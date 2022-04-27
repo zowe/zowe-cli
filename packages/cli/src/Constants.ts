@@ -9,37 +9,7 @@
 *
 */
 
-import {
-    APIML_LOGIN_DESCRIPTION,
-    APIML_LOGIN_EXAMPLE1,
-    APIML_LOGIN_EXAMPLE2,
-    APIML_LOGIN_SUMMARY,
-    APIML_LOGOUT_DESCRIPTION,
-    APIML_LOGOUT_EXAMPLE1,
-    APIML_LOGOUT_EXAMPLE2,
-    APIML_LOGOUT_OPTION_TOKEN_TYPE,
-    APIML_LOGOUT_SUMMARY,
-    AUTH_GROUP_DESCRIPTION,
-    AUTH_GROUP_SUMMARY,
-    AUTO_INIT_OPTION_GROUP,
-    AUTO_INIT_OPTION_HOST,
-    AUTO_INIT_OPTION_PASSWORD,
-    AUTO_INIT_OPTION_PORT,
-    AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
-    AUTO_INIT_OPTION_TOKEN_TYPE,
-    AUTO_INIT_OPTION_TOKEN_VALUE,
-    AUTO_INIT_OPTION_USER,
-    BASE_CONNECTION_OPTION_GROUP,
-    BASE_OPTION_CERT_FILE,
-    BASE_OPTION_CERT_KEY_FILE,
-    BASE_OPTION_HOST,
-    BASE_OPTION_PASSWORD,
-    BASE_OPTION_PORT,
-    BASE_OPTION_REJECT_UNAUTHORIZED,
-    BASE_OPTION_TOKEN_TYPE,
-    BASE_OPTION_TOKEN_VALUE,
-    BASE_OPTION_USER
-} from "@zowe/core-for-zowe-sdk";
+import { ProfileConstants } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Class to contain  constants
@@ -127,125 +97,125 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_CONNECTION_OPTION_GROUP = BASE_CONNECTION_OPTION_GROUP;
+    public static readonly BASE_CONNECTION_OPTION_GROUP = ProfileConstants.BASE_CONNECTION_OPTION_GROUP;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_HOST = BASE_OPTION_HOST;
+    public static readonly BASE_OPTION_HOST = ProfileConstants.BASE_OPTION_HOST;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_PORT = BASE_OPTION_PORT;
+    public static readonly BASE_OPTION_PORT = ProfileConstants.BASE_OPTION_PORT;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_USER = BASE_OPTION_USER;
+    public static readonly BASE_OPTION_USER = ProfileConstants.BASE_OPTION_USER;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_PASSWORD = BASE_OPTION_PASSWORD;
+    public static readonly BASE_OPTION_PASSWORD = ProfileConstants.BASE_OPTION_PASSWORD;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_REJECT_UNAUTHORIZED = BASE_OPTION_REJECT_UNAUTHORIZED;
+    public static readonly BASE_OPTION_REJECT_UNAUTHORIZED = ProfileConstants.BASE_OPTION_REJECT_UNAUTHORIZED;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_TOKEN_TYPE = BASE_OPTION_TOKEN_TYPE;
+    public static readonly BASE_OPTION_TOKEN_TYPE = ProfileConstants.BASE_OPTION_TOKEN_TYPE;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_TOKEN_VALUE = BASE_OPTION_TOKEN_VALUE;
+    public static readonly BASE_OPTION_TOKEN_VALUE = ProfileConstants.BASE_OPTION_TOKEN_VALUE;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_CERT_FILE = BASE_OPTION_CERT_FILE;
+    public static readonly BASE_OPTION_CERT_FILE = ProfileConstants.BASE_OPTION_CERT_FILE;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly BASE_OPTION_CERT_KEY_FILE = BASE_OPTION_CERT_KEY_FILE;
+    public static readonly BASE_OPTION_CERT_KEY_FILE = ProfileConstants.BASE_OPTION_CERT_KEY_FILE;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    // public static readonly BASE_OPTION_CERT_FILE_PASSPHRASE = BASE_OPTION_CERT_FILE_PASSPHRASE
+    // public static readonly BASE_OPTION_CERT_FILE_PASSPHRASE = ProfileConstants.BASE_OPTION_CERT_FILE_PASSPHRASE
 
     //______________________________________________________________________
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_GROUP = AUTO_INIT_OPTION_GROUP;
+    public static readonly AUTO_INIT_OPTION_GROUP = ProfileConstants.AUTO_INIT_OPTION_GROUP;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_HOST = AUTO_INIT_OPTION_HOST;
+    public static readonly AUTO_INIT_OPTION_HOST = ProfileConstants.AUTO_INIT_OPTION_HOST;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_PORT = AUTO_INIT_OPTION_PORT;
+    public static readonly AUTO_INIT_OPTION_PORT = ProfileConstants.AUTO_INIT_OPTION_PORT;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_USER = AUTO_INIT_OPTION_USER;
+    public static readonly AUTO_INIT_OPTION_USER = ProfileConstants.AUTO_INIT_OPTION_USER;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_PASSWORD = AUTO_INIT_OPTION_PASSWORD;
+    public static readonly AUTO_INIT_OPTION_PASSWORD = ProfileConstants.AUTO_INIT_OPTION_PASSWORD;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_REJECT_UNAUTHORIZED = AUTO_INIT_OPTION_REJECT_UNAUTHORIZED;
+    public static readonly AUTO_INIT_OPTION_REJECT_UNAUTHORIZED = ProfileConstants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_TOKEN_TYPE = AUTO_INIT_OPTION_TOKEN_TYPE;
+    public static readonly AUTO_INIT_OPTION_TOKEN_TYPE = ProfileConstants.AUTO_INIT_OPTION_TOKEN_TYPE;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTO_INIT_OPTION_TOKEN_VALUE = AUTO_INIT_OPTION_TOKEN_VALUE;
+    public static readonly AUTO_INIT_OPTION_TOKEN_VALUE = ProfileConstants.AUTO_INIT_OPTION_TOKEN_VALUE;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTH_GROUP_SUMMARY = AUTH_GROUP_SUMMARY;
+    public static readonly AUTH_GROUP_SUMMARY = ProfileConstants.AUTH_GROUP_SUMMARY;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly AUTH_GROUP_DESCRIPTION = AUTH_GROUP_DESCRIPTION;
+    public static readonly AUTH_GROUP_DESCRIPTION = ProfileConstants.AUTH_GROUP_DESCRIPTION;
 
     //______________________________________________________________________
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGIN_SUMMARY = APIML_LOGIN_SUMMARY;
+    public static readonly APIML_LOGIN_SUMMARY = ProfileConstants.APIML_LOGIN_SUMMARY;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGIN_DESCRIPTION = APIML_LOGIN_DESCRIPTION;
+    public static readonly APIML_LOGIN_DESCRIPTION = ProfileConstants.APIML_LOGIN_DESCRIPTION;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGIN_EXAMPLE1 = APIML_LOGIN_EXAMPLE1;
+    public static readonly APIML_LOGIN_EXAMPLE1 = ProfileConstants.APIML_LOGIN_EXAMPLE1;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGIN_EXAMPLE2 = APIML_LOGIN_EXAMPLE2;
+    public static readonly APIML_LOGIN_EXAMPLE2 = ProfileConstants.APIML_LOGIN_EXAMPLE2;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGOUT_SUMMARY = APIML_LOGOUT_SUMMARY;
+    public static readonly APIML_LOGOUT_SUMMARY = ProfileConstants.APIML_LOGOUT_SUMMARY;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGOUT_DESCRIPTION = APIML_LOGOUT_DESCRIPTION;
+    public static readonly APIML_LOGOUT_DESCRIPTION = ProfileConstants.APIML_LOGOUT_DESCRIPTION;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGOUT_EXAMPLE1 = APIML_LOGOUT_EXAMPLE1;
+    public static readonly APIML_LOGOUT_EXAMPLE1 = ProfileConstants.APIML_LOGOUT_EXAMPLE1;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGOUT_EXAMPLE2 = APIML_LOGOUT_EXAMPLE2;
+    public static readonly APIML_LOGOUT_EXAMPLE2 = ProfileConstants.APIML_LOGOUT_EXAMPLE2;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
-    public static readonly APIML_LOGOUT_OPTION_TOKEN_TYPE = APIML_LOGOUT_OPTION_TOKEN_TYPE;
+    public static readonly APIML_LOGOUT_OPTION_TOKEN_TYPE = ProfileConstants.APIML_LOGOUT_OPTION_TOKEN_TYPE;
 }

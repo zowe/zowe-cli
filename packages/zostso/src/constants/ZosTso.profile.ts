@@ -10,15 +10,7 @@
 */
 
 import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
-import {
-    TSO_OPTION_ACCOUNT_PROFILE,
-    TSO_OPTION_CHAR_SET,
-    TSO_OPTION_CODE_PAGE,
-    TSO_OPTION_COLUMNS,
-    TSO_OPTION_LOGON_PROCEDURE,
-    TSO_OPTION_REGION_SIZE,
-    TSO_OPTION_ROWS
-} from "./ZosTso.constants";
+import { TsoProfileConstants } from "./ZosTso.constants";
 
 /**
  * Profile configuration for TSO profiles
@@ -34,34 +26,34 @@ export const ZosTsoProfile: ICommandProfileTypeConfiguration = {
         properties: {
             account: {
                 type: "string",
-                optionDefinition: TSO_OPTION_ACCOUNT_PROFILE,
+                optionDefinition: TsoProfileConstants.TSO_OPTION_ACCOUNT_PROFILE,
                 includeInTemplate: true
             },
             characterSet: {
                 type: "string",
-                optionDefinition: TSO_OPTION_CHAR_SET
+                optionDefinition: TsoProfileConstants.TSO_OPTION_CHAR_SET
             },
             codePage: {
                 type: "string",
-                optionDefinition: TSO_OPTION_CODE_PAGE,
+                optionDefinition: TsoProfileConstants.TSO_OPTION_CODE_PAGE,
                 includeInTemplate: true
             },
             columns: {
                 type: "number",
-                optionDefinition: TSO_OPTION_COLUMNS
+                optionDefinition: TsoProfileConstants.TSO_OPTION_COLUMNS
             },
             logonProcedure: {
                 type: "string",
-                optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
+                optionDefinition: TsoProfileConstants.TSO_OPTION_LOGON_PROCEDURE,
                 includeInTemplate: true
             },
             regionSize: {
                 type: "number",
-                optionDefinition: TSO_OPTION_REGION_SIZE
+                optionDefinition: TsoProfileConstants.TSO_OPTION_REGION_SIZE
             },
             rows: {
                 type: "number",
-                optionDefinition: TSO_OPTION_ROWS
+                optionDefinition: TsoProfileConstants.TSO_OPTION_ROWS
             }
         },
         required: []

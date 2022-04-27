@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
-import { TSO_PROFILE_OPTIONS } from "@zowe/zos-tso-for-zowe-sdk";
+import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 
 export const CommandDefinition: ICommandDefinition = {
     name: "command",
@@ -39,7 +39,7 @@ export const CommandDefinition: ICommandDefinition = {
             type: "boolean",
             description: "Suppress console messages from start of address space."
         }
-    ] as ICommandOptionDefinition[]).concat(TSO_PROFILE_OPTIONS),
+    ] as ICommandOptionDefinition[]).concat(TsoProfileConstants.TSO_PROFILE_OPTIONS),
     examples: [
         {
             description: 'Issue the TSO command "status" to display information about jobs for your user ID.',

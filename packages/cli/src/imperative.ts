@@ -17,7 +17,7 @@ import { Constants } from "./Constants";
 import { ZosmfProfile } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosTsoProfile } from "@zowe/zos-tso-for-zowe-sdk";
 import { ZosUssProfile } from "@zowe/zos-uss-for-zowe-sdk";
-import { AUTH_GROUP_DESCRIPTION, AUTH_GROUP_SUMMARY, BaseProfile } from "@zowe/core-for-zowe-sdk";
+import { ProfileConstants } from "@zowe/core-for-zowe-sdk";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -49,11 +49,11 @@ const config: IImperativeConfig = {
             connProfType: "zosmf"
         }
     ],
-    baseProfile: BaseProfile,
+    baseProfile: ProfileConstants.BaseProfile,
     authGroupConfig: {
         authGroup: {
-            summary: AUTH_GROUP_SUMMARY,
-            description: AUTH_GROUP_DESCRIPTION
+            summary: ProfileConstants.AUTH_GROUP_SUMMARY,
+            description: ProfileConstants.AUTH_GROUP_DESCRIPTION
         }
     },
     configAutoInitCommandConfig: {
