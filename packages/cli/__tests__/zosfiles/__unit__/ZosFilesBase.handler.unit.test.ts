@@ -94,7 +94,7 @@ describe("ZosFilesBaseHandler", () => {
         await testClass.process(commandParameters);
 
         expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenLastCalledWith(commandParameters, expectedSession, zosmfProfile);
+        expect(spy).toHaveBeenLastCalledWith(commandParameters, expectedSession);
 
         expect(commandParameters.response.console.log).toHaveBeenCalledTimes(1);
         expect(commandParameters.response.console.log).toHaveBeenLastCalledWith(apiResponse.commandResponse);

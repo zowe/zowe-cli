@@ -33,6 +33,7 @@ const opts = {
   help: ["--help", "-h"],
   verbose: ["--verbose", "-v"],
   dryRun: ["--dry-run", "--dr"],
+  actParm: ["--act-param", "--ap"],
   clean: "--clean",
   node: "--node",
   os: "--os",
@@ -186,7 +187,18 @@ async function main() {
     // Execute workflow locally
     console.log("Executing new workflow...");
     await _sleep();
-    const runAct = cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], { stdio: "inherit" });
+    const actArgs = [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath];
+    let extraParms = "";
+    if (process.argv.indexOf(opts.actParm[0]) >= 0 || process.argv.indexOf(opts.actParm[1]) >= 0) {
+      process.argv.forEach((_v, _i) => {
+        if (_v === opts.actParm[0] || _v === opts.actParm[1]) {
+          if (extraParms !== "") extraParms += " ";
+          extraParms += "-P " + process.argv[_i + 1];
+        }
+      });
+      if (extraParms !== "") actArgs.push(...extraParms.split(' '));
+    }
+    const runAct = cp.spawn("act", actArgs, { stdio: "inherit" });
 
     runAct.on("close", async () => {
       console.log("Copying existing artifacts...");
@@ -234,6 +246,7 @@ Usage:
 - npm run test: act -- --node 16.x, 14.x
 - npm run test: act -- --node 16.x, 14.x --os ubuntu-latest
 - npm run test: act -- --node 16.x, 14.x --os ubuntu-latest, windows-latest
+- npm run test: act -- --node 16.x --os ubuntu-latest --ap ubuntu-latest=nektos/act-environments-ubuntu:18.04
 `);
 }
 

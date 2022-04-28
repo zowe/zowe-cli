@@ -64,18 +64,6 @@ describe("Upload dir-to-uss handler", () => {
                         // do nothing
                     })
                 }
-            },
-            profiles: {
-                get: jest.fn((args) => {
-                    return {
-                        host: "fake",
-                        port: "fake",
-                        user: "fake",
-                        password: "fake",
-                        auth: "fake",
-                        rejectUnauthorized: "fake"
-                    };
-                })
             }
         };
 
@@ -190,7 +178,6 @@ describe("Upload dir-to-uss handler", () => {
             }
 
             expect(error).toBeDefined();
-            expect(params.profiles.get).toHaveBeenCalledWith("zosmf", false);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

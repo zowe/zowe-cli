@@ -39,18 +39,6 @@ describe("USS file handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -82,9 +70,6 @@ describe("USS file handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -92,7 +77,6 @@ describe("USS file handler", () => {
             }
 
             //            expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fileList).toHaveBeenCalledTimes(1);
             expect(List.fileList).toHaveBeenCalledWith(fakeSession, path, {});
             expect(jsonObj).toMatchSnapshot();
