@@ -193,6 +193,24 @@ export class ProfileConstants {
         group: ProfileConstants.AUTO_INIT_OPTION_GROUP
     };
 
+    /**
+     * Option used in profile creation and commands for certificate file to be used to interact with login APIs
+     */
+    public static AUTO_INIT_OPTION_CERT_FILE: ICommandOptionDefinition = {
+        ...ProfileConstants.BASE_OPTION_CERT_FILE,
+        description: "The file path to a certificate file to use to authenticate to the API Mediation Layer",
+        group: ProfileConstants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for certificate key file to be used to interact with login APIs
+     */
+    public static AUTO_INIT_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
+        ...ProfileConstants.BASE_OPTION_CERT_KEY_FILE,
+        description: "The file path to a certificate key file to use to authenticate to the API Mediation Layer",
+        group: ProfileConstants.AUTO_INIT_OPTION_GROUP
+    };
+
 
     /**
      * Summary of auth command group
