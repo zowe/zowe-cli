@@ -5,6 +5,8 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 ## Recent Changes
 
 - Enhancement: Exposed `ssh` profile type configuration.
+- BugFix: Fixed issue where SSH command waits forever when user has expired password. [#989](https://github.com/zowe/zowe-cli/issues/989)
+- BugFix: Fixed SSH API using global mutable variables which could break concurrent commands. [#1389](https://github.com/zowe/zowe-cli/issues/1389)
 
 ## `7.0.0`
 
