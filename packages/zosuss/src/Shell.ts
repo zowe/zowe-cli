@@ -14,19 +14,18 @@ import { ClientChannel, Client } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
 
-// These are needed for authenticationHandler
-let authPos = 0;
-const authsAllowed = ["none"];
-let hasAuthFailed = false;
-export const startCmdFlag = "@@START OF COMMAND@@";
-
-export const expiredPasswordFlag = "FOTS1668";
-
 export class Shell {
+    public static readonly startCmdFlag = "@@START OF COMMAND@@";
+
+    public static readonly connRefusedFlag = "ECONNREFUSED";
+
+    public static readonly expiredPasswordFlag = "FOTS1668";
 
     public static executeSsh(session: SshSession,
         command: string,
         stdoutHandler: (data: string) => void): Promise<any> {
+        const authsAllowed = ["none"];
+        let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
@@ -58,17 +57,18 @@ export class Shell {
                     });
                     stream.on("close", () => {
                         Logger.getAppLogger().debug("SSH connection closed");
-                        stdoutHandler("\n");
+                        if (!hasAuthFailed) stdoutHandler("\n");
                         conn.end();
                         resolve(rc);
                     });
-                    stream.on("data", function (data: Buffer | string) {
+                    stream.on("data", (data: Buffer | string) => {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
                         // We do not know if password is expired until now.
                         // If it is, emit an error and shut down the stream.
-                        if (dataBuffer.length === 0 && data.indexOf(expiredPasswordFlag) === 0) {
+                        if (dataBuffer.length === 0 && data.indexOf(Shell.expiredPasswordFlag) === 0) {
+                            hasAuthFailed = true;
                             conn.emit("error", new Error(data.toString()));
-                            stream.removeListener("data", this);
+                            stream.removeAllListeners("data");
                             stream.close();
                             return;
                         }
@@ -81,8 +81,9 @@ export class Shell {
                             dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
                             // check startCmdFlag: start printing out data
-                            if (dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
-                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(startCmdFlag)+startCmdFlag.length);
+                            if (dataToPrint.match(new RegExp(`\n${this.startCmdFlag}`)) ||
+                                dataToPrint.match(new RegExp("\\$ " + this.startCmdFlag))) {
+                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(this.startCmdFlag) + this.startCmdFlag.length);
                                 isUserCommand = true;
                             }
 
@@ -101,26 +102,13 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\n` +
+                    stream.write(`export PS1='$ '\necho ${this.startCmdFlag}\n${command}\n` +
                     `exit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\n`);
                     stream.end();
                 });
             });
-            conn.connect({
-                host: session.ISshSession.hostname,
-                port: session.ISshSession.port,
-                username: session.ISshSession.user,
-                password: session.ISshSession.password,
-                privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
-                    require("fs").readFileSync(session.ISshSession.privateKey) : "",
-                passphrase: session.ISshSession.keyPassphrase,
-                authHandler: Shell.authenticationHandler,
-                readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
-                    session.ISshSession.handshakeTimeout : 0
-            });
             conn.on("error", (err: Error) => {
-                if (err.message.startsWith(expiredPasswordFlag)) {
-                    hasAuthFailed = true;
+                if (err.message.startsWith(this.expiredPasswordFlag)) {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.expiredPassword.message
                     }));
@@ -135,7 +123,7 @@ export class Shell {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.handshakeTimeout.message
                     }));
-                } else if ( err.message.includes("ECONNREFUSED")) {
+                } else if (err.message.includes(this.connRefusedFlag)) {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
                     }));
@@ -144,6 +132,18 @@ export class Shell {
                         msg: ZosUssMessages.unexpected.message + ":\n" + err.message
                     }));
                 }
+            });
+            conn.connect({
+                host: session.ISshSession.hostname,
+                port: session.ISshSession.port,
+                username: session.ISshSession.user,
+                password: session.ISshSession.password,
+                privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
+                    require("fs").readFileSync(session.ISshSession.privateKey) : "",
+                passphrase: session.ISshSession.keyPassphrase,
+                authHandler: this.authenticationHandler(authsAllowed),
+                readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
+                    session.ISshSession.handshakeTimeout : 0
             });
         });
         return promise;
@@ -157,19 +157,19 @@ export class Shell {
         return this.executeSsh(session, cwdCommand, stdoutHandler);
     }
 
-    /**
-     * Getter for brightside logger
-     * @returns {Logger}
-     */
-    private static get log(): Logger {
-        return Logger.getAppLogger();
-    }
-
-    private static authenticationHandler(methodsLeft: string[], partialSuccess: boolean, callback: any) {
-        partialSuccess = true;
-        if (authPos === authsAllowed.length) {
-            return false;
-        }
-        return authsAllowed[authPos++];
+    private static authenticationHandler(authsAllowed: string[]) {
+        let authPos = 0;
+        return (methodsLeft: string[], partialSuccess: boolean, callback: any) => {
+            partialSuccess = true;
+            if (authPos === authsAllowed.length) {
+                return false;
+            }
+            return authsAllowed[authPos++];
+        };
     }
 }
+
+/**
+ * @deprecated Use `Shell.startCmdFlag` instead.
+ */
+export const startCmdFlag = Shell.startCmdFlag;

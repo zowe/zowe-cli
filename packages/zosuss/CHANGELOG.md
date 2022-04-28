@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed issue where SSH command waits forever when user has expired password. [#989](https://github.com/zowe/zowe-cli/issues/989)
+- BugFix: Fixed SSH API using global mutable variables which could break concurrent commands. [#1389](https://github.com/zowe/zowe-cli/issues/1389)
+
 ## `6.33.3`
 
 - Documentation: Update README with information about the new optional native modules in ssh2 dependency
