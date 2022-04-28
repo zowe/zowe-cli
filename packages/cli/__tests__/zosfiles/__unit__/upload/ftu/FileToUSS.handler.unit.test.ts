@@ -40,18 +40,6 @@ describe("Upload file-to-uss handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -84,9 +72,6 @@ describe("Upload file-to-uss handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -94,7 +79,6 @@ describe("Upload file-to-uss handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToUssFile).toHaveBeenCalledTimes(1);
             expect(Upload.fileToUssFile).toHaveBeenCalledWith(fakeSession, inputfile, USSFileName, {
                 binary: undefined,
