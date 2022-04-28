@@ -38,18 +38,6 @@ describe("fs handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -81,9 +69,6 @@ describe("fs handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -91,7 +76,6 @@ describe("fs handler", () => {
             }
 
             //            expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fs).toHaveBeenCalledTimes(1);
             expect(List.fs).toHaveBeenCalledWith(fakeSession, {fsname: undefined, maxLength: undefined, path: null});
             expect(jsonObj).toMatchSnapshot();
@@ -121,18 +105,6 @@ describe("fs handler", () => {
                     apiResponse: {
                         items: ["test-items"]
                     }
-                };
-            });
-
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -167,9 +139,6 @@ describe("fs handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -177,7 +146,6 @@ describe("fs handler", () => {
             }
 
             //            expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fsWithPath).toHaveBeenCalledTimes(1);
             expect(List.fsWithPath).toHaveBeenCalledWith(fakeSession, {fsname: null, maxLength: undefined, path: "testing"});
             expect(jsonObj).toMatchSnapshot();

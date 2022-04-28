@@ -9,83 +9,54 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 
-export const TSO_OPTION_GROUP: string = "TSO ADDRESS SPACE OPTIONS";
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_GROUP = TsoProfileConstants.TSO_OPTION_GROUP;
 
-export const TSO_OPTION_ACCOUNT: ICommandOptionDefinition = {
-    name: "account",
-    aliases: ["a"],
-    description: "Your z/OS TSO/E accounting information.",
-    type: "string",
-    required: true,
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_ACCOUNT = TsoProfileConstants.TSO_OPTION_ACCOUNT;
 
-export const TSO_OPTION_ACCOUNT_PROFILE: ICommandOptionDefinition = {
-    ...TSO_OPTION_ACCOUNT,
-    required: false
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_ACCOUNT_PROFILE = TsoProfileConstants.TSO_OPTION_ACCOUNT_PROFILE;
 
-export const TSO_OPTION_CHAR_SET: ICommandOptionDefinition = {
-    name: "character-set",
-    aliases: ["cs"],
-    description: "Character set for address space to convert messages and responses from UTF-8 to EBCDIC.",
-    type: "string",
-    defaultValue: "697",
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_CHAR_SET = TsoProfileConstants.TSO_OPTION_CHAR_SET;
 
-export const TSO_OPTION_CODE_PAGE: ICommandOptionDefinition = {
-    name: "code-page",
-    aliases: ["cp"],
-    description: "Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.",
-    type: "string",
-    defaultValue: "1047",
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_CODE_PAGE = TsoProfileConstants.TSO_OPTION_CODE_PAGE;
 
-export const TSO_OPTION_COLUMNS: ICommandOptionDefinition = {
-    name: "columns",
-    aliases: ["cols"],
-    description: "The number of columns on a screen.",
-    type: "number",
-    defaultValue: 80,
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_COLUMNS = TsoProfileConstants.TSO_OPTION_COLUMNS;
 
-export const TSO_OPTION_LOGON_PROCEDURE: ICommandOptionDefinition = {
-    name: "logon-procedure",
-    aliases: ["l"],
-    description: "The logon procedure to use when creating TSO procedures on your behalf.",
-    type: "string",
-    defaultValue: "IZUFPROC",
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_LOGON_PROCEDURE = TsoProfileConstants.TSO_OPTION_LOGON_PROCEDURE;
 
-export const TSO_OPTION_REGION_SIZE: ICommandOptionDefinition = {
-    name: "region-size",
-    aliases: ["rs"],
-    description: "Region size for the TSO/E address space.",
-    type: "number",
-    defaultValue: 4096,
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_REGION_SIZE = TsoProfileConstants.TSO_OPTION_REGION_SIZE;
 
-export const TSO_OPTION_ROWS: ICommandOptionDefinition = {
-    name: "rows",
-    description: "The number of rows on a screen.",
-    type: "number",
-    defaultValue: 24,
-    group: TSO_OPTION_GROUP
-};
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_OPTION_ROWS = TsoProfileConstants.TSO_OPTION_ROWS;
 
-export const TSO_PROFILE_OPTIONS: ICommandOptionDefinition[] = [
-    TSO_OPTION_ACCOUNT,
-    TSO_OPTION_CHAR_SET,
-    TSO_OPTION_CODE_PAGE,
-    TSO_OPTION_COLUMNS,
-    TSO_OPTION_LOGON_PROCEDURE,
-    TSO_OPTION_REGION_SIZE,
-    TSO_OPTION_ROWS
-];
+/**
+ * @deprecated Please use this constant from the @zowe/zos-tso-for-zowe-sdk
+ */
+export const TSO_PROFILE_OPTIONS = TsoProfileConstants.TSO_PROFILE_OPTIONS;

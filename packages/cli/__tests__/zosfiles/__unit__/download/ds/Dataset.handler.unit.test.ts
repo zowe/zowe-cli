@@ -36,18 +36,6 @@ describe("Download data set handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -79,9 +67,6 @@ describe("Download data set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -89,7 +74,6 @@ describe("Download data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.dataSet).toHaveBeenCalledTimes(1);
             expect(Download.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {
                 task: {
@@ -126,18 +110,6 @@ describe("Download data set handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -170,9 +142,6 @@ describe("Download data set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -180,7 +149,6 @@ describe("Download data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.dataSet).toHaveBeenCalledTimes(1);
             expect(Download.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {
                 record,
@@ -218,18 +186,6 @@ describe("Download data set handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -262,9 +218,6 @@ describe("Download data set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -272,7 +225,6 @@ describe("Download data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.dataSet).toHaveBeenCalledTimes(1);
             expect(Download.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {
                 binary,

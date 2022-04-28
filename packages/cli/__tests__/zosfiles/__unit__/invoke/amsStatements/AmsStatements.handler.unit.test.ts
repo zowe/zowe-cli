@@ -19,18 +19,6 @@ describe("Invoke AMS statements handler", () => {
         const handler = new handlerReq.default();
         let fakeSession: any = null;
 
-        // Mocked function references
-        const profFunc = jest.fn((args) => {
-            return {
-                host: "fake",
-                port: "fake",
-                user: "fake",
-                password: "fake",
-                auth: "fake",
-                rejectUnauthorized: "fake"
-            };
-        });
-
         beforeEach(() => {
             // Mock the submit JCL function
             Invoke.ams = jest.fn((session) => {
@@ -84,9 +72,6 @@ describe("Invoke AMS statements handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -94,7 +79,6 @@ describe("Invoke AMS statements handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Invoke.ams).toHaveBeenCalledTimes(1);
             expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, [controlStatements], options);
             expect(jsonObj).toMatchSnapshot();

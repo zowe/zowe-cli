@@ -40,18 +40,6 @@ describe("Mount file system handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -84,9 +72,6 @@ describe("Mount file system handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -94,7 +79,6 @@ describe("Mount file system handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Mount.fs).toHaveBeenCalledTimes(1);
             expect(Mount.fs).toHaveBeenCalledWith(fakeSession, fileSystemName, mountPoint, {});
             expect(jsonObj).toMatchSnapshot();
@@ -126,18 +110,6 @@ describe("Mount file system handler", () => {
             throw impErr;
         });
 
-        // Mocked function references
-        const profFunc = jest.fn((args) => {
-            return {
-                host: "fake",
-                port: "fake",
-                user: "fake",
-                password: "fake",
-                auth: "fake",
-                rejectUnauthorized: "fake"
-            };
-        });
-
         try {
             // Invoke the handler with a full set of mocked arguments and response functions
             await handler.process({
@@ -163,9 +135,6 @@ describe("Mount file system handler", () => {
                             logMessage += "\n" + logArgs;
                         })
                     }
-                },
-                profiles: {
-                    get: profFunc
                 }
             } as any);
         } catch (e) {
@@ -173,7 +142,6 @@ describe("Mount file system handler", () => {
         }
 
         expect(error).toBeDefined();
-        expect(profFunc).toHaveBeenCalledWith("zosmf", false);
         expect(Mount.fs).toHaveBeenCalledTimes(1);
         expect(Mount.fs).toHaveBeenCalledWith(fakeSession, fileSystemName, mountPoint, {});
     });

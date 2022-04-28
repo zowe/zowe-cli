@@ -9,7 +9,7 @@
     "__tests__/__packages__/*"
   ],
   "scripts": {
-    "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
+    "build": "lerna run build && gulp updateLicense && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "build:exe": "cd zowex && cargo build && cargo clippy && cargo test",
     "clean": "lerna run --parallel clean",
     "clean:exe": "cd zowex && cargo clean",
@@ -39,7 +39,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.2",
+    "@zowe/imperative": "5.1.0",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {

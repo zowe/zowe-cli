@@ -106,6 +106,10 @@ exports[`config auto-init help should display help 1`] = `
  GLOBAL OPTIONS
  --------------
 
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
    --response-format-json | --rfj (boolean)
 
       Produce JSON formatted data from a command
