@@ -76,7 +76,6 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      *
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      * @param {AbstractSession} session The session object generated from the zosmf profile.
-     * @deprecated
      * @param {IProfile} zosmfProfile The zosmf profile that was loaded for the command.
      *        Never use this deprecated zosmfProfile parameter.
      *        It should have been removed for the V2 version of Zowe, but we missed it.
