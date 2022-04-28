@@ -61,13 +61,15 @@ const config: IImperativeConfig = {
         provider: "APIML",
         autoInit: {
             options: [
-                Constants.AUTO_INIT_OPTION_HOST,
-                Constants.AUTO_INIT_OPTION_PORT,
-                Constants.AUTO_INIT_OPTION_USER,
-                Constants.AUTO_INIT_OPTION_PASSWORD,
-                Constants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
-                Constants.AUTO_INIT_OPTION_TOKEN_TYPE,
-                Constants.AUTO_INIT_OPTION_TOKEN_VALUE
+                ProfileConstants.AUTO_INIT_OPTION_HOST,
+                ProfileConstants.AUTO_INIT_OPTION_PORT,
+                ProfileConstants.AUTO_INIT_OPTION_USER,
+                ProfileConstants.AUTO_INIT_OPTION_PASSWORD,
+                ProfileConstants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
+                ProfileConstants.AUTO_INIT_OPTION_TOKEN_TYPE,
+                ProfileConstants.AUTO_INIT_OPTION_TOKEN_VALUE,
+                ProfileConstants.AUTO_INIT_OPTION_CERT_FILE,
+                ProfileConstants.AUTO_INIT_OPTION_CERT_KEY_FILE
             ]
         },
         profileType: "base"
