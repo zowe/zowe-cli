@@ -36,18 +36,6 @@ describe("Create binary PDS data set handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -79,9 +67,6 @@ describe("Create binary PDS data set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -89,7 +74,6 @@ describe("Create binary PDS data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.dataSet).toHaveBeenCalledTimes(1);
             expect(Create.dataSet).toHaveBeenCalledWith(fakeSession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

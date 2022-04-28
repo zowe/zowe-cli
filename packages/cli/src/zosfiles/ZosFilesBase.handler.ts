@@ -41,8 +41,6 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      * @returns {Promise<void>}
      */
     public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf", false);
-
         const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
             commandParameters.arguments
         );
@@ -51,7 +49,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
         );
 
         const session = new Session(sessCfgWithCreds);
-        const response = await this.processWithSession(commandParameters, session, profile);
+        const response = await this.processWithSession(commandParameters, session);
 
         commandParameters.response.progress.endBar(); // end any progress bars
         // Print out the response
@@ -79,12 +77,16 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      * @param {AbstractSession} session The session object generated from the zosmf profile.
      * @param {IProfile} zosmfProfile The zosmf profile that was loaded for the command.
+     *        Never use this deprecated zosmfProfile parameter.
+     *        It should have been removed for the V2 version of Zowe, but we missed it.
+     *        There is no good reason to use it. Better techniques exist, and are
+     *        implemented in all of the implementations of this abstract class.
      *
      * @returns {Promise<IZosFilesResponse>} The response from the underlying zos-files api call.
      */
     public abstract async processWithSession(
         commandParameters: IHandlerParameters,
         session: AbstractSession,
-        zosmfProfile: IProfile
+        zosmfProfile?: IProfile
     ): Promise<IZosFilesResponse>;
 }

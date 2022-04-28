@@ -38,18 +38,6 @@ describe("List Dataset handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             // Invoke the handler with a full set of mocked arguments and response functions
             await handler.process({
                 arguments: {
@@ -80,13 +68,9 @@ describe("List Dataset handler", () => {
                             // do nothing
                         })
                     }
-                },
-                profiles: {
-                    get: profFunc
                 }
             } as any);
 
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.dataSet).toHaveBeenCalledTimes(1);
             expect(List.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

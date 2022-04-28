@@ -38,18 +38,6 @@ describe("Create USS Directory", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
@@ -81,9 +69,6 @@ describe("Create USS Directory", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -91,7 +76,6 @@ describe("Create USS Directory", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.uss).toHaveBeenCalledTimes(1);
             expect(Create.uss).toHaveBeenCalledWith(fakeSession, undefined, "directory", undefined, zosFilesOptions);
             expect(jsonObj).toMatchSnapshot();

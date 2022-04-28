@@ -37,18 +37,6 @@ describe("Upload stdin-to-data-set handler", () => {
                 };
             });
 
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
-                };
-            });
-
             process.nextTick(() => {
                 process.stdin.emit("data", Buffer.from("test-data"));
                 process.stdin.emit("end");
@@ -86,9 +74,6 @@ describe("Upload stdin-to-data-set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -96,7 +81,6 @@ describe("Upload stdin-to-data-set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.streamToDataSet).toHaveBeenCalledTimes(1);
         });
 
@@ -121,18 +105,6 @@ describe("Upload stdin-to-data-set handler", () => {
                 return {
                     success: true,
                     commandResponse: "uploaded"
-                };
-            });
-
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -174,9 +146,6 @@ describe("Upload stdin-to-data-set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -192,7 +161,6 @@ describe("Upload stdin-to-data-set handler", () => {
                     statusMessage: "Uploading stdin to data set"
                 }
             });
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.streamToDataSet).toHaveBeenCalledTimes(1);
         });
 
@@ -217,18 +185,6 @@ describe("Upload stdin-to-data-set handler", () => {
                 return {
                     success: true,
                     commandResponse: "uploaded"
-                };
-            });
-
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -270,9 +226,6 @@ describe("Upload stdin-to-data-set handler", () => {
                                 // do nothing
                             })
                         }
-                    },
-                    profiles: {
-                        get: profFunc
                     }
                 } as any);
             } catch (e) {
@@ -288,7 +241,6 @@ describe("Upload stdin-to-data-set handler", () => {
                     statusMessage: "Uploading stdin to data set"
                 }
             });
-            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.streamToDataSet).toHaveBeenCalledTimes(1);
         });
     });
