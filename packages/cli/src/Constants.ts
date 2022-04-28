@@ -175,6 +175,14 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
      */
+    public static readonly AUTO_INIT_OPTION_CERT_FILE = ProfileConstants.AUTO_INIT_OPTION_CERT_FILE;
+    /**
+     * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
+    */
+    public static readonly AUTO_INIT_OPTION_CERT_KEY_FILE = ProfileConstants.AUTO_INIT_OPTION_CERT_KEY_FILE;
+    /**
+     * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
+     */
     public static readonly AUTH_GROUP_SUMMARY = ProfileConstants.AUTH_GROUP_SUMMARY;
     /**
      * @deprecated Please use this constant from the @zowe/core-for-zowe-sdk
