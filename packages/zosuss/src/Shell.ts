@@ -65,7 +65,7 @@ export class Shell {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
                         // We do not know if password is expired until now.
                         // If it is, emit an error and shut down the stream.
-                        if (dataBuffer.length === 0 && data.indexOf(Shell.expiredPasswordFlag) === 0) {
+                        if (dataBuffer.length === 0 && data.indexOf(this.expiredPasswordFlag) === 0) {
                             hasAuthFailed = true;
                             conn.emit("error", new Error(data.toString()));
                             stream.removeAllListeners("data");
