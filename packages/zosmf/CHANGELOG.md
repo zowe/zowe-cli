@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `7.1.0`
 
 - Enhancement: Exposed `zosmf` profile type configuration.
 
