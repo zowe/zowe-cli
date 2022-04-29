@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { TSO_PROFILE_OPTIONS } from "../../constants/ZosTso.constants";
+import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 
 export const AddressSpaceDefinition: ICommandDefinition = {
     name: "address-space",
@@ -23,7 +23,7 @@ export const AddressSpaceDefinition: ICommandDefinition = {
     profile: {
         optional: ["zosmf", "tso"]
     },
-    options: TSO_PROFILE_OPTIONS.concat([
+    options: TsoProfileConstants.TSO_PROFILE_OPTIONS.concat([
         {
             name: "servlet-key-only", aliases: ["sko"],
             description: "Specify this option to print only the servlet key",

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `7.1.0`
+
+- Enhancement: Exposed `base` profile type configuration.
+
 ## `7.0.0`
 
 - Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.

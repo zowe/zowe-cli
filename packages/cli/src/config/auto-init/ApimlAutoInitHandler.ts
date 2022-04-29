@@ -69,6 +69,18 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      * @throws {ImperativeError}
      */
     protected async doAutoInit(session: AbstractSession, params: IHandlerParameters): Promise<IConfig> {
+        // Login with token authentication first, so we can support certificates
+        if ((session.ISession.user && session.ISession.password) || (session.ISession.cert && session.ISession.certKey)) {
+            // If it is basic authentication, we need to set the auth type.
+            if (session.ISession.password) { session.ISession.type = SessConstants.AUTH_TYPE_TOKEN; }
+            session.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
+            session.ISession.storeCookie = true;
+            session.ISession.tokenValue = await Login.apimlLogin(session);
+            session.ISession.storeCookie = false;
+            session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
+            session.ISession.user = session.ISession.password = session.ISession.cert = session.ISession.certKey = undefined;
+        }
+
         const restErrUnauthorized = 403;
         const configs = Services.getPluginApimlConfigs();
         let profileInfos;
@@ -103,14 +115,6 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
                 profileConfig.profiles.base.properties.tokenType = session.ISession.tokenType;
                 profileConfig.profiles.base.properties.tokenValue = session.ISession.tokenValue;
-                profileConfig.profiles.base.secure.push("tokenValue");
-            } else if (session.ISession.user && session.ISession.password) {
-                const tokenType = SessConstants.TOKEN_TYPE_APIML;
-                session.ISession.tokenType = tokenType;
-                session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
-                const tokenValue = await Login.apimlLogin(session);
-                profileConfig.profiles.base.properties.tokenType = tokenType;
-                profileConfig.profiles.base.properties.tokenValue = tokenValue;
                 profileConfig.profiles.base.secure.push("tokenValue");
             }
         }

@@ -32,5 +32,8 @@ export const ZosUssMessages: { [key: string]: IMessageDefinition } = {
     },
     unexpected: {
         message: "Connection failed because of an unexpected error"
+    },
+    expiredPassword: {
+        message: "Your password has expired"
     }
 };

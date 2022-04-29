@@ -14,24 +14,25 @@ import { ClientChannel, Client } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
 
-// These are needed for authenticationHandler
-let authPos = 0;
-const authsAllowed = ["none"];
-let hasAuthFailed = false;
-export const startCmdFlag = "@@START OF COMMAND@@";
-
 export class Shell {
+    public static readonly startCmdFlag = "@@START OF COMMAND@@";
+
+    public static readonly connRefusedFlag = "ECONNREFUSED";
+
+    public static readonly expiredPasswordFlag = "FOTS1668";
 
     public static executeSsh(session: SshSession,
         command: string,
         stdoutHandler: (data: string) => void): Promise<any> {
-        const promise = new Promise<any>((resolve,reject) => {
+        const authsAllowed = ["none"];
+        let hasAuthFailed = false;
+        const promise = new Promise<any>((resolve, reject) => {
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
-            if(session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
+            if (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
                 authsAllowed.push("publickey");
             }
-            if(session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
+            if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
                 authsAllowed.push("password");
             }
             const conn = new Client();
@@ -56,14 +57,23 @@ export class Shell {
                     });
                     stream.on("close", () => {
                         Logger.getAppLogger().debug("SSH connection closed");
-                        stdoutHandler("\n");
+                        if (!hasAuthFailed) stdoutHandler("\n");
                         conn.end();
                         resolve(rc);
                     });
-                    stream.on("data", (data: string) => {
+                    stream.on("data", (data: Buffer | string) => {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
+                        // We do not know if password is expired until now.
+                        // If it is, emit an error and shut down the stream.
+                        if (dataBuffer.length === 0 && data.indexOf(this.expiredPasswordFlag) === 0) {
+                            hasAuthFailed = true;
+                            conn.emit("error", new Error(data.toString()));
+                            stream.removeAllListeners("data");
+                            stream.close();
+                            return;
+                        }
                         dataBuffer += data;
-                        if(dataBuffer.includes("\r")) {
+                        if (dataBuffer.includes("\r")) {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
                             // rather than print it out right away
@@ -71,12 +81,13 @@ export class Shell {
                             dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
                             // check startCmdFlag: start printing out data
-                            if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
-                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(startCmdFlag)+startCmdFlag.length);
+                            if (dataToPrint.match(new RegExp(`\n${this.startCmdFlag}`)) ||
+                                dataToPrint.match(new RegExp("\\$ " + this.startCmdFlag))) {
+                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(this.startCmdFlag) + this.startCmdFlag.length);
                                 isUserCommand = true;
                             }
 
-                            if(isUserCommand && dataToPrint.match(/\\$ exit/)) {
+                            if (isUserCommand && dataToPrint.match(/\\$ exit/)) {
                                 // if exit found, print out stuff before exit, then stop printing out.
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
                                 stdoutHandler(dataToPrint);
@@ -91,36 +102,28 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\n` +
+                    stream.write(`export PS1='$ '\necho ${this.startCmdFlag}\n${command}\n` +
                     `exit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\n`);
                     stream.end();
                 });
             });
-            conn.connect({
-                host: session.ISshSession.hostname,
-                port: session.ISshSession.port,
-                username: session.ISshSession.user,
-                password: session.ISshSession.password,
-                privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
-                    require("fs").readFileSync(session.ISshSession.privateKey) : "",
-                passphrase: session.ISshSession.keyPassphrase,
-                authHandler: Shell.authenticationHandler,
-                readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
-                    session.ISshSession.handshakeTimeout : 0
-            } as any);
             conn.on("error", (err: Error) => {
-                if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
+                if (err.message.startsWith(this.expiredPasswordFlag)) {
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.expiredPassword.message
+                    }));
+                } else if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
                     hasAuthFailed = true;
                     reject(new ImperativeError({
                         msg: ZosUssMessages.allAuthMethodsFailed.message
                     }));
                 }
                 // throw error only when authentication didn't fail.
-                else if( !hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
+                else if (!hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.handshakeTimeout.message
                     }));
-                } else if ( err.message.includes("ECONNREFUSED")) {
+                } else if (err.message.includes(this.connRefusedFlag)) {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
                     }));
@@ -130,6 +133,18 @@ export class Shell {
                     }));
                 }
             });
+            conn.connect({
+                host: session.ISshSession.hostname,
+                port: session.ISshSession.port,
+                username: session.ISshSession.user,
+                password: session.ISshSession.password,
+                privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
+                    require("fs").readFileSync(session.ISshSession.privateKey) : "",
+                passphrase: session.ISshSession.keyPassphrase,
+                authHandler: this.authenticationHandler(authsAllowed),
+                readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
+                    session.ISshSession.handshakeTimeout : 0
+            } as any);
         });
         return promise;
     }
@@ -142,19 +157,19 @@ export class Shell {
         return this.executeSsh(session, cwdCommand, stdoutHandler);
     }
 
-    /**
-     * Getter for brightside logger
-     * @returns {Logger}
-     */
-    private static get log(): Logger {
-        return Logger.getAppLogger();
-    }
-
-    private static authenticationHandler(methodsLeft: string[], partialSuccess: boolean, callback: any) {
-        partialSuccess = true;
-        if (authPos === authsAllowed.length) {
-            return false;
-        }
-        return authsAllowed[authPos++];
+    private static authenticationHandler(authsAllowed: string[]) {
+        let authPos = 0;
+        return (methodsLeft: string[], partialSuccess: boolean, callback: any) => {
+            partialSuccess = true;
+            if (authPos === authsAllowed.length) {
+                return false;
+            }
+            return authsAllowed[authPos++];
+        };
     }
 }
+
+/**
+ * @deprecated Use `Shell.startCmdFlag` instead.
+ */
+export const startCmdFlag = Shell.startCmdFlag;
