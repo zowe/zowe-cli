@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.1.1`
 
 - BugFix: Moved `authConfig` object from the core SDK into the CLI's base profile definition to fix invalid handler path.
 
