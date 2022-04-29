@@ -49,7 +49,47 @@ const config: IImperativeConfig = {
             connProfType: "zosmf"
         }
     ],
-    baseProfile: ProfileConstants.BaseProfile,
+    baseProfile: {
+        ...ProfileConstants.BaseProfile,
+        authConfig: [
+            {
+                serviceName: "apiml",
+                handler: __dirname + "/auth/ApimlAuthHandler",
+                login: {
+                    summary: ProfileConstants.APIML_LOGIN_SUMMARY,
+                    description: ProfileConstants.APIML_LOGIN_DESCRIPTION,
+                    examples: [
+                        ProfileConstants.APIML_LOGIN_EXAMPLE1,
+                        ProfileConstants.APIML_LOGIN_EXAMPLE2
+                    ],
+                    options: [
+                        ProfileConstants.BASE_OPTION_HOST,
+                        ProfileConstants.BASE_OPTION_PORT,
+                        ProfileConstants.BASE_OPTION_USER,
+                        ProfileConstants.BASE_OPTION_PASSWORD,
+                        ProfileConstants.BASE_OPTION_REJECT_UNAUTHORIZED,
+                        ProfileConstants.BASE_OPTION_CERT_FILE,
+                        ProfileConstants.BASE_OPTION_CERT_KEY_FILE
+                    ]
+                },
+                logout: {
+                    summary: ProfileConstants.APIML_LOGOUT_SUMMARY,
+                    description: ProfileConstants.APIML_LOGOUT_DESCRIPTION,
+                    examples: [
+                        ProfileConstants.APIML_LOGOUT_EXAMPLE1,
+                        ProfileConstants.APIML_LOGOUT_EXAMPLE2
+                    ],
+                    options: [
+                        ProfileConstants.BASE_OPTION_HOST,
+                        ProfileConstants.BASE_OPTION_PORT,
+                        ProfileConstants.APIML_LOGOUT_OPTION_TOKEN_TYPE,
+                        ProfileConstants.BASE_OPTION_TOKEN_VALUE,
+                        ProfileConstants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    ]
+                }
+            }
+        ]
+    },
     authGroupConfig: {
         authGroup: {
             summary: ProfileConstants.AUTH_GROUP_SUMMARY,

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Moved `authConfig` object from the core SDK into the CLI's base profile definition to fix invalid handler path.
+
 ## `7.1.0`
 
 - Enhancement: Updated the `zowe config auto-init` command to allow using certificates for authentication. [#1359](https://github.com/zowe/zowe-cli/issues/1359)
