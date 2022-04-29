@@ -27,7 +27,9 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         commandParameters.response.progress.startBar({task});
 
         const dsContentBuf = await Get.dataSet(session, commandParameters.arguments.dataSetName,
-            { binary: commandParameters.arguments.binary }
+            {   binary: commandParameters.arguments.binary,
+                responseTimeout: commandParameters.arguments.responseTimeout
+            }
         );
         return {
             success: true,
