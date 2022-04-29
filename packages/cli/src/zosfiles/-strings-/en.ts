@@ -648,6 +648,40 @@ export default {
                 " without a maximum number of concurrent requests. "
         }
     },
+    VIEW: {
+        SUMMARY: "View the contents of a data set or USS file",
+        DESCRIPTION: "View the contents of a data set or USS file on your terminal (stdout).",
+        ACTIONS: {
+            DATA_SET: {
+                SUMMARY: "View content from a z/OS data set",
+                DESCRIPTION: "View content from a z/OS data set on your terminal (stdout).",
+                OPTIONS: {
+                    BINARY: "Transfer data in binary mode (no EBCDIC to ASCII conversion).",
+                },
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to display."
+                },
+                EXAMPLES: {
+                    EX1: `View the contents of the data set member "ibmuser.cntl(iefbr14)"`,
+                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`
+                }
+            },
+            USS_FILE: {
+                SUMMARY: "View content from a USS file",
+                DESCRIPTION: "View content from a Unix System Services (USS) file on your terminal (stdout).",
+                OPTIONS: {
+                    BINARY: "Transfer data in binary mode (no EBCDIC to ASCII conversion).",
+                },
+                POSITIONALS: {
+                    USSFILE: "The name of the USS file you want to display."
+                },
+                EXAMPLES: {
+                    EX1: `View the contents of the USS file "/a/ibmuser/my_text.txt"`,
+                    EX2: `View the contents of the USS file "/a/ibmuser/MyJavaClass.class" in binary mode`
+                }
+            }
+        }
+    },
     HMIGRATE: {
         DESCRIPTION: "Migrate data sets.",
         ACTIONS: {
