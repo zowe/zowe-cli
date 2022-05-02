@@ -10,11 +10,11 @@
 */
 
 import {ICommandDefinition} from "@zowe/imperative";
-
+import { ViewOptions } from "../View.options";
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).VIEW.ACTIONS.DATA_SET;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).VIEW;
 
 /**
  * View data set command definition containing its description, examples and/or options
@@ -33,26 +33,21 @@ export const DatasetDefinition: ICommandDefinition = {
     positionals: [
         {
             name: "dataSetName",
-            description: strings.POSITIONALS.DATASETNAME,
+            description: strings.ACTIONS.DATA_SET.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
         },
     ],
     options: [
-        {
-            name: "binary",
-            aliases: ["b"],
-            type: "boolean",
-            description: strings.OPTIONS.BINARY
-        }
+        ViewOptions.binary
     ],
     examples: [
         {
-            description: strings.EXAMPLES.EX1,
+            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
             options: `"ibmuser.cntl(iefbr14)"`
         },
         {
-            description: strings.EXAMPLES.EX2,
+            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
             options: `"ibmuser.test.loadlib(main)" --binary`
         }
     ]

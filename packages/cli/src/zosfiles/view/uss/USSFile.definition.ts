@@ -10,11 +10,11 @@
 */
 
 import {ICommandDefinition} from "@zowe/imperative";
-
+import { ViewOptions } from "../View.options";
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).VIEW.ACTIONS.USS_FILE;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).VIEW;
 
 /**
  * View USS file content command definition containing its description, examples and/or options
@@ -33,26 +33,21 @@ export const USSFileDefinition: ICommandDefinition = {
     positionals: [
         {
             name: "file",
-            description: strings.POSITIONALS.USSFILE,
+            description: strings.ACTIONS.USS_FILE.POSITIONALS.USSFILE,
             type: "string",
             required: true
         },
     ],
     options: [
-        {
-            name: "binary",
-            aliases: ["b"],
-            type: "boolean",
-            description: strings.OPTIONS.BINARY
-        }
+        ViewOptions.binary
     ],
     examples: [
         {
-            description: strings.EXAMPLES.EX1,
+            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
             options: `"/a/ibmuser/my_text.txt"`
         },
         {
-            description: strings.EXAMPLES.EX2,
+            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
             options: `"/a/ibmuser/MyJavaClass.class" --binary`
         }
     ]
