@@ -39,7 +39,10 @@ export const DatasetDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        ViewOptions.binary
+        ViewOptions.binary,
+        ViewOptions.encoding,
+        ViewOptions.record,
+        ViewOptions.volume
     ],
     examples: [
         {
