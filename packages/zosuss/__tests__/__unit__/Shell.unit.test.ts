@@ -11,8 +11,9 @@
 
 /* eslint-disable jest/expect-expect */
 import { Client } from "ssh2";
-import { startCmdFlag, Shell } from "../../src/Shell";
+import { Shell } from "../../src/Shell";
 import { SshSession } from "../../src/SshSession";
+import { ZosUssMessages } from "../../src/constants/ZosUss.messages";
 import { EventEmitter } from "events";
 jest.mock("ssh2");
 
@@ -35,13 +36,15 @@ mockStream.write = mockStreamWrite;
 
 const mockShell = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\n${startCmdFlag}stdout data\n\rerror$ `);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}stdout data\n\rerror$ `);
     mockStream.emit("exit", 0);
+    mockStream.emit("close");
 });
 
 (Client as any).mockImplementation(() => {
     mockClient.connect = mockConnect;
     mockClient.shell = mockShell;
+    mockClient.end = jest.fn();
     return mockClient;
 });
 
@@ -65,7 +68,7 @@ describe("Shell", () => {
 
     it("Should execute ssh command", async () => {
         const command = "commandtest";
-        Shell.executeSsh(fakeSshSession, command, stdoutHandler);
+        await Shell.executeSsh(fakeSshSession, command, stdoutHandler);
 
         checkMockFunctionsWithCommand(command);
     });
@@ -73,8 +76,110 @@ describe("Shell", () => {
     it("Should execute ssh command with cwd option", async () => {
         const cwd = "/";
         const command = "commandtest";
-        Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler);
+        await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler);
 
         checkMockFunctionsWithCommand(command);
+    });
+
+    describe("Error handling", () => {
+        it("should fail when password is expired", async () => {
+            mockShell.mockImplementationOnce((callback) => {
+                callback(null, mockStream);
+                mockStream.emit("data", Shell.expiredPasswordFlag);
+                mockStream.emit("exit", 0);
+            });
+            let caughtError;
+
+            try {
+                await Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(mockConnect).toBeCalled();
+            expect(mockShell).toBeCalled();
+            expect(mockStreamEnd).toBeCalled();
+            expect(caughtError.message).toBe(ZosUssMessages.expiredPassword.message);
+        });
+
+        it("should fail when all auth methods failed", async () => {
+            mockShell.mockImplementationOnce((callback) => {
+                callback(null, mockStream);
+                mockClient.emit("error", ZosUssMessages.allAuthMethodsFailed);
+                mockStream.emit("exit", 0);
+            });
+            let caughtError;
+
+            try {
+                await Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(mockConnect).toBeCalled();
+            expect(mockShell).toBeCalled();
+            expect(mockStreamEnd).toBeCalled();
+            expect(caughtError.message).toBe(ZosUssMessages.allAuthMethodsFailed.message);
+        });
+
+        it("should fail when handshake times out", async () => {
+            mockShell.mockImplementationOnce((callback) => {
+                callback(null, mockStream);
+                mockClient.emit("error", ZosUssMessages.handshakeTimeout);
+                mockStream.emit("exit", 0);
+            });
+            let caughtError;
+
+            try {
+                await Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(mockConnect).toBeCalled();
+            expect(mockShell).toBeCalled();
+            expect(mockStreamEnd).toBeCalled();
+            expect(caughtError.message).toBe(ZosUssMessages.handshakeTimeout.message);
+        });
+
+        it("should fail when connection is refused", async () => {
+            mockShell.mockImplementationOnce((callback) => {
+                callback(null, mockStream);
+                mockClient.emit("error", new Error(Shell.connRefusedFlag));
+                mockStream.emit("exit", 0);
+            });
+            let caughtError;
+
+            try {
+                await Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(mockConnect).toBeCalled();
+            expect(mockShell).toBeCalled();
+            expect(mockStreamEnd).toBeCalled();
+            expect(caughtError.message).toContain(ZosUssMessages.connectionRefused.message);
+        });
+
+        it("should fail when there is unexpected error", async () => {
+            mockShell.mockImplementationOnce((callback) => {
+                callback(null, mockStream);
+                mockClient.emit("error", new Error());
+                mockStream.emit("exit", 0);
+            });
+            let caughtError;
+
+            try {
+                await Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(mockConnect).toBeCalled();
+            expect(mockShell).toBeCalled();
+            expect(mockStreamEnd).toBeCalled();
+            expect(caughtError.message).toContain(ZosUssMessages.unexpected.message);
+        });
     });
 });
