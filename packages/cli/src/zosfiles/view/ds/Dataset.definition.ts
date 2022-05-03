@@ -28,7 +28,7 @@ export const DatasetDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Dataset.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {
