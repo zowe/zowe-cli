@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where privateKey is not being respected. [#1398](https://github.com/zowe/zowe-cli/issues/1398) [#1392](https://github.com/zowe/zowe-cli/issues/1392)
+
 ## `7.1.0`
 
 - Enhancement: Exposed `ssh` profile type configuration.

@@ -58,6 +58,6 @@
     "typescript": "^3.8.0"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.0.0"
+    "@zowe/imperative": "^5.2.0"
   }
 }
