@@ -29,7 +29,11 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         const dsContentBuf = await Get.USSFile(session, commandParameters.arguments.file,
             {
                 binary: commandParameters.arguments.binary,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                encoding: commandParameters.arguments.encoding,
+                record: commandParameters.arguments.record,
+                volume: commandParameters.arguments.volumeSerial,
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                task: task
             }
         );
         return {
