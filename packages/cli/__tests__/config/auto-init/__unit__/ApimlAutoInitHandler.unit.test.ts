@@ -536,7 +536,7 @@ describe("ApimlAutoInitHandler", () => {
             expect((handler as any).mAutoInitReport.profileRpts).toEqual(profileReports);
         });
 
-        it("should detect when all profiles are new and config does not exist", () => {
+        it("should detect when all profiles are new and starting config is null", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
@@ -550,7 +550,7 @@ describe("ApimlAutoInitHandler", () => {
             }
         });
 
-        it("should detect when all profiles are new and config already exists", () => {
+        it("should detect when all profiles are new and starting config does not exist", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
@@ -558,7 +558,7 @@ describe("ApimlAutoInitHandler", () => {
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
             (handler as any).recordProfileUpdates();
-            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Created");
             for (const profileReport of (handler as any).mAutoInitReport.profileRpts) {
                 expect(profileReport.changeForProf).toBe("Created");
             }
