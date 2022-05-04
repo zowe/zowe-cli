@@ -5,3 +5,5 @@ exports[`issue ssh handler tests should be able to get stdout 1`] = `"TEST OUTPU
 exports[`issue ssh handler tests should be able to get stdout 2`] = `"TEST OUTPUT"`;
 
 exports[`issue ssh handler tests should be able to get stdout with cwd option 1`] = `"TEST OUTPUT"`;
+
+exports[`issue ssh handler tests should be able to get stdout with privateKey 1`] = `"TEST OUTPUT"`;

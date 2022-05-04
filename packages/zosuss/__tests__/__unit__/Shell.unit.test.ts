@@ -15,6 +15,7 @@ import { Shell } from "../../src/Shell";
 import { SshSession } from "../../src/SshSession";
 import { ZosUssMessages } from "../../src/constants/ZosUss.messages";
 import { EventEmitter } from "events";
+import { join } from "path";
 jest.mock("ssh2");
 
 // Mock functions for SSH
@@ -23,6 +24,12 @@ const fakeSshSession = new SshSession({
     port: 22,
     user: "",
     password: ""
+});
+const fakeSshSessionPrivateKey = new SshSession({
+    hostname: "localhost",
+    port: 22,
+    user: "",
+    privateKey: join(__dirname, "__resources__", "fake_id_rsa")
 });
 const mockClient: any = new EventEmitter();
 const mockConnect = jest.fn().mockImplementation(() => {
@@ -69,6 +76,13 @@ describe("Shell", () => {
     it("Should execute ssh command", async () => {
         const command = "commandtest";
         await Shell.executeSsh(fakeSshSession, command, stdoutHandler);
+
+        checkMockFunctionsWithCommand(command);
+    });
+
+    it("Should execute ssh command with privateKey", async () => {
+        const command = "commandtest";
+        await Shell.executeSsh(fakeSshSessionPrivateKey, command, stdoutHandler);
 
         checkMockFunctionsWithCommand(command);
     });
