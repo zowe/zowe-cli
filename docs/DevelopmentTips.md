@@ -3,6 +3,7 @@
 ## Contents
 
  - [Debugging in VS Code](#debugging-in-vs-code)
+ - [Profiling with `pprof`](#profiling-with-pprof)
  - [Using Development Mode](#using-development-mode)
 
 ## Debugging in VS Code
@@ -26,6 +27,23 @@ Create a launch configuration like the following. You can have as many launch co
 ```
 
 To debug Jest tests in VS Code, the [Jest Runner](https://marketplace.visualstudio.com/items?itemName=firsttris.vscode-jest-runner) extension may come in handy.
+
+## Profiling with `pprof`
+
+`pprof` requires two components:
+
+* The [Node.js package](https://www.npmjs.com/package/pprof) to record profile data, which is installed as a dev dependency in this repo.
+* The [Go CLI](https://github.com/google/pprof) to view profile data, which can be installed following the instructions below:
+  * Install the prerequisites Golang and GraphViz. For example: `apt-get install golang graphviz` on Ubuntu or `choco install golang graphviz` on Windows.
+  * Install the binary for the `pprof` CLI: `go install github.com/google/pprof@latest`
+    **Note:** If you have an old version of Go, installing the binary may fail. You can skip it and invoke the `pprof` CLI packaged with Go instead using the command `go tool pprof`.
+
+Set the environment variable `NODE_OPTIONS="--require pprof"` to enable the profiler. Then run a Zowe CLI command like `npx zowe zosmf check status`.
+
+After the command completes, profile data will be saved to the current directory in `pprof-profile-${process.pid}.pb.gz`. To view this data in your browser, open the file with `pprof`:
+```shell
+pprof -http=: pprof-profile-${process.pid}.pb.gz
+```
 
 ## Using Development Mode
 
