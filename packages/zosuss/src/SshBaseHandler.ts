@@ -13,6 +13,7 @@ import {
     // AbstractSession,
     ICommandArguments,
     ICommandHandler,
+    IOverridePromptConnProps,
     IHandlerParameters,
     IProfile,
     IHandlerResponseConsoleApi,
@@ -64,9 +65,13 @@ export abstract class SshBaseHandler implements ICommandHandler {
         this.mHandlerParams = commandParameters;
         this.mSshProfile = commandParameters.profiles.get("ssh", false);
 
+        const sshSessCfgOverride: IOverridePromptConnProps[] = [{
+            propertyName: "privateKey",
+            propertiesOverridden: ["password", "tokenType", "tokenValue", "cert", "certKey", "passphrase"]
+        }];
         const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
         const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-            sshSessCfg, commandParameters.arguments, {parms: commandParameters}
+            sshSessCfg, commandParameters.arguments, {parms: commandParameters, propertyOverrides: sshSessCfgOverride}
         );
         this.mSession = new SshSession(sshSessCfgWithCreds);
 
