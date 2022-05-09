@@ -10,6 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
+import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { DeleteJobs, GetJobs, IJob, JobsConstants, JOB_STATUS } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -52,13 +53,18 @@ export default class JobHandler extends ZosmfBaseHandler {
         }
 
         // Loop through the jobs and delete those in OUTPUT status
-        const pendingDeletes: Promise<IJob>[] = [];
+        const deletedJobs: IJob[] = [];
         for (const job of jobs) {
             if (job.status === JOB_STATUS.OUTPUT) {
-                pendingDeletes.push(DeleteJobs.deleteJobForJob(this.mSession, job).then(() => job));
+                deletedJobs.push(job);
             }
         }
-        const deletedJobs: IJob[] = await Promise.all(pendingDeletes);
+        if (this.arguments.maxConcurrentRequests === 0) {
+            await Promise.all(deletedJobs.map((job) => DeleteJobs.deleteJobForJob(this.mSession, job)));
+        } else {
+            await asyncPool(this.arguments.maxConcurrentRequests, deletedJobs,
+                (job) => DeleteJobs.deleteJobForJob(this.mSession, job));
+        }
 
         const message: string = `Successfully deleted ${deletedJobs.length} job${deletedJobs.length === 1 ? "" : "s"}`;
         // Format the output

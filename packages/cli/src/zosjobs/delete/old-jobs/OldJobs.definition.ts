@@ -31,6 +31,13 @@ export const OldJobsDefinition: ICommandDefinition = {
             aliases: ["p"],
             description: strings.ACTIONS.OLD_JOBS.OPTIONS.PREFIX,
             type: "string"
+        },
+        {
+            name: "max-concurrent-requests",
+            aliases: ["mcr"],
+            description: strings.ACTIONS.OLD_JOBS.OPTIONS.MAX_CONCURRENT_REQUESTS,
+            type: "number",
+            defaultValue: 1
         }
     ],
     examples: [
