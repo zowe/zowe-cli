@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed issue where `config auto-init` could report that it modified a config file that did not yet exist.
+- BugFix: Updated Imperative to fix `config import` and `config secure` commands not respecting the `--reject-unauthorized` option.
 
 ## `7.1.2`
 
