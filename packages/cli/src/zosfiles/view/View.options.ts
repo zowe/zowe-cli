@@ -16,8 +16,6 @@ import i18nTypings from "../-strings-/en";
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).VIEW.OPTIONS;
 
-const maxConcurrentRequestsMaxValue = 99999;
-
 /**
  * Object containing all options to be used by the View API
  */

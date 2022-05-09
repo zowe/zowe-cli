@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`View data set handler process method should view a single data set 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`View data set handler process method should view a single data set 2`] = `""`;
+
+exports[`View data set handler process method should view a single data set 3`] = `
+"
+[object Object]"
+`;

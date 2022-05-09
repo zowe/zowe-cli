@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`View USS files handler process method should view uss files 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`View USS files handler process method should view uss files 2`] = `""`;
+
+exports[`View USS files handler process method should view uss files 3`] = `
+"
+[object Object]"
+`;
