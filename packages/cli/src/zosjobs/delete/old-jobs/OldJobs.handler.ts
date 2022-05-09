@@ -59,11 +59,11 @@ export default class JobHandler extends ZosmfBaseHandler {
                 deletedJobs.push(job);
             }
         }
+        const deleteJobPromise = (job: IJob) => DeleteJobs.deleteJobForJob(this.mSession, job);
         if (this.arguments.maxConcurrentRequests === 0) {
-            await Promise.all(deletedJobs.map((job) => DeleteJobs.deleteJobForJob(this.mSession, job)));
+            await Promise.all(deletedJobs.map(deleteJobPromise));
         } else {
-            await asyncPool(this.arguments.maxConcurrentRequests, deletedJobs,
-                (job) => DeleteJobs.deleteJobForJob(this.mSession, job));
+            await asyncPool(this.arguments.maxConcurrentRequests, deletedJobs, deleteJobPromise);
         }
 
         const message: string = `Successfully deleted ${deletedJobs.length} job${deletedJobs.length === 1 ? "" : "s"}`;
