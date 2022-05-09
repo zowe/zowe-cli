@@ -15,17 +15,17 @@ import { DeleteJobs, GetJobs, IJob, JobsConstants, JOB_STATUS } from "@zowe/zos-
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
- * "zos-jobs delete job" command handler. Delete (purge) a job by ID.
+ * "zos-jobs delete old-jobs" command handler. Delete (purge) multiple jobs in OUTPUT status.
  * @export
- * @class JobHandler
+ * @class OldJobsHandler
  * @implements {ICommandHandler}
  */
-export default class JobHandler extends ZosmfBaseHandler {
+export default class OldJobsHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
      * @private
      * @type {*}
-     * @memberof JobHandler
+     * @memberof OldJobsHandler
      */
     private arguments: any;
 
@@ -33,7 +33,7 @@ export default class JobHandler extends ZosmfBaseHandler {
      * Command handler process - invoked by the command processor to handle the "zos-jobs delete job"
      * @param {IHandlerParameters} params - Command handler parameters
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
-     * @memberof JobHandler
+     * @memberof OldJobsHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
