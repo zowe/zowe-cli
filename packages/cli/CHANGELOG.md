@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to potentially improve performance of commands that output CLI tables.
+
 ## `6.40.3`
 
 - BugFix: Updated Imperative to fix `plugins uninstall` command failing when there is a space in the install path.
