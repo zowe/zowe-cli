@@ -31,7 +31,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 });
 
 describe("delete old-jobs handler tests", () => {
-    it("should delete all jobs using defaults", async () => {
+    it("should delete all jobs using defaults sequentially", async () => {
         let passedSession: Session;
         GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
             passedSession = session;
@@ -43,6 +43,28 @@ describe("delete old-jobs handler tests", () => {
         const handler = new OldJobsHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.maxConcurrentRequests = 1;
+        await handler.process(params);
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "*");
+        expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(GetJobsData.SAMPLE_JOBS.length);
+        expect(DeleteJobs.deleteJobForJob).toHaveBeenLastCalledWith(
+            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1]);
+    });
+
+    it("should delete all jobs using defaults in parallel", async () => {
+        let passedSession: Session;
+        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+            passedSession = session;
+            return GetJobsData.SAMPLE_JOBS;
+        });
+        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+            return;
+        });
+        const handler = new OldJobsHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.maxConcurrentRequests = 0;
         await handler.process(params);
         expect(GetJobs.getJobsByPrefix).toHaveBeenCalledTimes(1);
         expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "*");
@@ -70,6 +92,24 @@ describe("delete old-jobs handler tests", () => {
         expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(GetJobsData.SAMPLE_JOBS.length);
         expect(DeleteJobs.deleteJobForJob).toHaveBeenLastCalledWith(
             passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1]);
+    });
+
+    it("should not delete jobs when none are found", async () => {
+        let passedSession: Session;
+        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+            passedSession = session;
+            return [];
+        });
+        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+            return;
+        });
+        const handler = new OldJobsHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        await handler.process(params);
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "*");
+        expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(0);
     });
 
     it("should not transform an error from the zosmf rest client", async () => {

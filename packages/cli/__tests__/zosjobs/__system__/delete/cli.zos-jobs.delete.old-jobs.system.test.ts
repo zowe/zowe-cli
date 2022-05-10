@@ -37,9 +37,17 @@ describe("zos-jobs delete old-jobs command", () => {
     });
 
     describe("successful scenario", () => {
-        it("should delete all old jobs", () => {
+        it("should delete all old jobs sequentially", () => {
             const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL]);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toContain("Successfully deleted");
+        });
+
+        it("should delete all old jobs in parallel", () => {
+            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr 0"]);
             expect(response.status).toBe(0);
             expect(response.stderr.toString()).toBe("");
             expect(response.stdout.toString()).toContain("Successfully deleted");
