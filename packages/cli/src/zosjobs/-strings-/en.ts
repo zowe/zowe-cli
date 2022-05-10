@@ -121,6 +121,26 @@ export default {
                     }
                 }
             },
+            USS_FILE: {
+                SUMMARY: "Submit a job contained in a USS file",
+                DESCRIPTION: "Submit a job (JCL) contained in a USS file. The command does not pre-validate the USS file path. " +
+                    "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
+                    "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+                POSITIONALS: {
+                    USSFILE: "Path to the USS file that contains the JCL to submit."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Submit the JCL in the USS file \"/a/ibmuser/compile.jcl\"",
+                        OPTIONS: "\"/a/ibmuser/compile.jcl\""
+                    },
+                    EX2: {
+                        DESCRIPTION: "Submit the JCL in the USS file \"/a/ibmuser/compile.jcl\", wait for the job to " +
+                        "complete and print all output from the job",
+                        OPTIONS: "\"/a/ibmuser/compile.jcl\" --vasc"
+                    }
+                }
+            },
             LOCAL_FILE: {
                 SUMMARY: "Submit a job contained in a local file",
                 DESCRIPTION: "Submit a job (JCL) contained in a local file. " +

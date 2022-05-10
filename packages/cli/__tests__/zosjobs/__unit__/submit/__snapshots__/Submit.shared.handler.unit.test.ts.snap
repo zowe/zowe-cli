@@ -105,3 +105,90 @@ Object {
 `;
 
 exports[`submit shared handler process method should submit JCL contained within a local-file if requested 3`] = `"Submitted JCL contained in \\"local-file\\": \\"test.txt\\""`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 1`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "object",
+  "output": Object {
+    "jobid": "JOB123",
+    "jobname": "MYJOB",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+  },
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 2`] = `
+Object {
+  "jobid": "JOB123",
+  "jobname": "MYJOB",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 3`] = `"Submitted JCL contained in \\"uss-file\\": \\"undefined\\""`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for active 1`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "object",
+  "output": Object {
+    "jobid": "JOB123",
+    "jobname": "MYJOB",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+  },
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for active 2`] = `
+Object {
+  "jobid": "JOB123",
+  "jobname": "MYJOB",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for active 3`] = `"Submitted JCL contained in \\"uss-file\\": \\"undefined\\""`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for output 1`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "object",
+  "output": Object {
+    "jobid": "JOB123",
+    "jobname": "MYJOB",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+  },
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for output 2`] = `
+Object {
+  "jobid": "JOB123",
+  "jobname": "MYJOB",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for output 3`] = `"Submitted JCL contained in \\"uss-file\\": \\"undefined\\""`;

@@ -151,7 +151,7 @@ describe("Submit Jobs - System Tests", () => {
             expect(job.jobname).toBeDefined();
             await deleteJob(job);
         }, LONG_TIMEOUT);
-    
+
         it("should allow users to call submitJobNotifyCommon with correct parameters (using a uss file)", async () => {
             const job = await SubmitJobs.submitJobNotifyCommon(REAL_SESSION, {
                 jobUSSFile

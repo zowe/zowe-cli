@@ -11,13 +11,11 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-jobs submit group definition", () => {
+describe("zos-jobs submit uss file definition", () => {
     it("should not have changed", () => {
-        const CHILDREN = 4;
-        const definition: ICommandDefinition = require("../../../../src/zosjobs/submit/Submit.definition").SubmitDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosjobs/submit/uss-file/USSFile.definition").USSFileDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(CHILDREN);
-        delete definition.children;
+        delete definition.handler;
         expect(definition).toMatchSnapshot();
     });
 });

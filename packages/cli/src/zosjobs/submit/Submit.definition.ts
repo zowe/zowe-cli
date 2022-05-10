@@ -15,6 +15,7 @@ import { LocalFileDefinition } from "./local-file/localFile.definition";
 import { StdinDefinition } from "./stdin/stdin.definition";
 
 import i18nTypings from "../-strings-/en";
+import { USSFileDefinition } from "./uss-file/USSFile.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).SUBMIT;
@@ -27,6 +28,7 @@ export const SubmitDefinition: ICommandDefinition = {
     description: strings.DESCRIPTION,
     children: [
         DataSetDefinition,
+        USSFileDefinition,
         LocalFileDefinition,
         StdinDefinition
     ]
