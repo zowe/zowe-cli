@@ -15,8 +15,10 @@ import {
     IJob,
     ISubmitJclNotifyParm,
     ISubmitJclParms,
+    ISubmitJobUSSNotifyParm,
     ISubmitJobNotifyParm,
     ISubmitJobParms,
+    ISubmitJobUSSParms,
     JOB_STATUS
 } from "./";
 import { JobsConstants } from "./JobsConstants";
@@ -53,21 +55,43 @@ export class SubmitJobs {
     }
 
     /**
-     * Submit a job that resides in a z/OS data set.
+     * Submit a job that resides in a USS File.
+     * @static
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} jobUSSFile - job USS File options to be translated into parms object
+     * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
+     * @memberof SubmitJobs
+     */
+    public static submitUSSJob(session: AbstractSession, jobUSSFile: string) {
+        this.log.trace("submitJob called with USS file %s", jobUSSFile);
+        return SubmitJobs.submitJobCommon(session, {jobUSSFile});
+    }
+
+    /**
+     * Submit a job that resides in a z/OS data set or USS file.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ISubmitJobParms} parms - parm object (see for details)
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
-    public static async submitJobCommon(session: AbstractSession, parms: ISubmitJobParms) {
+    public static async submitJobCommon(session: AbstractSession, parms: ISubmitJobParms|ISubmitJobUSSParms) {
         this.log.trace("submitJobCommon called with parms %s", JSON.stringify(parms));
-        ImperativeExpect.keysToBeDefined(parms, ["jobDataSet"], "You must provide a data set containing JCL to submit in parms.jobDataSet");
-        this.log.debug("Submitting a job located in the data set '%s'", parms.jobDataSet);
-        const fullyQualifiedDataset: string = "//'" + parms.jobDataSet + "'";
-        const jobObj: object = {file: fullyQualifiedDataset};
         let extraHeaders: IHeaderContent[] = [];
         if (parms.jclSymbols) {extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);}
+        let jobObj: object;
+        if ("jobDataSet" in parms) {
+            ImperativeExpect.keysToBeDefined(parms, ["jobDataSet"], "You must provide a data set containing JCL to submit in parms.jobDataSet");
+            this.log.debug("Submitting a job located in the data set '%s'", parms.jobDataSet);
+            const fullyQualifiedDataset: string = "//'" + parms.jobDataSet + "'";
+            jobObj = {file: fullyQualifiedDataset};
+        } else if ("jobUSSFile" in parms) {
+            ImperativeExpect.keysToBeDefined(parms, ["jobUSSFile"], "You must provide a USS file containing JCL to submit in parms.jobUSSFile");
+            this.log.debug("Submitting a job located in the USS file '%s'", parms.jobUSSFile);
+            jobObj = {file: parms.jobUSSFile};
+        } else {
+            throw new ImperativeError({msg: "You must provide a data set or USS file containing JCL to submit"});
+        }
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE,
             [Headers.APPLICATION_JSON, ...extraHeaders], jobObj);
     }
@@ -175,6 +199,19 @@ export class SubmitJobs {
     }
 
     /**
+     * Submit a job and be notified whenever it reaches the default status on a default polling interval.
+     * @static
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} jobDataSet - job data set to be translated into parms object with assumed defaults
+     * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
+     * @memberof SubmitJobs
+     */
+    public static async submitUSSJobNotify(session: AbstractSession, jobUSSFile: string): Promise<IJob> {
+        this.log.trace("submitJobNotify called with data set %s", jobUSSFile);
+        return SubmitJobs.submitJobNotifyCommon(session, {jobUSSFile});
+    }
+
+    /**
      * Submit a job from a data set and be notified whenever it reaches a certain status.
      * If not status is specified, MonitorJobs.DEFAULT_STATUS is assumed.
      * The polling interval can also be optionally controlled via parms.watchDelay.
@@ -185,9 +222,8 @@ export class SubmitJobs {
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
-    public static async submitJobNotifyCommon(session: AbstractSession, parms: ISubmitJobNotifyParm) {
+    public static async submitJobNotifyCommon(session: AbstractSession, parms: ISubmitJobNotifyParm|ISubmitJobUSSNotifyParm) {
         this.log.trace("submitJobNotifyCommon called with parms %s", JSON.stringify(parms));
-        ImperativeExpect.keysToBeDefined(parms, ["jobDataSet"], "You must provide a data set containing JCL to submit in parms.jobDataSet.");
         const job = await SubmitJobs.submitJobCommon(session, parms);
         return SubmitJobs.submitNotifyCommon(session, job, parms.status, parms.watchDelay);
     }
