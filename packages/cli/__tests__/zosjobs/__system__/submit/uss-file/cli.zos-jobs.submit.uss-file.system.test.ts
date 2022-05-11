@@ -12,7 +12,6 @@
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List } from "../../../../../../zosfiles/src/methods/list";
 import { Session } from "@zowe/imperative";
 
 process.env.FORCE_COLOR = "0";

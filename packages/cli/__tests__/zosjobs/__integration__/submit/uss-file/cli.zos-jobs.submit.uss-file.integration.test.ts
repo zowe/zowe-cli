@@ -10,7 +10,6 @@
 */
 
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { SubmitJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
