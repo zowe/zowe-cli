@@ -555,14 +555,6 @@ describe("submit shared handler", () => {
             // Mock the submit JCL function
             SubmitJobs.submitJclString = jest.fn((session, localFile) => {
                 LocalFileSpecified = localFile;
-                return {
-                    jobname: "MYJOB",
-                    jobid: "JOB123",
-                    status: "INPUT",
-                    retcode: "UNKNOWN"
-                };
-            });
-            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
                 return [{
                     ddName: "fakeDD1",
                     id: 1,

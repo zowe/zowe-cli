@@ -133,6 +133,33 @@ Object {
 
 exports[`submit shared handler process method should submit JCL contained within a local-file if requested 3`] = `"Submitted JCL contained in \\"local-file\\": \\"test.txt\\""`;
 
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 1`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 2`] = `"FakeData1"`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 3`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 4`] = `"FakeData2"`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 5`] = `
+Array [
+  Object {
+    "data": "FakeData1",
+    "ddName": "fakeDD1",
+    "id": 1,
+    "stepName": "fakeStep1",
+  },
+  Object {
+    "data": "FakeData2",
+    "ddName": "fakeDD2",
+    "id": 2,
+    "stepName": "fakeStep2",
+  },
+]
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 6`] = `"Submitted JCL contained in \\"local-file\\": \\"test.txt\\""`;
+
 exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 1`] = `
 Object {
   "fields": Array [
