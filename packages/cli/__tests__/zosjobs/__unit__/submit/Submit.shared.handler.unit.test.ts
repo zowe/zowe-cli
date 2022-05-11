@@ -32,14 +32,14 @@ describe("submit shared handler", () => {
             definition: SubmitDefinition.SubmitDefinition,
             profiles: UNIT_TEST_PROFILES_ZOSMF
         });
-        
+
         USSFILE_PARAMETERS = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-jobs", "submit", "uss-file"],
             definition: SubmitDefinition.SubmitDefinition,
             profiles: UNIT_TEST_PROFILES_ZOSMF
         });
-        
+
         LOCALFILE_PARAMETERS = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-jobs", "submit", "local-file"],
@@ -281,7 +281,7 @@ describe("submit shared handler", () => {
                     id: 2,
                     stepName: "fakeStep2",
                     data: "FakeData2"
-                }]
+                }];
             });
 
             // The handler should fail
@@ -476,7 +476,7 @@ describe("submit shared handler", () => {
                     id: 2,
                     stepName: "fakeStep2",
                     data: "FakeData2"
-                }]
+                }];
             });
 
             // The handler should fail
@@ -565,7 +565,7 @@ describe("submit shared handler", () => {
                     id: 2,
                     stepName: "fakeStep2",
                     data: "FakeData2"
-                }]
+                }];
             });
 
             // The handler should fail
