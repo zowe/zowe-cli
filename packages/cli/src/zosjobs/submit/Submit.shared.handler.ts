@@ -101,6 +101,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                 }
 
                 break;
+            // Submit JCL from a USS file
             case "uss-file":
                 response = await SubmitJobs.submitJobCommon(this.mSession, {jobUSSFile: this.mArguments.ussFile,
                     jclSymbols: this.mArguments.jclSymbols});

@@ -19,6 +19,33 @@ exports[`submit shared handler process method should submit JCL contained within
 
 exports[`submit shared handler process method should submit JCL contained within a data-set if requested 3`] = `"Submitted JCL contained in \\"dataset\\": \\"DATA.SET\\""`;
 
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and view all spool content 1`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and view all spool content 2`] = `"FakeData1"`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and view all spool content 3`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and view all spool content 4`] = `"FakeData2"`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and view all spool content 5`] = `
+Array [
+  Object {
+    "data": "FakeData1",
+    "ddName": "fakeDD1",
+    "id": 1,
+    "stepName": "fakeStep1",
+  },
+  Object {
+    "data": "FakeData2",
+    "ddName": "fakeDD2",
+    "id": 2,
+    "stepName": "fakeStep2",
+  },
+]
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and view all spool content 6`] = `"Submitted JCL contained in \\"dataset\\": \\"DATA.SET\\""`;
+
 exports[`submit shared handler process method should submit JCL contained within a data-set if requested and wait for active 1`] = `
 Object {
   "fields": Array [
@@ -115,25 +142,40 @@ Object {
     "status",
   ],
   "format": "object",
-  "output": Object {
-    "jobid": "JOB123",
-    "jobname": "MYJOB",
-    "retcode": "CC 0000",
-    "status": "OUTPUT",
-  },
+  "output": undefined,
 }
 `;
 
-exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 2`] = `
-Object {
-  "jobid": "JOB123",
-  "jobname": "MYJOB",
-  "retcode": "CC 0000",
-  "status": "OUTPUT",
-}
-`;
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 2`] = `undefined`;
 
 exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 3`] = `"Submitted JCL contained in \\"uss-file\\": \\"undefined\\""`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and view all spool content 1`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and view all spool content 2`] = `"FakeData1"`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and view all spool content 3`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and view all spool content 4`] = `"FakeData2"`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and view all spool content 5`] = `
+Array [
+  Object {
+    "data": "FakeData1",
+    "ddName": "fakeDD1",
+    "id": 1,
+    "stepName": "fakeStep1",
+  },
+  Object {
+    "data": "FakeData2",
+    "ddName": "fakeDD2",
+    "id": 2,
+    "stepName": "fakeStep2",
+  },
+]
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and view all spool content 6`] = `"Submitted JCL contained in \\"uss-file\\": \\"undefined\\""`;
 
 exports[`submit shared handler process method should submit JCL contained within a uss-file if requested and wait for active 1`] = `
 Object {

@@ -20,31 +20,40 @@ import {
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
-
-const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
-    positionals: ["zos-jobs", "submit", "data-set"],
-    definition: SubmitDefinition.SubmitDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
-});
-
-const USSFILE_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
-    positionals: ["zos-jobs", "submit", "uss-file"],
-    definition: SubmitDefinition.SubmitDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
-});
-
-const LOCALFILE_PARAMETERS: IHandlerParameters = mockHandlerParameters({
-    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
-    positionals: ["zos-jobs", "submit", "local-file"],
-    definition: SubmitDefinition.SubmitDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
-});
+let DEFAULT_PARAMETERS: IHandlerParameters;
+let USSFILE_PARAMETERS: IHandlerParameters;
+let LOCALFILE_PARAMETERS: IHandlerParameters;
 
 describe("submit shared handler", () => {
+    beforeEach(() => {
+        DEFAULT_PARAMETERS = mockHandlerParameters({
+            arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+            positionals: ["zos-jobs", "submit", "data-set"],
+            definition: SubmitDefinition.SubmitDefinition,
+            profiles: UNIT_TEST_PROFILES_ZOSMF
+        });
+        
+        USSFILE_PARAMETERS = mockHandlerParameters({
+            arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+            positionals: ["zos-jobs", "submit", "uss-file"],
+            definition: SubmitDefinition.SubmitDefinition,
+            profiles: UNIT_TEST_PROFILES_ZOSMF
+        });
+        
+        LOCALFILE_PARAMETERS = mockHandlerParameters({
+            arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+            positionals: ["zos-jobs", "submit", "local-file"],
+            definition: SubmitDefinition.SubmitDefinition,
+            profiles: UNIT_TEST_PROFILES_ZOSMF
+        });
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
 
     describe("error handling", () => {
+
         it("should detect if the JCL source type (data set, etc.) could not be determined", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
@@ -242,6 +251,57 @@ describe("submit shared handler", () => {
             expect(dataSetSpecified).toBe(theDataSet);
         });
 
+        it("should submit JCL contained within a data-set if requested and view all spool content", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Vars populated by the mocked function
+            let error;
+            let dataSetSpecified;
+
+            // Mock the submit JCL function
+            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+                dataSetSpecified = dataset.jobDataSet;
+                return {
+                    jobname: "MYJOB",
+                    jobid: "JOB123",
+                    status: "INPUT",
+                    retcode: "UNKNOWN"
+                };
+            });
+            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+                return [{
+                    ddName: "fakeDD1",
+                    id: 1,
+                    stepName: "fakeStep1",
+                    data: "FakeData1"
+                }, {
+                    ddName: "fakeDD2",
+                    id: 2,
+                    stepName: "fakeStep2",
+                    data: "FakeData2"
+                }]
+            });
+
+            // The handler should fail
+            const theDataSet = "DATA.SET";
+            const copy = Object.assign({}, DEFAULT_PARAMETERS);
+            copy.arguments.dataset = theDataSet;
+            copy.arguments.viewAllSpoolContent = true;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(SubmitJobs.submitJobCommon).toHaveBeenCalledTimes(1);
+            expect(copy.response.console.log).toHaveBeenCalledTimes(4);
+            expect(dataSetSpecified).toBe(theDataSet);
+        });
+
         it("should submit JCL contained within a uss-file if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
@@ -386,6 +446,57 @@ describe("submit shared handler", () => {
             expect(ussFileSpecified).toBe(theFile);
         });
 
+        it("should submit JCL contained within a uss-file if requested and view all spool content", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Vars populated by the mocked function
+            let error;
+            let ussFileSpecified;
+
+            // Mock the submit JCL function
+            SubmitJobs.submitJobCommon = jest.fn((session, opts) => {
+                ussFileSpecified = opts.jobUSSFile;
+                return {
+                    jobname: "MYJOB",
+                    jobid: "JOB123",
+                    status: "INPUT",
+                    retcode: "UNKNOWN"
+                };
+            });
+            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+                return [{
+                    ddName: "fakeDD1",
+                    id: 1,
+                    stepName: "fakeStep1",
+                    data: "FakeData1"
+                }, {
+                    ddName: "fakeDD2",
+                    id: 2,
+                    stepName: "fakeStep2",
+                    data: "FakeData2"
+                }]
+            });
+
+            // The handler should fail
+            const theFile = "/a/the/file.txt";
+            const copy = Object.assign({}, USSFILE_PARAMETERS);
+            copy.arguments.ussFile = theFile;
+            copy.arguments.viewAllSpoolContent = true;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(SubmitJobs.submitJobCommon).toHaveBeenCalledTimes(1);
+            expect(copy.response.console.log).toHaveBeenCalledTimes(4);
+            expect(ussFileSpecified).toBe(theFile);
+        });
+
         it("should submit JCL contained within a local-file if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
@@ -425,6 +536,64 @@ describe("submit shared handler", () => {
 
             expect(error).toBeUndefined();
             expect(SubmitJobs.submitJclString).toHaveBeenCalledTimes(1);
+            expect(LocalFileSpecified).toBe(`${badJCL}`);
+            IO.deleteFile(theLocalFile);
+        });
+
+        it("should submit JCL contained within a local-file if requested and view all spool content", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Vars populated by the mocked function
+            let error;
+            let LocalFileSpecified: ISubmitParms;
+
+            // Local file
+            const theLocalFile: string = "test.txt";
+
+            // Mock the submit JCL function
+            SubmitJobs.submitJclString = jest.fn((session, localFile) => {
+                LocalFileSpecified = localFile;
+                return {
+                    jobname: "MYJOB",
+                    jobid: "JOB123",
+                    status: "INPUT",
+                    retcode: "UNKNOWN"
+                };
+            });
+            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+                return [{
+                    ddName: "fakeDD1",
+                    id: 1,
+                    stepName: "fakeStep1",
+                    data: "FakeData1"
+                }, {
+                    ddName: "fakeDD2",
+                    id: 2,
+                    stepName: "fakeStep2",
+                    data: "FakeData2"
+                }]
+            });
+
+            // The handler should fail
+            const badJCL: Buffer = Buffer.from("Bad JCL");
+            IO.createFileSync(theLocalFile);
+            IO.writeFile(theLocalFile, badJCL);
+
+            const copy = Object.assign({}, LOCALFILE_PARAMETERS);
+            copy.arguments.localFile = theLocalFile;
+            copy.arguments.viewAllSpoolContent = true;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(SubmitJobs.submitJclString).toHaveBeenCalledTimes(1);
+            expect(copy.response.console.log).toHaveBeenCalledTimes(4);
             expect(LocalFileSpecified).toBe(`${badJCL}`);
             IO.deleteFile(theLocalFile);
         });
