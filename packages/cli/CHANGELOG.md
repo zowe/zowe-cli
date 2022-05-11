@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to submit a job from a dataset. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
+
 ## `7.1.3`
 
 - BugFix: Fixed issue where `config auto-init` could report that it modified a config file that did not yet exist.
