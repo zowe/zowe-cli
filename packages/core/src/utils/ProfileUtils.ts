@@ -27,7 +27,7 @@ export function getZoweDir(): string {
             envVariablePrefix: "ZOWE"
         };
     }
-    return ImperativeConfig.instance.cliHome;
+    return ImperativeConfig.instance.loadedConfig.defaultHome = ImperativeConfig.instance.cliHome;
 }
 
 /**
