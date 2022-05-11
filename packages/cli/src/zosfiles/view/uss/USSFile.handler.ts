@@ -31,7 +31,6 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
                 binary: commandParameters.arguments.binary,
                 encoding: commandParameters.arguments.encoding,
                 record: commandParameters.arguments.record,
-                volume: commandParameters.arguments.volumeSerial,
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 task: task
             }

@@ -2,7 +2,8 @@
 
 exports[`View data set handler process method should view a single data set 1`] = `
 Object {
-  "commandResponse": "downloaded",
+  "apiResponse": Object {},
+  "commandResponse": "[object Object]",
   "success": true,
 }
 `;

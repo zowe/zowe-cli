@@ -10,6 +10,7 @@
 */
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("View USS file handler", () => {
     describe("process method", () => {
@@ -18,6 +19,7 @@ describe("View USS file handler", () => {
             const handlerReq = require("../../../../../src/zosfiles/view/uss/USSFile.handler");
             const handler = new handlerReq.default();
             const file = "testing";
+            const binary = true;
 
             // Vars populated by the mocked function
             let error;
@@ -26,12 +28,12 @@ describe("View USS file handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the submit JCL function
+            // Mock the view USS file function
             Get.USSFile = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
-                    commandResponse: "downloaded"
+                    commandResponse: "Retrieved"
                 };
             });
 
@@ -53,7 +55,8 @@ describe("View USS file handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        file
+                        file,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -85,7 +88,13 @@ describe("View USS file handler", () => {
 
             //expect(error).toBeUndefined();
             expect(Get.USSFile).toHaveBeenCalledTimes(1);
-            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession, file, {});
+            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession, file, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Retrieving USS file"
+                }
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

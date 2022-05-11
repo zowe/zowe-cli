@@ -41,8 +41,7 @@ export const USSFileDefinition: ICommandDefinition = {
     options: [
         ViewOptions.binary,
         ViewOptions.encoding,
-        ViewOptions.record,
-        ViewOptions.volume
+        ViewOptions.record
     ],
     examples: [
         {

@@ -29,7 +29,7 @@ describe("View data set handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the submit Get.dataSet function
+            // Mock the view ds function
             Get.dataSet = jest.fn((session) => {
                 fakeSession = session;
                 return {
@@ -90,15 +90,12 @@ describe("View data set handler", () => {
                 error = e;
             }
 
-            //expect(error).toBeUndefined();
             expect(Get.dataSet).toHaveBeenCalledTimes(1);
-            //expect(Get.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {});
             expect(Get.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {
-                binary,
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Downloading data set"
+                    statusMessage: "Retrieving data set"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
