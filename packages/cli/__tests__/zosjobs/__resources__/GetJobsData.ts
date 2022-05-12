@@ -236,6 +236,64 @@ export class GetJobsData {
     ];
 
     /**
+     * Sample job files
+     * @static
+     * @type {IJobFile[]}
+     * @memberof GetJobsData
+     */
+     public static readonly SAMPLE_SPOOL_FILES_WITH_PROCSTEP: IJobFile[] =
+     [
+         {
+             "recfm": "UA",
+             "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
+             "stepname": "JES2",
+             "subsystem": "JES2",
+             "job-correlator": "J0007172USILDAMDD41B4773.......:",
+             "byte-count": 1297,
+             "lrecl": 133,
+             "jobid": "JOB07172",
+             "ddname": "JESMSGLG",
+             "id": 2,
+             "record-count": 19,
+             "class": "Z",
+             "jobname": "RUNMAIN",
+             "procstep": "PROC1"
+         },
+         {
+             "recfm": "V",
+             "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/3/records",
+             "stepname": "JES2",
+             "subsystem": "JES2",
+             "job-correlator": "J0007172USILDAMDD41B4773.......:",
+             "byte-count": 223,
+             "lrecl": 136,
+             "jobid": "JOB07172",
+             "ddname": "JESJCL",
+             "id": 3,
+             "record-count": 4,
+             "class": "Z",
+             "jobname": "RUNMAIN",
+             "procstep": "PROC2"
+         },
+         {
+             "recfm": "VA",
+             "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/4/records",
+             "stepname": "JES2",
+             "subsystem": "JES2",
+             "job-correlator": "J0007172USILDAMDD41B4773.......:",
+             "byte-count": 3195,
+             "lrecl": 137,
+             "jobid": "JOB07172",
+             "ddname": "JESYSMSG",
+             "id": 4,
+             "record-count": 42,
+             "class": "Z",
+             "jobname": "RUNMAIN",
+             "procstep": "PROC3"
+         }
+     ];
+
+    /**
      * Sample job file
      * @static
      * @type {IJobFile}

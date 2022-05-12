@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 1`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 2`] = `
+"1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T
+0
+ 10.51.46 JOB02090 ---- TUESDAY,   24 APR 2018 ----
+ 10.51.46 JOB02090  TSS7000I JOB123 Last-Used 24 Apr 18 07:08 System=BLAH Facility=ZOSMF
+ 10.51.46 JOB02090  TSS7001I Count=01310 Mode=Fail Locktime=None Name=SECRET
+ 10.51.46 JOB02090  $HASP373 JOB123X STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS BLAH
+ 10.51.46 JOB02090  IEF403I JOB123X - STARTED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT
+ 10.51.46 JOB02090  CAJR251I STEP1       1 IEFBR14  0000      $ .00       0 00:00:00.02 00:00:00.01       0       0       0       0
+ 10.51.46 JOB02090  IEF404I JOB123X - ENDED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.01
+ 10.51.46 JOB02090  $HASP395 JOB123X ENDED - RC=0000
+0------ JES2 JOB STATISTICS ------
+-  24 APR 2018 JOB EXECUTION DATE
+-            7 CARDS READ
+-           73 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            8 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME"
+`;
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 3`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 4`] = `
+"1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T
+0
+ 10.51.46 JOB02090 ---- TUESDAY,   24 APR 2018 ----
+ 10.51.46 JOB02090  TSS7000I JOB123 Last-Used 24 Apr 18 07:08 System=BLAH Facility=ZOSMF
+ 10.51.46 JOB02090  TSS7001I Count=01310 Mode=Fail Locktime=None Name=SECRET
+ 10.51.46 JOB02090  $HASP373 JOB123X STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS BLAH
+ 10.51.46 JOB02090  IEF403I JOB123X - STARTED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT
+ 10.51.46 JOB02090  CAJR251I STEP1       1 IEFBR14  0000      $ .00       0 00:00:00.02 00:00:00.01       0       0       0       0
+ 10.51.46 JOB02090  IEF404I JOB123X - ENDED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.01
+ 10.51.46 JOB02090  $HASP395 JOB123X ENDED - RC=0000
+0------ JES2 JOB STATISTICS ------
+-  24 APR 2018 JOB EXECUTION DATE
+-            7 CARDS READ
+-           73 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            8 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME"
+`;
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 5`] = `"Spool file: %s (ID #%d, Step: %s)"`;
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 6`] = `
+"1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T
+0
+ 10.51.46 JOB02090 ---- TUESDAY,   24 APR 2018 ----
+ 10.51.46 JOB02090  TSS7000I JOB123 Last-Used 24 Apr 18 07:08 System=BLAH Facility=ZOSMF
+ 10.51.46 JOB02090  TSS7001I Count=01310 Mode=Fail Locktime=None Name=SECRET
+ 10.51.46 JOB02090  $HASP373 JOB123X STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS BLAH
+ 10.51.46 JOB02090  IEF403I JOB123X - STARTED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT
+ 10.51.46 JOB02090  CAJR251I STEP1       1 IEFBR14  0000      $ .00       0 00:00:00.02 00:00:00.01       0       0       0       0
+ 10.51.46 JOB02090  IEF404I JOB123X - ENDED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.01
+ 10.51.46 JOB02090  $HASP395 JOB123X ENDED - RC=0000
+0------ JES2 JOB STATISTICS ------
+-  24 APR 2018 JOB EXECUTION DATE
+-            7 CARDS READ
+-           73 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            8 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME"
+`;
+
+exports[`zos-jobs view all-spool-content handler should be able to get the content of a spool file 7`] = `
+Array [
+  Object {
+    "data": "1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T
+0
+ 10.51.46 JOB02090 ---- TUESDAY,   24 APR 2018 ----
+ 10.51.46 JOB02090  TSS7000I JOB123 Last-Used 24 Apr 18 07:08 System=BLAH Facility=ZOSMF
+ 10.51.46 JOB02090  TSS7001I Count=01310 Mode=Fail Locktime=None Name=SECRET
+ 10.51.46 JOB02090  $HASP373 JOB123X STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS BLAH
+ 10.51.46 JOB02090  IEF403I JOB123X - STARTED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT
+ 10.51.46 JOB02090  CAJR251I STEP1       1 IEFBR14  0000      $ .00       0 00:00:00.02 00:00:00.01       0       0       0       0
+ 10.51.46 JOB02090  IEF404I JOB123X - ENDED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.01
+ 10.51.46 JOB02090  $HASP395 JOB123X ENDED - RC=0000
+0------ JES2 JOB STATISTICS ------
+-  24 APR 2018 JOB EXECUTION DATE
+-            7 CARDS READ
+-           73 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            8 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME",
+    "ddName": "JESMSGLG",
+    "id": 2,
+    "procName": null,
+    "stepName": "JES2",
+  },
+  Object {
+    "data": "1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T
+0
+ 10.51.46 JOB02090 ---- TUESDAY,   24 APR 2018 ----
+ 10.51.46 JOB02090  TSS7000I JOB123 Last-Used 24 Apr 18 07:08 System=BLAH Facility=ZOSMF
+ 10.51.46 JOB02090  TSS7001I Count=01310 Mode=Fail Locktime=None Name=SECRET
+ 10.51.46 JOB02090  $HASP373 JOB123X STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS BLAH
+ 10.51.46 JOB02090  IEF403I JOB123X - STARTED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT
+ 10.51.46 JOB02090  CAJR251I STEP1       1 IEFBR14  0000      $ .00       0 00:00:00.02 00:00:00.01       0       0       0       0
+ 10.51.46 JOB02090  IEF404I JOB123X - ENDED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.01
+ 10.51.46 JOB02090  $HASP395 JOB123X ENDED - RC=0000
+0------ JES2 JOB STATISTICS ------
+-  24 APR 2018 JOB EXECUTION DATE
+-            7 CARDS READ
+-           73 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            8 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME",
+    "ddName": "JESJCL",
+    "id": 3,
+    "procName": null,
+    "stepName": "JES2",
+  },
+  Object {
+    "data": "1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T
+0
+ 10.51.46 JOB02090 ---- TUESDAY,   24 APR 2018 ----
+ 10.51.46 JOB02090  TSS7000I JOB123 Last-Used 24 Apr 18 07:08 System=BLAH Facility=ZOSMF
+ 10.51.46 JOB02090  TSS7001I Count=01310 Mode=Fail Locktime=None Name=SECRET
+ 10.51.46 JOB02090  $HASP373 JOB123X STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS BLAH
+ 10.51.46 JOB02090  IEF403I JOB123X - STARTED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT
+ 10.51.46 JOB02090  CAJR251I STEP1       1 IEFBR14  0000      $ .00       0 00:00:00.02 00:00:00.01       0       0       0       0
+ 10.51.46 JOB02090  IEF404I JOB123X - ENDED - TIME=10.51.46
+ 10.51.46 JOB02090  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.01
+ 10.51.46 JOB02090  $HASP395 JOB123X ENDED - RC=0000
+0------ JES2 JOB STATISTICS ------
+-  24 APR 2018 JOB EXECUTION DATE
+-            7 CARDS READ
+-           73 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            8 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME",
+    "ddName": "JESYSMSG",
+    "id": 4,
+    "procName": null,
+    "stepName": "JES2",
+  },
+]
+`;
+
+exports[`zos-jobs view all-spool-content handler should not transform an error thrown from get jobs getJob API 1`] = `"Something went wrong"`;
+
+exports[`zos-jobs view all-spool-content handler should not transform an error thrown from get jobs getSpoolContent API 1`] = `"Something went wrong"`;
+
+exports[`zos-jobs view all-spool-content handler should not transform an error thrown from get jobs getSpoolFilesForJob API 1`] = `"Something went wrong"`;
