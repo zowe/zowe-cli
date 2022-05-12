@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to address `ProfileInfo` related issues. [zowe/vscode-extension-for-zowe#1777](https://github.com/zowe/vscode-extension-for-zowe/issues/1777)
+
 ## `7.1.3`
 
 - BugFix: Fixed issue where `config auto-init` could report that it modified a config file that did not yet exist.

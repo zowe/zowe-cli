@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Ensured that `defaultHome` and `cliHome` are the same from a `getZoweDir` point of view. [zowe/vscode-extension-for-zowe#1777](https://github.com/zowe/vscode-extension-for-zowe/issues/1777)
+
 ## `7.1.1`
 
 - BugFix: Moved `authConfig` object from the base profile definition into the CLI package because it made the handler path invalid.
