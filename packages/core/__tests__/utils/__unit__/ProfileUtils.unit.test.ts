@@ -38,7 +38,7 @@ describe("ProfileUtils", () => {
             jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ cliHome: { value: "test" } } as any);
             expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
             expect(ProfileUtils.getZoweDir()).toEqual("test");
-            expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+            expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome: "test" });
         });
 
         it("should return the defaultHome and set loadedConfig if undefined", () => {
