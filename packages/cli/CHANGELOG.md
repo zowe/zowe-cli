@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to view all spool content given a job id with the `zowe zos-jobs view all-spool-content` command. [#946](https://github.com/zowe/zowe-cli/issues/946)
+
 ## `7.1.3`
 
 - BugFix: Fixed issue where `config auto-init` could report that it modified a config file that did not yet exist.
