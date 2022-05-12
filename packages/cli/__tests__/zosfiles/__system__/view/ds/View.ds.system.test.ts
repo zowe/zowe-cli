@@ -28,7 +28,7 @@ describe("View Data Set", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             installPlugin: true,
-            testName: "zos_extended_view_ds",
+            testName: "view_data_set",
             tempProfileTypes: ["zosmf"]
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -58,14 +58,6 @@ describe("View Data Set", () => {
             await Delete.dataSet(REAL_SESSION, dsname);
         });
 
-        it("should display view data set help", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command_view_data_set_help.sh");
-            const response = runCliScript(shellScript, testEnvironment);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
-        }, TIMEOUT);
-
         it("should view data set", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname]);
@@ -75,14 +67,6 @@ describe("View Data Set", () => {
         }, TIMEOUT);
     });
     describe("Expected failures", () => {
-        it("should fail due to missing data set name", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
-            const response = runCliScript(shellScript, testEnvironment, [""]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            expect(response.stderr.toString()).toContain("dataSetName");
-        });
-
         it("should fail due to specified data set name does not existed", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);

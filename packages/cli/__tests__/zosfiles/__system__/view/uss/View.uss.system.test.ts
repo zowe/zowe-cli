@@ -28,7 +28,7 @@ describe("View uss file", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             installPlugin: true,
-            testName: "zos_extended_view_uss",
+            testName: "view_uss_file",
             tempProfileTypes: ["zosmf"]
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -77,14 +77,6 @@ describe("View uss file", () => {
             } catch (err) {
                 error = err;
             }
-        });
-
-        it("should display view uss help", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command_view_uss_help.sh");
-            const response = runCliScript(shellScript, testEnvironment);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
         });
 
         it("should view uss file", async () => {

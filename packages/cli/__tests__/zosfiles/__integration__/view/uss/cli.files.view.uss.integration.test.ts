@@ -16,7 +16,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
-describe("List USS file", () => {
+describe("View USS file", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
