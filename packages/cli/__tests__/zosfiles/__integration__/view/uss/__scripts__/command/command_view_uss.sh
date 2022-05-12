@@ -2,7 +2,8 @@
 path=$1
 set -e
 
-zowe zos-files view uss-file "$path" --host fakehost --pw fakepass --user fakeuser
+echo "================Z/OS FILES VIEW USS FILE==============="
+zowe files view uss-file "$path"
 if [ $? -gt 0 ]
 then
     exit $?

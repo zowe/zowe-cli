@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to view a dataset or USS file. [#1283](https://github.com/zowe/zowe-cli/issues/1283) 
+
 ## `7.1.1`
 
 - BugFix: Moved `authConfig` object from the core SDK into the CLI's base profile definition to fix invalid handler path.

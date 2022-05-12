@@ -29,7 +29,7 @@ describe("List USS file", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", () => {
+    it("should display the help", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command_view_uss_help.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT);
         expect(response.status).toBe(0);
@@ -37,12 +37,12 @@ describe("List USS file", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("should fail due to missing data set name", () => {
+    it("should fail due to missing uss filename", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
-        expect(response.stderr.toString()).toContain("path");
+        expect(response.stderr.toString()).toContain("file");
     });
 
 });

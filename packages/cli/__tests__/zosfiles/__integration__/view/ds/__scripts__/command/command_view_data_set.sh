@@ -2,7 +2,8 @@
 dsn=$1
 set -e
 
-zowe zos-files view ds "$dsn" --host fakehost --pw fakepass --user fakeuser
+echo "================Z/OS FILES VIEW DATA SET==============="
+zowe files view ds "$dsn"
 if [ $? -gt 0 ]
 then
     exit $?

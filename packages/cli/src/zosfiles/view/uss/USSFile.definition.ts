@@ -28,7 +28,7 @@ export const USSFileDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/USSFile.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {
