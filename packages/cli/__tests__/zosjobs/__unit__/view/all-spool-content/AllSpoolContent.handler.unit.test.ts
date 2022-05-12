@@ -18,7 +18,7 @@ import * as fs from "fs";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import * as AllSpoolContentHandler from "../../../../../src/zosjobs/view/all-spool-content/AllSpoolContent.handler"
+import * as AllSpoolContentHandler from "../../../../../src/zosjobs/view/all-spool-content/AllSpoolContent.handler";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";

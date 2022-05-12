@@ -41,7 +41,7 @@ if [ $ATTEMPTS -eq 0 -a "$STATUS" != "OUTPUT" ]; then
 fi
 
 # Print all the spool files content
-zowe zos-jobs view asc $JOBID
+zowe zos-jobs view all-spool-content $JOBID
 RC=$?
 # Wait for a few seconds to node flushes the buffers
 sleep 2

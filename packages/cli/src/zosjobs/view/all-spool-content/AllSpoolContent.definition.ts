@@ -21,7 +21,7 @@ export const AllSpoolContentDefinition: ICommandDefinition = {
     "The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
     handler: __dirname + "/AllSpoolContent.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {
