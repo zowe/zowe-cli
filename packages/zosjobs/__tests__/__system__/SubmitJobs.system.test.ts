@@ -433,7 +433,7 @@ describe("Submit Jobs - System Tests", () => {
             expect(err.message).toContain(badDataSet);
         });
 
-        it("should surface an error from z/OSMF when calling submitUSSJob with a non existent data set", async () => {
+        it("should surface an error from z/OSMF when calling submitUSSJob with a non existent USS file", async () => {
             let err: Error | ImperativeError;
             try {
                 await SubmitJobs.submitUSSJob(REAL_SESSION,

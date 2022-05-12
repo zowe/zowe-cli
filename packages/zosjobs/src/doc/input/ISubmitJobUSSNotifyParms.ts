@@ -10,24 +10,14 @@
 */
 
 import { JOB_STATUS } from "../../types/JobStatus";
+import { ISubmitJobUSSParms } from "./ISubmitJobUSSParms";
 
 /**
  * Interface for submit job API
  * @export
  * @interface ISubmitJobNotifyParm
  */
-export interface ISubmitJobUSSNotifyParm {
-
-    /**
-     * USS File which should contain syntactically correct JCL
-     * Example value: /u/users/ibmuser
-     * where IEFBR14 contains statements like:
-     *   //IEFBR14 JOB ()
-     *   //RUN     EXEC PGM=IEFBR14
-     * @type {string}
-     * @memberof ISubmitJobUSSNotifyParm
-     */
-    jobUSSFile: string;
+export interface ISubmitJobUSSNotifyParm extends ISubmitJobUSSParms{
 
     /**
      * Watch delay (polling delay) that the underlying services will use
@@ -53,11 +43,4 @@ export interface ISubmitJobUSSNotifyParm {
      * @memberof ISubmitJobUSSNotifyParm
      */
     attempts?: number;
-
-    /**
-     * A string for JCL symbolic substitution
-     * @type {string}
-     * @memberof ISubmitJobUSSNotifyParm
-     */
-    jclSymbols?: string;
 }

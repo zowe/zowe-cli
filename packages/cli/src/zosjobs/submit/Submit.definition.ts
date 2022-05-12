@@ -28,8 +28,8 @@ export const SubmitDefinition: ICommandDefinition = {
     description: strings.DESCRIPTION,
     children: [
         DataSetDefinition,
-        USSFileDefinition,
         LocalFileDefinition,
-        StdinDefinition
+        StdinDefinition,
+        USSFileDefinition
     ]
 };

@@ -18,8 +18,8 @@ export interface ISubmitJobUSSParms {
 
     /**
      * USS File which should contain syntactically correct JCL
-     * Example value: /u/users/ibmuser
-     * where IEFBR14 contains statements like:
+     * Example value: /u/users/ibmuser/iefbr14.jcl
+     * where the file contains statements like:
      *   //IEFBR14 JOB ()
      *   //RUN     EXEC PGM=IEFBR14
      * @type {string}

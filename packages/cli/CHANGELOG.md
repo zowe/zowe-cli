@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added the ability to submit a job from a dataset. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
+- Enhancement: Added the ability to submit a job from a USS file. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
 
 ## `7.1.3`
 

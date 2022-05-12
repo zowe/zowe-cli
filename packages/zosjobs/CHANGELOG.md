@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## Recent Changes
 
-- Enhancement: Added the ability to submit a job from a dataset. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
+- Enhancement: Added the ability to submit a job from a USS File. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
 
 ## `7.0.0`
 

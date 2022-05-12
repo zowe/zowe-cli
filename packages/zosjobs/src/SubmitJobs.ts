@@ -58,7 +58,7 @@ export class SubmitJobs {
      * Submit a job that resides in a USS File.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} jobUSSFile - job USS File options to be translated into parms object
+     * @param {string} jobUSSFile - job USS File to be translated into parms object
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
@@ -202,7 +202,7 @@ export class SubmitJobs {
      * Submit a job and be notified whenever it reaches the default status on a default polling interval.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} jobDataSet - job data set to be translated into parms object with assumed defaults
+     * @param {string} jobUSSFile - job USS file to be translated into parms object with assumed defaults
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */

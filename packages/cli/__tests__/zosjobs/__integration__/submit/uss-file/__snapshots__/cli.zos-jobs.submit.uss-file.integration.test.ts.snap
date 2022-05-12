@@ -218,7 +218,7 @@ exports[`zos-jobs submit uss-file command syntax errors should occur if an extra
 Unknown argument: blah
 Command failed due to improper syntax
 Command entered: \\"zos-jobs submit uss-file /a/ibmuser/ussfile.txt blah\\"
-Available commands are \\"data-set, uss-file, local-file, stdin\\".
+Available commands are \\"data-set, local-file, stdin, uss-file\\".
 Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
 Error Details:
 Unknown argument: blah
