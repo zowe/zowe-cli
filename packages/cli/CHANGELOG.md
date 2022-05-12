@@ -4,7 +4,17 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added the ability to view a dataset or USS file. [#1283](https://github.com/zowe/zowe-cli/issues/1283) 
+- Enhancement: Added the `zowe files view data-set` and `zowe files view uss-file` commands to view a dataset or USS file. [#1283](https://github.com/zowe/zowe-cli/issues/1283) 
+- Enhancement: Added the `zowe jobs delete old-jobs` command to delete (purge) jobs in OUTPUT status. [#1285](https://github.com/zowe/zowe-cli/issues/1285)
+
+## `7.1.3`
+
+- BugFix: Fixed issue where `config auto-init` could report that it modified a config file that did not yet exist.
+- BugFix: Updated Imperative to fix `config import` and `config secure` commands not respecting the `--reject-unauthorized` option.
+
+## `7.1.2`
+
+- BugFix: Fixed an issue where privateKey is not being respected. [#1398](https://github.com/zowe/zowe-cli/issues/1398) [#1392](https://github.com/zowe/zowe-cli/issues/1392)
 
 ## `7.1.1`
 
