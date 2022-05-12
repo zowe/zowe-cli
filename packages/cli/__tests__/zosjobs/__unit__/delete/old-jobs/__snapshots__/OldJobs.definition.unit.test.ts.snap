@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs delete old-jobs definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "oj",
+  ],
+  "description": "Delete (purge) jobs in OUTPUT status. Defaults to deleting all jobs owned by your user ID that are in output status.",
+  "examples": Array [
+    Object {
+      "description": "Delete all of your jobs in output status with a job name starting with \\"ibmuser\\"",
+      "options": "-p \\"ibmuser*\\"",
+    },
+  ],
+  "name": "old-jobs",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "p",
+      ],
+      "description": "Only delete jobs with job names that match this prefix. Defaults to deleting all jobs owned by your user ID that are in output status.",
+      "name": "prefix",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "mcr",
+      ],
+      "defaultValue": 1,
+      "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to delete jobs. Increasing the value makes the command run faster. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests. When you specify 0, Zowe CLI attempts to delete all jobs at once without a maximum number of concurrent requests.",
+      "name": "max-concurrent-requests",
+      "type": "number",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Delete multiple jobs in OUTPUT status",
+  "type": "command",
+}
+`;

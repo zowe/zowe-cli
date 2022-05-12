@@ -1,0 +1,253 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 1`] = `"Successfully deleted 2 jobs"`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 2`] = `
+Object {
+  "fields": Array [
+    "jobname",
+    "jobid",
+    "status",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "TSUxxx",
+      "jobname": "IBMUSER$",
+      "owner": "IBMUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "JOBxxx",
+      "jobname": "CAUSER$",
+      "owner": "CAUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+  ],
+}
+`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 3`] = `"Successfully deleted 2 jobs"`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 4`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "JOBxxx",
+    "jobname": "CAUSER$",
+    "owner": "CAUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+]
+`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 1`] = `"Successfully deleted 2 jobs"`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 2`] = `
+Object {
+  "fields": Array [
+    "jobname",
+    "jobid",
+    "status",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "TSUxxx",
+      "jobname": "IBMUSER$",
+      "owner": "IBMUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "JOBxxx",
+      "jobname": "CAUSER$",
+      "owner": "CAUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+  ],
+}
+`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 3`] = `"Successfully deleted 2 jobs"`;
+
+exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 4`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "JOBxxx",
+    "jobname": "CAUSER$",
+    "owner": "CAUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+]
+`;
+
+exports[`delete old-jobs handler tests should delete jobs with a specific prefix 1`] = `"Successfully deleted 2 jobs"`;
+
+exports[`delete old-jobs handler tests should delete jobs with a specific prefix 2`] = `
+Object {
+  "fields": Array [
+    "jobname",
+    "jobid",
+    "status",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "TSUxxx",
+      "jobname": "IBMUSER$",
+      "owner": "IBMUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "JOBxxx",
+      "jobname": "CAUSER$",
+      "owner": "CAUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+  ],
+}
+`;
+
+exports[`delete old-jobs handler tests should delete jobs with a specific prefix 3`] = `"Successfully deleted 2 jobs"`;
+
+exports[`delete old-jobs handler tests should delete jobs with a specific prefix 4`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "JOBxxx",
+    "jobname": "CAUSER$",
+    "owner": "CAUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+]
+`;
+
+exports[`delete old-jobs handler tests should not delete jobs when none are found 1`] = `"No jobs found with prefix *"`;
+
+exports[`delete old-jobs handler tests should not transform an error from the DeleteJobs API class 1`] = `"You fail in DeleteJobs"`;
+
+exports[`delete old-jobs handler tests should not transform an error from the zosmf rest client 1`] = `"You fail in z/OSMF"`;
