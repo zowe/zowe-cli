@@ -344,9 +344,9 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             const endCfgLayer = this.mAutoInitReport.endingConfig;
 
             if (!startCfgLayer.exists && endCfgLayer.exists) {
-                // the starting config file existed, but its layer did not
+                // the starting config file existed, but was in a different layer
                 if (this.mAutoInitReport.changeForConfig === this.NO_CHANGES_MSG) {
-                    this.mAutoInitReport.changeForConfig = this.MODIFIED_MSG;
+                    this.mAutoInitReport.changeForConfig = this.CREATED_MSG;
 
                     // each profile in this previously non-existent layer has been created
                     for (const nextProfRpt of this.mAutoInitReport.profileRpts) {
@@ -355,7 +355,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 }
             } else {
                 /* We must compare profile-by-profile.
-                 * Look for each profile from the ending config within the staring config
+                 * Look for each profile from the ending config within the starting config
                  */
                 for (const endProfNm of lodash.keys(endCfgLayer.properties.profiles)) {
                     if (lodash.has(startCfgLayer.properties.profiles, endProfNm)) {

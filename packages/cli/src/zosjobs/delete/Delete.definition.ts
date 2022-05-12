@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { JobDefinition } from "./job/Job.definition";
+import { OldJobsDefinition } from "./old-jobs/OldJobs.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -23,6 +24,7 @@ export const DeleteDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
-        JobDefinition
+        JobDefinition,
+        OldJobsDefinition
     ]
 };

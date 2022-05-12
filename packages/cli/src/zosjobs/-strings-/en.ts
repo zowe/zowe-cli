@@ -68,6 +68,25 @@ export default {
                         OPTIONS: "JOB03456 --modify-version \"2.0\""
                     }
                 }
+            },
+            OLD_JOBS: {
+                SUMMARY: "Delete multiple jobs in OUTPUT status",
+                DESCRIPTION: "Delete (purge) jobs in OUTPUT status. Defaults to deleting all jobs owned by your user ID that are in output status.",
+                OPTIONS: {
+                    PREFIX: "Only delete jobs with job names that match this prefix. " +
+                        "Defaults to deleting all jobs owned by your user ID that are in output status.",
+                    MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to delete jobs. " +
+                        "Increasing the value makes the command run faster. " +
+                        "However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too " +
+                        "many concurrent requests. " +
+                        "When you specify 0, Zowe CLI attempts to delete all jobs at once without a maximum number of concurrent requests."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Delete all of your jobs in output status with a job name starting with \"ibmuser\"",
+                        OPTIONS: "-p \"ibmuser*\""
+                    }
+                }
             }
         }
     },
