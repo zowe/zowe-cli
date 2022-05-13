@@ -23,6 +23,7 @@ import { HMigrateDefinition } from "./hMigrate/HMigrate.definition";
 import { HRecallDefinition } from "./hRecall/HRecall.definition";
 import { CopyDefinition } from "./copy/Copy.definition";
 import { RenameDefinition } from "./rename/Rename.definition";
+import { ViewDefinition } from "./view/View.definition";
 import { ZosFilesOptionDefinitions } from "./ZosFiles.options";
 
 /**
@@ -49,7 +50,8 @@ const definition: ICommandDefinition = {
         MountDefinition,
         UnmountDefinition,
         CopyDefinition,
-        RenameDefinition
+        RenameDefinition,
+        ViewDefinition
     ],
     passOn: [
         {

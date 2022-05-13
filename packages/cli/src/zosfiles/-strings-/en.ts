@@ -648,6 +648,44 @@ export default {
                 " without a maximum number of concurrent requests. "
         }
     },
+    VIEW: {
+        SUMMARY: "View the contents of a data set or USS file",
+        DESCRIPTION: "View the contents of a data set or USS file on your terminal (stdout).",
+        ACTIONS: {
+            DATA_SET: {
+                SUMMARY: "View content from a z/OS data set",
+                DESCRIPTION: "View content from a z/OS data set on your terminal (stdout).",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to display."
+                },
+                EXAMPLES: {
+                    EX1: `View the contents of the data set member "ibmuser.cntl(iefbr14)"`,
+                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`
+                }
+            },
+            USS_FILE: {
+                SUMMARY: "View content from a USS file",
+                DESCRIPTION: "View content from a Unix System Services (USS) file on your terminal (stdout).",
+                POSITIONALS: {
+                    USSFILE: "The name of the USS file you want to display."
+                },
+                EXAMPLES: {
+                    EX1: `View the contents of the USS file "/a/ibmuser/my_text.txt"`,
+                    EX2: `View the contents of the USS file "/a/ibmuser/MyJavaClass.class" in binary mode`
+                }
+            }
+        },
+        OPTIONS: {
+            BINARY: "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
+            ENCODING: "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding " +
+                "specified.",
+            RECORD: "Transfer the file content in record mode, which means that no data conversion is performed and the record length is prepended" +
+                " to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records." +
+                " Conflicts with binary.",
+            VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
+            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC."
+        }
+    },
     HMIGRATE: {
         DESCRIPTION: "Migrate data sets.",
         ACTIONS: {
