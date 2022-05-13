@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs view all-spool-content definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "asc",
+  ],
+  "description": "View the contents of each spool file from a z/OS job on spool/JES queues. The command does not pre-validate the JOBID. The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
+  "examples": Array [
+    Object {
+      "description": "View all spool files for the job with job ID JOB00234",
+      "options": "JOB00234",
+    },
+  ],
+  "name": "all-spool-content",
+  "positionals": Array [
+    Object {
+      "description": "The z/OS JOBID of the job containing the spool files you want to view. No pre-validation of the JOBID is performed.",
+      "name": "jobid",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "View all spool content for specified job ID",
+  "type": "command",
+}
+`;
