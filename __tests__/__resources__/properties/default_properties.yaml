@@ -95,6 +95,9 @@ zosjobs:
   # a physical sequential data set containing IEFBR14 JCL
   # that your user ID can submit
   iefbr14PSDataSet: zosjobs-iefbr14PSDataSet
+  # a path to a uss file containing IEFBR14 JCL
+  # that your user ID can submit
+  iefbr14USSFile: zosjobs-iefbr14USSFile
   # The jobclass for a non-held, etc jobclass
   jobclass: A
   # System affinity
