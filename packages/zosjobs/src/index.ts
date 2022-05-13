@@ -20,7 +20,9 @@ export * from "./doc/input/IMonitorJobWaitForParms";
 export * from "./doc/input/ISubmitJclNotifyParms";
 export * from "./doc/input/ISubmitJclParms";
 export * from "./doc/input/ISubmitJobNotifyParms";
+export * from "./doc/input/ISubmitJobUSSNotifyParms";
 export * from "./doc/input/ISubmitJobParms";
+export * from "./doc/input/ISubmitJobUSSParms";
 export * from "./doc/input/ISubmitParms";
 
 export * from "./doc/response/IJob";

@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs submit group definition", () => {
     it("should not have changed", () => {
-        const CHILDREN = 3;
+        const CHILDREN = 4;
         const definition: ICommandDefinition = require("../../../../src/zosjobs/submit/Submit.definition").SubmitDefinition;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(CHILDREN);

@@ -10,7 +10,6 @@
 */
 
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
-import { isNullOrUndefined } from "util";
 import * as  fs from "fs";
 import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
@@ -57,6 +56,8 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         let sourceType: string;
         if (this.mArguments.dataset) {
             sourceType = "dataset";
+        } else if (this.mArguments.ussFile) {
+            sourceType = "uss-file";
         } else if (this.mArguments.localFile) {
             sourceType = "local-file";
         } else if (params.definition.name === "stdin") {
@@ -100,6 +101,18 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                 }
 
                 break;
+            // Submit JCL from a USS file
+            case "uss-file":
+                response = await SubmitJobs.submitJobCommon(this.mSession, {jobUSSFile: this.mArguments.ussFile,
+                    jclSymbols: this.mArguments.jclSymbols});
+                apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
+                source = this.mArguments.ussfile;
+
+                if (parms.viewAllSpoolContent) {
+                    spoolFilesResponse = apiObj;
+                }
+
+                break;
             // Submit the JCL from a local file
             case "local-file": {
                 parms.jclSource = this.mArguments.localFile;
@@ -130,7 +143,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         }
 
         // Print the response to the command
-        if (isNullOrUndefined(spoolFilesResponse)) {
+        if (spoolFilesResponse == null) {
             params.response.format.output({
                 fields: ["jobid", "retcode", "jobname", "status"],
                 output: apiObj,
@@ -142,7 +155,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             // Print data from spool content
         } else {
             for (const spoolFile of spoolFilesResponse) {
-                if (!isNullOrUndefined(spoolFile.procName) && spoolFile.procName.length > 0) {
+                if (spoolFile.procName != null && spoolFile.procName.length > 0) {
                     this.console.log("Spool file: %s (ID #%d, Step: %s, ProcStep: %s)",
                         spoolFile.ddName, spoolFile.id, spoolFile.stepName, spoolFile.procName);
                 } else {
@@ -157,7 +170,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         }
 
         // Print path where spool content was downloaded
-        if (!isNullOrUndefined(directory) && isNullOrUndefined(spoolFilesResponse)) {
+        if (directory != null && spoolFilesResponse == null) {
             directory = directory.includes("./") ? directory : `./${directory}`;
             params.response.console.log(`Successfully downloaded output to ${directory}/${apiObj.jobid}`);
         }

@@ -246,7 +246,7 @@ exports[`zos-jobs submit local-file command syntax errors should occur if an ext
 Unknown argument: blah
 Command failed due to improper syntax
 Command entered: \\"zos-jobs submit local-file ../../../../packages/cli/__tests__/zosjobs/__integration__/submit/local-file/testFileOfLocalJCL.txt blah\\"
-Available commands are \\"data-set, local-file, stdin\\".
+Available commands are \\"data-set, local-file, stdin, uss-file\\".
 Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
 Error Details:
 Unknown argument: blah

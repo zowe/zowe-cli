@@ -68,6 +68,25 @@ export default {
                         OPTIONS: "JOB03456 --modify-version \"2.0\""
                     }
                 }
+            },
+            OLD_JOBS: {
+                SUMMARY: "Delete multiple jobs in OUTPUT status",
+                DESCRIPTION: "Delete (purge) jobs in OUTPUT status. Defaults to deleting all jobs owned by your user ID that are in output status.",
+                OPTIONS: {
+                    PREFIX: "Only delete jobs with job names that match this prefix. " +
+                        "Defaults to deleting all jobs owned by your user ID that are in output status.",
+                    MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to delete jobs. " +
+                        "Increasing the value makes the command run faster. " +
+                        "However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too " +
+                        "many concurrent requests. " +
+                        "When you specify 0, Zowe CLI attempts to delete all jobs at once without a maximum number of concurrent requests."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Delete all of your jobs in output status with a job name starting with \"ibmuser\"",
+                        OPTIONS: "-p \"ibmuser*\""
+                    }
+                }
             }
         }
     },
@@ -118,6 +137,26 @@ export default {
                         DESCRIPTION: "Submit the JCL in the data set \"ibmuser.cntl(deploy)\", wait for the job to " +
                         "complete and print all output from the job",
                         OPTIONS: "\"ibmuser.cntl(deploy)\" --vasc"
+                    }
+                }
+            },
+            USS_FILE: {
+                SUMMARY: "Submit a job contained in a USS file",
+                DESCRIPTION: "Submit a job (JCL) contained in a USS file. The command does not pre-validate the USS file path. " +
+                    "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
+                    "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+                POSITIONALS: {
+                    USSFILE: "Path to the USS file that contains the JCL to submit."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Submit the JCL in the USS file \"/a/ibmuser/compile.jcl\"",
+                        OPTIONS: "\"/a/ibmuser/compile.jcl\""
+                    },
+                    EX2: {
+                        DESCRIPTION: "Submit the JCL in the USS file \"/a/ibmuser/compile.jcl\", wait for the job to " +
+                        "complete and print all output from the job",
+                        OPTIONS: "\"/a/ibmuser/compile.jcl\" --vasc"
                     }
                 }
             },

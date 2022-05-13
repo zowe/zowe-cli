@@ -15,7 +15,7 @@ describe("zos-jobs delete definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../src/zosjobs/delete/Delete.definition").DeleteDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(1);
+        expect(definition.children.length).toBe(2);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });
