@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.2.0`
 
 - Enhancement: Added the `zowe zos-jobs view all-spool-content` command to view all spool content given a job id. [#946](https://github.com/zowe/zowe-cli/issues/946)
 - Enhancement: Added the `zowe jobs submit uss-file` command to submit a job from a USS file. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
