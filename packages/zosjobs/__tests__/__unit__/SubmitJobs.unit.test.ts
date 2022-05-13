@@ -66,7 +66,7 @@ describe("Submit Jobs API", () => {
             });
 
 
-        it("should allow users to call submitJCL and wait for output status",
+        it("should allow users to call submitJob and wait for output status",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
                 const job = await SubmitJobs.submitJob(fakeSession,
@@ -87,7 +87,8 @@ describe("Submit Jobs API", () => {
                 expect((finishedJob as IJob).status).toEqual("OUTPUT");
                 expect((finishedJob as IJob).retcode).toEqual("CC 0000");
             });
-        it("should allow users to call submitJCL and wait for ACTIVE status",
+
+        it("should allow users to call submitJob and wait for ACTIVE status",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
                 const job = await SubmitJobs.submitJob(fakeSession,
@@ -103,6 +104,50 @@ describe("Submit Jobs API", () => {
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
                     waitForActive: true,
                     jclSource: "dataset"
+                }, job);
+                expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
+                expect((finishedJob as IJob).status).toEqual("ACTIVE");
+                expect((finishedJob as IJob).retcode).toEqual(null);
+            });
+
+        it("should allow users to call submitUSSJob and wait for output status",
+            async () => {
+                (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                const job = await SubmitJobs.submitUSSJob(fakeSession,
+                    "/u/users/ibmuser/fake.jcl"
+                );
+                // mocking worked if this fake job name is filled in
+                expect(job.jobname).toEqual(fakeJobName);
+                MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+                    jobToWaitFor.status = "OUTPUT";
+                    jobToWaitFor.retcode = "CC 0000";
+                    return jobToWaitFor;
+                });
+                const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
+                    waitForOutput: true,
+                    jclSource: "uss-file"
+                }, job);
+                expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
+                expect((finishedJob as IJob).status).toEqual("OUTPUT");
+                expect((finishedJob as IJob).retcode).toEqual("CC 0000");
+            });
+
+        it("should allow users to call submitUSSJob and wait for ACTIVE status",
+            async () => {
+                (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                const job = await SubmitJobs.submitUSSJob(fakeSession,
+                    "/u/users/ibmuser/fake.jcl"
+                );
+                // mocking worked if this fake job name is filled in
+                expect(job.jobname).toEqual(fakeJobName);
+                MonitorJobs.waitForStatusCommon = jest.fn((session, jobToWaitFor) => {
+                    jobToWaitFor.status = "ACTIVE";
+                    jobToWaitFor.retcode = null;
+                    return jobToWaitFor;
+                });
+                const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
+                    waitForActive: true,
+                    jclSource: "uss-file"
                 }, job);
                 expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).status).toEqual("ACTIVE");
@@ -125,7 +170,7 @@ describe("Submit Jobs API", () => {
             });
 
 
-        it("should allow users to call submitDataSetJobCommon with correct parameters", async () => {
+        it("should allow users to call submitJobCommon with correct parameters (using data set)", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             const job = await SubmitJobs.submitJobCommon(fakeSession, {
                 jobDataSet: "DUMMY.DATA.SET"
@@ -134,7 +179,26 @@ describe("Submit Jobs API", () => {
             expect(job.jobname).toEqual(fakeJobName);
         });
 
+        it("should allow users to call submitJobCommon with correct parameters (using uss file)", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            const job = await SubmitJobs.submitJobCommon(fakeSession, {
+                jobUSSFile: "/u/users/ibmuser/fake.jcl"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+        });
+
         it("should allow users to call submitJobNotifyCommon with correct parameters (using data set)", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+            const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                jobDataSet: "DUMMY.DATA.SET"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+        });
+
+        it("should allow users to call submitJobNotifyCommon with correct parameters (using uss file)", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
             const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
@@ -164,10 +228,29 @@ describe("Submit Jobs API", () => {
             expect(job.jobname).toEqual(fakeJobName);
         });
 
+        it("should allow users to call submitUSSJobNotify with correct parameters", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+            const job = await SubmitJobs.submitUSSJobNotify(fakeSession,
+                "/u/users/ibmuser/fake.jcl"
+            );
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+        });
+
         it("should allow users to call submitJob with correct parameters", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             const job = await SubmitJobs.submitJob(fakeSession,
                 "DUMMY.DATA.SET"
+            );
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+        });
+
+        it("should allow users to call submitUSSJob with correct parameters", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            const job = await SubmitJobs.submitUSSJob(fakeSession,
+                "/u/users/ibmuser/fake.jcl"
             );
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
@@ -246,7 +329,7 @@ describe("Submit Jobs API", () => {
                 expect(err.message).toEqual(mockErrorText);
             });
 
-        it("should be able to catch an error awaiting submitJobCommon", async () => {
+        it("should be able to catch an error awaiting submitJobCommon (using data set)", async () => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             let err: any;
             try {
@@ -260,13 +343,42 @@ describe("Submit Jobs API", () => {
             expect(err.message).toEqual(mockErrorText);
         });
 
-        it("should be able to catch an error awaiting submitJobNotifyCommon", async () => {
+        it("should be able to catch an error awaiting submitJobCommon (using uss file)", async () => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
+            let err: any;
+            try {
+                await SubmitJobs.submitJobCommon(fakeSession, {
+                    jobUSSFile: "/u/users/ibmuser/fake.jcl"
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toEqual(mockErrorText);
+        });
+
+        it("should be able to catch an error awaiting submitJobNotifyCommon (using data set)", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             (MonitorJobs as any).waitForStatusCommon = throwImperativeError; // mock  monitor job API used by SubmitJobs.ts
             let err: any;
             try {
                 await SubmitJobs.submitJobNotifyCommon(fakeSession, {
                     jobDataSet: "DUMMY.DATA.SET"
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toEqual(mockErrorText);
+        });
+
+        it("should be able to catch an error awaiting submitJobNotifyCommon (using uss file)", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            (MonitorJobs as any).waitForStatusCommon = throwImperativeError; // mock  monitor job API used by SubmitJobs.ts
+            let err: any;
+            try {
+                await SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                    jobUSSFile: "/u/users/ibmuser/fake.jcl"
                 });
             } catch (e) {
                 err = e;
@@ -305,12 +417,41 @@ describe("Submit Jobs API", () => {
             expect(err.message).toEqual(mockErrorText);
         });
 
+        it("should be able to catch an error awaiting submitUSSJobNotify", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            (MonitorJobs as any).waitForStatusCommon = throwImperativeError; // mock  monitor job API used by SubmitJobs.ts
+            let err: any;
+            try {
+                await SubmitJobs.submitUSSJobNotify(fakeSession,
+                    "/u/users/ibmuser/fake.jcl"
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toEqual(mockErrorText);
+        });
+
         it("should be able to catch an error awaiting submitJob", async () => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             let err: any;
             try {
                 await SubmitJobs.submitJob(fakeSession,
                     "DUMMY.DATA.SET"
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toEqual(mockErrorText);
+        });
+
+        it("should be able to catch an error awaiting submitUSSJob", async () => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
+            let err: any;
+            try {
+                await SubmitJobs.submitUSSJob(fakeSession,
+                    "/u/users/ibmuser/fake.jcl"
                 );
             } catch (e) {
                 err = e;
@@ -386,7 +527,7 @@ describe("Submit Jobs API", () => {
                 });
             });
 
-        it("should be able to catch an error with submitJobCommon with catch() syntax", (done: any) => {
+        it("should be able to catch an error with submitJobCommon with catch() syntax (using data set)", (done: any) => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             SubmitJobs.submitJobCommon(fakeSession, {
                 jobDataSet: "DUMMY.DATA.SET"
@@ -399,11 +540,38 @@ describe("Submit Jobs API", () => {
             });
         });
 
-        it("should be able to catch an error with submitJobNotifyCommon with catch() syntax", (done: any) => {
+        it("should be able to catch an error with submitJobCommon with catch() syntax (using uss file)", (done: any) => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
+            SubmitJobs.submitJobCommon(fakeSession, {
+                jobUSSFile: "/u/users/ibmuser/fake.jcl"
+            }).then(() => {
+                expect("Should have called .catch()").toEqual("test failed");
+            }).catch((e) => {
+                expect(e).toBeDefined();
+                expect(e.message).toEqual(mockErrorText);
+                done();
+            });
+        });
+
+        it("should be able to catch an error with submitJobNotifyCommon with catch() syntax (using data set)", (done: any) => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             (MonitorJobs as any).waitForStatusCommon = throwImperativeError; // mock  monitor job API used by SubmitJobs.ts
             SubmitJobs.submitJobNotifyCommon(fakeSession, {
                 jobDataSet: "DUMMY.DATA.SET"
+            }).then(() => {
+                expect("Should have called .catch()").toEqual("test failed");
+            }).catch((e) => {
+                expect(e).toBeDefined();
+                expect(e.message).toEqual(mockErrorText);
+                done();
+            });
+        });
+
+        it("should be able to catch an error with submitJobNotifyCommon with catch() syntax (using uss file)", (done: any) => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            (MonitorJobs as any).waitForStatusCommon = throwImperativeError; // mock  monitor job API used by SubmitJobs.ts
+            SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                jobUSSFile: "/u/users/ibmuser/fake.jcl"
             }).then(() => {
                 expect("Should have called .catch()").toEqual("test failed");
             }).catch((e) => {
@@ -442,10 +610,37 @@ describe("Submit Jobs API", () => {
             });
         });
 
+        it("should be able to catch an error with submitUSSJobNotify with catch() syntax", (done: any) => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            (MonitorJobs as any).waitForStatusCommon = throwImperativeError; // mock  monitor job API used by SubmitJobs.ts
+            SubmitJobs.submitUSSJobNotify(fakeSession,
+                "/u/users/ibmuser/fake.jcl"
+            ).then(() => {
+                expect("Should have called .catch()").toEqual("test failed");
+            }).catch((e) => {
+                expect(e).toBeDefined();
+                expect(e.message).toEqual(mockErrorText);
+                done();
+            });
+        });
+
         it("should be able to catch an error with submitJob with catch() syntax", (done: any) => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             SubmitJobs.submitJob(fakeSession,
                 "DUMMY.DATA.SET"
+            ).then(() => {
+                expect("Should have called .catch()").toEqual("test failed");
+            }).catch((e) => {
+                expect(e).toBeDefined();
+                expect(e.message).toEqual(mockErrorText);
+                done();
+            });
+        });
+
+        it("should be able to catch an error with submitUSSJob with catch() syntax", (done: any) => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
+            SubmitJobs.submitUSSJob(fakeSession,
+                "/u/users/ibmuser/fake.jcl"
             ).then(() => {
                 expect("Should have called .catch()").toEqual("test failed");
             }).catch((e) => {
@@ -516,6 +711,32 @@ describe("Submit Jobs API", () => {
             }
             expect(err).toBeDefined();
             expect(err.message).toContain("jobDataSet");
+            expect(err.message).not.toContain("jobUSSFile");
+        });
+
+        it("should reject calls to submitJobCommon that don't provide jobUSSFile", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJobCommon(fakeSession, {
+                    jobUSSFile: undefined
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).not.toContain("jobDataSet");
+            expect(err.message).toContain("jobUSSFile");
+        });
+
+        it("should reject calls to submitJobCommon that don't provide jobDataSet or jobUSSFile", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJobCommon(fakeSession, {} as any);
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("a data set or USS file");
         });
 
         it("should reject calls to submitJobNotifyCommon that don't specify jobDataSet", async () => {
@@ -529,6 +750,32 @@ describe("Submit Jobs API", () => {
             }
             expect(err).toBeDefined();
             expect(err.message).toContain("jobDataSet");
+            expect(err.message).not.toContain("jobUSSFile");
+        });
+
+        it("should reject calls to submitJobNotifyCommon that don't specify jobUSSFile", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                    jobUSSFile: undefined
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).not.toContain("jobDataSet");
+            expect(err.message).toContain("jobUSSFile");
+        });
+
+        it("should reject calls to submitJobNotifyCommon that don't specify jobDataSet or jobUSSFile", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJobNotifyCommon(fakeSession, {} as any);
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("a data set or USS file");
         });
 
         it("should reject calls to submitJclNotify that don't provide jcl", async () => {
@@ -557,6 +804,19 @@ describe("Submit Jobs API", () => {
             expect(err.message).toContain("jobDataSet");
         });
 
+        it("should reject calls to submitUSSJobNotify that don't specify uss file", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitUSSJobNotify(fakeSession,
+                    undefined
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("jobUSSFile");
+        });
+
         it("should reject calls to submitJob that don't specify data set", async () => {
             let err: any;
             try {
@@ -568,6 +828,19 @@ describe("Submit Jobs API", () => {
             }
             expect(err).toBeDefined();
             expect(err.message).toContain("jobDataSet");
+        });
+
+        it("should reject calls to submitUSSJob that don't specify uss file", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitUSSJob(fakeSession,
+                    undefined
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("jobUSSFile");
         });
 
         it("should reject calls to submitJclString that don't provide JCL string", async () => {
@@ -621,7 +894,7 @@ describe("Submit Jobs API", () => {
             expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
         });
 
-        it("should allow users to call submitDataSetJobCommon with jcl substitution", async () => {
+        it("should allow users to call submitJobCommon with jcl substitution (with data set)", async () => {
             let receivedHeaders: IHeaderContent[] = [];
             (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
                 receivedHeaders = headers;
@@ -637,7 +910,23 @@ describe("Submit Jobs API", () => {
             expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
         });
 
-        it("should allow users to call submitJobNotifyCommon with jcl substitution", async () => {
+        it("should allow users to call submitJobCommon with jcl substitution (with uss file)", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJobCommon(fakeSession, {
+                jobUSSFile: "/u/users/ibmuser/fake.jcl",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should allow users to call submitJobNotifyCommon with jcl substitution (with data set)", async () => {
             let receivedHeaders: IHeaderContent[] = [];
             (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
                 receivedHeaders = headers;
@@ -646,6 +935,23 @@ describe("Submit Jobs API", () => {
             (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
             const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
                 jobDataSet: "DUMMY.DATA.SET",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should allow users to call submitJobNotifyCommon with jcl substitution (with uss file)", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+            const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                jobUSSFile: "/u/users/ibmuser/fake.jcl",
                 jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
             });
             // mocking worked if this fake job name is filled in

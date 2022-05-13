@@ -24,9 +24,11 @@ let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let account: string;
 let jobDataSet: string;
+let jobUSSFile: string;
 let iefbr14JCL: string;
 const badJCL = "thIsIs BaDJCL!";
 const badDataSet = "DOES.NOT.EXIST(FAKE)";
+const badUSSFile = "/tmp/does/not/exist/fake.txt";
 
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
 
@@ -51,6 +53,7 @@ describe("Submit Jobs - System Tests", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
         jobDataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14PSDataSet;
+        jobUSSFile = testEnvironment.systemTestProperties.zosjobs.iefbr14USSFile;
         const maxJobNamePrefixLength = 5;
         iefbr14JCL = "//" + systemProps.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
             ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
@@ -122,9 +125,18 @@ describe("Submit Jobs - System Tests", () => {
                 await deleteJob(job);
             }, LONG_TIMEOUT);
 
-        it("should allow users to call submitDataSetJobCommon with correct parameters", async () => {
+        it("should allow users to call submitJobCommon with correct parameters (with data set)", async () => {
             const job = await SubmitJobs.submitJobCommon(REAL_SESSION, {
                 jobDataSet
+            });
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
+            await deleteJob(job);
+        });
+
+        it("should allow users to call submitJobCommon with correct parameters (with uss file)", async () => {
+            const job = await SubmitJobs.submitJobCommon(REAL_SESSION, {
+                jobUSSFile
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
@@ -134,6 +146,15 @@ describe("Submit Jobs - System Tests", () => {
         it("should allow users to call submitJobNotifyCommon with correct parameters (using a data set)", async () => {
             const job = await SubmitJobs.submitJobNotifyCommon(REAL_SESSION, {
                 jobDataSet
+            });
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
+            await deleteJob(job);
+        }, LONG_TIMEOUT);
+
+        it("should allow users to call submitJobNotifyCommon with correct parameters (using a uss file)", async () => {
+            const job = await SubmitJobs.submitJobNotifyCommon(REAL_SESSION, {
+                jobUSSFile
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
@@ -161,9 +182,27 @@ describe("Submit Jobs - System Tests", () => {
             await deleteJob(job);
         }, LONG_TIMEOUT);
 
+        it("should allow users to call submitUSSJobNotify with correct parameters", async () => {
+            const job = await SubmitJobs.submitUSSJobNotify(REAL_SESSION,
+                jobUSSFile
+            );
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
+            await deleteJob(job);
+        }, LONG_TIMEOUT);
+
         it("should allow users to call submitJob with correct parameters", async () => {
             const job = await SubmitJobs.submitJob(REAL_SESSION,
                 jobDataSet
+            );
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
+            await deleteJob(job);
+        });
+
+        it("should allow users to call submitUSSJob with correct parameters", async () => {
+            const job = await SubmitJobs.submitUSSJob(REAL_SESSION,
+                jobUSSFile
             );
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
@@ -293,6 +332,20 @@ describe("Submit Jobs - System Tests", () => {
             expect(err.message).toContain(badDataSet);
         });
 
+        it("should surface an error from z/OSMF when calling submitJobCommon with a non existent uss file", async () => {
+            let err: Error | ImperativeError;
+            try {
+                await SubmitJobs.submitJobCommon(REAL_SESSION, {
+                    jobUSSFile: badUSSFile
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain(badUSSFile);
+        });
+
         it("should surface an error from z/OSMF when calling submitJobNotifyCommon with a non existent data set", async () => {
             let err: Error | ImperativeError;
             try {
@@ -305,6 +358,20 @@ describe("Submit Jobs - System Tests", () => {
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain(badDataSet);
+        }, LONG_TIMEOUT);
+
+        it("should surface an error from z/OSMF when calling submitJobNotifyCommon with a non existent uss file", async () => {
+            let err: Error | ImperativeError;
+            try {
+                await SubmitJobs.submitJobNotifyCommon(REAL_SESSION, {
+                    jobUSSFile: badUSSFile
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain(badUSSFile);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJclNotify with invalid JCL", async () => {
@@ -338,6 +405,20 @@ describe("Submit Jobs - System Tests", () => {
             expect(err.message).toContain(badDataSet);
         }, LONG_TIMEOUT);
 
+        it("should surface an error from z/OSMF when calling submitUSSJobNotify with a non existent uss file", async () => {
+            let err: Error | ImperativeError;
+            try {
+                await SubmitJobs.submitUSSJobNotify(REAL_SESSION,
+                    badUSSFile
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain(badUSSFile);
+        }, LONG_TIMEOUT);
+
         it("should surface an error from z/OSMF when calling submitJob with a non existent data set", async () => {
             let err: Error | ImperativeError;
             try {
@@ -350,6 +431,20 @@ describe("Submit Jobs - System Tests", () => {
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain(badDataSet);
+        });
+
+        it("should surface an error from z/OSMF when calling submitUSSJob with a non existent USS file", async () => {
+            let err: Error | ImperativeError;
+            try {
+                await SubmitJobs.submitUSSJob(REAL_SESSION,
+                    badUSSFile
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain(badUSSFile);
         });
 
         it("should throw an error if the JCL string is null", async () => {
