@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Added the `zowe zos-jobs view all-spool-content` command to view all spool content given a job id. [#946](https://github.com/zowe/zowe-cli/issues/946)
 - Enhancement: Added the `zowe jobs submit uss-file` command to submit a job from a USS file. [#1286](https://github.com/zowe/zowe-cli/issues/1286)
 - Enhancement: Added the `zowe files view data-set` and `zowe files view uss-file` commands to view a dataset or USS file. [#1283](https://github.com/zowe/zowe-cli/issues/1283)
 - Enhancement: Added the `zowe jobs delete old-jobs` command to delete (purge) jobs in OUTPUT status. [#1285](https://github.com/zowe/zowe-cli/issues/1285)

@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { AllSpoolContentDefinition } from "./all-spool-content/AllSpoolContent.definition";
 import { JobStatusByJobidDefinition } from "./job-status-by-jobid/JobStatusByJobid.definition";
 import { SpoolFileByIdDefinition } from "./spool-file-by-id/SpoolFileById.definition";
 
@@ -20,6 +21,7 @@ export const ViewDefinition: ICommandDefinition = {
     summary: "View details of a z/OS job",
     description: "View details of z/OS jobs on spool/JES queues.",
     children: [
+        AllSpoolContentDefinition,
         JobStatusByJobidDefinition,
         SpoolFileByIdDefinition
     ]
