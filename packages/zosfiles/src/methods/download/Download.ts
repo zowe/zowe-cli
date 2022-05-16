@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -25,6 +25,9 @@ import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { Utilities } from "../utilities";
+import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
+
+type IZosmfListResponseWithStatus = IZosmfListResponse & { status?: string };
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
@@ -276,6 +279,197 @@ export class Download {
     }
 
     /**
+     * Download data sets that match a DSLEVEL pattern to local files
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {string}           patterns     - contains the data set(s) pattern
+     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} data set name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     *
+     * @example
+     * ```typescript
+     *
+     * // Download all "PS" and "PO" datasets that match the pattern "USER.**.DATASET" to "user/data/set/pds/"
+     * await Download.dataSetsMatchingPatterns(session, "USER.DATA.SET.PDS");
+     *
+     * // Download all "PS" and "PO" datasets that match the pattern "USER.**.DATASET" to "./path/to/dir/"
+     * await Download.dataSetsMatchingPatterns(session, "USER.**.PDS", {directory: "./path/to/dir/"});
+     * ```
+     *
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.izua700/IZUHPINFO_API_GetReadDataSet.htm
+     */
+    public static async dataSetsMatchingPattern(session: AbstractSession, patterns: string[],
+        options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+        // Pattern is required to be non-empty
+        ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
+        patterns = patterns.filter(Boolean);
+        ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
+
+        // Arrays of all downloaded or skipped data set objects
+        const arrayOfArchivedDs: IZosmfListResponseWithStatus[] = [];
+        const arrayOfSkippedDs: IZosmfListResponseWithStatus[] = [];
+        const arrayOfExcludedDs: IZosmfListResponseWithStatus[] = [];
+        const arrayOfEmptyPOdataSets: IZosmfListResponseWithStatus[] = [];
+        let arrayOfDatasets: IZosmfListResponseWithStatus[] = [];
+
+        const width = 40;
+
+        try {
+            // Get names of all data sets
+            for (const pattern of patterns) {
+                const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
+                arrayOfDatasets.push(...listOfDataSets.apiResponse.items);
+            }
+
+            // Check if data sets matching pattern found
+            if (arrayOfDatasets.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
+                    apiResponse: []
+                };
+            }
+
+            // Exclude archived data sets
+            for (const dataSetObj of arrayOfDatasets) {
+                if (dataSetObj.dsorg == null) {
+                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Archived data set or alias - type ${dataSetObj.vol}.`, width);
+                    arrayOfArchivedDs.push(dataSetObj);
+                }
+            }
+
+            arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => dataSetObj.dsorg != null);
+
+            // Check if non-archived data sets matching pattern remain
+            if (arrayOfDatasets.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.allDataSetsArchived.message,
+                    apiResponse: []
+                };
+            }
+
+            // Exclude data sets matching exclude pattern
+            if (options.excludePatterns != null) {
+                const arrExcl: string[] = [];
+                for (const pattern of options.excludePatterns) {
+                    const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
+                    listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
+                        arrExcl.push(dataSetObj.dsname);
+                        arrayOfExcludedDs.push(dataSetObj);
+                    });
+                }
+
+                arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrExcl.indexOf(dataSetObj.dsname) === -1);
+            }
+
+            for (const dataSetObj of arrayOfExcludedDs) {
+                dataSetObj.status = TextUtils.wordWrap(`Skipped: Data set matches one or more patterns provided in` +
+                    ` --exclude-patterns option`, width);
+            }
+
+            // Check if exclude pattern has left any data sets in the list
+            if (arrayOfDatasets.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.noDataSetsInList.message,
+                    apiResponse: []
+                };
+            }
+
+            // Download data sets
+            const arrEmptyPO: string[] = [];
+            const arrSkipped: string[] = [];
+            const tempExtension = options.extension;
+            for (const dataSetObj of arrayOfDatasets) {
+                const llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length).toLowerCase();
+                if (options.extensionMap != null) {
+                    if (options.extensionMap[llq] != null) {
+                        options.extension = options.extensionMap[llq];
+                    } else {
+                        options.extension = tempExtension;
+                    }
+                }
+                const directoryOption = options.directory;
+                if (options.directory == null) {
+                    if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                        options.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                    } else {
+                        options.file = `${dataSetObj.dsname}.${options.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`.toLowerCase();
+                        options.directory = undefined;
+                        options.extension = undefined;
+                    }
+                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    options.directory = `${options.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
+                } else {
+                    options.file = `${options.directory}/${dataSetObj.dsname}.${options.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`
+                        .toLowerCase();
+                    options.directory = undefined;
+                    options.extension = undefined;
+                }
+
+                if (dataSetObj.dsorg === "PS") {
+                    const downloadPartitioned = await Download.dataSet(session, dataSetObj.dsname, options);
+                    dataSetObj.status = TextUtils.wordWrap(`${downloadPartitioned.commandResponse}`, width);
+                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    const downloadAllMembers = await Download.allMembers(session, dataSetObj.dsname, options);
+                    const listMembers: any = [];
+                    downloadAllMembers.apiResponse.items.forEach((items: any) => {
+                        listMembers.push(` ${items.member}`);
+                    });
+                    dataSetObj.status = TextUtils.wordWrap(`${downloadAllMembers.commandResponse}\nMembers: ${listMembers};`, width);
+                    if (downloadAllMembers.apiResponse.returnedRows === 0) {
+                        arrEmptyPO.push(dataSetObj.dsname);
+                        dataSetObj.status = TextUtils.wordWrap(`Skipped: Partitioned data set with zero members.`, width);
+                        arrayOfEmptyPOdataSets.push(dataSetObj);
+                    }
+                } else {
+                    arrSkipped.push(dataSetObj.dsname);
+                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
+                    arrayOfSkippedDs.push(dataSetObj);
+                }
+                options.directory = directoryOption;
+            }
+
+            arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrEmptyPO.indexOf(dataSetObj.dsname) === -1);
+            if (arrayOfDatasets.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.onlyEmptyPartitionedDataSets.message,
+                    apiResponse: []
+                };
+            }
+
+            arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrSkipped.indexOf(dataSetObj.dsname) === -1);
+            if (arrayOfDatasets.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.noDataSetsMatchingPatternRemain.message,
+                    apiResponse: []
+                };
+            }
+
+            // All processed data sets, downloaded successfully or skipped
+            const arrayOfEveryDS: IZosmfListResponse[] = [...arrayOfArchivedDs, ...arrayOfSkippedDs,
+                ...arrayOfExcludedDs, ...arrayOfEmptyPOdataSets, ...arrayOfDatasets];
+            const destination = options.directory ?? "./";
+
+            return {
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, destination),
+                apiResponse: arrayOfEveryDS
+            };
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieve USS file content and save it in your local workspace.
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
@@ -350,6 +544,4 @@ export class Download {
             throw error;
         }
     }
-
 }
-
