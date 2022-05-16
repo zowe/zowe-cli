@@ -25,7 +25,7 @@ export const USSFileDefinition: ICommandDefinition = {
     handler: __dirname + "/../Submit.shared.handler",
     positionals: [
         {
-            name: "ussFile",
+            name: "file",
             description: strings.USS_FILE.POSITIONALS.USSFILE,
             type: "string",
             required: true

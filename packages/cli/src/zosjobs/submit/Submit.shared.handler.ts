@@ -56,7 +56,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         let sourceType: string;
         if (this.mArguments.dataset) {
             sourceType = "dataset";
-        } else if (this.mArguments.ussFile) {
+        } else if (this.mArguments.file) {
             sourceType = "uss-file";
         } else if (this.mArguments.localFile) {
             sourceType = "local-file";
@@ -103,7 +103,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                 break;
             // Submit JCL from a USS file
             case "uss-file":
-                response = await SubmitJobs.submitJobCommon(this.mSession, {jobUSSFile: this.mArguments.ussFile,
+                response = await SubmitJobs.submitJobCommon(this.mSession, {jobUSSFile: this.mArguments.file,
                     jclSymbols: this.mArguments.jclSymbols});
                 apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
                 source = this.mArguments.ussfile;
