@@ -18,17 +18,6 @@ Array [
     "name": "encoding",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
-      "r",
-    ],
-    "conflictsWith": Array [
-      "binary",
-    ],
-    "description": "Transfer the file content in record mode, which means that no data conversion is performed and the record length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records. Conflicts with binary.",
-    "name": "record",
-    "type": "boolean",
-  },
 ]
 `;
 

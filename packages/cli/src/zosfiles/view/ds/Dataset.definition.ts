@@ -23,8 +23,8 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).VI
 export const DatasetDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
-    summary: strings.SUMMARY,
-    description: strings.DESCRIPTION,
+    summary: strings.ACTIONS.DATA_SET.SUMMARY,
+    description: strings.ACTIONS.DATA_SET.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Dataset.handler",
     profile: {
