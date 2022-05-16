@@ -23,8 +23,8 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).VI
 export const USSFileDefinition: ICommandDefinition = {
     name: "uss-file",
     aliases: ["uf"],
-    summary: strings.SUMMARY,
-    description: strings.DESCRIPTION,
+    summary: strings.ACTIONS.USS_FILE.SUMMARY,
+    description: strings.ACTIONS.USS_FILE.DESCRIPTION,
     type: "command",
     handler: __dirname + "/USSFile.handler",
     profile: {
@@ -40,8 +40,7 @@ export const USSFileDefinition: ICommandDefinition = {
     ],
     options: [
         ViewOptions.binary,
-        ViewOptions.encoding,
-        ViewOptions.record
+        ViewOptions.encoding
     ],
     examples: [
         {
