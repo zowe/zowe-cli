@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { DeleteJobs, GetJobs, IJob, JobsConstants, JOB_STATUS } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
@@ -59,7 +59,16 @@ export default class OldJobsHandler extends ZosmfBaseHandler {
                 deletedJobs.push(job);
             }
         }
-        const deleteJobPromise = (job: IJob) => DeleteJobs.deleteJobForJob(this.mSession, job);
+        const deleteJobPromise = async (job: IJob) => {
+            const response = await DeleteJobs.deleteJobForJob(this.mSession, job, this.arguments.modifyVersion);
+            if (response != null && response.status !== "0") {
+                throw new ImperativeError({
+                    msg: `Failed to delete job ${job.jobname} (${job.jobid})`,
+                    additionalDetails: response?.message,
+                    errorCode: response?.["internal-code"]
+                });
+            }
+        };
         if (this.arguments.maxConcurrentRequests === 0) {
             await Promise.all(deletedJobs.map(deleteJobPromise));
         } else {
