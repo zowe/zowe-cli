@@ -1000,13 +1000,13 @@ describe("z/OS Files - Download", () => {
 
         beforeEach(() => {
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockImplementation(() => null);
+            downloadDatasetSpy.mockResolvedValue(undefined);
 
             downloadAllMembersSpy.mockClear();
-            downloadAllMembersSpy.mockImplementation(() => null);
+            downloadAllMembersSpy.mockResolvedValue(undefined);
 
             listDataSetSpy.mockClear();
-            listDataSetSpy.mockImplementation(() => null);
+            listDataSetSpy.mockResolvedValue(undefined);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -1054,7 +1054,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             let dummyError = new Error("test2");
-            listDataSetSpy.mockImplementation(() => {
+            listDataSetSpy.mockImplementation(async () => {
                 throw dummyError;
             });
 
@@ -1081,11 +1081,11 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const dummyError = new Error("test");
-            downloadDatasetSpy.mockImplementation(() => {
+            downloadDatasetSpy.mockImplementation(async () => {
                 throw dummyError;
             });
 
-            List.dataSet = jest.fn(() => {
+            List.dataSet = jest.fn(async () => {
                 return {
                     apiResponse: {
                         items: [
@@ -1108,7 +1108,6 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toEqual(dummyError);
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
-            // tslint:disable-next-line:max-line-length
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
                 directory: undefined,
                 extension: undefined,
@@ -1121,11 +1120,11 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const dummyError = new Error("test");
-            downloadAllMembersSpy.mockImplementation(() => {
+            downloadAllMembersSpy.mockImplementation(async () => {
                 throw dummyError;
             });
 
-            List.dataSet = jest.fn(() => {
+            List.dataSet = jest.fn(async () => {
                 return {
                     apiResponse: {
                         items: [
@@ -1159,7 +1158,7 @@ describe("z/OS Files - Download", () => {
             const extension = "xyz";
             const binary = true;
 
-            List.dataSet = jest.fn(() => {
+            List.dataSet = jest.fn(async () => {
                 return {
                     commandResponse: "List of data sets",
                     apiResponse: {
@@ -1173,7 +1172,7 @@ describe("z/OS Files - Download", () => {
                 };
             });
 
-            Download.dataSet = jest.fn(() => {
+            Download.dataSet = jest.fn(async () => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1186,7 +1185,6 @@ describe("z/OS Files - Download", () => {
                     },
                 };
             });
-
 
             try {
                 response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], {directory, extension, binary});
@@ -1212,7 +1210,7 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const binary = true;
 
-            List.dataSet = jest.fn(() => {
+            List.dataSet = jest.fn(async () => {
                 return {
                     apiResponse: {
                         items: [
@@ -1247,7 +1245,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            List.dataSet = jest.fn(() => {
+            List.dataSet = jest.fn(async () => {
                 return {
                     apiResponse: {
                         items: [
@@ -1272,7 +1270,134 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
+        });
 
+        it("should not download datasets when pattern does not match any", async () => {
+            let response;
+            let caughtError;
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: []
+                    }
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
+                apiResponse: []
+            });
+        });
+
+        it("should not download datasets when pattern matches only archived datasets", async () => {
+            let response;
+            let caughtError;
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: null
+                            }
+                        ]
+                    }
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: ZosFilesMessages.allDataSetsArchived.message,
+                apiResponse: []
+            });
+        });
+
+        it("should not download datasets when pattern matches only empty partitioned datasets", async () => {
+            let response;
+            let caughtError;
+
+            downloadAllMembersSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: [],
+                        returnedRows: 0
+                    }
+                };
+            });
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PO.DATA.SET",
+                                dsorg: "PO"
+                            }
+                        ]
+                    }
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: ZosFilesMessages.onlyEmptyPartitionedDataSets.message,
+                apiResponse: []
+            });
+        });
+
+        it("should not download datasets when pattern matches only unsupported datasets", async () => {
+            let response;
+            let caughtError;
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.DATA.SET",
+                                dsorg: "unknown"
+                            }
+                        ]
+                    }
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: ZosFilesMessages.noDataSetsMatchingPatternRemain.message,
+                apiResponse: []
+            });
         });
     });
 

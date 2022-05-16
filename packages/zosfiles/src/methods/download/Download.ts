@@ -384,15 +384,12 @@ export class Download {
             // Download data sets
             const arrEmptyPO: string[] = [];
             const arrSkipped: string[] = [];
+            const downloadPromises: Promise<IZosFilesResponse>[] = [];
             const tempExtension = options.extension;
             for (const dataSetObj of arrayOfDatasets) {
                 const llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length).toLowerCase();
                 if (options.extensionMap != null) {
-                    if (options.extensionMap[llq] != null) {
-                        options.extension = options.extensionMap[llq];
-                    } else {
-                        options.extension = tempExtension;
-                    }
+                    options.extension = options.extensionMap[llq] ?? tempExtension;
                 }
                 const directoryOption = options.directory;
                 if (options.directory == null) {
@@ -413,26 +410,34 @@ export class Download {
                 }
 
                 if (dataSetObj.dsorg === "PS") {
-                    const downloadPartitioned = await Download.dataSet(session, dataSetObj.dsname, options);
-                    dataSetObj.status = TextUtils.wordWrap(`${downloadPartitioned.commandResponse}`, width);
+                    downloadPromises.push(Download.dataSet(session, dataSetObj.dsname, { ...options }).then((downloadResponse) => {
+                        dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}`, width);
+                        return downloadResponse;
+                    }));
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                    const downloadAllMembers = await Download.allMembers(session, dataSetObj.dsname, options);
-                    const listMembers: any = [];
-                    downloadAllMembers.apiResponse.items.forEach((items: any) => {
-                        listMembers.push(` ${items.member}`);
-                    });
-                    dataSetObj.status = TextUtils.wordWrap(`${downloadAllMembers.commandResponse}\nMembers: ${listMembers};`, width);
-                    if (downloadAllMembers.apiResponse.returnedRows === 0) {
-                        arrEmptyPO.push(dataSetObj.dsname);
-                        dataSetObj.status = TextUtils.wordWrap(`Skipped: Partitioned data set with zero members.`, width);
-                        arrayOfEmptyPOdataSets.push(dataSetObj);
-                    }
+                    downloadPromises.push(Download.allMembers(session, dataSetObj.dsname, { ...options }).then((downloadResponse) => {
+                        const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
+                        dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
+                        if (downloadResponse.apiResponse.returnedRows === 0) {
+                            arrEmptyPO.push(dataSetObj.dsname);
+                            dataSetObj.status = TextUtils.wordWrap(`Skipped: Partitioned data set with zero members.`, width);
+                            arrayOfEmptyPOdataSets.push(dataSetObj);
+                        }
+                        return downloadResponse;
+                    }));
                 } else {
                     arrSkipped.push(dataSetObj.dsname);
                     dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
                     arrayOfSkippedDs.push(dataSetObj);
                 }
                 options.directory = directoryOption;
+            }
+
+            const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+            if (maxConcurrentRequests === 0) {
+                await Promise.all(downloadPromises);
+            } else {
+                await asyncPool(maxConcurrentRequests, downloadPromises, (p: Promise<IZosFilesResponse>) => p);
             }
 
             arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrEmptyPO.indexOf(dataSetObj.dsname) === -1);
