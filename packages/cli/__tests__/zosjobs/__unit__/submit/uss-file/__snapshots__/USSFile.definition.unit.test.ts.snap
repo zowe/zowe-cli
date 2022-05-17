@@ -80,7 +80,7 @@ Object {
   "positionals": Array [
     Object {
       "description": "Path to the USS file that contains the JCL to submit.",
-      "name": "ussFile",
+      "name": "file",
       "required": true,
       "type": "string",
     },
