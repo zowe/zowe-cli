@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.2.1`
 
 - BugFix: Fixed name of the positional in `zowe zos-jobs submit uss-file` command.
 - BugFix: Updated the description of the `zowe zos-jobs view all-spool-content` command.
