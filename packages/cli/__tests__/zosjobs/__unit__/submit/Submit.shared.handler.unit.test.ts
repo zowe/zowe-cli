@@ -325,7 +325,7 @@ describe("submit shared handler", () => {
             // The handler should fail
             const theFile = "/a/the/file.txt";
             const copy = Object.assign({}, USSFILE_PARAMETERS);
-            copy.arguments.ussFile = theFile;
+            copy.arguments.file = theFile;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(copy);
@@ -376,7 +376,7 @@ describe("submit shared handler", () => {
             // The handler should fail
             const theFile = "/a/the/file.txt";
             const copy = Object.assign({}, USSFILE_PARAMETERS);
-            copy.arguments.ussFile = theFile;
+            copy.arguments.file = theFile;
             copy.arguments.waitForOutput = true;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -430,7 +430,7 @@ describe("submit shared handler", () => {
             // The handler should fail
             const theFile = "/a/the/file.txt";
             const copy = Object.assign({}, USSFILE_PARAMETERS);
-            copy.arguments.ussFile = theFile;
+            copy.arguments.file = theFile;
             copy.arguments.waitForActive = true;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -482,7 +482,7 @@ describe("submit shared handler", () => {
             // The handler should fail
             const theFile = "/a/the/file.txt";
             const copy = Object.assign({}, USSFILE_PARAMETERS);
-            copy.arguments.ussFile = theFile;
+            copy.arguments.file = theFile;
             copy.arguments.viewAllSpoolContent = true;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
