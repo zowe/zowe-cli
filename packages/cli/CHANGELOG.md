@@ -8,6 +8,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Updated the description of the `zowe zos-jobs view all-spool-content` command.
 - BugFix: Updated the descriptions of the `zowe zos-files view uss-file` and  `zowe zos-files view data-set` commands.
 - BugFix: Removed the `zowe zos-files view uss-file <file> --record` option.
+- BugFix: Fixed description of the `zowe zos-jobs delete` command group.
+- BugFix: Added `--modify-version` option to `zowe zos-jobs delete old-jobs` command for feature parity with `zowe zos-jobs delete job`.
 
 ## `7.2.0`
 
