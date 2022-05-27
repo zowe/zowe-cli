@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Alter the `zowe daemon disable` command to only kill the daemon running for the current user.
+
 ## `7.2.1`
 
 - BugFix: Fixed name of the positional in `zowe zos-jobs submit uss-file` command.
