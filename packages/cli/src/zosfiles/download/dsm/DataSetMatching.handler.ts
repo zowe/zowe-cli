@@ -33,6 +33,7 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             directory: commandParameters.arguments.directory,
             extension: commandParameters.arguments.extension,
             excludePatterns: commandParameters.arguments.excludePatterns?.split(","),
+            extensionMap: commandParameters.arguments.extensionMap?.split(","),
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
             failFast: commandParameters.arguments.failFast,

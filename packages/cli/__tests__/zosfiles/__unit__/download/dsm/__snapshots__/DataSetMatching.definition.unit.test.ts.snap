@@ -44,6 +44,20 @@ Array [
   },
   Object {
     "aliases": Array [
+      "em",
+    ],
+    "conflictsWith": Array [
+      "extension",
+    ],
+    "description": "Use this option to map data set names that match your pattern to the desired
+            extension. A comma delimited key value pairing (e.g. \\"cntl=.jcl,cpgm=.c\\" to map
+            the last segment of each data set (also known as the \\"low level qualifier\\" to
+            the desired local file extension).",
+    "name": "extension-map",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "ff",
     ],
     "defaultValue": true,
@@ -100,11 +114,11 @@ exports[`zos-files download dsm command definition should not have changed 2`] =
 Array [
   Object {
     "description": "Download all data sets beginning with \\"ibmuser\\" and ending with \\".cntl\\" or \\".jcl\\" to the local directory \\"jcl\\" to files with the extension \\".jcl\\"",
-    "options": "\\"ibmuser.*.cntl, ibmuser.*.jcl\\" -d jcl -e .jcl",
+    "options": "\\"ibmuser.**.cntl, ibmuser.**.jcl\\" --directory jcl --extension .jcl",
   },
   Object {
     "description": "Download all data sets that begin with \\"ibmuser.public.project\\" or \\"ibmuser.project.private\\", excluding those that end in \\"lib\\" to the local directory \\"project\\", providing a custom mapping of data set low level qualifier to local file extension",
-    "options": "\\"ibmuser.public.project*, ibmuser.project.private*\\" --ep \\"ibmuser.*.lib\\" -d project",
+    "options": "\\"ibmuser.public.project.*, ibmuser.project.private.*\\" --exclude-patterns \\"ibmuser.public.**.*lib\\" --directory project --extension-map cpgm=c,asmpgm=asm,java=java,chdr=c,jcl=jcl,cntl=jcl",
   },
 ]
 `;

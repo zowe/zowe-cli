@@ -46,6 +46,7 @@ export const DataSetMatchingDefinition: ICommandDefinition = {
         DownloadOptions.encoding,
         DownloadOptions.extension,
         DownloadOptions.excludePattern,
+        DownloadOptions.extensionMap,
         DownloadOptions.maxConcurrentRequests,
         DownloadOptions.preserveOriginalLetterCase,
         DownloadOptions.failFast
@@ -53,11 +54,11 @@ export const DataSetMatchingDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.*.cntl, ibmuser.*.jcl" -d jcl -e .jcl`
+            options: `"ibmuser.**.cntl, ibmuser.**.jcl" --directory jcl --extension .jcl`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.public.project*, ibmuser.project.private*" --ep "ibmuser.*.lib" -d project`
+            options: `"ibmuser.public.project.*, ibmuser.project.private.*" --exclude-patterns "ibmuser.public.**.*lib" --directory project --extension-map cpgm=c,asmpgm=asm,java=java,chdr=c,jcl=jcl,cntl=jcl`
         }
     ]
 };
