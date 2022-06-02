@@ -75,7 +75,7 @@ describe("Download Dataset Matching", () => {
             }
         });
 
-        fit("should download matching datasets", () => {
+        it("should download matching datasets", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm_fully_qualified.sh");
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -114,91 +114,81 @@ describe("Download Dataset Matching", () => {
             }
         });
 
-        it("should download all data set member of pds", () => {
+        it("should download data sets matching a given pattern", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
         });
 
-        it("should download all data set member of pds in binary format", () => {
+        it("should download data sets matching a given pattern in binary format", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--binary"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
         });
 
-        it("should download all data set member of pds in record format", () => {
+        it("should download data sets matching a given pattern in record format", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--record"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
         });
 
-        it("should download all data set member of pds with response timeout", () => {
+        it("should download data sets matching a given pattern with response timeout", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
         });
 
-        it("should download all data set members with --max-concurrent-requests 2", () => {
+        it("should download data sets matching a given pattern with --max-concurrent-requests 2", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, 2]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--max-concurrent-requests", 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
         });
 
-        it("should download all data set members of a large data set with --max-concurrent-requests 2", async () => {
-            const bigDsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, bigDsname);
-            const members = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13"];
-            const memberContent = Buffer.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ");
-            for (const member of members) {
-                await Upload.bufferToDataSet(REAL_SESSION, memberContent, `${bigDsname}(${member})`);
-            }
-            const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [bigDsname, 2]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
-            await Delete.dataSet(REAL_SESSION, bigDsname);
-        });
-
-        it("should download all data set member with response-format-json flag", () => {
+        it("should download data sets matching a given pattern with response-format-json flag", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
         });
 
-        it("should download all data set member to specified directory", () => {
+        it("should download data sets matching a given pattern to specified directory", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const testDir = "test/folder";
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, `-d ${testDir}`, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
             expect(response.stdout.toString()).toContain(testDir);
         });
 
-        it("should download all data set member with extension = \"\"", () => {
+        it("should download data sets matching a given pattern with extension = \".jcl\"", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, `-d ${testDir} --rfj`]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "-d", testDir, "--rfj", "-e", ".jcl"]);
+
             const result = JSON.parse(response.stdout.toString());
-            const expectedResult = {member: "TEST"};
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(result.stdout).toContain("Data set downloaded successfully.");
+            expect(result.stdout).toContain("Data sets matching pattern downloaded successfully.");
             expect(result.stdout).toContain(testDir);
-            expect(result.data.apiResponse.items[0]).toEqual(expectedResult);
+
+            for (const apiResp of result.data.apiResponse) {
+                expect(apiResp.status).toContain("Data set downloaded successfully.");
+                expect(apiResp.status).toContain("Destination:");
+                expect(apiResp.status).toContain(testDir);
+                expect(apiResp.status).toContain("Members:  TEST;");
+            }
         });
     });
 });
