@@ -1250,11 +1250,11 @@ describe("z/OS Files - Download", () => {
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz"});
         });
 
-        it("should download all datasets with maxConcurrentRequests set", async () => {
+        it("should download all datasets with maxConcurrentRequests set to zero", async () => {
             let response;
             let caughtError;
     
-            const maxConcurrentRequests = 3;
+            const maxConcurrentRequests = 0;
 
             List.dataSet = jest.fn(async () => {
                 return {
@@ -1296,7 +1296,7 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 3});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 0});
         });
 
         it("should download all datasets while specifying an extension with a leading dot", async () => {

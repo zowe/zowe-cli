@@ -20,6 +20,20 @@ exports[`Download DataSetMatching handler process method should gracefully handl
 
 exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 3`] = `""`;
 
+exports[`Download DataSetMatching handler process method should handle generation of an exclusion list 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download DataSetMatching handler process method should handle generation of an exclusion list 2`] = `""`;
+
+exports[`Download DataSetMatching handler process method should handle generation of an exclusion list 3`] = `
+"
+downloaded"
+`;
+
 exports[`Download DataSetMatching handler process method should handle generation of an extension map 1`] = `
 Object {
   "commandResponse": "downloaded",
