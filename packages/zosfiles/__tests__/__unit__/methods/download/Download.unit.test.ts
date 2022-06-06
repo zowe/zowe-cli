@@ -1201,6 +1201,104 @@ describe("z/OS Files - Download", () => {
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {binary, file: "my/test/path/test.ps.data.set.xyz"});
         });
 
+        it("should download all datasets specifying the extension", async () => {
+            let response;
+            let caughtError;
+
+            const extension = "xyz";
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "List of data sets",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], {extension});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
+                apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz"});
+        });
+
+        it("should download all datasets with maxConcurrentRequests set", async () => {
+            let response;
+            let caughtError;
+    
+            const maxConcurrentRequests = 3;
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "List of data sets",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], {maxConcurrentRequests});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
+                apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 3});
+        });
+
         it("should download all datasets while specifying an extension with a leading dot", async () => {
             let response;
             let caughtError;
@@ -1251,7 +1349,7 @@ describe("z/OS Files - Download", () => {
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz"});
         });
 
-        it("should download all datasets specifying the directory and extension map", async () => {
+        it("should download all datasets specifying the directory and extension map 1", async () => {
             let response;
             let caughtError;
 
@@ -1299,6 +1397,56 @@ describe("z/OS Files - Download", () => {
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.file"});
+        });
+
+        it("should download all datasets specifying the directory and extension map 2", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path";
+            const extensionMap = {fake: "file"};
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "List of data sets",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], {directory, extensionMap});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "my/test/path"),
+                apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.txt"});
         });
 
         it("should handle an error when the exclude pattern is specified", async () => {
@@ -1521,6 +1669,63 @@ describe("z/OS Files - Download", () => {
                     dsname: "TEST.PO.DATA.SET",
                     dsorg: "PO",
                     status: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, "./") + "\nMembers:  TESTDS;"
+                }]
+            });
+        });
+
+        it("should download datasets when pattern matches a partitioned dataset and directory is supplied", async () => {
+            let response;
+            let caughtError;
+            const directory = "my/test/path/";
+
+            downloadAllMembersSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: [{member: "TESTDS"}],
+                        returnedRows: 1
+                    },
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory)
+                };
+            });
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PO.DATA.SET",
+                                dsorg: "PO"
+                            }
+                        ]
+                    }
+                };
+            });
+            List.allMembers = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            {
+                                member: "TESTDS"
+                            }
+                        ]
+                    }
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], {directory});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, directory),
+                apiResponse: [{
+                    dsname: "TEST.PO.DATA.SET",
+                    dsorg: "PO",
+                    status: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory) + "\nMembers:  TESTDS;"
                 }]
             });
         });
