@@ -323,10 +323,13 @@ export default {
                     PATTERN: `The pattern or patterns to match data sets against. Also known as 'DSLEVEL'. The following special sequences can be ` +
                     `used in the pattern:
                     ${TextUtils.chalk.yellow("%")}: matches any single character
-                    ${TextUtils.chalk.yellow("*")}: matches any number of characters within a data set name qualifier (e.g. "ibmuser.j*.old" matches "ibmuser.jcl.old" but not "ibmuser.jcl.very.old")
-                    ${TextUtils.chalk.yellow("**")}: matches any number of characters within any number of data set name qualifiers (e.g. "ibmuser.**.old" matches both "ibmuser.jcl.old" and "ibmuser.jcl.very.old")
+                    ${TextUtils.chalk.yellow("*")}: matches any number of characters within a data set name qualifier ` +
+                    `(e.g. "ibmuser.j*.old" matches "ibmuser.jcl.old" but not "ibmuser.jcl.very.old")
+                    ${TextUtils.chalk.yellow("**")}: matches any number of characters within any number of data set name qualifiers ` +
+                    `(e.g. "ibmuser.**.old" matches both "ibmuser.jcl.old" and "ibmuser.jcl.very.old")
 
-                    However, the pattern cannot begin with any of these sequences.You can specify multiple patterns separated by commas, for example "ibmuser.**.cntl,ibmuser.**.jcl"`
+                    However, the pattern cannot begin with any of these sequences.You can specify multiple patterns separated by commas, ` +
+                    `for example "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },
                 EXAMPLES: {
                     EX1: `Download all data sets beginning with "ibmuser" and ending with ".cntl" or ".jcl" to the local directory "jcl" to ` +

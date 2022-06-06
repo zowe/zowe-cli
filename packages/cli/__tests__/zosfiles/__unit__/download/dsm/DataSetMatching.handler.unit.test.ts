@@ -115,7 +115,7 @@ describe("Download DataSetMatching handler", () => {
             let jsonObj;
             let logMessage = "";
             let fakeSession = null;
-            let extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
+            const extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
 
             // Mock the submit JCL function
             Download.dataSetsMatchingPattern = jest.fn((session) => {
@@ -192,7 +192,7 @@ describe("Download DataSetMatching handler", () => {
             let jsonObj;
             let logMessage = "";
             let fakeSession = null;
-            let extensionMap = "CNTL=JCL,PARMLIB-JCL,LOADLIB=JCL";
+            const extensionMap = "CNTL=JCL,PARMLIB-JCL,LOADLIB=JCL";
 
             // Mock the submit JCL function
             Download.dataSetsMatchingPattern = jest.fn((session) => {
