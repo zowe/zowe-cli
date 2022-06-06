@@ -393,21 +393,24 @@ export class Download {
                 }
 
                 // Normalize the extension, remove leading periods
-                if (mutableOptions.extension && mutableOptions.extension.startsWith(".")) { mutableOptions.extension = mutableOptions.extension.replace(/^\.+/g, ""); }
-                
+                if (mutableOptions.extension && mutableOptions.extension.startsWith(".")) {
+                    mutableOptions.extension = mutableOptions.extension.replace(/^\.+/g, "");
+                }
+
                 if (options.directory == null) {
                     if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
                         mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
                     } else {
-                        mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`.toLowerCase();
+                        mutableOptions.file = (`${dataSetObj.dsname}.` + 
+                            `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`).toLowerCase();
                         mutableOptions.directory = undefined;
                         mutableOptions.extension = undefined;
                     }
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
                     mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
-                    mutableOptions.file = `${mutableOptions.directory}/${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`
-                        .toLowerCase();
+                    mutableOptions.file = (`${mutableOptions.directory}/${dataSetObj.dsname}.` + 
+                        `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`).toLowerCase();
                     mutableOptions.directory = undefined;
                     mutableOptions.extension = undefined;
                 }

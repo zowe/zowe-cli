@@ -58,7 +58,8 @@ export const DataSetMatchingDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.public.project.*, ibmuser.project.private.*" --exclude-patterns "ibmuser.public.**.*lib" --directory project --extension-map cpgm=c,asmpgm=asm,java=java,chdr=c,jcl=jcl,cntl=jcl`
+            options: `"ibmuser.public.project.*, ibmuser.project.private.*" --exclude-patterns "ibmuser.public.**.*lib" ` +
+            `--directory project --extension-map cpgm=c,asmpgm=asm,java=java,chdr=c,jcl=jcl,cntl=jcl`
         }
     ]
 };

@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files download dsm command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = 
+        const definition: ICommandDefinition =
             require("../../../../../src/zosfiles/download/dsm/DataSetMatching.definition").DataSetMatchingDefinition;
 
         expect(definition).toBeDefined();
