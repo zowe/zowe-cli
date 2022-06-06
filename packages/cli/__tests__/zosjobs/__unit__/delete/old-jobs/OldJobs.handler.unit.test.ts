@@ -49,7 +49,7 @@ describe("delete old-jobs handler tests", () => {
         expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "*");
         expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(GetJobsData.SAMPLE_JOBS.length);
         expect(DeleteJobs.deleteJobForJob).toHaveBeenLastCalledWith(
-            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1]);
+            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1], undefined);
     });
 
     it("should delete all jobs using defaults in parallel", async () => {
@@ -70,7 +70,7 @@ describe("delete old-jobs handler tests", () => {
         expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "*");
         expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(GetJobsData.SAMPLE_JOBS.length);
         expect(DeleteJobs.deleteJobForJob).toHaveBeenLastCalledWith(
-            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1]);
+            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1], undefined);
     });
 
     it("should delete jobs with a specific prefix", async () => {
@@ -91,7 +91,28 @@ describe("delete old-jobs handler tests", () => {
         expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "TESTPRFX");
         expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(GetJobsData.SAMPLE_JOBS.length);
         expect(DeleteJobs.deleteJobForJob).toHaveBeenLastCalledWith(
-            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1]);
+            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1], undefined);
+    });
+
+    it("should delete jobs with modifyVersion 2.0", async () => {
+        let passedSession: Session;
+        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+            passedSession = session;
+            return GetJobsData.SAMPLE_JOBS;
+        });
+        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+            return;
+        });
+        const handler = new OldJobsHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.modifyVersion = "2.0";
+        await handler.process(params);
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledWith(passedSession, "*");
+        expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(GetJobsData.SAMPLE_JOBS.length);
+        expect(DeleteJobs.deleteJobForJob).toHaveBeenLastCalledWith(
+            passedSession, GetJobsData.SAMPLE_JOBS[GetJobsData.SAMPLE_JOBS.length - 1], "2.0");
     });
 
     it("should not delete jobs when none are found", async () => {
@@ -153,5 +174,28 @@ describe("delete old-jobs handler tests", () => {
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
+    });
+
+    it("should throw an error when modifyVersion is 2.0 and response status is non-zero", async () => {
+        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+            return GetJobsData.SAMPLE_JOBS;
+        });
+        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+            return { status: "1" };
+        });
+        const handler = new OldJobsHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        let caughtError;
+        try {
+            await handler.process(params);
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(GetJobs.getJobsByPrefix).toHaveBeenCalledTimes(1);
+        expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledTimes(1);
+        expect(caughtError).toBeDefined();
+        expect(caughtError instanceof ImperativeError).toBe(true);
+        expect(caughtError.message).toMatchSnapshot();
     });
 });

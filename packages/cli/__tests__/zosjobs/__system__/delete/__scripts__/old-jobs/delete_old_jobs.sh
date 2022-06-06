@@ -41,7 +41,7 @@ if [ $ATTEMPTS -eq 0 -a "$STATUS" != "OUTPUT" ]; then
 fi
 
 # Purge the jobs
-zowe jobs delete old-jobs $2
+zowe jobs delete old-jobs $2 $3
 RC=$?
 
 if [ $RC -gt 0 ]

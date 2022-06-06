@@ -5,9 +5,9 @@ Object {
   "aliases": Array [
     "del",
   ],
-  "description": "Delete a single job by job ID in OUTPUT status. This cancels the job if it is running and purges its output from the system.",
+  "description": "Delete a single job by job ID or delete multiple jobs in OUTPUT status.",
   "name": "delete",
-  "summary": "Delete a z/OS job",
+  "summary": "Delete a z/OS job or jobs",
   "type": "group",
 }
 `;

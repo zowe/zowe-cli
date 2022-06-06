@@ -38,6 +38,13 @@ export const OldJobsDefinition: ICommandDefinition = {
             description: strings.ACTIONS.OLD_JOBS.OPTIONS.MAX_CONCURRENT_REQUESTS,
             type: "number",
             defaultValue: 1
+        },
+        {
+            name: "modify-version",
+            description: strings.ACTIONS.JOB.OPTIONS.MODIFY_VERSION,
+            type: "string",
+            required: false,
+            defaultValue: "1.0"
         }
     ],
     examples: [

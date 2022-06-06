@@ -15,7 +15,7 @@ export const AllSpoolContentDefinition: ICommandDefinition = {
     name: "all-spool-content",
     aliases: ["asc"],
     type: "command",
-    summary: "View all spool content for specified job ID",
+    summary: "View all spool content for a specified job ID",
     description: "View the contents of each spool file from a z/OS job on spool/JES queues. " +
     "The command does not pre-validate the JOBID. " +
     "The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
