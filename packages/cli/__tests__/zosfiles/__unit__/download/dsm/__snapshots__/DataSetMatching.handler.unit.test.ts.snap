@@ -13,3 +13,23 @@ exports[`Download DataSetMatching handler process method should download matchin
 "
 downloaded"
 `;
+
+exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 1`] = `undefined`;
+
+exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 2`] = `""`;
+
+exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 3`] = `""`;
+
+exports[`Download DataSetMatching handler process method should handle generation of an extension map 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download DataSetMatching handler process method should handle generation of an extension map 2`] = `""`;
+
+exports[`Download DataSetMatching handler process method should handle generation of an extension map 3`] = `
+"
+downloaded"
+`;

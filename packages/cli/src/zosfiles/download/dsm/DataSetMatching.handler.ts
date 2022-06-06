@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ImperativeExpect, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { IZosFilesResponse, Download, IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
@@ -28,9 +28,11 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
         const extensionMap: {[key: string]: string} = {};
         try {
             if(commandParameters.arguments.extensionMap) {
+                commandParameters.arguments.extensionMap = commandParameters.arguments.extensionMap.toLowerCase();
                 const unoptimizedMap = commandParameters.arguments.extensionMap.split(",");
-                for (const entry in unoptimizedMap) {
+                for (const entry of unoptimizedMap) {
                     const splitEntry = entry.split("=");
+                    ImperativeExpect.toBeEqual(splitEntry.length, 2);
                     extensionMap[splitEntry[0]] = splitEntry[1];
                 }
             }

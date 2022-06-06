@@ -385,41 +385,40 @@ export class Download {
             const arrEmptyPO: string[] = [];
             const arrSkipped: string[] = [];
             const downloadPromises: Promise<IZosFilesResponse>[] = [];
-            const tempExtension = options.extension;
+            const mutableOptions = {...options};
             for (const dataSetObj of arrayOfDatasets) {
                 const llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length).toLowerCase();
                 if (options.extensionMap != null) {
-                    options.extension = options.extensionMap[llq] ?? tempExtension;
+                    mutableOptions.extension = options.extensionMap[llq] ?? options.extension;
                 }
 
                 // Normalize the extension, remove leading periods
-                if (options.extension && options.extension.startsWith(".")) { options.extension = options.extension.replace(/^\.+/g, ""); }
+                if (mutableOptions.extension && mutableOptions.extension.startsWith(".")) { mutableOptions.extension = mutableOptions.extension.replace(/^\.+/g, ""); }
                 
-                const directoryOption = options.directory;
                 if (options.directory == null) {
                     if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                        options.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                        mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
                     } else {
-                        options.file = `${dataSetObj.dsname}.${options.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`.toLowerCase();
-                        options.directory = undefined;
-                        options.extension = undefined;
+                        mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`.toLowerCase();
+                        mutableOptions.directory = undefined;
+                        mutableOptions.extension = undefined;
                     }
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                    options.directory = `${options.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
+                    mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
-                    options.file = `${options.directory}/${dataSetObj.dsname}.${options.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`
+                    mutableOptions.file = `${mutableOptions.directory}/${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`
                         .toLowerCase();
-                    options.directory = undefined;
-                    options.extension = undefined;
+                    mutableOptions.directory = undefined;
+                    mutableOptions.extension = undefined;
                 }
 
                 if (dataSetObj.dsorg === "PS") {
-                    downloadPromises.push(Download.dataSet(session, dataSetObj.dsname, { ...options }).then((downloadResponse) => {
+                    downloadPromises.push(Download.dataSet(session, dataSetObj.dsname, { ...mutableOptions }).then((downloadResponse) => {
                         dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}`, width);
                         return downloadResponse;
                     }));
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                    downloadPromises.push(Download.allMembers(session, dataSetObj.dsname, { ...options }).then((downloadResponse) => {
+                    downloadPromises.push(Download.allMembers(session, dataSetObj.dsname, { ...mutableOptions }).then((downloadResponse) => {
                         const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
                         dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
                         if (downloadResponse.apiResponse.returnedRows === 0) {
@@ -434,7 +433,7 @@ export class Download {
                     dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
                     arrayOfSkippedDs.push(dataSetObj);
                 }
-                options.directory = directoryOption;
+                mutableOptions.directory = options.directory;
             }
 
             const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
