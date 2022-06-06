@@ -391,6 +391,10 @@ export class Download {
                 if (options.extensionMap != null) {
                     options.extension = options.extensionMap[llq] ?? tempExtension;
                 }
+
+                // Normalize the extension, remove leading periods
+                if (options.extension && options.extension.startsWith(".")) { options.extension = options.extension.replace(/^\.+/g, ""); }
+                
                 const directoryOption = options.directory;
                 if (options.directory == null) {
                     if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
