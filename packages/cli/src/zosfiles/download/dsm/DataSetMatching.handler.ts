@@ -20,7 +20,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const status: ITaskWithStatus = {
-            statusMessage: "Downloading data sets matching a pattern",
+            statusMessage: "Downloading data sets",
             percentComplete: 0,
             stageName: TaskStage.IN_PROGRESS
         };
@@ -56,6 +56,6 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         };
         commandParameters.response.progress.startBar({task: status});
-        return Download.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), options);
+        return Download.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), { ...options, shouldThrow: false });
     }
 }

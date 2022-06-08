@@ -318,7 +318,7 @@ export default {
                 DESCRIPTION: "Download all data sets that match a DSLEVEL pattern (see help below). " +
                     "You can use several options to qualify which data sets will be skipped and how the " +
                     "downloaded files will be structured. Data sets that are neither physical sequential nor " +
-                    "partitioned data sets (with members) will be excluded. ",
+                    "partitioned data sets (with members) will be excluded.",
                 POSITIONALS: {
                     PATTERN: `The pattern or patterns to match data sets against. Also known as 'DSLEVEL'. The following special sequences can be ` +
                     `used in the pattern:
@@ -327,7 +327,6 @@ export default {
                     `(e.g. "ibmuser.j*.old" matches "ibmuser.jcl.old" but not "ibmuser.jcl.very.old")
                     ${TextUtils.chalk.yellow("**")}: matches any number of characters within any number of data set name qualifiers ` +
                     `(e.g. "ibmuser.**.old" matches both "ibmuser.jcl.old" and "ibmuser.jcl.very.old")
-
                     However, the pattern cannot begin with any of these sequences.You can specify multiple patterns separated by commas, ` +
                     `for example "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },

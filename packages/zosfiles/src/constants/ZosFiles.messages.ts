@@ -178,6 +178,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * Message indicating that the data sets matching pattern was downloaded successfully
      * @type {IMessageDefinition}
      */
+    // TODO Consider removing this
     datasetsDownloadedSuccessfully: {
         message: "Data sets matching pattern downloaded successfully.\nDestination: %s"
     },
@@ -592,6 +593,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     memberDownloadFailed: {
         message: "Failed to download the following members: \n"
+    },
+
+    /**
+     * Message indicating that the following data sets failed to properly download
+     * @type {IMessageDefinition}
+     */
+    datasetDownloadFailed: {
+        message: "Failed to download the following data sets: \n"
     },
 
     /**
