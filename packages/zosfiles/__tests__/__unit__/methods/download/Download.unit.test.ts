@@ -1253,7 +1253,7 @@ describe("z/OS Files - Download", () => {
         it("should download all datasets with maxConcurrentRequests set to zero", async () => {
             let response;
             let caughtError;
-    
+
             const maxConcurrentRequests = 0;
 
             List.dataSet = jest.fn(async () => {

@@ -401,7 +401,7 @@ export class Download {
                     if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
                         mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
                     } else {
-                        mutableOptions.file = (`${dataSetObj.dsname}.` + 
+                        mutableOptions.file = (`${dataSetObj.dsname}.` +
                             `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`).toLowerCase();
                         mutableOptions.directory = undefined;
                         mutableOptions.extension = undefined;
@@ -409,7 +409,7 @@ export class Download {
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
                     mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
-                    mutableOptions.file = (`${mutableOptions.directory}/${dataSetObj.dsname}.` + 
+                    mutableOptions.file = (`${mutableOptions.directory}/${dataSetObj.dsname}.` +
                         `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`).toLowerCase();
                     mutableOptions.directory = undefined;
                     mutableOptions.extension = undefined;
