@@ -26,6 +26,7 @@ import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
+import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { status?: string };
 
@@ -303,30 +304,25 @@ export class Download {
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.izua700/IZUHPINFO_API_GetReadDataSet.htm
      */
     public static async dataSetsMatchingPattern(session: AbstractSession, patterns: string[],
-        options: IDownloadOptions & { shouldThrow?: boolean; } = {}): Promise<IZosFilesResponse> {
-        // TODO Improve error handling in Zowe v3 so that `shouldThrow` can be removed
+        options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+
         // Pattern is required to be non-empty
         ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
         patterns = patterns.filter(Boolean);
         ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
 
-        // Arrays of all downloaded or skipped data set objects
-        const arrayOfArchivedDs: IZosmfListResponseWithStatus[] = [];
-        const arrayOfSkippedDs: IZosmfListResponseWithStatus[] = [];
-        const arrayOfExcludedDs: IZosmfListResponseWithStatus[] = [];
-        const arrayOfEmptyPOdataSets: IZosmfListResponseWithStatus[] = [];
-        let arrayOfDatasets: IZosmfListResponseWithStatus[] = [];
-
+        const result = this.emptyDownloadDsmResult();
+        let zosmfResponses: IZosmfListResponseWithStatus[] = [];
         const width = 40;
 
         // Get names of all data sets
         for (const pattern of patterns) {
             const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
-            arrayOfDatasets.push(...listOfDataSets.apiResponse.items);
+            zosmfResponses.push(...listOfDataSets.apiResponse.items);
         }
 
         // Check if data sets matching pattern found
-        if (arrayOfDatasets.length === 0) {
+        if (zosmfResponses.length === 0) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
@@ -335,17 +331,17 @@ export class Download {
         }
 
         // Exclude archived data sets
-        for (const dataSetObj of arrayOfDatasets) {
+        for (const dataSetObj of zosmfResponses) {
             if (dataSetObj.dsorg == null) {
                 dataSetObj.status = TextUtils.wordWrap(`Skipped: Archived data set or alias - type ${dataSetObj.vol}.`, width);
-                arrayOfArchivedDs.push(dataSetObj);
+                result.skipped.archived.push(dataSetObj.dsname);
             }
         }
 
-        arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => dataSetObj.dsorg != null);
+        zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => dataSetObj.dsorg != null);
 
         // Check if non-archived data sets matching pattern remain
-        if (arrayOfDatasets.length === 0) {
+        if (zosmfResponses.length === 0) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.allDataSetsArchived.message,
@@ -355,25 +351,20 @@ export class Download {
 
         // Exclude data sets matching exclude pattern
         if (options.excludePatterns != null) {
-            const arrExcl: string[] = [];
             for (const pattern of options.excludePatterns) {
                 const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
-                listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
-                    arrExcl.push(dataSetObj.dsname);
-                    arrayOfExcludedDs.push(dataSetObj);
+                listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponseWithStatus) => {
+                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Data set matches one or more patterns provided in` +
+                        ` --exclude-patterns option`, width);
+                    result.skipped.excluded.push(dataSetObj.dsname);
                 });
             }
 
-            arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrExcl.indexOf(dataSetObj.dsname) === -1);
-        }
-
-        for (const dataSetObj of arrayOfExcludedDs) {
-            dataSetObj.status = TextUtils.wordWrap(`Skipped: Data set matches one or more patterns provided in` +
-                ` --exclude-patterns option`, width);
+            zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => result.skipped.excluded.indexOf(dataSetObj.dsname) === -1);
         }
 
         // Check if exclude pattern has left any data sets in the list
-        if (arrayOfDatasets.length === 0) {
+        if (zosmfResponses.length === 0) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.noDataSetsInList.message,
@@ -382,11 +373,9 @@ export class Download {
         }
 
         // Download data sets
-        const arrEmptyPO: string[] = [];
-        const arrSkipped: string[] = [];
         const downloadPromises: { [key: string]: Promise<IZosFilesResponse> } = {};
         const mutableOptions: IDownloadOptions = { ...options, task: undefined };
-        for (const dataSetObj of arrayOfDatasets) {
+        for (const dataSetObj of zosmfResponses) {
             let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
             if (!options.preserveOriginalLetterCase) {
                 llq = llq.toLowerCase();
@@ -436,24 +425,19 @@ export class Download {
                         const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
                         dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
                         if (downloadResponse.apiResponse.returnedRows === 0) {
-                            arrEmptyPO.push(dataSetObj.dsname);
                             dataSetObj.status = TextUtils.wordWrap(`Skipped: Partitioned data set with zero members.`, width);
-                            arrayOfEmptyPOdataSets.push(dataSetObj);
+                            result.skipped.emptyPO.push(dataSetObj.dsname);
                         }
                         return downloadResponse;
                     });
             } else {
-                arrSkipped.push(dataSetObj.dsname);
                 dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
-                arrayOfSkippedDs.push(dataSetObj);
+                result.skipped.unsupported.push(dataSetObj.dsname);
             }
             mutableOptions.directory = options.directory;
         }
 
-        const downloadErrors: Error[] = [];
-        const failedDatasets: string[] = [];
         let downloadsInitiated = 0;
-
         const fulfillDownloadPromise = (dsname: string, downloadPromise: Promise<IZosFilesResponse>) => {
             if (options.task != null) {
                 options.task.statusMessage = "Downloading " + dsname;
@@ -465,41 +449,37 @@ export class Download {
             return downloadPromise.catch((err) => {
                 // If we should fail fast, rethrow error
                 if (options.failFast || options.failFast === undefined) {
-                    throw err;
+                    throw new ImperativeError({
+                        msg: err.message,
+                        causeErrors: err,
+                        additionalDetails: this.buildDownloadDsmResponse(result, options)
+                    });
                 }
-                downloadErrors.push(err);
-                failedDatasets.push(dsname);
+                result.failed[dsname] = err;
                 // TODO Delete the file that could not be downloaded?
             });
         };
 
         const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
-        try {
-            if (maxConcurrentRequests === 0) {
-                await Promise.all(Object.entries(downloadPromises)
-                    .map(async ([k, v]) => await fulfillDownloadPromise(k, v)));
-            } else {
-                await asyncPool(maxConcurrentRequests, Object.entries(downloadPromises),
-                    async ([k, v]) => await fulfillDownloadPromise(k, v));
-            }
-        } catch (err) {
-            if (options.shouldThrow !== false) {
-                throw err;
-            }
+        if (maxConcurrentRequests === 0) {
+            await Promise.all(Object.entries(downloadPromises)
+                .map(async ([k, v]) => await fulfillDownloadPromise(k, v)));
+        } else {
+            await asyncPool(maxConcurrentRequests, Object.entries(downloadPromises),
+                async ([k, v]) => await fulfillDownloadPromise(k, v));
         }
 
         // Handle failed downloads if no errors were thrown yet
-        if (downloadErrors.length > 0 && options.shouldThrow !== false) {
+        if (Object.keys(result.failed).length > 0) {
             throw new ImperativeError({
-                msg: ZosFilesMessages.datasetDownloadFailed.message + failedDatasets.join("\n") + "\n\n" +
-                    downloadErrors.map((err: Error) => err.message).join("\n"),
-                causeErrors: downloadErrors,
-                additionalDetails: failedDatasets.join("\n")
+                msg: ZosFilesMessages.datasetDownloadFailed.message + Object.keys(result.failed).join("\n"),
+                causeErrors: Object.values(result.failed),
+                additionalDetails: this.buildDownloadDsmResponse(result, options)
             });
         }
 
-        arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrEmptyPO.indexOf(dataSetObj.dsname) === -1);
-        if (arrayOfDatasets.length === 0) {
+        zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => result.skipped.emptyPO.indexOf(dataSetObj.dsname) === -1);
+        if (zosmfResponses.length === 0) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.onlyEmptyPartitionedDataSets.message,
@@ -507,8 +487,8 @@ export class Download {
             };
         }
 
-        arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => arrSkipped.indexOf(dataSetObj.dsname) === -1);
-        if (arrayOfDatasets.length === 0) {
+        zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => result.skipped.unsupported.indexOf(dataSetObj.dsname) === -1);
+        if (zosmfResponses.length === 0) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.noDataSetsMatchingPatternRemain.message,
@@ -517,46 +497,12 @@ export class Download {
         }
 
         // All processed data sets, downloaded successfully or skipped
-        const arrayOfEveryDS: IZosmfListResponse[] = [...arrayOfArchivedDs, ...arrayOfSkippedDs,
-            ...arrayOfExcludedDs, ...arrayOfEmptyPOdataSets, ...arrayOfDatasets];
-        arrayOfDatasets = arrayOfDatasets.filter((dataSetObj: IZosmfListResponse) => failedDatasets.indexOf(dataSetObj.dsname) === -1);
-        const numSkipped = arrayOfArchivedDs.length + arrayOfSkippedDs.length + arrayOfExcludedDs.length + arrayOfEmptyPOdataSets.length;
-
-        const responseLines = [`${arrayOfEveryDS.length} data sets were found matching pattern`];
-        // TODO Pluralize output?
-        if (arrayOfDatasets.length > 0) {
-            responseLines.push(TextUtils.chalk.green(`${arrayOfDatasets.length} data sets downloaded successfully to `) +
-                (options.directory ?? "./"));
-        }
-        if (numSkipped > 0) {
-            responseLines.push(TextUtils.chalk.yellow(`${numSkipped} data sets were skipped:`));
-            if (arrayOfArchivedDs.length > 0) {
-                responseLines.push(`    ${arrayOfArchivedDs.length} skipped because they are archived`);
-            }
-            if (arrayOfSkippedDs.length > 0) {
-                responseLines.push(`    ${arrayOfSkippedDs.length} skipped because they are an unsupported type`);
-            }
-            if (arrayOfExcludedDs.length > 0) {
-                responseLines.push(`    ${arrayOfExcludedDs.length} skipped because they match an exclude pattern`);
-            }
-            if (arrayOfEmptyPOdataSets.length > 0) {
-                responseLines.push(`    ${arrayOfEmptyPOdataSets.length} skipped because they are empty PO data sets`);
-            }
-        }
-        if (failedDatasets.length > 0) {
-            responseLines.push(
-                TextUtils.chalk.red(`${failedDatasets.length} data sets failed to download:`),
-                "    " + failedDatasets.join("\n    ") + "\n\n",
-                ...downloadErrors.map((err: Error) => err.message)
-            );
-            // TODO Fix promise rejection error
-            // TODO Warn user if failFast is true
-        }
+        zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => !(dataSetObj.dsname in result.failed));
 
         return {
             success: true,
-            commandResponse: responseLines.join("\n"),
-            apiResponse: arrayOfEveryDS
+            commandResponse: this.buildDownloadDsmResponse(result, options),
+            apiResponse: zosmfResponses
         };
     }
 
@@ -634,5 +580,66 @@ export class Download {
             Logger.getAppLogger().error(error);
             throw error;
         }
+    }
+
+    private static emptyDownloadDsmResult(): IDownloadDsmResult {
+        return {
+            downloaded: [],
+            skipped: {
+                archived: [],
+                unsupported: [],
+                excluded: [],
+                emptyPO: []
+            },
+            failed: {}
+        };
+    }
+
+    private static countDatasets(obj: { [key: string]: string[] | any; }): number {
+        let count = 0;
+        for (const v of Object.values(obj)) {
+            count += Array.isArray(v) ? v.length : this.countDatasets(v);
+        }
+        return count;
+    }
+
+    private static buildDownloadDsmResponse(result: IDownloadDsmResult, options: IDownloadOptions): string {
+        const numSkipped = this.countDatasets(result.skipped);
+        const failedDatasets = Object.keys(result.failed);
+        const responseLines = [`${this.countDatasets(result)} data sets were found matching pattern`];
+        // TODO Pluralize output?
+
+        if (result.downloaded.length > 0) {
+            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data sets downloaded successfully to `) +
+                (options.directory ?? "./"));
+        }
+
+        if (numSkipped > 0) {
+            responseLines.push(TextUtils.chalk.yellow(`${numSkipped} data sets were skipped:`));
+            if (result.skipped.archived.length > 0) {
+                responseLines.push(`    ${result.skipped.archived.length} skipped because they are archived`);
+            }
+            if (result.skipped.unsupported.length > 0) {
+                responseLines.push(`    ${result.skipped.unsupported.length} skipped because they are an unsupported type`);
+            }
+            if (result.skipped.excluded.length > 0) {
+                responseLines.push(`    ${result.skipped.excluded.length} skipped because they match an exclude pattern`);
+            }
+            if (result.skipped.emptyPO.length > 0) {
+                responseLines.push(`    ${result.skipped.emptyPO.length} skipped because they are empty PO data sets`);
+            }
+        }
+
+        if (failedDatasets.length > 0) {
+            responseLines.push(
+                TextUtils.chalk.red(`${failedDatasets.length} data sets failed to download:`),
+                "    " + failedDatasets.join("\n    ") + "\n\n",
+                ...Object.values(result.failed).map((err: Error) => err.message)
+            );
+            // TODO Fix promise rejection error
+            // TODO Warn user if failFast is true
+        }
+
+        return responseLines.join("\n");
     }
 }

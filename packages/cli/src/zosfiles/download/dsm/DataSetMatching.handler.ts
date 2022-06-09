@@ -56,6 +56,6 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         };
         commandParameters.response.progress.startBar({task: status});
-        return Download.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), { ...options, shouldThrow: false });
+        return Download.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), options);
     }
 }
