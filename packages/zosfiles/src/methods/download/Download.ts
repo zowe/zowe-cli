@@ -446,7 +446,9 @@ export class Download {
                 downloadsInitiated++;
             }
 
-            return downloadPromise.catch((err) => {
+            return downloadPromise.then((response: IZosFilesResponse) => {
+                result.downloaded.push(dsname);
+            }).catch((err) => {
                 // If we should fail fast, rethrow error
                 if (options.failFast || options.failFast === undefined) {
                     throw new ImperativeError({
@@ -497,6 +499,7 @@ export class Download {
         }
 
         // All processed data sets, downloaded successfully or skipped
+        // TODO Fix promise rejection error
         zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => !(dataSetObj.dsname in result.failed));
 
         return {
@@ -582,6 +585,10 @@ export class Download {
         }
     }
 
+    /**
+     * Create an empty download data sets matching result.
+     * @returns Results object with all lists initialized as empty
+     */
     private static emptyDownloadDsmResult(): IDownloadDsmResult {
         return {
             downloaded: [],
@@ -595,6 +602,11 @@ export class Download {
         };
     }
 
+    /**
+     * Count the number of data sets in a download data sets matching result.
+     * @param obj Object containing lists of data sets
+     * @returns Count of all data sets
+     */
     private static countDatasets(obj: { [key: string]: string[] | any; }): number {
         let count = 0;
         for (const v of Object.values(obj)) {
@@ -603,19 +615,24 @@ export class Download {
         return count;
     }
 
+    /**
+     * Build a response string from a download data sets matching result.
+     * @param result Result object from the download API
+     * @param options Options passed to the download API
+     * @returns Response string to print to console
+     */
     private static buildDownloadDsmResponse(result: IDownloadDsmResult, options: IDownloadOptions): string {
         const numSkipped = this.countDatasets(result.skipped);
         const failedDatasets = Object.keys(result.failed);
-        const responseLines = [`${this.countDatasets(result)} data sets were found matching pattern`];
-        // TODO Pluralize output?
+        const responseLines = [`${this.countDatasets(result)} data set(s) were found matching pattern`];
 
         if (result.downloaded.length > 0) {
-            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data sets downloaded successfully to `) +
+            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
                 (options.directory ?? "./"));
         }
 
         if (numSkipped > 0) {
-            responseLines.push(TextUtils.chalk.yellow(`${numSkipped} data sets were skipped:`));
+            responseLines.push(TextUtils.chalk.yellow(`${numSkipped} data set(s) were skipped:`));
             if (result.skipped.archived.length > 0) {
                 responseLines.push(`    ${result.skipped.archived.length} skipped because they are archived`);
             }
@@ -632,12 +649,16 @@ export class Download {
 
         if (failedDatasets.length > 0) {
             responseLines.push(
-                TextUtils.chalk.red(`${failedDatasets.length} data sets failed to download:`),
+                TextUtils.chalk.red(`${failedDatasets.length} data set(s) failed to download:`),
                 "    " + failedDatasets.join("\n    ") + "\n\n",
                 ...Object.values(result.failed).map((err: Error) => err.message)
             );
-            // TODO Fix promise rejection error
-            // TODO Warn user if failFast is true
+            if (options.failFast !== false) {
+                responseLines.push(
+                    "\nSome data sets may have been skipped because --fail-fast is true.",
+                    "To ignore errors and continue downloading, rerun the command with --fail-fast set to false."
+                );
+            }
         }
 
         return responseLines.join("\n");

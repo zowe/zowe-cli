@@ -95,7 +95,7 @@ describe("Download DataSetMatching handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Downloading data sets matching a pattern"
+                    statusMessage: "Downloading data sets"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
@@ -172,7 +172,7 @@ describe("Download DataSetMatching handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Downloading data sets matching a pattern"
+                    statusMessage: "Downloading data sets"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
@@ -318,7 +318,7 @@ describe("Download DataSetMatching handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Downloading data sets matching a pattern"
+                    statusMessage: "Downloading data sets"
                 }
             });
             expect(jsonObj).toMatchSnapshot();

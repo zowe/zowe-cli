@@ -1195,7 +1195,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "my/test/path"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {directory}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {binary, file: "my/test/path/test.ps.data.set.xyz"});
@@ -1244,7 +1248,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz"});
@@ -1293,7 +1301,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 0});
@@ -1343,7 +1355,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "my/test/path"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {directory}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz"});
@@ -1393,7 +1409,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "my/test/path"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {directory}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.file"});
@@ -1443,7 +1463,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "my/test/path"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {directory}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.txt"});
@@ -1515,7 +1539,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {}),
                 apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
             });
         });
@@ -1664,7 +1692,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, "./"),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {}),
                 apiResponse: [{
                     dsname: "TEST.PO.DATA.SET",
                     dsorg: "PO",
@@ -1721,7 +1753,11 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetsDownloadedSuccessfully.message, directory),
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {directory}),
                 apiResponse: [{
                     dsname: "TEST.PO.DATA.SET",
                     dsorg: "PO",
