@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.2.3`
+
+- BugFix: Updated Imperative to address `ProfileInfo` related issues.
+
 ## `7.2.2`
 
 - BugFix: Updated Imperative to address `ProfileInfo` related issues.
