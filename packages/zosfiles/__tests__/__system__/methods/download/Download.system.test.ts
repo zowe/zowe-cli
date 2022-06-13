@@ -661,7 +661,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + "/member.txt";
             });
 
-            it.only("should download a data set in record mode", async () => {
+            it("should download a data set in record mode", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -758,7 +758,7 @@ describe("Download Data Set", () => {
                 expect(fileContents).toEqual(data);
             });
 
-            it.only("should not download a data set if it is in the exclude map", async () => {
+            it("should not download a data set if it is in the exclude map", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -885,7 +885,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + "txt";
             });
 
-            it.only("should download a data set in record mode", async () => {
+            it("should download a data set in record mode", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -978,7 +978,7 @@ describe("Download Data Set", () => {
                 expect(fileContents).toEqual(data);
             });
 
-            it.only("should not download a data set if it is in the exclude map", async () => {
+            it("should not download a data set if it is in the exclude map", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
