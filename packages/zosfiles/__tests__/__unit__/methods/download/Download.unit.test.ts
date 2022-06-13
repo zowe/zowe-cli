@@ -18,6 +18,7 @@ import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants"
 import * as util from "util";
 import { List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
+import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -1205,6 +1206,60 @@ describe("z/OS Files - Download", () => {
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {binary, file: "my/test/path/test.ps.data.set.xyz"});
         });
 
+        it("should download all datasets specifying preserveOriginalLetterCase", async () => {
+            let response;
+            let caughtError;
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "List of data sets",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [
+                            {
+                                dsname: "TEST.PS.DATA.SET",
+                                dsorg: "PS",
+                            }
+                        ]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], { preserveOriginalLetterCase: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skipped: [],
+                    failed: []
+                }, {}),
+                apiResponse: [{ dsname: dataSetPS.dsname, dsorg: "PS", status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "TEST.PS.DATA.SET.txt",
+                preserveOriginalLetterCase: true
+            });
+        });
+
         it("should download all datasets specifying the extension", async () => {
             let response;
             let caughtError;
@@ -2170,6 +2225,62 @@ describe("z/OS Files - Download", () => {
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+    });
+
+    describe("buildDownloadDsmResponse", () => {
+        it("should build response with data sets skipped because they are archived", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.skipped.archived = ["HLQ.DS.SKIPPED"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) were found matching pattern");
+            expect(response).toContain("1 skipped because they are archived");
+        });
+
+        it("should build response with data sets skipped because they are an unsupported type", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.skipped.unsupported = ["HLQ.DS.SKIPPED"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) were found matching pattern");
+            expect(response).toContain("1 skipped because they are an unsupported type");
+        });
+
+        it("should build response with data sets skipped because they match an exclude pattern", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.skipped.excluded = ["HLQ.DS.SKIPPED"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) were found matching pattern");
+            expect(response).toContain("1 skipped because they match an exclude pattern");
+        });
+
+        it("should build response with data sets skipped because they are empty PO data sets", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.skipped.emptyPO = ["HLQ.DS.SKIPPED"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) were found matching pattern");
+            expect(response).toContain("1 skipped because they are empty PO data sets");
+        });
+
+        it("should build response with data sets that failed to download", () => {
+            const errorMsg = "i haz bad data set";
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failed = { "HLQ.DS.FAILED": new Error(errorMsg) };
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) were found matching pattern");
+            expect(response).toContain("1 data set(s) failed to download");
+            expect(response).toContain(errorMsg);
+            expect(response).toContain("Some data sets may have been skipped because --fail-fast is true");
+        });
+
+        it("should build response with data sets that failed to download when failFast is false", () => {
+            const errorMsg = "i haz bad data set";
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failed = { "HLQ.DS.FAILED": new Error(errorMsg) };
+            const response: string = (Download as any).buildDownloadDsmResponse(result, { failFast: false });
+            expect(response).toContain("1 data set(s) were found matching pattern");
+            expect(response).toContain("1 data set(s) failed to download");
+            expect(response).toContain(errorMsg);
+            expect(response).not.toContain("Some data sets may have been skipped because --fail-fast is true");
         });
     });
 });

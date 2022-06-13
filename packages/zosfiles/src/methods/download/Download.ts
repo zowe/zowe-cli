@@ -295,10 +295,10 @@ export class Download {
      * ```typescript
      *
      * // Download all "PS" and "PO" datasets that match the pattern "USER.**.DATASET" to "user/data/set/pds/"
-     * await Download.dataSetsMatchingPatterns(session, "USER.DATA.SET.PDS");
+     * await Download.dataSetsMatchingPattern(session, "USER.DATA.SET.PDS");
      *
      * // Download all "PS" and "PO" datasets that match the pattern "USER.**.DATASET" to "./path/to/dir/"
-     * await Download.dataSetsMatchingPatterns(session, "USER.**.PDS", {directory: "./path/to/dir/"});
+     * await Download.dataSetsMatchingPattern(session, "USER.**.PDS", {directory: "./path/to/dir/"});
      * ```
      *
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.izua700/IZUHPINFO_API_GetReadDataSet.htm
@@ -603,28 +603,15 @@ export class Download {
     }
 
     /**
-     * Count the number of data sets in a download data sets matching result.
-     * @param obj Object containing lists of data sets
-     * @returns Count of all data sets
-     */
-    private static countDatasets(obj: { [key: string]: string[] | any; }): number {
-        let count = 0;
-        for (const v of Object.values(obj)) {
-            count += Array.isArray(v) ? v.length : this.countDatasets(v);
-        }
-        return count;
-    }
-
-    /**
      * Build a response string from a download data sets matching result.
      * @param result Result object from the download API
      * @param options Options passed to the download API
      * @returns Response string to print to console
      */
-    private static buildDownloadDsmResponse(result: IDownloadDsmResult, options: IDownloadOptions): string {
-        const numSkipped = this.countDatasets(result.skipped);
+    private static buildDownloadDsmResponse(result: IDownloadDsmResult, options: IDownloadOptions = {}): string {
+        const numSkipped = Object.keys(result.skipped).reduce((acc, elem) => acc + (result.skipped as any)[elem].length, 0);
         const failedDatasets = Object.keys(result.failed);
-        const responseLines = [`${this.countDatasets(result)} data set(s) were found matching pattern`];
+        const responseLines = [`${result.downloaded.length + numSkipped + failedDatasets.length} data set(s) were found matching pattern`];
 
         if (result.downloaded.length > 0) {
             responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
