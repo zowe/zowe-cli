@@ -30,6 +30,13 @@ import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { status?: string };
 
+interface IDownloadDsmTask {
+    handler: (session: AbstractSession, dsname: string, options: IDownloadOptions) => Promise<IZosFilesResponse>;
+    dsname: string;
+    options: IDownloadOptions;
+    onSuccess: (response: IZosFilesResponse) => void;
+}
+
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
  */
@@ -65,6 +72,7 @@ export class Download {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        let destination: string;
 
         try {
             // Format the endpoint to send the request to
@@ -89,7 +97,7 @@ export class Download {
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the data set name
             // Note that the "extension" options do not affect the destination if the "file" options were provided
-            const destination = (() => {
+            destination = (() => {
                 if (options.file) {
                     return options.file;
                 }
@@ -140,6 +148,10 @@ export class Download {
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
+
+            if (destination != null) {
+                IO.deleteFile(destination);
+            }
 
             throw error;
         }
@@ -237,19 +249,18 @@ export class Download {
                     encoding: options.encoding,
                     responseTimeout: options.responseTimeout
                 }).catch((err) => {
-                    // If we should fail fast, rethrow error
-                    if (options.failFast || options.failFast === undefined) {
-                        throw err;
-                    }
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
                     // Delete the file that could not be downloaded
                     IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
+                    // If we should fail fast, rethrow error
+                    if (options.failFast || options.failFast === undefined) {
+                        throw err;
+                    }
                 });
             };
 
             const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
-
             if (maxConcurrentRequests === 0) {
                 await Promise.all(memberList.map(createDownloadPromise));
             } else {
@@ -315,85 +326,97 @@ export class Download {
         let zosmfResponses: IZosmfListResponseWithStatus[] = [];
         const width = 40;
 
-        // Get names of all data sets
-        for (const pattern of patterns) {
-            const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
-            zosmfResponses.push(...listOfDataSets.apiResponse.items);
-        }
-
-        // Check if data sets matching pattern found
-        if (zosmfResponses.length === 0) {
-            return {
-                success: false,
-                commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
-                apiResponse: []
-            };
-        }
-
-        // Exclude archived data sets
-        for (const dataSetObj of zosmfResponses) {
-            if (dataSetObj.dsorg == null) {
-                dataSetObj.status = TextUtils.wordWrap(`Skipped: Archived data set or alias - type ${dataSetObj.vol}.`, width);
-                result.skipped.archived.push(dataSetObj.dsname);
-            }
-        }
-
-        zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => dataSetObj.dsorg != null);
-
-        // Check if non-archived data sets matching pattern remain
-        if (zosmfResponses.length === 0) {
-            return {
-                success: false,
-                commandResponse: ZosFilesMessages.allDataSetsArchived.message,
-                apiResponse: []
-            };
-        }
-
-        // Exclude data sets matching exclude pattern
-        if (options.excludePatterns != null) {
-            for (const pattern of options.excludePatterns) {
+        try {
+            // Get names of all data sets
+            for (const pattern of patterns) {
                 const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
-                listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponseWithStatus) => {
-                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Data set matches one or more patterns provided in` +
-                        ` --exclude-patterns option`, width);
-                    result.skipped.excluded.push(dataSetObj.dsname);
-                });
+                zosmfResponses.push(...listOfDataSets.apiResponse.items);
             }
 
-            zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => result.skipped.excluded.indexOf(dataSetObj.dsname) === -1);
-        }
-
-        // Check if exclude pattern has left any data sets in the list
-        if (zosmfResponses.length === 0) {
-            return {
-                success: false,
-                commandResponse: ZosFilesMessages.noDataSetsInList.message,
-                apiResponse: []
-            };
-        }
-
-        // Download data sets
-        const downloadPromises: { [key: string]: Promise<IZosFilesResponse> } = {};
-        const mutableOptions: IDownloadOptions = { ...options, task: undefined };
-        for (const dataSetObj of zosmfResponses) {
-            let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
-            if (!options.preserveOriginalLetterCase) {
-                llq = llq.toLowerCase();
-            }
-            if (options.extensionMap != null) {
-                mutableOptions.extension = options.extensionMap[llq] ?? options.extension;
+            // Check if data sets matching pattern found
+            if (zosmfResponses.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
+                    apiResponse: []
+                };
             }
 
-            // Normalize the extension, remove leading periods
-            if (mutableOptions.extension && mutableOptions.extension.startsWith(".")) {
-                mutableOptions.extension = mutableOptions.extension.replace(/^\.+/g, "");
+            // Exclude archived data sets
+            for (const dataSetObj of zosmfResponses) {
+                if (dataSetObj.dsorg == null) {
+                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Archived data set or alias - type ${dataSetObj.vol}.`, width);
+                    result.skipped.archived.push(dataSetObj.dsname);
+                }
             }
 
-            if (options.directory == null) {
-                if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                    mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+            zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => dataSetObj.dsorg != null);
+
+            // Check if non-archived data sets matching pattern remain
+            if (zosmfResponses.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.allDataSetsArchived.message,
+                    apiResponse: []
+                };
+            }
+
+            // Exclude data sets matching exclude pattern
+            if (options.excludePatterns != null) {
+                for (const pattern of options.excludePatterns) {
+                    const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
+                    listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponseWithStatus) => {
+                        dataSetObj.status = TextUtils.wordWrap(`Skipped: Data set matches one or more patterns provided in` +
+                            ` --exclude-patterns option`, width);
+                        result.skipped.excluded.push(dataSetObj.dsname);
+                    });
+                }
+
+                zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => result.skipped.excluded.indexOf(dataSetObj.dsname) === -1);
+            }
+
+            // Check if exclude pattern has left any data sets in the list
+            if (zosmfResponses.length === 0) {
+                return {
+                    success: false,
+                    commandResponse: ZosFilesMessages.noDataSetsInList.message,
+                    apiResponse: []
+                };
+            }
+
+            // Download data sets
+            const downloadTasks: IDownloadDsmTask[] = [];
+            const mutableOptions: IDownloadOptions = { ...options, task: undefined };
+            for (const dataSetObj of zosmfResponses) {
+                let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
+                if (!options.preserveOriginalLetterCase) {
+                    llq = llq.toLowerCase();
+                }
+                if (options.extensionMap != null) {
+                    mutableOptions.extension = options.extensionMap[llq] ?? options.extension;
+                }
+
+                // Normalize the extension, remove leading periods
+                if (mutableOptions.extension && mutableOptions.extension.startsWith(".")) {
+                    mutableOptions.extension = mutableOptions.extension.replace(/^\.+/g, "");
+                }
+
+                if (options.directory == null) {
+                    if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                        mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                    } else {
+                        mutableOptions.file = `${dataSetObj.dsname}.` +
+                            `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
+                        if (!options.preserveOriginalLetterCase) {
+                            mutableOptions.file = mutableOptions.file.toLowerCase();
+                        }
+                        mutableOptions.directory = undefined;
+                        mutableOptions.extension = undefined;
+                    }
+                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
-                    mutableOptions.file = `${dataSetObj.dsname}.` +
+                    mutableOptions.file = `${mutableOptions.directory}/${dataSetObj.dsname}.` +
                         `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
                     if (!options.preserveOriginalLetterCase) {
                         mutableOptions.file = mutableOptions.file.toLowerCase();
@@ -401,74 +424,75 @@ export class Download {
                     mutableOptions.directory = undefined;
                     mutableOptions.extension = undefined;
                 }
-            } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
-            } else {
-                mutableOptions.file = `${mutableOptions.directory}/${dataSetObj.dsname}.` +
-                    `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
-                if (!options.preserveOriginalLetterCase) {
-                    mutableOptions.file = mutableOptions.file.toLowerCase();
-                }
-                mutableOptions.directory = undefined;
-                mutableOptions.extension = undefined;
-            }
 
-            if (dataSetObj.dsorg === "PS") {
-                downloadPromises[dataSetObj.dsname] = Download.dataSet(session, dataSetObj.dsname, { ...mutableOptions })
-                    .then((downloadResponse) => {
-                        dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}`, width);
-                        return downloadResponse;
-                    });
-            } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                downloadPromises[dataSetObj.dsname] = Download.allMembers(session, dataSetObj.dsname, { ...mutableOptions })
-                    .then((downloadResponse) => {
-                        const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
-                        dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
-                        if (downloadResponse.apiResponse.returnedRows === 0) {
-                            dataSetObj.status = TextUtils.wordWrap(`Skipped: Partitioned data set with zero members.`, width);
-                            result.skipped.emptyPO.push(dataSetObj.dsname);
+                if (dataSetObj.dsorg === "PS") {
+                    downloadTasks.push({
+                        handler: Download.dataSet.bind(this),
+                        dsname: dataSetObj.dsname,
+                        options: { ...mutableOptions },
+                        onSuccess: (downloadResponse) => {
+                            dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}`, width);
                         }
-                        return downloadResponse;
                     });
-            } else {
-                dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
-                result.skipped.unsupported.push(dataSetObj.dsname);
-            }
-            mutableOptions.directory = options.directory;
-        }
-
-        let downloadsInitiated = 0;
-        const fulfillDownloadPromise = (dsname: string, downloadPromise: Promise<IZosFilesResponse>) => {
-            if (options.task != null) {
-                options.task.statusMessage = "Downloading " + dsname;
-                options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
-                    (downloadsInitiated / Object.keys(downloadPromises).length));
-                downloadsInitiated++;
-            }
-
-            return downloadPromise.then((response: IZosFilesResponse) => {
-                result.downloaded.push(dsname);
-            }).catch((err) => {
-                // If we should fail fast, rethrow error
-                if (options.failFast || options.failFast === undefined) {
-                    throw new ImperativeError({
-                        msg: err.message,
-                        causeErrors: err,
-                        additionalDetails: this.buildDownloadDsmResponse(result, options)
+                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    downloadTasks.push({
+                        handler: Download.allMembers.bind(this),
+                        dsname: dataSetObj.dsname,
+                        options: { ...mutableOptions },
+                        onSuccess: (downloadResponse) => {
+                            const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
+                            dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
+                            if (downloadResponse.apiResponse.returnedRows === 0) {
+                                dataSetObj.status = TextUtils.wordWrap(`Skipped: Partitioned data set with zero members.`, width);
+                                result.skipped.emptyPO.push(dataSetObj.dsname);
+                            }
+                        }
                     });
+                } else {
+                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
+                    result.skipped.unsupported.push(dataSetObj.dsname);
                 }
-                result.failed[dsname] = err;
-                // TODO Delete the file that could not be downloaded?
-            });
-        };
+                mutableOptions.directory = options.directory;
+            }
 
-        const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
-        if (maxConcurrentRequests === 0) {
-            await Promise.all(Object.entries(downloadPromises)
-                .map(async ([k, v]) => await fulfillDownloadPromise(k, v)));
-        } else {
-            await asyncPool(maxConcurrentRequests, Object.entries(downloadPromises),
-                async ([k, v]) => await fulfillDownloadPromise(k, v));
+            let downloadsInitiated = 0;
+            const createDownloadPromise = (task: IDownloadDsmTask) => {
+                if (options.task != null) {
+                    options.task.statusMessage = "Downloading " + task.dsname;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (downloadsInitiated / downloadTasks.length));
+                    downloadsInitiated++;
+                }
+
+                return task.handler(session, task.dsname, task.options).then(
+                    (downloadResponse) => {
+                        result.downloaded.push(task.dsname);
+                        task.onSuccess(downloadResponse);
+                    },
+                    (err) => {
+                        result.failed[task.dsname] = err;
+                        // If we should fail fast, rethrow error
+                        if (options.failFast || options.failFast === undefined) {
+                            throw new ImperativeError({
+                                msg: `Failed to download ${task.dsname}`,
+                                causeErrors: err,
+                                additionalDetails: this.buildDownloadDsmResponse(result, options)
+                            });
+                        }
+                    }
+                );
+            };
+
+            const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+            if (maxConcurrentRequests === 0) {
+                await Promise.all(downloadTasks.map(createDownloadPromise));
+            } else {
+                await asyncPool(maxConcurrentRequests, downloadTasks, createDownloadPromise);
+            }
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+
+            throw error;
         }
 
         // Handle failed downloads if no errors were thrown yet
@@ -499,7 +523,6 @@ export class Download {
         }
 
         // All processed data sets, downloaded successfully or skipped
-        // TODO Fix promise rejection error
         zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => !(dataSetObj.dsname in result.failed));
 
         return {
@@ -642,12 +665,12 @@ export class Download {
             );
             if (options.failFast !== false) {
                 responseLines.push(
-                    "\nSome data sets may have been skipped because --fail-fast is true.",
+                    "Some data sets may have been skipped because --fail-fast is true.",
                     "To ignore errors and continue downloading, rerun the command with --fail-fast set to false."
                 );
             }
         }
 
-        return responseLines.join("\n");
+        return responseLines.join("\n") + "\n";
     }
 }

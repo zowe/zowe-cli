@@ -9,7 +9,7 @@
 *
 */
 
-import { IO, Session } from "@zowe/imperative";
+import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { Utilities, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
@@ -1106,7 +1106,9 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(response).toBeUndefined();
-            expect(caughtError).toEqual(dummyError);
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toBe("Failed to download TEST.PS.DATA.SET");
+            expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
@@ -1145,7 +1147,9 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(response).toBeUndefined();
-            expect(caughtError).toEqual(dummyError);
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toBe("Failed to download TEST.PO.DATA.SET");
+            expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {directory: "test/po/data/set"});
