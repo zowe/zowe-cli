@@ -95,8 +95,8 @@ describe("Download Dataset Matching", () => {
                     defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
-            expect(response.stdout.toString()).toContain("Destination:");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
     });
 
@@ -119,7 +119,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern in binary format", () => {
@@ -127,7 +128,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--binary"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern in record format", () => {
@@ -135,7 +137,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--record"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern with response timeout", () => {
@@ -143,7 +146,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern with --max-concurrent-requests 2", () => {
@@ -151,7 +155,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--max-concurrent-requests", 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern with response-format-json flag", () => {
@@ -159,29 +164,30 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern to specified directory", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, `-d ${testDir}`, "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "-d", testDir]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
-            expect(response.stdout.toString()).toContain(testDir);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ${testDir}`);
         });
 
         it("should download data sets matching a given pattern with extension = \".jcl\"", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "-d", testDir, "--rfj", "-e", ".jcl"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--rfj", "-d", testDir, "-e", ".jcl"]);
 
             const result = JSON.parse(response.stdout.toString());
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(result.stdout).toContain("Data sets matching pattern downloaded successfully.");
-            expect(result.stdout).toContain(testDir);
+            expect(result.stdout).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(result.stdout).toContain(`${dsnames.length} data set(s) downloaded successfully to ${testDir}`);
 
             for (const apiResp of result.data.apiResponse) {
                 expect(apiResp.status).toContain("Data set downloaded successfully.");
@@ -211,7 +217,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern in binary format", () => {
@@ -219,7 +226,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--binary"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern in record format", () => {
@@ -227,7 +235,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--record"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern with response timeout", () => {
@@ -235,7 +244,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern with --max-concurrent-requests 2", () => {
@@ -243,7 +253,8 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--max-concurrent-requests", 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern with response-format-json flag", () => {
@@ -251,29 +262,30 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ./`);
         });
 
         it("should download data sets matching a given pattern to specified directory", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, `-d ${testDir}`, "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "-d", testDir]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data sets matching pattern downloaded successfully.");
-            expect(response.stdout.toString()).toContain(testDir);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain(`${dsnames.length} data set(s) downloaded successfully to ${testDir}`);
         });
 
         it("should download data sets matching a given pattern with extension = \".jcl\"", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_download_dsm.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "-d", testDir, "--rfj", "-e", ".jcl"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--rfj", "-d", testDir, "-e", ".jcl"]);
 
             const result = JSON.parse(response.stdout.toString());
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(result.stdout).toContain("Data sets matching pattern downloaded successfully.");
-            expect(result.stdout).toContain(testDir);
+            expect(result.stdout).toContain(`${dsnames.length} data set(s) were found matching pattern`);
+            expect(result.stdout).toContain(`${dsnames.length} data set(s) downloaded successfully to ${testDir}`);
 
             for (const apiResp of result.data.apiResponse) {
                 expect(apiResp.status).toContain("Data set downloaded successfully.");
