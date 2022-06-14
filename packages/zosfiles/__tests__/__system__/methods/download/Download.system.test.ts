@@ -93,7 +93,8 @@ describe("Download Data Set", () => {
                 // delete the top-level folder and the folders and file below
                 // variable 'file' should be set in the test
                 const folders = file.split("/");
-                const rc = rimraf(folders[0]);
+                let rc = rimraf(folders[0]);
+                rc = rimraf(file);
             });
 
             it("should download a data set", async () => {
@@ -658,7 +659,7 @@ describe("Download Data Set", () => {
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "/member.txt";
+                file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
             });
 
             it("should download a data set in record mode", async () => {
@@ -692,7 +693,7 @@ describe("Download Data Set", () => {
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "/member.txt";
+                file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
             });
 
             it("should download a data set with a different extension", async () => {
@@ -818,7 +819,8 @@ describe("Download Data Set", () => {
 
                 // delete the top-level folder and the folders and file below
                 const folders = file.split("/");
-                const rc = rimraf(folders[0]);
+                let rc = rimraf(folders[0]);
+                rc = rimraf(file);
             });
 
             it("should download a data set", async () => {
@@ -845,9 +847,9 @@ describe("Download Data Set", () => {
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
-                file = dsname.toLowerCase();
+                file = dsname.toLowerCase() + ".txt";;
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}.txt`).toString());
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -880,9 +882,7 @@ describe("Download Data Set", () => {
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "txt";
+                file = "testdir/" + dsname.toLowerCase() + ".txt";
             });
 
             it("should download a data set in record mode", async () => {
@@ -914,9 +914,7 @@ describe("Download Data Set", () => {
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "txt";
+                file = "testdir/" + dsname.toLowerCase() + ".txt";
             });
 
             it("should download a data set with a different extension", async () => {
@@ -941,9 +939,9 @@ describe("Download Data Set", () => {
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
-                file = dsname.toLowerCase();
+                file = dsname.toLowerCase() + ".jcl";
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}.jcl`).toString());
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -972,9 +970,9 @@ describe("Download Data Set", () => {
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
-                file = dsname.toLowerCase();
+                file = dsname.toLowerCase() + ".jcl";
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}.jcl`).toString());
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -1002,9 +1000,9 @@ describe("Download Data Set", () => {
                 expect(response.success).toBeFalsy();
                 expect(response.commandResponse).toContain("No data sets left after excluded pattern(s) were filtered");
 
-                file = dsname.toLowerCase();
+                file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
-                const fileExists = existsSync(`${file}.jcl`);
+                const fileExists = existsSync(`${file}`);
                 expect(fileExists).toEqual(false);
             });
         });
