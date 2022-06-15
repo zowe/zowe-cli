@@ -23,7 +23,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
-            statusMessage: "Retrieving firstdata set",
+            statusMessage: "Retrieving first dataset",
             stageName: TaskStage.IN_PROGRESS
         };
 
@@ -56,12 +56,8 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         if(record2 == undefined){
             record2 = commandParameters.arguments.record;
         }
-        /*
-        if(volumeSerial2 == undefined){
-            volumeSerial2 = commandParameters.arguments.volumeSerial;
-        }*/
 
-        task.statusMessage = "Retrieving second data set";
+        task.statusMessage = "Retrieving second dataset";
         const dsContentBuf2 = await Get.dataSet(session, commandParameters.arguments.dataSetName2,
             {   binary: binary2,
                 encoding: encoding2,
@@ -111,14 +107,6 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             contextLines: contextLinesArg,
             expand: expandflag
         });
-        /*
-        else{
-            jsonDiff = diff(dsContentString1, dsContentString2, {aAnnotation: "Removed",
-                bAnnotation: "Added",
-                aColor: TextUtils.chalk.red,
-                bColor: TextUtils.chalk.green
-            });
-        }*/
 
         return {
             success: true,

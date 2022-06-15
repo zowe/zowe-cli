@@ -59,7 +59,7 @@ export const DatasetDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)`
+            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)"`
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
