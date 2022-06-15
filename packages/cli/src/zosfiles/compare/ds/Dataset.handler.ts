@@ -47,7 +47,6 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         let record2 = commandParameters.arguments.record2;
         const volumeSerial2 = commandParameters.arguments.volumeSerial2;
 
-        
         if(binary2 == undefined){
             binary2 = commandParameters.arguments.binary;
         }
@@ -62,7 +61,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             volumeSerial2 = commandParameters.arguments.volumeSerial;
         }*/
 
-        task.statusMessage = "Retrieving second data set"
+        task.statusMessage = "Retrieving second data set";
         const dsContentBuf2 = await Get.dataSet(session, commandParameters.arguments.dataSetName2,
             {   binary: binary2,
                 encoding: encoding2,
@@ -100,23 +99,26 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
+        let expandflag = true;
         const contextLinesArg = commandParameters.arguments.contextlines;
         if(contextLinesArg >= 0){
-            jsonDiff = diff(dsContentString1, dsContentString2, {aAnnotation: "Removed",
-                bAnnotation: "Added",
-                aColor: TextUtils.chalk.red,
-                bColor: TextUtils.chalk.green,
-                contextLines: contextLinesArg,
-                expand: false
-            });
+            expandflag = false;
         }
+        jsonDiff = diff(dsContentString1, dsContentString2, {aAnnotation: "Removed",
+            bAnnotation: "Added",
+            aColor: TextUtils.chalk.red,
+            bColor: TextUtils.chalk.green,
+            contextLines: contextLinesArg,
+            expand: expandflag
+        });
+        /*
         else{
             jsonDiff = diff(dsContentString1, dsContentString2, {aAnnotation: "Removed",
                 bAnnotation: "Added",
                 aColor: TextUtils.chalk.red,
                 bColor: TextUtils.chalk.green
             });
-        }
+        }*/
 
         return {
             success: true,
