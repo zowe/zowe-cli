@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, ImperativeError, ImperativeExpect, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { IZosFilesResponse, Download, IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse, Download, IDownloadOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
@@ -55,7 +55,12 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             task: status,
             responseTimeout: commandParameters.arguments.responseTimeout
         };
+
+        const dataSetObjs = await List.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","),
+            commandParameters.arguments.excludePatterns?.split(","));
+        commandParameters.response.console.log(`${dataSetObjs.length} data set(s) were found matching pattern\n`);
+
         commandParameters.response.progress.startBar({task: status});
-        return Download.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), options);
+        return Download.allDataSets(session, dataSetObjs, options);
     }
 }

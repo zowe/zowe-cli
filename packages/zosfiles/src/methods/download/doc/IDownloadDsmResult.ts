@@ -21,36 +21,19 @@ export interface IDownloadDsmResult {
     downloaded: string[];
 
     /**
-     * Object containing info about data sets that were skipped.
+     * List of data set names that failed to download because they are archived.
      */
-    skipped: {
-        /**
-         * List of data set names that were skipped because they are archived.
-         */
-        archived: string[];
+    failedArchived: string[];
 
-        /**
-         * List of data set names that were skipped because they are empty PO
-         * data sets.
-         */
-        emptyPO: string[];
-
-        /**
-         * List of data set names that were skipped because they match an
-         * exclude pattern.
-         */
-        excluded: string[];
-
-        /**
-         * List of data set names that were skipped because they are an
-         * unsupported type.
-         */
-        unsupported: string[];
-    };
+    /**
+     * List of data set names that failed to download because they are an
+     * unsupported type.
+     */
+    failedUnsupported: string[];
 
     /**
      * Object containing key-value pairs of data set names and errors for data
      * sets that failed to download.
      */
-    failed: { [key: string]: Error };
+    failedWithErrors: { [key: string]: Error };
 }

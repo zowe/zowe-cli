@@ -354,6 +354,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * Message indicating that all data sets matching the provided patterns are archived.
      * @type {IMessageDefinition}
      */
+    // TODO Remove obsolete messages for download dsm
     allDataSetsArchived: {
         message: "All data sets matching the selected pattern(s) were archived."
     },

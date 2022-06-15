@@ -20,6 +20,7 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
+import { IZosmfListResponse } from "./doc/IZosmfListResponse";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -285,6 +286,35 @@ export class List {
             this.log.error(error);
             throw error;
         }
+    }
+
+    public static async dataSetsMatchingPattern(session: AbstractSession, patterns: string[],
+        excludePatterns: string[] = []): Promise<IZosmfListResponse[]> {
+
+        // Pattern is required to be non-empty
+        ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
+        patterns = patterns.filter(Boolean);
+        ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
+        const zosmfResponses: IZosmfListResponse[] = [];
+
+        // Get names of all data sets
+        for (const pattern of patterns) {
+            const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
+            zosmfResponses.push(...listOfDataSets.apiResponse.items);
+        }
+
+        // Exclude names of data sets
+        for (const pattern of (excludePatterns || [])) {
+            const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
+            listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
+                const responseIndex = zosmfResponses.findIndex(response => response.dsname === dataSetObj.dsname);
+                if (responseIndex !== -1) {
+                    zosmfResponses.splice(responseIndex, 1);
+                }
+            });
+        }
+
+        return zosmfResponses;
     }
 
     private static get log() {
