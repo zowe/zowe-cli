@@ -847,7 +847,7 @@ describe("Download Data Set", () => {
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
-                file = dsname.toLowerCase() + ".txt";;
+                file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
