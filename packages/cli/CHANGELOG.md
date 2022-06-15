@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `zowe zos-files compare data-set` command to compare two datasets and display the differences on the terminal. [#1442](https://github.com/zowe/zowe-cli/issues/1442)
+
+## `7.2.3`
+
+- BugFix: Updated Imperative to address `ProfileInfo` related issues.
+
 ## `7.2.2`
 
 - BugFix: Updated Imperative to address `ProfileInfo` related issues.

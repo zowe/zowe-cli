@@ -14,7 +14,7 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src_
 
 describe("View data set handler", () => {
     describe("process method", () => {
-        it("should view a single data set", async () => {
+        it("should compare two data sets", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/compare/ds/Dataset.handler");
             const handler = new handlerReq.default();
@@ -92,20 +92,12 @@ describe("View data set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(1);
+            expect(Get.dataSet).toHaveBeenCalledTimes(2);
             expect(Get.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName1, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Fetching data set"
-                }
-            });
-            expect(Get.dataSet).toHaveBeenCalledTimes(1);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName2, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Fetching data set"
+                    statusMessage: "Retrieving second dataset"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
