@@ -9,11 +9,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { diff } from "jest-diff";
-import { TextUtils } from "@zowe/imperative";
 
 /**
  * Handler to view a data set's content
@@ -71,18 +70,20 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         let dsContentString1 = "";
         let dsContentString2 = "";
 
-        if(commandParameters.arguments.noseqnum == true){
+        if(commandParameters.arguments.noseqnum){
             const seqnumlen = 8;
 
             const dsStringArray1 = dsContentBuf1.toString().split("\n");
-            for(let i = 0; i < dsStringArray1.length; i++){
+            //for(let i = 0; i < dsStringArray1.length; i++){
+            for(const i in dsStringArray1){
                 const sl = dsStringArray1[i].length;
                 const tempString = dsStringArray1[i].substring(0,sl - seqnumlen);
                 dsContentString1 += tempString + "\n";
             }
 
             const dsStringArray2 = dsContentBuf2.toString().split("\n");
-            for(let i = 0; i < dsStringArray2.length; i++){
+            //for(let i = 0; i < dsStringArray2.length; i++){
+            for(const i in dsStringArray2){
                 const sl = dsStringArray2[i].length;
                 const tempString = dsStringArray2[i].substring(0,sl - seqnumlen);
                 dsContentString2 += tempString + "\n";
