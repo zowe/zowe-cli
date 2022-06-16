@@ -74,7 +74,6 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             const seqnumlen = 8;
 
             const dsStringArray1 = dsContentBuf1.toString().split("\n");
-            //for(let i = 0; i < dsStringArray1.length; i++){
             for(const i in dsStringArray1){
                 const sl = dsStringArray1[i].length;
                 const tempString = dsStringArray1[i].substring(0,sl - seqnumlen);
@@ -82,7 +81,6 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             }
 
             const dsStringArray2 = dsContentBuf2.toString().split("\n");
-            //for(let i = 0; i < dsStringArray2.length; i++){
             for(const i in dsStringArray2){
                 const sl = dsStringArray2[i].length;
                 const tempString = dsStringArray2[i].substring(0,sl - seqnumlen);

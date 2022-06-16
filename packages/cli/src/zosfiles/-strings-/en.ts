@@ -698,8 +698,8 @@ export default {
                     DATASETNAME2: "The name of the second data set you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the data set member "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"`,
-                    EX2: `Compare the contents of the data set member "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers`
+                    EX1: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"`,
+                    EX2: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers`
                 }
             }
         },
