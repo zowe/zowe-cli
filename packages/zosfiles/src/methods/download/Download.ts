@@ -28,7 +28,7 @@ import { Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 
-type IZosmfListResponseWithStatus = IZosmfListResponse & { status?: string };
+type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
 interface IDownloadDsmTask {
     handler: (session: AbstractSession, dsname: string, options: IDownloadOptions) => Promise<IZosFilesResponse>;
@@ -332,7 +332,9 @@ export class Download {
         try {
             // Exclude archived data sets
             for (const dataSetObj of zosmfResponses) {
-                if (dataSetObj.dsorg == null) {
+                if (dataSetObj.error != null) {
+                    result.failedWithErrors[dataSetObj.dsname] = dataSetObj.error;
+                } else if (dataSetObj.dsorg == null) {
                     dataSetObj.status = TextUtils.wordWrap(`Skipped: Archived data set or alias - type ${dataSetObj.vol}.`, width);
                     result.failedArchived.push(dataSetObj.dsname);
                 }
@@ -410,7 +412,8 @@ export class Download {
             }
 
             // If we should fail fast, throw error
-            if ((result.failedArchived.length > 0 || result.failedUnsupported.length > 0) && options.failFast !== false) {
+            if ((result.failedArchived.length > 0 || result.failedUnsupported.length > 0 ||
+                Object.keys(result.failedWithErrors).length > 0) && options.failFast !== false) {
                 throw new ImperativeError({
                     msg: `Failed to download data sets`,
                     additionalDetails: this.buildDownloadDsmResponse(result, options)
@@ -420,7 +423,7 @@ export class Download {
             let downloadsInitiated = 0;
             const createDownloadPromise = (task: IDownloadDsmTask) => {
                 if (options.task != null) {
-                    options.task.statusMessage = "Downloading " + task.dsname;
+                    options.task.statusMessage = `Downloading ${downloadsInitiated + 1} of ${downloadTasks.length}: ${task.dsname}`;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (downloadsInitiated / downloadTasks.length));
                     downloadsInitiated++;
@@ -585,17 +588,24 @@ export class Download {
         if (numFailed > 0) {
             responseLines.push(TextUtils.chalk.red(`${numFailed} data set(s) failed to download:`));
             if (result.failedArchived.length > 0) {
-                responseLines.push(TextUtils.chalk.yellow(`${result.failedArchived.length} failed because they are archived`));
-                responseLines.push(...result.failedArchived.map(dsname => `    ${dsname}`));
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${result.failedArchived.length} failed because they are archived`),
+                    ...result.failedArchived.map(dsname => `    ${dsname}`)
+                );
             }
             if (result.failedUnsupported.length > 0) {
-                responseLines.push(TextUtils.chalk.yellow(`${result.failedUnsupported.length} failed because they are an unsupported type`));
-                responseLines.push(...result.failedUnsupported.map(dsname => `    ${dsname}`));
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${result.failedUnsupported.length} failed because they are an unsupported type`),
+                    ...result.failedUnsupported.map(dsname => `    ${dsname}`)
+                );
             }
             if (failedDsnames.length > 0) {
-                responseLines.push(TextUtils.chalk.yellow(`${failedDsnames.length} failed for other reasons`));
-                responseLines.push(...failedDsnames.map(dsname => `    ${dsname}`));
-                responseLines.push(...Object.values(result.failedWithErrors).map((err: Error) => err.message));
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${failedDsnames.length} failed because of an uncaught error`),
+                    ...failedDsnames.map(dsname => `    ${dsname}`),
+                    "",
+                    ...Object.values(result.failedWithErrors).map((err: Error) => err.message)
+                );
             }
             if (options.failFast !== false) {
                 responseLines.push(

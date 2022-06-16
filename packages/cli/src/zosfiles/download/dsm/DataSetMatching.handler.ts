@@ -56,6 +56,7 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         };
 
+        commandParameters.response.console.log(`Searching for data sets, this may take a while...`);
         const dataSetObjs = await List.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","),
             commandParameters.arguments.excludePatterns?.split(","));
         commandParameters.response.console.log(`${dataSetObjs.length} data set(s) were found matching pattern\n`);

@@ -175,6 +175,15 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data sets matching pattern was downloaded successfully
+     * @type {IMessageDefinition}
+     * @deprecated
+     */
+    datasetsDownloadedSuccessfully: {
+        message: "Data sets matching pattern downloaded successfully.\nDestination: %s"
+    },
+
+    /**
      * Message indicating that file is uploaded to data set successfully
      * @type {IMessageDefinition}
      */
@@ -353,8 +362,8 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that all data sets matching the provided patterns are archived.
      * @type {IMessageDefinition}
+     * @deprecated
      */
-    // TODO Remove obsolete messages for download dsm
     allDataSetsArchived: {
         message: "All data sets matching the selected pattern(s) were archived."
     },
@@ -362,6 +371,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
+     * @deprecated
      */
     noDataSetsInList: {
         message: "No data sets left after excluded pattern(s) were filtered out."
@@ -378,6 +388,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
+     * @deprecated
      */
     noDataSetsMatchingPatternRemain: {
         message: "After filtering out the archived files and files that match the exclusion-parameters, no data sets matching" +
@@ -387,6 +398,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that only empty partitioned data sets match the provided patterns
      * @type {IMessageDefinition}
+     * @deprecated
      */
     onlyEmptyPartitionedDataSets: {
         message: "Only empty partitioned data sets match the provided patterns."

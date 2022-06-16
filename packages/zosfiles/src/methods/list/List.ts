@@ -22,6 +22,8 @@ import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
 import { IZosmfListResponse } from "./doc/IZosmfListResponse";
 
+type IZosmfListResponseWithError = IZosmfListResponse & { error?: Error };
+
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
  */
@@ -288,8 +290,15 @@ export class List {
         }
     }
 
+    /**
+     * List data sets that match a DSLEVEL pattern
+     * @param session z/OSMF connection info
+     * @param patterns Data set patterns to include
+     * @param excludePatterns Data set patterns to exclude
+     * @returns List of z/OSMF list responses for each data set
+     */
     public static async dataSetsMatchingPattern(session: AbstractSession, patterns: string[],
-        excludePatterns: string[] = []): Promise<IZosmfListResponse[]> {
+        excludePatterns: string[] = []): Promise<IZosmfListResponseWithError[]> {
 
         // Pattern is required to be non-empty
         ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
@@ -299,14 +308,40 @@ export class List {
 
         // Get names of all data sets
         for (const pattern of patterns) {
-            const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
-            zosmfResponses.push(...listOfDataSets.apiResponse.items);
+            let response: any;
+            try {
+                response = await List.dataSet(session, pattern, { attributes: true });
+            } catch (err) {
+                // Listing data sets with attributes may fail sometimes, for
+                // example if a TSO prompt is triggered. If that happens, we
+                // try first to list them all without attributes, and then fetch
+                // the attributes for each data set one by one. When an error
+                // is thrown we record it on the response object. This is a slow
+                // process but better than throwing an error.
+                response = await List.dataSet(session, pattern);
+                for (let i = 0; i < response.apiResponse.items.length; i++) {
+                    const dataSetObj = response.apiResponse.items[i];
+                    try {
+                        const tempResponse = await List.dataSet(session, dataSetObj.dsname, { attributes: true });
+                        response.apiResponse.items[i] = {
+                            ...dataSetObj,
+                            ...tempResponse.apiResponse.items[0]
+                        };
+                    } catch (innerErr) {
+                        response.apiResponse.items[i] = {
+                            dsname: dataSetObj.dsname,
+                            error: innerErr
+                        };
+                    }
+                }
+            }
+            zosmfResponses.push(...response.apiResponse.items);
         }
 
         // Exclude names of data sets
         for (const pattern of (excludePatterns || [])) {
-            const listOfDataSets = await List.dataSet(session, pattern, { attributes: true });
-            listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
+            const response = await List.dataSet(session, pattern);
+            response.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
                 const responseIndex = zosmfResponses.findIndex(response => response.dsname === dataSetObj.dsname);
                 if (responseIndex !== -1) {
                     zosmfResponses.splice(responseIndex, 1);
