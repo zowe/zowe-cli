@@ -16,8 +16,21 @@
  */
 
 const fs = require("fs");
+const path = require("path");
 
-const packagesDir = fs.readdirSync("packages")
-for (const packageDir of packagesDir) {
-    fs.copyFileSync("./LICENSE", `packages/${packageDir}/LICENSE`);
+// Check if we're executing from the root (npm publish) or individual package (npm pack)
+let projRoot = "." + path.sep
+const currDir = process.cwd()
+if (currDir.indexOf("packages") !== -1) { 
+    // We're in a package, get the absolute path to the root of the project
+    projRoot = currDir.substring(0, currDir.indexOf("packages"));
+}
+const rootPkgDir = projRoot + "packages"
+const pkgList = fs.readdirSync(rootPkgDir)
+for (const pkgDir of pkgList) {
+    // correct for any metadata files in the packages/ dir, like .DS_Store on Mac
+    const absPkgDir = rootPkgDir + path.sep + pkgDir
+    if (fs.lstatSync(absPkgDir).isDirectory()) {
+        fs.copyFileSync(`${projRoot}LICENSE`, `${absPkgDir}${path.sep}LICENSE`);
+    }
 }
