@@ -104,3 +104,6 @@ zowe.config.json
 zowe.config.user.json
 zowe.schema.json
 .github/_act_*.yml
+
+# Licenses in package folders (managed with build scripts)
+packages/*/LICENSE
