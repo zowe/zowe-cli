@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, ImperativeError, ImperativeExpect, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { IZosFilesResponse, Download, IDownloadOptions, List } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse, Download, IDownloadOptions, IDsmListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
@@ -20,14 +20,14 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const status: ITaskWithStatus = {
-            statusMessage: "Downloading data sets",
+            statusMessage: "Searching for data sets",
             percentComplete: 0,
             stageName: TaskStage.IN_PROGRESS
         };
 
         const extensionMap: {[key: string]: string} = {};
         try {
-            if(commandParameters.arguments.extensionMap) {
+            if (commandParameters.arguments.extensionMap) {
                 commandParameters.arguments.extensionMap = commandParameters.arguments.extensionMap.toLowerCase();
                 const unoptimizedMap = commandParameters.arguments.extensionMap.split(",");
                 for (const entry of unoptimizedMap) {
@@ -40,14 +40,26 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             throw new ImperativeError({msg: "An error occurred processing the extension map.", causeErrors: err});
         }
 
-        const options: IDownloadOptions = {
+        const listOptions: IDsmListOptions = {
+            excludePatterns: commandParameters.arguments.excludePatterns?.split(","),
+            maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+            task: status,
+            responseTimeout: commandParameters.arguments.responseTimeout
+        };
+
+        commandParameters.response.progress.startBar({ task: status });
+        const response = await List.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), listOptions);
+        commandParameters.response.progress.endBar();
+        commandParameters.response.console.log(`\r${response.apiResponse.length} data set(s) were found matching pattern\n`);
+
+        status.statusMessage = "Downloading data sets";
+        const downloadOptions: IDownloadOptions = {
             volume: commandParameters.arguments.volumeSerial,
             binary: commandParameters.arguments.binary,
             record: commandParameters.arguments.record,
             encoding: commandParameters.arguments.encoding,
             directory: commandParameters.arguments.directory,
             extension: commandParameters.arguments.extension,
-            excludePatterns: commandParameters.arguments.excludePatterns?.split(","),
             extensionMap: commandParameters.arguments.extensionMap ? extensionMap : null,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
@@ -56,12 +68,7 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         };
 
-        commandParameters.response.console.log(`Searching for data sets, this may take a while...`);
-        const dataSetObjs = await List.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","),
-            commandParameters.arguments.excludePatterns?.split(","));
-        commandParameters.response.console.log(`${dataSetObjs.length} data set(s) were found matching pattern\n`);
-
-        commandParameters.response.progress.startBar({task: status});
-        return Download.allDataSets(session, dataSetObjs, options);
+        commandParameters.response.progress.startBar({ task: status });
+        return Download.allDataSets(session, response.apiResponse, downloadOptions);
     }
 }

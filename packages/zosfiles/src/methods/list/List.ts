@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, IHeaderContent, ImperativeExpect, Logger, TaskProgress } from "@zowe/imperative";
 
 import { posix } from "path";
 
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -21,8 +21,7 @@ import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
 import { IZosmfListResponse } from "./doc/IZosmfListResponse";
-
-type IZosmfListResponseWithError = IZosmfListResponse & { error?: Error };
+import { IDsmListOptions } from "./doc/IDsmListOptions";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -298,7 +297,7 @@ export class List {
      * @returns List of z/OSMF list responses for each data set
      */
     public static async dataSetsMatchingPattern(session: AbstractSession, patterns: string[],
-        excludePatterns: string[] = []): Promise<IZosmfListResponseWithError[]> {
+        options: IDsmListOptions = {}): Promise<IZosFilesResponse> {
 
         // Pattern is required to be non-empty
         ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
@@ -319,27 +318,37 @@ export class List {
                 // is thrown we record it on the response object. This is a slow
                 // process but better than throwing an error.
                 response = await List.dataSet(session, pattern);
-                for (let i = 0; i < response.apiResponse.items.length; i++) {
-                    const dataSetObj = response.apiResponse.items[i];
-                    try {
-                        const tempResponse = await List.dataSet(session, dataSetObj.dsname, { attributes: true });
-                        response.apiResponse.items[i] = {
-                            ...dataSetObj,
-                            ...tempResponse.apiResponse.items[0]
-                        };
-                    } catch (innerErr) {
-                        response.apiResponse.items[i] = {
-                            dsname: dataSetObj.dsname,
-                            error: innerErr
-                        };
+
+                let listsInitiated = 0;
+                const createListPromise = (dataSetObj: any) => {
+                    if (options.task != null) {
+                        options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                            (listsInitiated / response.apiResponse.items.length));
+                        listsInitiated++;
                     }
+
+                    return List.dataSet(session, dataSetObj.dsname, { attributes: true }).then(
+                        (tempResponse) => {
+                            Object.assign(dataSetObj, tempResponse.apiResponse.items[0]);
+                        },
+                        (tempErr) => {
+                            Object.assign(dataSetObj, { error: tempErr });
+                        }
+                    );
+                };
+
+                const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+                if (maxConcurrentRequests === 0) {
+                    await Promise.all(response.apiResponse.items.map(createListPromise));
+                } else {
+                    await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
                 }
             }
             zosmfResponses.push(...response.apiResponse.items);
         }
 
         // Exclude names of data sets
-        for (const pattern of (excludePatterns || [])) {
+        for (const pattern of (options.excludePatterns || [])) {
             const response = await List.dataSet(session, pattern);
             response.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
                 const responseIndex = zosmfResponses.findIndex(response => response.dsname === dataSetObj.dsname);
@@ -349,7 +358,20 @@ export class List {
             });
         }
 
-        return zosmfResponses;
+        // Check if data sets matching pattern found
+        if (zosmfResponses.length === 0) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
+                apiResponse: []
+            };
+        }
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.datasetsListedSuccessfully.message,
+            apiResponse: zosmfResponses
+        };
     }
 
     private static get log() {

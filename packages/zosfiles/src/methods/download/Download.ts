@@ -317,17 +317,8 @@ export class Download {
     public static async allDataSets(session: AbstractSession, dataSetObjs: IZosmfListResponse[],
         options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
         const result = this.emptyDownloadDsmResult();
-        let zosmfResponses: IZosmfListResponseWithStatus[] = [...dataSetObjs];
+        const zosmfResponses: IZosmfListResponseWithStatus[] = [...dataSetObjs];
         const width = 40;
-
-        // Check if data sets matching pattern found
-        if (zosmfResponses.length === 0) {
-            return {
-                success: false,
-                commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
-                apiResponse: []
-            };
-        }
 
         try {
             // Exclude archived data sets
@@ -340,10 +331,9 @@ export class Download {
                 }
             }
 
-            zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => dataSetObj.dsorg != null);
-
             // Download data sets
-            const downloadTasks: IDownloadDsmTask[] = [];
+            const poDownloadTasks: IDownloadDsmTask[] = [];
+            const psDownloadTasks: IDownloadDsmTask[] = [];
             const mutableOptions: IDownloadOptions = { ...options, task: undefined };
 
             for (const dataSetObj of zosmfResponses) {
@@ -385,7 +375,7 @@ export class Download {
                 }
 
                 if (dataSetObj.dsorg === "PS") {
-                    downloadTasks.push({
+                    psDownloadTasks.push({
                         handler: Download.dataSet.bind(this),
                         dsname: dataSetObj.dsname,
                         options: { ...mutableOptions },
@@ -394,13 +384,15 @@ export class Download {
                         }
                     });
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
-                    // TODO Create directory even when there are no members
-                    downloadTasks.push({
+                    poDownloadTasks.push({
                         handler: Download.allMembers.bind(this),
                         dsname: dataSetObj.dsname,
                         options: { ...mutableOptions },
                         onSuccess: (downloadResponse) => {
                             const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
+                            if (listMembers.length === 0) {
+                                IO.createDirsSyncFromFilePath(mutableOptions.directory);
+                            }
                             dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
                         }
                     });
@@ -423,9 +415,9 @@ export class Download {
             let downloadsInitiated = 0;
             const createDownloadPromise = (task: IDownloadDsmTask) => {
                 if (options.task != null) {
-                    options.task.statusMessage = `Downloading ${downloadsInitiated + 1} of ${downloadTasks.length}: ${task.dsname}`;
+                    options.task.statusMessage = "Downloading data set " + task.dsname;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
-                        (downloadsInitiated / downloadTasks.length));
+                        (downloadsInitiated / (poDownloadTasks.length + psDownloadTasks.length)));
                     downloadsInitiated++;
                 }
 
@@ -448,11 +440,15 @@ export class Download {
                 );
             };
 
+            for (const task of poDownloadTasks) {
+                await createDownloadPromise(task);
+            }
+
             const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
             if (maxConcurrentRequests === 0) {
-                await Promise.all(downloadTasks.map(createDownloadPromise));
+                await Promise.all(psDownloadTasks.map(createDownloadPromise));
             } else {
-                await asyncPool(maxConcurrentRequests, downloadTasks, createDownloadPromise);
+                await asyncPool(maxConcurrentRequests, psDownloadTasks, createDownloadPromise);
             }
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -461,7 +457,6 @@ export class Download {
         }
 
         // Handle failed downloads if no errors were thrown yet
-        // TODO Should we throw error for other failures too?
         if (Object.keys(result.failedWithErrors).length > 0) {
             throw new ImperativeError({
                 msg: ZosFilesMessages.datasetDownloadFailed.message + Object.keys(result.failedWithErrors).join("\n"),
@@ -470,11 +465,9 @@ export class Download {
             });
         }
 
-        // All processed data sets that downloaded successfully
-        zosmfResponses = zosmfResponses.filter((dataSetObj: IZosmfListResponse) => result.downloaded.includes(dataSetObj.dsname));
-
+        const numFailed = result.failedArchived.length + result.failedUnsupported.length + Object.keys(result.failedWithErrors).length;
         return {
-            success: true,
+            success: numFailed === 0,
             commandResponse: this.buildDownloadDsmResponse(result, options),
             apiResponse: zosmfResponses
         };
