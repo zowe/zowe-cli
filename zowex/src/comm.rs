@@ -88,7 +88,7 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
                 // start the daemon and continue trying to connect
                 we_started_daemon = true;
                 cmd_to_show = proc_start_daemon(njs_zowe_path);
-            } else if we_started_daemon {
+            } else if we_started_daemon && conn_retries > THREE_MIN_OF_RETRIES {
                 println!("The Zowe daemon that we started is not running on socket: {}.",
                     daemon_socket
                 );
@@ -122,7 +122,7 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
         }
 
         let retry_msg;
-        if we_started_daemon {
+        if we_started_daemon && !daemon_proc_info.is_running {
             retry_msg = "Waiting for the Zowe daemon to start";
         } else {
             retry_msg = "Attempting to connect to the Zowe daemon";
