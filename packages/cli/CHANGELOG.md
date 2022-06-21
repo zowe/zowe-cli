@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.2.4`
+
+- BugFix: Fixed the Zowe Daemon binary exiting with an error if the daemon server does not start within 3 seconds.
+
 ## `7.2.3`
 
 - BugFix: Updated Imperative to address `ProfileInfo` related issues.
