@@ -107,3 +107,4 @@ zowe.schema.json
 
 # Licenses in package folders (managed with build scripts)
 packages/*/LICENSE
+__tests__/__packages__/*/LICENSE

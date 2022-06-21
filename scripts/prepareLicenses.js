@@ -18,18 +18,31 @@
 const fs = require("fs");
 const path = require("path");
 
-// Check if we're executing from the root (npm publish) or individual package (npm pack)
+// Resolve the project root, whether we execute from the project root or a package directory.
 let projRoot = "." + path.sep
-const currDir = process.cwd()
-if (currDir.indexOf("packages") !== -1) { 
-    // We're in a package, get the absolute path to the root of the project
-    projRoot = currDir.substring(0, currDir.indexOf("packages"));
+const keyFile = "lerna.json" // File which only exists in project root
+while (!fs.existsSync(`${projRoot}${keyFile}`)) {
+
+    projRoot = `${projRoot}..${path.sep}`
+
+    if (path.resolve(projRoot) == path.resolve("/")) {
+        console.log("Error trying to find project root - we're in the filesystem root.")
+        console.log(`Make sure you are running from a dir under the project, and the file ${keyFile} exists in the project root.`)
+        process.exit(1)
+    }
 }
+const testPkgDir = projRoot + "__tests__" + path.sep + "__packages__"
 const rootPkgDir = projRoot + "packages"
-const pkgList = fs.readdirSync(rootPkgDir)
-for (const pkgDir of pkgList) {
+for (const pkgDir of fs.readdirSync(rootPkgDir)) {
     // correct for any metadata files in the packages/ dir, like .DS_Store on Mac
     const absPkgDir = rootPkgDir + path.sep + pkgDir
+    if (fs.lstatSync(absPkgDir).isDirectory()) {
+        fs.copyFileSync(`${projRoot}LICENSE`, `${absPkgDir}${path.sep}LICENSE`);
+    }
+}
+for (const pkgDir of fs.readdirSync(testPkgDir)) {
+    // correct for any metadata files in the packages/ dir, like .DS_Store on Mac
+    const absPkgDir = testPkgDir + path.sep + pkgDir
     if (fs.lstatSync(absPkgDir).isDirectory()) {
         fs.copyFileSync(`${projRoot}LICENSE`, `${absPkgDir}${path.sep}LICENSE`);
     }
