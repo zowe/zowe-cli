@@ -36,7 +36,8 @@
     "typedoc": "typedoc",
     "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepack": "node scripts/prepareLicenses.js"
   },
   "dependencies": {
     "@zowe/imperative": "5.3.3",

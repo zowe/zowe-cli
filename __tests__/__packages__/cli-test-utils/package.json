@@ -31,7 +31,8 @@
     "watch": "tsc --pretty --watch",
     "clean": "rimraf lib",
     "lint": "npm run lint:packages",
-    "lint:packages": "eslint \"src/**/*.ts\""
+    "lint:packages": "eslint \"src/**/*.ts\"",
+    "prepack": "node ../../../scripts/prepareLicenses.js"
   },
   "dependencies": {
     "find-up": "^5.0.0",
