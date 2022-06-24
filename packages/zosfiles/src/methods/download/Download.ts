@@ -34,7 +34,7 @@ interface IDownloadDsmTask {
     handler: (session: AbstractSession, dsname: string, options: IDownloadOptions) => Promise<IZosFilesResponse>;
     dsname: string;
     options: IDownloadOptions;
-    onSuccess: (response: IZosFilesResponse) => void;
+    onSuccess: (response: IZosFilesResponse, options: IDownloadOptions) => void;
 }
 
 /**
@@ -383,12 +383,14 @@ export class Download {
                         handler: Download.allMembers.bind(this),
                         dsname: dataSetObj.dsname,
                         options: { ...mutableOptions },
-                        onSuccess: (downloadResponse) => {
+                        onSuccess: (downloadResponse, options) => {
+                            dataSetObj.status = downloadResponse.commandResponse;
                             const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
-                            if (listMembers.length === 0) {
-                                IO.createDirsSyncFromFilePath(mutableOptions.directory);
+                            if (listMembers.length === 0) {  // Create directory for empty PO data set
+                                IO.createDirsSyncFromFilePath(options.directory);
+                            } else {
+                                dataSetObj.status += `\nMembers: ${listMembers};`;
                             }
-                            dataSetObj.status = `${downloadResponse.commandResponse}\nMembers: ${listMembers};`;
                         }
                     });
                 } else {
@@ -419,7 +421,7 @@ export class Download {
                 return task.handler(session, task.dsname, task.options).then(
                     (downloadResponse) => {
                         result.downloaded.push(task.dsname);
-                        task.onSuccess(downloadResponse);
+                        task.onSuccess(downloadResponse, task.options);
                     },
                     (err) => {
                         result.failedWithErrors[task.dsname] = err;

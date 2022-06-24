@@ -988,6 +988,7 @@ describe("z/OS Files - Download", () => {
         const listDataSetSpy = jest.spyOn(List, "dataSet");
         const downloadDatasetSpy = jest.spyOn(Download, "dataSet");
         const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
+        const createDirsSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
 
         const dataSetPS = {
             dsname: "TEST.PS.DATA.SET",
@@ -1504,8 +1505,7 @@ describe("z/OS Files - Download", () => {
                     apiResponse: {
                         items: [
                             { member: "TESTDS" }
-                        ],
-                        returnedRows: 1
+                        ]
                     },
                     commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, "./")
                 };
@@ -1543,6 +1543,52 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download datasets when pattern matches a partitioned dataset with no members", async () => {
+            let response;
+            let caughtError;
+
+            createDirsSpy.mockClear();
+            downloadAllMembersSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: []
+                    },
+                    commandResponse: ZosFilesMessages.noMembersFound.message
+                };
+            });
+
+            List.allMembers = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: []
+                    }
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status: ZosFilesMessages.noMembersFound.message
+                }]
+            });
+            expect(createDirsSpy).toHaveBeenCalledTimes(1);
+            expect(createDirsSpy).toHaveBeenCalledWith("test/po/data/set");
+        });
+
         it("should download datasets when pattern matches a partitioned dataset and directory is supplied", async () => {
             let response;
             let caughtError;
@@ -1553,8 +1599,7 @@ describe("z/OS Files - Download", () => {
                     apiResponse: {
                         items: [
                             { member: "TESTDS" }
-                        ],
-                        returnedRows: 1
+                        ]
                     },
                     commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory)
                 };

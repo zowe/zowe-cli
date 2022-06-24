@@ -609,7 +609,7 @@ describe("Download Data Set", () => {
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname]);
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -646,7 +646,7 @@ describe("Download Data Set", () => {
                 };
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], options);
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -680,7 +680,7 @@ describe("Download Data Set", () => {
                 };
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], options);
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -707,7 +707,7 @@ describe("Download Data Set", () => {
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], {extension: "jcl"});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -740,7 +740,7 @@ describe("Download Data Set", () => {
                 extMap[ending] = "jcl";
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], {extensionMap: extMap});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -757,38 +757,6 @@ describe("Download Data Set", () => {
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}/member.jcl`).toString());
                 expect(fileContents).toEqual(data);
-            });
-
-            it("should not download a data set if it is in the exclude map", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // TODO - convert to UPLOAD APIs when available
-                // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
-                const ending = dsname.split(".").pop();
-                const excludePattern = defaultSystem.zosmf.user + ".ZOSFILE.DOWNLOAD.**." + ending;
-
-                try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], {excludePatterns: [excludePattern]});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeFalsy();
-                expect(response.commandResponse).toContain("No data sets left after excluded pattern(s) were filtered");
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.toLowerCase().replace(regex, "/");
-                // Compare the downloaded contents to those uploaded
-                const fileExists = existsSync(`${file}/member.jcl`);
-                expect(fileExists).toEqual(false);
             });
         });
 
@@ -834,7 +802,7 @@ describe("Download Data Set", () => {
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname]);
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -871,7 +839,7 @@ describe("Download Data Set", () => {
                 };
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], options);
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -903,7 +871,7 @@ describe("Download Data Set", () => {
                 };
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], options);
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -928,7 +896,7 @@ describe("Download Data Set", () => {
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], {extension: "jcl"});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -959,7 +927,7 @@ describe("Download Data Set", () => {
                 extMap[ending] = "jcl";
 
                 try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], {extensionMap: extMap});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -974,36 +942,6 @@ describe("Download Data Set", () => {
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
-            });
-
-            it("should not download a data set if it is in the exclude map", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // TODO - convert to UPLOAD APIs when available
-                // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
-                const ending = dsname.split(".").pop();
-                const excludePattern = defaultSystem.zosmf.user + ".ZOSFILE.DOWNLOAD.**." + ending;
-
-                try {
-                    response = await Download.dataSetsMatchingPattern(REAL_SESSION, [dsname], {excludePatterns: [excludePattern]});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeFalsy();
-                expect(response.commandResponse).toContain("No data sets left after excluded pattern(s) were filtered");
-
-                file = dsname.toLowerCase() + ".txt";
-                // Compare the downloaded contents to those uploaded
-                const fileExists = existsSync(`${file}`);
-                expect(fileExists).toEqual(false);
             });
         });
     });
