@@ -187,8 +187,8 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * Message indicating that the data sets matching pattern were listed successfully
      * @type {IMessageDefinition}
      */
-    datasetsListedSuccessfully: {
-        message: "Data sets matching pattern listed successfully."
+    dataSetsMatchedPattern: {
+        message: "%d data set(s) were found matching pattern."
     },
 
     /**

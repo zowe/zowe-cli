@@ -12,6 +12,7 @@
 import { AbstractSession, IHeaderContent, ImperativeExpect, Logger, TaskProgress } from "@zowe/imperative";
 
 import { posix } from "path";
+import * as util from "util";
 
 import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -385,7 +386,7 @@ export class List {
 
         return {
             success: true,
-            commandResponse: ZosFilesMessages.datasetsListedSuccessfully.message,
+            commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, zosmfResponses.length),
             apiResponse: zosmfResponses
         };
     }

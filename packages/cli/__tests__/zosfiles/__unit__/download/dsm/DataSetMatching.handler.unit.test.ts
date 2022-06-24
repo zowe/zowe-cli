@@ -178,4 +178,32 @@ describe("Download DataSetMatching handler", () => {
         expect(Download.allDataSets).toHaveBeenCalledTimes(1);
         expect(Download.allDataSets).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
     });
+
+    it("should gracefully handle an error from the z/OSMF List API", async () => {
+        const errorMsg = "i haz bad data set";
+        const pattern = "testing";
+        let caughtError;
+        let passedSession: Session = null;
+        List.dataSetsMatchingPattern = jest.fn((session) => {
+            passedSession = session;
+            throw new Error(errorMsg);
+        });
+        Download.allDataSets = jest.fn();
+
+        const handler = new DataSetMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        try {
+            await handler.process(params);
+        } catch (error) {
+            caughtError = error;
+        }
+
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toBe(errorMsg);
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], { ...fakeListOptions });
+        expect(Download.allDataSets).toHaveBeenCalledTimes(0);
+    });
 });

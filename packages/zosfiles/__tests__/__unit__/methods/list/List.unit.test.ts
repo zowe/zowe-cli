@@ -891,9 +891,44 @@ describe("z/OS Files - List", () => {
             dsorg: "PS"
         };
 
+        const dataSetPO = {
+            dsname: "TEST.PO.DATA.SET",
+            dsorg: "PO"
+        };
+
         beforeEach(() => {
             listDataSetSpy.mockClear();
             listDataSetSpy.mockResolvedValue(undefined);
+        });
+
+        it("should successfully list PS and PO data sets using the List.dataSet API", async () => {
+            const pattern = "TEST.**.DATA.SET";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: [dataSetPS, dataSetPO]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern, 2),
+                apiResponse: [dataSetPS, dataSetPO]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, {attributes: true});
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -955,6 +990,37 @@ describe("z/OS Files - List", () => {
             expect(caughtError).toEqual(dummyError);
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(2);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
+        });
+
+        it("should handle an error from the List.dataSet API and fall back to fetching attributes sequentially", async () => {
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementationOnce(async () => {
+                throw new Error("test2");
+            }).mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: [dataSetPS]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern, 1),
+                apiResponse: [dataSetPS]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(3);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
         });
 

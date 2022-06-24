@@ -2,7 +2,7 @@
 
 exports[`Download DataSetMatching handler should download matching datasets if requested 1`] = `
 "
-1 data set(s) were found matching pattern
+listed
 "
 `;
 
@@ -17,7 +17,7 @@ Object {
 
 exports[`Download DataSetMatching handler should handle generation of an exclusion list 1`] = `
 "
-1 data set(s) were found matching pattern
+listed
 "
 `;
 
@@ -32,7 +32,7 @@ Object {
 
 exports[`Download DataSetMatching handler should handle generation of an extension map 1`] = `
 "
-1 data set(s) were found matching pattern
+listed
 "
 `;
 

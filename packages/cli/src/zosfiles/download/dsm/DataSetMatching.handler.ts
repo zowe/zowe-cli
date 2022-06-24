@@ -50,7 +50,7 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
         const response = await List.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), listOptions);
         commandParameters.response.progress.endBar();
         if (response.success) {
-            commandParameters.response.console.log(`\r${response.apiResponse.length} data set(s) were found matching pattern\n`);
+            commandParameters.response.console.log(`\r${response.commandResponse}\n`);
         } else {
             return response;
         }
