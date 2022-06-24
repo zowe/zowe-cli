@@ -923,7 +923,7 @@ describe("z/OS Files - List", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern, 2),
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 2),
                 apiResponse: [dataSetPS, dataSetPO]
             });
 
@@ -1016,7 +1016,7 @@ describe("z/OS Files - List", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern, 1),
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 1),
                 apiResponse: [dataSetPS]
             });
 
