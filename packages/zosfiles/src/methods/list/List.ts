@@ -291,10 +291,17 @@ export class List {
 
     /**
      * List data sets that match a DSLEVEL pattern
-     * @param session z/OSMF connection info
-     * @param patterns Data set patterns to include
-     * @param excludePatterns Data set patterns to exclude
-     * @returns List of z/OSMF list responses for each data set
+     * @param {AbstractSession} session z/OSMF connection info
+     * @param {string[]} patterns Data set patterns to include
+     * @param {IDsmListOptions} options Contains options for the z/OSMF request
+     * @returns {Promise<IZosFilesResponse>} List of z/OSMF list responses for each data set
+     *
+     * @example
+     * ```typescript
+     *
+     * // List all "PS" and "PO" datasets that match the pattern "USER.**.DATASET"
+     * await List.dataSetsMatchingPattern(session, "USER.**.DATASET");
+     * ```
      */
     public static async dataSetsMatchingPattern(session: AbstractSession, patterns: string[],
         options: IDsmListOptions = {}): Promise<IZosFilesResponse> {
@@ -347,6 +354,15 @@ export class List {
             zosmfResponses.push(...response.apiResponse.items);
         }
 
+        // Check if data sets matching pattern found
+        if (zosmfResponses.length === 0) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
+                apiResponse: []
+            };
+        }
+
         // Exclude names of data sets
         for (const pattern of (options.excludePatterns || [])) {
             const response = await List.dataSet(session, pattern);
@@ -358,11 +374,11 @@ export class List {
             });
         }
 
-        // Check if data sets matching pattern found
+        // Check if exclude pattern has left any data sets in the list
         if (zosmfResponses.length === 0) {
             return {
                 success: false,
-                commandResponse: ZosFilesMessages.noDataSetsMatchingPattern.message,
+                commandResponse: ZosFilesMessages.noDataSetsInList.message,
                 apiResponse: []
             };
         }

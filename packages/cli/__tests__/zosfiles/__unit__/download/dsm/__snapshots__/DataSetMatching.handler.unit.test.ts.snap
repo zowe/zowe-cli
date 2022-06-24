@@ -1,49 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Download DataSetMatching handler process method should download matching datasets if requested 1`] = `
+exports[`Download DataSetMatching handler should download matching datasets if requested 1`] = `
+"
+1 data set(s) were found matching pattern
+"
+`;
+
+exports[`Download DataSetMatching handler should download matching datasets if requested 2`] = `"downloaded"`;
+
+exports[`Download DataSetMatching handler should download matching datasets if requested 3`] = `
 Object {
   "commandResponse": "downloaded",
   "success": true,
 }
 `;
 
-exports[`Download DataSetMatching handler process method should download matching datasets if requested 2`] = `""`;
-
-exports[`Download DataSetMatching handler process method should download matching datasets if requested 3`] = `
+exports[`Download DataSetMatching handler should handle generation of an exclusion list 1`] = `
 "
-downloaded"
+1 data set(s) were found matching pattern
+"
 `;
 
-exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 1`] = `undefined`;
+exports[`Download DataSetMatching handler should handle generation of an exclusion list 2`] = `"downloaded"`;
 
-exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 2`] = `""`;
-
-exports[`Download DataSetMatching handler process method should gracefully handle an extension map parsing error 3`] = `""`;
-
-exports[`Download DataSetMatching handler process method should handle generation of an exclusion list 1`] = `
+exports[`Download DataSetMatching handler should handle generation of an exclusion list 3`] = `
 Object {
   "commandResponse": "downloaded",
   "success": true,
 }
 `;
 
-exports[`Download DataSetMatching handler process method should handle generation of an exclusion list 2`] = `""`;
-
-exports[`Download DataSetMatching handler process method should handle generation of an exclusion list 3`] = `
+exports[`Download DataSetMatching handler should handle generation of an extension map 1`] = `
 "
-downloaded"
+1 data set(s) were found matching pattern
+"
 `;
 
-exports[`Download DataSetMatching handler process method should handle generation of an extension map 1`] = `
+exports[`Download DataSetMatching handler should handle generation of an extension map 2`] = `"downloaded"`;
+
+exports[`Download DataSetMatching handler should handle generation of an extension map 3`] = `
 Object {
   "commandResponse": "downloaded",
   "success": true,
 }
-`;
-
-exports[`Download DataSetMatching handler process method should handle generation of an extension map 2`] = `""`;
-
-exports[`Download DataSetMatching handler process method should handle generation of an extension map 3`] = `
-"
-downloaded"
 `;

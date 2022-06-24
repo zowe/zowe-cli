@@ -9,8 +9,27 @@
 *
 */
 
-import { Download, IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { IHandlerParameters, Session } from "@zowe/imperative";
+import { Download, IDownloadOptions, IDsmListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
+import * as DataSetMatchingDefinition from "../../../../../src/zosfiles/download/dsm/DataSetMatching.definition";
+import * as DataSetMatchingHandler from "../../../../../src/zosfiles/download/dsm/DataSetMatching.handler";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
+
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+    positionals: ["zos-jobs", "download", "output"],
+    definition: DataSetMatchingDefinition.DataSetMatchingDefinition,
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
+
+const fakeListOptions: IDsmListOptions = {
+    task: {
+        percentComplete: 0,
+        stageName: 0,
+        statusMessage: "Searching for data sets"
+    }
+};
 
 const fakeDownloadOptions: IDownloadOptions = {
     binary: undefined,
@@ -18,312 +37,145 @@ const fakeDownloadOptions: IDownloadOptions = {
     encoding: undefined,
     excludePatterns: undefined,
     extension: undefined,
-    extensionMap: null,
+    extensionMap: undefined,
     failFast: undefined,
     maxConcurrentRequests: undefined,
     preserveOriginalLetterCase: undefined,
     record: undefined,
     responseTimeout: undefined,
-    volume: undefined
+    volume: undefined,
+    task: {
+        percentComplete: 0,
+        stageName: 0,
+        statusMessage: "Downloading data sets"
+    }
 };
 
 describe("Download DataSetMatching handler", () => {
-    describe("process method", () => {
-        it("should download matching datasets if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/download/dsm/DataSetMatching.handler");
-            const handler = new handlerReq.default();
-            const pattern = "testing";
-
-            // Vars populated by the mocked function
-            let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
-
-            // Mock the submit JCL function
-            Download.dataSetsMatchingPattern = jest.fn((session) => {
-                fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "downloaded"
-                };
-            });
-
-            try {
-                // Invoke the handler with a full set of mocked arguments and response functions
-                await handler.process({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"],
-                        pattern,
-                        ...UNIT_TEST_ZOSMF_PROF_OPTS
-                    },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        },
-                        progress: {
-                            startBar: jest.fn((parms) => {
-                                // do nothing
-                            }),
-                            endBar: jest.fn(() => {
-                                // do nothing
-                            })
-                        }
-                    }
-                } as any);
-            } catch (e) {
-                error = e;
-            }
-
-            expect(error).toBeUndefined();
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledWith(fakeSession, [pattern], {
-                ...fakeDownloadOptions,
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Downloading data sets"
-                }
-            });
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+    it("should download matching datasets if requested", async () => {
+        const pattern = "testing";
+        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        let passedSession: Session = null;
+        List.dataSetsMatchingPattern = jest.fn((session) => {
+            passedSession = session;
+            return {
+                success: true,
+                commandResponse: "listed",
+                apiResponse: fakeListResponse
+            };
+        });
+        Download.allDataSets = jest.fn((session) => {
+            return {
+                success: true,
+                commandResponse: "downloaded"
+            };
         });
 
-        it("should handle generation of an extension map", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/download/dsm/DataSetMatching.handler");
-            const handler = new handlerReq.default();
-            const pattern = "testing";
+        const handler = new DataSetMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        await handler.process(params);
 
-            // Vars populated by the mocked function
-            let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
-            const extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], { ...fakeListOptions });
+        expect(Download.allDataSets).toHaveBeenCalledTimes(1);
+        expect(Download.allDataSets).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
+    });
 
-            // Mock the submit JCL function
-            Download.dataSetsMatchingPattern = jest.fn((session) => {
-                fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "downloaded"
-                };
-            });
-
-            try {
-                // Invoke the handler with a full set of mocked arguments and response functions
-                await handler.process({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"],
-                        pattern,
-                        extensionMap,
-                        ...UNIT_TEST_ZOSMF_PROF_OPTS
-                    },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        },
-                        progress: {
-                            startBar: jest.fn((parms) => {
-                                // do nothing
-                            }),
-                            endBar: jest.fn(() => {
-                                // do nothing
-                            })
-                        }
-                    }
-                } as any);
-            } catch (e) {
-                error = e;
-            }
-
-            expect(error).toBeUndefined();
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledWith(fakeSession, [pattern], {
-                ...fakeDownloadOptions,
-                extensionMap: {cntl: "jcl", parmlib: "jcl", loadlib: "jcl"},
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Downloading data sets"
-                }
-            });
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+    it("should handle generation of an extension map", async () => {
+        const pattern = "testing";
+        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        const extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
+        let passedSession: Session = null;
+        List.dataSetsMatchingPattern = jest.fn((session) => {
+            passedSession = session;
+            return {
+                success: true,
+                commandResponse: "listed",
+                apiResponse: fakeListResponse
+            };
+        });
+        Download.allDataSets = jest.fn((session) => {
+            return {
+                success: true,
+                commandResponse: "downloaded"
+            };
         });
 
-        it("should gracefully handle an extension map parsing error", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/download/dsm/DataSetMatching.handler");
-            const handler = new handlerReq.default();
-            const pattern = "testing";
+        const handler = new DataSetMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        params.arguments.extensionMap = extensionMap;
+        await handler.process(params);
 
-            // Vars populated by the mocked function
-            let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
-            const extensionMap = "CNTL=JCL,PARMLIB-JCL,LOADLIB=JCL";
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], { ...fakeListOptions });
+        expect(Download.allDataSets).toHaveBeenCalledTimes(1);
+        expect(Download.allDataSets).toHaveBeenCalledWith(passedSession, fakeListResponse, {
+            ...fakeDownloadOptions,
+            extensionMap: { cntl: "jcl", parmlib: "jcl", loadlib: "jcl" }
+        });
+    });
 
-            // Mock the submit JCL function
-            Download.dataSetsMatchingPattern = jest.fn((session) => {
-                fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "downloaded"
-                };
-            });
+    it("should gracefully handle an extension map parsing error", async () => {
+        const pattern = "testing";
+        const extensionMap = "CNTL=JCL,PARMLIB-JCL,LOADLIB=JCL";
+        let caughtError;
+        List.dataSetsMatchingPattern = jest.fn();
+        Download.allDataSets = jest.fn();
 
-            try {
-                // Invoke the handler with a full set of mocked arguments and response functions
-                await handler.process({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"],
-                        pattern,
-                        extensionMap,
-                        ...UNIT_TEST_ZOSMF_PROF_OPTS
-                    },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        },
-                        progress: {
-                            startBar: jest.fn((parms) => {
-                                // do nothing
-                            }),
-                            endBar: jest.fn(() => {
-                                // do nothing
-                            })
-                        }
-                    }
-                } as any);
-            } catch (e) {
-                error = e;
-            }
+        const handler = new DataSetMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        params.arguments.extensionMap = extensionMap;
+        try {
+            await handler.process(params);
+        } catch (error) {
+            caughtError = error;
+        }
 
-            expect(error).toBeDefined();
-            expect(error.message).toContain("An error occurred processing the extension map");
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledTimes(0);
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain("An error occurred processing the extension map");
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(0);
+        expect(Download.allDataSets).toHaveBeenCalledTimes(0);
+    });
+
+    it("should handle generation of an exclusion list", async () => {
+        const pattern = "testing";
+        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        const excludePatterns = "TEST.EXCLUDE.**.CNTL";
+        let passedSession: Session = null;
+        List.dataSetsMatchingPattern = jest.fn((session) => {
+            passedSession = session;
+            return {
+                success: true,
+                commandResponse: "listed",
+                apiResponse: fakeListResponse
+            };
+        });
+        Download.allDataSets = jest.fn((session) => {
+            return {
+                success: true,
+                commandResponse: "downloaded"
+            };
         });
 
-        it("should handle generation of an exclusion list", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/download/dsm/DataSetMatching.handler");
-            const handler = new handlerReq.default();
-            const pattern = "testing";
+        const handler = new DataSetMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        params.arguments.excludePatterns = excludePatterns;
+        await handler.process(params);
 
-            // Vars populated by the mocked function
-            let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
-            const excludePatterns = "TEST.EXCLUDE.**.CNTL";
-
-            // Mock the submit JCL function
-            Download.dataSetsMatchingPattern = jest.fn((session) => {
-                fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "downloaded"
-                };
-            });
-
-            try {
-                // Invoke the handler with a full set of mocked arguments and response functions
-                await handler.process({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"],
-                        pattern,
-                        excludePatterns,
-                        ...UNIT_TEST_ZOSMF_PROF_OPTS
-                    },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        },
-                        progress: {
-                            startBar: jest.fn((parms) => {
-                                // do nothing
-                            }),
-                            endBar: jest.fn(() => {
-                                // do nothing
-                            })
-                        }
-                    }
-                } as any);
-            } catch (e) {
-                error = e;
-            }
-
-            expect(error).toBeUndefined();
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
-            expect(Download.dataSetsMatchingPattern).toHaveBeenCalledWith(fakeSession, [pattern], {
-                ...fakeDownloadOptions,
-                excludePatterns: ["TEST.EXCLUDE.**.CNTL"],
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Downloading data sets"
-                }
-            });
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], {
+            ...fakeListOptions,
+            excludePatterns: [excludePatterns]
         });
+        expect(Download.allDataSets).toHaveBeenCalledTimes(1);
+        expect(Download.allDataSets).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
     });
 });

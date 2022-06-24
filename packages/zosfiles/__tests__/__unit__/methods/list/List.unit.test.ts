@@ -16,6 +16,7 @@ import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { posix } from "path";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import { IListOptions } from "../../../../src";
+import * as util from "util";
 
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
@@ -880,5 +881,109 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
+    });
+
+    describe("dataSetsMatchingPattern", () => {
+        const listDataSetSpy = jest.spyOn(List, "dataSet");
+
+        const dataSetPS = {
+            dsname: "TEST.PS.DATA.SET",
+            dsorg: "PS"
+        };
+
+        beforeEach(() => {
+            listDataSetSpy.mockClear();
+            listDataSetSpy.mockResolvedValue(undefined);
+        });
+
+        it("should throw an error if the data set name is not specified", async () => {
+            let response;
+            let caughtError;
+
+            // Test for NULL
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, null);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingPatterns.message);
+
+            caughtError = undefined;
+            // Test for UNDEFINED
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, undefined);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingPatterns.message);
+
+            caughtError = undefined;
+            // Test for EMPTY
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, ["", undefined, null]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingPatterns.message);
+        });
+
+        it("should handle an error from the List.dataSet API", async () => {
+            const dummyError = new Error("test2");
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(2);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
+        });
+
+        it("should handle an error when the exclude pattern is specified", async () => {
+            const excludePatterns = ["TEST.PS.DATA.SET"];
+            let response;
+            let caughtError;
+
+            List.dataSet = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [dataSetPS]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(
+                    dummySession, [dataSetPS.dsname], { excludePatterns });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: util.format(ZosFilesMessages.noDataSetsInList.message),
+                apiResponse: []
+            });
+        });
     });
 });

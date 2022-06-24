@@ -19,12 +19,6 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const status: ITaskWithStatus = {
-            statusMessage: "Searching for data sets",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-
         const extensionMap: {[key: string]: string} = {};
         try {
             if (commandParameters.arguments.extensionMap) {
@@ -40,19 +34,32 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             throw new ImperativeError({msg: "An error occurred processing the extension map.", causeErrors: err});
         }
 
+        const listStatus: ITaskWithStatus = {
+            statusMessage: "Searching for data sets",
+            percentComplete: 0,
+            stageName: TaskStage.IN_PROGRESS
+        };
         const listOptions: IDsmListOptions = {
             excludePatterns: commandParameters.arguments.excludePatterns?.split(","),
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-            task: status,
+            task: listStatus,
             responseTimeout: commandParameters.arguments.responseTimeout
         };
 
-        commandParameters.response.progress.startBar({ task: status });
+        commandParameters.response.progress.startBar({ task: listStatus });
         const response = await List.dataSetsMatchingPattern(session, commandParameters.arguments.pattern.split(","), listOptions);
         commandParameters.response.progress.endBar();
-        commandParameters.response.console.log(`\r${response.apiResponse.length} data set(s) were found matching pattern\n`);
+        if (response.success) {
+            commandParameters.response.console.log(`\r${response.apiResponse.length} data set(s) were found matching pattern\n`);
+        } else {
+            return response;
+        }
 
-        status.statusMessage = "Downloading data sets";
+        const downloadStatus: ITaskWithStatus = {
+            statusMessage: "Downloading data sets",
+            percentComplete: 0,
+            stageName: TaskStage.IN_PROGRESS
+        };
         const downloadOptions: IDownloadOptions = {
             volume: commandParameters.arguments.volumeSerial,
             binary: commandParameters.arguments.binary,
@@ -60,15 +67,15 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             encoding: commandParameters.arguments.encoding,
             directory: commandParameters.arguments.directory,
             extension: commandParameters.arguments.extension,
-            extensionMap: commandParameters.arguments.extensionMap ? extensionMap : null,
+            extensionMap: commandParameters.arguments.extensionMap ? extensionMap : undefined,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
             failFast: commandParameters.arguments.failFast,
-            task: status,
+            task: downloadStatus,
             responseTimeout: commandParameters.arguments.responseTimeout
         };
 
-        commandParameters.response.progress.startBar({ task: status });
+        commandParameters.response.progress.startBar({ task: downloadStatus });
         return Download.allDataSets(session, response.apiResponse, downloadOptions);
     }
 }

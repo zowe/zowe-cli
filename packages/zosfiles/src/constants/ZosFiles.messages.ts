@@ -368,6 +368,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that data set objects were not passed.
+     * @type {IMessageDefinition}
+     */
+    missingDataSets: {
+        message: "No list of data sets to download was passed."
+    },
+
+    /**
      * Message indicating that all data sets matching the provided patterns are archived.
      * @type {IMessageDefinition}
      * @deprecated
@@ -410,6 +418,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     onlyEmptyPartitionedDataSets: {
         message: "Only empty partitioned data sets match the provided patterns."
+    },
+
+    /**
+     * Message indicating that some or all data sets failed to download
+     * @type {IMessageDefinition}
+     */
+    failedToDownloadDataSets: {
+        message: "Failed to download data sets"
     },
 
     /**

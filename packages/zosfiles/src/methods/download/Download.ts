@@ -291,11 +291,11 @@ export class Download {
     }
 
     /**
-     * Download data sets that match a DSLEVEL pattern to local files
+     * Download a list of data sets to local files
      *
-     * @param {AbstractSession}  session      - z/OS MF connection info
-     * @param {string}           patterns     - contains the data set(s) pattern
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {AbstractSession}  session         - z/OS MF connection info
+     * @param {IZosmfListResponse[]} dataSetObjs - contains data set objects returned by z/OSMF List API
+     * @param {IDownloadOptions} [options={}]    - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
@@ -305,32 +305,22 @@ export class Download {
      * @example
      * ```typescript
      *
-     * // Download all "PS" and "PO" datasets that match the pattern "USER.**.DATASET" to "user/data/set/pds/"
-     * await Download.dataSetsMatchingPattern(session, "USER.DATA.SET.PDS");
-     *
-     * // Download all "PS" and "PO" datasets that match the pattern "USER.**.DATASET" to "./path/to/dir/"
-     * await Download.dataSetsMatchingPattern(session, "USER.**.PDS", {directory: "./path/to/dir/"});
+     * // Download a list of "PS" and "PO" datasets to the directory "./path/to/dir/"
+     * await Download.allDataSets(session, [
+     *    { dsname: "USER.DATA.SET.PS", dsorg: "PS" },
+     *    { dsname: "USER.DATA.SET.PDS", dsorg: "PO" }
+     * ], {directory: "./path/to/dir/"});
      * ```
      *
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.izua700/IZUHPINFO_API_GetReadDataSet.htm
      */
     public static async allDataSets(session: AbstractSession, dataSetObjs: IZosmfListResponse[],
         options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeEqual(dataSetObjs.length, 0, ZosFilesMessages.missingDataSets.message);
         const result = this.emptyDownloadDsmResult();
         const zosmfResponses: IZosmfListResponseWithStatus[] = [...dataSetObjs];
-        const width = 40;
 
         try {
-            // Exclude archived data sets
-            for (const dataSetObj of zosmfResponses) {
-                if (dataSetObj.error != null) {
-                    result.failedWithErrors[dataSetObj.dsname] = dataSetObj.error;
-                } else if (dataSetObj.dsorg == null) {
-                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Archived data set or alias - type ${dataSetObj.vol}.`, width);
-                    result.failedArchived.push(dataSetObj.dsname);
-                }
-            }
-
             // Download data sets
             const poDownloadTasks: IDownloadDsmTask[] = [];
             const psDownloadTasks: IDownloadDsmTask[] = [];
@@ -374,13 +364,18 @@ export class Download {
                     mutableOptions.extension = undefined;
                 }
 
-                if (dataSetObj.dsorg === "PS") {
+                if (dataSetObj.error != null) {
+                    result.failedWithErrors[dataSetObj.dsname] = dataSetObj.error;
+                } else if (dataSetObj.dsorg == null) {
+                    dataSetObj.status = `Skipped: Archived data set or alias - type ${dataSetObj.vol}.`;
+                    result.failedArchived.push(dataSetObj.dsname);
+                } else if (dataSetObj.dsorg === "PS") {
                     psDownloadTasks.push({
                         handler: Download.dataSet.bind(this),
                         dsname: dataSetObj.dsname,
                         options: { ...mutableOptions },
                         onSuccess: (downloadResponse) => {
-                            dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}`, width);
+                            dataSetObj.status = downloadResponse.commandResponse;
                         }
                     });
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
@@ -393,11 +388,11 @@ export class Download {
                             if (listMembers.length === 0) {
                                 IO.createDirsSyncFromFilePath(mutableOptions.directory);
                             }
-                            dataSetObj.status = TextUtils.wordWrap(`${downloadResponse.commandResponse}\nMembers: ${listMembers};`, width);
+                            dataSetObj.status = `${downloadResponse.commandResponse}\nMembers: ${listMembers};`;
                         }
                     });
                 } else {
-                    dataSetObj.status = TextUtils.wordWrap(`Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`, width);
+                    dataSetObj.status = `Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`;
                     result.failedUnsupported.push(dataSetObj.dsname);
                 }
                 mutableOptions.directory = options.directory;
@@ -407,7 +402,7 @@ export class Download {
             if ((result.failedArchived.length > 0 || result.failedUnsupported.length > 0 ||
                 Object.keys(result.failedWithErrors).length > 0) && options.failFast !== false) {
                 throw new ImperativeError({
-                    msg: `Failed to download data sets`,
+                    msg: ZosFilesMessages.failedToDownloadDataSets.message,
                     additionalDetails: this.buildDownloadDsmResponse(result, options)
                 });
             }
@@ -440,10 +435,14 @@ export class Download {
                 );
             };
 
+            // First download the partitioned data sets
+            // We execute the promises sequentially to make sure that
+            // we do not exceed `--mcr` when downloading multiple members
             for (const task of poDownloadTasks) {
                 await createDownloadPromise(task);
             }
 
+            // Next download the sequential data sets in a pool
             const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
             if (maxConcurrentRequests === 0) {
                 await Promise.all(psDownloadTasks.map(createDownloadPromise));
