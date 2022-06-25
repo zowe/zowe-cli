@@ -4947,6 +4947,12 @@
         "@babel/types": "^7.3.0"
       }
     },
+    "node_modules/@types/diff": {
+      "version": "5.0.2",
+      "resolved": "https://registry.npmjs.org/@types/diff/-/diff-5.0.2.tgz",
+      "integrity": "sha512-uw8eYMIReOwstQ0QKF0sICefSy8cNO/v7gOTiIy9SbwuHyEecJUm7qlgueOO5S1udZ5I/irVydHVwMchgzbKTg==",
+      "dev": true
+    },
     "node_modules/@types/glob": {
       "version": "7.2.0",
       "resolved": "https://registry.npmjs.org/@types/glob/-/glob-7.2.0.tgz",
@@ -5576,8 +5582,7 @@
     "node_modules/abbrev": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz",
-      "integrity": "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==",
-      "dev": true
+      "integrity": "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q=="
     },
     "node_modules/acorn": {
       "version": "7.4.1",
@@ -8649,7 +8654,6 @@
       "version": "5.0.0",
       "resolved": "https://registry.npmjs.org/diff/-/diff-5.0.0.tgz",
       "integrity": "sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==",
-      "dev": true,
       "engines": {
         "node": ">=0.3.1"
       }
@@ -8663,10 +8667,9 @@
       }
     },
     "node_modules/diff2html": {
-      "version": "3.4.14",
-      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-3.4.14.tgz",
-      "integrity": "sha512-cMS7WYOELzSMuAmRMR0+vNwF8PjcFXOyutYEdXkcAXeA7l2AVEi3XdNnC1lk4bh2xSFKkoQ6Lhy+iqtcRonkww==",
-      "dev": true,
+      "version": "3.4.17",
+      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-3.4.17.tgz",
+      "integrity": "sha512-B/H+iLRHTsRl2Ffs/7tYJ0Rg4uisXe83inIdNE8trXY83Wn7OCTslJNP7fyaUpSsLbRIzPSNgT7LqFNiIQlDyg==",
       "dependencies": {
         "diff": "5.0.0",
         "hogan.js": "3.0.2"
@@ -8675,7 +8678,7 @@
         "node": ">=12"
       },
       "optionalDependencies": {
-        "highlight.js": "11.2.0"
+        "highlight.js": "11.5.1"
       }
     },
     "node_modules/dir-glob": {
@@ -12025,10 +12028,9 @@
       }
     },
     "node_modules/highlight.js": {
-      "version": "11.2.0",
-      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-11.2.0.tgz",
-      "integrity": "sha512-JOySjtOEcyG8s4MLR2MNbLUyaXqUunmSnL2kdV/KuGJOmHZuAR5xC54Ko7goAXBWNhf09Vy3B+U7vR62UZ/0iw==",
-      "dev": true,
+      "version": "11.5.1",
+      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-11.5.1.tgz",
+      "integrity": "sha512-LKzHqnxr4CrD2YsNoIf/o5nJ09j4yi/GcH5BnYz9UnVpZdS4ucMgvP61TDty5xJcFGRjnH4DpujkS9bHT3hq0Q==",
       "optional": true,
       "engines": {
         "node": ">=12.0.0"
@@ -12038,7 +12040,6 @@
       "version": "3.0.2",
       "resolved": "https://registry.npmjs.org/hogan.js/-/hogan.js-3.0.2.tgz",
       "integrity": "sha1-TNnhq9QpQUbnZ55B14mHMrAse/0=",
-      "dev": true,
       "dependencies": {
         "mkdirp": "0.3.0",
         "nopt": "1.0.10"
@@ -12052,7 +12053,6 @@
       "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz",
       "integrity": "sha1-G79asbqCevI1dRQ0kEJkVfSB/h4=",
       "deprecated": "Legacy versions of mkdirp are no longer supported. Please update to mkdirp 1.x. (Note that the API surface has changed to use Promises in 1.x.)",
-      "dev": true,
       "engines": {
         "node": "*"
       }
@@ -18656,7 +18656,6 @@
       "version": "1.0.10",
       "resolved": "https://registry.npmjs.org/nopt/-/nopt-1.0.10.tgz",
       "integrity": "sha1-bd0hvSoxQXuScn3Vhfim83YI6+4=",
-      "dev": true,
       "dependencies": {
         "abbrev": "1"
       },
@@ -24979,6 +24978,8 @@
         "@zowe/zos-uss-for-zowe-sdk": "7.2.3",
         "@zowe/zos-workflows-for-zowe-sdk": "7.2.3",
         "@zowe/zosmf-for-zowe-sdk": "7.2.3",
+        "diff": "^5.1.0",
+        "diff2html": "^3.4.17",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
         "lodash": "4.17.21",
@@ -24990,6 +24991,7 @@
         "zowe": "lib/main.js"
       },
       "devDependencies": {
+        "@types/diff": "^5.0.2",
         "@types/lodash": "^4.14.175",
         "@types/node": "^12.12.24",
         "@types/tar": "6.1.1",
@@ -25010,6 +25012,14 @@
       },
       "optionalDependencies": {
         "keytar": "7.8.0"
+      }
+    },
+    "packages/cli/node_modules/diff": {
+      "version": "5.1.0",
+      "resolved": "https://registry.npmjs.org/diff/-/diff-5.1.0.tgz",
+      "integrity": "sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==",
+      "engines": {
+        "node": ">=0.3.1"
       }
     },
     "packages/cli/node_modules/get-stream": {
@@ -25037,6 +25047,9 @@
       "engines": {
         "node": ">= 8"
       }
+    },
+    "packages/cli/packages/cli": {
+      "extraneous": true
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
@@ -29259,6 +29272,12 @@
         "@babel/types": "^7.3.0"
       }
     },
+    "@types/diff": {
+      "version": "5.0.2",
+      "resolved": "https://registry.npmjs.org/@types/diff/-/diff-5.0.2.tgz",
+      "integrity": "sha512-uw8eYMIReOwstQ0QKF0sICefSy8cNO/v7gOTiIy9SbwuHyEecJUm7qlgueOO5S1udZ5I/irVydHVwMchgzbKTg==",
+      "dev": true
+    },
     "@types/glob": {
       "version": "7.2.0",
       "resolved": "https://registry.npmjs.org/@types/glob/-/glob-7.2.0.tgz",
@@ -29277,6 +29296,11 @@
       "requires": {
         "@types/node": "*"
       }
+    },
+    "@types/hogan.js": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/@types/hogan.js/-/hogan.js-3.0.1.tgz",
+      "integrity": "sha512-D03i/2OY7kGyMq9wdQ7oD8roE49z/ZCZThe/nbahtvuqCNZY9T2MfedOWyeBdbEpY2W8Gnh/dyJLdFtUCOkYbg=="
     },
     "@types/istanbul-lib-coverage": {
       "version": "2.0.4",
@@ -29536,6 +29560,7 @@
     "@zowe/cli": {
       "version": "file:packages/cli",
       "requires": {
+        "@types/diff": "^5.0.2",
         "@types/lodash": "^4.14.175",
         "@types/node": "^12.12.24",
         "@types/tar": "6.1.1",
@@ -29554,6 +29579,8 @@
         "@zowe/zos-workflows-for-zowe-sdk": "7.2.3",
         "@zowe/zosmf-for-zowe-sdk": "7.2.3",
         "comment-json": "^4.1.0",
+        "diff": "^5.1.0",
+        "diff2html": "^3.4.17",
         "eslint": "^7.32.0",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
@@ -29570,6 +29597,11 @@
         "which": "2.0.2"
       },
       "dependencies": {
+        "diff": {
+          "version": "5.1.0",
+          "resolved": "https://registry.npmjs.org/diff/-/diff-5.1.0.tgz",
+          "integrity": "sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw=="
+        },
         "get-stream": {
           "version": "6.0.1",
           "resolved": "https://registry.npmjs.org/get-stream/-/get-stream-6.0.1.tgz",
@@ -29970,8 +30002,7 @@
     "abbrev": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz",
-      "integrity": "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==",
-      "dev": true
+      "integrity": "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q=="
     },
     "acorn": {
       "version": "7.4.1",
@@ -32388,8 +32419,7 @@
     "diff": {
       "version": "5.0.0",
       "resolved": "https://registry.npmjs.org/diff/-/diff-5.0.0.tgz",
-      "integrity": "sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==",
-      "dev": true
+      "integrity": "sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w=="
     },
     "diff-sequences": {
       "version": "27.4.0",
@@ -32397,13 +32427,12 @@
       "integrity": "sha512-YqiQzkrsmHMH5uuh8OdQFU9/ZpADnwzml8z0O5HvRNda+5UZsaX/xN+AAxfR2hWq1Y7HZnAzO9J5lJXOuDz2Ww=="
     },
     "diff2html": {
-      "version": "3.4.14",
-      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-3.4.14.tgz",
-      "integrity": "sha512-cMS7WYOELzSMuAmRMR0+vNwF8PjcFXOyutYEdXkcAXeA7l2AVEi3XdNnC1lk4bh2xSFKkoQ6Lhy+iqtcRonkww==",
-      "dev": true,
+      "version": "3.4.17",
+      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-3.4.17.tgz",
+      "integrity": "sha512-B/H+iLRHTsRl2Ffs/7tYJ0Rg4uisXe83inIdNE8trXY83Wn7OCTslJNP7fyaUpSsLbRIzPSNgT7LqFNiIQlDyg==",
       "requires": {
         "diff": "5.0.0",
-        "highlight.js": "11.2.0",
+        "highlight.js": "11.5.1",
         "hogan.js": "3.0.2"
       }
     },
@@ -35047,17 +35076,15 @@
       }
     },
     "highlight.js": {
-      "version": "11.2.0",
-      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-11.2.0.tgz",
-      "integrity": "sha512-JOySjtOEcyG8s4MLR2MNbLUyaXqUunmSnL2kdV/KuGJOmHZuAR5xC54Ko7goAXBWNhf09Vy3B+U7vR62UZ/0iw==",
-      "dev": true,
+      "version": "11.5.1",
+      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-11.5.1.tgz",
+      "integrity": "sha512-LKzHqnxr4CrD2YsNoIf/o5nJ09j4yi/GcH5BnYz9UnVpZdS4ucMgvP61TDty5xJcFGRjnH4DpujkS9bHT3hq0Q==",
       "optional": true
     },
     "hogan.js": {
       "version": "3.0.2",
       "resolved": "https://registry.npmjs.org/hogan.js/-/hogan.js-3.0.2.tgz",
       "integrity": "sha1-TNnhq9QpQUbnZ55B14mHMrAse/0=",
-      "dev": true,
       "requires": {
         "mkdirp": "0.3.0",
         "nopt": "1.0.10"
@@ -35066,8 +35093,7 @@
         "mkdirp": {
           "version": "0.3.0",
           "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz",
-          "integrity": "sha1-G79asbqCevI1dRQ0kEJkVfSB/h4=",
-          "dev": true
+          "integrity": "sha1-G79asbqCevI1dRQ0kEJkVfSB/h4="
         }
       }
     },
@@ -40301,7 +40327,6 @@
       "version": "1.0.10",
       "resolved": "https://registry.npmjs.org/nopt/-/nopt-1.0.10.tgz",
       "integrity": "sha1-bd0hvSoxQXuScn3Vhfim83YI6+4=",
-      "dev": true,
       "requires": {
         "abbrev": "1"
       }

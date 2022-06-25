@@ -724,7 +724,8 @@ export default {
             CONTEXTLINES: "The number of context lines that display before and after detected non-matching lines. By default all matching " +
                 "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
                 "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +
-                "of 0 strips all matching lines."
+                "of 0 strips all matching lines.",
+            BROWSERVIEW: "Open the data-sets diffs in browser"
         }
     },
     HMIGRATE: {

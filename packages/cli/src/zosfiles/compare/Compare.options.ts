@@ -135,5 +135,15 @@ export const CompareOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["cl"],
         description: strings.CONTEXTLINES,
         type: "number"
+    },
+
+    /**
+     * Open in browser option
+     */
+    browserview: {
+        name: "browserview",
+        aliases: ["bv"],
+        description: strings.BROWSERVIEW,
+        type: "boolean"
     }
 };
