@@ -641,8 +641,7 @@ describe("Download Data Set", () => {
                 const options: IDownloadOptions = {
                     binary: true,
                     extension: ".txt",
-                    directory: "testDir",
-                    excludePatterns: ["TEST.DATA.SET"]
+                    directory: "testDir"
                 };
 
                 try {
@@ -675,8 +674,7 @@ describe("Download Data Set", () => {
                 const options: IDownloadOptions = {
                     record: true,
                     extension: ".txt",
-                    directory: "testDir",
-                    excludePatterns: ["TEST.DATA.SET"]
+                    directory: "testDir"
                 };
 
                 try {
@@ -834,8 +832,7 @@ describe("Download Data Set", () => {
                 const options: IDownloadOptions = {
                     binary: true,
                     extension: ".txt",
-                    directory: "testDir",
-                    excludePatterns: ["TEST.DATA.SET"]
+                    directory: "testDir"
                 };
 
                 try {
@@ -866,8 +863,7 @@ describe("Download Data Set", () => {
                 const options: IDownloadOptions = {
                     record: true,
                     extension: ".txt",
-                    directory: "testDir",
-                    excludePatterns: ["TEST.DATA.SET"]
+                    directory: "testDir"
                 };
 
                 try {

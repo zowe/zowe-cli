@@ -39,6 +39,7 @@ export interface IDownloadOptions extends IOptions {
      * Exclude data sets that match these DSLEVEL patterns. Any data sets that match
      * this pattern will not be downloaded
      * @example "ibmuser.**.jcl, ibmuser.rexa.*"
+     * @deprecated Use the `List.dataSetsMatchingPattern` API to match data sets and exclude patterns
      */
     excludePatterns?: string[];
 
