@@ -295,7 +295,7 @@ describe("Disable daemon handler", () => {
                 error = e;
             }
 
-            expect(IO.existsSync).toHaveBeenCalledTimes(1);
+            expect(IO.existsSync).toHaveBeenCalledTimes(3);
             expect(IO.existsSync).toHaveBeenCalledWith(fakeZoweExePath);
             expect(IO.deleteFile).toHaveBeenCalledTimes(0);
             expect(error).toBeUndefined();
@@ -315,9 +315,9 @@ describe("Disable daemon handler", () => {
                 error = e;
             }
 
-            expect(IO.existsSync).toHaveBeenCalledTimes(1);
+            expect(IO.existsSync).toHaveBeenCalledTimes(3);
             expect(IO.existsSync).toHaveBeenCalledWith(fakeZoweExePath);
-            expect(IO.deleteFile).toHaveBeenCalledTimes(1);
+            expect(IO.deleteFile).toHaveBeenCalledTimes(2);
             expect(error).toBeUndefined();
             IO.existsSync = existsSyncOrig;
         });
@@ -353,6 +353,10 @@ describe("Disable daemon handler", () => {
                 }];
             });
 
+            // mock disable handler's private static readMyDaemonPid() function to ensure we match our PID
+            const readMyDaemonPidReal = DisableDaemonHandler["readMyDaemonPid"];
+            DisableDaemonHandler["readMyDaemonPid"] = jest.fn().mockReturnValue(fakePid);
+
             let error;
             try {
                 await disableHandler.disableDaemon();
@@ -365,6 +369,7 @@ describe("Disable daemon handler", () => {
             expect(killSpy).toHaveBeenCalledTimes(1);
             expect(killSpy).toHaveBeenCalledWith(fakePid, "SIGINT");
             expect(error).toBeUndefined();
+            DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
         });
     }); // end disableDaemon method
 });
