@@ -154,7 +154,7 @@ export default class DisableDaemonHandler implements ICommandHandler {
      *          Returns null if no daemon PID is recorded for the user.
      */
     private static readMyDaemonPid(daemonPidFileNm: string): Number | null {
-        if (fs.existsSync(daemonPidFileNm)) {
+        if (IO.existsSync(daemonPidFileNm)) {
             try {
                 const pidFileContents = JSON.parse(fs.readFileSync(daemonPidFileNm, "utf-8"));
                 const myUserName = os.userInfo().username;
