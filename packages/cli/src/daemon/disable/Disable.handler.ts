@@ -10,7 +10,6 @@
 */
 
 import * as nodeJsPath from "path";
-import * as fs from "fs";
 import * as os from "os";
 
 import {
@@ -156,7 +155,7 @@ export default class DisableDaemonHandler implements ICommandHandler {
     private static readMyDaemonPid(daemonPidFileNm: string): Number | null {
         if (IO.existsSync(daemonPidFileNm)) {
             try {
-                const pidFileContents = JSON.parse(fs.readFileSync(daemonPidFileNm, "utf-8"));
+                const pidFileContents = JSON.parse(IO.readFileSync(daemonPidFileNm).toString());
                 const myUserName = os.userInfo().username;
                 if (pidFileContents?.user != myUserName) {
                     Logger.getAppLogger().error(`Daemon PID file '${daemonPidFileNm}' contains ` +
