@@ -15,9 +15,43 @@ import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from
 
 import DisableDaemonHandler from "../../../../src/daemon/disable/Disable.handler";
 
+const findProcMock = jest.fn();
+jest.mock('find-process', () => findProcMock);
+
 describe("Disable daemon handler", () => {
     let disableHandler: any; // use "any" so we can call private functions
     let disableDaemonSpy: any;
+
+    // command parms passed to process() by multiple tests
+    let apiMessage = "";
+    let jsonObj;
+    let logMessage = "";
+    const cmdParms = {
+        arguments: {
+            $0: "fake",
+            _: ["fake"]
+        },
+        response: {
+            data: {
+                setMessage: jest.fn((setMsgArgs) => {
+                    apiMessage = setMsgArgs;
+                }),
+                setObj: jest.fn((setObjArgs) => {
+                    jsonObj = setObjArgs;
+                }),
+                setExitCode: jest.fn((exitCode) => {
+                    return exitCode;
+                })
+            },
+            console: {
+                log: jest.fn((logArgs) => {
+                    logMessage += "\n" + logArgs;
+                })
+            },
+            progress: {}
+        },
+        profiles: {}
+    } as any;
 
     beforeAll(() => {
         // instantiate our handler and spy on its private disableDaemon() function
@@ -25,46 +59,17 @@ describe("Disable daemon handler", () => {
     });
 
     beforeEach(() => {
-        // remove disableDaemon spy
+        // restore mock to original implementation
         disableDaemonSpy?.mockRestore();
+
+        // clear count of calls
+        findProcMock?.mockClear();
+
+        // clear logMessage contents
+        logMessage = "";
     });
 
     describe("process method", () => {
-        // command parms passed to process() by multiple tests
-        let apiMessage = "";
-        let jsonObj;
-        let logMessage = "";
-        const cmdParms = {
-            arguments: {
-                $0: "fake",
-                _: ["fake"]
-            },
-            response: {
-                data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
-                    }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
-                    }),
-                    setExitCode: jest.fn((exitCode) => {
-                        return exitCode;
-                    })
-                },
-                console: {
-                    log: jest.fn((logArgs) => {
-                        logMessage += "\n" + logArgs;
-                    })
-                },
-                progress: {}
-            },
-            profiles: {}
-        } as any;
-
-        beforeEach(() => {
-            // clear logMessage contents
-            logMessage = "";
-        });
 
         it("should succeed when the disableDaemon function succeeds", async () => {
             // spy on our handler's private disableDaemon() function
@@ -163,6 +168,7 @@ describe("Disable daemon handler", () => {
             expect(logMessage).toContain(badStuffMsg);
         });
     }); // end process method
+
     describe("disableDaemon method", () => {
         // cliHome is a getter property, so mock the property
         const impCfg: ImperativeConfig = ImperativeConfig.instance;
@@ -334,8 +340,6 @@ describe("Disable daemon handler", () => {
              * This concoction enables us to override that function.
              * We want to simulate PowerShell not on the path.
              */
-            const findProcMock = jest.fn();
-            jest.mock('find-process', () => findProcMock);
             findProcMock.mockImplementation(() => {
                 throw new Error("When PowerShell is not on your path, you get: powershell.exe ENOENT");
             });
@@ -377,8 +381,6 @@ describe("Disable daemon handler", () => {
              * This concoction enables us to override that function.
              */
             const fakePid = 1234567890;
-            const findProcMock = jest.fn();
-            jest.mock('find-process', () => findProcMock);
             findProcMock.mockImplementation(() => {
                 return[{
                     "name": "node",
