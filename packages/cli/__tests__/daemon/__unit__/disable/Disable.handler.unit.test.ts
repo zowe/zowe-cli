@@ -22,37 +22,6 @@ describe("Disable daemon handler", () => {
     let disableHandler: any; // use "any" so we can call private functions
     let disableDaemonSpy: any;
 
-    // command parms passed to process() by multiple tests
-    let apiMessage = "";
-    let jsonObj;
-    let logMessage = "";
-    const cmdParms = {
-        arguments: {
-            $0: "fake",
-            _: ["fake"]
-        },
-        response: {
-            data: {
-                setMessage: jest.fn((setMsgArgs) => {
-                    apiMessage = setMsgArgs;
-                }),
-                setObj: jest.fn((setObjArgs) => {
-                    jsonObj = setObjArgs;
-                }),
-                setExitCode: jest.fn((exitCode) => {
-                    return exitCode;
-                })
-            },
-            console: {
-                log: jest.fn((logArgs) => {
-                    logMessage += "\n" + logArgs;
-                })
-            },
-            progress: {}
-        },
-        profiles: {}
-    } as any;
-
     beforeAll(() => {
         // instantiate our handler and spy on its private disableDaemon() function
         disableHandler = new DisableDaemonHandler();
@@ -64,12 +33,44 @@ describe("Disable daemon handler", () => {
 
         // clear count of calls
         findProcMock?.mockClear();
-
-        // clear logMessage contents
-        logMessage = "";
     });
 
     describe("process method", () => {
+        // command parms passed to process() by multiple tests
+        let apiMessage = "";
+        let jsonObj;
+        let logMessage = "";
+        const cmdParms = {
+            arguments: {
+                $0: "fake",
+                _: ["fake"]
+            },
+            response: {
+                data: {
+                    setMessage: jest.fn((setMsgArgs) => {
+                        apiMessage = setMsgArgs;
+                    }),
+                    setObj: jest.fn((setObjArgs) => {
+                        jsonObj = setObjArgs;
+                    }),
+                    setExitCode: jest.fn((exitCode) => {
+                        return exitCode;
+                    })
+                },
+                console: {
+                    log: jest.fn((logArgs) => {
+                        logMessage += "\n" + logArgs;
+                    })
+                },
+                progress: {}
+            },
+            profiles: {}
+        } as any;
+
+        beforeEach(() => {
+            // clear logMessage contents
+            logMessage = "";
+        });
 
         it("should succeed when the disableDaemon function succeeds", async () => {
             // spy on our handler's private disableDaemon() function
@@ -360,18 +361,39 @@ describe("Disable daemon handler", () => {
             DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
         });
 
-        it("should succeed when no daemon is running", async () => {
+        it("should succeed when no daemon PID matches", async () => {
             const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
 
-            let error;
+            // mock disable handler's private static readMyDaemonPid() function to return my PID
+            const myPid = 11221122;
+            const readMyDaemonPidReal = DisableDaemonHandler["readMyDaemonPid"];
+            DisableDaemonHandler["readMyDaemonPid"] = jest.fn().mockReturnValue(myPid);
+
+            /* The find-process module returns a single function as its default export.
+             * This concoction enables us to override that function.
+             * Return an array of 1 PID that does not match myPid.
+             */
+            const noMatchPid = 99669966;
+            findProcMock.mockImplementation(() => {
+                return[{
+                    "name": "node",
+                    "pid": noMatchPid,
+                    "cmd": "node /some/path/to/@zowe/cli/lib/main.js --daemon"
+                }];
+            });
+
+            let impErr;
             try {
                 await disableHandler.disableDaemon();
             } catch (e) {
-                error = e;
+                impErr = e;
             }
 
+            expect(findProcMock).toHaveBeenCalledTimes(1);
+            expect(findProcMock).toHaveBeenCalledWith("name", "node", true);
             expect(killSpy).toHaveBeenCalledTimes(0);
-            expect(error).toBeUndefined();
+            expect(impErr).toBeUndefined();
+            DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
         });
 
         it("should succeed when a zowe daemon is running", async () => {
