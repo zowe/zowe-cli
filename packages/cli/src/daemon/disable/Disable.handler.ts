@@ -106,7 +106,7 @@ export default class DisableDaemonHandler implements ICommandHandler {
                  * on the user's PATH.
                  */
                 let powerShellHint = "";
-                if (err.includes("powershell.exe ENOENT")) {
+                if (err.message.includes("powershell.exe ENOENT")) {
                     powerShellHint = "\nPowershell.exe may not be on your PATH.";
                 }
                 throw new ImperativeError({

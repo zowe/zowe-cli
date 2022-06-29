@@ -322,6 +322,40 @@ describe("Disable daemon handler", () => {
             IO.existsSync = existsSyncOrig;
         });
 
+        it("should detect powershell-not-on-path error", async () => {
+            const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
+
+            // mock disable handler's private static readMyDaemonPid() function to ensure we match our PID
+            const fakePid = 1234567890;
+            const readMyDaemonPidReal = DisableDaemonHandler["readMyDaemonPid"];
+            DisableDaemonHandler["readMyDaemonPid"] = jest.fn().mockReturnValue(fakePid);
+
+            /* The find-process module returns a single function as its default export.
+             * This concoction enables us to override that function.
+             * We want to simulate PowerShell not on the path.
+             */
+            const findProcMock = jest.fn();
+            jest.mock('find-process', () => findProcMock);
+            findProcMock.mockImplementation(() => {
+                throw new Error("When PowerShell is not on your path, you get: powershell.exe ENOENT");
+            });
+
+            let impErr: ImperativeError = new ImperativeError({msg: "No error yet"});
+            try {
+                await disableHandler.disableDaemon();
+            } catch (e) {
+                impErr = e;
+            }
+
+            expect(findProcMock).toHaveBeenCalledTimes(1);
+            expect(findProcMock).toHaveBeenCalledWith("name", "node", true);
+            expect(killSpy).toHaveBeenCalledTimes(0);
+            expect(impErr.message).toMatch("Failed while searching for the Zowe CLI daemon process");
+            expect(impErr.message).toMatch("Reason: Error: When PowerShell is not on your path, you get: powershell.exe ENOENT");
+            expect(impErr.message).toMatch("Powershell.exe may not be on your PATH");
+            DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
+        });
+
         it("should succeed when no daemon is running", async () => {
             const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
 
