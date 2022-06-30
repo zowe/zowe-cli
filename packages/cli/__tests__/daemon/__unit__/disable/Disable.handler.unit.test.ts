@@ -10,8 +10,9 @@
 */
 
 import * as nodeJsPath from "path";
+import * as os from "os";
 
-import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
+import { ImperativeConfig, ImperativeError, IO, Logger, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
 import DisableDaemonHandler from "../../../../src/daemon/disable/Disable.handler";
 
@@ -430,4 +431,124 @@ describe("Disable daemon handler", () => {
             DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
         });
     }); // end disableDaemon method
+
+    describe("readMyDaemonPid method", () => {
+
+        it("should catch a json parse error", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                return "This is not a JSON buffer";
+            });
+
+            let logMsg = "";
+            const getAppLoggerReal = Logger["getAppLogger"];
+            Logger["getAppLogger"] = jest.fn(() => {
+                return {
+                    error: jest.fn((errMsg) => {
+                        logMsg = errMsg;
+                    })
+                };
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBeNull();
+            expect(logMsg).toMatch("Unable to read daemon PID file");
+            expect(logMsg).toMatch("Reason: SyntaxError: Unexpected token");
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+            Logger["getAppLogger"] = getAppLoggerReal;
+        });
+
+        it("should detect a non matching user name", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                const pidFileContents = '{ "user": "NotMyUserId", "pid": 123 }';
+                return Buffer.from(pidFileContents, "utf-8");
+            });
+
+            let logMsg = "";
+            const getAppLoggerReal = Logger["getAppLogger"];
+            Logger["getAppLogger"] = jest.fn(() => {
+                return {
+                    error: jest.fn((errMsg) => {
+                        logMsg = errMsg;
+                    })
+                };
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBeNull();
+            expect(logMsg).toMatch("Daemon PID file 'fakePidFileName' contains user 'NotMyUserId'. It should be user '");
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+            Logger["getAppLogger"] = getAppLoggerReal;
+        });
+
+        it("should detect an invalid pid type", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                const pidFileContents = `{ "user": "${os.userInfo().username}", "pid": "Pid is not a string" }`;
+                return Buffer.from(pidFileContents, "utf-8");
+            });
+
+            let logMsg = "";
+            const getAppLoggerReal = Logger["getAppLogger"];
+            Logger["getAppLogger"] = jest.fn(() => {
+                return {
+                    error: jest.fn((errMsg) => {
+                        logMsg = errMsg;
+                    })
+                };
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBeNull();
+            expect(logMsg).toMatch("Daemon PID file 'fakePidFileName' contains invalid PID value = 'Pid is not a string' of type string");
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+            Logger["getAppLogger"] = getAppLoggerReal;
+        });
+
+        it("should return a valid pid", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const validPid = 123;
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                const pidFileContents = `{ "user": "${os.userInfo().username}", "pid": ${validPid} }`;
+                return Buffer.from(pidFileContents, "utf-8");
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBe(validPid);
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+        });
+    }); // end readMyDaemonPid method
 });
