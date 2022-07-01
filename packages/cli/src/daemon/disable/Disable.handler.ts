@@ -152,7 +152,7 @@ export default class DisableDaemonHandler implements ICommandHandler {
      * @returns The Pid of the daemon for the current user.
      *          Returns null if no daemon PID is recorded for the user.
      */
-    private static readMyDaemonPid(daemonPidFileNm: string): Number | null {
+    private static readMyDaemonPid(daemonPidFileNm: string): number | null {
         if (IO.existsSync(daemonPidFileNm)) {
             try {
                 const pidFileContents = JSON.parse(IO.readFileSync(daemonPidFileNm).toString());
