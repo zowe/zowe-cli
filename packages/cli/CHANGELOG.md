@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `zowe files download data-sets-matching` command to download multiple data sets at once. [#1287](https://github.com/zowe/zowe-cli/issues/1287)
+  - Note: If you used this command previously in the extended files plug-in for Zowe v1, the `--fail-fast` option now defaults to true which is different from the original behavior.
+
 ## `7.2.4`
 
 - BugFix: Fixed the Zowe Daemon binary exiting with an error if the daemon server does not start within 3 seconds.
