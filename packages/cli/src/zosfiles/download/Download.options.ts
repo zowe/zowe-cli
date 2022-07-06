@@ -104,7 +104,7 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
      * The pattern to be excluded
      * @type {ICommandOptionDefinition}
      */
-    excludePattern: {
+    excludePattern: { // for consistency, we should "break" this and make it plural :P
         name: "exclude-patterns",
         aliases: ["ep"],
         description: strings.EXCLUDE_PATTERN,
