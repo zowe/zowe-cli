@@ -28,6 +28,7 @@ jobs:
         profile: minimal
         toolchain: 1.61.0
         override: true
+        components: clippy
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
