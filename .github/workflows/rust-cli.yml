@@ -46,7 +46,10 @@ jobs:
         path: zowex/target/debug/zowe.tgz
 
     - name: Run linter
-      run: cargo clippy --manifest-path=zowex/Cargo.toml
+      uses: actions-rs/clippy-check@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        args: --manifest-path=zowex/Cargo.toml
 
     - name: Run tests
       run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture
