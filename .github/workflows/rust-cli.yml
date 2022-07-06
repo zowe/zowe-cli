@@ -44,6 +44,9 @@ jobs:
         name: zowe-linux.tgz
         path: zowex/target/debug/zowe.tgz
 
+    - name: Run linter
+      run: cargo clippy
+
     - name: Run tests
       run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture
 
