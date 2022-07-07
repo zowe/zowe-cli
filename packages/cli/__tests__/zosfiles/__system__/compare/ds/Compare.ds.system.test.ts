@@ -24,11 +24,11 @@ let dsname: string;
 const TIMEOUT = 20000;
 
 
-describe("View Data Set", () => {
+describe("Compare Data Sets", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             installPlugin: true,
-            testName: "view_data_set",
+            testName: "compare_data_sets",
             tempProfileTypes: ["zosmf"]
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -58,8 +58,8 @@ describe("View Data Set", () => {
             await Delete.dataSet(REAL_SESSION, dsname);
         });
 
-        it("should view data set", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
+        it("should compare data sets", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_compare_data_set.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -68,7 +68,7 @@ describe("View Data Set", () => {
     });
     describe("Expected failures", () => {
         it("should fail due to specified data set name does not existed", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_compare_data_set.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");

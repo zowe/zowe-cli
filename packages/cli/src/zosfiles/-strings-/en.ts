@@ -719,8 +719,9 @@ export default {
             VOLUME: "The volume serial (VOLSER) where the first data set resides. You can use this option at any time. However, the " +
                 "VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             VOLUME2: "The volume serial (VOLSER) where the second data set resides.",
-            NOSEQNUM: "If you are comparing two files that contain sequence numbers, this option strips the last eight " +
-                "characters from each string.",
+            SEQNUM: "If you are comparing two files that contain sequence numbers, this option controls if the sequences numbers are " +
+                "removed from the end of each string. The default is to keep the sequence numbers. Use the --no-seqnum option to not " +
+                "include them.",
             CONTEXTLINES: "The number of context lines that display before and after detected non-matching lines. By default all matching " +
                 "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
                 "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +

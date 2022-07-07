@@ -74,10 +74,11 @@ Array [
   },
   Object {
     "aliases": Array [
-      "ns",
+      "sn",
     ],
-    "description": "If you are comparing two files that contain sequence numbers, this option strips the last eight characters from each string.",
-    "name": "noseqnum",
+    "defaultValue": true,
+    "description": "If you are comparing two files that contain sequence numbers, this option controls if the sequences numbers are removed from the end of each string. The default is to keep the sequence numbers. Use the --no-seqnum option to not include them.",
+    "name": "seqnum",
     "type": "boolean",
   },
   Object {
@@ -85,7 +86,7 @@ Array [
       "cl",
     ],
     "description": "The number of context lines that display before and after detected non-matching lines. By default all matching lines display. If you want to limit the amount of data returned to only lines with differences use the context lines option to reduce the matching lines to only those before and after non-matching lines. Using the value of 0 strips all matching lines.",
-    "name": "contextlines",
+    "name": "context-lines",
     "type": "number",
   },
 ]
@@ -99,7 +100,7 @@ Array [
   },
   Object {
     "description": "Compare the contents of the data set members \\"sys1.samplib(antptso)\\" and \\"sys1.samplib(antxtso)\\" without sequence numbers",
-    "options": "\\"sys1.samplib(antptso)\\" \\"sys1.samplib(antxtso)\\" --noseqnum",
+    "options": "\\"sys1.samplib(antptso)\\" \\"sys1.samplib(antxtso)\\" --no-seqnum",
   },
 ]
 `;

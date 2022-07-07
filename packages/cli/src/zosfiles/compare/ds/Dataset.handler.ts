@@ -70,7 +70,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         let dsContentString1 = "";
         let dsContentString2 = "";
 
-        if(commandParameters.arguments.noseqnum){
+        if(commandParameters.arguments.seqnum == false){
             const seqnumlen = 8;
 
             const dsStringArray1 = dsContentBuf1.toString().split("\n");
@@ -95,7 +95,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
 
         let jsonDiff = "";
         let expandflag = true;
-        const contextLinesArg = commandParameters.arguments.contextlines;
+        const contextLinesArg = commandParameters.arguments.contextLines;
         if(contextLinesArg >= 0){
             expandflag = false;
         }

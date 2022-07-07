@@ -12,7 +12,7 @@
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-describe("View data set handler", () => {
+describe("Compare data set handler", () => {
     describe("process method", () => {
         it("should compare two data sets", async () => {
             // Require the handler and create a new instance
@@ -20,6 +20,7 @@ describe("View data set handler", () => {
             const handler = new handlerReq.default();
             const dataSetName1 = "testing1";
             const dataSetName2 = "testing2";
+            const options = "--ns";
             const binary = true;
 
 
@@ -59,6 +60,7 @@ describe("View data set handler", () => {
                         _: ["fake"],
                         dataSetName1,
                         dataSetName2,
+                        options,
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {

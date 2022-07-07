@@ -53,7 +53,7 @@ export const DatasetDefinition: ICommandDefinition = {
         CompareOptions.record2,
         CompareOptions.volume,
         CompareOptions.volume2,
-        CompareOptions.noseqnum,
+        CompareOptions.seqnum,
         CompareOptions.contextlines
     ],
     examples: [
@@ -63,7 +63,7 @@ export const DatasetDefinition: ICommandDefinition = {
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
-            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)" --noseqnum`
+            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)" --no-seqnum`
         }
     ]
 };
