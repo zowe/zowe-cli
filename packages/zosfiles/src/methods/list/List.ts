@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 
 import { posix } from "path";
 
@@ -164,10 +164,22 @@ export class List {
      */
     public static async fileList(session: AbstractSession, path: string, options: IUSSListOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(path, ZosFilesMessages.missingUSSFileName.message);
-        ImperativeExpect.toNotBeEqual(path, "", ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(path.trim(), "", ZosFilesMessages.missingUSSFileName.message);
+
+        // Error out if someone tries to use a second table parameter without specifying a first table parameter
+        if (options.depth || options.filesys != null || options.symlinks != null){
+            if (!(options.group || options.user || options.name || options.size || options.mtime || options.perm || options.type)) {
+                throw new ImperativeError({msg: "Options 'depth', 'filesys' and 'symlinks' require a 'group', 'user', 'name', 'size " +
+                    "'mtime', 'perm', or 'type' option to be specified."});
+            }
+        }
+
+        // Remove a trailing slash from the path, if one exists
+        // Do not remove if requesting the root directory
+        if (path.trim().length > 1 && path.endsWith("/")) { path = path.slice(0, -1); }
 
         try {
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -178,6 +190,24 @@ export class List {
             }
             if (options.responseTimeout != null) {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+
+            // Start modifying the endpoint with the query parameters that were passed in
+            if (options.group) { endpoint += `&${ZosFilesConstants.RES_GROUP}=${encodeURIComponent(options.group)}`; }
+            if (options.user) { endpoint += `&${ZosFilesConstants.RES_USER}=${encodeURIComponent(options.user)}`; }
+            if (options.name) { endpoint += `&${ZosFilesConstants.RES_NAME}=${encodeURIComponent(options.name)}`; }
+            if (options.size) { endpoint += `&${ZosFilesConstants.RES_SIZE}=${encodeURIComponent(options.size)}`; }
+            if (options.mtime) { endpoint += `&${ZosFilesConstants.RES_MTIME}=${encodeURIComponent(options.mtime)}`; }
+            if (options.perm) { endpoint += `&${ZosFilesConstants.RES_PERM}=${encodeURIComponent(options.perm)}`; }
+            if (options.type) { endpoint += `&${ZosFilesConstants.RES_TYPE}=${encodeURIComponent(options.type)}`; }
+            if (options.depth) { endpoint += `&${ZosFilesConstants.RES_DEPTH}=${encodeURIComponent(options.depth)}`; }
+            if (options.filesys != null) {
+                if (options.filesys === true) { endpoint += `&${ZosFilesConstants.RES_FILESYS}=all`; }
+                else { endpoint += `&${ZosFilesConstants.RES_FILESYS}=same`; }
+            }
+            if (options.symlinks != null) {
+                if (options.symlinks === true) { endpoint += `&${ZosFilesConstants.RES_SYMLINKS}=report`; }
+                else { endpoint += `&${ZosFilesConstants.RES_SYMLINKS}=follow`; }
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);
