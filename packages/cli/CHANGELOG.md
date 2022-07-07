@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.3.1`
 
 - BugFix: Updated Imperative to fix CLI commands failing with error "Cannot find module 'ansi-colors'".
 
