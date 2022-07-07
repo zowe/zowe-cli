@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -25,6 +25,17 @@ import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { Utilities } from "../utilities";
+import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
+import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
+
+type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
+
+interface IDownloadDsmTask {
+    handler: (session: AbstractSession, dsname: string, options: IDownloadOptions) => Promise<IZosFilesResponse>;
+    dsname: string;
+    options: IDownloadOptions;
+    onSuccess: (response: IZosFilesResponse, options: IDownloadOptions) => void;
+}
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
@@ -61,6 +72,7 @@ export class Download {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        let destination: string;
 
         try {
             // Format the endpoint to send the request to
@@ -85,7 +97,7 @@ export class Download {
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the data set name
             // Note that the "extension" options do not affect the destination if the "file" options were provided
-            const destination = (() => {
+            destination = (() => {
                 if (options.file) {
                     return options.file;
                 }
@@ -136,6 +148,10 @@ export class Download {
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
+
+            if (destination != null) {
+                IO.deleteFile(destination);
+            }
 
             throw error;
         }
@@ -233,19 +249,18 @@ export class Download {
                     encoding: options.encoding,
                     responseTimeout: options.responseTimeout
                 }).catch((err) => {
-                    // If we should fail fast, rethrow error
-                    if (options.failFast || options.failFast === undefined) {
-                        throw err;
-                    }
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
                     // Delete the file that could not be downloaded
                     IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
+                    // If we should fail fast, rethrow error
+                    if (options.failFast || options.failFast === undefined) {
+                        throw err;
+                    }
                 });
             };
 
             const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
-
             if (maxConcurrentRequests === 0) {
                 await Promise.all(memberList.map(createDownloadPromise));
             } else {
@@ -273,6 +288,190 @@ export class Download {
 
             throw error;
         }
+    }
+
+    /**
+     * Download a list of data sets to local files
+     *
+     * @param {AbstractSession}  session         - z/OS MF connection info
+     * @param {IZosmfListResponse[]} dataSetObjs - contains data set objects returned by z/OSMF List API
+     * @param {IDownloadOptions} [options={}]    - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} data set name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     *
+     * @example
+     * ```typescript
+     *
+     * // Download a list of "PS" and "PO" datasets to the directory "./path/to/dir/"
+     * await Download.allDataSets(session, [
+     *    { dsname: "USER.DATA.SET.PS", dsorg: "PS" },
+     *    { dsname: "USER.DATA.SET.PDS", dsorg: "PO" }
+     * ], {directory: "./path/to/dir/"});
+     * ```
+     *
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.2.0/com.ibm.zos.v2r2.izua700/IZUHPINFO_API_GetReadDataSet.htm
+     */
+    public static async allDataSets(session: AbstractSession, dataSetObjs: IZosmfListResponse[],
+        options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeEqual(dataSetObjs.length, 0, ZosFilesMessages.missingDataSets.message);
+        const result = this.emptyDownloadDsmResult();
+        const zosmfResponses: IZosmfListResponseWithStatus[] = [...dataSetObjs];
+
+        try {
+            // Download data sets
+            const poDownloadTasks: IDownloadDsmTask[] = [];
+            const psDownloadTasks: IDownloadDsmTask[] = [];
+            const mutableOptions: IDownloadOptions = { ...options, task: undefined };
+
+            for (const dataSetObj of zosmfResponses) {
+                let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
+                if (!options.preserveOriginalLetterCase) {
+                    llq = llq.toLowerCase();
+                }
+                if (options.extensionMap != null) {
+                    mutableOptions.extension = options.extensionMap[llq] ?? options.extension;
+                }
+
+                // Normalize the extension, remove leading periods
+                if (mutableOptions.extension && mutableOptions.extension.startsWith(".")) {
+                    mutableOptions.extension = mutableOptions.extension.replace(/^\.+/g, "");
+                }
+
+                if (options.directory == null) {
+                    if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                        mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                    } else {
+                        mutableOptions.file = `${dataSetObj.dsname}.` +
+                            `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
+                        if (!options.preserveOriginalLetterCase) {
+                            mutableOptions.file = mutableOptions.file.toLowerCase();
+                        }
+                        mutableOptions.directory = undefined;
+                        mutableOptions.extension = undefined;
+                    }
+                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
+                } else {
+                    mutableOptions.file = `${mutableOptions.directory}/${dataSetObj.dsname}.` +
+                        `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
+                    if (!options.preserveOriginalLetterCase) {
+                        mutableOptions.file = mutableOptions.file.toLowerCase();
+                    }
+                    mutableOptions.directory = undefined;
+                    mutableOptions.extension = undefined;
+                }
+
+                if (dataSetObj.error != null) {
+                    result.failedWithErrors[dataSetObj.dsname] = dataSetObj.error;
+                } else if (dataSetObj.dsorg == null) {
+                    dataSetObj.status = `Skipped: Archived data set or alias - type ${dataSetObj.vol}.`;
+                    result.failedArchived.push(dataSetObj.dsname);
+                } else if (dataSetObj.dsorg === "PS") {
+                    psDownloadTasks.push({
+                        handler: Download.dataSet.bind(this),
+                        dsname: dataSetObj.dsname,
+                        options: { ...mutableOptions },
+                        onSuccess: (downloadResponse) => {
+                            dataSetObj.status = downloadResponse.commandResponse;
+                        }
+                    });
+                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    poDownloadTasks.push({
+                        handler: Download.allMembers.bind(this),
+                        dsname: dataSetObj.dsname,
+                        options: { ...mutableOptions },
+                        onSuccess: (downloadResponse, options) => {
+                            dataSetObj.status = downloadResponse.commandResponse;
+                            const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
+                            if (listMembers.length === 0) {  // Create directory for empty PO data set
+                                IO.createDirsSyncFromFilePath(options.directory);
+                            } else {
+                                dataSetObj.status += `\nMembers: ${listMembers};`;
+                            }
+                        }
+                    });
+                } else {
+                    dataSetObj.status = `Skipped: Unsupported data set - type ${dataSetObj.dsorg}.`;
+                    result.failedUnsupported.push(dataSetObj.dsname);
+                }
+                mutableOptions.directory = options.directory;
+            }
+
+            // If we should fail fast, throw error
+            if ((result.failedArchived.length > 0 || result.failedUnsupported.length > 0 ||
+                Object.keys(result.failedWithErrors).length > 0) && options.failFast !== false) {
+                throw new ImperativeError({
+                    msg: ZosFilesMessages.failedToDownloadDataSets.message,
+                    additionalDetails: this.buildDownloadDsmResponse(result, options)
+                });
+            }
+
+            let downloadsInitiated = 0;
+            const createDownloadPromise = (task: IDownloadDsmTask) => {
+                if (options.task != null) {
+                    options.task.statusMessage = "Downloading data set " + task.dsname;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (downloadsInitiated / (poDownloadTasks.length + psDownloadTasks.length)));
+                    downloadsInitiated++;
+                }
+
+                return task.handler(session, task.dsname, task.options).then(
+                    (downloadResponse) => {
+                        result.downloaded.push(task.dsname);
+                        task.onSuccess(downloadResponse, task.options);
+                    },
+                    (err) => {
+                        result.failedWithErrors[task.dsname] = err;
+                        // If we should fail fast, rethrow error
+                        if (options.failFast || options.failFast === undefined) {
+                            throw new ImperativeError({
+                                msg: `Failed to download ${task.dsname}`,
+                                causeErrors: err,
+                                additionalDetails: this.buildDownloadDsmResponse(result, options)
+                            });
+                        }
+                    }
+                );
+            };
+
+            // First download the partitioned data sets
+            // We execute the promises sequentially to make sure that
+            // we do not exceed `--mcr` when downloading multiple members
+            for (const task of poDownloadTasks) {
+                await createDownloadPromise(task);
+            }
+
+            // Next download the sequential data sets in a pool
+            const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+            if (maxConcurrentRequests === 0) {
+                await Promise.all(psDownloadTasks.map(createDownloadPromise));
+            } else {
+                await asyncPool(maxConcurrentRequests, psDownloadTasks, createDownloadPromise);
+            }
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+
+            throw error;
+        }
+
+        // Handle failed downloads if no errors were thrown yet
+        if (Object.keys(result.failedWithErrors).length > 0) {
+            throw new ImperativeError({
+                msg: ZosFilesMessages.datasetDownloadFailed.message + Object.keys(result.failedWithErrors).join("\n"),
+                causeErrors: Object.values(result.failedWithErrors),
+                additionalDetails: this.buildDownloadDsmResponse(result, options)
+            });
+        }
+
+        const numFailed = result.failedArchived.length + result.failedUnsupported.length + Object.keys(result.failedWithErrors).length;
+        return {
+            success: numFailed === 0,
+            commandResponse: this.buildDownloadDsmResponse(result, options),
+            apiResponse: zosmfResponses
+        };
     }
 
     /**
@@ -351,5 +550,65 @@ export class Download {
         }
     }
 
-}
+    /**
+     * Create an empty download data sets matching result.
+     * @returns Results object with all lists initialized as empty
+     */
+    private static emptyDownloadDsmResult(): IDownloadDsmResult {
+        return {
+            downloaded: [],
+            failedArchived: [],
+            failedUnsupported: [],
+            failedWithErrors: {}
+        };
+    }
 
+    /**
+     * Build a response string from a download data sets matching result.
+     * @param result Result object from the download API
+     * @param options Options passed to the download API
+     * @returns Response string to print to console
+     */
+    private static buildDownloadDsmResponse(result: IDownloadDsmResult, options: IDownloadOptions = {}): string {
+        const failedDsnames = Object.keys(result.failedWithErrors);
+        const numFailed = result.failedArchived.length + result.failedUnsupported.length + failedDsnames.length;
+        const responseLines = [];
+
+        if (result.downloaded.length > 0) {
+            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
+                (options.directory ?? "./"));
+        }
+
+        if (numFailed > 0) {
+            responseLines.push(TextUtils.chalk.red(`${numFailed} data set(s) failed to download:`));
+            if (result.failedArchived.length > 0) {
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${result.failedArchived.length} failed because they are archived`),
+                    ...result.failedArchived.map(dsname => `    ${dsname}`)
+                );
+            }
+            if (result.failedUnsupported.length > 0) {
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${result.failedUnsupported.length} failed because they are an unsupported type`),
+                    ...result.failedUnsupported.map(dsname => `    ${dsname}`)
+                );
+            }
+            if (failedDsnames.length > 0) {
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${failedDsnames.length} failed because of an uncaught error`),
+                    ...failedDsnames.map(dsname => `    ${dsname}`),
+                    "",
+                    ...Object.values(result.failedWithErrors).map((err: Error) => err.message)
+                );
+            }
+            if (options.failFast !== false) {
+                responseLines.push(
+                    "\nSome data sets may have been skipped because --fail-fast is true.",
+                    "To ignore errors and continue downloading, rerun the command with --fail-fast set to false."
+                );
+            }
+        }
+
+        return responseLines.join("\n") + "\n";
+    }
+}
