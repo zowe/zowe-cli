@@ -17,7 +17,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COMPARE;
 
 /**
- * View data set command definition containing its description, examples and/or options
+ * Compare data sets command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
 export const DatasetDefinition: ICommandDefinition = {
