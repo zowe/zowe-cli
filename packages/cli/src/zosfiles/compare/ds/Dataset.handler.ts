@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -9,15 +10,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils, ImperativeConfig } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { diff } from "jest-diff";
-import { ProcessUtils } from "@zowe/imperative";
-import { createTwoFilesPatch } from "diff";
-import { html } from "diff2html";
-import * as path from 'path';
-import * as fs from 'fs';
+import { DiffUtils } from "@zowe/imperative";
 /**
  * Handler to view a data set's content
  * @export
@@ -99,86 +95,18 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
-        let expandflag = true;
         const contextLinesArg = commandParameters.arguments.contextlines;
-        if (contextLinesArg >= 0) {
-            expandflag = false;
-        }
 
-        jsonDiff = await diff(dsContentString1, dsContentString2, {
-            aAnnotation: "Removed",
-            bAnnotation: "Added",
-            aColor: TextUtils.chalk.red,
-            bColor: TextUtils.chalk.green,
-            contextLines: contextLinesArg,
-            expand: expandflag
+        jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
+            outputFormat: 'terminal',
+            contextLinesArg: contextLinesArg
         });
-
 
         //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (browserView) {
-            const patchDiff = createTwoFilesPatch(
-                commandParameters.arguments.dataSetName1, commandParameters.arguments.dataSetName2, dsContentString1, dsContentString2
-            );
 
-            const diffHtml = html(patchDiff, {
-                // drawFileList: true,
-                outputFormat: "side-by-side",
-                matching: "lines",
-                diffStyle: "char",
-            });
+            await DiffUtils.openDiffInbrowser(dsContentString1, dsContentString2);
 
-            const diffLauncher = path.join(ImperativeConfig.instance.cliHome, './diff.html');
-            if (diffHtml != null) {
-                fs.writeFileSync(diffLauncher,
-                    `<html>
-                    <head>
-                      <link
-                        rel="stylesheet"
-                        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/github.min.css"
-                      />
-                      <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css"
-                      />
-                      <script
-                        type="text/javascript"
-                        src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"
-                      ></script>
-
-                      <script>
-
-                               const diffString = ${patchDiff}
-
-                           document.addEventListener('DOMContentLoaded', function () {
-                             var targetElement = document.getElementsByClassName('d2h-file-list-wrapper')[0];
-                             var configuration = {
-                               drawFileList: true,
-                               fileListToggle: false,
-                               fileListStartVisible: false,
-                               fileContentToggle: false,
-                               matching: 'lines',
-                               outputFormat: 'side-by-side',
-                               synchronisedScroll: true,
-                               highlight: true,
-                               renderNothingWhenEmpty: false,
-                             };
-                             var diff2htmlUi = new Diff2HtmlUI(targetElement, diffString, configuration);
-                             diff2htmlUi.draw();
-                             diff2htmlUi.highlightCode();
-                           });
-                      </script>
-
-                      <meta content="0; url=diff.html?p=" />
-                    </head>
-                    <body>
-                      ${diffHtml}
-                    </body>
-                  </html>
-                  `);
-            }
-            ProcessUtils.openInDefaultApp(`file:///${diffLauncher}`);
             return {
                 success: true,
                 commandResponse: "Launching data-sets diffs in browser....",
