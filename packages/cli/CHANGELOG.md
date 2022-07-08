@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - BugFix: Alter the `zowe daemon disable` command to only kill the daemon running for the current user.
 
+## `7.3.1`
+
+- BugFix: Updated Imperative to fix CLI commands failing with error "Cannot find module 'ansi-colors'".
+
 ## `7.3.0`
 
 - Enhancement: Added the `zowe files download data-sets-matching` command to download multiple data sets at once. [#1287](https://github.com/zowe/zowe-cli/issues/1287)
