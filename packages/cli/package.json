@@ -52,11 +52,12 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json"
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
+    "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "6.40.4",
-    "@zowe/imperative": "4.18.6",
+    "@zowe/imperative": "4.18.7",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "6.40.4",
     "@zowe/zos-console-for-zowe-sdk": "6.40.4",
