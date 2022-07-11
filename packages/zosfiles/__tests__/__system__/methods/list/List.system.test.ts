@@ -9,9 +9,9 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload } from "../../../../src";
+import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { format, inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -443,6 +443,77 @@ describe("List command group", () => {
             });
         });
 
+    });
+
+    describe("dataSetsMatchingPattern", () => {
+        beforeEach(async () => {
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
+                { volser: defaultSystem.datasets.vol });
+            await delay(delayTime);
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname + ".LIKE",
+                { volser: defaultSystem.datasets.vol });
+            await delay(delayTime);
+        });
+
+        afterEach(async () => {
+            await Delete.dataSet(REAL_SESSION, dsname);
+            await delay(delayTime);
+            await Delete.dataSet(REAL_SESSION, dsname + ".LIKE");
+            await delay(delayTime);
+        });
+
+        it("should find data sets that match a pattern", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname]);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
+            expect(response.apiResponse[0].dsname).toBe(dsname);
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
+        });
+
+        it("should exclude data sets that do not match a pattern", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname],
+                    { excludePatterns: [dsname + ".LIKE"] });
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 1));
+            expect(response.apiResponse.length).toBe(1);
+            expect(response.apiResponse[0].dsname).toBe(dsname);
+        });
+
+        it("should fail when no data sets match", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname + ".INVALID"]);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(dsname + ".INVALID");
+        });
     });
 
 });

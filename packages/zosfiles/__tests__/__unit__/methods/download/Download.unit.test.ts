@@ -9,7 +9,7 @@
 *
 */
 
-import { IO, Session } from "@zowe/imperative";
+import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { Utilities, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
@@ -18,6 +18,7 @@ import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants"
 import * as util from "util";
 import { List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
+import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -983,10 +984,11 @@ describe("z/OS Files - Download", () => {
         });
     });
 
-    describe("datasetMatchingPattern", () => {
+    describe("allDataSets", () => {
         const listDataSetSpy = jest.spyOn(List, "dataSet");
         const downloadDatasetSpy = jest.spyOn(Download, "dataSet");
         const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
+        const createDirsSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
 
         const dataSetPS = {
             dsname: "TEST.PS.DATA.SET",
@@ -1000,15 +1002,640 @@ describe("z/OS Files - Download", () => {
 
         beforeEach(() => {
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockImplementation(() => null);
+            downloadDatasetSpy.mockResolvedValue(undefined);
 
             downloadAllMembersSpy.mockClear();
-            downloadAllMembersSpy.mockImplementation(() => null);
+            downloadAllMembersSpy.mockResolvedValue(undefined);
 
             listDataSetSpy.mockClear();
-            listDataSetSpy.mockImplementation(() => null);
+            listDataSetSpy.mockResolvedValue(undefined);
         });
 
+        it("should handle an error from Download.dataSet", async () => {
+            let response;
+            let caughtError;
+
+            const dummyError = new Error("test");
+            downloadDatasetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toBe("Failed to download TEST.PS.DATA.SET");
+            expect(caughtError.causeErrors).toEqual(dummyError);
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                directory: undefined,
+                extension: undefined,
+                file: `${dataSetPS.dsname.toLocaleLowerCase()}.txt`
+            });
+        });
+
+        it("should handle an error from Download.allMembers", async () => {
+            let response;
+            let caughtError;
+
+            const dummyError = new Error("test");
+            downloadAllMembersSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toBe("Failed to download TEST.PO.DATA.SET");
+            expect(caughtError.causeErrors).toEqual(dummyError);
+
+            expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {directory: "test/po/data/set"});
+        });
+
+        it("should download all datasets specifying the directory, extension and binary mode", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path";
+            const extension = "xyz";
+            const binary = true;
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {directory}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {binary, file: "my/test/path/test.ps.data.set.xyz"});
+        });
+
+        it("should download all datasets specifying preserveOriginalLetterCase", async () => {
+            let response;
+            let caughtError;
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { preserveOriginalLetterCase: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "TEST.PS.DATA.SET.txt",
+                preserveOriginalLetterCase: true
+            });
+        });
+
+        it("should download all datasets specifying the extension", async () => {
+            let response;
+            let caughtError;
+
+            const extension = "xyz";
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {extension});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz"});
+        });
+
+        it("should download all datasets with maxConcurrentRequests set to zero", async () => {
+            let response;
+            let caughtError;
+
+            const maxConcurrentRequests = 0;
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {maxConcurrentRequests});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 0});
+        });
+
+        it("should download all datasets while specifying an extension with a leading dot", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path";
+            const extension = ".xyz";
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extension});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {directory}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz"});
+        });
+
+        it("should download all datasets specifying the directory and extension map 1", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path";
+            const extensionMap = {set: "file"};
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extensionMap});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {directory}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.file"});
+        });
+
+        it("should download all datasets specifying the directory and extension map 2", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path";
+            const extensionMap = {fake: "file"};
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extensionMap});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {directory}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.txt"});
+        });
+
+        it("should download all datasets without any options", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+        });
+
+        it("should not download datasets when pattern does not match any", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allDataSets(dummySession, []);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingDataSets.message);
+        });
+
+        it("should not download datasets when pattern matches only datasets which failed to list attributes", async () => {
+            let response;
+            let caughtError;
+
+            Download.dataSet = jest.fn();
+
+            try {
+                response = await Download.allDataSets(dummySession, [{
+                    dsname: dataSetPO.dsname,
+                    error: new Error("i haz bad data set")
+                }, dataSetPS] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.failedToDownloadDataSets.message);
+            expect(Download.dataSet).toHaveBeenCalledTimes(0);
+        });
+
+        it("should not download datasets when pattern matches only archived datasets", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allDataSets(dummySession, [{ dsname: dataSetPS.dsname }] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.failedToDownloadDataSets.message);
+        });
+
+        it("should not download datasets when pattern matches only unsupported datasets", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allDataSets(dummySession, [{
+                    dsname: "TEST.DATA.SET",
+                    dsorg: "unknown"
+                }] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.failedToDownloadDataSets.message);
+        });
+
+        it("should download datasets when pattern matches only datasets which failed to list attributes and failFast is false", async () => {
+            const fakeError = new Error("i haz bad data set");
+            let response;
+            let caughtError;
+
+            Download.dataSet = jest.fn(async () => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [{
+                    dsname: dataSetPO.dsname,
+                    error: fakeError
+                }, dataSetPS] as any, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.datasetDownloadFailed.message);
+            expect(caughtError.message).toContain(dataSetPO.dsname);
+            expect(Download.dataSet).toHaveBeenCalledTimes(1);
+        });
+
+        it("should download datasets when pattern matches only archived datasets and failFast is false", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allDataSets(dummySession, [{
+                    dsname: dataSetPS.dsname,
+                    vol: "MIGRATC"
+                }] as any, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: [],
+                    failedArchived: ["TEST.PS.DATA.SET"],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { failFast: false }),
+                apiResponse: [{
+                    dsname: "TEST.PS.DATA.SET",
+                    vol: "MIGRATC",
+                    status: "Skipped: Archived data set or alias - type MIGRATC."
+                }]
+            });
+        });
+
+        it("should download datasets when pattern matches only unsupported datasets and failFast is false", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allDataSets(dummySession, [{
+                    dsname: "TEST.DATA.SET",
+                    dsorg: "unknown"
+                }] as any, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: [],
+                    failedArchived: [],
+                    failedUnsupported: ["TEST.DATA.SET"],
+                    failedWithErrors: {}
+                }, { failFast: false }),
+                apiResponse: [{
+                    dsname: "TEST.DATA.SET",
+                    dsorg: "unknown",
+                    status: "Skipped: Unsupported data set - type unknown."
+                }]
+            });
+        });
+
+        it("should download datasets when pattern matches a partitioned dataset", async () => {
+            let response;
+            let caughtError;
+
+            downloadAllMembersSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            { member: "TESTDS" }
+                        ]
+                    },
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, "./")
+                };
+            });
+
+            List.allMembers = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            { member: "TESTDS" }
+                        ]
+                    }
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, "./") + "\nMembers:  TESTDS;"
+                }]
+            });
+        });
+
+        it("should download datasets when pattern matches a partitioned dataset with no members", async () => {
+            let response;
+            let caughtError;
+
+            createDirsSpy.mockClear();
+            downloadAllMembersSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: []
+                    },
+                    commandResponse: ZosFilesMessages.noMembersFound.message
+                };
+            });
+
+            List.allMembers = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: []
+                    }
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status: ZosFilesMessages.noMembersFound.message
+                }]
+            });
+            expect(createDirsSpy).toHaveBeenCalledTimes(1);
+            expect(createDirsSpy).toHaveBeenCalledWith("test/po/data/set");
+        });
+
+        it("should download datasets when pattern matches a partitioned dataset and directory is supplied", async () => {
+            let response;
+            let caughtError;
+            const directory = "my/test/path/";
+
+            downloadAllMembersSpy.mockImplementation(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            { member: "TESTDS" }
+                        ]
+                    },
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory)
+                };
+            });
+
+            List.allMembers = jest.fn(async () => {
+                return {
+                    apiResponse: {
+                        items: [
+                            { member: "TESTDS" }
+                        ]
+                    }
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any, {directory});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {directory}),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory) + "\nMembers:  TESTDS;"
+                }]
+            });
+        });
     });
 
     describe("USS File", () => {
@@ -1383,6 +2010,52 @@ describe("z/OS Files - Download", () => {
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+    });
+
+    describe("buildDownloadDsmResponse", () => {
+        it("should build response with data sets that downloaded successfully", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.downloaded = ["HLQ.DS.TEST"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) downloaded successfully");
+            expect(response).not.toContain("1 data set(s) failed to download");
+        });
+
+        it("should build response with data sets skipped because they are archived", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failedArchived = ["HLQ.DS.SKIPPED"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) failed to download");
+            expect(response).toContain("1 failed because they are archived");
+        });
+
+        it("should build response with data sets skipped because they are an unsupported type", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failedUnsupported = ["HLQ.DS.SKIPPED"];
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) failed to download");
+            expect(response).toContain("1 failed because they are an unsupported type");
+        });
+
+        it("should build response with data sets that failed to download", () => {
+            const errorMsg = "i haz bad data set";
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failedWithErrors = { "HLQ.DS.FAILED": new Error(errorMsg) };
+            const response: string = (Download as any).buildDownloadDsmResponse(result, {});
+            expect(response).toContain("1 data set(s) failed to download");
+            expect(response).toContain(errorMsg);
+            expect(response).toContain("Some data sets may have been skipped because --fail-fast is true");
+        });
+
+        it("should build response with data sets that failed to download when failFast is false", () => {
+            const errorMsg = "i haz bad data set";
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failedWithErrors = { "HLQ.DS.FAILED": new Error(errorMsg) };
+            const response: string = (Download as any).buildDownloadDsmResponse(result, { failFast: false });
+            expect(response).toContain("1 data set(s) failed to download");
+            expect(response).toContain(errorMsg);
+            expect(response).not.toContain("Some data sets may have been skipped because --fail-fast is true");
         });
     });
 });

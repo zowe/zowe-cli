@@ -15,6 +15,7 @@ import { AllMembersDefinition } from "./am/AllMembers.definition";
 
 import i18nTypings from "../-strings-/en";
 import { UssFileDefinition } from "./uss/UssFile.definition";
+import { DataSetMatchingDefinition } from "./dsm/DataSetMatching.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).DOWNLOAD;
@@ -32,6 +33,7 @@ export const DownloadDefinition: ICommandDefinition = {
     children: [
         DatasetDefinition,
         AllMembersDefinition,
-        UssFileDefinition
+        UssFileDefinition,
+        DataSetMatchingDefinition
     ]
 };

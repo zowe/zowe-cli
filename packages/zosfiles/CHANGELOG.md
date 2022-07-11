@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.3.0`
+
+- Enhancement: Added `Download.dataSetsMatchingPattern` method to download all data sets that match a DSLEVEL pattern.
+
 ## `7.0.0`
 
 - Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
