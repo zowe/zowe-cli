@@ -24,6 +24,7 @@ import { HRecallDefinition } from "./hRecall/HRecall.definition";
 import { CopyDefinition } from "./copy/Copy.definition";
 import { RenameDefinition } from "./rename/Rename.definition";
 import { ViewDefinition } from "./view/View.definition";
+import { CompareDefinition } from "./compare/Compare.definition";
 import { ZosFilesOptionDefinitions } from "./ZosFiles.options";
 
 /**
@@ -51,7 +52,8 @@ const definition: ICommandDefinition = {
         UnmountDefinition,
         CopyDefinition,
         RenameDefinition,
-        ViewDefinition
+        ViewDefinition,
+        CompareDefinition
     ],
     passOn: [
         {
