@@ -93,7 +93,8 @@ describe("Download Data Set", () => {
                 // delete the top-level folder and the folders and file below
                 // variable 'file' should be set in the test
                 const folders = file.split("/");
-                const rc = rimraf(folders[0]);
+                let rc = rimraf(folders[0]);
+                rc = rimraf(file);
             });
 
             it("should download a data set", async () => {
@@ -563,7 +564,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + "/member.dat";
             });
         });
-        describe("Data sets matching - all data sets", () => {
+        describe("Data sets matching - all data sets - PO", () => {
 
             beforeEach(async () => {
                 let error;
@@ -589,8 +590,354 @@ describe("Download Data Set", () => {
                 }
 
                 // delete the top-level folder and the folders and file below
+                try {
+                    const folders = file.split("/");
+                    const rc = rimraf(folders[0]);
+                } catch {
+                    // Do nothing, sometimes the files are not created.
+                }
+            });
+
+            it("should download a data set", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.toLowerCase().replace(regex, "/");
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}/member.txt`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a data set in binary mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                const options: IDownloadOptions = {
+                    binary: true,
+                    extension: ".txt",
+                    directory: "testDir"
+                };
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                // convert the data set name to use as a path/file for clean up in AfterEach
+                const regex = /\./gi;
+                file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
+            });
+
+            it("should download a data set in record mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                const options: IDownloadOptions = {
+                    record: true,
+                    extension: ".txt",
+                    directory: "testDir"
+                };
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                // convert the data set name to use as a path/file for clean up in AfterEach
+                const regex = /\./gi;
+                file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
+            });
+
+            it("should download a data set with a different extension", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.toLowerCase().replace(regex, "/");
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}/member.jcl`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a data set with an extension map", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                const ending = dsname.split(".").pop().toLowerCase();
+                const extMap: any = {};
+                extMap[ending] = "jcl";
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.toLowerCase().replace(regex, "/");
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}/member.jcl`).toString());
+                expect(fileContents).toEqual(data);
+            });
+        });
+
+        describe("Data sets matching - all data sets - PS", () => {
+
+            beforeEach(async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await delay(delayTime);
+                } catch (err) {
+                    error = err;
+                }
+            });
+
+            afterEach(async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await delay(delayTime);
+                } catch (err) {
+                    error = err;
+                }
+
+                // delete the top-level folder and the folders and file below
                 const folders = file.split("/");
-                const rc = rimraf(folders[0]);
+                let rc = rimraf(folders[0]);
+                rc = rimraf(file);
+            });
+
+            it("should download a data set", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.toLowerCase() + ".txt";
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a data set in binary mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                const options: IDownloadOptions = {
+                    binary: true,
+                    extension: ".txt",
+                    directory: "testDir"
+                };
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                file = "testdir/" + dsname.toLowerCase() + ".txt";
+            });
+
+            it("should download a data set in record mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                const options: IDownloadOptions = {
+                    record: true,
+                    extension: ".txt",
+                    directory: "testDir"
+                };
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                file = "testdir/" + dsname.toLowerCase() + ".txt";
+            });
+
+            it("should download a data set with a different extension", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                file = dsname.toLowerCase() + ".jcl";
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a data set with an extension map", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                const ending = dsname.split(".").pop().toLowerCase();
+                const extMap: any = {};
+                extMap[ending] = "jcl";
+
+                try {
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                file = dsname.toLowerCase() + ".jcl";
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                expect(fileContents).toEqual(data);
             });
         });
     });
@@ -960,4 +1307,3 @@ describe("Download Data Set", () => {
         });
     });
 });
-
