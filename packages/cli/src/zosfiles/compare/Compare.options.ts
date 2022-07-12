@@ -114,7 +114,7 @@ export const CompareOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
-     * The noseqnum option
+     * The seqnum option
      * @type {ICommandOptionDefinition}
      */
 
@@ -131,7 +131,7 @@ export const CompareOptions: { [key: string]: ICommandOptionDefinition } = {
      * @type {ICommandOptionDefinition}
      */
 
-    contextlines: {
+    contextLines: {
         name: "context-lines",
         aliases: ["cl"],
         description: strings.CONTEXTLINES,

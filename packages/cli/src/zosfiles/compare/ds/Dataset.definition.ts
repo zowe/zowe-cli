@@ -54,7 +54,7 @@ export const DatasetDefinition: ICommandDefinition = {
         CompareOptions.volume,
         CompareOptions.volume2,
         CompareOptions.seqnum,
-        CompareOptions.contextlines
+        CompareOptions.contextLines
     ],
     examples: [
         {
