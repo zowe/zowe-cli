@@ -2,9 +2,23 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.4.0`
 
 - Enhancement: Added the `zowe zos-files compare data-set` command to compare two datasets and display the differences on the terminal. [#1442](https://github.com/zowe/zowe-cli/issues/1442)
+- BugFix: Alter the `zowe daemon disable` command to only kill the daemon running for the current user.
+
+## `7.3.1`
+
+- BugFix: Updated Imperative to fix CLI commands failing with error "Cannot find module 'ansi-colors'".
+
+## `7.3.0`
+
+- Enhancement: Added the `zowe files download data-sets-matching` command to download multiple data sets at once. [#1287](https://github.com/zowe/zowe-cli/issues/1287)
+  - Note: If you used this command previously in the extended files plug-in for Zowe v1, the `--fail-fast` option now defaults to true which is different from the original behavior.
+
+## `7.2.4`
+
+- BugFix: Fixed the Zowe Daemon binary exiting with an error if the daemon server does not start within 3 seconds.
 
 ## `7.2.3`
 

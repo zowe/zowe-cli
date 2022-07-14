@@ -177,9 +177,18 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that the data sets matching pattern was downloaded successfully
      * @type {IMessageDefinition}
+     * @deprecated
      */
     datasetsDownloadedSuccessfully: {
         message: "Data sets matching pattern downloaded successfully.\nDestination: %s"
+    },
+
+    /**
+     * Message indicating that the data sets matching pattern were listed successfully
+     * @type {IMessageDefinition}
+     */
+    dataSetsMatchedPattern: {
+        message: "%d data set(s) were found matching pattern."
     },
 
     /**
@@ -359,8 +368,17 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that data set objects were not passed.
+     * @type {IMessageDefinition}
+     */
+    missingDataSets: {
+        message: "No list of data sets to download was passed."
+    },
+
+    /**
      * Message indicating that all data sets matching the provided patterns are archived.
      * @type {IMessageDefinition}
+     * @deprecated
      */
     allDataSetsArchived: {
         message: "All data sets matching the selected pattern(s) were archived."
@@ -369,6 +387,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
+     * @deprecated
      */
     noDataSetsInList: {
         message: "No data sets left after excluded pattern(s) were filtered out."
@@ -385,6 +404,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
+     * @deprecated
      */
     noDataSetsMatchingPatternRemain: {
         message: "After filtering out the archived files and files that match the exclusion-parameters, no data sets matching" +
@@ -394,9 +414,18 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that only empty partitioned data sets match the provided patterns
      * @type {IMessageDefinition}
+     * @deprecated
      */
     onlyEmptyPartitionedDataSets: {
         message: "Only empty partitioned data sets match the provided patterns."
+    },
+
+    /**
+     * Message indicating that some or all data sets failed to download
+     * @type {IMessageDefinition}
+     */
+    failedToDownloadDataSets: {
+        message: "Failed to download data sets"
     },
 
     /**
@@ -592,6 +621,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     memberDownloadFailed: {
         message: "Failed to download the following members: \n"
+    },
+
+    /**
+     * Message indicating that the following data sets failed to properly download
+     * @type {IMessageDefinition}
+     */
+    datasetDownloadFailed: {
+        message: "Failed to download the following data sets: \n"
     },
 
     /**

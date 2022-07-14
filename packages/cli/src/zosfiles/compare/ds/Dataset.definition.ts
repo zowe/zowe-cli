@@ -17,7 +17,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COMPARE;
 
 /**
- * View data set command definition containing its description, examples and/or options
+ * Compare data sets command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
 export const DatasetDefinition: ICommandDefinition = {
@@ -53,8 +53,8 @@ export const DatasetDefinition: ICommandDefinition = {
         CompareOptions.record2,
         CompareOptions.volume,
         CompareOptions.volume2,
-        CompareOptions.noseqnum,
-        CompareOptions.contextlines,
+        CompareOptions.seqnum,
+        CompareOptions.contextLines,
         CompareOptions.browserview
     ],
     examples: [
@@ -64,7 +64,7 @@ export const DatasetDefinition: ICommandDefinition = {
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
-            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)" --noseqnum`
+            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)" --no-seqnum`
         }
     ]
 };

@@ -114,14 +114,15 @@ export const CompareOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
-     * The noseqnum option
+     * The seqnum option
      * @type {ICommandOptionDefinition}
      */
 
-    noseqnum: {
-        name: "noseqnum",
-        aliases: ["ns"],
-        description: strings.NOSEQNUM,
+    seqnum: {
+        name: "seqnum",
+        aliases: ["sn"],
+        description: strings.SEQNUM,
+        defaultValue: true,
         type: "boolean"
     },
 
@@ -130,8 +131,8 @@ export const CompareOptions: { [key: string]: ICommandOptionDefinition } = {
      * @type {ICommandOptionDefinition}
      */
 
-    contextlines: {
-        name: "contextlines",
+    contextLines: {
+        name: "context-lines",
         aliases: ["cl"],
         description: strings.CONTEXTLINES,
         type: "number"
