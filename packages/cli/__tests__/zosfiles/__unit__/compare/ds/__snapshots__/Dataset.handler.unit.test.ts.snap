@@ -1,16 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Compare data set handler process method should compare two data sets 1`] = `
+exports[`Compare data set handler process method should compare two data sets in terminal 1`] = `
 Object {
   "apiResponse": Object {},
-  "commandResponse": "[2mCompared values have no visual difference.[22m",
+  "commandResponse": Object {
+    "jsonDiff": "compared string",
+  },
   "success": true,
 }
 `;
 
-exports[`Compare data set handler process method should compare two data sets 2`] = `""`;
+exports[`Compare data set handler process method should compare two data sets in terminal 2`] = `""`;
 
-exports[`Compare data set handler process method should compare two data sets 3`] = `
+exports[`Compare data set handler process method should compare two data sets in terminal 3`] = `
 "
-[2mCompared values have no visual difference.[22m"
+[object Object]"
 `;

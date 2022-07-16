@@ -94,14 +94,6 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             dsContentString2 = dsContentBuf2.toString();
         }
 
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
-
-        jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
-            outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
-        });
-
         //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (browserView) {
 
@@ -113,6 +105,15 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                 apiResponse: {}
             };
         }
+
+        let jsonDiff = "";
+        const contextLinesArg = commandParameters.arguments.contextlines;
+
+        jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
+            outputFormat: 'terminal',
+            contextLinesArg: contextLinesArg
+        });
+
 
         return {
             success: true,
