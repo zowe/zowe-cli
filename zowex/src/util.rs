@@ -47,12 +47,11 @@ pub fn util_get_nodejs_zowe_path() -> String {
     let my_exe_path_buf = my_exe_result.unwrap();
     let my_exe_path = my_exe_path_buf.to_string_lossy();
 
-    let zowe_cmd;
-    if env::consts::OS == "windows" {
-        zowe_cmd = "zowe.cmd";
+    let zowe_cmd = if env::consts::OS == "windows" {
+        "zowe.cmd"
     } else {
-        zowe_cmd = "zowe";
-    }
+        "zowe"
+    };
 
     // find every program in our path that would execute a 'zowe' command
     const NOT_FOUND: &str = "notFound";
