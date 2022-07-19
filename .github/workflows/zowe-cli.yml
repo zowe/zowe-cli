@@ -184,6 +184,6 @@ jobs:
     - name: Upload Results to Codecov
       id: upload-codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: codecov/codecov-action@v1.0.7
+      uses: codecov/codecov-action@v3
       with:
         env_vars: OS,NODE

@@ -17,14 +17,28 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js LTS
+      uses: actions/setup-node@v2
       with:
-        node-version: 12.x
+        node-version: lts/*
 
     - name: Use NPM v8
       id: npm8
       run: npm install -g npm@^8
 
-    - name: Check Vulnerabilities
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - name: Check Node Vulnerabilities
       run: npm audit --production --audit-level=moderate
+
+    # TODO Consider using actions-rs/audit-check after https://github.com/actions-rs/audit-check/issues/116 is fixed
+    - name: Check Rust Vulnerabilities
+      working-directory: zowex
+      run: |
+        cargo install cargo-audit
+        cargo audit
