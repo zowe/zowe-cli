@@ -55,7 +55,7 @@ export const DatasetDefinition: ICommandDefinition = {
         CompareOptions.volume2,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
-        CompareOptions.browserview
+        CompareOptions.browserView
     ],
     examples: [
         {
