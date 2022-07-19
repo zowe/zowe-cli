@@ -77,7 +77,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0  # See https://github.com/zowe/zowe-cli/issues/1466
+        toolchain: stable
         override: true
 
     - name: Checkout Imperative

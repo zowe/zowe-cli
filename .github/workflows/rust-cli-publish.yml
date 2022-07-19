@@ -68,7 +68,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0
+        toolchain: stable
         override: true
 
     - uses: actions/download-artifact@v2
@@ -114,7 +114,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0
+        toolchain: stable
         override: true
 
     - uses: actions/download-artifact@v2
@@ -160,7 +160,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0
+        toolchain: stable
         override: true
 
     - uses: actions/download-artifact@v2
