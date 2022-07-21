@@ -21,9 +21,8 @@ jobs:
 
     - name: Get version
       id: get-version
-      run: |
-        cd zowex
-        echo "::set-output name=ZOWEX_VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
+      working-directory: zowex
+      run: echo "::set-output name=ZOWEX_VERSION::$(cargo metadata --no-deps | jq -r .packages[0].version)"
 
     - name: Create Release
       id: create_release
