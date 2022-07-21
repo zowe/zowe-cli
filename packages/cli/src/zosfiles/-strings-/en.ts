@@ -313,6 +313,17 @@ export default {
                     EX2: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" in binary mode`
                 }
             },
+            USS_DIR: {
+                SUMMARY: "Download content from a USS directory",
+                DESCRIPTION: "Download content from a USS directory to a local directory on your PC",
+                POSITIONALS: {
+                    USSDIRNAME: "The name of the USS directory you want to download"
+                },
+                EXAMPLES: {
+                    EX1: `Download the directory "/a/ibmuser" to ./`,
+                    EX2: `Download the directory "/a/ibmuser" to "./" in binary mode`
+                }
+            },
             DATA_SETS_MATCHING: {
                 SUMMARY: "Download multiple data sets at once",
                 DESCRIPTION: "Download all data sets that match a DSLEVEL pattern (see help below). " +

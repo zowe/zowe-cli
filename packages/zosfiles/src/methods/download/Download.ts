@@ -11,7 +11,8 @@
 
 import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
 
-import { posix } from "path";
+import { posix, join} from "path";
+import * as fs from "fs";
 import * as util from "util";
 
 import { ZosmfRestClient, IHeaderContent, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
@@ -27,6 +28,8 @@ import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
+import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
+import { IUSSListOptions } from "../list";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -35,6 +38,12 @@ interface IDownloadDsmTask {
     dsname: string;
     options: IDownloadOptions;
     onSuccess: (response: IZosFilesResponse, options: IDownloadOptions) => void;
+}
+
+interface IDownloadUssTask {
+    dirName?: string;
+    file?: string;
+    options?: IDownloadOptions;
 }
 
 /**
@@ -551,6 +560,134 @@ export class Download {
     }
 
     /**
+     * Retrieve USS file content and save it in your local workspace.
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {string}           ussDirName  - contains the USS file name
+     * @param {IDownloadOptions} [fileOptions={}] - contains the file options to be sent
+     * @param {IUSSListOptions}  [listOptions={}] - contains the uss list options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} USS file name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     */
+    public static async ussDir(session: AbstractSession, ussDirName: string,
+        fileOptions: IDownloadOptions = {}, listOptions: IUSSListOptions = {}): Promise<IZosFilesResponse> {
+
+        // required
+        ImperativeExpect.toNotBeNullOrUndefined(ussDirName, ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(fileOptions.record, true, ZosFilesMessages.unsupportedDataType.message);
+        const result = this.emptyDownloadUssDirResult();
+        const responses: IZosFilesResponse[] = [];
+        const downloadTasks: IDownloadUssTask[] = [];
+        let downloadsInitiated = 0;
+        let downloadsTotal = 0;
+
+        const createPromise = (task: IDownloadUssTask) => {
+            if (task.file) {
+                return createFilePromise(task);
+            } else {
+                return createDirPromise(task);
+            }
+        };
+
+        const createFilePromise = (task: IDownloadUssTask) => {
+            if (fileOptions.task != null) {
+                fileOptions.task.statusMessage = "Downloading file: " + task.file;
+                fileOptions.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (downloadsInitiated / downloadsTotal));
+                downloadsInitiated++;
+            }
+            return this.ussFile(session, posix.join(ussDirName, task.file), task.options).then(
+                (downloadResponse) => {
+                    responses.push(downloadResponse);
+                    result.downloaded.push(task.file);
+                }, (err) => {
+                    result.failedWithErrors[task.file] = err;
+                    if (fileOptions.failFast || fileOptions.failFast === undefined) {
+                        throw new ImperativeError({
+                            msg: `Failed to download ${task.file}`,
+                            causeErrors: err,
+                            additionalDetails: this.buildDownloadUssDirResponse(result, fileOptions)
+                        });
+                    }
+                }
+            );
+        };
+
+        const createDirPromise = (task: IDownloadUssTask) => {
+            return fs.promises.mkdir(task.dirName, { recursive: true }).then(
+                () => {
+                    result.downloaded.push(task.dirName);
+                }, (err) => {
+                    result.failedWithErrors[task.dirName] = err;
+                    if (fileOptions.failFast || fileOptions.failFast === undefined) {
+                        throw new ImperativeError({
+                            msg: `Failed to create directory ${task.dirName}`,
+                            causeErrors: err,
+                            additionalDetails: this.buildDownloadUssDirResponse(result, fileOptions)
+                        });
+                    }
+                }
+            );
+        };
+
+        try {
+            // Remove a trailing slash from the path, if one exists
+            // Do not remove if requesting the root directory
+            if (ussDirName.trim().length > 1 && ussDirName.endsWith("/")) { ussDirName = ussDirName.slice(0, -1); }
+            const workingDirectory = fileOptions.directory ? fileOptions.directory : process.cwd();
+            const mutableOptions: IDownloadOptions = { ...fileOptions, task: undefined };
+
+            // Populate list options
+            listOptions = {name: "*", ...listOptions};
+
+            // Get the directory listing from z/OSMF
+            const list = (await List.fileList(session, ussDirName, listOptions)).apiResponse.items;
+
+            // For each item in the listing...
+            for (const item of list) {
+                if (item.name === "." || item.name === ".." || item.name === "...") {
+                    // If the name is ., .., or ..., ignore it.
+                    continue;
+                } else if (item.mode.startsWith("-")) {
+                    // If mode starts with -, the item is a file, download it
+                    mutableOptions.file = join(workingDirectory, item.name);
+                    downloadTasks.push({
+                        file: item.name,
+                        options: { ...mutableOptions },
+                    });
+                    downloadsTotal++;
+                } else if (item.mode.startsWith("d")) {
+                    // If mode starts with d, the item is a directory, create it
+                    downloadTasks.push({
+                        dirName: join(workingDirectory, item.name),
+                    });
+                }
+                // Otherwise, skip it entirely.
+            }
+
+            // Next download the USS files in a pool
+            const maxConcurrentRequests = fileOptions.maxConcurrentRequests == null ? 1 : fileOptions.maxConcurrentRequests;
+            if (maxConcurrentRequests === 0) {
+                await Promise.all(downloadTasks.map(createPromise));
+            } else {
+                await asyncPool(maxConcurrentRequests, downloadTasks, createPromise);
+            }
+
+            return {
+                success: Object.keys(result.failedWithErrors).length === 0,
+                commandResponse: this.buildDownloadUssDirResponse(result, fileOptions),
+                apiResponse: responses
+            };
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
+
+    /**
      * Create an empty download data sets matching result.
      * @returns Results object with all lists initialized as empty
      */
@@ -559,6 +696,17 @@ export class Download {
             downloaded: [],
             failedArchived: [],
             failedUnsupported: [],
+            failedWithErrors: {}
+        };
+    }
+
+    /**
+     * Create an empty download data sets matching result.
+     * @returns Results object with all lists initialized as empty
+     */
+    private static emptyDownloadUssDirResult(): IDownloadUssDirResult {
+        return {
+            downloaded: [],
             failedWithErrors: {}
         };
     }
@@ -609,6 +757,42 @@ export class Download {
             }
         }
 
+        return responseLines.join("\n") + "\n";
+    }
+
+    /**
+     * Build a response string from a download ussDir result.
+     * @param result Result object from the download API
+     * @param options Options passed to the download API
+     * @returns Response string to print to console
+     */
+    private static buildDownloadUssDirResponse(result: IDownloadUssDirResult, options: IDownloadOptions = {}): string {
+        const failedFiles = Object.keys(result.failedWithErrors);
+        const numFailed = failedFiles.length;
+        const responseLines = [];
+
+        if (result.downloaded.length > 0) {
+            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} file(s) downloaded successfully to `) +
+                (options.directory ?? "./"));
+        }
+
+        if (numFailed > 0) {
+            responseLines.push(TextUtils.chalk.red(`${numFailed} file(s) failed to download:`));
+            if (failedFiles.length > 0) {
+                responseLines.push(
+                    TextUtils.chalk.yellow(`${failedFiles.length} failed because of an uncaught error`),
+                    ...failedFiles.map(dsname => `    ${dsname}`),
+                    "",
+                    ...Object.values(result.failedWithErrors).map((err: Error) => err.message)
+                );
+            }
+            if (options.failFast !== false) {
+                responseLines.push(
+                    "\nSome files may have been skipped because --fail-fast is true.",
+                    "To ignore errors and continue downloading, rerun the command with --fail-fast set to false."
+                );
+            }
+        }
         return responseLines.join("\n") + "\n";
     }
 }
