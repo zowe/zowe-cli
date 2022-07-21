@@ -634,9 +634,6 @@ export class Download {
         };
 
         try {
-            // Remove a trailing slash from the path, if one exists
-            // Do not remove if requesting the root directory
-            if (ussDirName.trim().length > 1 && ussDirName.endsWith("/")) { ussDirName = ussDirName.slice(0, -1); }
             const workingDirectory = fileOptions.directory ? fileOptions.directory : process.cwd();
             const mutableOptions: IDownloadOptions = { ...fileOptions, task: undefined };
 
