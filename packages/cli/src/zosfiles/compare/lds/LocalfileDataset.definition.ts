@@ -17,54 +17,50 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COMPARE;
 
 /**
- * Compare data sets command definition containing its description, examples and/or options
+ * Compare local files and data sets command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
-export const DatasetDefinition: ICommandDefinition = {
-    name: "data-set",
-    aliases: ["ds"],
-    summary: strings.ACTIONS.DATA_SET.SUMMARY,
-    description: strings.ACTIONS.DATA_SET.DESCRIPTION,
+export const LocalfileDatasetDefinition: ICommandDefinition = {
+    name: "local-file-data-set",
+    aliases: ["lds"],
+    summary: strings.ACTIONS.LOCAL_FILE_DATA_SET.SUMMARY,
+    description: strings.ACTIONS.LOCAL_FILE_DATA_SET.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/Dataset.handler",
+    handler: __dirname + "/LocalfileDataset.handler",
     profile: {
         optional: ["zosmf"],
     },
     positionals: [
         {
-            name: "dataSetName1",
-            description: strings.ACTIONS.DATA_SET.POSITIONALS.DATASETNAME1,
+            name: "localFilePath",
+            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.POSITIONALS.LOCALFILEPATH,
             type: "string",
             required: true
         },
         {
-            name: "dataSetName2",
+            name: "dataSetName",
             type: "string",
-            description: strings.ACTIONS.DATA_SET.POSITIONALS.DATASETNAME2,
+            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.POSITIONALS.DATASETNAME,
             required: true
         }
     ],
     options: [
         CompareOptions.binary,
-        CompareOptions.binary2,
         CompareOptions.encoding,
-        CompareOptions.encoding2,
         CompareOptions.record,
-        CompareOptions.record2,
         CompareOptions.volume,
-        CompareOptions.volume2,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
         CompareOptions.browserview
     ],
     examples: [
         {
-            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)"`
+            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.EXAMPLES.EX1,
+            options: `"./a.txt" "sys1.samplib(antxtso)"`
         },
         {
-            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
-            options: `"sys1.samplib(antptso)" "sys1.samplib(antxtso)" --no-seqnum`
+            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.EXAMPLES.EX2,
+            options: `"./a.txt" "sys1.samplib(antxtso)" --no-seqnum`
         }
     ]
 };

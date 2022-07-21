@@ -11,6 +11,7 @@
 
 import {ICommandDefinition} from "@zowe/imperative";
 import {DatasetDefinition} from "./ds/Dataset.definition";
+import { LocalfileDatasetDefinition } from "./lds/LocalfileDataset.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -28,6 +29,7 @@ export const CompareDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
-        DatasetDefinition
+        DatasetDefinition,
+        LocalfileDatasetDefinition
     ],
 };
