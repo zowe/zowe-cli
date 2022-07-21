@@ -121,12 +121,11 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
             );
         }
 
-        let retry_msg;
-        if we_started_daemon && !daemon_proc_info.is_running {
-            retry_msg = "Waiting for the Zowe daemon to start";
+        let retry_msg = if we_started_daemon && !daemon_proc_info.is_running {
+            "Waiting for the Zowe daemon to start"
         } else {
-            retry_msg = "Attempting to connect to the Zowe daemon";
-        }
+            "Attempting to connect to the Zowe daemon"
+        };
         if conn_retries > 0 {
             println!("{} ({} of {})", retry_msg, conn_retries, THREE_MIN_OF_RETRIES);
         }
