@@ -47,11 +47,10 @@ fn main() -> io::Result<()> {
      * failure exit code. Alternatively, our Err branch represents when we
      * fail to run the command.
      */
-    let exit_code: i32;
-    match run_zowe_command(&mut cmd_line_args) {
-        Ok(ok_val) => exit_code = ok_val,
-        Err(err_val) => exit_code = err_val
-    }
+    let exit_code: i32 = match run_zowe_command(&mut cmd_line_args) {
+        Ok(ok_val) => ok_val,
+        Err(err_val) => err_val
+    };
 
     /* Rust does not enable main() to return an exit code.
      * Thus, we explicitly exit the process with our desired exit code.

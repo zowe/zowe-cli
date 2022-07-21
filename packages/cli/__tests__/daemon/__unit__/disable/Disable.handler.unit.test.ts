@@ -10,10 +10,14 @@
 */
 
 import * as nodeJsPath from "path";
+import * as os from "os";
 
-import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
+import { ImperativeConfig, ImperativeError, IO, Logger, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
 import DisableDaemonHandler from "../../../../src/daemon/disable/Disable.handler";
+
+const findProcMock = jest.fn();
+jest.mock('find-process', () => findProcMock);
 
 describe("Disable daemon handler", () => {
     let disableHandler: any; // use "any" so we can call private functions
@@ -25,8 +29,11 @@ describe("Disable daemon handler", () => {
     });
 
     beforeEach(() => {
-        // remove disableDaemon spy
+        // restore mock to original implementation
         disableDaemonSpy?.mockRestore();
+
+        // clear count of calls
+        findProcMock?.mockClear();
     });
 
     describe("process method", () => {
@@ -163,6 +170,7 @@ describe("Disable daemon handler", () => {
             expect(logMessage).toContain(badStuffMsg);
         });
     }); // end process method
+
     describe("disableDaemon method", () => {
         // cliHome is a getter property, so mock the property
         const impCfg: ImperativeConfig = ImperativeConfig.instance;
@@ -295,7 +303,7 @@ describe("Disable daemon handler", () => {
                 error = e;
             }
 
-            expect(IO.existsSync).toHaveBeenCalledTimes(1);
+            expect(IO.existsSync).toHaveBeenCalledTimes(3);
             expect(IO.existsSync).toHaveBeenCalledWith(fakeZoweExePath);
             expect(IO.deleteFile).toHaveBeenCalledTimes(0);
             expect(error).toBeUndefined();
@@ -315,25 +323,78 @@ describe("Disable daemon handler", () => {
                 error = e;
             }
 
-            expect(IO.existsSync).toHaveBeenCalledTimes(1);
+            expect(IO.existsSync).toHaveBeenCalledTimes(3);
             expect(IO.existsSync).toHaveBeenCalledWith(fakeZoweExePath);
-            expect(IO.deleteFile).toHaveBeenCalledTimes(1);
+            expect(IO.deleteFile).toHaveBeenCalledTimes(2);
             expect(error).toBeUndefined();
             IO.existsSync = existsSyncOrig;
         });
 
-        it("should succeed when no daemon is running", async () => {
+        it("should detect powershell-not-on-path error", async () => {
             const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
 
-            let error;
+            // mock disable handler's private static readMyDaemonPid() function to ensure we match our PID
+            const fakePid = 1234567890;
+            const readMyDaemonPidReal = DisableDaemonHandler["readMyDaemonPid"];
+            DisableDaemonHandler["readMyDaemonPid"] = jest.fn().mockReturnValue(fakePid);
+
+            /* The find-process module returns a single function as its default export.
+             * This concoction enables us to override that function.
+             * We want to simulate PowerShell not on the path.
+             */
+            findProcMock.mockImplementation(() => {
+                throw new Error("When PowerShell is not on your path, you get: powershell.exe ENOENT");
+            });
+
+            let impErr: ImperativeError = new ImperativeError({msg: "No error yet"});
             try {
                 await disableHandler.disableDaemon();
             } catch (e) {
-                error = e;
+                impErr = e;
             }
 
+            expect(findProcMock).toHaveBeenCalledTimes(1);
+            expect(findProcMock).toHaveBeenCalledWith("name", "node", true);
             expect(killSpy).toHaveBeenCalledTimes(0);
-            expect(error).toBeUndefined();
+            expect(impErr.message).toMatch("Failed while searching for the Zowe CLI daemon process");
+            expect(impErr.message).toMatch("Reason: Error: When PowerShell is not on your path, you get: powershell.exe ENOENT");
+            expect(impErr.message).toMatch("Powershell.exe may not be on your PATH");
+            DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
+        });
+
+        it("should succeed when no daemon PID matches", async () => {
+            const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
+
+            // mock disable handler's private static readMyDaemonPid() function to return my PID
+            const myPid = 11221122;
+            const readMyDaemonPidReal = DisableDaemonHandler["readMyDaemonPid"];
+            DisableDaemonHandler["readMyDaemonPid"] = jest.fn().mockReturnValue(myPid);
+
+            /* The find-process module returns a single function as its default export.
+             * This concoction enables us to override that function.
+             * Return an array of 1 PID that does not match myPid.
+             */
+            const noMatchPid = 99669966;
+            findProcMock.mockImplementation(() => {
+                return[{
+                    "name": "node",
+                    "pid": noMatchPid,
+                    "cmd": "node /some/path/to/@zowe/cli/lib/main.js --daemon"
+                }];
+            });
+
+            let impErr;
+            try {
+                await disableHandler.disableDaemon();
+            } catch (e) {
+                impErr = e;
+            }
+
+            expect(findProcMock).toHaveBeenCalledTimes(1);
+            expect(findProcMock).toHaveBeenCalledWith("name", "node", true);
+            expect(killSpy).toHaveBeenCalledTimes(0);
+            expect(impErr).toBeUndefined();
+            DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
         });
 
         it("should succeed when a zowe daemon is running", async () => {
@@ -343,8 +404,6 @@ describe("Disable daemon handler", () => {
              * This concoction enables us to override that function.
              */
             const fakePid = 1234567890;
-            const findProcMock = jest.fn();
-            jest.mock('find-process', () => findProcMock);
             findProcMock.mockImplementation(() => {
                 return[{
                     "name": "node",
@@ -352,6 +411,10 @@ describe("Disable daemon handler", () => {
                     "cmd": "node /some/path/to/@zowe/cli/lib/main.js --daemon"
                 }];
             });
+
+            // mock disable handler's private static readMyDaemonPid() function to ensure we match our PID
+            const readMyDaemonPidReal = DisableDaemonHandler["readMyDaemonPid"];
+            DisableDaemonHandler["readMyDaemonPid"] = jest.fn().mockReturnValue(fakePid);
 
             let error;
             try {
@@ -365,6 +428,127 @@ describe("Disable daemon handler", () => {
             expect(killSpy).toHaveBeenCalledTimes(1);
             expect(killSpy).toHaveBeenCalledWith(fakePid, "SIGINT");
             expect(error).toBeUndefined();
+            DisableDaemonHandler["readMyDaemonPid"] = readMyDaemonPidReal;
         });
     }); // end disableDaemon method
+
+    describe("readMyDaemonPid method", () => {
+
+        it("should catch a json parse error", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                return "This is not a JSON buffer";
+            });
+
+            let logMsg = "";
+            const getAppLoggerReal = Logger["getAppLogger"];
+            Logger["getAppLogger"] = jest.fn(() => {
+                return {
+                    error: jest.fn((errMsg) => {
+                        logMsg = errMsg;
+                    })
+                };
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBeNull();
+            expect(logMsg).toMatch("Unable to read daemon PID file");
+            expect(logMsg).toMatch("Reason: SyntaxError: Unexpected token");
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+            Logger["getAppLogger"] = getAppLoggerReal;
+        });
+
+        it("should detect a non matching user name", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                const pidFileContents = '{ "user": "NotMyUserId", "pid": 123 }';
+                return Buffer.from(pidFileContents, "utf-8");
+            });
+
+            let logMsg = "";
+            const getAppLoggerReal = Logger["getAppLogger"];
+            Logger["getAppLogger"] = jest.fn(() => {
+                return {
+                    error: jest.fn((errMsg) => {
+                        logMsg = errMsg;
+                    })
+                };
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBeNull();
+            expect(logMsg).toMatch("Daemon PID file 'fakePidFileName' contains user 'NotMyUserId'. It should be user '");
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+            Logger["getAppLogger"] = getAppLoggerReal;
+        });
+
+        it("should detect an invalid pid type", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                const pidFileContents = `{ "user": "${os.userInfo().username}", "pid": "Pid is not a string" }`;
+                return Buffer.from(pidFileContents, "utf-8");
+            });
+
+            let logMsg = "";
+            const getAppLoggerReal = Logger["getAppLogger"];
+            Logger["getAppLogger"] = jest.fn(() => {
+                return {
+                    error: jest.fn((errMsg) => {
+                        logMsg = errMsg;
+                    })
+                };
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBeNull();
+            expect(logMsg).toMatch("Daemon PID file 'fakePidFileName' contains invalid PID value = 'Pid is not a string' of type string");
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+            Logger["getAppLogger"] = getAppLoggerReal;
+        });
+
+        it("should return a valid pid", async () => {
+            const existsSyncReal = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const validPid = 123;
+            const readFileSyncReal = IO.readFileSync;
+            IO.readFileSync = jest.fn(() => {
+                const pidFileContents = `{ "user": "${os.userInfo().username}", "pid": ${validPid} }`;
+                return Buffer.from(pidFileContents, "utf-8");
+            });
+
+            // run our test and check results
+            const myPid = DisableDaemonHandler["readMyDaemonPid"]("fakePidFileName");
+            expect(myPid).toBe(validPid);
+
+            IO.existsSync = existsSyncReal;
+            IO.readFileSync = readFileSyncReal;
+        });
+    }); // end readMyDaemonPid method
 });

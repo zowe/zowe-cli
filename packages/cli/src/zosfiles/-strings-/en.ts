@@ -693,6 +693,48 @@ export default {
             "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC."
         }
     },
+    COMPARE: {
+        SUMMARY: "Compare the contents of a two data set members",
+        DESCRIPTION: "Compare the contents of a two data set members on your terminal (stdout).",
+        ACTIONS: {
+            DATA_SET: {
+                SUMMARY: "Compare content of two z/OS data sets",
+                DESCRIPTION: "Compare content of two z/OS data sets on your terminal (stdout).",
+                POSITIONALS: {
+                    DATASETNAME1: "The name of the first data set you want to compare.",
+                    DATASETNAME2: "The name of the second data set you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"`,
+                    EX2: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers`
+                }
+            }
+        },
+        OPTIONS: {
+            BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
+                "and the binary2 flag is not set then both datasets are transferred in binary mode.",
+            BINARY2: "Transfer the content of the second data set in binary mode.",
+            ENCODING: "Transfer the content of the first data set with encoding mode, which means that data conversion is performed " +
+                "using the file encoding specified. If encoding mode is set and the encoding2 flag is not set both data sets are " +
+                "transferred in encoding mode.",
+            ENCODING2: "Transfer the content of the second data set with encoding mode.",
+            RECORD: "Transfer the content for the first data set in record mode, which means that no data conversion is performed and the record " +
+                "length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are " +
+                "added between records. If encoding mode is set and the encoding2 flag is not set both data sets are transferred in " +
+                "encoding mode. This option conflicts with binary mode.",
+            RECORD2: "Transfer the content for the second data set in record mode. Conflicts with binary2.",
+            VOLUME: "The volume serial (VOLSER) where the first data set resides. You can use this option at any time. However, the " +
+                "VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
+            VOLUME2: "The volume serial (VOLSER) where the second data set resides.",
+            SEQNUM: "If you are comparing two files that contain sequence numbers, this option controls if the sequences numbers are " +
+                "removed from the end of each string. The default is to keep the sequence numbers. Use the --no-seqnum option to not " +
+                "include them.",
+            CONTEXTLINES: "The number of context lines that display before and after detected non-matching lines. By default all matching " +
+                "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
+                "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +
+                "of 0 strips all matching lines."
+        }
+    },
     HMIGRATE: {
         DESCRIPTION: "Migrate data sets.",
         ACTIONS: {
