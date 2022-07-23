@@ -18,7 +18,7 @@ import { DiffUtils } from "@zowe/imperative";
  * Handler to view a data set's content
  * @export
  */
-export default class DatasetHandler extends ZosFilesBaseHandler {
+export default class UssFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
