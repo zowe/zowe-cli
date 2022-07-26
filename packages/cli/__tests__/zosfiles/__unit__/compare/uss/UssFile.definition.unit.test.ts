@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files compare lds command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lds/UssFile.definition").UssFileDefinition;
+        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/uss/UssFile.definition").UssFileDefinition;
 
         expect(definition).toBeDefined();
 
