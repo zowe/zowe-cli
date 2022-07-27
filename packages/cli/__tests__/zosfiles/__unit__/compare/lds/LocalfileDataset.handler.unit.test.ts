@@ -13,17 +13,17 @@ import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { DiffUtils } from "@zowe/imperative";
 
-describe("Compare data set handler", () => {
+describe("Compare local-file and data-set handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/compare/lds/LocalfileDataset.handler");
         const handler = new handlerReq.default();
-        const dataSetName1 = "testing1";
-        const dataSetName2 = "testing2";
+        const localfilePath = "testing1";
+        const dataSetName = "testing2";
         // Vars populated by the mocked function
         let error;
         let apiMessage = "";
-        let jsonObj: object;
+        let jsonObj:object;
         let logMessage = "";
         let fakeSession: object;
 
@@ -35,6 +35,7 @@ describe("Compare data set handler", () => {
                 commandResponse: "compared"
             };
         });
+
         // Mocked function references
         const profFunc = jest.fn((args) => {
             return {
@@ -51,8 +52,8 @@ describe("Compare data set handler", () => {
             arguments: {
                 $0: "fake",
                 _: ["fake"],
-                dataSetName1,
-                dataSetName2,
+                localfilePath,
+                dataSetName,
                 browserview: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
@@ -85,7 +86,7 @@ describe("Compare data set handler", () => {
         };
 
 
-        it("should compare two data sets in terminal", async () => {
+        it("should compare local-file and data-set in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
                 return {
@@ -100,8 +101,8 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(2);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
+            expect(Get.dataSet).toHaveBeenCalledTimes(1);
+            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -114,7 +115,7 @@ describe("Compare data set handler", () => {
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
-        it("should compare two data sets in browser", async () => {
+        it("should compare local-file and data-set in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
             processArguments.arguments.browserview = true ;

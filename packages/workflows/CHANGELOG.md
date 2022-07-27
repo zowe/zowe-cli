@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## Recent Changes
+
+- Added `zowe zos-files compare local-file-data-set` command to compare a local file with a data-set in the terminal and in browser.
+
 ## `7.0.0`
 
 - Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
