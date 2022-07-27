@@ -13,7 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files compare lds command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lds/LocalFileDataset.definition").DatasetDefinition;
+        // eslint-disable-next-line max-len
+        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lds/LocalFileDataset.definition").LocalfileDatasetDefinition;
 
         expect(definition).toBeDefined();
 

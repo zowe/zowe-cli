@@ -23,9 +23,9 @@ describe("Compare local-file and data-set handler", () => {
         // Vars populated by the mocked function
         let error;
         let apiMessage = "";
-        let jsonObj;
+        let jsonObj:object;
         let logMessage = "";
-        let fakeSession;
+        let fakeSession: object;
 
         // Mock the compare ds function
         Get.dataSet = jest.fn((session) => {
