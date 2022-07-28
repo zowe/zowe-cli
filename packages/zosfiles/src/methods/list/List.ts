@@ -172,8 +172,7 @@ export class List {
         // Error out if someone tries to use a second table parameter without specifying a first table parameter
         if (options.depth || options.filesys != null || options.symlinks != null){
             if (!(options.group || options.user || options.name || options.size || options.mtime || options.perm || options.type)) {
-                throw new ImperativeError({msg: "Options 'depth', 'filesys' and 'symlinks' require a 'group', 'user', 'name', 'size " +
-                    "'mtime', 'perm', or 'type' option to be specified."});
+                throw new ImperativeError({msg: ZosFilesMessages.missingRequiredTableParameters.message});
             }
         }
 

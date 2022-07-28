@@ -71,6 +71,15 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that required table parameters are missing for file list
+     * @type {IMessageDefinition}
+     */
+    missingRequiredTableParameters: {
+        message: "Options 'depth', 'filesys', and 'symlinks' require a 'group', 'user', 'name', 'size', 'mtime', 'perm', or 'type' option to be " +
+            "specified."
+    },
+
+    /**
      * Message indicating that the payload is required
      * @type {IMessageDefinition}
      */
