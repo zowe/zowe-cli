@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.4.1`
 
 - BugFix: Updated Imperative to fix error when installing plug-ins that do not define profiles.
 
