@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to fix error when installing plug-ins that do not define profiles.
+
 ## `7.4.0`
 
 - Enhancement: Added the `zowe zos-files compare data-set` command to compare two datasets and display the differences on the terminal. [#1442](https://github.com/zowe/zowe-cli/issues/1442)
