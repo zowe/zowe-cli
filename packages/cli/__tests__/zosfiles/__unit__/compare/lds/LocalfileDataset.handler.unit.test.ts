@@ -18,7 +18,7 @@ describe("Compare local-file and data-set handler", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/compare/lds/LocalfileDataset.handler");
         const handler = new handlerReq.default();
-        const localfilePath = "testing1";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lds/LocalfileDataset.definition.unit.test.ts";
         const dataSetName = "testing2";
         // Vars populated by the mocked function
         let error;
@@ -52,7 +52,7 @@ describe("Compare local-file and data-set handler", () => {
             arguments: {
                 $0: "fake",
                 _: ["fake"],
-                localfilePath,
+                localFilePath,
                 dataSetName,
                 browserview: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
@@ -106,7 +106,7 @@ describe("Compare local-file and data-set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Retrieving second dataset"
+                    statusMessage: "Retrieving dataset"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
