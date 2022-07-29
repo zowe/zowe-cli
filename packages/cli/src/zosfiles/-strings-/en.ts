@@ -723,6 +723,19 @@ export default {
                     EX2: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext" without sequence numbers`
                 }
             },
+            LOCAL_FILE_USS_FILE: {
+                SUMMARY: "Compare content of a local file and a z/os uss file",
+                DESCRIPTION: "Compare content of a local file and a z/os uss file on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    USSFILEPATH: "The path of the uss file set you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "sys1.samplib(antxtso)"`,
+                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "sys1.samplib(antxtso)"` +
+                     `without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
