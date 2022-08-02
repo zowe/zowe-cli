@@ -20,7 +20,12 @@ import {
     Tag,
     Utilities,
     ZosFilesConstants,
-    ZosFilesMessages
+    ZosFilesMessages,
+    ICreateZfsOptions,
+    IMountFsOptions,
+    Mount,
+    Unmount,
+    IUSSListOptions
 } from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
@@ -29,8 +34,9 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines, delay } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
-import { readdirSync, readFileSync } from "fs";
+import * as fs from "fs";
 import { posix } from "path";
+import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 
 const rimraf = require("rimraf").sync;
 const delayTime = 2000;
@@ -40,6 +46,8 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
+let ussDirname: string;
+let localDirname: string;
 let file: string;
 
 describe("Download Data Set", () => {
@@ -57,6 +65,8 @@ describe("Download Data Set", () => {
 
         // using unique DS function to generate unique USS file name
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
+        ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
+        localDirname = `${testEnvironment.workingDir}/ussDir`;
     });
 
     afterAll(async () => {
@@ -126,7 +136,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + ".txt";
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -157,7 +167,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + ".txt";
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -191,13 +201,13 @@ describe("Download Data Set", () => {
 
                 // Check if folders and file are created in original uppercase
                 file.split("/").reduce((path, pathSegment) => {
-                    const pathExists = readdirSync(path).indexOf(pathSegment) !== -1;
+                    const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
                     expect(pathExists).toBeTruthy();
                     return [path, pathSegment].join("/");
                 }, ".");
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -287,7 +297,7 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -324,7 +334,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + ".dat";
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
         });
@@ -388,7 +398,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/");
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}/member.txt`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -421,7 +431,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/");
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}/member.txt`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -455,13 +465,13 @@ describe("Download Data Set", () => {
 
                 // Check if folders and file are created in original uppercase
                 file.split("/").reduce((path, pathSegment) => {
-                    const pathExists = readdirSync(path).indexOf(pathSegment) !== -1;
+                    const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
                     expect(pathExists).toBeTruthy();
                     return [path, pathSegment].join("/");
                 }, ".");
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(file).toString());
+                const fileContents = stripNewLines(fs.readFileSync(file).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -624,7 +634,7 @@ describe("Download Data Set", () => {
                 const regex = /\./gi;
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}/member.txt`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -720,7 +730,7 @@ describe("Download Data Set", () => {
                 const regex = /\./gi;
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}/member.jcl`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.jcl`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -753,7 +763,7 @@ describe("Download Data Set", () => {
                 const regex = /\./gi;
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}/member.jcl`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.jcl`).toString());
                 expect(fileContents).toEqual(data);
             });
         });
@@ -815,7 +825,7 @@ describe("Download Data Set", () => {
                 const regex = /\./gi;
                 file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -905,7 +915,7 @@ describe("Download Data Set", () => {
 
                 file = dsname.toLowerCase() + ".jcl";
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -936,7 +946,7 @@ describe("Download Data Set", () => {
 
                 file = dsname.toLowerCase() + ".jcl";
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
             });
         });
@@ -1050,7 +1060,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
 
             });
@@ -1073,7 +1083,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
 
             });
@@ -1101,7 +1111,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
                 expect(response.apiResponse.etag).toBeDefined();
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
 
             });
@@ -1158,7 +1168,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -1183,7 +1193,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
             });
 
@@ -1208,7 +1218,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data.slice(0, -1) + "€");
             });
 
@@ -1233,7 +1243,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(readFileSync(`test1.txt`).toString());
+                const fileContents = stripNewLines(fs.readFileSync(`test1.txt`).toString());
                 expect(fileContents).toEqual(data);
 
                 // Delete created local file
@@ -1303,6 +1313,181 @@ describe("Download Data Set", () => {
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(error.message).toContain("Expect Error: Unsupported data type 'record' specified for USS file operation.");
+            });
+        });
+    });
+
+    describe.only("Download USS Directory", () => {
+        describe("Success Scenarios", () => {
+            const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const anotherTestFileContents = testFileContents.toLowerCase();
+            const binaryFileContents = String.fromCharCode(...Array(256).keys());
+            const createZfsOptions: ICreateZfsOptions = {
+                perms: 755,
+                cylsPri: 10,
+                cylsSec: 2,
+                timeout: 20
+            };
+            const mountZfsOptions: IMountFsOptions = {
+                "fs-type": "ZFS",
+                mode: "rdwr"
+            };
+            let zfsName: string;
+
+            const expectDownloaded = (dirname: string, options: IUSSListOptions = {}) => {
+                expect(fs.existsSync(`${dirname}/emptyFolder`)).toBe(true);
+                expect(fs.readdirSync(`${dirname}/emptyFolder`).length).toBe(0);
+                expect(fs.existsSync(`${dirname}/parentFolder`)).toBe(true);
+                expect(fs.readFileSync(`${dirname}/testFile.txt`, "utf-8")).toBe(testFileContents);
+
+                // Test depth option
+                const depth = options.depth || 0;
+                expect(fs.existsSync(`${dirname}/parentFolder/childFolder`)).toBe(depth !== 1);
+                if (depth !== 1) {
+                    expect(fs.readFileSync(`${dirname}/parentFolder/childFolder/anotherTestFile.txt`, "utf-8")).toBe(anotherTestFileContents);
+                }
+
+                // Test filesys option
+                const filesys = options.filesys || false;
+                expect(fs.existsSync(`${dirname}/mountFolder`)).toBe(filesys);
+                if (filesys) {
+                    expect(fs.readFileSync(`${dirname}/mountFolder/binaryFile.bin`, "utf-8")).toBe(binaryFileContents);
+                }
+
+                // Test symlinks option
+                const symlinks = options.symlinks || false;
+                expect(fs.existsSync(`${dirname}/testFile.lnk`)).toBe(!symlinks);
+                if (!symlinks) {
+                    expect(fs.readFileSync(`${dirname}/testFile.lnk`, "utf-8")).toBe(testFileContents);
+                }
+            };
+
+            beforeAll(async () => {
+                const emptyFolder = posix.join(ussDirname, "emptyFolder");
+                const parentFolder = posix.join(ussDirname, "parentFolder");
+                const childFolder = posix.join(parentFolder, "childFolder");
+                const testFile = posix.join(ussDirname, "testFile.txt");
+                const anotherTestFile = posix.join(childFolder, "anotherTestFile.txt");
+                const mountFolder = posix.join(ussDirname, "mountFolder");
+                const binaryFile = posix.join(mountFolder, "binaryFile.bin");
+                const testSymlink = posix.join(ussDirname, "testFile.lnk");
+
+                // Create directories
+                for (const directory of [ussDirname, emptyFolder, parentFolder, childFolder, mountFolder]) {
+                    await Create.uss(REAL_SESSION, directory, "directory");
+                }
+
+                // Create and mount file system
+                zfsName = getUniqueDatasetName(defaultSystem.zosmf.user);
+                await Create.zfs(REAL_SESSION, zfsName, createZfsOptions);
+                await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
+
+                // Upload files
+                await Upload.bufferToUssFile(REAL_SESSION, testFile, Buffer.from(testFileContents));
+                await Upload.bufferToUssFile(REAL_SESSION, anotherTestFile, Buffer.from(anotherTestFileContents));
+                await Upload.bufferToUssFile(REAL_SESSION, binaryFile, Buffer.from(binaryFileContents), { binary: true });
+                await Utilities.chtag(REAL_SESSION, binaryFile, Tag.BINARY);
+
+                // Create symlink
+                const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
+                await Shell.executeSshCwd(SSH_SESSION, `ln -s ${posix.basename(testFile)} ${posix.basename(testSymlink)}`, ussDirname, jest.fn());
+            });
+
+            afterEach(() => {
+                IO.deleteDirTree(localDirname);
+            });
+
+            it("should download directory recursively", async () => {
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, ussDirname, { directory: localDirname });
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeUndefined();
+                expectDownloaded(localDirname);
+            });
+
+            it("should download directory with depth of 1", async () => {
+                const listOptions: IUSSListOptions = { depth: 1 };
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, ussDirname, { directory: localDirname }, listOptions);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeUndefined();
+                expectDownloaded(localDirname, listOptions);
+            });
+
+            it("should download directory including all filesystems", async () => {
+                const listOptions: IUSSListOptions = { filesys: true };
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, ussDirname, { directory: localDirname }, listOptions);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeUndefined();
+                expectDownloaded(localDirname, listOptions);
+            });
+
+            it("should download directory excluding symlinks", async () => {
+                const listOptions: IUSSListOptions = { symlinks: true };
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, ussDirname, { directory: localDirname }, listOptions);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeUndefined();
+                expectDownloaded(localDirname, listOptions);
+            });
+        });
+
+        describe("Failure Scenarios", () => {
+            it("should throw error when session is undefined", async () => {
+                let caughtError;
+                try {
+                    await Download.ussDir(undefined, ussDirname);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toBe("Expect Error: Required object must be defined");
+            });
+
+            it("should throw error when USS dir name is undefined", async () => {
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, undefined);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toBe("Expect Error: Specify the USS directory name.");
+            });
+
+            it("should throw error when USS dir name is empty string", async () => {
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, "");
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toBe("Expect Error: Specify the USS directory name.");
+            });
+
+            it("should fail to download directory that does not exist", async () => {
+                let caughtError;
+                try {
+                    await Download.ussDir(REAL_SESSION, posix.join(ussDirname, "invalidDir"), { directory: testEnvironment.workingDir });
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain("Path name not found");
             });
         });
     });

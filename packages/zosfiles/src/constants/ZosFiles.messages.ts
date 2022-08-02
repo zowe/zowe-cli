@@ -71,6 +71,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the USS Dir name is required
+     * @type {IMessageDefinition}
+     */
+    missingUSSDirName: {
+        message: "Specify the USS directory name."
+    },
+
+    /**
      * Message indicating that required table parameters are missing for file list
      * @type {IMessageDefinition}
      */

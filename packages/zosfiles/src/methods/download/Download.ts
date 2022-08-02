@@ -576,8 +576,8 @@ export class Download {
         fileOptions: IDownloadOptions = {}, listOptions: IUSSListOptions = {}): Promise<IZosFilesResponse> {
 
         // required
-        ImperativeExpect.toNotBeNullOrUndefined(ussDirName, ZosFilesMessages.missingUSSFileName.message);
-        ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(ussDirName, ZosFilesMessages.missingUSSDirName.message);
+        ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSDirName.message);
         ImperativeExpect.toNotBeEqual(fileOptions.record, true, ZosFilesMessages.unsupportedDataType.message);
         const result = this.emptyDownloadUssDirResult();
         const responses: IZosFilesResponse[] = [];
