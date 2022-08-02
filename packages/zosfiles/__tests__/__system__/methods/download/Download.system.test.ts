@@ -1317,7 +1317,7 @@ describe("Download Data Set", () => {
         });
     });
 
-    describe.only("Download USS Directory", () => {
+    describe("Download USS Directory", () => {
         describe("Success Scenarios", () => {
             const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const anotherTestFileContents = testFileContents.toLowerCase();
@@ -1395,6 +1395,17 @@ describe("Download Data Set", () => {
 
             afterEach(() => {
                 IO.deleteDirTree(localDirname);
+            });
+
+            afterAll(async () => {
+                // Unmount and delete file system
+                await Unmount.fs(REAL_SESSION, zfsName);
+                await Delete.zfs(REAL_SESSION, zfsName);
+
+                // Delete directory recursively
+                const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
+                await Shell.executeSshCwd(SSH_SESSION, `rm testFile.lnk`, ussDirname, jest.fn());
+                await Delete.ussFile(REAL_SESSION, ussDirname, true);
             });
 
             it("should download directory recursively", async () => {
