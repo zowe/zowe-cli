@@ -12,7 +12,6 @@
 import { Download, IDownloadOptions, IUSSListOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-/* eslint-disable noImplicitAny */
 const defaultListObj: IUSSListOptions = {
     name: "*",
     depth: undefined,
@@ -33,7 +32,6 @@ const defaultDownloadObj: IDownloadOptions = {
         statusMessage: "Searching for files"
     }
 };
-/* eslint-enable noImplicitAny */
 
 describe("Download uss dir handler", () => {
     describe("process method", () => {
