@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { DownloadOptions } from "../Download.options";
 import i18nTypings from "../../-strings-/en";
+import { ListOptions } from "../../list/List.options";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).DOWNLOAD.ACTIONS.USS_DIR;
@@ -43,7 +44,18 @@ export const UssDirDefinition: ICommandDefinition = {
         DownloadOptions.binary,
         DownloadOptions.encoding,
         DownloadOptions.maxConcurrentRequests,
-        DownloadOptions.failFast
+        DownloadOptions.failFast,
+        ListOptions.name,
+        ListOptions.maxLength,
+        ListOptions.group,
+        ListOptions.owner,
+        ListOptions.mtime,
+        ListOptions.size,
+        ListOptions.perm,
+        ListOptions.type,
+        ListOptions.depth,
+        ListOptions.filesys,
+        ListOptions.symlinks
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download uss dir handler process method should download a uss dir if requested 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download uss dir handler process method should download a uss dir if requested 2`] = `""`;
+
+exports[`Download uss dir handler process method should download a uss dir if requested 3`] = `
+"
+downloaded"
+`;

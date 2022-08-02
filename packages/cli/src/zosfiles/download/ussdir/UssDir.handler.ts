@@ -30,10 +30,21 @@ export default class UssDirHandler extends ZosFilesBaseHandler {
             directory: commandParameters.arguments.directory,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             task: downloadStatus,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            failFast: commandParameters.arguments.failFast
         };
         const listOptions: IUSSListOptions = {
-            name: "*"
+            name: commandParameters.arguments.name ? commandParameters.arguments.name : "*",
+            maxLength: commandParameters.arguments.maxLength,
+            group: commandParameters.arguments.group,
+            user: commandParameters.arguments.owner,
+            mtime: commandParameters.arguments.mtime,
+            size: commandParameters.arguments.size,
+            perm: commandParameters.arguments.perm,
+            type: commandParameters.arguments.type,
+            depth: commandParameters.arguments.depth,
+            filesys: commandParameters.arguments.filesys,
+            symlinks: commandParameters.arguments.symlinks
         };
 
         commandParameters.response.progress.startBar({ task: downloadStatus });

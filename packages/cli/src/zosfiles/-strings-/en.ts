@@ -475,13 +475,25 @@ export default {
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
+            NAME: "Filters files in USS based on the name of the file or directory.",
             PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against " +
                 "all members, e.g. \"*\".",
             PATH: "Specifies the path where the file system is mounted." +
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
                 " This option and --path are mutually exclusive.",
-            START: "An optional search parameter that specifies the first data set name to return in the response document."
+            START: "An optional search parameter that specifies the first data set name to return in the response document.",
+            GROUP: "Filters content in USS based on the owning group name or ID.",
+            OWNER: "Filters content in USS based on the owning user name or ID.",
+            MTIME: "Filters content in USS based on the last modification time.",
+            SIZE: "Filters content in USS based on the size.",
+            PERM: "Filters content in USS based on the permissions octal.",
+            TYPE: "Filters content in USS based on the type of content." +
+                " f - regular file, d - directory, l - symbolic link, p - FIFO named pipe, s - socket",
+            DEPTH: "Filters content in USS based on the number of directories to traverse down.",
+            FILESYS: "Filters content in USS based on the filesystem the data is on." +
+                " true - all filesystems, false - same filesystem as search directory.",
+            SYMLINKS: "Filters content in USS based on whether or not to follow symbolic links. true - report symlinks, false - follow symlinks"
         }
     },
     MOUNT: {
