@@ -13,10 +13,6 @@ Array [
   Object {
     "description": "Filters content in USS based on the number of directories to traverse down.",
     "name": "depth",
-    "numericValueRange": Array [
-      0,
-      Infinity,
-    ],
     "type": "number",
   },
   Object {

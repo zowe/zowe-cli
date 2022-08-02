@@ -167,8 +167,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     depth: {
         name: "depth",
         description: strings.DEPTH,
-        type: "number",
-        numericValueRange: [0, Infinity]
+        type: "number"
     },
 
     /**
