@@ -126,7 +126,7 @@ describe("Download uss dir handler", () => {
             });
 
             const localDownloadObj: IDownloadOptions = {...defaultDownloadObj};
-            const localListObj: IUSSListOptions = {name: "fakefile.txt", ...defaultListObj};
+            const localListObj: IUSSListOptions = {...defaultListObj, name: "fakefile.txt"};
 
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -135,7 +135,7 @@ describe("Download uss dir handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         ussDirName,
-                        file: "fakefile.txt",
+                        name: "fakefile.txt",
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
