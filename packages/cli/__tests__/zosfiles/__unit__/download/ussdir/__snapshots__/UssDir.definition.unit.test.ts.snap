@@ -4,6 +4,18 @@ exports[`zos-files download uss-dir command definition should not have changed 1
 Array [
   Object {
     "aliases": Array [
+      "attrs",
+    ],
+    "conflictsWith": Array [
+      "binary",
+      "record",
+    ],
+    "description": "Path of an attributes file to control how files are downloaded",
+    "name": "attributes",
+    "type": "existingLocalFile",
+  },
+  Object {
+    "aliases": Array [
       "b",
     ],
     "description": "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process returns each line as-is, without translation. No delimiters are added between records.",
