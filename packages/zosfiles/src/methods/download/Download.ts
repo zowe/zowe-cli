@@ -30,6 +30,7 @@ import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
+// import { ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -580,6 +581,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSDirName.message);
         ImperativeExpect.toNotBeEqual(fileOptions.record, true, ZosFilesMessages.unsupportedDataType.message);
         const result = this.emptyDownloadUssDirResult();
+        // const attributes = ZosFilesAttributes.loadFromFile(fileOptions.attributes);
         const responses: IZosFilesResponse[] = [];
         const downloadTasks: IDownloadUssTask[] = [];
         let downloadsInitiated = 0;

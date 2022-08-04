@@ -9,9 +9,9 @@
 *
 */
 
-
+import * as fs from "fs";
 import * as minimatch from "minimatch";
-import { Logger, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import * as pathUtils from "path";
 
@@ -37,6 +37,46 @@ export class ZosFilesAttributes {
     constructor(attributesFileContents: string, basePath?: string) {
         this.parse(attributesFileContents);
         this.basePath = basePath;
+    }
+
+    public static loadFromFile(filePath?: string, defaultDir?: string): ZosFilesAttributes | undefined {
+        let attributesFile;
+        if (filePath != null) {
+            if (!fs.existsSync(filePath)) {
+                throw new ImperativeError({ msg: TextUtils.formatMessage(ZosFilesMessages.attributesFileNotFound.message,
+                    { file: filePath })});
+            }
+            attributesFile = filePath;
+        }
+        else {
+            const localAttributesFile = pathUtils.join(defaultDir ?? process.cwd(), ".zosattributes");
+            if (fs.existsSync(localAttributesFile)) {
+                attributesFile = localAttributesFile;
+            } else {
+                return;
+            }
+        }
+
+        let attributesFileContents;
+        try {
+            attributesFileContents = fs.readFileSync(attributesFile).toString();
+        }
+        catch (err) {
+            throw new ImperativeError({ msg: TextUtils.formatMessage(
+                ZosFilesMessages.errorReadingAttributesFile.message,
+                { file: attributesFile, message: err.message })});
+        }
+
+        let attributes;
+        try {
+            attributes = new ZosFilesAttributes(attributesFileContents, defaultDir);
+        }
+        catch (err) {
+            throw new ImperativeError({ msg: TextUtils.formatMessage(
+                ZosFilesMessages.errorParsingAttributesFile.message,
+                { file: attributesFile, message: err.message })});
+        }
+        return attributes;
     }
 
     public fileShouldBeUploaded(path: string): boolean {

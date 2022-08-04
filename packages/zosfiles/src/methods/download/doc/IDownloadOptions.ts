@@ -81,4 +81,9 @@ export interface IDownloadOptions extends IOptions {
      * The default value is true for backward compatibility.
      */
     failFast?: boolean;
+
+    /**
+     * The path to a .zosattributes file used to control file conversion and tagging.
+     */
+    attributes?: string;
 }

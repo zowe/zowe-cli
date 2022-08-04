@@ -9,11 +9,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils, ITaskWithStatus, TaskStage, ImperativeError } from "@zowe/imperative";
-import { IZosFilesResponse, ZosFilesAttributes, ZosFilesMessages, Upload, IUploadMap } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, TextUtils, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { IZosFilesResponse, ZosFilesAttributes, Upload, IUploadMap } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import * as path from "path";
-import * as fs from "fs";
 
 /**
  * Handler to upload content from a local directory to a USS directory
@@ -40,10 +39,10 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         }
 
         let response;
-        const attributesFile = this.findAttributesFile(commandParameters, inputDir);
+        const attributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes, inputDir);
 
-        if (attributesFile) {
-            response = await this.uploadWithAttributesFile(attributesFile, response, session, inputDir,
+        if (attributes != null) {
+            response = await this.uploadWithAttributesFile(attributes, response, session, inputDir,
                 commandParameters, status);
         } else {
             const filesMap: IUploadMap = this.buildFilesMap(commandParameters);
@@ -76,48 +75,12 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         return response;
     }
 
-    private findAttributesFile(commandParameters: IHandlerParameters, inputDir: string) {
-        let attributesFile;
-        if (commandParameters.arguments.attributes) {
-            if (!fs.existsSync(commandParameters.arguments.attributes)) {
-                throw new ImperativeError({ msg: TextUtils.formatMessage(ZosFilesMessages.attributesFileNotFound.message,
-                    {file: commandParameters.arguments.attributes})});
-            }
-            attributesFile = commandParameters.arguments.attributes;
-        }
-        else {
-            const localAttributesFile = path.join(inputDir, ".zosattributes");
-            if (fs.existsSync(localAttributesFile)) {
-                attributesFile = localAttributesFile;
-            }
-        }
-        return attributesFile;
-    }
-
-    private async uploadWithAttributesFile(attributesFile: any,
+    private async uploadWithAttributesFile(attributes: ZosFilesAttributes,
         response: any,
         session: AbstractSession,
         inputDir: string,
         commandParameters: IHandlerParameters,
         status: ITaskWithStatus) {
-        let attributesFileContents;
-        try {
-            attributesFileContents = fs.readFileSync(attributesFile).toString();
-        }
-        catch (err) {
-            throw new ImperativeError({ msg: TextUtils.formatMessage(
-                ZosFilesMessages.errorReadingAttributesFile.message,
-                {file: attributesFile, message: err.message})});
-        }
-        let attributes;
-        try {
-            attributes = new ZosFilesAttributes(attributesFileContents,inputDir);
-        }
-        catch (err) {
-            throw new ImperativeError({ msg: TextUtils.formatMessage(
-                ZosFilesMessages.errorParsingAttributesFile.message,
-                {file: attributesFile, message: err.message})});
-        }
 
         if(commandParameters.arguments.recursive) {
             response = await Upload.dirToUSSDirRecursive(session,
