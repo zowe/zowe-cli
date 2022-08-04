@@ -581,7 +581,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSDirName.message);
         ImperativeExpect.toNotBeEqual(fileOptions.record, true, ZosFilesMessages.unsupportedDataType.message);
         const result = this.emptyDownloadUssDirResult();
-        // const attributes = ZosFilesAttributes.loadFromFile(fileOptions.attributes);
+        // const attributes = fileOptions.attributes;
         const responses: IZosFilesResponse[] = [];
         const downloadTasks: IDownloadUssTask[] = [];
         let downloadsInitiated = 0;

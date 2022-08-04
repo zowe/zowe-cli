@@ -10,6 +10,7 @@
 */
 
 import { IOptions } from "../../../doc/IOptions";
+import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 
 /**
  * This interface defines the options that can be sent into the download data set function
@@ -85,5 +86,5 @@ export interface IDownloadOptions extends IOptions {
     /**
      * The path to a .zosattributes file used to control file conversion and tagging.
      */
-    attributes?: string;
+    attributes?: ZosFilesAttributes;
 }

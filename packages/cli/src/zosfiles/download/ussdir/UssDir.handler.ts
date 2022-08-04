@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { IZosFilesResponse, Download, IDownloadOptions, IUSSListOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse, Download, IDownloadOptions, IUSSListOptions, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
@@ -25,13 +25,16 @@ export default class UssDirHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
+        const zosAttributes: ZosFilesAttributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes);
+
         const downloadOptions: IDownloadOptions = {
             binary: commandParameters.arguments.binary,
             directory: commandParameters.arguments.directory,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             task: downloadStatus,
             responseTimeout: commandParameters.arguments.responseTimeout,
-            failFast: commandParameters.arguments.failFast
+            failFast: commandParameters.arguments.failFast,
+            attributes: zosAttributes
         };
         const listOptions: IUSSListOptions = {
             name: commandParameters.arguments.name ? commandParameters.arguments.name : "*",

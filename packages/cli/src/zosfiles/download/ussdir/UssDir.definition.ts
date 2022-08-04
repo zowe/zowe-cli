@@ -40,6 +40,7 @@ export const UssDirDefinition: ICommandDefinition = {
         }
     ],
     options: [
+        DownloadOptions.attributes,
         DownloadOptions.directory,
         DownloadOptions.binary,
         DownloadOptions.encoding,

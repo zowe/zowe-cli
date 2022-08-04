@@ -350,6 +350,7 @@ export default {
             }
         },
         OPTIONS: {
+            ATTRIBUTES: "Path of an attributes file to control how files are downloaded",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process " +

@@ -150,5 +150,16 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.FAIL_FAST,
         type: "boolean",
         defaultValue: true
-    }
+    },
+
+    /**
+     * The attributes option to specify the path to a zos-files-attributes file
+     */
+    attributes: {
+        name: "attributes",
+        aliases: ["attrs"],
+        description: strings.ATTRIBUTES,
+        type: "existingLocalFile",
+        conflictsWith: ["binary", "record"]
+    },
 };
