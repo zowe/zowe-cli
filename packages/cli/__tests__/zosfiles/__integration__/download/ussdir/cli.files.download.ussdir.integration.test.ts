@@ -62,4 +62,11 @@ describe("Download USS Directory", () => {
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("does not exist");
     });
+
+    it("should fail due to specifying an invalid type filter", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_ussdir.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["test", "--type", "a"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Invalid value specified for option");
+    });
 });

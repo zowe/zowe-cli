@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
 
-import { posix, join} from "path";
+import { posix, join } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
