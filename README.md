@@ -65,11 +65,6 @@ The first time that you download Zowe CLI from the GitHub repository, issue the 
 npm install
 ```
 
-The flags from previous command are unnecessary now and may cause some problems, if you are wondering what problems might be caused here you go:
-- ```--@zowe:registry=https://registry.npmjs.org``` is unnecessary because the ```@zowe:registry``` defined in .npmrc should work.
-- ```--no-package-lock``` ignores the dependencies locked down in shrinkwrap for security/compatiblity reasons.
-- ``` --force ``` should generally not be used unless there is an error that requires force to be bypassed.
-
 **Note:** When necessary, you can run the install command again to update dependencies that were changed in package.json.
 
 To build your code changes, issue the following command:
