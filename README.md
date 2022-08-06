@@ -62,8 +62,13 @@ Zowe CLI requires NPM version 7 to install from source. Before proceeding, check
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm install --@zowe:registry=https://registry.npmjs.org --no-package-lock --force
+npm install
 ```
+
+The flags from previous command are unnecessary now and may cause some problems, if you are wondering what problems might be caused here you go:
+- ```--@zowe:registry=https://registry.npmjs.org``` is unnecessary because the ```@zowe:registry``` defined in .npmrc should work.
+- ```--no-package-lock``` ignores the dependencies locked down in shrinkwrap for security/compatiblity reasons.
+- ``` --force ``` should generally not be used unless there is an error that requires force to be bypassed.
 
 **Note:** When necessary, you can run the install command again to update dependencies that were changed in package.json.
 
