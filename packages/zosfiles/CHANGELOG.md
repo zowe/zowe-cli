@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.4.2`
 
 - BugFix: Added errorMessage property to `IZosFilesResponse` to provide more specific error messages.
 

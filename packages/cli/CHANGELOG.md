@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.4.2`
 
 - BugFix: Renamed `download data-set-matching` to `download data-sets-matching`. The old name still exists as an alias.
 - BugFix: Fixed output of `download data-sets-matching` being printed twice when some data sets fail to download.
