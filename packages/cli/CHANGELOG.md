@@ -2,6 +2,15 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.4.2`
+
+- BugFix: Renamed `download data-set-matching` to `download data-sets-matching`. The old name still exists as an alias.
+- BugFix: Fixed output of `download data-sets-matching` being printed twice when some data sets fail to download.
+
+## `7.4.1`
+
+- BugFix: Updated Imperative to fix error when installing plug-ins that do not define profiles.
+
 ## `7.4.0`
 
 - Enhancement: Added the `zowe zos-files compare data-set` command to compare two datasets and display the differences on the terminal. [#1442](https://github.com/zowe/zowe-cli/issues/1442)
