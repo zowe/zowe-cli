@@ -412,7 +412,7 @@ describe("Download USS Directory", () => {
             expect(response.status).toBe(0);
         });
 
-        it("should download uss directory based on file modification time 1", async () => {
+        it("should download uss directory based on file modification time 2", async () => {
             localFilesToDelete = [];
             localDirsToDelete = [];
             const shellScript = path.join(
