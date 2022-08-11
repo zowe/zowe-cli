@@ -816,7 +816,7 @@ export class Download {
 
     private static parseAttributeOptions(filename: string, attributes?: ZosFilesAttributes): Partial<IDownloadOptions> {
         const downloadOptions: Partial<IDownloadOptions> = {};
-        if (attributes !== null) {
+        if (attributes != null) {
             downloadOptions.binary = attributes.getFileTransferMode(filename) === TransferMode.BINARY;
             if (!downloadOptions.binary) {
                 downloadOptions.encoding = attributes.getRemoteEncoding(filename);

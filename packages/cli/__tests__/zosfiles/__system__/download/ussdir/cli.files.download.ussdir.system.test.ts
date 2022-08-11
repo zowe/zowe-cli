@@ -425,6 +425,30 @@ describe("Download USS Directory", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });
+
+        it("should download uss directory and use a zosattributes file", async () => {
+            localFilesToDelete = [...filesToDelete];
+            localDirsToDelete = [...dirsToDelete];
+            const zosAttributesFile = path.join(TEST_ENVIRONMENT.workingDir, ".zosattributes");
+            const zosAttributesFileContents = fs.readFileSync(path.join(__dirname, "__resources__", ".zosattributes")).toString();
+            const ussname4realfull = path.join(TEST_ENVIRONMENT.workingDir, ussname4real) + ".bin";
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_directory.sh"
+            );
+            fs.writeFileSync(zosAttributesFile, zosAttributesFileContents);
+            await Upload.bufferToUssFile(REAL_SESSION, `${ussname4}.bin`, Buffer.from(data));
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussdir1, `--attributes .zosattributes`, "--rfj"]);
+            await Delete.ussFile(REAL_SESSION, `${ussname4}.bin`, true);
+            fs.unlinkSync(zosAttributesFile);
+            expect(fs.readFileSync(ussname4realfull).toString()).toEqual("��������������������������");
+            fs.unlinkSync(ussname4realfull);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toContain("5 file(s) downloaded successfully");
+            expect(response.status).toBe(0);
+        });
     });
 
     describe("Expected failures", () => {
