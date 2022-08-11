@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -938,17 +938,21 @@ export class Upload {
                     reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
                 } else if (options.record) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
-                } else if (options.localEncoding) {
-                    reqHeaders.push({"Content-Type": options.localEncoding});
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                } else if (options.encoding) {
-                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                    const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                    header[keys[0]] = value;
-                    reqHeaders.push(header);
                 } else {
-                    reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+                    if (options.encoding) {
+                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                        const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                        const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+                        header[keys[0]] = value;
+                        reqHeaders.push(header);
+                    } else {
+                        reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    }
+                    if (options.localEncoding) {
+                        reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });
+                    } else {
+                        reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+                    }
                 }
                 reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {

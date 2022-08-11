@@ -93,6 +93,10 @@ export class ZosFilesAttributes {
         return result;
     }
 
+    public fileShouldBeIgnored(path: string): boolean {
+        return !this.fileShouldBeUploaded(path);
+    }
+
     public getFileTransferMode(path: string): TransferMode {
         const attributes = this.findLastMatchingAttributes(path);
         if (attributes === null) {

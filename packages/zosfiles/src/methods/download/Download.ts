@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
 
 import { posix, join } from "path";
 import * as fs from "fs";
@@ -30,7 +30,7 @@ import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
-// import { ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
+import { TransferMode, ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -96,7 +96,7 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 
             // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -524,7 +524,7 @@ export class Download {
             ussFileName = encodeURIComponent(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -582,7 +582,6 @@ export class Download {
         ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSDirName.message);
         ImperativeExpect.toNotBeEqual(fileOptions.record, true, ZosFilesMessages.unsupportedDataType.message);
         const result = this.emptyDownloadUssDirResult();
-        // const attributes = fileOptions.attributes;
         const responses: IZosFilesResponse[] = [];
         const downloadTasks: IDownloadUssTask[] = [];
         let downloadsInitiated = 0;
@@ -653,10 +652,17 @@ export class Download {
                     continue;
                 } else if (item.mode.startsWith("-")) {
                     // If mode starts with -, the item is a file, download it
+                    if (fileOptions.attributes?.fileShouldBeIgnored(item.name)) {
+                        // If .zosattributes says to ignore the file, skip it
+                        continue;
+                    }
                     mutableOptions.file = join(workingDirectory, item.name);
                     downloadTasks.push({
                         file: item.name,
-                        options: { ...mutableOptions },
+                        options: {
+                            ...mutableOptions,
+                            ...this.parseAttributeOptions(item.name, fileOptions.attributes)
+                        },
                     });
                     downloadsTotal++;
                 } else if (item.mode.startsWith("d")) {
@@ -794,5 +800,29 @@ export class Download {
             }
         }
         return responseLines.join("\n") + "\n";
+    }
+
+    private static generateHeadersBasedOnOptions(options: IDownloadOptions) {
+        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+        if (!options.binary && !options.record) {
+            if (options.localEncoding) {
+                reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });
+            } else {
+                reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+            }
+        }
+        return reqHeaders;
+    }
+
+    private static parseAttributeOptions(filename: string, attributes?: ZosFilesAttributes): Partial<IDownloadOptions> {
+        const downloadOptions: Partial<IDownloadOptions> = {};
+        if (attributes !== null) {
+            downloadOptions.binary = attributes.getFileTransferMode(filename) === TransferMode.BINARY;
+            if (!downloadOptions.binary) {
+                downloadOptions.encoding = attributes.getRemoteEncoding(filename);
+                downloadOptions.localEncoding = attributes.getLocalEncoding(filename);
+            }
+        }
+        return downloadOptions;
     }
 }

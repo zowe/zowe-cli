@@ -84,6 +84,11 @@ export interface IDownloadOptions extends IOptions {
     failFast?: boolean;
 
     /**
+     * The local file encoding to pass as a "Content-Type" header
+     */
+    localEncoding?: string;
+
+    /**
      * The path to a .zosattributes file used to control file conversion and tagging.
      */
     attributes?: ZosFilesAttributes;
