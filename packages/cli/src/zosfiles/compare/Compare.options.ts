@@ -141,8 +141,8 @@ export const CompareOptions: { [key: string]: ICommandOptionDefinition } = {
     /**
      * Open in browser option
      */
-    browserview: {
-        name: "browserview",
+    browserView: {
+        name: "browser-view",
         aliases: ["bv"],
         description: strings.BROWSERVIEW,
         type: "boolean"

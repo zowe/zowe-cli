@@ -65,7 +65,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
         // reached, for example the upload API needs to return an API response even when it fails.
         if (!response.success && response.commandResponse) {
             throw new ImperativeError({
-                msg: response.commandResponse
+                msg: response.errorMessage || response.commandResponse
             });
         }
     }
