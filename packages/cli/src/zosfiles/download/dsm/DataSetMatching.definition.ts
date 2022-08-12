@@ -21,8 +21,8 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DO
  * @type {ICommandDefinition}
  */
 export const DataSetMatchingDefinition: ICommandDefinition = {
-    name: "data-set-matching",
-    aliases: ["dsm"],
+    name: "data-sets-matching",
+    aliases: ["dsm", "data-set-matching"],
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",

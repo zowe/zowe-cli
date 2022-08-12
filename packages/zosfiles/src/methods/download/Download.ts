@@ -470,7 +470,8 @@ export class Download {
         return {
             success: numFailed === 0,
             commandResponse: this.buildDownloadDsmResponse(result, options),
-            apiResponse: zosmfResponses
+            apiResponse: zosmfResponses,
+            errorMessage: numFailed > 0 ? ZosFilesMessages.someDownloadsFailed.message : undefined
         };
     }
 

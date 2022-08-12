@@ -53,13 +53,12 @@ pub fn proc_get_cmd_shell() -> Result<(CmdShell, String), SimpleError> {
     for (next_pid, process) in sys.processes() {
         if next_pid == &my_pid {
             found_my_pid = true;
-            let my_parent_pid: Pid;
-            match process.parent() {
-                Some(parent_id) => my_parent_pid = parent_id,
+            let my_parent_pid: Pid = match process.parent() {
+                Some(parent_id) => parent_id,
                 None => {
                     return Err(SimpleError::new("Got invalid parent process ID from the process list."));
                 }
-            }
+            };
 
             // loop though the process list to find our parent process ID
             let mut found_parent_pid: bool = false;
@@ -197,9 +196,8 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
     }
 
     // read in the pid file contents
-    let pid_file: File;
-    match File::open(&pid_file_path) {
-        Ok(ok_val) => pid_file = ok_val,
+    let pid_file: File = match File::open(&pid_file_path) {
+        Ok(ok_val) => ok_val,
         Err(err_val) => {
             // we should not continue if we cannot open an existing pid file
             println!("Unable to open file = {}\nDetails = {}",
@@ -207,11 +205,10 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
             );
             std::process::exit(EXIT_CODE_FILE_IO_ERROR);
         }
-    }
+    };
     let pid_reader = BufReader::new(pid_file);
-    let daemon_pid_for_user: DaemonPidForUser;
-    match serde_json::from_reader(pid_reader) {
-        Ok(ok_val) => daemon_pid_for_user = ok_val,
+    let daemon_pid_for_user: DaemonPidForUser = match serde_json::from_reader(pid_reader) {
+        Ok(ok_val) => ok_val,
         Err(err_val) => {
             // we should not continue if we cannot read an existing pid file
             println!("Unable to read file = {}\nDetails = {}",
@@ -219,7 +216,7 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
             );
             std::process::exit(EXIT_CODE_FILE_IO_ERROR);
         }
-    }
+    };
 
     if daemon_pid_for_user.user != username() {
         // our pid file should only contain our own user name
@@ -281,7 +278,7 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     }
 
     let daemon_arg = LAUNCH_DAEMON_OPTION;
-    match Command::new(njs_zowe_path.to_owned())
+    match Command::new(njs_zowe_path)
         .arg(daemon_arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
