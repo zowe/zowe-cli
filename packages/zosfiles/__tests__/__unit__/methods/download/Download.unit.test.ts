@@ -1462,7 +1462,8 @@ describe("z/OS Files - Download", () => {
                     dsname: "TEST.PS.DATA.SET",
                     vol: "MIGRATC",
                     status: "Skipped: Archived data set or alias - type MIGRATC."
-                }]
+                }],
+                errorMessage: ZosFilesMessages.someDownloadsFailed.message
             });
         });
 
@@ -1492,7 +1493,8 @@ describe("z/OS Files - Download", () => {
                     dsname: "TEST.DATA.SET",
                     dsorg: "unknown",
                     status: "Skipped: Unsupported data set - type unknown."
-                }]
+                }],
+                errorMessage: ZosFilesMessages.someDownloadsFailed.message
             });
         });
 

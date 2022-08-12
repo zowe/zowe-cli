@@ -22,13 +22,20 @@ export interface IZosFilesResponse {
 
     /**
      * The command response text.
-     * @type{string}
+     * @type {string}
      */
     commandResponse: string;
 
     /**
      * The api response object.
-     * @type{*}
+     * @type {*}
      */
     apiResponse?: any;
+
+    /**
+     * The error message text.
+     * If not defined, the command response will be used.
+     * @type {string}
+     */
+    errorMessage?: string;
 }

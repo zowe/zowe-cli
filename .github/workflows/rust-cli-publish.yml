@@ -21,9 +21,8 @@ jobs:
 
     - name: Get version
       id: get-version
-      run: |
-        cd zowex
-        echo "::set-output name=ZOWEX_VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
+      working-directory: zowex
+      run: echo "::set-output name=ZOWEX_VERSION::$(cargo metadata --no-deps | jq -r .packages[0].version)"
 
     - name: Create Release
       id: create_release
@@ -68,7 +67,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0
+        toolchain: stable
         override: true
 
     - uses: actions/download-artifact@v2
@@ -114,7 +113,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0
+        toolchain: stable
         override: true
 
     - uses: actions/download-artifact@v2
@@ -160,7 +159,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: 1.61.0
+        toolchain: stable
         override: true
 
     - uses: actions/download-artifact@v2
