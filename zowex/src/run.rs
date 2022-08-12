@@ -79,14 +79,13 @@ pub fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
         return run_delayed_zowe_command(&njs_zowe_path, zowe_cmd_args);
     }
 
-    let run_result: Result<i32, i32>;
-    if user_wants_daemon() {
+    let run_result: Result<i32, i32> = if user_wants_daemon() {
         // send command to the daemon
-        run_result = run_daemon_command(&njs_zowe_path, zowe_cmd_args);
+        run_daemon_command(&njs_zowe_path, zowe_cmd_args)
     } else {
         // user wants to run classic NodeJS zowe
-        run_result = run_nodejs_command(&njs_zowe_path, zowe_cmd_args);
-    }
+        run_nodejs_command(&njs_zowe_path, zowe_cmd_args)
+    };
     run_result
 }
 
@@ -132,8 +131,7 @@ pub fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
  */
 fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
     // launch classic NodeJS zowe and wait for it to complete.
-    let exit_code: i32;
-    match Command::new(njs_zowe_path.to_owned())
+    let exit_code: i32 = match Command::new(njs_zowe_path)
         .args(zowe_cmd_args.to_owned())
         .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
@@ -141,7 +139,7 @@ fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
         .output()
     {
         Ok(new_proc) => {
-            exit_code = new_proc.status.code().unwrap();
+            new_proc.status.code().unwrap()
         }
         Err(error) => {
             println!("Failed to run the following command:");
@@ -150,7 +148,7 @@ fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
                 njs_zowe_path, zowe_cmd_args
             );
             println!("Due to this error:\n    {}", error);
-            exit_code = EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD;
+            EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD
         }
     };
 
@@ -213,8 +211,7 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
     // println!("script_arg_vec = {:?}", script_arg_vec);
 
     println!("The '{}' command will run in the background ...", arg_vec_to_string(zowe_cmd_args));
-    let run_result: Result<i32, i32>;
-    match Command::new(cmd_shell_to_launch)
+    let run_result: Result<i32, i32> = match Command::new(cmd_shell_to_launch)
         .args(script_arg_vec)
         .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
@@ -222,7 +219,7 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
         .spawn()
     {
         Ok(..) => {
-            run_result = Ok(EXIT_CODE_SUCCESS);
+            Ok(EXIT_CODE_SUCCESS)
         }
         Err(err_val) => {
             println!("Failed to run the following command:");
@@ -231,7 +228,7 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
                 njs_zowe_path, zowe_cmd_args
             );
             println!("Due to this error:\n    {}", err_val);
-            run_result = Err(EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD);
+            Err(EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD)
         }
     };
     run_result
@@ -251,14 +248,13 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
  *      An empty Result upon success. Otherwise an error Result.
  */
 pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
-    let cwd: PathBuf;
-    match env::current_dir() {
-        Ok(ok_val) => cwd = ok_val,
+    let cwd: PathBuf = match env::current_dir() {
+        Ok(ok_val) => ok_val,
         Err(err_val) => {
             println!("Unable to get current directory\nDetails = {:?}", err_val);
             return Err(EXIT_CODE_ENV_ERROR);
         }
-    }
+    };
 
     let mut stdin = Vec::new();
     if !atty::is(Stream::Stdin) {
@@ -269,28 +265,27 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
     }
 
     // create the response structure for this message
-    let response: DaemonResponse;
-    if !zowe_cmd_args.is_empty()  &&  zowe_cmd_args[0] == SHUTDOWN_REQUEST {
+    let response: DaemonResponse = if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == SHUTDOWN_REQUEST {
         // Sending Control-C shutdown request
         let control_c: String = "\x03".to_string();
-        response = DaemonResponse {
+        DaemonResponse {
             argv: None,
             cwd: None,
             env: None,
             stdinLength: Some(0),
             stdin: Some(control_c),
             user: Some(encode(username())),
-        };
+        }
     } else {
-        response = DaemonResponse {
+        DaemonResponse {
             argv: Some(zowe_cmd_args.to_vec()),
             cwd: Some(cwd.into_os_string().into_string().unwrap()),
             env: Some(util_get_zowe_env()),
             stdinLength: Some(stdin.len() as i32),
             stdin: None,
             user: Some(encode(username())),
-        };
-    }
+        }
+    };
 
     let mut _resp: Vec<u8>;
     match serde_json::to_vec(&response) {
@@ -308,11 +303,10 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
     }
 
     let mut tries = 0;
-    let socket_string: String;
-    match util_get_socket_string() {
-        Ok(ok_val) => socket_string = ok_val,
+    let socket_string: String = match util_get_socket_string() {
+        Ok(ok_val) => ok_val,
         Err(err_val) => return Err(err_val)
-    }
+    };
 
     #[cfg(target_family = "windows")]
     let mut lock_file = get_win_lock_file()?;
@@ -624,15 +618,14 @@ fn get_win_lock_file() -> Result<LockFile, i32> {
         println!("Reason = {}.", err_val);
         return Err(EXIT_CODE_FILE_IO_ERROR);
     }
-    let lock_file:LockFile;
-    match LockFile::open(&lock_path) {
-        Ok(ok_val) => lock_file = ok_val,
+    let lock_file: LockFile = match LockFile::open(&lock_path) {
+        Ok(ok_val) => ok_val,
         Err(err_val) => {
             println!("Unable to open zowe daemon lock file = {}.", &lock_path.display());
             println!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
-    }
+    };
     Ok(lock_file)
 }
 
@@ -642,11 +635,10 @@ fn get_win_lock_file() -> Result<LockFile, i32> {
  */
 fn user_wants_daemon() -> bool {
     const DAEMON_ENV_VAR_NM: &str = "ZOWE_USE_DAEMON";
-    let env_var_val;
-    match env::var(DAEMON_ENV_VAR_NM) {
-        Ok(val) => env_var_val = val,
-        Err(_e) => env_var_val = "NoDaemon".to_string(),
-    }
+    let env_var_val = match env::var(DAEMON_ENV_VAR_NM) {
+        Ok(val) => val,
+        Err(_e) => "NoDaemon".to_string(),
+    };
 
     if env_var_val.to_lowercase() == "false"
         || env_var_val.to_lowercase() == "no"

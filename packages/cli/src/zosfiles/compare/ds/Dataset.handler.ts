@@ -44,7 +44,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         let binary2 = commandParameters.arguments.binary2;
         let encoding2 = commandParameters.arguments.encoding2;
         let record2 = commandParameters.arguments.record2;
-        const browserView = commandParameters.arguments.browserview;
+        const browserView = commandParameters.arguments.browserView;
         const volumeSerial2 = commandParameters.arguments.volumeSerial2;
 
         if (binary2 == undefined) {
