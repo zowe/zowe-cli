@@ -53,7 +53,7 @@ describe("Compare data set handler", () => {
                 _: ["fake"],
                 dataSetName1,
                 dataSetName2,
-                browserview: false,
+                browserView: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
             response: {
@@ -117,7 +117,7 @@ describe("Compare data set handler", () => {
         it("should compare two data sets in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
-            processArguments.arguments.browserview = true ;
+            processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
