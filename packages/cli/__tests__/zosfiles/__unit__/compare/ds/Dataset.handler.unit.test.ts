@@ -67,7 +67,7 @@ describe("Compare data set handler", () => {
                 },
                 console: {
                     log: jest.fn((logArgs) => {
-                        logMessage += "\n" + logArgs;
+                        logMessage += logArgs;
                     })
                 },
                 progress: {
@@ -88,9 +88,7 @@ describe("Compare data set handler", () => {
         it("should compare two data sets in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
-                return {
-                    jsonDiff: "compared string"
-                };
+                return "compared string";
             });
 
             try {
@@ -109,8 +107,8 @@ describe("Compare data set handler", () => {
                 }
             });
             expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
