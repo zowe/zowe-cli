@@ -99,7 +99,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching data-sets diffs in browser....",
+                commandResponse: "Launching data-sets diffs in browser...",
                 apiResponse: {}
             };
         }
