@@ -71,23 +71,23 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
 exports[`zos-files upload dtu command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory:\\"",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\"",
   },
   Object {
-    "description": "Upload all files from the \\"local_dir\\" directory and all its sub-directories, to the \\"/a/ibmuser/my_dir\\" USS directory:",
+    "description": "Upload all files from the \\"local_dir\\" directory and all its sub-directories, to the \\"/a/ibmuser/my_dir\\" USS directory",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --recursive",
   },
   Object {
-    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary-files \\"myFile1.exe,myFile2.exe,myFile3.exe\\"",
   },
   Object {
-    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary --ascii-files \\"myFile1.txt,myFile2.txt,myFile3.txt\\"",
   },
   Object {
-    "description": "Recursively upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory, specifying files to ignore and file encodings in the local file my_global_attributes:",
+    "description": "Recursively upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory, specifying files to ignore and file encodings in the local file my_global_attributes",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --recursive --attributes my_global_attributes",
   },
 ]

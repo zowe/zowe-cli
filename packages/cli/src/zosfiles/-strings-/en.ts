@@ -573,10 +573,10 @@ export default {
                     "An optional .zosattributes file in the source directory can be used to control file conversion and tagging.\n\n" +
                     "An example .zosattributes file:{{space}}{{space}}\n" +
                     "# pattern        local-encoding        remote-encoding{{space}}{{space}}\n" +
-                    "# Don't upload the node_modules directory{{space}}{{space}\n" +
-                    "node_modules     -{{space}}{{space}\n" +
+                    "# Don't upload the node_modules directory{{space}}{{space}}\n" +
+                    "node_modules     -{{space}}{{space}}\n" +
                     "# Don't upload files that start with periods{{space}}{{space}}\n" +
-                    ".*               - {{space}}{{space}\n" +
+                    ".*               -{{space}}{{space}}\n" +
                     "# Upload jpg images in binary{{space}}{{space}}\n" +
                     "*.jpg            binary                binary{{space}}{{space}}\n" +
                     "# Convert CICS Node.js profiles to EBCDIC{{space}}{{space}}\n" +
@@ -601,15 +601,15 @@ export default {
                     USSDIR: "The name of the USS directory to which you want to upload the local directory"
                 },
                 EXAMPLES: {
-                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
+                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory`,
                     EX2: `Upload all files from the "local_dir" directory and all its sub-directories, ` +
-                        `to the "/a/ibmuser/my_dir" USS directory:`,
+                        `to the "/a/ibmuser/my_dir" USS directory`,
                     EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                        `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
+                        `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode`,
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                        `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`,
+                        `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode`,
                     EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
-                        `specifying files to ignore and file encodings in the local file my_global_attributes:`
+                        `specifying files to ignore and file encodings in the local file my_global_attributes`
                 }
             }
         },
