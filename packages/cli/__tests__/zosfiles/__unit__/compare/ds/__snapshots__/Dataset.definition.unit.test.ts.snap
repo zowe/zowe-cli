@@ -89,6 +89,14 @@ Array [
     "name": "context-lines",
     "type": "number",
   },
+  Object {
+    "aliases": Array [
+      "bv",
+    ],
+    "description": "Open the data-sets diffs in browser",
+    "name": "browser-view",
+    "type": "boolean",
+  },
 ]
 `;
 
