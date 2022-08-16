@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the browser-view option to `zowe zos-files compare data-set` command to compare two datasets and display the differences on the browser. [#1443](https://github.com/zowe/zowe-cli/issues/1443)
+
 ## `7.4.2`
 
 - BugFix: Renamed `download data-set-matching` to `download data-sets-matching`. The old name still exists as an alias.
