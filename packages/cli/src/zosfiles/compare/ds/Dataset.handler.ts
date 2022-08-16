@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -10,10 +9,9 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { DiffUtils } from "@zowe/imperative";
 /**
  * Handler to view a data set's content
  * @export
@@ -101,7 +99,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching data-sets diffs in browser....",
+                commandResponse: "Launching data-sets diffs in browser...",
                 apiResponse: {}
             };
         }
