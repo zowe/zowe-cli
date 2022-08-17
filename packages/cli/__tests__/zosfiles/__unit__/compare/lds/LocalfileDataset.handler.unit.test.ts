@@ -68,7 +68,7 @@ describe("Compare local-file and data-set handler", () => {
                 },
                 console: {
                     log: jest.fn((logArgs) => {
-                        logMessage += "\n" + logArgs;
+                        logMessage += logArgs;
                     })
                 },
                 progress: {
@@ -89,9 +89,7 @@ describe("Compare local-file and data-set handler", () => {
         it("should compare local-file and data-set in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
-                return {
-                    jsonDiff: "compared string"
-                };
+                return "compared string";
             });
 
             try {
@@ -110,8 +108,8 @@ describe("Compare local-file and data-set handler", () => {
                 }
             });
             expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
