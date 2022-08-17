@@ -54,7 +54,7 @@ describe("Compare local-file and data-set handler", () => {
                 _: ["fake"],
                 localFilePath,
                 dataSetName,
-                browserview: false,
+                browserView: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
             response: {
@@ -116,7 +116,7 @@ describe("Compare local-file and data-set handler", () => {
         it("should compare local-file and data-set in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
-            processArguments.arguments.browserview = true ;
+            processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
