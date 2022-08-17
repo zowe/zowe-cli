@@ -75,7 +75,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         );
 
 
-        const browserView = commandParameters.arguments.browserview;
+        const browserView = commandParameters.arguments.browserView;
 
         let lfContentString = "";
         let dsContentString = "";
@@ -109,7 +109,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching local-filee and data-set diffs in browser....",
+                commandResponse: "Launching local-filee and data-set diffs in browser...",
                 apiResponse: {}
             };
         }
