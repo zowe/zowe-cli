@@ -11,10 +11,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { DiffUtils } from "@zowe/imperative";
 
 /**
  * Handler to view a data set's content
@@ -79,7 +78,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         let lfContentString = "";
         let dsContentString = "";
 
-        if (commandParameters.arguments.seqnum == false) {
+        if (!commandParameters.arguments.seqnum) {
             const seqnumlen = 8;
 
             const lfStringArray = lfContentBuf.toString().split("\n");
@@ -108,7 +107,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching local-filee and data-set diffs in browser...",
+                commandResponse: "Launching local-file and data-set diffs in browser...",
                 apiResponse: {}
             };
         }
