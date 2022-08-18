@@ -83,6 +83,22 @@ export class GetJobs {
     }
 
     /**
+     * Get a list of jobs that match various parameters
+     * @static
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string}
+     * @returns {Promise<IJob[]>} - promise that resolves to an array of IJob objects (matching jobs)
+     * @memberof GetJobs
+     */
+    public static async getJobsByParameters(session: AbstractSession, params: IGetJobsParms) {
+        Logger.getAppLogger().trace("GetJobs.getJobsByOwnerAndPrefix()");
+        const { owner, prefix } = params;
+        ImperativeExpect.toBeDefinedAndNonBlank(owner, "owner");
+        ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix");
+        return GetJobs.getJobsCommon(session, { ...params});
+    }
+
+    /**
      * Get a single job object from an input job id
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
@@ -162,6 +178,12 @@ export class GetJobs {
                     query += JobsConstants.COMBO_ID;
                 }
                 query += (JobsConstants.EXEC_DATA);
+            }
+            if (parms.status) {
+                if (RestClient.hasQueryString(query)) {
+                    query += JobsConstants.COMBO_ID;
+                }
+                query += parms.status;
             }
         }
 

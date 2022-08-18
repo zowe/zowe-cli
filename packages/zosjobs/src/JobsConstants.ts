@@ -88,6 +88,14 @@ export class JobsConstants {
     public static readonly DEFAULT_MAX_JOBS: number = 1000;
 
     /**
+     * Maximum number of jobs to obtain
+     * @static
+     * @type {number}
+     * @memberof JobsConstants
+     */
+         public static readonly DEFAULT_STATUS: string = '*';
+
+    /**
      * URI base jobs API
      * @static
      * @type {string}
