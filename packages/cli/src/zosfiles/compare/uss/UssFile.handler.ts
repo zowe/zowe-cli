@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -10,10 +9,9 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { DiffUtils } from "@zowe/imperative";
 /**
  * Handler to view a data set's content
  * @export
@@ -46,7 +44,7 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         let binary2 = commandParameters.arguments.binary2;
         let encoding2 = commandParameters.arguments.encoding2;
         let record2 = commandParameters.arguments.record2;
-        const browserView = commandParameters.arguments.browserview;
+        const browserView = commandParameters.arguments.browserView;
         const volumeSerial2 = commandParameters.arguments.volumeSerial2;
 
         if (binary2 == undefined) {
@@ -74,7 +72,7 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         let ussContentString1 = "";
         let ussContentString2 = "";
 
-        if(commandParameters.arguments.seqnum == false){
+        if(!commandParameters.arguments.seqnum){
             const seqnumlen = 8;
 
             const ussFileStringArray1 = ussFileContentBuf1.toString().split("\n");
@@ -103,7 +101,7 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching uss files diffs in browser....",
+                commandResponse: "Launching uss files diffs in browser...",
                 apiResponse: {}
             };
         }
