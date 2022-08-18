@@ -3,16 +3,7 @@
 exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal 1`] = `
 Object {
   "apiResponse": Object {},
-  "commandResponse": Object {
-    "jsonDiff": "compared string",
-  },
+  "commandResponse": "compared string",
   "success": true,
 }
-`;
-
-exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal 2`] = `""`;
-
-exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal 3`] = `
-"
-[object Object]"
 `;
