@@ -3,16 +3,7 @@
 exports[`Compare data set handler process method should compare two data sets in terminal 1`] = `
 Object {
   "apiResponse": Object {},
-  "commandResponse": Object {
-    "jsonDiff": "compared string",
-  },
+  "commandResponse": "compared string",
   "success": true,
 }
-`;
-
-exports[`Compare data set handler process method should compare two data sets in terminal 2`] = `""`;
-
-exports[`Compare data set handler process method should compare two data sets in terminal 3`] = `
-"
-[object Object]"
 `;
