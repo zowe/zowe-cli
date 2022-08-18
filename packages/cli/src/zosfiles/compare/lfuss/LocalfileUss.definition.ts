@@ -51,7 +51,7 @@ export const LocalfileUssFileDefinition: ICommandDefinition = {
         CompareOptions.volume,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
-        CompareOptions.browserview
+        CompareOptions.browserView
     ],
     examples: [
         {

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -12,10 +11,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { DiffUtils } from "@zowe/imperative";
 
 /**
  * Handler to compare the local file and uss file's content
@@ -75,12 +73,12 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
         );
 
 
-        const browserView = commandParameters.arguments.browserview;
+        const browserView = commandParameters.arguments.browserView;
 
         let lfContentString = "";
         let ussContentString = "";
 
-        if (commandParameters.arguments.seqnum == false) {
+        if (!commandParameters.arguments.seqnum) {
             const seqnumlen = 8;
 
             const lfStringArray = lfContentBuf.toString().split("\n");
@@ -109,7 +107,7 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching local-filee and uss-file diffs in browser....",
+                commandResponse: "Launching local-filee and uss-file diffs in browser...",
                 apiResponse: {}
             };
         }

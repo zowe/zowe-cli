@@ -54,7 +54,7 @@ describe("Compare local-file and uss-file handler", () => {
                 _: ["fake"],
                 localFilePath,
                 ussFilePath,
-                browserview: false,
+                browserView: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
             response: {
@@ -68,7 +68,7 @@ describe("Compare local-file and uss-file handler", () => {
                 },
                 console: {
                     log: jest.fn((logArgs) => {
-                        logMessage += "\n" + logArgs;
+                        logMessage += logArgs;
                     })
                 },
                 progress: {
@@ -89,9 +89,7 @@ describe("Compare local-file and uss-file handler", () => {
         it("should compare local-file and uss-file in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
-                return {
-                    jsonDiff: "compared string"
-                };
+                return "compared string";
             });
 
             try {
@@ -110,15 +108,15 @@ describe("Compare local-file and uss-file handler", () => {
                 }
             });
             expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
         it("should compare local-file and uss-file in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
-            processArguments.arguments.browserview = true ;
+            processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);

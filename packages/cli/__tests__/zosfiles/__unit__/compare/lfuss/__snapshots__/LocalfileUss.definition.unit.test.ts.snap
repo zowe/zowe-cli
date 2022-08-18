@@ -59,7 +59,7 @@ Array [
       "bv",
     ],
     "description": "Opens the diffs between two given files in browser",
-    "name": "browserview",
+    "name": "browser-view",
     "type": "boolean",
   },
 ]
