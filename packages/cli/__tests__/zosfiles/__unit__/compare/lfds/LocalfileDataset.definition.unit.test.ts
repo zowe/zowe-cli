@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-files compare lds command definition", () => {
     it ("should not have changed", () => {
         // eslint-disable-next-line max-len
-        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lds/LocalfileDataset.definition").LocalfileDatasetDefinition;
+        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lfds/LocalfileDataset.definition").LocalfileDatasetDefinition;
 
         expect(definition).toBeDefined();
 

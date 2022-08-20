@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files compare lds command definition", () => {
+describe("zos-files compare uss command definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/uss/UssFile.definition").UssFileDefinition;
 

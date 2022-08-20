@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-files compare lds command definition should not have changed 1`] = `
+exports[`zos-files compare uss command definition should not have changed 1`] = `
 Array [
   Object {
     "aliases": Array [
@@ -100,7 +100,7 @@ Array [
 ]
 `;
 
-exports[`zos-files compare lds command definition should not have changed 2`] = `
+exports[`zos-files compare uss command definition should not have changed 2`] = `
 Array [
   Object {
     "description": "Compare the contents of the uss file \\"/u/**/**/*.ext\\" and \\"/u/**/**/*.ext\\"",
