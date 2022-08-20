@@ -11,7 +11,7 @@
 
 import {ICommandDefinition} from "@zowe/imperative";
 import {DatasetDefinition} from "./ds/Dataset.definition";
-import { LocalfileDatasetDefinition } from "./lds/LocalfileDataset.definition";
+import { LocalfileDatasetDefinition } from "./lfds/LocalfileDataset.definition";
 import {UssFileDefinition} from './uss/UssFile.definition';
 
 import i18nTypings from "../-strings-/en";
