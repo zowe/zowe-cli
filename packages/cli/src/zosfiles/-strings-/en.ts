@@ -697,7 +697,20 @@ export default {
                     EX1: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"`,
                     EX2: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers`
                 }
-            }
+            },
+            LOCAL_FILE_DATA_SET: {
+                SUMMARY: "Compare content of a local file and a z/os dataset",
+                DESCRIPTION: "Compare content of a local file and a z/os dataset on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    DATASETNAME: "The name of the data set you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"`,
+                    EX2: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"` +
+                     `without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
