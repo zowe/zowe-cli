@@ -25,7 +25,8 @@ export default class UssDirHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
-        const zosAttributes: ZosFilesAttributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes);
+        const zosAttributes: ZosFilesAttributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes,
+            commandParameters.arguments.directory);
 
         const downloadOptions: IDownloadOptions = {
             binary: commandParameters.arguments.binary,

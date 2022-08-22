@@ -132,7 +132,7 @@ describe("ZosFilesAttributes", () => {
             const testable = new ZosFilesAttributes(attributesFileContents);
             expect(testable.getRemoteEncoding(".hidden")).toBe("binary");
         });
-        it("shuld return the remote encoding with base path", () => {
+        it("should return the remote encoding with base path", () => {
             const testable = new ZosFilesAttributes("foo.ascii ISO8859-1 ISO8859-1","/base/path");
             expect(testable.getRemoteEncoding("/base/path/foo.ascii")).toBe("ISO8859-1");
         });
@@ -140,6 +140,16 @@ describe("ZosFilesAttributes", () => {
         it("should default to ISO8859-1 if no pattern is matched", () => {
             const testable = new ZosFilesAttributes("*.stuff binary binary");
             expect(testable.getRemoteEncoding("foo.ascii")).toBe("ISO8859-1");
+        });
+
+        it("should parse ASCII as ISO8859-1", () => {
+            const testable = new ZosFilesAttributes("foo.ascii binary ASCII");
+            expect(testable.getRemoteEncoding("foo.ascii")).toBe("ISO8859-1");
+        });
+
+        it("should parse EBCDIC as default encoding", () => {
+            const testable = new ZosFilesAttributes("foo.ebcdic binary EBCDIC");
+            expect(testable.getRemoteEncoding("foo.ebcdic")).toBeUndefined();
         });
     });
 
@@ -149,9 +159,19 @@ describe("ZosFilesAttributes", () => {
             expect(testable.getLocalEncoding("foo.ascii")).toBe("ISO8859-1");
         });
 
-        it("shuld return the local encoding", () => {
+        it("should return the local encoding", () => {
             const testable = new ZosFilesAttributes("*.ucs2 UCS-2 UTF-8");
             expect(testable.getLocalEncoding("foo.ucs2")).toBe("UCS-2");
+        });
+
+        it("should parse ASCII as ISO8859-1", () => {
+            const testable = new ZosFilesAttributes("foo.ascii ASCII binary");
+            expect(testable.getLocalEncoding("foo.ascii")).toBe("ISO8859-1");
+        });
+
+        it("should parse EBCDIC as default encoding", () => {
+            const testable = new ZosFilesAttributes("foo.ebcdic EBCDIC binary");
+            expect(testable.getLocalEncoding("foo.ebcdic")).toBeUndefined();
         });
     });
 

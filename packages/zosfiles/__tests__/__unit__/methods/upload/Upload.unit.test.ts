@@ -1575,7 +1575,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data);
@@ -1593,7 +1593,8 @@ describe("z/OS Files - Upload", () => {
             const data: Buffer = Buffer.from("testing");
             const responseTimeout = 5;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING,
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
@@ -1633,7 +1634,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file with Etag", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
@@ -1654,7 +1655,7 @@ describe("z/OS Files - Upload", () => {
         it("should set local encoding if specified", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, {"Content-Type": "UCS-2"}, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
@@ -1676,6 +1677,7 @@ describe("z/OS Files - Upload", () => {
     describe("streamToUssFile", () => {
         let USSresponse: IZosFilesResponse;
         const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
+        const chtagSpy = jest.spyOn(Utilities, "chtag");
         const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
         const inputStream = new Readable();
         inputStream.push("testing");
@@ -1687,10 +1689,13 @@ describe("z/OS Files - Upload", () => {
 
             zosmfExpectFullSpy.mockClear();
             zosmfExpectFullSpy.mockImplementation(() => null);
+            chtagSpy.mockClear();
+            chtagSpy.mockImplementation(() => null);
         });
 
         afterAll(() => {
             zosmfExpectFullSpy.mockRestore();
+            chtagSpy.mockRestore();
         });
 
         it("should throw an error if USS file name is not specified", async () => {
@@ -1723,7 +1728,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("return with proper response when upload USS file", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream);
@@ -1740,10 +1745,12 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("return with proper response when upload USS file with responseTimeout", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING,
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {responseTimeout: 5});
@@ -1760,6 +1767,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("return with proper response when upload USS file in binary", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
@@ -1781,10 +1789,12 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream,
                 normalizeRequestNewLines: false});
+            expect(chtagSpy).toHaveBeenCalledTimes(1);
+            expect(chtagSpy).toHaveBeenCalledWith(dummySession, dsName, Tag.BINARY);
         });
         it("return with proper response when upload USS file with Etag", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {etag: etagValue});
@@ -1802,10 +1812,11 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("return with proper response when upload USS file and request Etag back", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
             zosmfExpectFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {returnEtag: true});
@@ -1826,10 +1837,11 @@ describe("z/OS Files - Upload", () => {
                 requestStream: inputStream,
                 normalizeRequestNewLines: true,
                 dataToReturn: [CLIENT_PROPERTY.response]});
+            expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("should set local encoding if specified", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, {"Content-Type": "UCS-2"}, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {localEncoding: "UCS-2"});
@@ -1846,6 +1858,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -2199,6 +2212,7 @@ describe("z/OS Files - Upload", () => {
         });
 
         afterAll(() => {
+            fileToUssFileSpy.mockRestore();
             zosmfExpectFullSpy.mockRestore();
         });
 
@@ -2268,8 +2282,7 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockReturnValue(testReturn);
-            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValueOnce(testReturn).mockReturnValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -2286,8 +2299,7 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockReturnValue(testReturn);
-            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValueOnce(testReturn).mockReturnValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -2304,25 +2316,16 @@ describe("z/OS Files - Upload", () => {
 
             const MockZosAttributes = jest.fn<ZosFilesAttributes>();
             const attributesMock = new MockZosAttributes();
-            const chtagSpy = jest.spyOn(Utilities,"chtag");
+            const chtagSpy = jest.spyOn(Utilities, "chtag");
 
             beforeEach(() => {
                 pathNormalizeSpy.mockRestore();
                 promiseSpy.mockRestore();
                 chtagSpy.mockReset();
-                chtagSpy.mockReturnValue(testReturn);
                 isDirSpy.mockReturnValueOnce(true)
                     .mockReturnValue(false);
                 isDirectoryExistsSpy.mockReturnValue(true);
-                fileToUssFileSpy.mockReturnValue(testReturn);
 
-                attributesMock.getFileTransferMode = jest.fn((filePath: string) => {
-                    if (filePath.endsWith("textfile")) {
-                        return TransferMode.TEXT;
-                    } else {
-                        return TransferMode.BINARY;
-                    }
-                });
                 attributesMock.getRemoteEncoding = jest.fn((filePath: string) => {
                     if (filePath.endsWith("textfile") || filePath.endsWith("asciifile")) {
                         return "ISO8859-1";
@@ -2388,11 +2391,7 @@ describe("z/OS Files - Upload", () => {
                     }
                 });
                 attributesMock.fileShouldBeUploaded = jest.fn((ignorePath: string) => {
-                    if (ignorePath.endsWith("ignoredir")) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return !ignorePath.endsWith("ignoredir");
                 });
 
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName, {attributes: attributesMock});
@@ -2424,7 +2423,7 @@ describe("z/OS Files - Upload", () => {
                     `${dsName}/binaryfile`, {binary: true});
             });
 
-            it("should call API to tag files accord to remote encoding", async () => {
+            it("should call API to tag files according to remote encoding", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
                 attributesMock.fileShouldBeUploaded = jest.fn(() => true);
 

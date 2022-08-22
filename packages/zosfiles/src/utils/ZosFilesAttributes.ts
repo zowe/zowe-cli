@@ -112,8 +112,10 @@ export class ZosFilesAttributes {
 
     public getRemoteEncoding(path: string): string {
         const attributes = this.findLastMatchingAttributes(path);
-        if (attributes === null) {
+        if (attributes === null || attributes.remoteEncoding?.toUpperCase() === "ASCII") {
             return "ISO8859-1";
+        } else if (attributes.remoteEncoding?.toUpperCase() === "EBCDIC") {
+            return;  // Fall back to default system code page
         }
 
         return attributes.remoteEncoding;
@@ -121,8 +123,10 @@ export class ZosFilesAttributes {
 
     public getLocalEncoding(path: string): string {
         const attributes = this.findLastMatchingAttributes(path);
-        if (attributes === null) {
+        if (attributes === null || attributes.localEncoding?.toUpperCase() === "ASCII") {
             return "ISO8859-1";
+        } else if (attributes.localEncoding?.toUpperCase() === "EBCDIC") {
+            return;  // Fall back to default system code page
         }
 
         return attributes.localEncoding;

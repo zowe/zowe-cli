@@ -25,7 +25,6 @@ import { IUploadResult } from "./doc/IUploadResult";
 import { Create } from "../create";
 import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
-import { ZosFilesAttributes, TransferMode } from "../../utils/ZosFilesAttributes";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
@@ -480,6 +479,7 @@ export class Upload {
         options: IUploadOptions = {}) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        const origUssname = ussname;
         ussname = path.posix.normalize(ussname);
         ussname = ZosFilesUtils.formatUnixFilepath(ussname);
         ussname = encodeURIComponent(ussname);
@@ -499,6 +499,12 @@ export class Upload {
             restOptions.dataToReturn = [CLIENT_PROPERTY.response];
         }
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
+
+        if (options.binary) {
+            await Utilities.chtag(session, origUssname, Tag.BINARY);
+        } else if (options.encoding != null) {
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+        }
 
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {};
@@ -824,48 +830,37 @@ export class Upload {
 
     private static async uploadFile(localPath: string, ussPath: string,
         session: AbstractSession, options: IUploadOptions) {
-        let tempBinary;
+        const tempOptions: Partial<IUploadOptions> = {};
 
         if (options.attributes) {
-            await this.uploadFileAndTagBasedOnAttributes(localPath, ussPath, session, options.attributes);
-        }
-        else {
+            if (!options.attributes.fileShouldBeUploaded(localPath)) {
+                return;
+            }
+            const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
+            if (remoteEncoding === Tag.BINARY) {
+                tempOptions.binary = true;
+            } else if (remoteEncoding != null) {
+                tempOptions.encoding = remoteEncoding;
+            }
+            const localEncoding = options.attributes.getLocalEncoding(localPath);
+            if (localEncoding != null && localEncoding !== Tag.BINARY) {
+                tempOptions.localEncoding = localEncoding;
+            }
+        } else {
             if (options.filesMap) {
                 if (options.filesMap.fileNames.indexOf(path.basename(localPath)) > -1) {
-                    tempBinary = options.filesMap.binary;
+                    tempOptions.binary = options.filesMap.binary;
+                } else {
+                    tempOptions.binary = options.binary;
                 }
-                else {
-                    tempBinary = options.binary;
-                }
-            }
-            else {
-                tempBinary = options.binary;
-            }
-            await this.fileToUssFile(session, localPath, ussPath, {binary: tempBinary});
-        }
-    }
-
-    private static async uploadFileAndTagBasedOnAttributes(localPath: string,
-        ussPath: string,
-        session: AbstractSession,
-        attributes: ZosFilesAttributes) {
-        if (attributes.fileShouldBeUploaded(localPath)) {
-            const binary = attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
-            if (binary) {
-                await this.fileToUssFile(session, localPath, ussPath, {binary});
             } else {
-                await this.fileToUssFile(session, localPath, ussPath, {binary, localEncoding: attributes.getLocalEncoding(localPath)});
-            }
-
-            const tag = attributes.getRemoteEncoding(localPath);
-            if (tag === Tag.BINARY.valueOf() ) {
-                await Utilities.chtag(session,ussPath,Tag.BINARY);
-            } else {
-                await Utilities.chtag(session,ussPath,Tag.TEXT,tag);
+                tempOptions.binary = options.binary;
             }
         }
-    }
 
+        // TODO Should all options be passed, not just new ones?
+        await this.fileToUssFile(session, localPath, ussPath, tempOptions);
+    }
 
     /**
      * Get Log
