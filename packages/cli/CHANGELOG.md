@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added the browser-view option to `zowe zos-files compare data-set` command to compare two datasets and display the differences on the browser. [#1443](https://github.com/zowe/zowe-cli/issues/1443)
 - Enhancement: Added a command `zowe zos-files compare local-file-data-set` to compare a localfile and a dataset, & display the differences in the browser and terminal. [#1444](https://github.com/zowe/zowe-cli/issues/1444)
+- BugFix: Updated Imperative to include bugfixes in version `5.4.3`.
 
 ## `7.4.2`
 
