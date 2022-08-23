@@ -7,7 +7,3 @@ Object {
   "success": true,
 }
 `;
-
-exports[`Compare data set handler process method should compare two uss-files in terminal 2`] = `""`;
-
-exports[`Compare data set handler process method should compare two uss-files in terminal 3`] = `"compared string"`;

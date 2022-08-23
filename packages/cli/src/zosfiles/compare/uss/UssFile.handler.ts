@@ -30,8 +30,6 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             {
                 binary: commandParameters.arguments.binary,
                 encoding: commandParameters.arguments.encoding,
-                record: commandParameters.arguments.record,
-                volume: commandParameters.arguments.volumeSerial,
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 task: task
             }
@@ -43,9 +41,7 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
 
         let binary2 = commandParameters.arguments.binary2;
         let encoding2 = commandParameters.arguments.encoding2;
-        let record2 = commandParameters.arguments.record2;
         const browserView = commandParameters.arguments.browserView;
-        const volumeSerial2 = commandParameters.arguments.volumeSerial2;
 
         if (binary2 == undefined) {
             binary2 = commandParameters.arguments.binary;
@@ -53,17 +49,12 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         if (encoding2 == undefined) {
             encoding2 = commandParameters.arguments.encoding;
         }
-        if (record2 == undefined) {
-            record2 = commandParameters.arguments.record;
-        }
 
         task.statusMessage = "Retrieving second uss-file";
         const ussFileContentBuf2 = await Get.USSFile(session, commandParameters.arguments.ussFilePath2,
             {
                 binary: binary2,
                 encoding: encoding2,
-                record: record2,
-                volume: volumeSerial2,
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 task: task
             }

@@ -108,8 +108,8 @@ describe("Compare data set handler", () => {
                 }
             });
             expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
