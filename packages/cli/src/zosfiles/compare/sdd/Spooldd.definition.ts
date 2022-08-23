@@ -45,6 +45,7 @@ export const SpoolddDefinition: ICommandDefinition = {
         }
     ],
     options: [
+        CompareOptions.contextLines,
         CompareOptions.browserView
     ],
     examples: [

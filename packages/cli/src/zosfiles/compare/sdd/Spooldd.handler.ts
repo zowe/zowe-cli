@@ -56,7 +56,7 @@ export default class SpoolddHandler extends ZosFilesBaseHandler {
 
             return {
                 success: true,
-                commandResponse: "Launching data-sets diffs in browser...",
+                commandResponse: "Launching spool-dds' diffs in browser...",
                 apiResponse: {}
             };
         }
