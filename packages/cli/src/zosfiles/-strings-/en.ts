@@ -749,6 +749,19 @@ export default {
                      `without sequence numbers`
                 }
             },
+            LOCAL_FILE_SPOOL_DD: {
+                SUMMARY: "Compare content of a local file and a spool dd",
+                DESCRIPTION: "Compare content of a local-file and a spool-dd on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    SPOOLDDDESCRIPTION: "The name of the job with the id of spool dd"
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the two spool dds "./a.txt"  "jobName:jobId:spoolId"`,
+                    EX2: `Compare the contents of the local file and the uss file "./a.txt"  "jobName:jobId:spoolId"` +
+                     `without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +

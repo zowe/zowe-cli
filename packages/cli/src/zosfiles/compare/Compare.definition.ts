@@ -15,6 +15,7 @@ import { LocalfileDatasetDefinition } from "./lfds/LocalfileDataset.definition";
 import {UssFileDefinition} from './uss/UssFile.definition';
 import { LocalfileUssFileDefinition } from "./lfuss/LocalfileUss.definition";
 import { SpoolddDefinition } from "./sdd/Spooldd.definition";
+import { LocalfileSpoolddDefinition } from "./lfsdd/LocalfileSpooldd.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -36,6 +37,7 @@ export const CompareDefinition: ICommandDefinition = {
         LocalfileDatasetDefinition,
         UssFileDefinition,
         LocalfileUssFileDefinition,
-        SpoolddDefinition
+        SpoolddDefinition,
+        LocalfileSpoolddDefinition
     ],
 };
