@@ -20,25 +20,6 @@ Array [
   },
   Object {
     "aliases": Array [
-      "r",
-    ],
-    "conflictsWith": Array [
-      "binary",
-    ],
-    "description": "Transfer the content for the first data set in record mode, which means that no data conversion is performed and the record length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records. If encoding mode is set and the encoding2 flag is not set both data sets are transferred in encoding mode. This option conflicts with binary mode.",
-    "name": "record",
-    "type": "boolean",
-  },
-  Object {
-    "aliases": Array [
-      "vs",
-    ],
-    "description": "The volume serial (VOLSER) where the first data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
-    "name": "volume-serial",
-    "type": "string",
-  },
-  Object {
-    "aliases": Array [
       "sn",
     ],
     "defaultValue": true,

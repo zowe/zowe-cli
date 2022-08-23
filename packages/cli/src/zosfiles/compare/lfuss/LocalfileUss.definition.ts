@@ -47,8 +47,6 @@ export const LocalfileUssFileDefinition: ICommandDefinition = {
     options: [
         CompareOptions.binary,
         CompareOptions.encoding,
-        CompareOptions.record,
-        CompareOptions.volume,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
         CompareOptions.browserView

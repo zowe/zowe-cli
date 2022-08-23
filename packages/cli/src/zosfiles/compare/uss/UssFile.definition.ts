@@ -49,10 +49,6 @@ export const UssFileDefinition: ICommandDefinition = {
         CompareOptions.binary2,
         CompareOptions.encoding,
         CompareOptions.encoding2,
-        CompareOptions.record,
-        CompareOptions.record2,
-        CompareOptions.volume,
-        CompareOptions.volume2,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
         CompareOptions.browserView
