@@ -711,6 +711,18 @@ export default {
                      `without sequence numbers`
                 }
             },
+            USS_FILE: {
+                SUMMARY: "Compare content of a local file and a z/os uss files",
+                DESCRIPTION: "Compare the contents of a two uss files on your terminal (stdout). browser.",
+                POSITIONALS: {
+                    USSFILEPATH1: "The path of the first uss file you want to compare.",
+                    USSFILEPATH2: "The path of the second uss file you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext"`,
+                    EX2: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext" without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
@@ -735,7 +747,7 @@ export default {
                 "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
                 "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +
                 "of 0 strips all matching lines.",
-            BROWSERVIEW: "Open the data-sets diffs in browser"
+            BROWSERVIEW: "Opens the diffs between two given files in browser"
         }
     },
     HMIGRATE: {
