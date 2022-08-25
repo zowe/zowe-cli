@@ -20,6 +20,7 @@ import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { TsoResponseService } from "./TsoResponseService";
+import { ICollectedResponses } from "./doc/ICollectedResponses";
 
 /**
  * Start TSO address space and receive servlet key
@@ -64,7 +65,7 @@ export class StartTso {
         }
 
         const zosmfResponse = await this.startCommon(session, customParms);
-        let collectedResponses = null;
+        let collectedResponses: ICollectedResponses;
         if (!isNullOrUndefined(zosmfResponse.servletKey)){
             collectedResponses = await SendTso.getAllResponses(session, zosmfResponse);
         }
