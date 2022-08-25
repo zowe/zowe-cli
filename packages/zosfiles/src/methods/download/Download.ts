@@ -30,7 +30,7 @@ import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
-import { ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
+import { TransferMode, ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -815,17 +815,13 @@ export class Download {
     }
 
     private static parseAttributeOptions(filename: string, attributes?: ZosFilesAttributes): Partial<IDownloadOptions> {
+        // TODO Should we upload/download hidden files like .zosattributes?
         const downloadOptions: Partial<IDownloadOptions> = {};
         if (attributes != null) {
-            const remoteEncoding = attributes.getRemoteEncoding(filename);
-            if (remoteEncoding === Tag.BINARY) {
-                downloadOptions.binary = true;
-            } else if (remoteEncoding != null) {
-                downloadOptions.encoding = remoteEncoding;
-            }
-            const localEncoding = attributes.getLocalEncoding(filename);
-            if (localEncoding != null && localEncoding !== Tag.BINARY) {
-                downloadOptions.localEncoding = localEncoding;
+            downloadOptions.binary = attributes.getFileTransferMode(filename) === TransferMode.BINARY;
+            if (!downloadOptions.binary) {
+                downloadOptions.encoding = attributes.getRemoteEncoding(filename);
+                downloadOptions.localEncoding = attributes.getLocalEncoding(filename);
             }
         }
         return downloadOptions;

@@ -14,6 +14,7 @@ import * as minimatch from "minimatch";
 import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import * as pathUtils from "path";
+import { Tag } from "../methods/utilities";
 
 export enum TransferMode {BINARY, TEXT}
 
@@ -103,7 +104,7 @@ export class ZosFilesAttributes {
             return TransferMode.BINARY;
         }
 
-        if (attributes.localEncoding === attributes.remoteEncoding) {
+        if (attributes.localEncoding === Tag.BINARY || attributes.localEncoding === attributes.remoteEncoding) {
             return TransferMode.BINARY;
         } else {
             return TransferMode.TEXT;
@@ -112,7 +113,7 @@ export class ZosFilesAttributes {
 
     public getRemoteEncoding(path: string): string {
         const attributes = this.findLastMatchingAttributes(path);
-        if (attributes === null || attributes.remoteEncoding?.toUpperCase() === "ASCII") {
+        if (attributes === null) {
             return "ISO8859-1";
         } else if (attributes.remoteEncoding?.toUpperCase() === "EBCDIC") {
             return;  // Fall back to default system code page
@@ -123,10 +124,8 @@ export class ZosFilesAttributes {
 
     public getLocalEncoding(path: string): string {
         const attributes = this.findLastMatchingAttributes(path);
-        if (attributes === null || attributes.localEncoding?.toUpperCase() === "ASCII") {
+        if (attributes === null) {
             return "ISO8859-1";
-        } else if (attributes.localEncoding?.toUpperCase() === "EBCDIC") {
-            return;  // Fall back to default system code page
         }
 
         return attributes.localEncoding;

@@ -30,6 +30,7 @@ import { Readable } from "stream";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
+import { TransferMode } from "../../utils/ZosFilesAttributes";
 
 
 export class Upload {
@@ -652,7 +653,7 @@ export class Upload {
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(fileName,ussFilePath,session,options);
+                return this.uploadFile(fileName, ussFilePath, session, options);
             };
 
             if (maxConcurrentRequests === 0) {
@@ -836,15 +837,10 @@ export class Upload {
             if (!options.attributes.fileShouldBeUploaded(localPath)) {
                 return;
             }
-            const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
-            if (remoteEncoding === Tag.BINARY) {
-                tempOptions.binary = true;
-            } else if (remoteEncoding != null) {
-                tempOptions.encoding = remoteEncoding;
-            }
-            const localEncoding = options.attributes.getLocalEncoding(localPath);
-            if (localEncoding != null && localEncoding !== Tag.BINARY) {
-                tempOptions.localEncoding = localEncoding;
+            tempOptions.binary = options.attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
+            if (!tempOptions.binary) {
+                tempOptions.encoding = options.attributes.getRemoteEncoding(localPath);
+                tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
         } else {
             if (options.filesMap) {
