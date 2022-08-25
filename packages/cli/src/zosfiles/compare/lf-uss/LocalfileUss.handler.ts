@@ -39,19 +39,18 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
         }
 
         // check if the path given is of a file or not
-        fs.lstat(localFile, (err, stats) => {
-            if (err == null && stats.isFile()) {
-                return true;
-            } else if (err == null) {
+        try {
+            if(!fs.lstatSync(localFile).isFile()){
                 throw new ImperativeError({
-                    msg: 'Path given is not a file'
-                });
-            } else {
-                throw new ImperativeError({
-                    msg: 'File not found, please recheck your file path'
+                    msg: 'Path given is not of a file, do recheck your path again'
                 });
             }
-        });
+        } catch (error) {
+            if (error instanceof ImperativeError) throw error;
+            throw new ImperativeError({
+                msg: 'Path not found. Please check the path and try again'
+            });
+        }
 
         // reading local file as buffer
         const lfContentBuf = fs.readFileSync(localFile);

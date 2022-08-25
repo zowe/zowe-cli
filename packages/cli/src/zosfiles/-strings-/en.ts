@@ -731,8 +731,8 @@ export default {
                     USSFILEPATH: "The path of the uss file set you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "sys1.samplib(antxtso)"`,
-                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "sys1.samplib(antxtso)"` +
+                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "/u/**/**/*.ext"`,
+                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "/u/**/**/*.ext"` +
                      `without sequence numbers`
                 }
             },
