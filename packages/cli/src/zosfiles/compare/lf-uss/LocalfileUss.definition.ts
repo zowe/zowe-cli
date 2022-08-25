@@ -22,7 +22,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
  */
 export const LocalfileUssFileDefinition: ICommandDefinition = {
     name: "local-file-uss-file",
-    aliases: ["lfuss"],
+    aliases: ["lf-uss"],
     summary: strings.ACTIONS.LOCAL_FILE_USS_FILE.SUMMARY,
     description: strings.ACTIONS.LOCAL_FILE_USS_FILE.DESCRIPTION,
     type: "command",
@@ -54,11 +54,11 @@ export const LocalfileUssFileDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.LOCAL_FILE_USS_FILE.EXAMPLES.EX1,
-            options: `"./a.txt" "sys1.samplib(antxtso)"`
+            options: `"./a.txt" "/u/**/**/*.ext"`
         },
         {
             description: strings.ACTIONS.LOCAL_FILE_USS_FILE.EXAMPLES.EX2,
-            options: `"./a.txt" "sys1.samplib(antxtso)" --no-seqnum`
+            options: `"./a.txt" "/u/**/**/*.ext" --no-seqnum`
         }
     ]
 };
