@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve Zowe CLI
-labels: bug
+labels: bug, new
 ---
 
 <!-- Thanks for deciding to open an issue. Before submitting, please see the following information. -->
@@ -11,6 +11,20 @@ labels: bug
 <!--Also see the Troubleshooting section in the Zowe Docs website: https://docs.zowe.org/stable/troubleshoot/cli/known-cli
 -->
 
+**Describe the bug**
+
+<!-- A clear and concise description of the bug or error. -->
+
+**Expected and actual results**
+
+<!--
+Details about the behavior:
+1. Command issued:
+2. Expected results:
+3. Actual results:
+4. Applicable log files:
+
+-->
 **Describe your environment**
 
 <!--
@@ -23,23 +37,6 @@ labels: bug
 - Daemon mode enabled or disabled:
 - For more information, see Gathering information to troubleshoot Zowe CLI
 -->
-
-**Describe the bug**
-
-<!-- A clear and concise description of the bug or error. -->
-
-
-**Expected and actual results**
-
-<!--
-Details about the behavior:
-1. Command issued:
-2. Expected results:
-3. Actual results:
-4. Applicable log files:
-
--->
-
 
 **Additional context**
 

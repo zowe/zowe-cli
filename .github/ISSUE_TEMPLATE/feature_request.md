@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for Zowe CLI
-labels: enhancement
+labels: enhancement, new
 ---
 
 <!-- Thanks for deciding to open an issue. Before submitting, please complete the following information. -->
