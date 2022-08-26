@@ -37,13 +37,13 @@ describe("list instance info handler tests", () => {
     });
     it("should be able to list instance info", async () => {
         ListRegistryInstances.listFilteredRegistry = jest.fn(
-            (session, zOSMFVersion, instanceId) => {
+            async (session, zOSMFVersion, instanceId) => {
                 return ProvisioningListMocks.LIST_REGISTRY_INSTANCES_RESPONSE;
             }
         );
         ListInstanceInfo.listInstanceCommon = jest.fn(
-            (session, zOSMFVersion, instanceId) => {
-                return {};
+            async (session, zOSMFVersion, instanceId) => {
+                return {} as any;
             }
         );
         const handler = new Handler.default();

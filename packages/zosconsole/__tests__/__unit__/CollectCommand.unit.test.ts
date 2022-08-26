@@ -100,7 +100,7 @@ describe("CollectCommand collectCommon", () => {
      * Verify that ZosmfRestClient.getExpectJSON method has been called with proper parameters
      */
     it("should get response from custom console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -128,7 +128,7 @@ describe("CollectCommand collectCommon", () => {
      * Command should fail with incorrect parameters and
      */
     it("should fail if session is not provided.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -177,7 +177,7 @@ describe("CollectCommand collectCommon", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             throw new ImperativeError({msg: "Collect error message"}, {tag: "some tag"});
         });
 
@@ -196,7 +196,7 @@ describe("CollectCommand collectCommon", () => {
 describe("CollectCommand collectDefConsoleCommon", () => {
 
     it("should get response from default console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -223,15 +223,15 @@ describe("CollectCommand collectDefConsoleCommon", () => {
 describe("CollectCommand collect", () => {
 
     it("should get response from custom console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -249,15 +249,15 @@ describe("CollectCommand collect", () => {
     });
 
     it("should get response (one chunk of data provided as a response).", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -275,19 +275,19 @@ describe("CollectCommand collect", () => {
     });
 
     it("should get response (two chunks of data with empty responses provided as a response).", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1)
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1)
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -306,10 +306,10 @@ describe("CollectCommand collect", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<IZosmfIssueResponse> => {
             throw new ImperativeError({msg: "Issue error message"}, {tag: "some tag"});
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -331,15 +331,15 @@ describe("CollectCommand collect", () => {
     });
 
     it("with non empty console response should collect all data.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((reject) => {
                 process.nextTick(() => {
                     reject(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         const response: IConsoleResponse = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS,
             FOLLOW_UP_CONSOLE_RESPONSE);

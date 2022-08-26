@@ -326,10 +326,10 @@ describe("z/OS Files - Upload", () => {
             response = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation();
 
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementation(() => null);
+            zosmfPutFullSpy.mockImplementation();
         });
 
         it("should throw error if data set name is not specified", async () => {
@@ -653,7 +653,10 @@ describe("z/OS Files - Upload", () => {
     });
     describe("streamToDataSet", () => {
         const zosmfPutFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(dsName),
+            response:{ headers: { etag: etagValue } }
+        };
         const inputStream = new Readable();
         inputStream.push("testing");
         inputStream.push(null);
@@ -868,7 +871,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
@@ -894,7 +897,7 @@ describe("z/OS Files - Upload", () => {
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
@@ -1045,7 +1048,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_RECORD,
@@ -1069,7 +1072,7 @@ describe("z/OS Files - Upload", () => {
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
@@ -1528,7 +1531,7 @@ describe("z/OS Files - Upload", () => {
             USSresponse = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation();
         });
 
         it("should throw an error if USS file name is not specified", async () => {
@@ -1676,7 +1679,10 @@ describe("z/OS Files - Upload", () => {
     describe("streamToUssFile", () => {
         let USSresponse: IZosFilesResponse;
         const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(dsName),
+            response: { headers: { etag: etagValue } }
+        };
         const inputStream = new Readable();
         inputStream.push("testing");
         inputStream.push(null);
@@ -1686,7 +1692,7 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             zosmfExpectFullSpy.mockClear();
-            zosmfExpectFullSpy.mockImplementation(() => null);
+            zosmfExpectFullSpy.mockImplementation();
         });
 
         afterAll(() => {
@@ -1806,7 +1812,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file and request Etag back", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
             const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
-            zosmfExpectFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfExpectFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {returnEtag: true});
             } catch (err) {
@@ -1861,10 +1867,10 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             createReadStreamSpy.mockReset();
-            createReadStreamSpy.mockImplementation(() => null);
+            createReadStreamSpy.mockImplementation();
 
             streamToUssFileSpy.mockReset();
-            streamToUssFileSpy.mockImplementation(() => null);
+            streamToUssFileSpy.mockImplementation();
 
             lsStatSpy.mockClear();
             lsStatSpy.mockImplementation((somePath, callback) => {
@@ -1964,8 +1970,9 @@ describe("z/OS Files - Upload", () => {
             const streamResponse: IZosFilesResponse = {
                 success: true,
                 commandResponse: undefined,
-                apiResponse: {etag: etagValue}};
-            streamToUssFileSpy.mockImplementationOnce(() => streamResponse);
+                apiResponse: { etag: etagValue }
+            };
+            streamToUssFileSpy.mockImplementationOnce(async () => streamResponse);
             try {
                 USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", {returnEtag: true});
             } catch (err) {
@@ -2029,8 +2036,8 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
-            zosmfExpectFullSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation();
+            zosmfExpectFullSpy.mockImplementation();
         });
 
         afterAll(() => {
@@ -2194,8 +2201,8 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
-            zosmfExpectFullSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation();
+            zosmfExpectFullSpy.mockImplementation();
         });
 
         afterAll(() => {

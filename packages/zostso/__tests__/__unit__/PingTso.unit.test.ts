@@ -62,7 +62,7 @@ function expectZosmfResponseFailed(response: IPingResponse, error: ImperativeErr
 
 describe("PingTsoCommand Test", () => {
     it("should return ping response if a correct servlet key was provided", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -84,7 +84,7 @@ describe("PingTsoCommand Test", () => {
         expectZosmfResponseSucceeded(response, error);
     });
     it("should return response if an invalid servlet key was provided", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);

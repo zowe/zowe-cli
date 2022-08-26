@@ -340,7 +340,7 @@ describe("CoreUtils", () => {
             const poolSize = 2;
             let sum = 0;
             const createPromiseFunction = (numberToAdd: number) => {
-                return new Promise((resolve, reject) => {
+                return new Promise<void>((resolve, reject) => {
                     sum += numberToAdd;
                     resolve();
                 });
@@ -354,7 +354,7 @@ describe("CoreUtils", () => {
             const poolSize = 2;
             let sum = 0;
             const createPromiseFunction = (numberToAdd: number) => {
-                return new Promise((resolve, reject) => {
+                return new Promise<void>((resolve, reject) => {
                     if (numberToAdd > 0) {
                         sum += numberToAdd;
                         resolve();

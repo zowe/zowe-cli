@@ -374,9 +374,7 @@ describe("MonitorJobs", () => {
 
                 // Reset the mock and program it to return immediately.
                 sleepMock.mockReset();
-                sleepMock.mockImplementation(() => {
-                    return;
-                });
+                sleepMock.mockImplementation();
             });
 
             afterAll(() => {

@@ -44,7 +44,7 @@ describe("List workflows handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            ListWorkflows.getWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

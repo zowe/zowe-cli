@@ -54,7 +54,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn((session) => {
+            CreateWorkflow.createWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -63,7 +63,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mock the get key function
-            ListWorkflows.getWfKey = jest.fn((session) => {
+            ListWorkflows.getWfKey = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     workflowKey: "fake-workflow-key"
@@ -162,7 +162,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn((session) => {
+            CreateWorkflow.createWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -253,7 +253,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflowLocal = jest.fn((session) => {
+            CreateWorkflow.createWorkflowLocal = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -348,7 +348,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn((session) => {
+            CreateWorkflow.createWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
