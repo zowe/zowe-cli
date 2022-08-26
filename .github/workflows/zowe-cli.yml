@@ -138,7 +138,7 @@ jobs:
     - name: Unit Tests
       id: unit
       if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:unit >> unit-tests.txt
+      run: npm run test:unit
 
     - name: Unlock Keyring
       id: unlock-keyring
@@ -163,12 +163,12 @@ jobs:
     - name: Integration Tests (Native)
       id: integration-native
       if: ${{ always() && steps.build.outcome == 'success' && !(github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: npm run test:integration >> integration-tests.txt
+      run: npm run test:integration
 
     - name: Integration Tests (Daemon)
       id: integration-daemon
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: npm run test:integration -- --runInBand >> integration-tests.txt
+      run: npm run test:integration -- --runInBand
 
     - name: Archive Results
       id: upload
@@ -176,10 +176,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results.tgz
-        path: |
-          __tests__/__results__/
-          unit-tests.txt
-          integration-tests.txt
+        path: __tests__/__results__/
 
     - name: Upload Results to Codecov
       id: upload-codecov
