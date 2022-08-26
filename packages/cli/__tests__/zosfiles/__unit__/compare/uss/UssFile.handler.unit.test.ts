@@ -16,10 +16,10 @@ import { DiffUtils } from "@zowe/imperative";
 describe("Compare data set handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../../src/zosfiles/compare/ds/Dataset.handler");
+        const handlerReq = require("../../../../../src/zosfiles/compare/uss/UssFile.handler");
         const handler = new handlerReq.default();
-        const dataSetName1 = "testing1";
-        const dataSetName2 = "testing2";
+        const ussFilePath1 = "/u/testing1";
+        const ussFilePath2 = "/u/testing2";
         // Vars populated by the mocked function
         let error;
         let apiMessage = "";
@@ -27,8 +27,8 @@ describe("Compare data set handler", () => {
         let logMessage = "";
         let fakeSession: object;
 
-        // Mock the compare ds function
-        Get.dataSet = jest.fn((session) => {
+        // Mock the get uss function
+        Get.USSFile = jest.fn((session) => {
             fakeSession = session;
             return {
                 success: true,
@@ -51,8 +51,8 @@ describe("Compare data set handler", () => {
             arguments: {
                 $0: "fake",
                 _: ["fake"],
-                dataSetName1,
-                dataSetName2,
+                ussFilePath1,
+                ussFilePath2,
                 browserView: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
@@ -85,10 +85,11 @@ describe("Compare data set handler", () => {
         };
 
 
-        it("should compare two data sets in terminal", async () => {
+        it("should compare two uss-files in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
                 return "compared string";
+
             });
 
             try {
@@ -98,12 +99,12 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(2);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
+            expect(Get.USSFile).toHaveBeenCalledTimes(2);
+            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Retrieving second dataset"
+                    statusMessage: "Retrieving second uss-file"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
@@ -112,7 +113,7 @@ describe("Compare data set handler", () => {
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
-        it("should compare two data sets in browser", async () => {
+        it("should compare two uss-files in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
             processArguments.arguments.browserView = true ;

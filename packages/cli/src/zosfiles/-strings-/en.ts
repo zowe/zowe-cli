@@ -697,7 +697,32 @@ export default {
                     EX1: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"`,
                     EX2: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers`
                 }
-            }
+            },
+            LOCAL_FILE_DATA_SET: {
+                SUMMARY: "Compare content of a local file and a z/os dataset",
+                DESCRIPTION: "Compare content of a local file and a z/os dataset on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    DATASETNAME: "The name of the data set you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"`,
+                    EX2: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"` +
+                     `without sequence numbers`
+                }
+            },
+            USS_FILE: {
+                SUMMARY: "Compare content of a local file and a z/os uss files",
+                DESCRIPTION: "Compare the contents of a two uss files on your terminal (stdout). browser.",
+                POSITIONALS: {
+                    USSFILEPATH1: "The path of the first uss file you want to compare.",
+                    USSFILEPATH2: "The path of the second uss file you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext"`,
+                    EX2: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext" without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
@@ -721,7 +746,8 @@ export default {
             CONTEXTLINES: "The number of context lines that display before and after detected non-matching lines. By default all matching " +
                 "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
                 "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +
-                "of 0 strips all matching lines."
+                "of 0 strips all matching lines.",
+            BROWSERVIEW: "Opens the diffs between two given files in browser"
         }
     },
     HMIGRATE: {

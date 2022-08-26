@@ -16,34 +16,32 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to view a data set's content
  * @export
  */
-export default class DatasetHandler extends ZosFilesBaseHandler {
+export default class UssFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
-            statusMessage: "Retrieving first dataset",
+            statusMessage: "Retrieving first uss file",
             stageName: TaskStage.IN_PROGRESS
         };
 
         commandParameters.response.progress.startBar({ task });
 
-        const dsContentBuf1 = await Get.dataSet(session, commandParameters.arguments.dataSetName1,
+        const ussFileContentBuf1 = await Get.USSFile(session, commandParameters.arguments.ussFilePath1,
             {
                 binary: commandParameters.arguments.binary,
                 encoding: commandParameters.arguments.encoding,
-                record: commandParameters.arguments.record,
-                volume: commandParameters.arguments.volumeSerial,
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 task: task
             }
         );
+
+
         commandParameters.response.progress.endBar();
         commandParameters.response.progress.startBar({ task });
 
         let binary2 = commandParameters.arguments.binary2;
         let encoding2 = commandParameters.arguments.encoding2;
-        let record2 = commandParameters.arguments.record2;
         const browserView = commandParameters.arguments.browserView;
-        const volumeSerial2 = commandParameters.arguments.volumeSerial2;
 
         if (binary2 == undefined) {
             binary2 = commandParameters.arguments.binary;
@@ -51,55 +49,50 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         if (encoding2 == undefined) {
             encoding2 = commandParameters.arguments.encoding;
         }
-        if (record2 == undefined) {
-            record2 = commandParameters.arguments.record;
-        }
 
-        task.statusMessage = "Retrieving second dataset";
-        const dsContentBuf2 = await Get.dataSet(session, commandParameters.arguments.dataSetName2,
+        task.statusMessage = "Retrieving second uss-file";
+        const ussFileContentBuf2 = await Get.USSFile(session, commandParameters.arguments.ussFilePath2,
             {
                 binary: binary2,
                 encoding: encoding2,
-                record: record2,
-                volume: volumeSerial2,
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 task: task
             }
         );
 
-        let dsContentString1 = "";
-        let dsContentString2 = "";
+        let ussContentString1 = "";
+        let ussContentString2 = "";
 
         if(!commandParameters.arguments.seqnum){
             const seqnumlen = 8;
 
-            const dsStringArray1 = dsContentBuf1.toString().split("\n");
-            for (const i in dsStringArray1) {
-                const sl = dsStringArray1[i].length;
-                const tempString = dsStringArray1[i].substring(0, sl - seqnumlen);
-                dsContentString1 += tempString + "\n";
+            const ussFileStringArray1 = ussFileContentBuf1.toString().split("\n");
+            for (const i in ussFileStringArray1) {
+                const sl = ussFileStringArray1[i].length;
+                const tempString = ussFileStringArray1[i].substring(0, sl - seqnumlen);
+                ussContentString1 += tempString + "\n";
             }
 
-            const dsStringArray2 = dsContentBuf2.toString().split("\n");
-            for (const i in dsStringArray2) {
-                const sl = dsStringArray2[i].length;
-                const tempString = dsStringArray2[i].substring(0, sl - seqnumlen);
-                dsContentString2 += tempString + "\n";
+            const ussFileStringArray2 = ussFileContentBuf2.toString().split("\n");
+            for (const i in ussFileStringArray2) {
+                const sl = ussFileStringArray2[i].length;
+                const tempString = ussFileStringArray2[i].substring(0, sl - seqnumlen);
+                ussContentString2 += tempString + "\n";
             }
         }
         else {
-            dsContentString1 = dsContentBuf1.toString();
-            dsContentString2 = dsContentBuf2.toString();
+            ussContentString1 = ussFileContentBuf1.toString();
+            ussContentString2 = ussFileContentBuf2.toString();
         }
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        //  CHECHKING IsetsF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (browserView) {
 
-            await DiffUtils.openDiffInbrowser(dsContentString1, dsContentString2);
+            await DiffUtils.openDiffInbrowser(ussContentString1, ussContentString2);
 
             return {
                 success: true,
-                commandResponse: "Launching data-sets diffs in browser...",
+                commandResponse: "Launching uss files diffs in browser...",
                 apiResponse: {}
             };
         }
@@ -107,7 +100,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         let jsonDiff = "";
         const contextLinesArg = commandParameters.arguments.contextlines;
 
-        jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
+        jsonDiff = await DiffUtils.getDiffString(ussContentString1, ussContentString2, {
             outputFormat: 'terminal',
             contextLinesArg: contextLinesArg
         });
