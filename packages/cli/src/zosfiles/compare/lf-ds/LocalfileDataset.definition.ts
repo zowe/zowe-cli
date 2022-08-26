@@ -22,7 +22,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
  */
 export const LocalfileDatasetDefinition: ICommandDefinition = {
     name: "local-file-data-set",
-    aliases: ["lfds"],
+    aliases: ["lf-ds"],
     summary: strings.ACTIONS.LOCAL_FILE_DATA_SET.SUMMARY,
     description: strings.ACTIONS.LOCAL_FILE_DATA_SET.DESCRIPTION,
     type: "command",
