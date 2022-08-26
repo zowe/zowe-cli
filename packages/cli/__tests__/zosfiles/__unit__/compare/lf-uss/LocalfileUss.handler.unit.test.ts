@@ -15,10 +15,10 @@ import { DiffUtils } from "@zowe/imperative";
 describe("Compare local-file and uss-file handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../../src/zosfiles/compare/lfuss/LocalfileUss.handler");
+        const handlerReq = require("../../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler");
         const handler = new handlerReq.default();
         // any local repo file
-        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/lfuss/LocalfileUss.definition.unit.test.ts' ;
+        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/lf-uss/LocalfileUss.definition.unit.test.ts' ;
         const ussFilePath = "./testing2";
         // Vars populated by the mocked function
         let error;

@@ -715,8 +715,8 @@ export default {
                 SUMMARY: "Compare content of a local file and a z/os uss files",
                 DESCRIPTION: "Compare the contents of a two uss files on your terminal (stdout). browser.",
                 POSITIONALS: {
-                    USSFILEPATH1: "The path of the first  uss file you want to compare.",
-                    USSFILEPATH2: "The path of the second  uss file you want to compare."
+                    USSFILEPATH1: "The path of the first uss file you want to compare.",
+                    USSFILEPATH2: "The path of the second uss file you want to compare."
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext"`,
@@ -731,8 +731,8 @@ export default {
                     USSFILEPATH: "The path of the uss file set you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "sys1.samplib(antxtso)"`,
-                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "sys1.samplib(antxtso)"` +
+                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "/u/**/**/*.ext"`,
+                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "/u/**/**/*.ext"` +
                      `without sequence numbers`
                 }
             },
@@ -740,12 +740,12 @@ export default {
                 SUMMARY: "Compare content of two spool dds",
                 DESCRIPTION: "Compare content of two spool dds on your terminal (stdout).",
                 POSITIONALS: {
-                    SPOOLDDDESCRIPTION1: "The name of the job with the id of spool dd",
-                    SPOOLDDDESCRIPTION2: "The name of the job with the id of spool dd"
+                    SPOOLDDDESCRIPTION1: "The name of the first job with the id of spool dd",
+                    SPOOLDDDESCRIPTION2: "The name of the second job with the id of spool dd"
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"`,
-                    EX2: `Compare the contents of the local file and the uss file "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"` +
+                    EX2: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"` +
                      `without sequence numbers`
                 }
             },
