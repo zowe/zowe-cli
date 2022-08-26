@@ -58,7 +58,7 @@ export class StartTso {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         let customParms: IStartTsoParms;
-        if (isNullOrUndefined(parms)) {
+        if (parms == null) {
             customParms = this.setDefaultAddressSpaceParams({}, encodeURIComponent(accountNumber));
         } else {
             customParms = this.setDefaultAddressSpaceParams(parms, encodeURIComponent(accountNumber));
@@ -66,7 +66,7 @@ export class StartTso {
 
         const zosmfResponse = await this.startCommon(session, customParms);
         let collectedResponses: ICollectedResponses;
-        if (!isNullOrUndefined(zosmfResponse.servletKey)){
+        if (zosmfResponse.servletKey == null){
             collectedResponses = await SendTso.getAllResponses(session, zosmfResponse);
         }
         return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, collectedResponses);
