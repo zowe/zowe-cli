@@ -757,8 +757,8 @@ export default {
                     SPOOLDDDESCRIPTION: "The name of the job with the id of spool dd"
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the two spool dds "./a.txt"  "jobName:jobId:spoolId"`,
-                    EX2: `Compare the contents of the local file and the uss file "./a.txt"  "jobName:jobId:spoolId"` +
+                    EX1: `Compare the contents of a local-file and a spool dd "./a.txt"  "jobName:jobId:spoolId"`,
+                    EX2: `Compare the contents of a local-file and a spool dd  "./a.txt"  "jobName:jobId:spoolId"` +
                      `without sequence numbers`
                 }
             },

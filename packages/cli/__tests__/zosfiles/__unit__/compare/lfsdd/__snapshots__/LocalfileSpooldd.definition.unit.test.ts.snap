@@ -33,11 +33,11 @@ Array [
 exports[`zos-files compare lfsdd command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Compare the contents of the two spool dds \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"",
+    "description": "Compare the contents of a local-file and a spool dd \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"",
     "options": "\\"./a.txt\\" \\"jobName:jobId:spoolId\\"",
   },
   Object {
-    "description": "Compare the contents of the local file and the uss file \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"without sequence numbers",
+    "description": "Compare the contents of a local-file and a spool dd  \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"without sequence numbers",
     "options": "\\"./a.txt\\" \\"jobName:jobId:spoolId\\" --no-seqnum",
   },
 ]
