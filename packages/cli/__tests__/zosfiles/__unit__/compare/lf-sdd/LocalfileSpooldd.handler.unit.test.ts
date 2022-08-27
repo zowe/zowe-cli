@@ -16,9 +16,9 @@ import { DiffUtils } from "@zowe/imperative";
 describe("Compare localfile-spooldd handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../../src/zosfiles/compare/lfsdd/LocalfileSpooldd.handler");
+        const handlerReq = require("../../../../../src/zosfiles/compare/lf-sdd/LocalfileSpooldd.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lfsdd/LocalfileSpooldd.definition.unit.test.ts";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lf-sdd/LocalfileSpooldd.definition.unit.test.ts";
         const spoolDescription = "jobName:jobId:3";
         // Vars populated by the mocked function
         let error;

@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-files compare lfsdd command definition", () => {
     it ("should not have changed", () => {
         // eslint-disable-next-line max-len
-        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lfsdd/LocalfileSpooldd.definition").LocalfileSpoolddDefinition;
+        const definition: ICommandDefinition = require(" ../../../../../src/zosfiles/compare/lf-sdd/LocalfileSpooldd.definition").LocalfileSpoolddDefinition;
 
         expect(definition).toBeDefined();
 

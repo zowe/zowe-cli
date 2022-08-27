@@ -22,7 +22,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
  */
 export const LocalfileSpoolddDefinition: ICommandDefinition = {
     name: "local-file-spool-dd",
-    aliases: ["lfsdd"],
+    aliases: ["lf-sdd"],
     summary: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.SUMMARY,
     description: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.DESCRIPTION,
     type: "command",
