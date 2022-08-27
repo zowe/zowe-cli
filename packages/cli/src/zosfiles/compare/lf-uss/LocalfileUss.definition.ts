@@ -54,11 +54,11 @@ export const LocalfileUssFileDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.LOCAL_FILE_USS_FILE.EXAMPLES.EX1,
-            options: `"./a.txt" "/u/**/**/*.ext"`
+            options: `"./a.txt" "/u/user/test.txt"`
         },
         {
             description: strings.ACTIONS.LOCAL_FILE_USS_FILE.EXAMPLES.EX2,
-            options: `"./a.txt" "/u/**/**/*.ext" --no-seqnum`
+            options: `"./a.txt" "/u/user/test.txt" --no-seqnum`
         }
     ]
 };

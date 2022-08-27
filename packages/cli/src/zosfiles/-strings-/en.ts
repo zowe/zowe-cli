@@ -719,8 +719,8 @@ export default {
                     USSFILEPATH2: "The path of the second uss file you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext"`,
-                    EX2: `Compare the contents of the uss file "/u/**/**/*.ext" and "/u/**/**/*.ext" without sequence numbers`
+                    EX1: `Compare the contents of the uss file "/u/user/test.txt" and "/u/user/test.txt"`,
+                    EX2: `Compare the contents of the uss file "/u/user/test.txt" and "/u/user/test.txt" without sequence numbers`
                 }
             },
             LOCAL_FILE_USS_FILE: {
@@ -731,8 +731,8 @@ export default {
                     USSFILEPATH: "The path of the uss file set you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "/u/**/**/*.ext"`,
-                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "/u/**/**/*.ext"` +
+                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "/u/user/test.txt"`,
+                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "/u/user/test.txt"` +
                      `without sequence numbers`
                 }
             },
