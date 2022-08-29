@@ -10,7 +10,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added a command `zowe zos-files compare local-file-uss-file` to compare a local-file and a uss-file, & display the differences in the browser and terminal. [#1446](https://github.com/zowe/zowe-cli/issues/1446)
 - Enhancement: Added a command `zowe zos-files compare spool-dd` to compare two spoolddds', & display the differences in the browser and terminal. [#1447](https://github.com/zowe/zowe-cli/issues/1447)
 - Enhancement: Added a command `zowe zos-files compare local-file-spool-dd` to compare a local-file and a spooldd', & display the differences in the browser and terminal. [#1448](https://github.com/zowe/zowe-cli/issues/1448)
-- BugFix: Updated Imperative to include bugfixes in version `5.4.3`.
+- BugFix: Updated Imperative to include bugfixes in version `5.5.0`.
 
 ## `7.4.2`
 
