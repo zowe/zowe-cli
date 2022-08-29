@@ -299,10 +299,15 @@ describe("CoreUtils", () => {
     });
 
     describe("sleep", () => {
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
         it("should sleep the default amount", async () => {
             const defaultSleepTime = 1000;
 
             jest.useFakeTimers();
+            jest.spyOn(global, "setTimeout");
 
             const waitForSleep = CoreUtils.sleep();
 
@@ -320,6 +325,7 @@ describe("CoreUtils", () => {
             const specifiedTime = 5000;
 
             jest.useFakeTimers();
+            jest.spyOn(global, "setTimeout");
 
             const waitForSleep = CoreUtils.sleep(specifiedTime);
 

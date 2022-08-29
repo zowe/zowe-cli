@@ -1534,7 +1534,7 @@ describe("z/OS Files - Upload", () => {
             USSresponse = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation();
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         it("should throw an error if USS file name is not specified", async () => {
@@ -1695,7 +1695,7 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             zosmfExpectFullSpy.mockClear();
-            zosmfExpectFullSpy.mockImplementation();
+            zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         afterAll(() => {
@@ -1870,10 +1870,10 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             createReadStreamSpy.mockReset();
-            createReadStreamSpy.mockImplementation();
+            createReadStreamSpy.mockImplementation((): any => null);
 
             streamToUssFileSpy.mockReset();
-            streamToUssFileSpy.mockImplementation();
+            streamToUssFileSpy.mockImplementation(async (): Promise<any> => null);
 
             lsStatSpy.mockClear();
             lsStatSpy.mockImplementation((somePath, callback: any) => {
@@ -2039,8 +2039,8 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation();
-            zosmfExpectFullSpy.mockImplementation();
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
+            zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         afterAll(() => {
@@ -2203,8 +2203,8 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation();
-            zosmfExpectFullSpy.mockImplementation();
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
+            zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         afterAll(() => {
