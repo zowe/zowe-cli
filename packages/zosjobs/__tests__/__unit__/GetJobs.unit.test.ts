@@ -365,7 +365,7 @@ describe("GetJobs tests", () => {
     describe("getJcl APIs", () => {
         it("should have proper URI when getting JCL", () => {
             (ZosmfRestClient.getExpectString as any) =
-                jest.fn<string>((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJcl(pretendSession, "fakeJob", "fakeId");
@@ -437,7 +437,7 @@ describe("GetJobs tests", () => {
     describe("getSpoolContent APIs", () => {
         it("should have proper URI when getting spool content", () => {
             (ZosmfRestClient.getExpectString as any) =
-                jest.fn<string>((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getSpoolContent(pretendSession, GetJobsData.SAMPLE_JOB_FILE);

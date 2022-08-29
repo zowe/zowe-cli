@@ -44,16 +44,19 @@ describe("z/OS Files - Download", () => {
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
-        const fakeWriteStream: any = {fakeWriteStream: true};
+        const fakeWriteStream: any = { fakeWriteStream: true };
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
-        const fakeResponseWithEtag = {data: ussFileContent, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(ussFileContent),
+            response: {headers: { etag: etagValue } }
+        };
 
         beforeEach(() => {
             zosmfStreamSpy.mockClear();
-            zosmfStreamSpy.mockImplementation(() => null);
+            zosmfStreamSpy.mockImplementation(async (): Promise<any> => null);
 
             zosmfGetFullSpy.mockClear();
-            zosmfGetFullSpy.mockImplementation(() => null);
+            zosmfGetFullSpy.mockImplementation(async (): Promise<any> => null);
 
             ioCreateDirSpy.mockClear();
             ioCreateDirSpy.mockImplementation(() => null);
@@ -468,7 +471,7 @@ describe("z/OS Files - Download", () => {
         });
 
         it("should download a data set and return Etag", async () => {
-            zosmfGetFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfGetFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
             let response;
             let caughtError;
             const volume = "testVs";
@@ -551,12 +554,12 @@ describe("z/OS Files - Download", () => {
 
         beforeEach(() => {
             listAllMembersSpy.mockClear();
-            listAllMembersSpy.mockImplementation(() => {
-                return {apiResponse: listApiResponse};
+            listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                return { apiResponse: listApiResponse };
             });
 
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockResolvedValue(null);
+            downloadDatasetSpy.mockResolvedValue(null as any);
         });
 
         it("should throw and error if the data set name is not specified", async () => {
@@ -603,7 +606,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            listAllMembersSpy.mockResolvedValueOnce({apiResponse: {items: []}});
+            listAllMembersSpy.mockResolvedValueOnce({ apiResponse: { items: [] } } as any);
 
             try {
                 response = await Download.allMembers(dummySession, dsname);
@@ -1002,13 +1005,13 @@ describe("z/OS Files - Download", () => {
 
         beforeEach(() => {
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockResolvedValue(undefined);
+            downloadDatasetSpy.mockResolvedValue(undefined as any);
 
             downloadAllMembersSpy.mockClear();
-            downloadAllMembersSpy.mockResolvedValue(undefined);
+            downloadAllMembersSpy.mockResolvedValue(undefined as any);
 
             listDataSetSpy.mockClear();
-            listDataSetSpy.mockResolvedValue(undefined);
+            listDataSetSpy.mockResolvedValue(undefined as any);
         });
 
         it("should handle an error from Download.dataSet", async () => {
@@ -1071,7 +1074,7 @@ describe("z/OS Files - Download", () => {
             const extension = "xyz";
             const binary = true;
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1104,7 +1107,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1142,7 +1145,7 @@ describe("z/OS Files - Download", () => {
 
             const extension = "xyz";
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1177,7 +1180,7 @@ describe("z/OS Files - Download", () => {
 
             const maxConcurrentRequests = 0;
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1213,7 +1216,7 @@ describe("z/OS Files - Download", () => {
             const directory = "my/test/path";
             const extension = ".xyz";
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1249,7 +1252,7 @@ describe("z/OS Files - Download", () => {
             const directory = "my/test/path";
             const extensionMap = {set: "file"};
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1285,7 +1288,7 @@ describe("z/OS Files - Download", () => {
             const directory = "my/test/path";
             const extensionMap = {fake: "file"};
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1411,7 +1414,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            Download.dataSet = jest.fn(async () => {
+            Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
                     apiResponse: {
@@ -1502,7 +1505,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            downloadAllMembersSpy.mockImplementation(async () => {
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [
@@ -1513,7 +1516,7 @@ describe("z/OS Files - Download", () => {
                 };
             });
 
-            List.allMembers = jest.fn(async () => {
+            List.allMembers = jest.fn(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [
@@ -1550,7 +1553,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             createDirsSpy.mockClear();
-            downloadAllMembersSpy.mockImplementation(async () => {
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: []
@@ -1559,7 +1562,7 @@ describe("z/OS Files - Download", () => {
                 };
             });
 
-            List.allMembers = jest.fn(async () => {
+            List.allMembers = jest.fn(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: []
@@ -1596,7 +1599,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const directory = "my/test/path/";
 
-            downloadAllMembersSpy.mockImplementation(async () => {
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [
@@ -1607,7 +1610,7 @@ describe("z/OS Files - Download", () => {
                 };
             });
 
-            List.allMembers = jest.fn(async () => {
+            List.allMembers = jest.fn(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [
@@ -1648,17 +1651,20 @@ describe("z/OS Files - Download", () => {
         const fakeStream: any = {fakeStream: true};
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
         const putUSSPayloadSpy = jest.spyOn(Utilities, "putUSSPayload");
-        const fakeResponseWithEtag = {data: ussFileContent, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(ussFileContent),
+            response: { headers: { etag: etagValue } }
+        };
 
         beforeEach(() => {
             zosmfStreamSpy.mockClear();
-            zosmfStreamSpy.mockImplementation(() => ussFileContent);
+            zosmfStreamSpy.mockImplementation(async () => ussFileContent);
 
             zosmfGetFullSpy.mockClear();
-            zosmfGetFullSpy.mockImplementation(() => ussFileContent);
+            zosmfGetFullSpy.mockImplementation(async (): Promise<any> => ussFileContent);
 
             zosmfExpectBufferSpy.mockClear();
-            zosmfExpectBufferSpy.mockImplementation(() => ussFileContent);
+            zosmfExpectBufferSpy.mockImplementation(async () => Buffer.from(ussFileContent));
 
             ioCreateDirSpy.mockClear();
             ioCreateDirSpy.mockImplementation(() => null);
@@ -1667,7 +1673,7 @@ describe("z/OS Files - Download", () => {
             ioWriteStreamSpy.mockImplementation(() => fakeStream);
 
             putUSSPayloadSpy.mockClear();
-            putUSSPayloadSpy.mockResolvedValue("{}");
+            putUSSPayloadSpy.mockResolvedValue(Buffer.from("{}"));
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -1836,9 +1842,9 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
             const destination = localFileName;
-            putUSSPayloadSpy.mockResolvedValueOnce(JSON.stringify({
+            putUSSPayloadSpy.mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["t ISO8859-1\tT=on\t" + ussname]
-            }));
+            })));
             try {
                 response = await Download.ussFile(dummySession, ussname, {});
             } catch (e) {
@@ -1877,9 +1883,9 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
             const destination = localFileName;
-            putUSSPayloadSpy.mockResolvedValueOnce(JSON.stringify({
+            putUSSPayloadSpy.mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["t IBM-1147\tT=on\t" + ussname]
-            }));
+            })));
             try {
                 response = await Download.ussFile(dummySession, ussname, {});
             } catch (e) {
@@ -1981,7 +1987,7 @@ describe("z/OS Files - Download", () => {
         });
 
         it("should download uss file and return Etag", async () => {
-            zosmfGetFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfGetFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
             let response;
             let caughtError;
             const destination = localFileName;

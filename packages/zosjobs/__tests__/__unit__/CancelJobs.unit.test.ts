@@ -11,12 +11,12 @@
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
-import { CancelJobs, IJob } from "../../src";
+import { CancelJobs, IJob, IJobFeedback } from "../../src";
 import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnCancelJobsDataAsync = async () => {
+const returnCancelJobsDataAsync = async (): Promise<any> => {
     return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
 };
 
@@ -72,7 +72,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 1_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
@@ -81,7 +81,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 2_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
@@ -90,7 +90,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 2_0) and get a bad response", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });
@@ -112,7 +112,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 1_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
@@ -121,7 +121,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 2_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
@@ -130,7 +130,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 2_0) and get a failed response", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });

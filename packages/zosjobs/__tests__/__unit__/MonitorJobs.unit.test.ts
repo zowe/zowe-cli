@@ -366,7 +366,7 @@ describe("MonitorJobs", () => {
                 status : "COMPLETE"
             };
 
-            const sleepMock = sleep as jest.Mock<typeof sleep>;
+            const sleepMock = jest.mocked(sleep);
 
             beforeEach(() => {
                 checkStatusSpy.mockReset();
@@ -480,7 +480,7 @@ describe("MonitorJobs", () => {
                 };
 
                 checkStatusSpy.mockReturnValue([false, dummyJob]);
-                sleepMock.mockImplementation(() => {
+                sleepMock.mockImplementation(async () => {
                     attempts++;
                     if (attempts === maxAttempts) {
                         throw Error(errMsg);
@@ -523,7 +523,7 @@ describe("MonitorJobs", () => {
         });
 
         describe("checkStatus", () => {
-            const getStatusCommonMock = GetJobs.getStatusCommon as jest.Mock<typeof GetJobs.getStatusCommon>;
+            const getStatusCommonMock = jest.mocked(GetJobs.getStatusCommon);
 
             beforeEach(() => {
                 getStatusCommonMock.mockReset();
@@ -538,7 +538,7 @@ describe("MonitorJobs", () => {
                     status: "ACTIVE"
                 };
 
-                getStatusCommonMock.mockReturnValue(job);
+                getStatusCommonMock.mockResolvedValue(job as any);
 
                 let response: [boolean, IJob];
 
@@ -568,7 +568,7 @@ describe("MonitorJobs", () => {
                     status: "ACTIVE"
                 };
 
-                getStatusCommonMock.mockReturnValue(job);
+                getStatusCommonMock.mockResolvedValue(job as any);
 
                 // The first call is for if the job status is equal to parms
                 const response: [boolean, IJob] = await privateMonitorJobs.checkStatus({}, parms);
@@ -587,7 +587,7 @@ describe("MonitorJobs", () => {
                     status: "ACTIVE"
                 };
 
-                getStatusCommonMock.mockReturnValue(job);
+                getStatusCommonMock.mockResolvedValue(job as any);
 
                 let error: Error;
 
