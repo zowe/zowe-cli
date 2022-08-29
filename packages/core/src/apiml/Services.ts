@@ -79,12 +79,12 @@ export class Services {
         Logger.getAppLogger().trace("Services.getByConfig()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         if (session.ISession.type === "basic") {
-            ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.user, "User name for API ML basic login must be defined.");
-            ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.password, "Password for API ML basic login must be defined.");
+            ImperativeExpect.toNotBeNullOrUndefined(session.ISession.user, "User name for API ML basic login must be defined.");
+            ImperativeExpect.toNotBeNullOrUndefined(session.ISession.password, "Password for API ML basic login must be defined.");
         } else {
-            ImperativeExpect.toBeEqual(session.ISession?.tokenType, "apimlAuthenticationToken",
+            ImperativeExpect.toBeEqual(session.ISession.tokenType, "apimlAuthenticationToken",
                 "Token type for API ML token login must be apimlAuthenticationToken.");
-            ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.tokenValue, "Token value for API ML token login must be defined.");
+            ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Token value for API ML token login must be defined.");
         }
 
         // Perform GET request on APIML services endpoint

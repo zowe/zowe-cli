@@ -20,6 +20,7 @@ import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { TsoResponseService } from "./TsoResponseService";
+import { ICollectedResponses } from "./doc/ICollectedResponses";
 
 /**
  * Start TSO address space and receive servlet key
@@ -57,15 +58,15 @@ export class StartTso {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         let customParms: IStartTsoParms;
-        if (isNullOrUndefined(parms)) {
+        if (parms == null) {
             customParms = this.setDefaultAddressSpaceParams({}, encodeURIComponent(accountNumber));
         } else {
             customParms = this.setDefaultAddressSpaceParams(parms, encodeURIComponent(accountNumber));
         }
 
         const zosmfResponse = await this.startCommon(session, customParms);
-        let collectedResponses = null;
-        if (!isNullOrUndefined(zosmfResponse.servletKey)){
+        let collectedResponses: ICollectedResponses;
+        if (zosmfResponse.servletKey != null){
             collectedResponses = await SendTso.getAllResponses(session, zosmfResponse);
         }
         return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, collectedResponses);
