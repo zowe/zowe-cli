@@ -17,50 +17,46 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COMPARE;
 
 /**
- * Compare uss-files command definition containing its description, examples and/or options
+ * Compare local-file-spool-dd command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
-export const UssFileDefinition: ICommandDefinition = {
-    name: "uss-files",
-    aliases: ["uss"],
-    summary: strings.ACTIONS.USS_FILE.SUMMARY,
-    description: strings.ACTIONS.USS_FILE.DESCRIPTION,
+export const LocalfileSpoolddDefinition: ICommandDefinition = {
+    name: "local-file-spool-dd",
+    aliases: ["lf-sdd"],
+    summary: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.SUMMARY,
+    description: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/UssFile.handler",
+    handler: __dirname + "/LocalfileSpooldd.handler",
     profile: {
         optional: ["zosmf"],
     },
     positionals: [
         {
-            name: "ussFilePath1",
-            description: strings.ACTIONS.USS_FILE.POSITIONALS.USSFILEPATH1,
+            name: "localFilePath",
+            description: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.POSITIONALS.LOCALFILEPATH,
             type: "string",
             required: true
         },
         {
-            name: "ussFilePath2",
+            name: "spoolDescription",
             type: "string",
-            description: strings.ACTIONS.USS_FILE.POSITIONALS.USSFILEPATH2,
+            description: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.POSITIONALS.SPOOLDDDESCRIPTION,
             required: true
         }
     ],
     options: [
-        CompareOptions.binary,
-        CompareOptions.binary2,
-        CompareOptions.encoding,
-        CompareOptions.encoding2,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
         CompareOptions.browserView
     ],
     examples: [
         {
-            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
-            options: `"/u/user/test.txt" "/u/user/test.txt"`
+            description: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.EXAMPLES.EX1,
+            options: `"./a.txt" "jobName:jobId:spoolId"`
         },
         {
-            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
-            options: `"/u/user/test.txt" "/u/user/test.txt" --no-seqnum`
+            description: strings.ACTIONS.LOCAL_FILE_SPOOL_DD.EXAMPLES.EX2,
+            options: `"./a.txt" "jobName:jobId:spoolId" --no-seqnum`
         }
     ]
 };

@@ -9,33 +9,42 @@
 *
 */
 
-import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { DiffUtils } from "@zowe/imperative";
 
-describe("Compare local-file and data-set handler", () => {
+describe("Compare spooldd handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../../src/zosfiles/compare/lfds/LocalfileDataset.handler");
+        const handlerReq = require("../../../../../src/zosfiles/compare/sdd/Spooldd.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lfds/LocalfileDataset.definition.unit.test.ts";
-        const dataSetName = "testing2";
+        const spoolDescription1 = "jobName1:jobId1:2";
+        const spoolDescription2 = "jobName2:jobId2:3";
         // Vars populated by the mocked function
         let error;
         let apiMessage = "";
-        let jsonObj:object;
+        let jsonObj: object;
         let logMessage = "";
         let fakeSession: object;
 
-        // Mock the compare ds function
-        Get.dataSet = jest.fn((session) => {
+        const spoolDescArr1 = spoolDescription1.split(":");
+        const jobName1: string = spoolDescArr1[0];
+        const jobId1: string = spoolDescArr1[1];
+        const spoolId1: number = Number(spoolDescArr1[2]);
+
+        const spoolDescArr2 = spoolDescription2.split(":");
+        const jobName2: string = spoolDescArr2[0];
+        const jobId2: string = spoolDescArr2[1];
+        const spoolId2: number = Number(spoolDescArr2[2]);
+
+        // Mock the get uss function
+        GetJobs.getSpoolContentById = jest.fn((session) => {
             fakeSession = session;
             return {
                 success: true,
                 commandResponse: "compared"
             };
         });
-
         // Mocked function references
         const profFunc = jest.fn((args) => {
             return {
@@ -52,8 +61,8 @@ describe("Compare local-file and data-set handler", () => {
             arguments: {
                 $0: "fake",
                 _: ["fake"],
-                localFilePath,
-                dataSetName,
+                spoolDescription1,
+                spoolDescription2,
                 browserView: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
@@ -86,10 +95,11 @@ describe("Compare local-file and data-set handler", () => {
         };
 
 
-        it("should compare local-file and data-set in terminal", async () => {
+        it("should compare two spooldd in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
                 return "compared string";
+
             });
 
             try {
@@ -99,21 +109,15 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(1);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving dataset"
-                }
-            });
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(2);
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
-        it("should compare local-file and data-set in browser", async () => {
+        it("should compare two spooldd in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
             processArguments.arguments.browserView = true ;

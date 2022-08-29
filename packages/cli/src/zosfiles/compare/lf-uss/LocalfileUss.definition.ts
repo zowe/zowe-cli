@@ -20,47 +20,45 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
  * Compare local files and data sets command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
-export const LocalfileDatasetDefinition: ICommandDefinition = {
-    name: "local-file-data-set",
-    aliases: ["lfds"],
-    summary: strings.ACTIONS.LOCAL_FILE_DATA_SET.SUMMARY,
-    description: strings.ACTIONS.LOCAL_FILE_DATA_SET.DESCRIPTION,
+export const LocalfileUssFileDefinition: ICommandDefinition = {
+    name: "local-file-uss-file",
+    aliases: ["lf-uss"],
+    summary: strings.ACTIONS.LOCAL_FILE_USS_FILE.SUMMARY,
+    description: strings.ACTIONS.LOCAL_FILE_USS_FILE.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/LocalfileDataset.handler",
+    handler: __dirname + "/LocalfileUss.handler",
     profile: {
         optional: ["zosmf"],
     },
     positionals: [
         {
             name: "localFilePath",
-            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.POSITIONALS.LOCALFILEPATH,
+            description: strings.ACTIONS.LOCAL_FILE_USS_FILE.POSITIONALS.LOCALFILEPATH,
             type: "string",
             required: true
         },
         {
-            name: "dataSetName",
+            name: "ussFilePath",
             type: "string",
-            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.POSITIONALS.DATASETNAME,
+            description: strings.ACTIONS.LOCAL_FILE_USS_FILE.POSITIONALS.USSFILEPATH,
             required: true
         }
     ],
     options: [
         CompareOptions.binary,
         CompareOptions.encoding,
-        CompareOptions.record,
-        CompareOptions.volume,
         CompareOptions.seqnum,
         CompareOptions.contextLines,
         CompareOptions.browserView
     ],
     examples: [
         {
-            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.EXAMPLES.EX1,
-            options: `"./a.txt" "sys1.samplib(antxtso)"`
+            description: strings.ACTIONS.LOCAL_FILE_USS_FILE.EXAMPLES.EX1,
+            options: `"./a.txt" "/u/user/test.txt"`
         },
         {
-            description: strings.ACTIONS.LOCAL_FILE_DATA_SET.EXAMPLES.EX2,
-            options: `"./a.txt" "sys1.samplib(antxtso)" --no-seqnum`
+            description: strings.ACTIONS.LOCAL_FILE_USS_FILE.EXAMPLES.EX2,
+            options: `"./a.txt" "/u/user/test.txt" --no-seqnum`
         }
     ]
 };
