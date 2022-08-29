@@ -29,7 +29,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession: AbstractSession = null;
 
             // Mock the delete function
-            DeleteWorkflow.deleteWorkflow = jest.fn(async (session) => {
+            DeleteWorkflow.deleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -103,7 +103,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession: AbstractSession = null;
 
             // Mock the delete function
-            DeleteWorkflow.deleteWorkflow = jest.fn(async (session) => {
+            DeleteWorkflow.deleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -187,7 +187,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession: AbstractSession = null;
 
             // Mock the delete function
-            DeleteWorkflow.deleteWorkflow = jest.fn(async (session) => {
+            DeleteWorkflow.deleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -196,7 +196,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn(async (session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return null;
             });
@@ -267,7 +267,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession: AbstractSession = null;
 
             // Mock the delete function
-            DeleteWorkflow.deleteWorkflow = jest.fn(async (session) => {
+            DeleteWorkflow.deleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -276,7 +276,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn(async (session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return null;
             });

@@ -54,8 +54,8 @@ describe("DaemonDecider tests", () => {
             },
             parse
         };
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((unusedclient, ...args: any[]): any => {
             return {on};
         });
 
@@ -99,8 +99,8 @@ describe("DaemonDecider tests", () => {
             },
             parse
         };
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((method, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((method: any, ...args: any[]): any => {
             method("fakeClient", "fakeServer");
             return {on, listen};
         });
@@ -186,8 +186,8 @@ describe("DaemonDecider tests", () => {
             parse
         };
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((unusedclient, ...args: any[]): any => {
             return {on, listen};
         });
 
@@ -230,8 +230,8 @@ describe("DaemonDecider tests", () => {
             parse
         };
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((unusedclient, ...args: any[]): any => {
             return {on, listen};
         });
 
@@ -280,8 +280,8 @@ describe("DaemonDecider tests", () => {
             parse
         };
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((unusedclient, ...args: any[]): any => {
             return {on, listen};
         });
 
@@ -365,8 +365,8 @@ describe("DaemonDecider tests", () => {
             parse
         };
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((unusedclient, ...args: any[]): any => {
             return {on, listen};
         });
 
@@ -429,8 +429,8 @@ describe("DaemonDecider tests", () => {
             parse
         };
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((unusedclient, ...args: any[]): any => {
             return {on, listen};
         });
 

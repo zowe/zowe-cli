@@ -30,12 +30,9 @@ describe("View data set handler", () => {
             let fakeSession = null;
 
             // Mock the view ds function
-            Get.dataSet = jest.fn((session) => {
+            Get.dataSet = jest.fn(async (session) => {
                 fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "downloaded"
-                };
+                return Buffer.from("downloaded");
             });
 
             // Mocked function references

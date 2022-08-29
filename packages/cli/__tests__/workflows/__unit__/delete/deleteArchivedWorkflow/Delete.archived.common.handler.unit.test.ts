@@ -29,7 +29,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -100,7 +100,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -249,7 +249,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,

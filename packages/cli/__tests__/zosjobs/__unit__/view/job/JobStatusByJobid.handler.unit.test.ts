@@ -38,7 +38,7 @@ describe("view job-status-by-jobid handler tests", () => {
     });
 
     it("should be able to get a job", async () => {
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         const handler = new JobStatusByJobidHandler.default();

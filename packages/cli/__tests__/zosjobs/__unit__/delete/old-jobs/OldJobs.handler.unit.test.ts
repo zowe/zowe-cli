@@ -33,11 +33,11 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 describe("delete old-jobs handler tests", () => {
     it("should delete all jobs using defaults sequentially", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, prefix) => {
             passedSession = session;
             return GetJobsData.SAMPLE_JOBS;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job): Promise<any> => {
             return;
         });
         const handler = new OldJobsHandler.default();
@@ -54,11 +54,11 @@ describe("delete old-jobs handler tests", () => {
 
     it("should delete all jobs using defaults in parallel", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, prefix) => {
             passedSession = session;
             return GetJobsData.SAMPLE_JOBS;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job): Promise<any> => {
             return;
         });
         const handler = new OldJobsHandler.default();
@@ -75,11 +75,11 @@ describe("delete old-jobs handler tests", () => {
 
     it("should delete jobs with a specific prefix", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, prefix) => {
             passedSession = session;
             return GetJobsData.SAMPLE_JOBS;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job): Promise<any> => {
             return;
         });
         const handler = new OldJobsHandler.default();
@@ -96,11 +96,11 @@ describe("delete old-jobs handler tests", () => {
 
     it("should delete jobs with modifyVersion 2.0", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, prefix) => {
             passedSession = session;
             return GetJobsData.SAMPLE_JOBS;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job): Promise<any> => {
             return;
         });
         const handler = new OldJobsHandler.default();
@@ -117,11 +117,11 @@ describe("delete old-jobs handler tests", () => {
 
     it("should not delete jobs when none are found", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, prefix) => {
             passedSession = session;
             return [];
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job): Promise<any> => {
             return;
         });
         const handler = new OldJobsHandler.default();
@@ -155,7 +155,7 @@ describe("delete old-jobs handler tests", () => {
     it("should not transform an error from the DeleteJobs API class", async () => {
         const failMessage = "You fail in DeleteJobs";
         let error;
-        GetJobs.getJobsByPrefix = jest.fn((session, jobid) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, jobid) => {
             return GetJobsData.SAMPLE_JOBS;
         });
         DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
@@ -177,10 +177,10 @@ describe("delete old-jobs handler tests", () => {
     });
 
     it("should throw an error when modifyVersion is 2.0 and response status is non-zero", async () => {
-        GetJobs.getJobsByPrefix = jest.fn((session, prefix) => {
+        GetJobs.getJobsByPrefix = jest.fn(async (session, prefix) => {
             return GetJobsData.SAMPLE_JOBS;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job): Promise<any> => {
             return { status: "1" };
         });
         const handler = new OldJobsHandler.default();

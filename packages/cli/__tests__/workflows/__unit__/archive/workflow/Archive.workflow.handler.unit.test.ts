@@ -41,7 +41,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -113,7 +113,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,

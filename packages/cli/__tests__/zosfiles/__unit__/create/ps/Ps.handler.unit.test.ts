@@ -28,7 +28,7 @@ describe("Create PS data set handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            Create.dataSet = jest.fn((session) => {
+            Create.dataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

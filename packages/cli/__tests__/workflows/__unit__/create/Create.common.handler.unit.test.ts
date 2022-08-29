@@ -54,7 +54,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn(async (session) => {
+            CreateWorkflow.createWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -63,7 +63,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mock the get key function
-            ListWorkflows.getWfKey = jest.fn(async (session) => {
+            ListWorkflows.getWfKey = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     workflowKey: "fake-workflow-key"
@@ -71,7 +71,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mock the create function
-            DeleteWorkflow.deleteWorkflow = jest.fn((session) => {
+            DeleteWorkflow.deleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true
@@ -162,7 +162,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn(async (session) => {
+            CreateWorkflow.createWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -253,7 +253,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflowLocal = jest.fn(async (session) => {
+            CreateWorkflow.createWorkflowLocal = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -348,7 +348,7 @@ describe("Create workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn(async (session) => {
+            CreateWorkflow.createWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,

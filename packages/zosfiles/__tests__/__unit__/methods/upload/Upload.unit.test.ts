@@ -26,7 +26,7 @@ import { Utilities } from "../../../../src/methods/utilities/Utilities";
 import { ZosFilesUtils } from "../../../../src/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/methods/create";
-import { Tag, TransferMode, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
+import { Tag, TransferMode, ZosFilesMessages } from "../../../../src";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { Readable } from "stream";
 

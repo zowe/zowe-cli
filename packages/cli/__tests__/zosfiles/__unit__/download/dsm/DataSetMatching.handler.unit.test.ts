@@ -56,7 +56,7 @@ describe("Download DataSetMatching handler", () => {
         const pattern = "testing";
         const fakeListResponse = [{ dsname: "HLQ." + pattern }];
         let passedSession: Session = null;
-        List.dataSetsMatchingPattern = jest.fn((session) => {
+        List.dataSetsMatchingPattern = jest.fn(async (session) => {
             passedSession = session;
             return {
                 success: true,
@@ -64,7 +64,7 @@ describe("Download DataSetMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allDataSets = jest.fn((session) => {
+        Download.allDataSets = jest.fn(async (session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"
@@ -88,7 +88,7 @@ describe("Download DataSetMatching handler", () => {
         const fakeListResponse = [{ dsname: "HLQ." + pattern }];
         const extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
         let passedSession: Session = null;
-        List.dataSetsMatchingPattern = jest.fn((session) => {
+        List.dataSetsMatchingPattern = jest.fn(async (session) => {
             passedSession = session;
             return {
                 success: true,
@@ -96,7 +96,7 @@ describe("Download DataSetMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allDataSets = jest.fn((session) => {
+        Download.allDataSets = jest.fn(async (session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"
@@ -148,7 +148,7 @@ describe("Download DataSetMatching handler", () => {
         const fakeListResponse = [{ dsname: "HLQ." + pattern }];
         const excludePatterns = "TEST.EXCLUDE.**.CNTL";
         let passedSession: Session = null;
-        List.dataSetsMatchingPattern = jest.fn((session) => {
+        List.dataSetsMatchingPattern = jest.fn(async (session) => {
             passedSession = session;
             return {
                 success: true,
@@ -156,7 +156,7 @@ describe("Download DataSetMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allDataSets = jest.fn((session) => {
+        Download.allDataSets = jest.fn(async (session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"

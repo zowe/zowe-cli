@@ -28,7 +28,7 @@ describe("Download uss file handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.ussFile = jest.fn((session) => {
+            Download.ussFile = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

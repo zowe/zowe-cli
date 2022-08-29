@@ -31,7 +31,7 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session) => {
+            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -112,7 +112,7 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session) => {
+            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
