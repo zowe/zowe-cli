@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Compare local-file and uss-file handler process method should compare local-file and uss-file in terminal 1`] = `
+Object {
+  "apiResponse": Object {},
+  "commandResponse": "compared string",
+  "success": true,
+}
+`;

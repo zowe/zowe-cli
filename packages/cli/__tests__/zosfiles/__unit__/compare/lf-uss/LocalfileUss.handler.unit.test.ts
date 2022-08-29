@@ -8,18 +8,18 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { DiffUtils } from "@zowe/imperative";
 
-describe("Compare local-file and data-set handler", () => {
+describe("Compare local-file and uss-file handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../../src/zosfiles/compare/lfds/LocalfileDataset.handler");
+        const handlerReq = require("../../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lfds/LocalfileDataset.definition.unit.test.ts";
-        const dataSetName = "testing2";
+        // any local repo file
+        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/lf-uss/LocalfileUss.definition.unit.test.ts' ;
+        const ussFilePath = "./testing2";
         // Vars populated by the mocked function
         let error;
         let apiMessage = "";
@@ -27,8 +27,8 @@ describe("Compare local-file and data-set handler", () => {
         let logMessage = "";
         let fakeSession: object;
 
-        // Mock the compare ds function
-        Get.dataSet = jest.fn((session) => {
+        // Mock the compare uss function
+        Get.USSFile = jest.fn((session) => {
             fakeSession = session;
             return {
                 success: true,
@@ -53,7 +53,7 @@ describe("Compare local-file and data-set handler", () => {
                 $0: "fake",
                 _: ["fake"],
                 localFilePath,
-                dataSetName,
+                ussFilePath,
                 browserView: false,
                 ...UNIT_TEST_ZOSMF_PROF_OPTS
             },
@@ -86,7 +86,7 @@ describe("Compare local-file and data-set handler", () => {
         };
 
 
-        it("should compare local-file and data-set in terminal", async () => {
+        it("should compare local-file and uss-file in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(() => {
                 return "compared string";
@@ -99,12 +99,12 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(1);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
+            expect(Get.USSFile).toHaveBeenCalledTimes(1);
+            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Retrieving dataset"
+                    statusMessage: "Retrieving uss file"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
@@ -113,7 +113,7 @@ describe("Compare local-file and data-set handler", () => {
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
-        it("should compare local-file and data-set in browser", async () => {
+        it("should compare local-file and uss-file in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
             processArguments.arguments.browserView = true ;
