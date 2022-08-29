@@ -736,6 +736,19 @@ export default {
                      `without sequence numbers`
                 }
             },
+            SPOOL_DD: {
+                SUMMARY: "Compare content of two spool dds",
+                DESCRIPTION: "Compare content of two spool dds on your terminal (stdout).",
+                POSITIONALS: {
+                    SPOOLDDDESCRIPTION1: "The name of the first job with the id of spool dd",
+                    SPOOLDDDESCRIPTION2: "The name of the second job with the id of spool dd"
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"`,
+                    EX2: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"` +
+                     `without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
