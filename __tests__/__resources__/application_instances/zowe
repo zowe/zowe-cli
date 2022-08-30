@@ -5,4 +5,4 @@ case `uname` in
     *CYGWIN*|*MINGW*|*MSYS*) basedir=`cygpath -w "$basedir"`;;
 esac
 
-exec node "$basedir/../../../packages/cli/lib/main.js" "$@"
+MSYS_NO_PATHCONV=1 exec node "$basedir/../../../packages/cli/lib/main.js" "$@"
