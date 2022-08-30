@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import * as path from "path";
 import * as fs from "fs";
 
