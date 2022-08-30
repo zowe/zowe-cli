@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to absorb bugfixes introduced in version `4.18.9`.
+
 ## `6.40.6`
 
 - BugFix: Fixed missing help text for `zos-files upload dir-to-uss` command.
