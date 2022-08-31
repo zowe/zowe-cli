@@ -29,12 +29,9 @@ describe("Compare local-file and uss-file handler", () => {
         let fakeSession: object;
 
         // Mock the compare uss function
-        Get.USSFile = jest.fn((session) => {
+        Get.USSFile = jest.fn(async (session) => {
             fakeSession = session;
-            return {
-                success: true,
-                commandResponse: "compared"
-            };
+            return Buffer.from("compared");
         });
 
         // Mocked function references
@@ -89,7 +86,7 @@ describe("Compare local-file and uss-file handler", () => {
 
         it("should compare local-file and uss-file in terminal", async () => {
 
-            DiffUtils.getDiffString = jest.fn(() => {
+            DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
             });
 

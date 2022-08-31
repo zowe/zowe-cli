@@ -38,12 +38,9 @@ describe("Compare spooldd handler", () => {
         const spoolId2: number = Number(spoolDescArr2[2]);
 
         // Mock the get uss function
-        GetJobs.getSpoolContentById = jest.fn((session) => {
+        GetJobs.getSpoolContentById = jest.fn(async (session) => {
             fakeSession = session;
-            return {
-                success: true,
-                commandResponse: "compared"
-            };
+            return "compared";
         });
         // Mocked function references
         const profFunc = jest.fn((args) => {
@@ -97,7 +94,7 @@ describe("Compare spooldd handler", () => {
 
         it("should compare two spooldd in terminal", async () => {
 
-            DiffUtils.getDiffString = jest.fn(() => {
+            DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
 
             });
