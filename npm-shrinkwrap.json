@@ -25021,6 +25021,7 @@
       "version": "4.1.1",
       "resolved": "https://registry.npmjs.org/comment-json/-/comment-json-4.1.1.tgz",
       "integrity": "sha512-v8gmtPvxhBlhdRBLwdHSjGy9BgA23t9H1FctdQKyUrErPjSrJcdDMqBq9B4Irtm7w3TNYLQJNH6ARKnpyag1sA==",
+      "dev": true,
       "dependencies": {
         "array-timsort": "^1.0.3",
         "core-util-is": "^1.0.2",
@@ -29597,6 +29598,7 @@
           "version": "4.1.1",
           "resolved": "https://registry.npmjs.org/comment-json/-/comment-json-4.1.1.tgz",
           "integrity": "sha512-v8gmtPvxhBlhdRBLwdHSjGy9BgA23t9H1FctdQKyUrErPjSrJcdDMqBq9B4Irtm7w3TNYLQJNH6ARKnpyag1sA==",
+          "dev": true,
           "requires": {
             "array-timsort": "^1.0.3",
             "core-util-is": "^1.0.2",
