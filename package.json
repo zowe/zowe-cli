@@ -40,7 +40,7 @@
     "prepack": "node scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/imperative": "5.5.0",
+    "@zowe/imperative": "5.5.1",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
