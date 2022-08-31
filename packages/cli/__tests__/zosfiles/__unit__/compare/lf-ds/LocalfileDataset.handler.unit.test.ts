@@ -16,9 +16,9 @@ import { DiffUtils } from "@zowe/imperative";
 describe("Compare local-file and data-set handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../../src/zosfiles/compare/lfds/LocalfileDataset.handler");
+        const handlerReq = require("../../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lfds/LocalfileDataset.definition.unit.test.ts";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lf-ds/LocalfileDataset.definition.unit.test.ts";
         const dataSetName = "testing2";
         // Vars populated by the mocked function
         let error;

@@ -60,9 +60,9 @@ export class TsoResponseService {
         const startResponse: IStartStopResponses = {
             success: false,
             zosmfTsoResponse: zosmfResponse,
-            collectedResponses: isNullOrUndefined(collectedResponses)? null : collectedResponses.tsos,
+            collectedResponses: (collectedResponses == null) ? null : collectedResponses.tsos,
             servletKey: zosmfResponse.servletKey,
-            messages: isNullOrUndefined(collectedResponses)? "" : collectedResponses.messages
+            messages: (collectedResponses == null) ? "" : collectedResponses.messages
         };
 
         if (zosmfResponse.servletKey != null) {
