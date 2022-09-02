@@ -26,3 +26,4 @@ jobs:
             This issue has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs.
           stale-pr-label: "stale"
+          start-date: "2022-07-30T00:00:00Z"
