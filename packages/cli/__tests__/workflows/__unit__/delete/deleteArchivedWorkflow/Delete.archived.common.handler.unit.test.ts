@@ -29,7 +29,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -100,7 +100,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -109,7 +109,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -181,7 +181,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `deletion failed`});
             });
@@ -249,7 +249,7 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -258,7 +258,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}_fake`}]};
             });
@@ -330,13 +330,13 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `deletion failed`});
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -409,13 +409,13 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `deletion failed`});
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });

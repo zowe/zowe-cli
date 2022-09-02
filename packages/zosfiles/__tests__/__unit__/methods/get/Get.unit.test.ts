@@ -35,7 +35,7 @@ describe("z/OS Files - View", () => {
 
         beforeEach(() => {
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => content);
+            zosmfExpectSpy.mockImplementation(async () => content);
         });
 
         it("should throw an error if the data set name is null", async () => {
@@ -237,7 +237,7 @@ describe("z/OS Files - View", () => {
 
             beforeEach(() => {
                 zosmfExpectSecondSpy.mockClear();
-                zosmfExpectSecondSpy.mockImplementation(() => content);
+                zosmfExpectSecondSpy.mockImplementation(async () => content);
             });
 
             it("should throw an error if the uss file name is null", async () => {

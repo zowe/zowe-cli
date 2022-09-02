@@ -87,7 +87,7 @@ describe("Create Dataset", () => {
 
     const options: ICreateDataSetOptions = {} as any;
 
-    // eslint-disable-next-line jest/no-disabled-tests
+    // eslint-disable-next-line jest/expect-expect, jest/no-disabled-tests
     it.skip("should create a partitioned data set", async () => {
         // const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
 
@@ -95,7 +95,7 @@ describe("Create Dataset", () => {
         // expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     });
 
-    // eslint-disable-next-line jest/no-disabled-tests
+    // eslint-disable-next-line jest/expect-expect, jest/no-disabled-tests
     it.skip("should create a sequential data set", async () => {
         // const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
 

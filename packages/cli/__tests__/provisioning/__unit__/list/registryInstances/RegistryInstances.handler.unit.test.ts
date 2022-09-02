@@ -35,8 +35,8 @@ describe("list registry instances handler tests", () => {
 
     it("should be able to list registry", async () => {
         ListRegistryInstances.listFilteredRegistry = jest.fn(
-            (session, zOSMFVersion) => {
-                return {};
+            async (session, zOSMFVersion) => {
+                return {} as any;
             }
         );
         const handler = new Handler.default();

@@ -32,7 +32,7 @@ To debug Jest tests in VS Code, the [Jest Runner](https://marketplace.visualstud
 
 `pprof` requires two components:
 
-* The [Node.js package](https://www.npmjs.com/package/pprof) to record profile data, which is installed as a dev dependency in this repo.
+* The [Node.js package](https://www.npmjs.com/package/pprof) to record profile data, which can be installed with the command `npm install -g pprof`.
 * The [Go CLI](https://github.com/google/pprof) to view profile data, which can be installed following the instructions below:
   * Install a supported version of the Go development kit (available as the `golang` package from `apt-get` or Chocolatey).
   * Install Graphviz to render graphs of profile data (available as the `graphviz` package from `apt-get` or Chocolatey).

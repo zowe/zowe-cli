@@ -28,12 +28,9 @@ describe("Compare local-file and data-set handler", () => {
         let fakeSession: object;
 
         // Mock the compare ds function
-        Get.dataSet = jest.fn((session) => {
+        Get.dataSet = jest.fn(async (session) => {
             fakeSession = session;
-            return {
-                success: true,
-                commandResponse: "compared"
-            };
+            return Buffer.from("compared");
         });
 
         // Mocked function references
@@ -88,7 +85,7 @@ describe("Compare local-file and data-set handler", () => {
 
         it("should compare local-file and data-set in terminal", async () => {
 
-            DiffUtils.getDiffString = jest.fn(() => {
+            DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
             });
 

@@ -127,7 +127,7 @@ describe("StopTso getResources", () => {
 describe("StopTso stopCommon", () => {
 
     it("should succeed with correct parameters", async () => {
-        (ZosmfRestClient.deleteExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.deleteExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -192,7 +192,7 @@ describe("StopTso stopCommon", () => {
 describe("StopTso stop", () => {
 
     it("should succeed with all correctly provided parameters", async () => {
-        (StopTso.stopCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StopTso.stopCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -261,7 +261,7 @@ describe("StopTso stop", () => {
     });
 
     it("should throw an error if servlet key is inactive", async () => {
-        (StopTso.stopCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StopTso.stopCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_BAD_ZOSMF_RESPONSE);

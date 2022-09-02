@@ -84,7 +84,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      *
      * @returns {Promise<IZosFilesResponse>} The response from the underlying zos-files api call.
      */
-    public abstract async processWithSession(
+    public abstract processWithSession(
         commandParameters: IHandlerParameters,
         session: AbstractSession,
         zosmfProfile?: IProfile

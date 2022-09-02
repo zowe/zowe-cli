@@ -72,7 +72,7 @@ describe("ZosFilesUtils", () => {
             isDirSpy.mockReturnValueOnce(false);
             lstatSyncSpy.mockReturnValueOnce({
                 isFile: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             expect(ZosFilesUtils.getFileListFromPath(inputPath).toString()).toBe(expectResult.toString());
         });
@@ -83,7 +83,7 @@ describe("ZosFilesUtils", () => {
             isDirSpy.mockReturnValueOnce(false);
             lstatSyncSpy.mockReturnValueOnce({
                 isFile: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             expect(ZosFilesUtils.getFileListFromPath(inputPath, false).toString()).toBe(expectResult.toString());
         });
@@ -92,10 +92,10 @@ describe("ZosFilesUtils", () => {
             const mockFileList = ["file1", "file2"];
 
             isDirSpy.mockReturnValueOnce(true);
-            readDirSyncSpy.mockReturnValueOnce(mockFileList);
+            readDirSyncSpy.mockReturnValueOnce(mockFileList as any);
             lstatSyncSpy.mockReturnValue({
                 isFile: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             expect(ZosFilesUtils.getFileListFromPath(inputPath, false).toString()).toBe(mockFileList.toString());
         });
@@ -108,10 +108,10 @@ describe("ZosFilesUtils", () => {
             ];
 
             isDirSpy.mockReturnValueOnce(true);
-            readDirSyncSpy.mockReturnValueOnce(mockFileList);
+            readDirSyncSpy.mockReturnValueOnce(mockFileList as any);
             lstatSyncSpy.mockReturnValue({
                 isFile: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             expect(ZosFilesUtils.getFileListFromPath(inputPath).toString()).toBe(expectResult.toString());
         });
@@ -121,10 +121,10 @@ describe("ZosFilesUtils", () => {
             const expectResult = ["file1"];
 
             isDirSpy.mockReturnValueOnce(true);
-            readDirSyncSpy.mockReturnValueOnce(mockFileList);
+            readDirSyncSpy.mockReturnValueOnce(mockFileList as any);
             lstatSyncSpy.mockReturnValue({
                 isFile: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             expect(ZosFilesUtils.getFileListFromPath(inputPath, false, false).toString()).toBe(mockFileList.toString());
         });

@@ -33,12 +33,9 @@ describe("Compare localfile-spooldd handler", () => {
         const spoolId: number = Number(spoolDescArr[2]);
 
         // Mock the get uss function
-        GetJobs.getSpoolContentById = jest.fn((session) => {
+        GetJobs.getSpoolContentById = jest.fn(async (session) => {
             fakeSession = session;
-            return {
-                success: true,
-                commandResponse: "compared"
-            };
+            return "compared";
         });
         // Mocked function references
         const profFunc = jest.fn((args) => {
@@ -92,7 +89,7 @@ describe("Compare localfile-spooldd handler", () => {
 
         it("should compare a local-file and a spool-dd in terminal", async () => {
 
-            DiffUtils.getDiffString = jest.fn(() => {
+            DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
 
             });

@@ -32,7 +32,7 @@ describe("Mount file system handler", () => {
             let fakeSession = null;
 
             // Mock the zfs function
-            Mount.fs = jest.fn((session) => {
+            Mount.fs = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

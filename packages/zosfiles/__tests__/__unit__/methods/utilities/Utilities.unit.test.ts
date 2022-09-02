@@ -34,7 +34,7 @@ describe("USS utiliites", () => {
 
         it("should throw an error if filename is missing", async () => {
             try {
-                response = await Utilities.chtag(dummySession,undefined,undefined);
+                response = await Utilities.chtag(dummySession, undefined, undefined);
             } catch (err) {
                 error = err;
             }
@@ -45,7 +45,7 @@ describe("USS utiliites", () => {
 
         it("should throw an error if codeset is specified with Tag.BINARY", async () => {
             try {
-                response = await Utilities.chtag(dummySession,"/testfile",Tag.BINARY,"ISO8859-1");
+                response = await Utilities.chtag(dummySession, "/testfile", Tag.BINARY, "ISO8859-1");
             } catch (err) {
                 error = err;
             }
@@ -86,7 +86,7 @@ describe("USS utiliites", () => {
         });
 
         it("should URI-encoded the path", async () => {
-            const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockReturnValue({});
+            const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockResolvedValue(Buffer.from(""));
 
             response = await Utilities.chtag(dummySession,"/test file",Tag.TEXT,"ISO8859-1");
 
@@ -97,7 +97,7 @@ describe("USS utiliites", () => {
         });
 
         async function testChtagExpectPayload(args: IChtagArgs, expectedPayload: any) {
-            const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockReturnValue({});
+            const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockResolvedValue(Buffer.from(""));
 
             response = await Utilities.chtag(dummySession,"/testfile",args.type,args.codeset);
 
@@ -135,7 +135,7 @@ describe("Utilities.putUSSPayload", () => {
 
         beforeEach(() => {
             zosmfExpectSecondSpy.mockClear();
-            zosmfExpectSecondSpy.mockImplementation(() => content);
+            zosmfExpectSecondSpy.mockImplementation(async () => content);
         });
 
         it("should throw an error if the uss file name is null", async () => {
@@ -228,7 +228,7 @@ describe("Utilities.putUSSPayload", () => {
 
         beforeEach(() => {
             zosmfExpectSecondSpy.mockClear();
-            zosmfExpectSecondSpy.mockImplementation(() => content);
+            zosmfExpectSecondSpy.mockImplementation(async () => content);
         });
 
         it("should throw an error if the uss file name is null", async () => {
@@ -289,7 +289,7 @@ describe("Utilities.putUSSPayload", () => {
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
             const content1 = new Buffer(JSON.stringify({stdout:["m UTF-8   T=off /tmp/file"]}));
-            zosmfExpectSecondSpy.mockImplementation(() => content1);
+            zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
             } catch (e) {
@@ -310,7 +310,7 @@ describe("Utilities.putUSSPayload", () => {
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
             const content1 = new Buffer(JSON.stringify({stdout:["b binary  T=on /tmp/file"]}));
-            zosmfExpectSecondSpy.mockImplementation(() => content1);
+            zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
             } catch (e) {
@@ -331,7 +331,7 @@ describe("Utilities.putUSSPayload", () => {
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
             const content1 = new Buffer(JSON.stringify({stdout:["- untagged  T=on /tmp/file"]}));
-            zosmfExpectSecondSpy.mockImplementation(() => content1);
+            zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
             } catch (e) {
@@ -352,7 +352,7 @@ describe("Utilities.putUSSPayload", () => {
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
             const content1 = new Buffer(JSON.stringify({}));
-            zosmfExpectSecondSpy.mockImplementation(() => content1);
+            zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
             } catch (e) {
@@ -382,9 +382,9 @@ describe("Utilities.putUSSPayload", () => {
         const ussname = "/u/zowe/test";
 
         it("should set binary property if file is tagged as binary", async () => {
-            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["b binary\tT=off\t" + ussname]
-            }));
+            })));
             const options: any = {};
             await Utilities.applyTaggedEncoding(dummySession, ussname, options);
             expect(options.binary).toBe(true);
@@ -392,9 +392,9 @@ describe("Utilities.putUSSPayload", () => {
         });
 
         it("should set binary property if file encoding is ISO8859-1", async () => {
-            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["t ISO8859-1\tT=on\t" + ussname]
-            }));
+            })));
             const options: any = {};
             await Utilities.applyTaggedEncoding(dummySession, ussname, options);
             expect(options.binary).toBe(true);
@@ -402,9 +402,9 @@ describe("Utilities.putUSSPayload", () => {
         });
 
         it("should set binary property if file encoding is UCS-2", async () => {
-            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["t UCS-2\tT=on\t" + ussname]
-            }));
+            })));
             const options: any = {};
             await Utilities.applyTaggedEncoding(dummySession, ussname, options);
             expect(options.binary).toBe(true);
@@ -412,9 +412,9 @@ describe("Utilities.putUSSPayload", () => {
         });
 
         it("should set binary property if file encoding is UTF-8", async () => {
-            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["t UTF-8\tT=on\t" + ussname]
-            }));
+            })));
             const options: any = {};
             await Utilities.applyTaggedEncoding(dummySession, ussname, options);
             expect(options.binary).toBe(true);
@@ -422,9 +422,9 @@ describe("Utilities.putUSSPayload", () => {
         });
 
         it("should set encoding property if file encoding has IBM prefix", async () => {
-            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["t IBM-1047\tT=on\t" + ussname]
-            }));
+            })));
             const options: any = {};
             await Utilities.applyTaggedEncoding(dummySession, ussname, options);
             expect(options.binary).toBeUndefined();
@@ -432,9 +432,9 @@ describe("Utilities.putUSSPayload", () => {
         });
 
         it("should do nothing if file is untagged", async () => {
-            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["- untagged\tT=off\t" + ussname]
-            }));
+            })));
             const options: any = {};
             await Utilities.applyTaggedEncoding(dummySession, ussname, options);
             expect(options.binary).toBeUndefined();
@@ -465,7 +465,7 @@ describe("Utilities.putUSSPayload", () => {
         it("should execute if all parameters are provided", async () => {
             let error: Error;
             let renameResponse;
-            jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockReturnValue({});
+            jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockResolvedValue(Buffer.from(""));
             const zosmfExpectSecondSpy = jest.spyOn(Utilities, "putUSSPayload");
             const oldPath = "/u/zowe/test";
             const newPath= "/u/zowe/test1";

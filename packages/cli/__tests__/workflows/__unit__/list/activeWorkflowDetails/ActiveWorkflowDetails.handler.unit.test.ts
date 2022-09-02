@@ -9,17 +9,6 @@
 *
 */
 
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
-
 import { PropertiesWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 describe("List workflow details handler", () => {
@@ -42,7 +31,7 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
+            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -123,7 +112,7 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
+            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -131,7 +120,7 @@ describe("List workflow details handler", () => {
                 };
             });
 
-            ListWorkflows.getWfKey = jest.fn((session) => {
+            ListWorkflows.getWfKey = jest.fn(async (session) => {
                 fakeSession = session;
                 return workflowKey;
             });

@@ -62,7 +62,7 @@ describe("PerformAction getResourcesQuery", () => {
 describe("PerformAction doProvisioningActionCommon", () => {
 
     it("should succeed with all correct parameters", async () => {
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);

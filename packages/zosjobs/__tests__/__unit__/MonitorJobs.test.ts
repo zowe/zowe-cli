@@ -129,8 +129,8 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is OUTPUT", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
+                    return { jobname: "FAKE", jobid: "FAKE", status: "OUTPUT" };
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
 
@@ -186,7 +186,7 @@ describe("Monitor Jobs", () => {
                 const attempts: number = 4;
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobsCommon;
@@ -218,7 +218,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 2;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
 
@@ -245,7 +245,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 2;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -272,7 +272,7 @@ describe("Monitor Jobs", () => {
                 const ERROR_AT_ATTEMPT = 2;
                 let attempts = 0;
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < ERROR_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -300,7 +300,7 @@ describe("Monitor Jobs", () => {
                 const ERROR_AT_ATTEMPT = 2;
                 let attempts = 0;
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < ERROR_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -427,7 +427,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is OUTPUT", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -489,7 +489,7 @@ describe("Monitor Jobs", () => {
                 const attempts: number = 4;
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobsCommon;
@@ -523,7 +523,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 2;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
 
@@ -552,7 +552,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 2;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -581,7 +581,7 @@ describe("Monitor Jobs", () => {
                 const ERROR_AT_ATTEMPT = 2;
                 let attempts = 0;
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < ERROR_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -611,7 +611,7 @@ describe("Monitor Jobs", () => {
                 const ERROR_AT_ATTEMPT = 2;
                 let attempts = 0;
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < ERROR_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -813,7 +813,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is the expected status", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -827,7 +827,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is OUTPUT and the expected status is ACTIVE", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -841,7 +841,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is ACTIVE and the expected status is INPUT", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -855,7 +855,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is ACTIVE and the expected status is ACTIVE", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -869,7 +869,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is OUTPUT and the expected status is OUTPUT", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -883,7 +883,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is OUTPUT and the expected status is INPUT", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -897,7 +897,7 @@ describe("Monitor Jobs", () => {
             it("should return immediately if the initial status is INPUT and the expected status is INPUT", async () => {
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args) => {
+                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -978,7 +978,7 @@ describe("Monitor Jobs", () => {
                 const attempts: number = 10;
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobsCommon;
@@ -1000,7 +1000,7 @@ describe("Monitor Jobs", () => {
                 const attempts: number = 2;
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobsCommon;
@@ -1022,7 +1022,7 @@ describe("Monitor Jobs", () => {
                 const attempts: number = 4;
 
                 // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
                 GetJobs.getStatusCommon = mockedGetJobsCommon;
@@ -1053,7 +1053,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 10;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
 
@@ -1081,7 +1081,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 10;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
@@ -1108,7 +1108,7 @@ describe("Monitor Jobs", () => {
                 // Mock GetJobs.getStatusCommon
                 const CHANGE_AT_ATTEMPT = 10;
                 let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < CHANGE_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -1136,7 +1136,7 @@ describe("Monitor Jobs", () => {
                 const ERROR_AT_ATTEMPT = 5;
                 let attempts = 0;
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < ERROR_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -1165,7 +1165,7 @@ describe("Monitor Jobs", () => {
                 const ERROR_AT_ATTEMPT = 5;
                 let attempts = 0;
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
+                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
                     attempts++;
                     if (attempts < ERROR_AT_ATTEMPT) {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};

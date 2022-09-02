@@ -30,7 +30,7 @@ describe("Create USS Directory", () => {
             let fakeSession = null;
 
             // Mock the create function
-            Create.uss = jest.fn((session) => {
+            Create.uss = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

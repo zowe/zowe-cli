@@ -24,7 +24,7 @@ describe("Create data set", () => {
     let mySpy: any;
 
     beforeEach(() => {
-        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockReturnValue("");
+        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockResolvedValue("");
     });
 
     afterEach(() => {
@@ -997,7 +997,7 @@ describe("Create VSAM Data Set", () => {
     let mySpy: any;
 
     beforeEach(() => {
-        mySpy = jest.spyOn(Invoke, "ams").mockReturnValue("");
+        mySpy = jest.spyOn(Invoke, "ams").mockResolvedValue({} as any);
         dsOptions = {};
     });
 
@@ -1442,7 +1442,7 @@ describe("Create uss file or directory", () => {
     let mySpy: any;
 
     beforeEach(() => {
-        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockReturnValue("");
+        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockResolvedValue("");
     });
 
     afterEach(() => {

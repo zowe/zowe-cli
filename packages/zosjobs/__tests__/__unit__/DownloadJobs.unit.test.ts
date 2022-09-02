@@ -32,7 +32,7 @@ describe("DownloadJobs", () => {
         // do nothing;
     });
 
-    IO.createWriteStream = jest.fn((file: string) => {
+    IO.createWriteStream = jest.fn((file: string): any => {
         // do nothing;
     });
     const expectedMockSpoolContent = "Hello! This is my spool content.";
@@ -65,7 +65,7 @@ describe("DownloadJobs", () => {
         });
 
         it("should allow users to call downloadSpoolContent with correct parameters", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
                 // do nothing
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
@@ -112,7 +112,7 @@ describe("DownloadJobs", () => {
 
         it("should allow users to call downloadSpoolContentCommon with correct parameters " +
             "(jobFile with no procstep - procstep should be omitted from the download directory)", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
                 // do nothing
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
@@ -130,7 +130,7 @@ describe("DownloadJobs", () => {
         });
 
         it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory)", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
                 // do nothing;
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
@@ -146,7 +146,7 @@ describe("DownloadJobs", () => {
 
 
         it("should allow users to call downloadSpoolContentCommon with correct parameters (omitting job ID in the resulting directory)", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
                 // do nothing
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {

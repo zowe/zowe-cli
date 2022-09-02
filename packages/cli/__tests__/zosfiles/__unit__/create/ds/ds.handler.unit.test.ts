@@ -29,7 +29,7 @@ describe("Create data set handler", () => {
             let AbstractSession = null;
 
             // Mock the create function
-            Create.dataSetLike = jest.fn((session) => {
+            Create.dataSetLike = jest.fn(async (session) => {
                 AbstractSession = session;
                 return {
                     success: true,
