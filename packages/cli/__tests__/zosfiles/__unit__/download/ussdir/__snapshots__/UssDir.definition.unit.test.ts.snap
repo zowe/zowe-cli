@@ -64,6 +64,14 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ih",
+    ],
+    "description": "Include hidden files and folders that have names beginning with a dot",
+    "name": "include-hidden",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "mcr",
     ],
     "defaultValue": 1,

@@ -382,7 +382,8 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
                 " without a maximum number of concurrent requests. ",
-            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case"
+            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case",
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot"
         }
     },
     INVOKE: {
@@ -663,7 +664,8 @@ export default {
                 "the following message displays:\n" +
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to upload all members at once" +
-                " without a maximum number of concurrent requests. "
+                " without a maximum number of concurrent requests. ",
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot"
         }
     },
     VIEW: {

@@ -65,6 +65,14 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     ],
     "type": "number",
   },
+  Object {
+    "aliases": Array [
+      "ih",
+    ],
+    "description": "Include hidden files and folders that have names beginning with a dot",
+    "name": "include-hidden",
+    "type": "boolean",
+  },
 ]
 `;
 

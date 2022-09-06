@@ -92,4 +92,9 @@ export interface IDownloadOptions extends IOptions {
      * The path to a .zosattributes file used to control file conversion and tagging.
      */
     attributes?: ZosFilesAttributes;
+
+    /**
+     * Specifies whether hidden files whose names begin with a dot should be downloaded.
+     */
+    includeHidden?: boolean;
 }

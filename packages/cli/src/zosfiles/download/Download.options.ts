@@ -162,4 +162,14 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "existingLocalFile",
         conflictsWith: ["binary", "record"]
     },
+
+    /**
+     * The include hidden option for download
+     */
+    includeHidden: {
+        name: "include-hidden",
+        aliases: ["ih"],
+        description: strings.INCLUDE_HIDDEN,
+        type: "boolean"
+    }
 };

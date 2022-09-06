@@ -1869,6 +1869,28 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: true});
             expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
+        it("should chtag remote encoding even when binary is specified", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, { binary: true, encoding: "IBM-1047" });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders,
+                requestStream: inputStream,
+                normalizeRequestNewLines: false});
+            expect(chtagSpy).toHaveBeenCalledTimes(1);
+            expect(chtagSpy).toHaveBeenCalledWith(dummySession, dsName, Tag.TEXT, "IBM-1047");
+        });
     });
 
     describe("fileToUssFile", () => {

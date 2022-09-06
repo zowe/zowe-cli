@@ -647,8 +647,8 @@ export class Download {
 
             // For each item in the listing...
             for (const item of list) {
-                if (item.name === "." || item.name === ".." || item.name === "...") {
-                    // If the name is ., .., or ..., ignore it.
+                if (item.name === "." || item.name === ".." || item.name === "..." || (!fileOptions.includeHidden && /(^|\/)\./.test(item.name))) {
+                    // If the name is ., .., ..., or a hidden file, ignore it.
                     continue;
                 } else if (item.mode.startsWith("-")) {
                     // If mode starts with -, the item is a file, download it

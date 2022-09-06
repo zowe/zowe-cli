@@ -55,7 +55,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
                         filesMap,
                         maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
                         task: status,
-                        responseTimeout: commandParameters.arguments.responseTimeout
+                        responseTimeout: commandParameters.arguments.responseTimeout,
+                        includeHidden: commandParameters.arguments.includeHidden
                     });
             } else {
                 response = await Upload.dirToUSSDir(session,
@@ -65,7 +66,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
                         filesMap,
                         maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
                         task: status,
-                        responseTimeout: commandParameters.arguments.responseTimeout
+                        responseTimeout: commandParameters.arguments.responseTimeout,
+                        includeHidden: commandParameters.arguments.includeHidden
                     });
             }
         }
