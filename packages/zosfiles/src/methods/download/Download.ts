@@ -792,7 +792,7 @@ export class Download {
             responseLines.push(
                 TextUtils.chalk.yellow(`${result.skippedExisting.length} were skipped because they already exist.`),
                 ...result.skippedExisting.map(filename => `    ${filename}`),
-                "\nPlease use the 'overwrite' option in order to download the files listed above."
+                "\nRerun the command with --overwrite to download the files listed above."
             );
         }
 
