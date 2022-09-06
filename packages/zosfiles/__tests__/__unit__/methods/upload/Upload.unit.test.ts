@@ -1916,6 +1916,10 @@ describe("z/OS Files - Upload", () => {
             });
         });
 
+        afterAll(() => {
+            streamToUssFileSpy.mockRestore();
+        });
+
         it("should throw an error if local file name is not specified", async () => {
             try {
                 USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
@@ -2080,8 +2084,7 @@ describe("z/OS Files - Upload", () => {
         });
 
         afterAll(() => {
-            zosmfExpectFullSpy.mockReset();
-            fileToUssFileSpy.mockRestore();
+            zosmfExpectFullSpy.mockRestore();
         });
 
         it("should upload recursively if option is specified", async () => {
@@ -2240,6 +2243,7 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
+            fileToUssFileSpy.mockResolvedValue(testReturn);
             zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
             zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
         });
@@ -2314,7 +2318,6 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockResolvedValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce(testReturn);
 
             try {
@@ -2332,7 +2335,6 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockResolvedValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce(testReturn);
 
             try {
@@ -2473,6 +2475,7 @@ describe("z/OS Files - Upload", () => {
 
             it("should call API to tag files according to remote encoding", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
+                fileToUssFileSpy.mockRestore();
                 attributesMock.fileShouldBeUploaded = jest.fn(() => true);
 
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, { attributes: attributesMock });
@@ -2486,6 +2489,7 @@ describe("z/OS Files - Upload", () => {
 
             it("should call API to tag a file as text that was uploaded in binary mode", async () => {
                 getFileListFromPathSpy.mockReturnValue(["asciifile"]);
+                fileToUssFileSpy.mockRestore();
                 attributesMock.fileShouldBeUploaded = jest.fn(() => true);
 
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, { attributes: attributesMock });

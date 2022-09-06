@@ -11,7 +11,7 @@
 
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
 
-import { posix, join } from "path";
+import { posix, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
@@ -582,6 +582,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(ussDirName.trim(), "", ZosFilesMessages.missingUSSDirName.message);
         ImperativeExpect.toNotBeEqual(fileOptions.record, true, ZosFilesMessages.unsupportedDataType.message);
         const result = this.emptyDownloadUssDirResult();
+        const workingDirectory = fileOptions.directory ? fileOptions.directory : process.cwd();
         const responses: IZosFilesResponse[] = [];
         const downloadTasks: IDownloadUssTask[] = [];
         let downloadsInitiated = 0;
@@ -623,10 +624,11 @@ export class Download {
                 () => {
                     result.downloaded.push(task.dirName);
                 }, (err) => {
-                    result.failedWithErrors[task.dirName] = err;
+                    const relDirName = relative(workingDirectory, task.dirName);
+                    result.failedWithErrors[relDirName] = err;
                     if (fileOptions.failFast || fileOptions.failFast === undefined) {
                         throw new ImperativeError({
-                            msg: `Failed to create directory ${task.dirName}`,
+                            msg: `Failed to create directory ${relDirName}`,
                             causeErrors: err,
                             additionalDetails: this.buildDownloadUssDirResponse(result, fileOptions)
                         });
@@ -636,7 +638,6 @@ export class Download {
         };
 
         try {
-            const workingDirectory = fileOptions.directory ? fileOptions.directory : process.cwd();
             const mutableOptions: IDownloadOptions = { ...fileOptions, task: undefined };
 
             // Populate list options

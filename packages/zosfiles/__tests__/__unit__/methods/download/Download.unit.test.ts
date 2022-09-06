@@ -9,14 +9,15 @@
 *
 */
 
+import * as fs from "fs";
 import { ImperativeError, IO, Session } from "@zowe/imperative";
-import { Utilities, ZosFilesMessages } from "../../../../src";
+import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
-import { posix } from "path";
+import { posix, join } from "path";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import * as util from "util";
-import { List } from "../../../../src/methods/list";
+import { IUSSListOptions, List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 
@@ -2021,6 +2022,309 @@ describe("z/OS Files - Download", () => {
         });
     });
 
+    describe("USS Directory", () => {
+        const ussDirName = "/u/test";
+        const fakeFileResponse = { status: "downloaded file" };
+        const listFileListSpy = jest.spyOn(List, "fileList");
+        const downloadUssFileSpy = jest.spyOn(Download, "ussFile");
+        const mkdirPromiseSpy = jest.spyOn(fs.promises, "mkdir");
+
+        beforeEach(() => {
+            listFileListSpy.mockClear();
+
+            downloadUssFileSpy.mockClear();
+            downloadUssFileSpy.mockResolvedValue(fakeFileResponse as any);
+
+            mkdirPromiseSpy.mockClear();
+            mkdirPromiseSpy.mockResolvedValue(undefined as any);
+        });
+
+        it("should handle an error from create file promise", async () => {
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: "file1" }
+                    ]
+                }
+            } as any);
+            const dummyError = new Error("test");
+            downloadUssFileSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toBe("Failed to download file1");
+            expect(caughtError.causeErrors).toEqual(dummyError);
+
+            expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(dummySession, ussDirName + "/file1", {
+                file: join(process.cwd(), "file1")
+            });
+        });
+
+        it("should handle an error from create directory promise", async () => {
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: "folder1" }
+                    ]
+                }
+            } as any);
+            const dummyError = new Error("test");
+            mkdirPromiseSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toBe("Failed to create directory folder1");
+            expect(caughtError.causeErrors).toEqual(dummyError);
+
+            expect(mkdirPromiseSpy).toHaveBeenCalledTimes(1);
+            expect(mkdirPromiseSpy).toHaveBeenCalledWith(join(process.cwd(), "folder1"), { recursive: true });
+        });
+
+        it("should download USS directory with download and list options", async () => {
+            const fileOptions: IDownloadOptions = { binary: true };
+            const listOptions: IUSSListOptions = { filesys: true };
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: "file1" }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, fileOptions, listOptions);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["file1"],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse]
+            });
+            expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
+                { name: "*", ...listOptions });
+            expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
+                { file: join(process.cwd(), "file1"), ...fileOptions });
+        });
+
+        it("should download USS directory when failFast is false", async () => {
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: "badfolder" },
+                        { mode: "-", name: "badfile" },
+                        { mode: "d", name: "goodfolder" },
+                        { mode: "-", name: "goodfile" }
+                    ]
+                }
+            } as any);
+            const dummyError = new Error("test");
+            downloadUssFileSpy.mockImplementationOnce(async () => {
+                throw dummyError;
+            });
+            mkdirPromiseSpy.mockImplementationOnce(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["goodfolder", "goodfile"],
+                    failedWithErrors: { "badfolder": dummyError, "badfile": dummyError }
+                }, { failFast: false }),
+                apiResponse: [fakeFileResponse]
+            });
+        });
+
+        it("should download USS directory with maxConcurrentRequests set to zero", async () => {
+            const maxConcurrentRequests = 0;
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: "file1" }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, { maxConcurrentRequests });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["file1"],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse]
+            });
+            expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
+                { file: join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
+        });
+
+        it("should download USS directory excluding hidden files", async () => {
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: ".." },
+                        { mode: "d", name: "." },
+                        { mode: "-", name: "file1" },
+                        { mode: "-", name: "file2" },
+                        { mode: "d", name: ".folder" },
+                        { mode: "-", name: ".folder/file3" }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["file1", "file2"],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse, fakeFileResponse]
+            });
+            expect(fs.promises.mkdir).toHaveBeenCalledTimes(0);
+            expect(Download.ussFile).toHaveBeenCalledTimes(2);
+        });
+
+        it("should download USS directory when includeHidden is true", async () => {
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: ".." },
+                        { mode: "d", name: "." },
+                        { mode: "-", name: "file1" },
+                        { mode: "-", name: "file2" },
+                        { mode: "d", name: ".folder" },
+                        { mode: "-", name: ".folder/file3" }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, { includeHidden: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["file1", "file2", ".folder", ".folder/file3"],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse, fakeFileResponse, fakeFileResponse]
+            });
+            expect(fs.promises.mkdir).toHaveBeenCalledTimes(1);
+            expect(Download.ussFile).toHaveBeenCalledTimes(3);
+        });
+
+        it("should download USS directory with .zosattributes file", async () => {
+            let response;
+            let caughtError;
+
+            const zosAttributes: Partial<ZosFilesAttributes> = {
+                fileShouldBeIgnored: (name: string) => name.startsWith("ignored"),
+                getFileTransferMode: (name: string) => name.startsWith("binary") ? TransferMode.BINARY : TransferMode.TEXT,
+                getLocalEncoding: (name: string): any => name.startsWith("text") ? "ISO-8859-1" : null,
+                getRemoteEncoding: (name: string): any => name.startsWith("text") ? "IBM-1047" : null
+            };
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: ".." },
+                        { mode: "d", name: "." },
+                        { mode: "-", name: "binaryfile" },
+                        { mode: "-", name: "ignoredfile" },
+                        { mode: "-", name: "textfile" },
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, { attributes: zosAttributes as any });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["binaryfile", "textfile"],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse, fakeFileResponse]
+            });
+            expect(Download.ussFile).toHaveBeenNthCalledWith(1, dummySession, ussDirName + "/binaryfile",
+                expect.objectContaining({ binary: true }));
+            expect(Download.ussFile).toHaveBeenNthCalledWith(2, dummySession, ussDirName + "/textfile",
+                expect.objectContaining({ encoding: "IBM-1047", localEncoding: "ISO-8859-1" }));
+        });
+    });
+
     describe("buildDownloadDsmResponse", () => {
         it("should build response with data sets that downloaded successfully", () => {
             const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
@@ -2064,6 +2368,36 @@ describe("z/OS Files - Download", () => {
             expect(response).toContain("1 data set(s) failed to download");
             expect(response).toContain(errorMsg);
             expect(response).not.toContain("Some data sets may have been skipped because --fail-fast is true");
+        });
+    });
+
+    describe("buildDownloadUssDirResponse", () => {
+        it("should build response with USS files that downloaded successfully", () => {
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadUssDirResult();
+            result.downloaded = ["/u/test/file1"];
+            const response: string = (Download as any).buildDownloadUssDirResponse(result, {});
+            expect(response).toContain("1 file(s) downloaded successfully");
+            expect(response).not.toContain("1 file(s) failed to download");
+        });
+
+        it("should build response with USS files that failed to download", () => {
+            const errorMsg = "i haz bad uss file";
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            result.failedWithErrors = { "/u/test/bad1": new Error(errorMsg) };
+            const response: string = (Download as any).buildDownloadUssDirResponse(result, {});
+            expect(response).toContain("1 file(s) failed to download");
+            expect(response).toContain(errorMsg);
+            expect(response).toContain("Some files may have been skipped because --fail-fast is true");
+        });
+
+        it("should build response with USS files that failed to download when failFast is false", () => {
+            const errorMsg = "i haz bad uss file";
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadUssDirResult();
+            result.failedWithErrors = { "/u/test/bad1": new Error(errorMsg) };
+            const response: string = (Download as any).buildDownloadUssDirResponse(result, { failFast: false });
+            expect(response).toContain("1 file(s) failed to download");
+            expect(response).toContain(errorMsg);
+            expect(response).not.toContain("Some files may have been skipped because --fail-fast is true");
         });
     });
 });
