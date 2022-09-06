@@ -89,6 +89,14 @@ Array [
     "name": "context-lines",
     "type": "number",
   },
+  Object {
+    "aliases": Array [
+      "bv",
+    ],
+    "description": "Opens the diffs between two given files in browser",
+    "name": "browser-view",
+    "type": "boolean",
+  },
 ]
 `;
 

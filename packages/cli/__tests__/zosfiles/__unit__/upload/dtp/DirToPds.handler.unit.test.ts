@@ -29,7 +29,7 @@ describe("Upload dir-to-pds handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.dirToPds = jest.fn((session) => {
+            Upload.dirToPds = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -110,7 +110,7 @@ describe("Upload dir-to-pds handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.dirToPds = jest.fn((session) => {
+            Upload.dirToPds = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -193,7 +193,7 @@ describe("Upload dir-to-pds handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.dirToPds = jest.fn((session) => {
+            Upload.dirToPds = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,

@@ -79,7 +79,7 @@ describe("issue ssh handler tests", () => {
     });
 
     it("should be able to get stdout", async () => {
-        Shell.executeSsh = jest.fn((session, command, stdoutHandler) => {
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
         const handler = new SshHandler.default();
@@ -91,7 +91,7 @@ describe("issue ssh handler tests", () => {
     });
 
     it("should be able to get stdout with privateKey", async () => {
-        Shell.executeSsh = jest.fn((session, command, stdoutHandler) => {
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
         const handler = new SshHandler.default();
@@ -103,7 +103,7 @@ describe("issue ssh handler tests", () => {
     });
 
     it("should be able to get stdout with cwd option", async () => {
-        Shell.executeSshCwd = jest.fn((session, command, cwd, stdoutHandler) => {
+        Shell.executeSshCwd = jest.fn(async (session, command, cwd, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
         const handler = new SshHandler.default();

@@ -74,7 +74,7 @@ describe("Submit Jobs API", () => {
                 );
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
-                MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+                MonitorJobs.waitForJobOutputStatus = jest.fn(async (session, jobToWaitFor) => {
                     jobToWaitFor.status = "OUTPUT";
                     jobToWaitFor.retcode = "CC 0000";
                     return jobToWaitFor;
@@ -96,7 +96,7 @@ describe("Submit Jobs API", () => {
                 );
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
-                MonitorJobs.waitForStatusCommon = jest.fn((session, jobToWaitFor) => {
+                MonitorJobs.waitForStatusCommon = jest.fn(async (session, jobToWaitFor: any) => {
                     jobToWaitFor.status = "ACTIVE";
                     jobToWaitFor.retcode = null;
                     return jobToWaitFor;
@@ -118,7 +118,7 @@ describe("Submit Jobs API", () => {
                 );
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
-                MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+                MonitorJobs.waitForJobOutputStatus = jest.fn(async (session, jobToWaitFor) => {
                     jobToWaitFor.status = "OUTPUT";
                     jobToWaitFor.retcode = "CC 0000";
                     return jobToWaitFor;
@@ -140,7 +140,7 @@ describe("Submit Jobs API", () => {
                 );
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
-                MonitorJobs.waitForStatusCommon = jest.fn((session, jobToWaitFor) => {
+                MonitorJobs.waitForStatusCommon = jest.fn(async (session, jobToWaitFor: any) => {
                     jobToWaitFor.status = "ACTIVE";
                     jobToWaitFor.retcode = null;
                     return jobToWaitFor;
@@ -859,7 +859,7 @@ describe("Submit Jobs API", () => {
 
         it("should allow users to call submitJCLCommon with jcl substitution", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -876,7 +876,7 @@ describe("Submit Jobs API", () => {
         it("should allow users to call submitJCLNotifyCommon with jcl substitution", async () => {
             (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -896,7 +896,7 @@ describe("Submit Jobs API", () => {
 
         it("should allow users to call submitJobCommon with jcl substitution (with data set)", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -912,7 +912,7 @@ describe("Submit Jobs API", () => {
 
         it("should allow users to call submitJobCommon with jcl substitution (with uss file)", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -928,7 +928,7 @@ describe("Submit Jobs API", () => {
 
         it("should allow users to call submitJobNotifyCommon with jcl substitution (with data set)", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -945,7 +945,7 @@ describe("Submit Jobs API", () => {
 
         it("should allow users to call submitJobNotifyCommon with jcl substitution (with uss file)", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -962,7 +962,7 @@ describe("Submit Jobs API", () => {
 
         it("should permit multiple spaces as symbol definition delimiters", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -978,7 +978,7 @@ describe("Submit Jobs API", () => {
 
         it("should permit two single quotes inside a single quoted value", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });
@@ -993,7 +993,7 @@ describe("Submit Jobs API", () => {
 
         it("should permit two single quotes when value is not quoted", async () => {
             let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn((session, url, headers, payload) => {
                 receivedHeaders = headers;
                 return returnIJob();
             });

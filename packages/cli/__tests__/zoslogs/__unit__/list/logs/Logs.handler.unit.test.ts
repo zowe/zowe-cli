@@ -37,7 +37,7 @@ describe("get logs handler tests", () => {
     it("should be able to get logs using defaults", async () => {
         let passedSession: Session;
         let passedParms: IZosLogParms;
-        GetZosLog.getZosLog = jest.fn((session, parms) => {
+        GetZosLog.getZosLog = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetLogsData.SAMPLE_RESP_DATA;
@@ -53,7 +53,7 @@ describe("get logs handler tests", () => {
     it("should be able to get logs using defaults to get empty items", async () => {
         let passedSession: Session;
         let passedParms: IZosLogParms;
-        GetZosLog.getZosLog = jest.fn((session, parms) => {
+        GetZosLog.getZosLog = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetLogsData.SAMPLE_RESP_DATA_EMPTY;
@@ -69,7 +69,7 @@ describe("get logs handler tests", () => {
     it("should be able to get logs using all options", async () => {
         let passedSession: Session;
         let passedParms: IZosLogParms;
-        GetZosLog.getZosLog = jest.fn((session, parms) => {
+        GetZosLog.getZosLog = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetLogsData.SAMPLE_RESP_DATA;

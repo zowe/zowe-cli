@@ -639,7 +639,7 @@ describe("Get workflow properties", () => {
     describe("Successful scenarios", () => {
         it("Successful call without optional parameters returns IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -664,7 +664,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call with all optional parameters returns IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE_WITH_STEPSANDVARIABLES);
@@ -690,7 +690,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call with optional steps returns IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE_WITH_STEPS);
@@ -716,7 +716,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call with optional variables returns IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE_WITH_VARIABLES);
@@ -742,7 +742,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call with undefined zosmf version returns IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -767,7 +767,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call without optional parameters - both undefined returns IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -792,7 +792,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call without optional parameters steps - set null IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -817,7 +817,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call without optional parameters variables - set null IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -842,7 +842,7 @@ describe("Get workflow properties", () => {
 
         it("Successful call without both optional parameters variables - both set null IRegisteredWorkflow properties response.", async () => {
 
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);

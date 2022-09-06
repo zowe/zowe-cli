@@ -477,7 +477,7 @@ export class Upload {
     public static async streamToUssFile(session: AbstractSession,
         ussname: string,
         uploadStream: Readable,
-        options: IUploadOptions = {}) {
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         const origUssname = ussname;

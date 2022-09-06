@@ -26,7 +26,7 @@ import { Utilities } from "../../../../src/methods/utilities/Utilities";
 import { ZosFilesUtils } from "../../../../src/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/methods/create";
-import { Tag, TransferMode, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
+import { Tag, TransferMode, ZosFilesMessages } from "../../../../src";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { Readable } from "stream";
 
@@ -81,7 +81,7 @@ describe("z/OS Files - Upload", () => {
             expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
         });
         it("should throw error if invalid file path is specified", async () => {
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => false});
             });
             const testPath = "non-existing-path";
@@ -104,7 +104,7 @@ describe("z/OS Files - Upload", () => {
                 }
             };
 
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(rootError);
             });
             const testPath = "non-existing-path";
@@ -124,7 +124,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response", async () => {
             const testReturn = {};
             const testPath = "test/path";
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => true});
             });
 
@@ -144,7 +144,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response with responseTimeout", async () => {
             const testReturn = {};
             const testPath = "test/path";
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => true});
             });
 
@@ -208,7 +208,7 @@ describe("z/OS Files - Upload", () => {
                 }
             };
 
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(rootError);
             });
 
@@ -228,7 +228,7 @@ describe("z/OS Files - Upload", () => {
         });
 
         it("return with proper message when path is pointing to a file", async () => {
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => false});
             });
             isDirSpy.mockReturnValueOnce(false);
@@ -249,7 +249,7 @@ describe("z/OS Files - Upload", () => {
             const testPath = "test/path";
             isDirSpy.mockReturnValueOnce(true);
             dataSetSpy.mockReturnValueOnce(testReturn);
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => false});
             });
 
@@ -269,7 +269,7 @@ describe("z/OS Files - Upload", () => {
             const testPath = "test/path";
             isDirSpy.mockReturnValueOnce(true);
             dataSetSpy.mockReturnValueOnce(testReturn);
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => false});
             });
 
@@ -290,7 +290,7 @@ describe("z/OS Files - Upload", () => {
             const testPath = "test/path";
             isDirSpy.mockReturnValueOnce(true);
             dataSetSpy.mockReturnValueOnce(testReturn);
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => false});
             });
 
@@ -320,7 +320,10 @@ describe("z/OS Files - Upload", () => {
     describe("bufferToDataSet", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
         const zosmfPutFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(dsName),
+            response: { headers: { etag: etagValue } }
+        };
 
         beforeEach(() => {
             response = undefined;
@@ -591,7 +594,7 @@ describe("z/OS Files - Upload", () => {
                     writeData: buffer});
             });
             it("return with proper response when uploading with return 'etag' option", async () => {
-                zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+                zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
                 // Unit test for return etag option
                 reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
                 uploadOptions.returnEtag = true;
@@ -653,7 +656,10 @@ describe("z/OS Files - Upload", () => {
     });
     describe("streamToDataSet", () => {
         const zosmfPutFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(dsName),
+            response:{ headers: { etag: etagValue } }
+        };
         const inputStream = new Readable();
         inputStream.push("testing");
         inputStream.push(null);
@@ -868,7 +874,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
@@ -894,7 +900,7 @@ describe("z/OS Files - Upload", () => {
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
@@ -1045,7 +1051,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders,
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_RECORD,
@@ -1069,7 +1075,7 @@ describe("z/OS Files - Upload", () => {
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
@@ -1226,7 +1232,7 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             isDirSpy.mockReturnValueOnce(true);
 
@@ -1257,11 +1263,11 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
 
             try {
@@ -1291,11 +1297,11 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
 
             try {
@@ -1327,11 +1333,11 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
 
             try {
@@ -1363,7 +1369,7 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
 
             try {
@@ -1394,7 +1400,7 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy",
+                commandResponse: "dummy",
                 apiResponse: {
                     etag: etagValue
                 }
@@ -1433,7 +1439,7 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             isDirSpy.mockReturnValueOnce(false);
 
@@ -1465,7 +1471,7 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             writeZosmfDatasetSpy.mockRejectedValueOnce(new ImperativeError({
                 msg: "dummy error"
@@ -1500,7 +1506,7 @@ describe("z/OS Files - Upload", () => {
             getFileListSpy.mockReturnValueOnce(mockFileList);
             writeZosmfDatasetSpy.mockResolvedValueOnce({
                 success: true,
-                CommandResponse: "dummy"
+                commandResponse: "dummy"
             });
             writeZosmfDatasetSpy.mockRejectedValueOnce(new ImperativeError({
                 msg: "dummy error"
@@ -1678,7 +1684,10 @@ describe("z/OS Files - Upload", () => {
         let USSresponse: IZosFilesResponse;
         const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
         const chtagSpy = jest.spyOn(Utilities, "chtag");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag = {
+            data: Buffer.from(dsName),
+            response: { headers: { etag: etagValue } }
+        };
         const inputStream = new Readable();
         inputStream.push("testing");
         inputStream.push(null);
@@ -1817,7 +1826,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file and request Etag back", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
             const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
-            zosmfExpectFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            zosmfExpectFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {returnEtag: true});
             } catch (err) {
@@ -1880,7 +1889,7 @@ describe("z/OS Files - Upload", () => {
             streamToUssFileSpy.mockImplementation(async () => null);
 
             lstatSpy.mockClear();
-            lstatSpy.mockImplementation((somePath, callback) => {
+            lstatSpy.mockImplementation((somePath, callback: any) => {
                 callback(null, {isFile: () => true});
             });
         });
@@ -1926,7 +1935,7 @@ describe("z/OS Files - Upload", () => {
                 }
             };
 
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(rootError);
             });
             try {
@@ -1976,9 +1985,10 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file including Etag", async () => {
             const streamResponse: IZosFilesResponse = {
                 success: true,
-                commandResponse: undefined,
-                apiResponse: {etag: etagValue}};
-            streamToUssFileSpy.mockImplementationOnce(() => streamResponse);
+                commandResponse: undefined as any,
+                apiResponse: { etag: etagValue }
+            };
+            streamToUssFileSpy.mockImplementationOnce(async () => streamResponse);
             try {
                 USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", {returnEtag: true});
             } catch (err) {
@@ -1996,7 +2006,7 @@ describe("z/OS Files - Upload", () => {
             expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {returnEtag: true});
         });
         it("should throw an error if local file name is not a valid file path", async () => {
-            lstatSpy.mockImplementationOnce((somePath, callback) => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
                 callback(null, {isFile: () => false});
             });
             try {
@@ -2026,7 +2036,7 @@ describe("z/OS Files - Upload", () => {
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
         const promiseSpy = jest.spyOn(Promise, "all");
-        const testReturn = {};
+        const testReturn: any = {};
         const testPath = "test/path";
 
         beforeEach(() => {
@@ -2054,10 +2064,10 @@ describe("z/OS Files - Upload", () => {
 
         it("should upload recursively if option is specified", async () => {
             isDirSpy.mockReturnValue(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
-            createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
-            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"])
-                .mockReturnValueOnce([]);
+            isDirectoryExistsSpy.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+            createUssDirSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
+            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any)
+                .mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any).mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             fileToUssFileSpy.mockResolvedValue(testReturn);
@@ -2075,10 +2085,10 @@ describe("z/OS Files - Upload", () => {
 
         it("should upload recursively if option is specified and work with responseTimeout", async () => {
             isDirSpy.mockReturnValue(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
-            createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
-            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"])
-                .mockReturnValueOnce([]);
+            isDirectoryExistsSpy.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+            createUssDirSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
+            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any)
+                .mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any).mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             fileToUssFileSpy.mockResolvedValue(testReturn);
@@ -2158,12 +2168,12 @@ describe("z/OS Files - Upload", () => {
 
         it("should return with proper response", async () => {
             isDirSpy.mockReturnValueOnce(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(true);
-            getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
+            isDirectoryExistsSpy.mockResolvedValueOnce(true);
+            getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"] as any);
             filterDirectoriesSpy.mockReturnValueOnce([]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
             fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
-            promiseSpy.mockReturnValueOnce({});
+            promiseSpy.mockReturnValueOnce(testReturn);
 
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
@@ -2280,10 +2290,10 @@ describe("z/OS Files - Upload", () => {
 
         it("should return with proper response", async () => {
             isDirSpy.mockReturnValueOnce(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(true);
+            isDirectoryExistsSpy.mockResolvedValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
             fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
-            promiseSpy.mockReturnValueOnce({});
+            promiseSpy.mockReturnValueOnce(testReturn);
 
             try {
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName);
@@ -2298,10 +2308,10 @@ describe("z/OS Files - Upload", () => {
 
         it("should return with proper response with responseTimeout", async () => {
             isDirSpy.mockReturnValueOnce(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(true);
+            isDirectoryExistsSpy.mockResolvedValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
             fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
-            promiseSpy.mockReturnValueOnce({});
+            promiseSpy.mockReturnValueOnce(testReturn);
 
             try {
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {responseTimeout: 5});
@@ -2316,7 +2326,7 @@ describe("z/OS Files - Upload", () => {
 
         describe("scenarios with .zosattributes file", () => {
 
-            const MockZosAttributes = jest.fn<ZosFilesAttributes>();
+            const MockZosAttributes = jest.fn();
             const attributesMock = new MockZosAttributes();
             const lstatSpy = jest.spyOn(fs, "lstat");
             const createReadStreamSpy = jest.spyOn(IO, "createReadStream");
@@ -2329,7 +2339,7 @@ describe("z/OS Files - Upload", () => {
                 chtagSpy.mockResolvedValue(testReturn);
                 isDirSpy.mockReturnValueOnce(true)
                     .mockReturnValue(false);
-                isDirectoryExistsSpy.mockReturnValue(true);
+                isDirectoryExistsSpy.mockResolvedValue(true);
                 lstatSpy.mockReset();
                 lstatSpy.mockImplementation((somePath, callback) => {
                     callback(null, {isFile: () => true});
@@ -2389,7 +2399,7 @@ describe("z/OS Files - Upload", () => {
                 isDirSpy.mockImplementation((dirPath: string) => {
                     return (dirPath.endsWith("dir"));
                 });
-                getFileListWithFsSpy.mockImplementation((dirPath: string) => {
+                getFileListWithFsSpy.mockImplementation((dirPath: any): any[] => {
                     if (dirPath.endsWith("uploaddir")) {
                         return ["uploadedfile"];
                     } else if (dirPath.endsWith("ignoredir")) {

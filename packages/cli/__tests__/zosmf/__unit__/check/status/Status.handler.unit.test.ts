@@ -31,7 +31,7 @@ let checkStatHandler: ICommandHandler = null;
 
 describe("check status behavior", () => {
     beforeEach(() => {
-        CheckStatus.getZosmfInfo = jest.fn((session, servletKey) => {
+        CheckStatus.getZosmfInfo = jest.fn(async (session): Promise<any> => {
             return {
                 zos_version: "zosv123",
                 zosmf_port: "1234",
@@ -77,7 +77,7 @@ describe("check status behavior", () => {
 
     it("should pass the rest client error to the command processor (no transformation)", async () => {
         const parmsToUse = Object.assign({}, ...[goodCmdParms]);
-        CheckStatus.getZosmfInfo = jest.fn((session, servletKey) => {
+        CheckStatus.getZosmfInfo = jest.fn((session) => {
             throw new Error("Mock GetInfo Error");
         });
         parmsToUse.response.console.error = jest.fn((errors) => {

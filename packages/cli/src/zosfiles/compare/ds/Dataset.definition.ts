@@ -9,7 +9,7 @@
 *
 */
 
-import {ICommandDefinition} from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { CompareOptions } from "../Compare.options";
 import i18nTypings from "../../-strings-/en";
 
@@ -54,7 +54,8 @@ export const DatasetDefinition: ICommandDefinition = {
         CompareOptions.volume,
         CompareOptions.volume2,
         CompareOptions.seqnum,
-        CompareOptions.contextLines
+        CompareOptions.contextLines,
+        CompareOptions.browserView
     ],
     examples: [
         {

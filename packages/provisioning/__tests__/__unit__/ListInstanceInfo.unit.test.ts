@@ -86,7 +86,7 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 describe("ListInstanceInfo listInstanceCommon", () => {
 
     it("should succeed with all correctly provided parameters", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);

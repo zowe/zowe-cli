@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files compare lfuss command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both datasets are transferred in binary mode.",
+    "name": "binary",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "ec",
+    ],
+    "description": "Transfer the content of the first data set with encoding mode, which means that data conversion is performed using the file encoding specified. If encoding mode is set and the encoding2 flag is not set both data sets are transferred in encoding mode.",
+    "name": "encoding",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "sn",
+    ],
+    "defaultValue": true,
+    "description": "If you are comparing two files that contain sequence numbers, this option controls if the sequences numbers are removed from the end of each string. The default is to keep the sequence numbers. Use the --no-seqnum option to not include them.",
+    "name": "seqnum",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "cl",
+    ],
+    "description": "The number of context lines that display before and after detected non-matching lines. By default all matching lines display. If you want to limit the amount of data returned to only lines with differences use the context lines option to reduce the matching lines to only those before and after non-matching lines. Using the value of 0 strips all matching lines.",
+    "name": "context-lines",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "bv",
+    ],
+    "description": "Opens the diffs between two given files in browser",
+    "name": "browser-view",
+    "type": "boolean",
+  },
+]
+`;
+
+exports[`zos-files compare lfuss command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Compare the contents of the local file and the uss file \\"./a.txt\\" and \\"/u/user/test.txt\\"",
+    "options": "\\"./a.txt\\" \\"/u/user/test.txt\\"",
+  },
+  Object {
+    "description": "Compare the contents of the local file and the uss file \\"./a.txt\\" and \\"/u/user/test.txt\\"without sequence numbers",
+    "options": "\\"./a.txt\\" \\"/u/user/test.txt\\" --no-seqnum",
+  },
+]
+`;

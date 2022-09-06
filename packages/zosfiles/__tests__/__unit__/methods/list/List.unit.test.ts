@@ -42,7 +42,7 @@ describe("z/OS Files - List", () => {
     describe("allMembers", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -231,7 +231,7 @@ describe("z/OS Files - List", () => {
     describe("dataSet", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should throw error when data set name is not specified", async () => {
@@ -516,7 +516,7 @@ describe("z/OS Files - List", () => {
     describe("fileList", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should throw error when path name is not specified", async () => {
@@ -1128,7 +1128,7 @@ describe("z/OS Files - List", () => {
     describe("fs", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should list all mounted filesystems", async () => {
@@ -1304,7 +1304,7 @@ describe("z/OS Files - List", () => {
 
         beforeEach(() => {
             listDataSetSpy.mockClear();
-            listDataSetSpy.mockResolvedValue(undefined);
+            listDataSetSpy.mockResolvedValue({} as any);
         });
 
         it("should successfully list PS and PO data sets using the List.dataSet API", async () => {
@@ -1312,7 +1312,7 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            listDataSetSpy.mockImplementation(async () => {
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [dataSetPS, dataSetPO]
@@ -1405,7 +1405,7 @@ describe("z/OS Files - List", () => {
 
             listDataSetSpy.mockImplementationOnce(async () => {
                 throw new Error("test2");
-            }).mockImplementation(async () => {
+            }).mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [dataSetPS]
@@ -1435,7 +1435,7 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            List.dataSet = jest.fn(async () => {
+            List.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [dataSetPS]

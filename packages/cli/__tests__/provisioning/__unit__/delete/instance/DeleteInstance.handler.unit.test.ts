@@ -39,12 +39,12 @@ describe("delete deprovisioned instance handler tests", () => {
 
     it("should be able to delete deprovisioned instance", async () => {
         ListRegistryInstances.listFilteredRegistry = jest.fn(
-            (session, zOSMFVersion, type, externalName) => {
+            async (session, zOSMFVersion, type, externalName) => {
                 return ProvisioningListMocks.LIST_REGISTRY_INSTANCES_RESPONSE;
             }
         );
         DeleteInstance.deleteDeprovisionedInstance = jest.fn(
-            (session, zOSMFVersion, name) => {
+            async (session, zOSMFVersion, name) => {
                 return "";
             }
         );

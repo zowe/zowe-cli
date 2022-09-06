@@ -221,7 +221,7 @@ describe("Submit Jobs - System Tests", () => {
             expect(job[0].data.toString()).toContain("J E S 2  J O B  L O G");
         });
 
-        it("should download spool content to a local directory", async (done: any) => {  // eslint-disable-line jest/no-done-callback
+        it("should download spool content to a local directory", async () => {
             const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",
                 {
                     jclSource: "stdin",
@@ -232,10 +232,7 @@ describe("Submit Jobs - System Tests", () => {
             expect(existsSync(`${job.jobid}/JES2`)).toBeTruthy();
 
             // delete locally created directory
-
-            require("rimraf")(job.jobid, {maxBusyTries: 10}, (err?: Error) => {
-                done(err);
-            });
+            require("rimraf").sync(job.jobid, {maxBusyTries: 10});
 
         });
     });

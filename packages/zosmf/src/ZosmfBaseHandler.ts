@@ -131,7 +131,5 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      *
      */
-    public abstract async processCmd(
-        commandParameters: IHandlerParameters
-    ): Promise<void>;
+    public abstract processCmd(commandParameters: IHandlerParameters): Promise<void>;
 }

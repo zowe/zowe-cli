@@ -67,7 +67,7 @@ describe("Upload dir-to-uss handler", () => {
 
         beforeEach(() => {
 
-            Upload.dirToUSSDir = jest.fn((session) => {
+            Upload.dirToUSSDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -134,7 +134,7 @@ describe("Upload dir-to-uss handler", () => {
         it("should override .zosattributes content with --attributes content", async () => {
             const mockAttributesFromParam = {attributes: "--attributes"};
             const mockAttributesFromLocalFile = {attributes: ".zosattributes"};
-            jest.spyOn(ZosFilesAttributes, 'loadFromFile').mockImplementationOnce((path: string) => {
+            jest.spyOn(ZosFilesAttributes, "loadFromFile").mockImplementationOnce((path: string) => {
                 if (path === "real file") {
                     return mockAttributesFromParam;
                 } else if (path.endsWith(".zosattributes")) {

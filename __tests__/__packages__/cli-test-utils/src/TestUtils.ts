@@ -95,7 +95,7 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             data: {
                 setMessage: jest.fn((setMsgArgs) => {
                     expect(setMsgArgs).toMatchSnapshot();
-                }),
+                }) as any,
                 setObj: jest.fn((setObjArgs) => {
                     expect(Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs).toMatchSnapshot();
                 }),
@@ -104,12 +104,12 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             console: {
                 log: jest.fn((logs) => {
                     expect(logs.toString()).toMatchSnapshot();
-                }),
+                }) as any,
                 error: jest.fn((errors) => {
                     expect(errors.toString()).toMatchSnapshot();
-                }),
-                errorHeader: jest.fn(() => undefined),
-                prompt: jest.fn(() => null)
+                }) as any,
+                errorHeader: jest.fn(() => undefined) as any,
+                prompt: jest.fn(async () => null) as any
             },
             progress: {
                 startBar: jest.fn((parms) => undefined),
