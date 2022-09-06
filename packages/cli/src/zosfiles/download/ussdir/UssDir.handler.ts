@@ -36,7 +36,8 @@ export default class UssDirHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout,
             failFast: commandParameters.arguments.failFast,
             attributes: zosAttributes,
-            includeHidden: commandParameters.arguments.includeHidden
+            includeHidden: commandParameters.arguments.includeHidden,
+            overwrite: commandParameters.arguments.overwrite
         };
         const listOptions: IUSSListOptions = {
             name: commandParameters.arguments.name ? commandParameters.arguments.name : "*",

@@ -602,21 +602,25 @@ export class Download {
                 fileOptions.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (downloadsInitiated / downloadsTotal));
                 downloadsInitiated++;
             }
-            return this.ussFile(session, posix.join(ussDirName, task.file), task.options).then(
-                (downloadResponse) => {
-                    responses.push(downloadResponse);
-                    result.downloaded.push(task.file);
-                }, (err) => {
-                    result.failedWithErrors[task.file] = err;
-                    if (fileOptions.failFast || fileOptions.failFast === undefined) {
-                        throw new ImperativeError({
-                            msg: `Failed to download ${task.file}`,
-                            causeErrors: err,
-                            additionalDetails: this.buildDownloadUssDirResponse(result, fileOptions)
-                        });
+            if (fs.existsSync(task.file) && !fileOptions.overwrite) {
+                result.skippedExisting.push(task.file);
+            } else {
+                return this.ussFile(session, posix.join(ussDirName, task.file), task.options).then(
+                    (downloadResponse) => {
+                        responses.push(downloadResponse);
+                        result.downloaded.push(task.file);
+                    }, (err) => {
+                        result.failedWithErrors[task.file] = err;
+                        if (fileOptions.failFast || fileOptions.failFast === undefined) {
+                            throw new ImperativeError({
+                                msg: `Failed to download ${task.file}`,
+                                causeErrors: err,
+                                additionalDetails: this.buildDownloadUssDirResponse(result, fileOptions)
+                            });
+                        }
                     }
-                }
-            );
+                );
+            }
         };
 
         const createDirPromise = (task: IDownloadUssTask) => {
@@ -714,6 +718,7 @@ export class Download {
     private static emptyDownloadUssDirResult(): IDownloadUssDirResult {
         return {
             downloaded: [],
+            skippedExisting: [],
             failedWithErrors: {}
         };
     }
@@ -783,12 +788,20 @@ export class Download {
                 (options.directory ?? "./"));
         }
 
+        if (result.skippedExisting.length > 0) {
+            responseLines.push(
+                TextUtils.chalk.yellow(`${result.skippedExisting.length} were skipped because they already exist.`),
+                ...result.skippedExisting.map(filename => `    ${filename}`),
+                "\nPlease use the 'overwrite' option in order to download the files listed above."
+            );
+        }
+
         if (numFailed > 0) {
             responseLines.push(TextUtils.chalk.red(`${numFailed} file(s) failed to download:`));
             if (failedFiles.length > 0) {
                 responseLines.push(
                     TextUtils.chalk.yellow(`${failedFiles.length} failed because of an uncaught error`),
-                    ...failedFiles.map(dsname => `    ${dsname}`),
+                    ...failedFiles.map(filename => `    ${filename}`),
                     "",
                     ...Object.values(result.failedWithErrors).map((err: Error) => err.message)
                 );

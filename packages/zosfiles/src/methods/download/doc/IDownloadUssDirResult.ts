@@ -21,6 +21,11 @@ export interface IDownloadUssDirResult {
     downloaded: string[];
 
     /**
+     * List of file names that were not downloaded because they already existed on the system.
+     */
+    skippedExisting: string[];
+
+    /**
      * Object containing key-value pairs of files and errors for uss files that failed to download.
      */
     failedWithErrors: { [key: string]: Error };

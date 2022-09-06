@@ -97,4 +97,9 @@ export interface IDownloadOptions extends IOptions {
      * Specifies whether hidden files whose names begin with a dot should be downloaded.
      */
     includeHidden?: boolean;
+
+    /**
+     * Specifies whether local files should be overwritten when downloaded.
+     */
+    overwrite?: boolean;
 }

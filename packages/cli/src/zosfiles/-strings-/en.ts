@@ -383,7 +383,8 @@ export default {
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
                 " without a maximum number of concurrent requests. ",
             PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case",
-            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot"
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot",
+            OVERWRITE: "Overwrite files that already exist in your local environment"
         }
     },
     INVOKE: {
