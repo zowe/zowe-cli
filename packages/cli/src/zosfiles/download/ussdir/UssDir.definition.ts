@@ -47,6 +47,7 @@ export const UssDirDefinition: ICommandDefinition = {
         DownloadOptions.maxConcurrentRequests,
         DownloadOptions.failFast,
         DownloadOptions.includeHidden,
+        DownloadOptions.overwrite,
         ListOptions.name,
         ListOptions.maxLength,
         ListOptions.group,

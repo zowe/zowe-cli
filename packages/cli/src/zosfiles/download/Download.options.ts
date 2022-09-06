@@ -171,5 +171,15 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["ih"],
         description: strings.INCLUDE_HIDDEN,
         type: "boolean"
+    },
+
+    /**
+     * The include hidden option for download
+     */
+    overwrite: {
+        name: "overwrite",
+        aliases: ["ow"],
+        description: strings.OVERWRITE,
+        type: "boolean"
     }
 };
