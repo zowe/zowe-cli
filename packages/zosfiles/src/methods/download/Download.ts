@@ -815,7 +815,6 @@ export class Download {
     }
 
     private static parseAttributeOptions(filename: string, attributes?: ZosFilesAttributes): Partial<IDownloadOptions> {
-        // TODO Should we upload/download hidden files like .zosattributes?
         const downloadOptions: Partial<IDownloadOptions> = {};
         if (attributes != null) {
             downloadOptions.binary = attributes.getFileTransferMode(filename) === TransferMode.BINARY;

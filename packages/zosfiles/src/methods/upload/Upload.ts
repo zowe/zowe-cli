@@ -501,10 +501,10 @@ export class Upload {
         }
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
 
-        if (options.binary) {
-            await Utilities.chtag(session, origUssname, Tag.BINARY);
-        } else if (options.encoding != null) {
+        if (options.encoding != null) {
             await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+        } else if (options.binary) {
+            await Utilities.chtag(session, origUssname, Tag.BINARY);
         }
 
         // By default, apiResponse is empty when uploading
@@ -751,7 +751,7 @@ export class Upload {
             });
         }
 
-        const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+        const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false, !options.includeHidden);
 
         files.forEach(async (file) => {
             let tempBinary = options.binary;
@@ -838,8 +838,11 @@ export class Upload {
                 return;
             }
             tempOptions.binary = options.attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
+            const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
+            if (remoteEncoding != null && remoteEncoding !== Tag.BINARY) {
+                tempOptions.encoding = remoteEncoding;
+            }
             if (!tempOptions.binary) {
-                tempOptions.encoding = options.attributes.getRemoteEncoding(localPath);
                 tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
         } else {

@@ -326,10 +326,10 @@ describe("z/OS Files - Upload", () => {
             response = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation(async () => null);
 
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementation(() => null);
+            zosmfPutFullSpy.mockImplementation(async () => null);
         });
 
         it("should throw error if data set name is not specified", async () => {
@@ -663,7 +663,7 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementation(() => null);
+            zosmfPutFullSpy.mockImplementation(async () => null);
         });
 
         it("should throw error if data set name is not specified", async () => {
@@ -1528,7 +1528,7 @@ describe("z/OS Files - Upload", () => {
             USSresponse = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation(async () => null);
         });
 
         it("should throw an error if USS file name is not specified", async () => {
@@ -1688,9 +1688,9 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             zosmfExpectFullSpy.mockClear();
-            zosmfExpectFullSpy.mockImplementation(() => null);
+            zosmfExpectFullSpy.mockImplementation(async () => null);
             chtagSpy.mockClear();
-            chtagSpy.mockImplementation(() => null);
+            chtagSpy.mockImplementation(async () => null);
         });
 
         afterAll(() => {
@@ -1874,10 +1874,10 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             createReadStreamSpy.mockReset();
-            createReadStreamSpy.mockImplementation(() => null);
+            createReadStreamSpy.mockImplementation(async () => null);
 
             streamToUssFileSpy.mockReset();
-            streamToUssFileSpy.mockImplementation(() => null);
+            streamToUssFileSpy.mockImplementation(async () => null);
 
             lstatSpy.mockClear();
             lstatSpy.mockImplementation((somePath, callback) => {
@@ -2011,6 +2011,7 @@ describe("z/OS Files - Upload", () => {
             lstatSpy.mockClear();
         });
     });
+
     describe("dirToUSSDirRecursive", () => {
         let USSresponse: IZosFilesResponse;
         const isDirSpy = jest.spyOn(IO, "isDir");
@@ -2042,12 +2043,13 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => null);
-            zosmfExpectFullSpy.mockImplementation(() => null);
+            zosmfExpectSpy.mockImplementation(async () => null);
+            zosmfExpectFullSpy.mockImplementation(async () => null);
         });
 
         afterAll(() => {
-            zosmfExpectFullSpy.mockRestore();
+            zosmfExpectFullSpy.mockReset();
+            fileToUssFileSpy.mockRestore();
         });
 
         it("should upload recursively if option is specified", async () => {
@@ -2058,7 +2060,7 @@ describe("z/OS Files - Upload", () => {
                 .mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
-            fileToUssFileSpy.mockReturnValue({});
+            fileToUssFileSpy.mockResolvedValue(testReturn);
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
             } catch (err) {
@@ -2079,7 +2081,7 @@ describe("z/OS Files - Upload", () => {
                 .mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
-            fileToUssFileSpy.mockReturnValue({});
+            fileToUssFileSpy.mockResolvedValue(testReturn);
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName, {responseTimeout: 5});
             } catch (err) {
@@ -2160,8 +2162,7 @@ describe("z/OS Files - Upload", () => {
             getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
             filterDirectoriesSpy.mockReturnValueOnce([]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockReturnValue(testReturn);
-            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -2281,7 +2282,7 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockReturnValueOnce(testReturn).mockReturnValueOnce(testReturn);
+            fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -2294,11 +2295,12 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
             expect(USSresponse.success).toBeTruthy();
         });
+
         it("should return with proper response with responseTimeout", async () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUssFileSpy.mockReturnValueOnce(testReturn).mockReturnValueOnce(testReturn);
+            fileToUssFileSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -2311,6 +2313,7 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
             expect(USSresponse.success).toBeTruthy();
         });
+
         describe("scenarios with .zosattributes file", () => {
 
             const MockZosAttributes = jest.fn<ZosFilesAttributes>();
@@ -2323,13 +2326,15 @@ describe("z/OS Files - Upload", () => {
                 pathNormalizeSpy.mockRestore();
                 promiseSpy.mockRestore();
                 chtagSpy.mockReset();
+                chtagSpy.mockResolvedValue(testReturn);
                 isDirSpy.mockReturnValueOnce(true)
                     .mockReturnValue(false);
                 isDirectoryExistsSpy.mockReturnValue(true);
-                lstatSpy.mockClear();
-                lstatSpy.mockResolvedValue(undefined);
+                lstatSpy.mockReset();
+                lstatSpy.mockImplementation((somePath, callback) => {
+                    callback(null, {isFile: () => true});
+                });
                 createReadStreamSpy.mockReturnValue(undefined);
-                fileToUssFileSpy.mockRestore();
 
                 attributesMock.getFileTransferMode = jest.fn((filePath: string) => {
                     if (filePath.endsWith("textfile")) {
@@ -2370,7 +2375,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
-                    path.normalize(path.join(testPath,"uploadme")),
+                    path.normalize(path.join(testPath, "uploadme")),
                     `${dsName}/uploadme`, { binary: true });
             });
 
