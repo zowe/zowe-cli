@@ -25,7 +25,7 @@ import { IDownloadOptions } from "./doc/IDownloadOptions";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
-import { Tag, Utilities } from "../utilities";
+import { Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";

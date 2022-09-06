@@ -329,10 +329,10 @@ describe("z/OS Files - Upload", () => {
             response = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(async () => null);
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
 
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementation(async () => null);
+            zosmfPutFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         it("should throw error if data set name is not specified", async () => {
@@ -669,7 +669,7 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             zosmfPutFullSpy.mockClear();
-            zosmfPutFullSpy.mockImplementation(async () => null);
+            zosmfPutFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         it("should throw error if data set name is not specified", async () => {
@@ -1534,7 +1534,7 @@ describe("z/OS Files - Upload", () => {
             USSresponse = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(async () => null);
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         it("should throw an error if USS file name is not specified", async () => {
@@ -1697,9 +1697,9 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             zosmfExpectFullSpy.mockClear();
-            zosmfExpectFullSpy.mockImplementation(async () => null);
+            zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
             chtagSpy.mockClear();
-            chtagSpy.mockImplementation(async () => null);
+            chtagSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         afterAll(() => {
@@ -1883,10 +1883,10 @@ describe("z/OS Files - Upload", () => {
             error = undefined;
 
             createReadStreamSpy.mockReset();
-            createReadStreamSpy.mockImplementation(async () => null);
+            createReadStreamSpy.mockImplementation((): any => null);
 
             streamToUssFileSpy.mockReset();
-            streamToUssFileSpy.mockImplementation(async () => null);
+            streamToUssFileSpy.mockImplementation(async (): Promise<any> => null);
 
             lstatSpy.mockClear();
             lstatSpy.mockImplementation((somePath, callback: any) => {
@@ -2053,8 +2053,8 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(async () => null);
-            zosmfExpectFullSpy.mockImplementation(async () => null);
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
+            zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         afterAll(() => {
@@ -2201,7 +2201,7 @@ describe("z/OS Files - Upload", () => {
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const promiseSpy = jest.spyOn(Promise, "all");
         const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
-        const testReturn = {};
+        const testReturn: any = {};
         const testPath = "test/path";
 
         beforeEach(() => {
@@ -2218,8 +2218,8 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockClear();
             zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(async () => null);
-            zosmfExpectFullSpy.mockImplementation(async () => null);
+            zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
+            zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
         });
 
         afterAll(() => {
@@ -2341,7 +2341,7 @@ describe("z/OS Files - Upload", () => {
                     .mockReturnValue(false);
                 isDirectoryExistsSpy.mockResolvedValue(true);
                 lstatSpy.mockReset();
-                lstatSpy.mockImplementation((somePath, callback) => {
+                lstatSpy.mockImplementation((somePath, callback: any) => {
                     callback(null, {isFile: () => true});
                 });
                 createReadStreamSpy.mockReturnValue(undefined);

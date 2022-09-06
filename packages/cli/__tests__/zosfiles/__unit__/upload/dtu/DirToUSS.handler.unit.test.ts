@@ -132,12 +132,12 @@ describe("Upload dir-to-uss handler", () => {
         });
 
         it("should override .zosattributes content with --attributes content", async () => {
-            const mockAttributesFromParam = {attributes: "--attributes"};
-            const mockAttributesFromLocalFile = {attributes: ".zosattributes"};
-            jest.spyOn(ZosFilesAttributes, "loadFromFile").mockImplementationOnce((path: string) => {
+            const mockAttributesFromParam = { attributes: "--attributes" };
+            const mockAttributesFromLocalFile = { attributes: ".zosattributes" };
+            jest.spyOn(ZosFilesAttributes, "loadFromFile").mockImplementationOnce((path?: string): any => {
                 if (path === "real file") {
                     return mockAttributesFromParam;
-                } else if (path.endsWith(".zosattributes")) {
+                } else if (path?.endsWith(".zosattributes")) {
                     return mockAttributesFromLocalFile;
                 }
             });

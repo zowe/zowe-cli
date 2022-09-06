@@ -51,7 +51,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -117,7 +117,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -187,7 +187,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -257,7 +257,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -327,7 +327,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -397,7 +397,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -467,7 +467,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -537,7 +537,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -607,7 +607,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -677,7 +677,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -747,7 +747,7 @@ describe("Download uss dir handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            Download.ussDir = jest.fn((session) => {
+            Download.ussDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
