@@ -110,30 +110,15 @@ jobs:
     - name: Setup Binary in PATH
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: setup-binary
-      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
-
-    - name: Test Rust Linux EXE and zowe script
-      id: test-linux-exe-and-script
-      if: ${{ matrix.os != 'windows-latest' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      shell: bash
       run: |
-        export PATH=$PATH:${{ github.workspace }}/__tests__/__resources__/application_instances
-        echo "PATH = $PATH"
-        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+        tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
+        echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
 
-    - name: Test Rust Windows EXE and zowe script
-      id: test-win-exe-and-script
-      if: ${{ matrix.os == 'windows-latest' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: |
-        # Adding to Path in GHActions is unreliable. Maybe Windows Path is too long? So we set Path in our script.
-        $ErrorActionPreference = 'silentlycontinue'
-        $shortPath = Split-Path (Get-Command pwsh).Path
-        if ( $shortPath.length -le 0 ) {
-            $shortPath = Split-Path (Get-Command Powershell).Path
-        }
-        $shortPath = "$shortPath;$(Split-Path (Get-Command node).Path);$(Split-Path (Get-Command cargo).Path);${{ github.workspace }}\__tests__\__resources__\application_instances"
-        $env:Path = $shortPath
-        echo "Path = $env:Path"
-        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+    - name: Test Rust EXE and zowe script
+      id: test-exe-and-script
+      if: ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       id: unit
@@ -148,17 +133,7 @@ jobs:
     - name: Start Daemon on Windows only
       id: start-daemon
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: |
-        # Adding to Path in GHActions is unreliable. Maybe Windows Path is too long? So we set Path in our script.
-        $ErrorActionPreference = 'silentlycontinue'
-        $shortPath = Split-Path (Get-Command pwsh).Path
-        if ( $shortPath.length -le 0 ) {
-            $shortPath = Split-Path (Get-Command Powershell).Path
-        }
-        $shortPath = "$shortPath;$(Split-Path (Get-Command node).Path);$(Split-Path (Get-Command cargo).Path);${{ github.workspace }}\__tests__\__resources__\application_instances"
-        $env:Path = $shortPath
-        echo "Path = $env:Path"
-        ./__tests__/__resources__/daemon_instances/zowe
+      run: ./__tests__/__resources__/daemon_instances/zowe
 
     - name: Integration Tests (Native)
       id: integration-native
@@ -175,7 +150,7 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}-${{ matrix.node-version }}-results.tgz
+        name: ${{ matrix.os }}-${{ matrix.node-version }}-results
         path: __tests__/__results__/
 
     - name: Upload Results to Codecov
