@@ -110,21 +110,15 @@ jobs:
     - name: Setup Binary in PATH
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: setup-binary
-      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
-
-    - name: Test Rust Linux EXE and zowe script
-      id: test-linux-exe-and-script
-      if: ${{ matrix.os != 'windows-latest' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      shell: bash
       run: |
+        tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
         echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
-        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
-    - name: Test Rust Windows EXE and zowe script
-      id: test-win-exe-and-script
-      if: ${{ matrix.os == 'windows-latest' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: |
-        Add-Content $env:GITHUB_PATH "${{ github.workspace }}\__tests__\__resources__\application_instances"
-        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+    - name: Test Rust EXE and zowe script
+      id: test-linux-exe-and-script
+      if: ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       id: unit
