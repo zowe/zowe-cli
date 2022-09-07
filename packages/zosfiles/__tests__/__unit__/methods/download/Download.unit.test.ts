@@ -2128,6 +2128,7 @@ describe("z/OS Files - Download", () => {
                 success: true,
                 commandResponse: (Download as any).buildDownloadUssDirResponse({
                     downloaded: ["file1"],
+                    skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
                 apiResponse: [fakeFileResponse]
@@ -2171,6 +2172,7 @@ describe("z/OS Files - Download", () => {
                 success: false,
                 commandResponse: (Download as any).buildDownloadUssDirResponse({
                     downloaded: ["goodfolder", "goodfile"],
+                    skippedExisting: [],
                     failedWithErrors: { "badfolder": dummyError, "badfile": dummyError }
                 }, { failFast: false }),
                 apiResponse: [fakeFileResponse]
@@ -2201,6 +2203,7 @@ describe("z/OS Files - Download", () => {
                 success: true,
                 commandResponse: (Download as any).buildDownloadUssDirResponse({
                     downloaded: ["file1"],
+                    skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
                 apiResponse: [fakeFileResponse]
@@ -2237,6 +2240,7 @@ describe("z/OS Files - Download", () => {
                 success: true,
                 commandResponse: (Download as any).buildDownloadUssDirResponse({
                     downloaded: ["file1", "file2"],
+                    skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
                 apiResponse: [fakeFileResponse, fakeFileResponse]
@@ -2273,6 +2277,7 @@ describe("z/OS Files - Download", () => {
                 success: true,
                 commandResponse: (Download as any).buildDownloadUssDirResponse({
                     downloaded: ["file1", "file2", ".folder", ".folder/file3"],
+                    skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
                 apiResponse: [fakeFileResponse, fakeFileResponse, fakeFileResponse]
@@ -2314,6 +2319,7 @@ describe("z/OS Files - Download", () => {
                 success: true,
                 commandResponse: (Download as any).buildDownloadUssDirResponse({
                     downloaded: ["binaryfile", "textfile"],
+                    skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
                 apiResponse: [fakeFileResponse, fakeFileResponse]
@@ -2382,7 +2388,7 @@ describe("z/OS Files - Download", () => {
 
         it("should build response with USS files that failed to download", () => {
             const errorMsg = "i haz bad uss file";
-            const result: IDownloadDsmResult = (Download as any).emptyDownloadDsmResult();
+            const result: IDownloadDsmResult = (Download as any).emptyDownloadUssDirResult();
             result.failedWithErrors = { "/u/test/bad1": new Error(errorMsg) };
             const response: string = (Download as any).buildDownloadUssDirResponse(result, {});
             expect(response).toContain("1 file(s) failed to download");

@@ -320,8 +320,9 @@ export default {
                     USSDIRNAME: "The name of the USS directory you want to download"
                 },
                 EXAMPLES: {
-                    EX1: `Download the directory "/a/ibmuser" to ./`,
-                    EX2: `Download the directory "/a/ibmuser" to "./" in binary mode`
+                    EX1: `Download the directory "/a/ibmuser" to "./" in binary mode`,
+                    EX2: `Download the directory "/a/ibmuser" to "./localDir"`,
+                    EX3: `Download files from the directory "/a/ibmuser" that match the name "*.log" and were modified within the last day`
                 }
             },
             DATA_SETS_MATCHING: {
@@ -361,6 +362,7 @@ export default {
             ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                 "specified.",
             FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",
+            FAIL_FAST_USS: "Set this option to false to continue downloading USS files if one or more fail.",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
             EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension. When no extension " +
@@ -368,10 +370,11 @@ export default {
             DIRECTORY: "The directory to where you want to save the members. The command creates the directory for you when it does not already " +
                 "exist. By default, the command creates a folder structure based on the data set qualifiers. For example, the data set " +
                 "ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).",
-            EXTENSION_MAP: `Use this option to map data set names that match your pattern to the desired
-            extension. A comma delimited key value pairing (e.g. "cntl=.jcl,cpgm=.c" to map
-            the last segment of each data set (also known as the "low level qualifier" to
-            the desired local file extension).`,
+            DIRECTORY_USS: "The directory to where you want to save the files. The command creates the directory for you when it does not already " +
+                "exist. By default, the command downloads the files to the current directory.",
+            EXTENSION_MAP: `Use this option to map data set names that match your pattern to the desired extension. A comma delimited key value ` +
+                `pairing (e.g. "cntl=.jcl,cpgm=.c" to map the last segment of each data set (also known as the "low level qualifier" to the ` +
+                `desired local file extension).`,
             EXCLUDE_PATTERN: "Exclude data sets that match these DSLEVEL patterns. Any data sets that match" +
                 " this pattern will not be downloaded.",
             MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to download members." +
@@ -381,6 +384,14 @@ export default {
                 "the following message displays:\n" +
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
+                " without a maximum number of concurrent requests. ",
+            MAX_CONCURRENT_REQUESTS_USS: "Specifies the maximum number of concurrent z/OSMF REST API requests to download files." +
+                " Increasing the value results in faster downloads. " +
+                "However, increasing the value increases resource consumption on z/OS and can be prone " +
+                "to errors caused by making too many concurrent requests. If the download process encounters an error, " +
+                "the following message displays:\n" +
+                "The maximum number of TSO address spaces have been created. When you specify 0, " +
+                Constants.DISPLAY_NAME + " attempts to download all files at once" +
                 " without a maximum number of concurrent requests. ",
             PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case",
             INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot",
@@ -488,8 +499,11 @@ export default {
             START: "An optional search parameter that specifies the first data set name to return in the response document.",
             GROUP: "Filters content in USS based on the owning group name or ID.",
             OWNER: "Filters content in USS based on the owning user name or ID.",
-            MTIME: "Filters content in USS based on the last modification time.",
-            SIZE: "Filters content in USS based on the size.",
+            MTIME: "Filters content in USS based on the last modification time." +
+                " N - specify an exact number of days, +N - older than N days, -N - newer than N days ",
+            SIZE: "Filters content in USS based on the size." +
+                " Default units are bytes. Add a suffix of K for kilobytes, M for megabytes, or G for gigabytes." +
+                " N - specify an exact file size, +N - larger than N size, -N - smaller than N size",
             PERM: "Filters content in USS based on the permissions octal.",
             TYPE: "Filters content in USS based on the type of content." +
                 " f - regular file, d - directory, l - symbolic link, p - FIFO named pipe, s - socket",

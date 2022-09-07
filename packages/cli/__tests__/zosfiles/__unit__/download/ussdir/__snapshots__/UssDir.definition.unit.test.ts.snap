@@ -31,7 +31,7 @@ Array [
     "aliases": Array [
       "d",
     ],
-    "description": "The directory to where you want to save the members. The command creates the directory for you when it does not already exist. By default, the command creates a folder structure based on the data set qualifiers. For example, the data set ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).",
+    "description": "The directory to where you want to save the files. The command creates the directory for you when it does not already exist. By default, the command downloads the files to the current directory.",
     "name": "directory",
     "type": "string",
   },
@@ -48,7 +48,7 @@ Array [
       "ff",
     ],
     "defaultValue": true,
-    "description": "Set this option to false to continue downloading dataset members if one or more fail.",
+    "description": "Set this option to false to continue downloading USS files if one or more fail.",
     "name": "fail-fast",
     "type": "boolean",
   },
@@ -75,8 +75,8 @@ Array [
       "mcr",
     ],
     "defaultValue": 1,
-    "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to download members. Increasing the value results in faster downloads. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests. If the download process encounters an error, the following message displays:
-The maximum number of TSO address spaces have been created. When you specify 0, Zowe CLI attempts to download all members at once without a maximum number of concurrent requests. ",
+    "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to download files. Increasing the value results in faster downloads. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests. If the download process encounters an error, the following message displays:
+The maximum number of TSO address spaces have been created. When you specify 0, Zowe CLI attempts to download all files at once without a maximum number of concurrent requests. ",
     "name": "max-concurrent-requests",
     "numericValueRange": Array [
       0,
@@ -93,7 +93,7 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "type": "number",
   },
   Object {
-    "description": "Filters content in USS based on the last modification time.",
+    "description": "Filters content in USS based on the last modification time. N - specify an exact number of days, +N - older than N days, -N - newer than N days ",
     "name": "mtime",
     "type": "string",
   },
@@ -101,6 +101,14 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "description": "Filters files in USS based on the name of the file or directory.",
     "name": "name",
     "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "ow",
+    ],
+    "description": "Overwrite files that already exist in your local environment",
+    "name": "overwrite",
+    "type": "boolean",
   },
   Object {
     "description": "Filters content in USS based on the owning user name or ID.",
@@ -113,7 +121,7 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "type": "string",
   },
   Object {
-    "description": "Filters content in USS based on the size.",
+    "description": "Filters content in USS based on the size. Default units are bytes. Add a suffix of K for kilobytes, M for megabytes, or G for gigabytes. N - specify an exact file size, +N - larger than N size, -N - smaller than N size",
     "name": "size",
     "type": "string",
   },
@@ -143,12 +151,16 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
 exports[`zos-files download uss-dir command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Download the directory \\"/a/ibmuser\\" to ./",
-    "options": "/a/ibmuser",
-  },
-  Object {
     "description": "Download the directory \\"/a/ibmuser\\" to \\"./\\" in binary mode",
     "options": "/a/ibmuser --binary",
+  },
+  Object {
+    "description": "Download the directory \\"/a/ibmuser\\" to \\"./localDir\\"",
+    "options": "/a/ibmuser --directory localDir",
+  },
+  Object {
+    "description": "Download files from the directory \\"/a/ibmuser\\" that match the name \\"*.log\\" and were modified within the last day",
+    "options": "/a/ibmuser --name \\"*.log\\" --mtime -1",
   },
 ]
 `;

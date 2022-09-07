@@ -41,11 +41,11 @@ export const UssDirDefinition: ICommandDefinition = {
     ],
     options: [
         DownloadOptions.attributes,
-        DownloadOptions.directory,
+        DownloadOptions.directoryUss,
         DownloadOptions.binary,
         DownloadOptions.encoding,
-        DownloadOptions.maxConcurrentRequests,
-        DownloadOptions.failFast,
+        DownloadOptions.maxConcurrentRequestsUss,
+        DownloadOptions.failFastUss,
         DownloadOptions.includeHidden,
         DownloadOptions.overwrite,
         ListOptions.name,
@@ -63,11 +63,15 @@ export const UssDirDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `/a/ibmuser`
+            options: `/a/ibmuser --binary`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `/a/ibmuser --binary`
+            options: `/a/ibmuser --directory localDir`
+        },
+        {
+            description: strings.EXAMPLES.EX3,
+            options: `/a/ibmuser --name "*.log" --mtime -1`
         }
     ]
 };
