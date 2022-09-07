@@ -1703,8 +1703,8 @@ describe("z/OS Files - Upload", () => {
         });
 
         afterAll(() => {
-            zosmfExpectFullSpy.mockRestore();
-            chtagSpy.mockRestore();
+            zosmfExpectFullSpy.mockReset();
+            chtagSpy.mockReset();
         });
 
         it("should throw an error if USS file name is not specified", async () => {
@@ -2084,7 +2084,7 @@ describe("z/OS Files - Upload", () => {
         });
 
         afterAll(() => {
-            zosmfExpectFullSpy.mockRestore();
+            zosmfExpectFullSpy.mockReset();
         });
 
         it("should upload recursively if option is specified", async () => {
@@ -2249,7 +2249,7 @@ describe("z/OS Files - Upload", () => {
         });
 
         afterAll(() => {
-            zosmfExpectFullSpy.mockRestore();
+            zosmfExpectFullSpy.mockReset();
         });
 
         it("should throw an error if local directory is not specified", async () => {
