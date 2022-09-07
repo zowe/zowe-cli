@@ -9,15 +9,121 @@
 *
 */
 
-
+import * as fs from "fs";
+import * as path from "path";
 import { ZosFilesAttributes, TransferMode } from "../../../src/utils/ZosFilesAttributes";
 
+const sampleAttributesFile = `# pattern local-encoding remote-encoding
+*.json -
+*.bin binary
+*.jcl IBM-1047 IBM-1047
+*.md UTF-8 UTF-8
+*.txt UTF-8 IBM-1047`;
+const sampleAttributesMap = new Map(Object.entries({
+    "*.json": { ignore: true },
+    "*.bin": { ignore: false, localEncoding: "binary" },
+    "*.jcl": { ignore: false, localEncoding: "IBM-1047", remoteEncoding: "IBM-1047" },
+    "*.md": { ignore: false, localEncoding: "UTF-8", remoteEncoding: "UTF-8" },
+    "*.txt": { ignore: false, localEncoding: "UTF-8", remoteEncoding: "IBM-1047" }
+}));
 
 describe("ZosFilesAttributes", () => {
+    describe("Loading from file", () => {
+        const existsSpy = jest.spyOn(fs, "existsSync");
+        const readFileSpy = jest.spyOn(fs, "readFileSync");
+
+        afterEach(() => {
+            existsSpy.mockClear();
+            readFileSpy.mockClear();
+        });
+
+        it("successfully parses .zosattributes file in current directory", () => {
+            existsSpy.mockReturnValueOnce(true);
+            readFileSpy.mockReturnValueOnce(sampleAttributesFile);
+            const attributesLoaded = ZosFilesAttributes.loadFromFile();
+            expect(readFileSpy).toHaveBeenCalledWith(path.join(process.cwd(), ".zosattributes"));
+            expect((attributesLoaded as any).attributes).toEqual(sampleAttributesMap);
+        });
+
+        it("successfully parses custom attributes file", () => {
+            existsSpy.mockReturnValueOnce(true);
+            readFileSpy.mockReturnValueOnce(sampleAttributesFile);
+            const attributesLoaded = ZosFilesAttributes.loadFromFile("../testAttributes");
+            expect(readFileSpy).toHaveBeenCalledWith("../testAttributes");
+            expect((attributesLoaded as any).attributes).toEqual(sampleAttributesMap);
+        });
+
+        it("successfully parses .zosattributes file in custom directory", () => {
+            existsSpy.mockReturnValueOnce(true);
+            readFileSpy.mockReturnValueOnce(sampleAttributesFile);
+            const attributesLoaded = ZosFilesAttributes.loadFromFile(undefined, __dirname);
+            expect(readFileSpy).toHaveBeenCalledWith(path.join(__dirname, ".zosattributes"));
+            expect((attributesLoaded as any).attributes).toEqual(sampleAttributesMap);
+        });
+
+        it("skips parsing .zosattributes file that does not exist", () => {
+            existsSpy.mockReturnValueOnce(false);
+            let attributesLoaded;
+            let caughtError;
+            try {
+                attributesLoaded = ZosFilesAttributes.loadFromFile();
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(attributesLoaded).toBeUndefined();
+            expect(caughtError).toBeUndefined();
+        });
+
+        it("fails to parse custom attributes file that does not exist", () => {
+            existsSpy.mockReturnValueOnce(false);
+            let caughtError;
+            try {
+                ZosFilesAttributes.loadFromFile("badAttributes");
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError.message).toBe("Attributes file badAttributes does not exist");
+        });
+
+        it("fails to parse attributes file that cannot be read", () => {
+            const errMsg = "invalid attributes";
+            existsSpy.mockReturnValueOnce(true);
+            readFileSpy.mockImplementationOnce(() => {
+                throw new Error(errMsg);
+            });
+            let caughtError;
+            try {
+                ZosFilesAttributes.loadFromFile();
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError.message).toContain("Could not read attributes file");
+            expect(caughtError.message).toContain(errMsg);
+        });
+
+        it("fails to parse attributes file when there is unknown error", () => {
+            const errMsg = "invalid attributes";
+            existsSpy.mockReturnValueOnce(true);
+            readFileSpy.mockReturnValueOnce(sampleAttributesFile);
+            jest.spyOn(ZosFilesAttributes.prototype as any, "parse").mockImplementationOnce(() => {
+                throw new Error(errMsg);
+            });
+            let caughtError;
+            try {
+                ZosFilesAttributes.loadFromFile();
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError.message).toContain("Error parsing attributes file");
+            expect(caughtError.message).toContain(errMsg);
+        });
+    });
+
     describe("Ignoring", () => {
         it("does not ignore files not mentioned in .zosattributes", () => {
             const testable = new ZosFilesAttributes("fred -");
             expect(testable.fileShouldBeUploaded("foo.stuff")).toBeTruthy();
+            expect(testable.fileShouldBeIgnored("foo.stuff")).toBeFalsy();
         });
 
         it("does not ignore files marked with an encoding", () => {
@@ -30,6 +136,7 @@ describe("ZosFilesAttributes", () => {
             const attributesFileContents = "foo.stuff -";
             const testable = new ZosFilesAttributes(attributesFileContents);
             expect(testable.fileShouldBeUploaded("foo.stuff")).toBeFalsy();
+            expect(testable.fileShouldBeIgnored("foo.stuff")).toBeTruthy();
         });
 
         it("ignores a file marked with - and not a file marked with an encoding", () => {
