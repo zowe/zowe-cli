@@ -116,7 +116,7 @@ jobs:
         echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
 
     - name: Test Rust EXE and zowe script
-      id: test-linux-exe-and-script
+      id: test-exe-and-script
       if: ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
@@ -135,10 +135,15 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: ./__tests__/__resources__/daemon_instances/zowe
 
-    - name: Integration Tests
-      id: integration
-      if: ${{ always() && steps.build.outcome == 'success' }}
+    - name: Integration Tests (Native)
+      id: integration-native
+      if: ${{ always() && steps.build.outcome == 'success' && !(github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: npm run test:integration
+
+    - name: Integration Tests (Daemon)
+      id: integration-daemon
+      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: npm run test:integration -- --runInBand
 
     - name: Archive Results
       id: upload
