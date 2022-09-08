@@ -602,7 +602,8 @@ export class Download {
                 fileOptions.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (downloadsInitiated / downloadsTotal));
                 downloadsInitiated++;
             }
-            if (fs.existsSync(task.file) && !fileOptions.overwrite) {
+            // task.options.file is only null for directories, but we may want to fall back to the filename itself (just in case)
+            if (fs.existsSync(task.options?.file ?? task.file) && !fileOptions.overwrite) {
                 result.skippedExisting.push(task.file);
             } else {
                 return this.ussFile(session, posix.join(ussDirName, task.file), task.options).then(

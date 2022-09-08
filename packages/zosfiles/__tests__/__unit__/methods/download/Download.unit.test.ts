@@ -2031,6 +2031,7 @@ describe("z/OS Files - Download", () => {
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
 
         beforeEach(() => {
+            existsSyncSpy.mockClear();
             listFileListSpy.mockClear();
 
             downloadUssFileSpy.mockClear();

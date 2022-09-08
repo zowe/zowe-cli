@@ -574,6 +574,7 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + "/member.dat";
             });
         });
+
         describe("Data sets matching - all data sets - PO", () => {
 
             beforeEach(async () => {
@@ -1453,6 +1454,34 @@ describe("Download Data Set", () => {
                 }
                 expect(caughtError).toBeUndefined();
                 expectDownloaded(localDirname, listOptions);
+            });
+
+            it("should not download files that already exist", async () => {
+                let caughtError;
+                const testFile = posix.join(localDirname, "testFile.txt");
+                try {
+                    fs.mkdirSync(localDirname);
+                    fs.writeFileSync(testFile, "test");
+                    await Download.ussDir(REAL_SESSION, ussDirname, { directory: localDirname });
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeUndefined();
+                expect(fs.readFileSync(testFile).toString()).toEqual("test");
+            });
+
+            it("should download files that already exist when overwrite is true", async () => {
+                let caughtError;
+                const testFile = posix.join(localDirname, "testFile.txt");
+                try {
+                    fs.mkdirSync(localDirname);
+                    fs.writeFileSync(testFile, "test");
+                    await Download.ussDir(REAL_SESSION, ussDirname, { directory: localDirname, overwrite: true });
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeUndefined();
+                expect(fs.readFileSync(testFile).toString()).toEqual(testFileContents);
             });
         });
 
