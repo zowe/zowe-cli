@@ -791,7 +791,7 @@ export class Download {
 
         if (result.skippedExisting.length > 0) {
             responseLines.push(
-                TextUtils.chalk.yellow(`${result.skippedExisting.length} were skipped because they already exist.`),
+                TextUtils.chalk.yellow(`${result.skippedExisting.length} file(s) skipped because they already exist.`),
                 ...result.skippedExisting.map(filename => `    ${filename}`),
                 "\nRerun the command with --overwrite to download the files listed above."
             );

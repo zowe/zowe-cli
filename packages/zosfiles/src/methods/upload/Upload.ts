@@ -857,7 +857,6 @@ export class Upload {
             }
         }
 
-        // TODO Should all options be passed, not just new ones?
         await this.fileToUssFile(session, localPath, ussPath, tempOptions);
     }
 

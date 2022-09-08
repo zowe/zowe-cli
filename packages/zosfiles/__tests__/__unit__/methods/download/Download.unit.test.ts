@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as path from "path";
 import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -2336,7 +2337,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => filepath === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => path.basename(filepath.toString()) === "file2" );
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
@@ -2369,7 +2370,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => filepath === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => path.basename(filepath.toString()) === "file2" );
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
