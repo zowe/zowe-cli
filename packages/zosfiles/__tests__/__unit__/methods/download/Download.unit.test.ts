@@ -2028,6 +2028,7 @@ describe("z/OS Files - Download", () => {
         const listFileListSpy = jest.spyOn(List, "fileList");
         const downloadUssFileSpy = jest.spyOn(Download, "ussFile");
         const mkdirPromiseSpy = jest.spyOn(fs.promises, "mkdir");
+        const existsSyncSpy = jest.spyOn(fs, "existsSync");
 
         beforeEach(() => {
             listFileListSpy.mockClear();
@@ -2328,6 +2329,72 @@ describe("z/OS Files - Download", () => {
                 expect.objectContaining({ binary: true }));
             expect(Download.ussFile).toHaveBeenNthCalledWith(2, dummySession, ussDirName + "/textfile",
                 expect.objectContaining({ encoding: "IBM-1047", localEncoding: "ISO-8859-1" }));
+        });
+
+        it("should not download files that already exist locally", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockImplementation((filepath) => filepath === "file2" );
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: "file1" },
+                        { mode: "-", name: "file2" },
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["file1"],
+                    skippedExisting: ["file2"],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse]
+            });
+            expect(Download.ussFile).toHaveBeenCalledTimes(1);
+        });
+
+        it("should download files that already exist locally when overwrite is true", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockImplementation((filepath) => filepath === "file2" );
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: "file1" },
+                        { mode: "-", name: "file2" },
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, {overwrite: true});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadUssDirResponse({
+                    downloaded: ["file1", "file2"],
+                    skippedExisting: [],
+                    failedWithErrors: {}
+                }, {}),
+                apiResponse: [fakeFileResponse, fakeFileResponse]
+            });
+            expect(Download.ussFile).toHaveBeenCalledTimes(2);
         });
     });
 
