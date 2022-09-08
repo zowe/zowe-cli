@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated the `List.fileList` method to support z/OSMF filter parameters such as "mtime" and "name".
+- Enhancement: Added `Download.ussDir` method to download the contents of a USS directory.
+- Enhancement: Updated the `Upload.streamToUssFile` method to "chtag" files after uploading them.
+
 ## `7.4.2`
 
 - BugFix: Added errorMessage property to `IZosFilesResponse` to provide more specific error messages.

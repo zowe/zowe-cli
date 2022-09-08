@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `zowe files download uss-dir` command to download the contents of a USS directory. [#1038](https://github.com/zowe/zowe-cli/issues/1038)
+- Enhancement: Updated the `zowe files upload file-to-uss` and `zowe files upload dir-to-uss` commands to improve how they handle file encoding. [#1479](https://github.com/zowe/zowe-cli/issues/1479)
+  - Both commands now "chtag" files after uploading them to indicate their remote encoding. This matches the already existing behavior of the `zowe files download uss-file` command which checks file tags before downloading.
+  - The behavior of ".zosattributes" files which can specify local and remote encoding has been changed. Files are now converted to the remote encoding, not just tagged. If no encoding is specified, the default transfer mode is text instead of binary to be consistent with z/OSMF default behavior.
+
 ## `7.5.1`
 
 - BugFix: Updated Imperative to include bugfixes in version `5.5.1`.
