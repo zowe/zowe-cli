@@ -101,7 +101,7 @@ export class ZosFilesAttributes {
     public getFileTransferMode(path: string): TransferMode {
         const attributes = this.findLastMatchingAttributes(path);
         if (attributes === null) {
-            return TransferMode.BINARY;
+            return TransferMode.TEXT;
         }
 
         if (attributes.localEncoding === Tag.BINARY || attributes.localEncoding === attributes.remoteEncoding) {
@@ -113,9 +113,7 @@ export class ZosFilesAttributes {
 
     public getRemoteEncoding(path: string): string {
         const attributes = this.findLastMatchingAttributes(path);
-        if (attributes === null) {
-            return "ISO8859-1";
-        } else if (attributes.remoteEncoding?.toUpperCase() === "EBCDIC") {
+        if (attributes === null || attributes.remoteEncoding?.toUpperCase() === "EBCDIC") {
             return;  // Fall back to default system code page
         }
 

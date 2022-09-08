@@ -429,7 +429,7 @@ describe("Download USS Directory", () => {
         it("should download uss directory and use a zosattributes file 1", async () => {
             localFilesToDelete = [...filesToDelete];
             localDirsToDelete = [...dirsToDelete];
-            const zosAttributesFile = path.join(TEST_ENVIRONMENT.workingDir, ".zosattributes");
+            const zosAttributesFile = path.join(TEST_ENVIRONMENT.workingDir, "testAttributes");
             const zosAttributesFileContents = fs.readFileSync(path.join(__dirname, "__resources__", ".zosattributes")).toString();
             const ussname4realfull = path.join(TEST_ENVIRONMENT.workingDir, ussname4real) + ".bin";
             const shellScript = path.join(
@@ -440,7 +440,7 @@ describe("Download USS Directory", () => {
             );
             fs.writeFileSync(zosAttributesFile, zosAttributesFileContents);
             await Upload.bufferToUssFile(REAL_SESSION, `${ussname4}.bin`, Buffer.from(data));
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussdir1, `--attributes .zosattributes`, "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussdir1, `--attributes testAttributes`, "--rfj"]);
             await Delete.ussFile(REAL_SESSION, `${ussname4}.bin`, true);
             fs.unlinkSync(zosAttributesFile);
             expect(fs.readFileSync(ussname4realfull).toString()).toEqual("��������������������������");

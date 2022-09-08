@@ -222,9 +222,9 @@ describe("ZosFilesAttributes", () => {
             expect(testable.getFileTransferMode("not.binary")).toBe(TransferMode.TEXT);
         });
 
-        it("should default to binary if no pattern is matched", () => {
+        it("should default to text if no pattern is matched", () => {
             const testable = new ZosFilesAttributes("*.stuff ISO8859-1 EBCDIC");
-            expect(testable.getFileTransferMode("foo.binary")).toBe(TransferMode.BINARY);
+            expect(testable.getFileTransferMode("foo.text")).toBe(TransferMode.TEXT);
         });
     });
 
@@ -244,9 +244,9 @@ describe("ZosFilesAttributes", () => {
             expect(testable.getRemoteEncoding("/base/path/foo.ascii")).toBe("ISO8859-1");
         });
 
-        it("should default to ISO8859-1 if no pattern is matched", () => {
+        it("should default to EBCDIC if no pattern is matched", () => {
             const testable = new ZosFilesAttributes("*.stuff binary binary");
-            expect(testable.getRemoteEncoding("foo.ascii")).toBe("ISO8859-1");
+            expect(testable.getRemoteEncoding("foo.ascii")).toBeUndefined();
         });
 
         it("should parse EBCDIC as default encoding", () => {
