@@ -196,7 +196,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
     private async unzipTgz(tgzFile: string, toDir: string, fileToExtract: string): Promise<void> {
         return new Promise<void>((resolve) => {
             fs.createReadStream(tgzFile)
-                .on('error', function(err) {
+                .on('error', function(err: any) {
                     throw new ImperativeError({
                         msg: err
                     });
