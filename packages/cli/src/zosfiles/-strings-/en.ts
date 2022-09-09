@@ -504,7 +504,7 @@ export default {
             SIZE: "Filters content in USS based on the size." +
                 " Default units are bytes. Add a suffix of K for kilobytes, M for megabytes, or G for gigabytes." +
                 " N - specify an exact file size, +N - larger than N size, -N - smaller than N size",
-            PERM: "Filters content in USS based on the permissions octal.",
+            PERM: "Filters content in USS based on the octal permissions string.",
             TYPE: "Filters content in USS based on the type of content." +
                 " f - regular file, d - directory, l - symbolic link, p - FIFO named pipe, s - socket",
             DEPTH: "Filters content in USS based on the number of directories to traverse down.",

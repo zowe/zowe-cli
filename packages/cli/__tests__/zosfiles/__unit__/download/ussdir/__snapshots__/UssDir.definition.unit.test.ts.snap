@@ -116,7 +116,7 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "type": "string",
   },
   Object {
-    "description": "Filters content in USS based on the permissions octal.",
+    "description": "Filters content in USS based on the octal permissions string.",
     "name": "perm",
     "type": "string",
   },
