@@ -20,7 +20,7 @@ export default class ComapareBaseHelper {
 
     /**
      * Singleton instance of this class
-     * @public
+     * @private
      * @static
      * @type {ComapareBaseHelper}
      * @memberof ComapareBaseHelper
