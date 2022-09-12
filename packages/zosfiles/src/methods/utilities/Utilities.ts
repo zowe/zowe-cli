@@ -64,18 +64,18 @@ export class Utilities {
      * @param {Tag}             type - enum of chtag type of Test, Binary or Mixed
      * @param {string}          codeset - optional string describing codeset e.g. IBM-1047
      *
-     * @returns {IZosFilesResponse>} Promise that resolves to response object
+     * @returns {Promise<IZosFilesResponse>} Promise that resolves to response object
      *
      * @throws {ImperativeError}
      */
     public static async chtag(session: AbstractSession, ussFileName: string, type: Tag, codeset?: string): Promise<IZosFilesResponse> {
-        ImperativeExpect.toNotBeNullOrUndefined(ussFileName,ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
 
         if (type === Tag.BINARY) {
-            ImperativeExpect.toBeEqual(codeset,undefined,"A codeset cannot be specified for a binary file.");
+            ImperativeExpect.toBeEqual(codeset, undefined, "A codeset cannot be specified for a binary file.");
         }
 
-        const payload = { request: "chtag", action: "set", type: type.valueOf()} as any;
+        const payload = { request: "chtag", action: "set", type: type.valueOf() } as any;
         if (codeset) {
             payload.codeset = codeset;
         }

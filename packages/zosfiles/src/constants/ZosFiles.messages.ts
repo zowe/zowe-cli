@@ -71,6 +71,23 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the USS Dir name is required
+     * @type {IMessageDefinition}
+     */
+    missingUSSDirName: {
+        message: "Specify the USS directory name."
+    },
+
+    /**
+     * Message indicating that required table parameters are missing for file list
+     * @type {IMessageDefinition}
+     */
+    missingRequiredTableParameters: {
+        message: "Options 'depth', 'filesys', and 'symlinks' require a 'group', 'user', 'name', 'size', 'mtime', 'perm', or 'type' option to be " +
+            "specified."
+    },
+
+    /**
      * Message indicating that the payload is required
      * @type {IMessageDefinition}
      */

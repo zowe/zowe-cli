@@ -76,4 +76,9 @@ export interface IUploadOptions extends IOptions {
      * which is at least 8MB.
      */
     returnEtag?: boolean;
+
+    /**
+     * Specifies whether hidden files whose names begin with a dot should be uploaded.
+     */
+    includeHidden?: boolean;
 }
