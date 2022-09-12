@@ -49,10 +49,7 @@ Array [
     "conflictsWith": Array [
       "extension",
     ],
-    "description": "Use this option to map data set names that match your pattern to the desired
-            extension. A comma delimited key value pairing (e.g. \\"cntl=.jcl,cpgm=.c\\" to map
-            the last segment of each data set (also known as the \\"low level qualifier\\" to
-            the desired local file extension).",
+    "description": "Use this option to map data set names that match your pattern to the desired extension. A comma delimited key value pairing (e.g. \\"cntl=.jcl,cpgm=.c\\" to map the last segment of each data set (also known as the \\"low level qualifier\\" to the desired local file extension).",
     "name": "extension-map",
     "type": "string",
   },

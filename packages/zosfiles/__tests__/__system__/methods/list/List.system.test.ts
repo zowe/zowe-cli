@@ -40,7 +40,7 @@ describe("List command group", () => {
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
         path = `${defaultSystem.unix.testdir}/${user}`;
-        filename = "aTestUssFolder.txt";
+        filename = "aTestUssFile.txt";
         Imperative.console.info("Using USS path:" + path + " and filename " + filename);
     });
 
@@ -179,7 +179,6 @@ describe("List command group", () => {
 
     describe("Data Set", () => {
         describe("Success Scenarios", () => {
-            const testString = "test";
             beforeEach(async () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
                     { volser: defaultSystem.datasets.vol });
@@ -295,7 +294,7 @@ describe("List command group", () => {
     describe("USS Files", () => {
 
         describe("Success scenarios", () => {
-            beforeEach(async () => {
+            beforeAll(async () => {
                 let error;
                 let response;
                 try {
@@ -309,7 +308,7 @@ describe("List command group", () => {
                 }
             });
 
-            afterEach(async () => {
+            afterAll(async () => {
                 let error;
                 let response;
                 try {
@@ -364,6 +363,113 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[0].mode.startsWith("d")).toBeTruthy();
                 expect(response.apiResponse.items.length).toBe(1);
             });
+
+            describe("Filter Options", () => {
+                let listResponse: any;
+
+                beforeAll(async () => {
+                    let error;
+                    let response;
+                    try {
+                        response = await List.fileList(REAL_SESSION, path);
+                        listResponse = response.apiResponse.items.find((item: any) => item.mode.startsWith("-"));
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                });
+
+                it("should filter by group", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { group: listResponse.group });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { group: listResponse.group + "-invalid" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by group ID", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { group: listResponse.gid });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { group: listResponse.gid + 1 });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by user", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { user: listResponse.user });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { user: listResponse.user + "-invalid" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by user ID", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { user: listResponse.uid });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { user: listResponse.uid + 1 });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by name", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { name: listResponse.name });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { name: listResponse.name + "-invalid" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by size", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { size: listResponse.size });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { size: listResponse.size + 1 });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by mtime", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { mtime: -1 });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { mtime: 1 });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by perm", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { perm: "-444" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { perm: "-777" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+
+                it("should filter by type", async () => {
+                    let response = await List.fileList(REAL_SESSION, path, { type: "f" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeDefined();
+
+                    response = await List.fileList(REAL_SESSION, path, { type: "d" });
+                    expect(response.success).toBe(true);
+                    expect(response.apiResponse.items.find((item: any) => item.name === filename)).toBeUndefined();
+                });
+            });
         });
 
         describe("Failure Scenarios", () => {
@@ -378,6 +484,45 @@ describe("List command group", () => {
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(error.message).toContain("Expect Error: Required object must be defined");
+            });
+
+            it("should display proper error message when path is undefined", async () => {
+                let response: IZosFilesResponse;
+                let error;
+                try {
+                    response = await List.fileList(REAL_SESSION, undefined);
+                } catch (err) {
+                    error = err;
+                }
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+            });
+
+            it("should display proper error message when path is empty string", async () => {
+                let response: IZosFilesResponse;
+                let error;
+                try {
+                    response = await List.fileList(REAL_SESSION, "");
+                } catch (err) {
+                    error = err;
+                }
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+            });
+
+            it("should display proper error message when required table parameters are missing", async () => {
+                let response: IZosFilesResponse;
+                let error;
+                try {
+                    response = await List.fileList(REAL_SESSION, path, { depth: 1 });
+                } catch (err) {
+                    error = err;
+                }
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(error.message).toContain(ZosFilesMessages.missingRequiredTableParameters.message);
             });
 
             it("should display proper message when listing path files and file does not exists", async () => {
