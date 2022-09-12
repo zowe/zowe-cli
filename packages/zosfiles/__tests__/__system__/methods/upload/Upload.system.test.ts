@@ -10,7 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse,
-    Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../src";
+    Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap, Utilities } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
@@ -646,7 +646,6 @@ describe("Upload USS file", () => {
             let getResponse;
             const data: Buffer = Buffer.from(testdata);
 
-
             try {
                 uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
@@ -664,6 +663,7 @@ describe("Upload USS file", () => {
             let uploadResponse;
             let getResponse;
             const data: Buffer = Buffer.from(testdata);
+
             try {
                 uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
@@ -680,10 +680,12 @@ describe("Upload USS file", () => {
             let error;
             let uploadResponse;
             let getResponse;
+            let tagResponse;
 
             try {
                 uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
+                tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -691,17 +693,19 @@ describe("Upload USS file", () => {
 
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(testdata));
+            expect(tagResponse).toBe(false);
 
         });
         it("should upload a USS file from local file in binary mode", async () => {
             let error;
             let uploadResponse;
             let getResponse;
-
+            let tagResponse;
 
             try {
                 uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
+                tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -709,6 +713,7 @@ describe("Upload USS file", () => {
 
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(testdata));
+            expect(tagResponse).toBe(true);
 
         });
         it("should upload a USS file while passing correct Etag", async () => {

@@ -27,19 +27,21 @@ export function stripNewLines(str: string): string {
 }
 
 /**
- * This function leverage unix time stamp (ms since epoch) along with user specified
- * high level qualify to generate unique data set name to be used for testing.
+ * This function leverage unix time stamp (ms since epoch), random numbers and user specified
+ * high level qualifier to generate unique data set name to be used for testing.
  * @param {string} hlq User specified high level qualify
  * @returns {string} A generated data set name
  */
 export function getUniqueDatasetName(hlq: string): string {
     let generatedName: string = "";
-    let timestampInMs: string = Date.now().toString();
+    const randomNumber = Math.random();
+    const timestampInMsNum = Date.now();
+    let timestampInMs = Math.floor(randomNumber * timestampInMsNum).toString();
     let tempStr: string;
     const MAX_NODE_LENGTH = 7;
 
     while (timestampInMs.length > 0) {
-        tempStr = timestampInMs.substr(0, MAX_NODE_LENGTH);
+        tempStr = timestampInMs.substring(0, MAX_NODE_LENGTH);
         generatedName += `A${tempStr}`;
         timestampInMs = timestampInMs.slice(tempStr.length, timestampInMs.length);
 

@@ -9,11 +9,12 @@
 *
 */
 
-
+import * as fs from "fs";
 import * as minimatch from "minimatch";
-import { Logger, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import * as pathUtils from "path";
+import { Tag } from "../methods/utilities";
 
 export enum TransferMode {BINARY, TEXT}
 
@@ -39,6 +40,46 @@ export class ZosFilesAttributes {
         this.basePath = basePath;
     }
 
+    public static loadFromFile(filePath?: string, defaultDir?: string): ZosFilesAttributes | undefined {
+        let attributesFile;
+        if (filePath != null) {
+            if (!fs.existsSync(filePath)) {
+                throw new ImperativeError({ msg: TextUtils.formatMessage(ZosFilesMessages.attributesFileNotFound.message,
+                    { file: filePath })});
+            }
+            attributesFile = filePath;
+        }
+        else {
+            const localAttributesFile = pathUtils.join(defaultDir ?? process.cwd(), ".zosattributes");
+            if (fs.existsSync(localAttributesFile)) {
+                attributesFile = localAttributesFile;
+            } else {
+                return;
+            }
+        }
+
+        let attributesFileContents;
+        try {
+            attributesFileContents = fs.readFileSync(attributesFile).toString();
+        }
+        catch (err) {
+            throw new ImperativeError({ msg: TextUtils.formatMessage(
+                ZosFilesMessages.errorReadingAttributesFile.message,
+                { file: attributesFile, message: err.message })});
+        }
+
+        let attributes;
+        try {
+            attributes = new ZosFilesAttributes(attributesFileContents, defaultDir);
+        }
+        catch (err) {
+            throw new ImperativeError({ msg: TextUtils.formatMessage(
+                ZosFilesMessages.errorParsingAttributesFile.message,
+                { file: attributesFile, message: err.message })});
+        }
+        return attributes;
+    }
+
     public fileShouldBeUploaded(path: string): boolean {
         let result = false;
         const attributes = this.findLastMatchingAttributes(path);
@@ -53,13 +94,17 @@ export class ZosFilesAttributes {
         return result;
     }
 
+    public fileShouldBeIgnored(path: string): boolean {
+        return !this.fileShouldBeUploaded(path);
+    }
+
     public getFileTransferMode(path: string): TransferMode {
         const attributes = this.findLastMatchingAttributes(path);
         if (attributes === null) {
-            return TransferMode.BINARY;
+            return TransferMode.TEXT;
         }
 
-        if (attributes.localEncoding === attributes.remoteEncoding) {
+        if (attributes.localEncoding === Tag.BINARY || attributes.localEncoding === attributes.remoteEncoding) {
             return TransferMode.BINARY;
         } else {
             return TransferMode.TEXT;
@@ -68,8 +113,8 @@ export class ZosFilesAttributes {
 
     public getRemoteEncoding(path: string): string {
         const attributes = this.findLastMatchingAttributes(path);
-        if (attributes === null) {
-            return "ISO8859-1";
+        if (attributes === null || attributes.remoteEncoding?.toUpperCase() === "EBCDIC") {
+            return;  // Fall back to default system code page
         }
 
         return attributes.remoteEncoding;

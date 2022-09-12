@@ -125,8 +125,9 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         type: "string",
         conflictsWith: ["ascii-files, binary-files"]
     },
+
     /**
-     *  The maximum concurrent requests for upload
+     * The maximum concurrent requests for upload
      * @type {ICommandOptionDefinition}
      */
     maxConcurrentRequests: {
@@ -136,5 +137,15 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         type: "number",
         defaultValue: 1,
         numericValueRange: [0, maxConcurrentRequestsMaxValue]
+    },
+
+    /**
+     * The include hidden option for upload
+     */
+    includeHidden: {
+        name: "include-hidden",
+        aliases: ["ih"],
+        description: strings.INCLUDE_HIDDEN,
+        type: "boolean"
     }
 };

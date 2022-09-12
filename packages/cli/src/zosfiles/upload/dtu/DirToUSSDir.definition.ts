@@ -51,7 +51,8 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
         UploadOptions.binaryFiles,
         UploadOptions.asciiFiles,
         UploadOptions.attributes,
-        UploadOptions.maxConcurrentRequests
+        UploadOptions.maxConcurrentRequests,
+        UploadOptions.includeHidden
     ],
     examples: [
         {

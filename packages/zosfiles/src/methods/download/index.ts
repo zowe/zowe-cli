@@ -10,5 +10,7 @@
 */
 
 export * from "./doc/IDownloadOptions";
+export * from "./doc/IDownloadDsmResult";
+export * from "./doc/IDownloadUssDirResult";
 
 export * from "./Download";
