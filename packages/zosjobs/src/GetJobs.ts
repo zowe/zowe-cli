@@ -91,7 +91,7 @@ export class GetJobs {
      * @memberof GetJobs
      */
     public static async getJobsByParameters(session: AbstractSession, params: IGetJobsParms) {
-        Logger.getAppLogger().trace("GetJobs.getJobsByOwnerAndPrefix()");
+        Logger.getAppLogger().trace("GetJobs.getJobsByParameters()");
         const { owner, prefix } = params;
         ImperativeExpect.toBeDefinedAndNonBlank(owner, "owner");
         ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix");
