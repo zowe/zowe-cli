@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { Create, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Create, CreateDataSetTypeEnum, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { generateZosmfOptions } from "../Create.utils";
 
@@ -20,11 +20,23 @@ import { generateZosmfOptions } from "../Create.utils";
 
 export default class DataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        return Create.dataSetLike(
-            session,
-            commandParameters.arguments.dataSetName,
-            commandParameters.arguments.like,
-            generateZosmfOptions(commandParameters.arguments)
-        );
+        if (commandParameters.arguments.dataSetType != undefined) {
+            return Create.dataSet(
+                session,
+                CreateDataSetTypeEnum.DATA_SET_BLANK,
+                commandParameters.arguments.dataSetName,
+                generateZosmfOptions(commandParameters.arguments)
+            );
+
+        }
+        else {
+            return Create.dataSetLike(
+                session,
+                commandParameters.arguments.dataSetName,
+                commandParameters.arguments.like,
+                generateZosmfOptions(commandParameters.arguments)
+            );            
+        }
+
     }
 }
