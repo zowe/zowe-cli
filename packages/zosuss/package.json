@@ -45,11 +45,11 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "ssh2": "1.4.0"
+    "ssh2": "1.11.0"
   },
   "devDependencies": {
     "@types/node": "^14.18.28",
-    "@types/ssh2": "^0.5.44",
+    "@types/ssh2": "^1.11.0",
     "@zowe/cli-test-utils": "7.6.0",
     "@zowe/imperative": "5.5.2",
     "eslint": "^7.32.0",

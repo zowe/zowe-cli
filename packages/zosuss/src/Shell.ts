@@ -45,8 +45,8 @@ export class Shell {
                     let isUserCommand = false;
                     let rc: number;
 
-                    stream.on("exit", (exitcode) => {
-                        Logger.getAppLogger().debug("Return Code: " + exitcode);
+                    stream.on("exit", (exitcode: number) => {
+                        Logger.getAppLogger().debug(`Return Code: ${exitcode}`);
                         if (dataBuffer.trim().length > 1) {
                             // normally the last line is "\r\n$ " and we don't care about it
                             // but we need to handle the case of an incomplete line at the end
