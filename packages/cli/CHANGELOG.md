@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed Example 3 where no `--like` option is specified in `zowe zos-files create data-set`.
+
 ## `7.6.2`
 
 - BugFix: Updated `minimatch` and `keytar` dependencies for technical currency.
