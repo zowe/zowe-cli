@@ -28,7 +28,7 @@ export default class CompareBaseHelper {
     public file1Options: ICompareFileOptions = {} as ICompareFileOptions;
 
     /**
-     * file compare option for file
+     * file compare option for file2
      * @public
      * @memberof CompareBaseHelper
      */
