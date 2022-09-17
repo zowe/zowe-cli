@@ -13,3 +13,17 @@ exports[`Create data set handler process method should create a  data set if req
 "
 created"
 `;
+
+exports[`Create data set handler process method should create a  data set if requested with --data-set-type 1`] = `
+Object {
+  "commandResponse": "created",
+  "success": true,
+}
+`;
+
+exports[`Create data set handler process method should create a  data set if requested with --data-set-type 2`] = `""`;
+
+exports[`Create data set handler process method should create a  data set if requested with --data-set-type 3`] = `
+"
+created"
+`;
