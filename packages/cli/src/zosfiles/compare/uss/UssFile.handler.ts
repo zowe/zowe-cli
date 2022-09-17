@@ -20,7 +20,7 @@ import CompareBaseHelper from "../CompareBaseHelper";
  */
 export default class UssFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        CompareBaseHelper.instance.setComparisonEnvironment(commandParameters);
+        const helper = new CompareBaseHelper(commandParameters);
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Retrieving first uss file",
@@ -31,9 +31,9 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
 
         const ussFileContentBuf1 = await Get.USSFile(session, commandParameters.arguments.ussFilePath1,
             {
-                binary: CompareBaseHelper.instance.binary,
-                encoding: CompareBaseHelper.instance.encoding,
-                responseTimeout: CompareBaseHelper.instance.responseTimeout,
+                binary: helper.file1Options.binary,
+                encoding: helper.file1Options.encoding,
+                responseTimeout: helper.responseTimeout,
                 task: task
             }
         );
@@ -45,15 +45,15 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         task.statusMessage = "Retrieving second uss-file";
         const ussFileContentBuf2 = await Get.USSFile(session, commandParameters.arguments.ussFilePath2,
             {
-                binary: CompareBaseHelper.instance.binary2,
-                encoding: CompareBaseHelper.instance.encoding,
-                responseTimeout: CompareBaseHelper.instance.responseTimeout,
+                binary: helper.file2Options.binary,
+                encoding: helper.file2Options.encoding,
+                responseTimeout: helper.responseTimeout,
                 task: task
             }
         );
 
 
-        const {contentString1, contentString2} =CompareBaseHelper.instance.prepareStrings(ussFileContentBuf1, ussFileContentBuf2);
-        return CompareBaseHelper.instance.getResponse(contentString1, contentString2);
+        const {contentString1, contentString2} =helper.prepareStrings(ussFileContentBuf1, ussFileContentBuf2);
+        return helper.getResponse(contentString1, contentString2);
     }
 }

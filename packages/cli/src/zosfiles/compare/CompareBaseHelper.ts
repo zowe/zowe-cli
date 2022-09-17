@@ -11,154 +11,94 @@
 
 import { IHandlerParameters, DiffUtils } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
 /**
  * Base helper for compare command to handle common operations through the comparison
  * @export
  */
-export default class ComapareBaseHelper {
+export default class CompareBaseHelper {
+
 
     /**
-     * Singleton instance of this class
-     * @private
-     * @static
-     * @type {ComapareBaseHelper}
-     * @memberof ComapareBaseHelper
-     */
-    private static hInstance: ComapareBaseHelper;
-
-    /**
-     * Return a singleton instance of this class
-     * @static
-     * @readonly
-     */
-    public static get instance(): ComapareBaseHelper {
-        if(this.hInstance == null){
-            this.hInstance = new ComapareBaseHelper();
-        }
-
-        return this.hInstance;
-    }
-
-    /**
-     * binary option for file1
+     * file compare option for file1
      * @public
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
-    public binary: boolean;
+    public file1Options: ICompareFileOptions = {} as ICompareFileOptions;
 
     /**
-     * encoding option for file1
+     * file compare option for file
      * @public
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
-    public encoding: string;
-
-    /**
-     * record option for file1
-     * @public
-     * @memberof ComapareBaseHelper
-     */
-    public record: boolean;
-
-    /**
-     * volume serial option for file
-     * @public
-     * @memberof ComapareBaseHelper
-     */
-    public volumeSerial: string;
+    public file2Options: ICompareFileOptions = {} as ICompareFileOptions;
 
     /**
      * responseTimeout option
      * @public
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
     public responseTimeout: number;
 
     /**
-     * binary option for file2
-     * @public
-     * @memberof ComapareBaseHelper
-     */
-    public binary2: boolean;
-
-    /**
-     * encoding option for file1
-     * @public
-     * @memberof ComapareBaseHelper
-     */
-    public encoding2: string;
-
-    /**
-     * record option for file2
-     * @public
-     * @memberof ComapareBaseHelper
-     */
-    public record2: boolean;
-
-    /**
-     * volume serial option for file2
-     * @public
-     * @memberof ComapareBaseHelper
-     */
-    public volumeSerial2: string;
-
-    /**
      * seqnum option
      * @public
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
     public seqnum: boolean;
 
     /**
      * contextLines option
      * @private
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
     private contextLines: number;
 
     /**
      * browserView option
      * @private
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
     private  browserView: boolean;
 
     /**
-     * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
-     * @public
-     * @memberof ComapareBaseHelper
+     * Creates an instance of CompareBaseHelper
+     * @param {IHandlerParameters} commandParameters Command parameters sent to the handler
+     * @memberof CompareBaseHelper
      */
-    public async setComparisonEnvironment(commandParameters: IHandlerParameters): Promise<void> {
+    constructor(commandParameters: IHandlerParameters){
+        this.file1Options.binary = commandParameters.arguments.binary;
+        this.file2Options.binary = commandParameters.arguments.binary2;
+        this.file1Options.encoding = commandParameters.arguments.encoding2;
+        this.file2Options.encoding = commandParameters.arguments.encoding2;
+        this.file1Options.record = commandParameters.arguments.record2;
+        this.file2Options.record = commandParameters.arguments.record2;
+        this.file1Options.volumeSerial = commandParameters.arguments.volumeSerial2;
+        this.file2Options.volumeSerial = commandParameters.arguments.volumeSerial2;
 
-        this.binary = commandParameters.arguments.binary;
-        this.binary2 = commandParameters.arguments.binary2;
-        this.encoding2 = commandParameters.arguments.encoding2;
-        this.encoding2 = commandParameters.arguments.encoding2;
-        this.record2 = commandParameters.arguments.record2;
-        this.record2 = commandParameters.arguments.record2;
-        this.volumeSerial2 = commandParameters.arguments.volumeSerial2;
-        this.volumeSerial2 = commandParameters.arguments.volumeSerial2;
-
-        if (this.binary2 == undefined) {
-            this.binary2 = this.binary;
+        if (this.file2Options?.binary == undefined) {
+            this.file2Options.binary = this.file1Options.binary;
         }
-        if (this.encoding2 == undefined) {
-            this.encoding2 = this.encoding;
+        if (this.file2Options.encoding == undefined) {
+            this.file2Options.encoding = this.file1Options.encoding;
         }
-        if (this.record2 == undefined) {
-            this.record2 = this.record;
+        if (this.file2Options.record == undefined) {
+            this.file2Options.record = this.file1Options.record;
         }
 
+        this.seqnum = commandParameters.arguments.seqnum;
+        this.browserView = commandParameters.arguments.browserView;
+        this.contextLines = commandParameters.arguments.contextLines;
+        this.responseTimeout = commandParameters.arguments.responseTimeout;
     }
-
     /**
      *
      * @param {string | Buffer } content1 - Content string or buffer of file 1
      * @param {string | Buffer } content2 - - Content string or buffer of file 2
      * @returns
      * @public
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
     public prepareStrings(content1: string | Buffer, content2: string | Buffer ) {
         let contentString1: string;
@@ -195,11 +135,9 @@ export default class ComapareBaseHelper {
      *
      * @param {string} string1 - string of file 1 comtent
      * @param  {string} string2 - string of file 2 comtent
-     * @param {boolean} browserView
-     * @param {number} contextlinesArg
-     * @returns
+     * @returns {IZosFilesResponse}
      * @public
-     * @memberof ComapareBaseHelper
+     * @memberof CompareBaseHelper
      */
     public async getResponse(string1: string, string2: string): Promise<IZosFilesResponse>{
         //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
