@@ -14,6 +14,12 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src_
 
 describe("Create data set handler", () => {
     describe("process method", () => {
+        // Require the handler and create a new instance
+        const handlerReq = require("../../../../../src/zosfiles/create/ds/ds.handler");
+        const handler = new handlerReq.default();
+        const dataSetName = "testing";
+        const likeDataSetName = "testing";
+        const dataSetTypeName = "PDS";
 
         beforeEach(() => {
             // Mocks need cleared after every test for clean test runs
@@ -21,12 +27,6 @@ describe("Create data set handler", () => {
         });
 
         it("should create a  data set if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/create/ds/ds.handler");
-            const handler = new handlerReq.default();
-            const dataSetName = "testing";
-            const likeDataSetName = "testing";
-
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
@@ -90,12 +90,6 @@ describe("Create data set handler", () => {
         });
 
         it("should create a  data set if requested with --data-set-type", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/create/ds/ds.handler");
-            const handler = new handlerReq.default();
-            const dataSetName = "testing";
-            const dataSetTypeName = "PDS";
-
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
