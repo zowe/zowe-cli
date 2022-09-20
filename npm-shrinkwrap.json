@@ -264,19 +264,6 @@
         "node": ">=8"
       }
     },
-    "__tests__/__packages__/cli-test-utils/node_modules/typescript": {
-      "version": "4.5.5",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.5.5.tgz",
-      "integrity": "sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==",
-      "dev": true,
-      "bin": {
-        "tsc": "bin/tsc",
-        "tsserver": "bin/tsserver"
-      },
-      "engines": {
-        "node": ">=4.2.0"
-      }
-    },
     "__tests__/__packages__/cli-test-utils/node_modules/which": {
       "version": "2.0.2",
       "resolved": "https://registry.npmjs.org/which/-/which-2.0.2.tgz",
@@ -8432,9 +8419,9 @@
       "dev": true
     },
     "node_modules/@types/node": {
-      "version": "12.20.42",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.42.tgz",
-      "integrity": "sha512-aI3/oo5DzyiI5R/xAhxxRzfZlWlsbbqdgxfTPkqu/Zt+23GXiJvMCyPJT4+xKSXOnLqoL8jJYMLTwvK2M3a5hw==",
+      "version": "12.20.55",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
+      "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==",
       "dev": true
     },
     "node_modules/@types/normalize-package-data": {
@@ -34770,7 +34757,7 @@
         "cosmiconfig": "^7.0.0",
         "dedent": "^0.7.0",
         "dot-prop": "^6.0.1",
-        "glob-parent": "~5.1.2",
+        "glob-parent": "^5.1.1",
         "globby": "^11.0.2",
         "load-json-file": "^6.2.0",
         "npmlog": "^6.0.2",
@@ -37080,9 +37067,9 @@
       "dev": true
     },
     "@types/node": {
-      "version": "12.20.42",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.42.tgz",
-      "integrity": "sha512-aI3/oo5DzyiI5R/xAhxxRzfZlWlsbbqdgxfTPkqu/Zt+23GXiJvMCyPJT4+xKSXOnLqoL8jJYMLTwvK2M3a5hw==",
+      "version": "12.20.55",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
+      "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==",
       "dev": true
     },
     "@types/normalize-package-data": {
@@ -37764,12 +37751,6 @@
           "version": "3.0.0",
           "resolved": "https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz",
           "integrity": "sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==",
-          "dev": true
-        },
-        "typescript": {
-          "version": "4.5.5",
-          "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.5.5.tgz",
-          "integrity": "sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==",
           "dev": true
         },
         "which": {
@@ -40537,7 +40518,7 @@
         "async-each": "^1.0.1",
         "braces": "^2.3.2",
         "fsevents": "^1.2.7",
-        "glob-parent": "~5.1.2",
+        "glob-parent": "^3.1.0",
         "inherits": "^2.0.3",
         "is-binary-path": "^1.0.0",
         "is-glob": "^4.0.0",
@@ -41918,7 +41899,7 @@
         "file-entry-cache": "^6.0.1",
         "find-up": "^5.0.0",
         "functional-red-black-tree": "^1.0.1",
-        "glob-parent": "~5.1.2",
+        "glob-parent": "^6.0.1",
         "globals": "^13.15.0",
         "globby": "^11.1.0",
         "grapheme-splitter": "^1.0.4",
@@ -42403,7 +42384,7 @@
       "requires": {
         "@nodelib/fs.stat": "^2.0.2",
         "@nodelib/fs.walk": "^1.2.3",
-        "glob-parent": "~5.1.2",
+        "glob-parent": "^5.1.2",
         "merge2": "^1.3.0",
         "micromatch": "^4.0.4"
       }
@@ -43137,7 +43118,7 @@
       "requires": {
         "extend": "^3.0.0",
         "glob": "^7.1.1",
-        "glob-parent": "~5.1.2",
+        "glob-parent": "^3.1.0",
         "is-negated-glob": "^1.0.0",
         "ordered-read-streams": "^1.0.0",
         "pumpify": "^1.3.5",
@@ -43217,7 +43198,7 @@
           "requires": {
             "@nodelib/fs.stat": "^2.0.2",
             "@nodelib/fs.walk": "^1.2.3",
-            "glob-parent": "~5.1.2",
+            "glob-parent": "^5.1.2",
             "merge2": "^1.3.0",
             "micromatch": "^4.0.4"
           }

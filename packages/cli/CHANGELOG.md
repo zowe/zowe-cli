@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Restore info message on daemon startup. [#1506](https://github.com/zowe/zowe-cli/issues/1506)
+
 ## `7.5.1`
 
 - BugFix: Updated Imperative to include bugfixes in version `5.5.1`.
