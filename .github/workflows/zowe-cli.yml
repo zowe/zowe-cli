@@ -26,8 +26,11 @@ on:
 
 jobs:
   test:
-    name: Cross-Platform Test
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ${{ matrix.os }}
+    outputs:
+      npm-resolutions: ${{ steps.npm-update.outputs.result }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +48,6 @@ jobs:
       group: ${{ matrix.os }}-node-${{ matrix.node-version }}-ci-${{ github.ref }}
       cancel-in-progress: true
 
-    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -63,9 +65,14 @@ jobs:
       id: npm8
       run: npm install -g npm@~8.3.2
 
-    - name: Install Node Package Dependencies
-      id: install
+    - name: Install Dependencies
       run: npm ci
+
+    - name: Update Dependencies
+      id: npm-update
+      uses: zowe-actions/octorelease-script@master
+      with:
+        script: npmUpdate
 
     - name: Use Original NPM Version
       id: original-npm-version
@@ -90,7 +97,7 @@ jobs:
 
     - name: Build Source
       id: build
-      run: npm run build --if-present
+      run: npm run build
 
     - name: Build Binary
       id: build-binary
@@ -121,7 +128,6 @@ jobs:
       run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
-      id: unit
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit
 
@@ -136,17 +142,14 @@ jobs:
       run: ./__tests__/__resources__/daemon_instances/zowe
 
     - name: Integration Tests (Native)
-      id: integration-native
       if: ${{ always() && steps.build.outcome == 'success' && !(github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: npm run test:integration
 
     - name: Integration Tests (Daemon)
-      id: integration-daemon
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: npm run test:integration -- --runInBand
 
     - name: Archive Results
-      id: upload
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: actions/upload-artifact@v2
       with:
@@ -154,8 +157,63 @@ jobs:
         path: __tests__/__results__/
 
     - name: Upload Results to Codecov
-      id: upload-codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: codecov/codecov-action@v3
       with:
         env_vars: OS,NODE
+
+    - name: Configure Sonar Scan
+      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
+      uses: octorelease/run-script@master
+      with:
+        script: sonarConfig
+
+    - name: SonarCloud Scan
+      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+
+  release:
+    if: github.event_name == 'push'
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+        ref: ${{ github.ref }}
+
+    - name: Use Node.js LTS
+      uses: actions/setup-node@v2
+      with:
+        node-version: 'lts/*'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Update Dependencies
+      uses: zowe-actions/octorelease-script@master
+      env:
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+        NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
+      with:
+        script: npmUpdate
+
+    - name: Build Source
+      run: npm run build
+
+    - uses: zowe-actions/octorelease@master
+      env:
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+        GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+        NPM_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        NPM_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
