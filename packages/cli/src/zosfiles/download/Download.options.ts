@@ -100,6 +100,13 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "string"
     },
 
+    directoryUss: {
+        name: "directory",
+        aliases: ["d"],
+        description: strings.DIRECTORY_USS,
+        type: "string"
+    },
+
     /**
      * The pattern to be excluded
      * @type {ICommandOptionDefinition}
@@ -136,6 +143,15 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         numericValueRange: [0, maxConcurrentRequestsMaxValue]
     },
 
+    maxConcurrentRequestsUss: {
+        name: "max-concurrent-requests",
+        aliases: ["mcr"],
+        description: strings.MAX_CONCURRENT_REQUESTS_USS,
+        type: "number",
+        defaultValue: 1,
+        numericValueRange: [0, maxConcurrentRequestsMaxValue]
+    },
+
     preserveOriginalLetterCase: {
         name: "preserve-original-letter-case",
         aliases: ["po"],
@@ -150,5 +166,44 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.FAIL_FAST,
         type: "boolean",
         defaultValue: true
+    },
+
+    failFastUss: {
+        name: "fail-fast",
+        aliases: ["ff"],
+        description: strings.FAIL_FAST_USS,
+        type: "boolean",
+        defaultValue: true
+    },
+
+    /**
+     * The attributes option to specify the path to a zos-files-attributes file
+     */
+    attributes: {
+        name: "attributes",
+        aliases: ["attrs"],
+        description: strings.ATTRIBUTES,
+        type: "existingLocalFile",
+        conflictsWith: ["binary", "record"]
+    },
+
+    /**
+     * The include hidden option for download
+     */
+    includeHidden: {
+        name: "include-hidden",
+        aliases: ["ih"],
+        description: strings.INCLUDE_HIDDEN,
+        type: "boolean"
+    },
+
+    /**
+     * The include hidden option for download
+     */
+    overwrite: {
+        name: "overwrite",
+        aliases: ["ow"],
+        description: strings.OVERWRITE,
+        type: "boolean"
     }
 };

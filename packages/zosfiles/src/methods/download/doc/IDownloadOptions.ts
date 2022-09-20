@@ -10,6 +10,7 @@
 */
 
 import { IOptions } from "../../../doc/IOptions";
+import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 
 /**
  * This interface defines the options that can be sent into the download data set function
@@ -81,4 +82,24 @@ export interface IDownloadOptions extends IOptions {
      * The default value is true for backward compatibility.
      */
     failFast?: boolean;
+
+    /**
+     * The local file encoding to pass as a "Content-Type" header
+     */
+    localEncoding?: string;
+
+    /**
+     * The path to a .zosattributes file used to control file conversion and tagging.
+     */
+    attributes?: ZosFilesAttributes;
+
+    /**
+     * Specifies whether hidden files whose names begin with a dot should be downloaded.
+     */
+    includeHidden?: boolean;
+
+    /**
+     * Specifies whether local files should be overwritten when downloaded.
+     */
+    overwrite?: boolean;
 }
