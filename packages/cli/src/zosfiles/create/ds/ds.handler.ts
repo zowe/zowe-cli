@@ -20,7 +20,7 @@ import { generateZosmfOptions } from "../Create.utils";
 
 export default class DataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        if (commandParameters.arguments.like == null) {
+        if (commandParameters.arguments.like == undefined) {
             return Create.dataSet(
                 session,
                 CreateDataSetTypeEnum.DATA_SET_BLANK,
