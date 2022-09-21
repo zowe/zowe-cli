@@ -146,7 +146,8 @@ describe("Create data set handler", () => {
 
             expect(error).toBeUndefined();
             expect(Create.dataSet).toHaveBeenCalledTimes(1);
-            expect(Create.dataSet).toHaveBeenCalledWith(AbstractSession, CreateDataSetTypeEnum.DATA_SET_BLANK, dataSetName,{"dsntype": dataSetTypeName});
+            expect(Create.dataSet).toHaveBeenCalledWith(AbstractSession, CreateDataSetTypeEnum.DATA_SET_BLANK, dataSetName,
+                {"dsntype": dataSetTypeName});
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

@@ -35,7 +35,7 @@ export default class DataSetHandler extends ZosFilesBaseHandler {
                 commandParameters.arguments.dataSetName,
                 commandParameters.arguments.like,
                 generateZosmfOptions(commandParameters.arguments)
-            );            
+            );
         }
 
     }
