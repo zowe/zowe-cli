@@ -3,7 +3,7 @@
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
 ## `7.6.0`
-
+- Enhancement: Modified the progress bar for USS file uploads to increase readibility. [#451](https://github.com/zowe/zowe-cli/issues/451)
 - Enhancement: Updated the `List.fileList` method to support z/OSMF filter parameters such as "mtime" and "name".
 - Enhancement: Added `Download.ussDir` method to download the contents of a USS directory.
 - Enhancement: Updated the `Upload.streamToUssFile` method to "chtag" files after uploading them.
