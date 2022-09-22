@@ -44,6 +44,8 @@
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
+    "@octorelease/lerna": "^0.1.3",
+    "@octorelease/prune-shrinkwrap": "^0.1.0",
     "@types/jest": "^28.0.0",
     "@types/node": "^14.18.28",
     "@typescript-eslint/eslint-plugin": "^5.33.0",

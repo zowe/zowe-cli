@@ -70,7 +70,7 @@ jobs:
 
     - name: Update Dependencies
       id: npm-update
-      uses: zowe-actions/octorelease-script@master
+      uses: zowe-actions/octorelease-script@update-for-cli
       with:
         script: npmUpdate
 
@@ -164,7 +164,7 @@ jobs:
 
     - name: Configure Sonar Scan
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
-      uses: octorelease/run-script@master
+      uses: zowe-actions/octorelease-script@update-for-cli
       with:
         script: sonarConfig
 
@@ -197,7 +197,7 @@ jobs:
       run: npm ci
 
     - name: Update Dependencies
-      uses: zowe-actions/octorelease-script@master
+      uses: zowe-actions/octorelease-script@update-for-cli
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
