@@ -95,6 +95,16 @@ Array [
   },
   Object {
     "aliases": Array [
+      "rl",
+      "lrecl",
+    ],
+    "defaultValue": "CYL",
+    "description": "The logical record length. Analogous to the length of a line (for example, 80)",
+    "name": "record-length",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
       "ss",
     ],
     "description": "The secondary space allocation (for example, 1)",
