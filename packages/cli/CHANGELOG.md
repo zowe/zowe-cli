@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.6.1`
+
+- BugFix: Updated `ssh2` dependency to fix "Received unexpected packet type" error on SSH commands. [#1516](https://github.com/zowe/zowe-cli/issues/1516)
+- BugFix: Updated Imperative to include bugfixes in version `5.5.3`.
+
 ## `7.6.0`
 
 - Enhancement: Added the `zowe files download uss-dir` command to download the contents of a USS directory. [#1038](https://github.com/zowe/zowe-cli/issues/1038)
