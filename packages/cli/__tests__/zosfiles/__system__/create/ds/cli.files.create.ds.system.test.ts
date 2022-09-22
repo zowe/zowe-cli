@@ -25,6 +25,8 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let dsnameSuffix: string;
 let user: string;
+let pass: string;
+let host: string;
 
 describe("Create Data Set", () => {
     // Create the unique test environment
@@ -39,6 +41,8 @@ describe("Create Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
+        pass = defaultSystem.zosmf.password.trim().toUpperCase();
+        host = defaultSystem.zosmf.host.trim().toUpperCase();
         dsname = `${user}.TEST.DATA.SET`;
 
     });
@@ -71,11 +75,12 @@ describe("Create Data Set", () => {
         });
 
         it("should creating a data set with missing like", () => {
-            dsnameSuffix = "dataSetType";
+            dsnameSuffix = "withoutLike";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ds_missing_like.sh",
-                TEST_ENVIRONMENT);
+                TEST_ENVIRONMENT,[host,user,pass]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set created successfully.");
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
