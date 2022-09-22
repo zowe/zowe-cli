@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent changes
+## Recent Changes
 - Enhancement: Modified the progress bar for USS file uploads to increase readibility. [#451](https://github.com/zowe/zowe-cli/issues/451)
 
 ## `7.6.0`
