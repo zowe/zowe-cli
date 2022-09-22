@@ -47,6 +47,7 @@ export const PdsDefinition: ICommandDefinition = {
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.blksize},
         {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.lrecl},
+        {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.alcunit},
         ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
