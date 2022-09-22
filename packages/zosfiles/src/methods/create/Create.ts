@@ -34,7 +34,7 @@ export class Create {
     /**
      * Create a data set
      * @param {AbstractSession} session                     - z/OSMF connection info
-     * @param {CreateDataSetTypeEnum} cmdType               - The type of data set we are going to create
+     * @param {CreateDataSetTypeEnum} cmdType               - The type of data set we are going to create from default options
      * @param {string} dataSetName                          - the name of the data set to create
      * @param {Partial<ICreateDataSetOptions>} [options={}] - additional options for the creation of the data set
      * @returns {Promise<IZosFilesResponse>}
