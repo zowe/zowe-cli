@@ -80,7 +80,7 @@ node('zowe-jenkins-agent-dind') {
         unit: 'MINUTES'
     ])
 
-    def TEST_ROOT = "__tests__/__results__"
+    def TEST_ROOT = "__tests__/__results__/ci"
     def UNIT_TEST_ROOT = "$TEST_ROOT/unit"
     def UNIT_JUNIT_OUTPUT = "$UNIT_TEST_ROOT/junit.xml"
 
