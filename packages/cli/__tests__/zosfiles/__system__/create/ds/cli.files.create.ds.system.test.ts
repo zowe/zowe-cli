@@ -70,6 +70,15 @@ describe("Create Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should creating a data set with missing like", () => {
+            dsnameSuffix = "dataSetType";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ds_missing_like.sh",
+                TEST_ENVIRONMENT);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
     });
 
 });

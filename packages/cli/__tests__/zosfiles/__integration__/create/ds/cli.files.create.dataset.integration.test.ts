@@ -36,12 +36,4 @@ describe("Create  Data Set", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    describe("Expected failures", () => {
-
-        it("should fail creating a data set due to missing like data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ds_fail_missing_like.sh", TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("like");
-        });
-    });
 });
