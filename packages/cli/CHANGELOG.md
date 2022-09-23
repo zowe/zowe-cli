@@ -3,7 +3,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
-- Enhancement: Added `ZosFilesCreateOptions.alcunit` option to pds definition. [#1203](https://github.com/zowe/zowe-cli/issues/1203)
+- Enhancement: Added `ZosFilesCreateOptions.alcunit` option to PDS definition. [#1203](https://github.com/zowe/zowe-cli/issues/1203)
 
 ## `7.6.1`
 
