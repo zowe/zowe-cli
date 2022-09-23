@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Comapare Base Helper it should prepare the comtent strings for comparison should return the prepared strings 1`] = `
+{
+  "contentString1": "undefinedtest 
+",
+  "contentString2": "undefinedtest 
+",
+}
+`;

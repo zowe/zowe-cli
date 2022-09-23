@@ -17,22 +17,21 @@ import { ICompareFileOptions } from "./doc/ICompareFileOptions";
  * Base helper for compare command to handle common operations through the comparison
  * @export
  */
-export default class CompareBaseHelper {
-
+export class CompareBaseHelper {
 
     /**
      * file compare option for file1
      * @public
      * @memberof CompareBaseHelper
      */
-    public file1Options: ICompareFileOptions = {} as ICompareFileOptions;
+    public file1Options: ICompareFileOptions = {};
 
     /**
      * file compare option for file2
      * @public
      * @memberof CompareBaseHelper
      */
-    public file2Options: ICompareFileOptions = {} as ICompareFileOptions;
+    public file2Options: ICompareFileOptions = {};
 
     /**
      * responseTimeout option
@@ -53,14 +52,14 @@ export default class CompareBaseHelper {
      * @private
      * @memberof CompareBaseHelper
      */
-    private contextLines: number;
+    public contextLines: number;
 
     /**
      * browserView option
      * @private
      * @memberof CompareBaseHelper
      */
-    private  browserView: boolean;
+    public  browserView: boolean;
 
     /**
      * Creates an instance of CompareBaseHelper
@@ -92,8 +91,9 @@ export default class CompareBaseHelper {
         this.contextLines = commandParameters.arguments.contextLines;
         this.responseTimeout = commandParameters.arguments.responseTimeout;
     }
+
     /**
-     *
+     * This method will prepare the strings for comparison ready
      * @param {string | Buffer } content1 - Content string or buffer of file 1
      * @param {string | Buffer } content2 - - Content string or buffer of file 2
      * @returns
@@ -132,7 +132,7 @@ export default class CompareBaseHelper {
     }
 
     /**
-     *
+     * To get the difference string in ternninal or in browser
      * @param {string} string1 - string of file 1 comtent
      * @param  {string} string2 - string of file 2 comtent
      * @returns {IZosFilesResponse}

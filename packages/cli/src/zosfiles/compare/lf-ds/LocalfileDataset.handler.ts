@@ -12,16 +12,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import {CompareBaseHelper} from '../CompareBaseHelper';
 
 /**
- * Handler to view a data set's content
+ * Handler to compare a localfile and a dataset content
  * @export
  */
 export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+
+        const helper = new CompareBaseHelper(commandParameters);
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Retrieving local file",
@@ -55,76 +58,20 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
 
         // reading local file as buffer
         const lfContentBuf = fs.readFileSync(localFile);
-
         commandParameters.response.progress.endBar();
-
-        // retrieving the data-set to compare
         commandParameters.response.progress.startBar({ task });
-        task.statusMessage = "Retrieving dataset";
+        task.statusMessage = `Retrieving dataset`;
+
         const dsContentBuf = await Get.dataSet(session, commandParameters.arguments.dataSetName,
             {
-                binary: commandParameters.arguments.binary,
-                encoding: commandParameters.arguments.encoding,
-                record: commandParameters.arguments.record,
-                volume: commandParameters.arguments.volumeSerial,
-                responseTimeout: commandParameters.arguments.responseTimeout,
+                ...helper.file2Options,
+                responseTimeout: helper.responseTimeout,
                 task: task
             }
         );
 
+        const {contentString1, contentString2} = helper.prepareStrings(lfContentBuf, dsContentBuf);
 
-        const browserView = commandParameters.arguments.browserView;
-
-        let lfContentString = "";
-        let dsContentString = "";
-
-        if (!commandParameters.arguments.seqnum) {
-            const seqnumlen = 8;
-
-            const lfStringArray = lfContentBuf.toString().split("\n");
-            for (const i in lfStringArray) {
-                const sl = lfStringArray[i].length;
-                const tempString = lfStringArray[i].substring(0, sl - seqnumlen);
-                lfContentString += tempString + "\n";
-            }
-
-            const dsStringArray = dsContentBuf.toString().split("\n");
-            for (const i in dsStringArray) {
-                const sl = dsStringArray[i].length;
-                const tempString = dsStringArray[i].substring(0, sl - seqnumlen);
-                dsContentString += tempString + "\n";
-            }
-        }
-        else {
-            lfContentString = lfContentBuf.toString();
-            dsContentString = dsContentBuf.toString();
-        }
-
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (browserView) {
-
-            await DiffUtils.openDiffInbrowser(lfContentString, dsContentString);
-
-            return {
-                success: true,
-                commandResponse: "Launching local-file and data-set diffs in browser...",
-                apiResponse: {}
-            };
-        }
-
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
-
-        jsonDiff = await DiffUtils.getDiffString(lfContentString, dsContentString, {
-            outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
-        });
-
-
-        return {
-            success: true,
-            commandResponse: jsonDiff,
-            apiResponse: {}
-        };
+        return helper.getResponse(contentString1, contentString2);
     }
 }

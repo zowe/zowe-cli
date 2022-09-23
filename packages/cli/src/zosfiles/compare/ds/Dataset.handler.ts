@@ -12,14 +12,14 @@
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import CompreBaseHelper from '../CompareBaseHelper';
+import {CompareBaseHelper} from '../CompareBaseHelper';
 /**
  * Handler to view a data set's content
  * @export
  */
 export default class DatasetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const helper = new CompreBaseHelper(commandParameters);
+        const helper = new CompareBaseHelper(commandParameters);
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: `Retrieving first dataset`,
@@ -47,7 +47,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             }
         );
 
-        const {contentString1, contentString2} = await helper.prepareStrings(dsContentBuf1, dsContentBuf2);
+        const {contentString1, contentString2} = helper.prepareStrings(dsContentBuf1, dsContentBuf2);
 
         return helper.getResponse(contentString1, contentString2);
     }

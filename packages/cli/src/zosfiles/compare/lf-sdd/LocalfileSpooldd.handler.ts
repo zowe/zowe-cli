@@ -13,25 +13,27 @@ import * as path from "path";
 import * as fs from "fs";
 
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, ImperativeError, TaskStage, DiffUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, ImperativeError, TaskStage } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import {CompareBaseHelper} from "../CompareBaseHelper";
+
 /**
  * Handler to compare spooldd's content
  * @export
  */
 export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        const helper = new CompareBaseHelper(commandParameters);
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Retrieving local file",
             stageName: TaskStage.IN_PROGRESS
         };
-        const descriptionSeperator: string = ":";
+
         commandParameters.response.progress.startBar({ task });
 
-        // retrieving local file
         let localFile: string;
 
         // resolving to full path if local path passed is not absolute
@@ -55,10 +57,11 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
             });
         }
 
+        // reading local file as buffer
         const lfContentBuf = fs.readFileSync(localFile);
 
         let lfContentString: string = "";
-        if (!commandParameters.arguments.seqnum) {
+        if (!helper.seqnum) {
             const seqnumlen = 8;
 
             const lfStringArray = lfContentBuf.toString().split("\n");
@@ -76,6 +79,7 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
 
         task.statusMessage = "Retrieving spooldd";
         // retrieving information for  spooldd
+        const descriptionSeperator: string = ":";
         const spoolDescription = commandParameters.arguments.spoolDescription;
         const spoolDescArr = spoolDescription.split(descriptionSeperator);
         const jobName: string = spoolDescArr[0];
@@ -84,32 +88,8 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
 
         const spoolContentString = await GetJobs.getSpoolContentById(session, jobName, jobId, spoolId);
 
+        const {contentString1, contentString2} = helper.prepareStrings(lfContentString, spoolContentString);
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (commandParameters.arguments.browserView) {
-
-            await DiffUtils.openDiffInbrowser(lfContentString, spoolContentString);
-
-            return {
-                success: true,
-                commandResponse: "Launching local-file and spool-dd diffs in browser...",
-                apiResponse: {}
-            };
-        }
-
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
-
-        jsonDiff = await DiffUtils.getDiffString(lfContentString, spoolContentString, {
-            outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
-        });
-
-
-        return {
-            success: true,
-            commandResponse: jsonDiff,
-            apiResponse: {}
-        };
+        return helper.getResponse(contentString1, contentString2);
     }
 }

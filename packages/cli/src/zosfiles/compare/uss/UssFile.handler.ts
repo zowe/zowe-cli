@@ -12,7 +12,7 @@
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import CompareBaseHelper from "../CompareBaseHelper";
+import {CompareBaseHelper} from "../CompareBaseHelper";
 
 /**
  * Handler to view a data set's content
@@ -53,7 +53,8 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         );
 
 
-        const {contentString1, contentString2} =helper.prepareStrings(ussFileContentBuf1, ussFileContentBuf2);
+        const {contentString1, contentString2} = helper.prepareStrings(ussFileContentBuf1, ussFileContentBuf2);
+
         return helper.getResponse(contentString1, contentString2);
     }
 }

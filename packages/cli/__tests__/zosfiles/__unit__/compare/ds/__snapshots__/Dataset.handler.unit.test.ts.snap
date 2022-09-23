@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Compare data set handler process method should compare two data sets in terminal 1`] = `
-Object {
-  "apiResponse": Object {},
+{
+  "apiResponse": {},
   "commandResponse": "compared string",
   "success": true,
 }

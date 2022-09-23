@@ -122,5 +122,6 @@ describe("Compare data set handler", () => {
 
             expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledTimes(1);
         });
+
     });
 });

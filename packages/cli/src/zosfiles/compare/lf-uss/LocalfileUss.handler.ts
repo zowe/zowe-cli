@@ -12,9 +12,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import {CompareBaseHelper} from '../CompareBaseHelper';
 
 /**
  * Handler to compare the local file and uss file's content
@@ -22,6 +23,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class LocalfileUssHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        const helper = new CompareBaseHelper(commandParameters);
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Retrieving local file",
@@ -55,74 +57,22 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
 
         // reading local file as buffer
         const lfContentBuf = fs.readFileSync(localFile);
-
         commandParameters.response.progress.endBar();
 
-        // retrieving the data-set to compare
+
         commandParameters.response.progress.startBar({ task });
         task.statusMessage = "Retrieving uss file";
+
         const ussContentBuf = await Get.USSFile(session, commandParameters.arguments.ussFilePath,
             {
-                binary: commandParameters.arguments.binary,
-                encoding: commandParameters.arguments.encoding,
+                ...helper.file2Options,
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 task: task
             }
         );
 
+        const {contentString1, contentString2} = helper.prepareStrings(lfContentBuf, ussContentBuf);
 
-        const browserView = commandParameters.arguments.browserView;
-
-        let lfContentString = "";
-        let ussContentString = "";
-
-        if (!commandParameters.arguments.seqnum) {
-            const seqnumlen = 8;
-
-            const lfStringArray = lfContentBuf.toString().split("\n");
-            for (const i in lfStringArray) {
-                const sl = lfStringArray[i].length;
-                const tempString = lfStringArray[i].substring(0, sl - seqnumlen);
-                lfContentString += tempString + "\n";
-            }
-
-            const ussStringArray = ussContentBuf.toString().split("\n");
-            for (const i in ussStringArray) {
-                const sl = ussStringArray[i].length;
-                const tempString = ussStringArray[i].substring(0, sl - seqnumlen);
-                ussContentString += tempString + "\n";
-            }
-        }
-        else {
-            lfContentString = lfContentBuf.toString();
-            ussContentString = ussContentBuf.toString();
-        }
-
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (browserView) {
-
-            await DiffUtils.openDiffInbrowser(lfContentString, ussContentString);
-
-            return {
-                success: true,
-                commandResponse: "Launching local-filee and uss-file diffs in browser...",
-                apiResponse: {}
-            };
-        }
-
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
-
-        jsonDiff = await DiffUtils.getDiffString(lfContentString, ussContentString, {
-            outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
-        });
-
-
-        return {
-            success: true,
-            commandResponse: jsonDiff,
-            apiResponse: {}
-        };
+        return helper.getResponse(contentString1, contentString2);
     }
 }

@@ -17,8 +17,8 @@
  * @interface ICompareFileOptions
  */
 export interface ICompareFileOptions {
-    binary?: boolean | false;
-    encoding?: string | "";
-    record?: boolean | false;
-    volumeSerial?: string | "";
+    binary?: boolean;
+    encoding?: string;
+    record?: boolean;
+    volumeSerial?: string;
 }
