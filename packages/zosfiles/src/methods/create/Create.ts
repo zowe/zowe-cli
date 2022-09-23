@@ -34,9 +34,9 @@ export class Create {
     /**
      * Create a data set
      * @param {AbstractSession} session                     - z/OSMF connection info
-     * @param {CreateDataSetTypeEnum} dataSetType           - The type of data set we are going to create from default options
+     * @param {CreateDataSetTypeEnum} dataSetType           - the type of data set we are going to create
      * @param {string} dataSetName                          - the name of the data set to create
-     * @param {Partial<ICreateDataSetOptions>} [options={}] - additional options for the creation of the data set
+     * @param {Partial<ICreateDataSetOptions>} [options={}] - overrides the default options provided by dataSetType
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dataSet(session: AbstractSession,
