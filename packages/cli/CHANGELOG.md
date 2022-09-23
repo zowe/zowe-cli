@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a compare base helper with common methods to be used by every files compare command to reduce the code redundancy.
+
 ## `7.8.0`
 
 - Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
