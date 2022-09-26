@@ -22,13 +22,11 @@ module.exports = {
             aliasTags: {
                 "latest": ["zowe-v2-lts", "next"]
             },
+            pruneShrinkwrap: ["@zowe/cli"],
             smokeTest: true
         }],
         ["@octorelease/github", {
             checkPrLabels: true
-        }],
-        ["@octorelease/prune-shrinkwrap", {
-            packages: ["packages/cli"]
         }],
         "@octorelease/git"
     ]

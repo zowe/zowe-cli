@@ -42,7 +42,6 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh && bash ../../scripts/bundleKeytar.sh",
     "preinstall": "node ./scripts/preinstall",
     "postinstall": "node ./scripts/validatePlugins && node ./scripts/printSuccessMessage",
     "build": "tsc --pretty",
@@ -54,7 +53,9 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "prepack": "node ../../scripts/prepareLicenses.js",
+    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh && bash ../../scripts/bundleKeytar.sh",
+    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js && npm i --package-lock-only --ignore-scripts --no-audit"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.6.1",
