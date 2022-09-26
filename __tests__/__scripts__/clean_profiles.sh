@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 # run this from the root of the project (where the packages/, __tests__, and node_modules, directories, .gitignore are)
 # clean up temporary test profiles
@@ -48,7 +48,7 @@ do
             echo "" #newline
         fi
     done <<< "$(zowe profiles list zosmf)"
-    
+
 done <<<  "$(ls -l | grep ^d | sed 's:.*\ ::g')" # list temporary directories in the data/ dir
 
 echo "Finished cleaning profiles"
