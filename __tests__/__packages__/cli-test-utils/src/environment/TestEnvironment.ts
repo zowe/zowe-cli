@@ -178,6 +178,7 @@ export class TestEnvironment {
         installScript += `zowe ${pluginConfig.name} --help\n`; // check that the plugin help is available
         const scriptPath = testEnvironment.workingDir + "/install_plugin.sh";
         IO.writeFile(scriptPath, Buffer.from(installScript));
+        fs.chmodSync(scriptPath, "755");
 
         const output = runCliScript(scriptPath, testEnvironment, []);
         if (output.status !== 0) {

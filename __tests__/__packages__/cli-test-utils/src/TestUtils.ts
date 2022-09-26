@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { spawnSync, SpawnSyncReturns, execSync } from "child_process";
+import { spawnSync, SpawnSyncReturns } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 
@@ -44,8 +44,9 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
             });
         }
 
+        // Check to see if the file is executable
         try { fs.accessSync(scriptPath, fs.constants.X_OK) } catch {
-            execSync(`chmod +x ${scriptPath}`);
+            fs.chmodSync(scriptPath, "755");
         }
         return spawnSync(scriptPath, args, {
             cwd: testEnvironment.workingDir,
