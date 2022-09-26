@@ -113,7 +113,7 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             description: "Create a zosmf profile called 'zosAPIML' to connect to z/OSMF via the Zowe API Mediation Layer running at host " +
                 "'zosAPIML', port '7554', and allow for self-signed certificates. To reduce duplication, you could elect to store the 'host', " +
                 "'port', 'reject-unauthorized', 'user', and 'password' values for the API Mediation Layer in a base profile and only store " +
-                "the 'base-path' of the service in the zosmf profile."
+                "the 'base-path' of the service in the zosmf profile"
         }
     ],
     updateProfileExamples: [
