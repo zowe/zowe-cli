@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { spawnSync, SpawnSyncReturns } from "child_process";
+import { spawnSync, SpawnSyncReturns, execSync } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 
@@ -35,12 +35,24 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
             childEnv[key] = testEnvironment.env[key];
         }
 
-        // Execute the command synchronously
-        return spawnSync("sh", [`${scriptPath}`].concat(args), {
+        if (process.platform === "win32") {
+            // Execute the command synchronously
+            return spawnSync("sh", [`${scriptPath}`].concat(args), {
+                cwd: testEnvironment.workingDir,
+                env: childEnv,
+                encoding: "buffer"
+            });
+        }
+
+        try { fs.accessSync(scriptPath, fs.constants.X_OK) } catch {
+            execSync(`chmod +x ${scriptPath}`);
+        }
+        return spawnSync(scriptPath, args, {
             cwd: testEnvironment.workingDir,
             env: childEnv,
             encoding: "buffer"
         });
+
     } else {
         throw new Error(`The script file ${scriptPath} doesn't exist`);
 
