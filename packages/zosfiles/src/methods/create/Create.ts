@@ -34,13 +34,13 @@ export class Create {
     /**
      * Create a data set
      * @param {AbstractSession} session                     - z/OSMF connection info
-     * @param {CreateDataSetTypeEnum} cmdType               - The type of data set we are going to create
+     * @param {CreateDataSetTypeEnum} dataSetType           - the type of data set we are going to create
      * @param {string} dataSetName                          - the name of the data set to create
-     * @param {Partial<ICreateDataSetOptions>} [options={}] - additional options for the creation of the data set
+     * @param {Partial<ICreateDataSetOptions>} [options={}] - overrides the default options provided by dataSetType
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dataSet(session: AbstractSession,
-        cmdType: CreateDataSetTypeEnum,
+        dataSetType: CreateDataSetTypeEnum,
         dataSetName: string,
         options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         let validCmdType = true;
@@ -49,12 +49,12 @@ export class Create {
         let tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
 
         // Required
-        ImperativeExpect.toNotBeNullOrUndefined(cmdType, ZosFilesMessages.missingDatasetType.message);
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetType, ZosFilesMessages.missingDatasetType.message);
 
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
-        switch (cmdType) {
+        switch (dataSetType) {
             case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
                 tempOptions = { ...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions };
                 break;
@@ -99,7 +99,7 @@ export class Create {
                 }
             } else {
                 if (isNullOrUndefined(tempOptions.secondary)) {
-                    if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
+                    if (dataSetType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
                         tempOptions.secondary = 1;
                     } else {
                         tempOptions.secondary = 10;
