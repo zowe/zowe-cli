@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Added to the description of Create.ts `cmdType`. [#48](https://github.com/zowe/zowe-cli/issues/48)
+
 ## `7.6.0`
 
 - Enhancement: Updated the `List.fileList` method to support z/OSMF filter parameters such as "mtime" and "name".
