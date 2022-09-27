@@ -84,7 +84,7 @@
     "@types/which": "^2.0.1",
     "@zowe/cli-test-utils": "7.6.1",
     "comment-json": "^4.1.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.22.0",
     "js-yaml": "^3.13.1",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
