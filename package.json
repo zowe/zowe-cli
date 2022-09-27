@@ -70,7 +70,7 @@
     "jest-junit": "^6.3.0",
     "jest-sonar-reporter": "^2.0.0",
     "jest-stare": "^2.2.0",
-    "js-yaml": "^3.13.1",
+    "js-yaml": "^4.1.0",
     "jsonfile": "^4.0.0",
     "lerna": "^5.4.3",
     "madge": "^4.0.1",
