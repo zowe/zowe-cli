@@ -45,7 +45,9 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
         }
 
         // Check to see if the file is executable
-        try { fs.accessSync(scriptPath, fs.constants.X_OK) } catch {
+        try {
+            fs.accessSync(scriptPath, fs.constants.X_OK);
+        } catch {
             fs.chmodSync(scriptPath, "755");
         }
         return spawnSync(scriptPath, args, {
