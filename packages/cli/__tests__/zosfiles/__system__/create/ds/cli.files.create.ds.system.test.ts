@@ -40,10 +40,10 @@ describe("Create Data Set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        user = defaultSystem.zosmf.user.trim().toUpperCase();
-        pass = defaultSystem.zosmf.password.trim().toUpperCase();
-        host = defaultSystem.zosmf.host.trim().toUpperCase();
-        dsname = `${user}.TEST.DATA.SET`;
+        user = defaultSystem.zosmf.user.trim();
+        pass = defaultSystem.zosmf.password.trim();
+        host = defaultSystem.zosmf.host.trim();
+        dsname = `${user.toUpperCase()}.TEST.DATA.SET`;
 
     });
 
