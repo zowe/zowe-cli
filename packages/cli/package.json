@@ -55,7 +55,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "prepack": "node ../../scripts/prepareLicenses.js",
     "prepublishOnly": "bash ../../scripts/bundleDaemon.sh && bash ../../scripts/bundleKeytar.sh",
-    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js && npm i --package-lock-only --ignore-scripts --no-audit"
+    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js && npm i --package-lock-only --ignore-scripts --no-audit && npm dedupe --production --workspaces=false"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.6.1",
