@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
-import { Imperative, IO } from "@zowe/imperative";
+import { Console, Imperative, IO } from "@zowe/imperative";
 import { DaemonClient } from "./DaemonClient";
 import { DaemonUtil } from "./DaemonUtil";
 import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";
@@ -116,7 +116,7 @@ export class DaemonDecider {
             this.mServer.maxConnections = 1;
             this.mServer.listen(this.mSocket, () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
-                Imperative.console.info(`server bound ${this.mSocket}`);
+                new Console(`info`).info(`server bound ${this.mSocket}`);
             });
         } else {
             Imperative.parse();

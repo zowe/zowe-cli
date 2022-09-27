@@ -378,7 +378,7 @@ export class Upload {
                     // update the progress bar if any
                     const LAST_FIFTEEN_CHARS = -15;
                     const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
-                    options.task.statusMessage = "Uploading ..." + abbreviatedFile;
+                    options.task.statusMessage = "Uploading... " + abbreviatedFile;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / uploadFileList.length));
                     uploadsInitiated++;
@@ -646,7 +646,7 @@ export class Upload {
             const createFileUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
                 if (options.task != null) {
-                    options.task.statusMessage = "Uploading ..." + this.formatStringForDisplay(file.fileName);
+                    options.task.statusMessage = "Uploading... " + this.formatStringForDisplay(file.fileName);
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / filesArray.length));
                     uploadsInitiated++;
@@ -800,7 +800,7 @@ export class Upload {
             const createUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
                 if (options.task != null) {
-                    options.task.statusMessage = "Uploading ..." + this.formatStringForDisplay(file.fileName);
+                    options.task.statusMessage = "Uploading... " + this.formatStringForDisplay(file.fileName);
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / filesArray.length));
                     uploadsInitiated++;
