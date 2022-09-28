@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 JCL=$1
 HOST=$2
