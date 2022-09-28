@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `minimatch` and `keytar` dependencies for technical currency.
+- BugFix: Updated example for `zowe profiles create zosmf-profile` command. [#1152](https://github.com/zowe/zowe-cli/issues/1152)
+- BugFix: Restore info message on daemon startup. [#1506](https://github.com/zowe/zowe-cli/issues/1506)
+
 ## `7.6.1`
 
 - BugFix: Updated `ssh2` dependency to fix "Received unexpected packet type" error on SSH commands. [#1516](https://github.com/zowe/zowe-cli/issues/1516)

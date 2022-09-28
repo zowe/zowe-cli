@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.6.1",
-    "@zowe/imperative": "5.5.3",
+    "@zowe/imperative": "5.5.4",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "7.6.1",
     "@zowe/zos-console-for-zowe-sdk": "7.6.1",
@@ -73,7 +73,7 @@
     "find-process": "1.4.7",
     "get-stream": "6.0.1",
     "lodash": "4.17.21",
-    "minimatch": "3.0.4",
+    "minimatch": "5.0.1",
     "tar": "6.1.11"
   },
   "devDependencies": {
@@ -85,7 +85,7 @@
     "@zowe/cli-test-utils": "7.6.1",
     "comment-json": "^4.1.0",
     "eslint": "^8.22.0",
-    "js-yaml": "^3.13.1",
+    "js-yaml": "^4.1.0",
     "madge": "^4.0.1",
     "npm-lockfile": "^3.0.4",
     "rimraf": "^2.6.3",
@@ -95,7 +95,7 @@
     "which": "^2.0.2"
   },
   "optionalDependencies": {
-    "keytar": "7.8.0"
+    "keytar": "7.9.0"
   },
   "engines": {
     "node": ">=14.0.0"

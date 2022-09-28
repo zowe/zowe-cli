@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed profiles being created when not requested.
+- BugFix: Allowed shell scripts to decide which interpreter to use based on the shebang.
+
 ## `7.0.0`
 
 - Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.

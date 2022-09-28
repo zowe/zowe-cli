@@ -109,9 +109,11 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
                 "specified on every command"
         },
         {
-            options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
-            description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
-                "and allow self-signed certificates"
+            options: "zosAPIML --host zosAPIML --port 7554 --user ibmuser --password myp4ss --reject-unauthorized false --base-path ibmzosmf/api/v1",
+            description: "Create a zosmf profile called 'zosAPIML' to connect to z/OSMF via the Zowe API Mediation Layer running at host " +
+                "'zosAPIML', port '7554', and allow for self-signed certificates. To reduce duplication, you could elect to store the 'host', " +
+                "'port', 'reject-unauthorized', 'user', and 'password' values for the API Mediation Layer in a base profile and only store " +
+                "the 'base-path' of the service in the zosmf profile"
         }
     ],
     updateProfileExamples: [
