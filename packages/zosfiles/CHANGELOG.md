@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Updated `minimatch` dependency for technical currency.
 - BugFix: Added to the description of Create.ts `cmdType`. [#48](https://github.com/zowe/zowe-cli/issues/48)
 - BugFix: Modified the progress bar for USS file uploads to increase readibility. [#451](https://github.com/zowe/zowe-cli/issues/451)
 
