@@ -55,7 +55,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "prepack": "node ../../scripts/prepareLicenses.js",
     "prepublishOnly": "bash ../../scripts/bundleDaemon.sh && bash ../../scripts/bundleKeytar.sh",
-    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js && npm i --package-lock-only --ignore-scripts --no-audit && npm dedupe --production --workspaces=false"
+    "preshrinkwrap": "cp ../../npm-shrinkwrap.json npm-shrinkwrap.json && npm-lockfile --date now -o npm-shrinkwrap.json"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.6.1",
@@ -87,6 +87,7 @@
     "eslint": "^8.22.0",
     "js-yaml": "^3.13.1",
     "madge": "^4.0.1",
+    "npm-lockfile": "^3.0.4",
     "rimraf": "^2.6.3",
     "strip-ansi": "^6.0.1",
     "typedoc": "^0.23.10",

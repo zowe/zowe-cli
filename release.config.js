@@ -20,6 +20,7 @@ module.exports = {
         "@octorelease/changelog",
         ["@octorelease/lerna", {
             aliasTags: {
+                // Note: Remove "next" tag here when the "next" branch is uncommented above
                 "latest": ["zowe-v2-lts", "next"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
