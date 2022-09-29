@@ -30,4 +30,4 @@ fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": registryUrl("@zowe") })
     .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
     .then(() => console.log(chalk.green("Lockfile contents written!")))
-    .catch((err) => console.error(err));
+    .catch((err) => { console.error(err); process.exit(1); });

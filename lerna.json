@@ -4,7 +4,8 @@
     "publish": {
       "ignoreChanges": [
         "packages/**/__tests__/**"
-      ]
+      ],
+      "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
     }
   },
   "useWorkspaces": true

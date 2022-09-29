@@ -2,7 +2,7 @@
 set -ex
 
 cd "$(git rev-parse --show-toplevel)"
-keytarVersion=$(jq -r .version node_modules/keytar/package.json)
+keytarVersion=$(jq -r .optionalDependencies.keytar packages/cli/package.json)
 
 rm -rf prebuilds
 mkdir prebuilds && cd prebuilds
