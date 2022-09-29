@@ -47,6 +47,8 @@
         "lerna": "^5.4.3",
         "madge": "^4.0.1",
         "mustache": "^4.2.0",
+        "npm-lockfile": "^3.0.4",
+        "registry-url": "^5.1.0",
         "rimraf": "^2.6.3",
         "shebang-regex": "^2.0.0",
         "syncpack": "^5.6.10",
@@ -24317,6 +24319,18 @@
         "url": "https://github.com/sponsors/mysticatea"
       }
     },
+    "node_modules/registry-url": {
+      "version": "5.1.0",
+      "resolved": "https://registry.npmjs.org/registry-url/-/registry-url-5.1.0.tgz",
+      "integrity": "sha512-8acYXXTI0AkQv6RAOjE3vOaIXZkT9wo4LOFbBKYQEEnnMNBpKqdUrI6S4NT0KPIo/WVvJ5tE/X5LF/TQUf0ekw==",
+      "dev": true,
+      "dependencies": {
+        "rc": "^1.2.8"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
     "node_modules/remove-bom-buffer": {
       "version": "3.0.0",
       "resolved": "https://registry.npmjs.org/remove-bom-buffer/-/remove-bom-buffer-3.0.0.tgz",
@@ -27322,7 +27336,6 @@
         "eslint": "^8.22.0",
         "js-yaml": "^4.1.0",
         "madge": "^4.0.1",
-        "npm-lockfile": "^3.0.4",
         "rimraf": "^2.6.3",
         "strip-ansi": "^6.0.1",
         "typedoc": "^0.23.10",
@@ -35438,7 +35451,6 @@
         "lodash": "4.17.21",
         "madge": "^4.0.1",
         "minimatch": "5.0.1",
-        "npm-lockfile": "^3.0.4",
         "rimraf": "^2.6.3",
         "strip-ansi": "^6.0.1",
         "tar": "6.1.11",
@@ -49153,6 +49165,15 @@
       "resolved": "https://registry.npmjs.org/regexpp/-/regexpp-3.2.0.tgz",
       "integrity": "sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==",
       "dev": true
+    },
+    "registry-url": {
+      "version": "5.1.0",
+      "resolved": "https://registry.npmjs.org/registry-url/-/registry-url-5.1.0.tgz",
+      "integrity": "sha512-8acYXXTI0AkQv6RAOjE3vOaIXZkT9wo4LOFbBKYQEEnnMNBpKqdUrI6S4NT0KPIo/WVvJ5tE/X5LF/TQUf0ekw==",
+      "dev": true,
+      "requires": {
+        "rc": "^1.2.8"
+      }
     },
     "remove-bom-buffer": {
       "version": "3.0.0",
