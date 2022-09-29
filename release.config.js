@@ -13,7 +13,7 @@ module.exports = {
         // {
         //     name: "next",
         //     prerelease: true,
-        //     dependencies: { "@zowe/perf-timing": "latest", "@zowe/imperative: "next" }
+        //     dependencies: { "@zowe/perf-timing": "latest", "@zowe/imperative": "next" }
         // }
     ],
     plugins: [
