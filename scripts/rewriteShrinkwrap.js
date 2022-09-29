@@ -28,6 +28,6 @@ fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
 // Build deduped shrinkwrap for @zowe/cli
 getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": registryUrl("@zowe") })
-	.then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
-	.then(() => console.log(chalk.green("Lockfile contents written!")))
-	.catch((err) => console.error(err));
+    .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
+    .then(() => console.log(chalk.green("Lockfile contents written!")))
+    .catch((err) => console.error(err));
