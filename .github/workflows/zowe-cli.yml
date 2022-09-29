@@ -75,7 +75,7 @@ jobs:
 
     - name: Update Dependencies
       id: npm-update
-      uses: zowe-actions/octorelease-script@update-for-cli
+      uses: zowe-actions/octorelease-script@master
       with:
         script: npmUpdate
 
@@ -168,13 +168,14 @@ jobs:
         env_vars: OS,NODE
 
     - name: Configure Sonar Scan
+      id: sonar-config
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
-      uses: zowe-actions/octorelease-script@update-for-cli
+      uses: zowe-actions/octorelease-script@master
       with:
         script: sonarConfig
 
     - name: SonarCloud Scan
-      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
+      if: ${{ always() && steps.sonar-config.outcome == 'success' }}
       uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -202,7 +203,7 @@ jobs:
       run: npm ci
 
     - name: Update Dependencies
-      uses: zowe-actions/octorelease-script@update-for-cli
+      uses: zowe-actions/octorelease-script@master
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
