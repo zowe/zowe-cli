@@ -41,6 +41,38 @@ export default {
             }
         }
     },
+    CHANGE: {
+        SUMMARY: "CHANGE a z/OS job",
+        DESCRIPTION: "CHANGE a single job by job ID. This CHANGE the job if it is running or on input.",
+        ACTIONS: {
+            JOB: {
+                SUMMARY: "CHANGE a single job by job ID",
+                DESCRIPTION: "CHANGE a single job by job ID",
+                POSITIONALS: {
+                    JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
+                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
+                        "the job ID if desired. You can use, for example \"J123\".", 
+                    JOB_CLASS: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
+                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
+                        "the job ID if desired. You can use, for example \"J123\".",                         
+                },
+                OPTIONS: {
+                    MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"2.0\" will make the cancel job API synchronous. " +
+                        "Otherwise, it will be asynchronous by default."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Cancel job with job ID JOB03456",
+                        OPTIONS: "JOB03456"
+                    },
+                    EX2: {
+                        DESCRIPTION: "Cancel job with job ID JOB03456 synchronously",
+                        OPTIONS: "JOB03456 --modify-version \"2.0\""
+                    }
+                }
+            }
+        }
+    },
     DELETE: {
         SUMMARY: "Delete a z/OS job or jobs",
         DESCRIPTION: "Delete a single job by job ID or delete multiple jobs in OUTPUT status.",
