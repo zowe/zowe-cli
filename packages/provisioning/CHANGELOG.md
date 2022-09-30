@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
-## Recent Changes
+## `7.6.2`
 
 - BugFix: Updated `js-yaml` dependency for technical currency.
 
