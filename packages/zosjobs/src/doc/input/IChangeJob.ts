@@ -10,16 +10,15 @@
 */
 
 /**
- * Interface for payload to cancel a job.
+ * Interface for change job z/OSMF API
  * @export
  * @interface IChangeJob
  */
-export interface IChangeJob {
-
+ export interface IChangeJob {
     /**
-     * "cancel" is currently the only valid value
+     * updated class for job
      * @type {string}
      * @memberof IChangeJob
      */
-    request: string;
+    class: string;
 }

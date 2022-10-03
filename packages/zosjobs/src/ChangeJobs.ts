@@ -72,7 +72,7 @@ export class ChangeJobs {
 
         // build request
         const request: IChangeJob = {
-            request: JobsConstants.REQUEST_CANCEL
+            class: parms.jobclass
         };
 
         const parameters: string = "/" + parms.jobid;
