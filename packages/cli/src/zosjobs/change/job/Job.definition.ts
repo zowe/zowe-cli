@@ -38,15 +38,6 @@ export const JobDefinition: ICommandDefinition = {
             required: true
         }
     ],
-    options: [
-        {
-            name: "modify-version",
-            description: strings.ACTIONS.JOB.OPTIONS.MODIFY_VERSION,
-            type: "string",
-            required: false,
-            defaultValue: "1.0"
-        }
-    ],
     examples: [
         {
             description: strings.ACTIONS.JOB.EXAMPLES.EX1.DESCRIPTION,

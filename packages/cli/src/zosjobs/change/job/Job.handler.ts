@@ -37,28 +37,15 @@ export default class JobHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
 
-        // Force yargs `jobid` parameter to be a string
+        // Force yargs `jobid` & `jobclass` parameters to be strings
         const jobid: string = this.arguments.jobid + "";
-
+        const jobclass: string = this.arguments.jobclass + "";
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 
         // Change the job
-        const response = await ChangeJobs.changeJob(this.mSession, job.jobid, job.class);
+        const response = await ChangeJobs.changeJob(this.mSession, job.jobid, jobclass);
         let message: string;
-
-        //dont need version, phase this out AT
-        if (this.arguments.modifyVersion == null || this.arguments.modifyVersion === "1.0") {
-            message = `Successfully submitted request to change job (${jobid})`;
-        } else if (this.arguments.modifyVersion === "2.0" && response?.status === "0") {
-            message = `Successfully changed job (${jobid})`;
-        } else {
-            throw new ImperativeError({
-                msg: `Failed to change job (${jobid})`,
-                additionalDetails: response?.message,
-                errorCode: response?.["internal-code"]
-            });
-        }
 
         // Print message to console
         this.console.log(message);

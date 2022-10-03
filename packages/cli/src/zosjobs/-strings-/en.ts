@@ -56,10 +56,6 @@ export default {
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
                         "the job ID if desired. You can use, for example \"J123\".",                         
                 },
-                OPTIONS: {
-                    MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"2.0\" will make the cancel job API synchronous. " +
-                        "Otherwise, it will be asynchronous by default."
-                },
                 EXAMPLES: {
                     EX1: {
                         DESCRIPTION: "Cancel job with job ID JOB03456",
