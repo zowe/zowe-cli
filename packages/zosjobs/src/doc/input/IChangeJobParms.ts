@@ -10,21 +10,21 @@
 */
 
 /**
- * Interface for cancel job z/OSMF API
+ * Interface for change job z/OSMF API
  * @export
  * @interface IChangeJobParms
  */
 export interface IChangeJobParms {
 
     /**
-     * job id for the job you want to cancel
+     * job id for the job you want to change
      * @type {string}
      * @memberof IChangeJobParms
      */
     jobid: string;
 
     /**
-     * job name for the job you want to cancel
+     * job name for the job you want to change
      * @type {string}
      * @memberof IChangeJobParms
      */
