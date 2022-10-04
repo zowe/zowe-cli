@@ -718,7 +718,9 @@ export default {
                 " to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records." +
                 " Conflicts with binary.",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
-            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC."
+            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
+            RANGE: "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records " +
+            "or SSS,NNN where is is the start and NNN is the number of records retrieved."
         }
     },
     COMPARE: {

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Allow `zowe files view ds ... --range SSS-EEE | SSS,NNN`.
+
 ## `7.6.2`
 
 - BugFix: Updated `minimatch` and `keytar` dependencies for technical currency.
