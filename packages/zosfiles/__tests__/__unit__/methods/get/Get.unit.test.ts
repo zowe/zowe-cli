@@ -207,7 +207,7 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{ "X-IBM-Record-Range": range }]);
+                [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Record-Range": range }]);
         });
 
         it("should get data set content with responseTimeout", async () => {
