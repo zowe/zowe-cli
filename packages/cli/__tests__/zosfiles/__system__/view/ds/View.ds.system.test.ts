@@ -27,7 +27,6 @@ const TIMEOUT = 20000;
 describe("View Data Set", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            installPlugin: true,
             testName: "view_data_set",
             tempProfileTypes: ["zosmf"]
         });
