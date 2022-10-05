@@ -58,5 +58,13 @@ Array [
     "description": "View the contents of the data set member \\"ibmuser.test.loadlib(main)\\" in binary mode",
     "options": "\\"ibmuser.test.loadlib(main)\\" --binary",
   },
+  Object {
+    "description": "View only the first two lines of content for data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\" --range 0,2",
+  },
+  Object {
+    "description": "View only lines six through eight (zero-based) in the contents of the data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\" --range 5-7",
+  },
 ]
 `;
