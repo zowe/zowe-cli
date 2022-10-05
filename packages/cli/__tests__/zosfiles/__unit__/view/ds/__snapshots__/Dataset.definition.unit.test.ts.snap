@@ -37,6 +37,14 @@ Array [
     "name": "volume-serial",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "R",
+    ],
+    "description": "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records or SSS,NNN where is is the start and NNN is the number of records retrieved.",
+    "name": "range",
+    "type": "string",
+  },
 ]
 `;
 
