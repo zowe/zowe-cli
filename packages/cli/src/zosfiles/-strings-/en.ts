@@ -695,7 +695,9 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `View the contents of the data set member "ibmuser.cntl(iefbr14)"`,
-                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`
+                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`,
+                    EX3: `View only the first two lines of content for data set member "ibmuser.cntl(iefbr14)"`,
+                    EX4: `View only lines six through eight (zero-based) in the contents of the data set member "ibmuser.cntl(iefbr14)"`
                 }
             },
             USS_FILE: {

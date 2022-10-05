@@ -53,6 +53,14 @@ export const DatasetDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
             options: `"ibmuser.test.loadlib(main)" --binary`
+        },
+        {
+            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX3,
+            options: `"ibmuser.cntl(iefbr14)" --range 0,2`
+        },
+        {
+            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX4,
+            options: `"ibmuser.cntl(iefbr14)" --range 5-7`
         }
     ]
 };
