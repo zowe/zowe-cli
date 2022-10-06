@@ -15,6 +15,12 @@
  * @interface IChangeJobParms
  */
 export interface IChangeJobParms {
+    /**
+     * job name for the job you want to change
+     * @type {string}
+     * @memberof IChangeJobParms
+     */
+     jobname: string;
 
     /**
      * job id for the job you want to change

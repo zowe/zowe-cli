@@ -36,7 +36,12 @@ export interface IJobFeedback {
      * @memberof IJobFeedback
      */
     "original-jobid": string;
-
+    class: string;
+    /**
+     * job name for a job
+     * @type {string}
+     * @memberof IJob
+     */
     /**
      * Job owner
      * @type {string}
