@@ -49,6 +49,7 @@ export default {
                 SUMMARY: "CHANGE a single job by job ID",
                 DESCRIPTION: "CHANGE a single job by job ID",
                 POSITIONALS: {
+                    JOB_NAME: "The job name (e.g. AT895450) of the job. Job NAME is an identifier for z/OS batch jobs ",
                     JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
                         "the job ID if desired. You can use, for example \"J123\".", 
@@ -58,11 +59,11 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Cancel job with job ID JOB03456",
-                        OPTIONS: "JOB03456"
+                        DESCRIPTION: "Change job with job ID JOB03456 and job NAME AT895450",
+                        OPTIONS: "`AT895450` `JOB03456`"
                     },
                     EX2: {
-                        DESCRIPTION: "Cancel job with job ID JOB03456 synchronously",
+                        DESCRIPTION: "Change job with job ID JOB03456 synchronously",
                         OPTIONS: "JOB03456 --modify-version \"2.0\""
                     }
                 }
