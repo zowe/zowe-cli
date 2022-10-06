@@ -34,9 +34,15 @@ export class ChangeJobs {
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ChangeJobs
      */
+<<<<<<< HEAD
     public static async changeJob(session: AbstractSession, jobname: string, jobid: string, jobclass: string): Promise<undefined|IJobFeedback> {
         this.log.trace("changeJob called with jobname %s jobid %s", jobname, jobid);
         return ChangeJobs.changeJobCommon(session, { jobname, jobid, jobclass });
+=======
+    public static async changeJob(session: AbstractSession, jobid: string, jobclass: string): Promise<undefined|IJobFeedback> {
+        this.log.trace("changeJob called with jobname %s jobid %s", jobid);
+        return ChangeJobs.changeJobCommon(session, { jobid, jobclass });
+>>>>>>> 5c7dbbb2ee5046b01f42f189dd12a29bad491dfe
     }
 
     /**
@@ -50,7 +56,11 @@ export class ChangeJobs {
      */
     public static async changeJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
         this.log.trace("changeJobForJob called with job %s", JSON.stringify(job));
+<<<<<<< HEAD
         return ChangeJobs.changeJobCommon(session, { jobname:job.jobname, jobid: job.jobid, jobclass: job.class });
+=======
+        return ChangeJobs.changeJobCommon(session, { jobid: job.jobid, jobclass: job.class });
+>>>>>>> 5c7dbbb2ee5046b01f42f189dd12a29bad491dfe
     }
 
     /**
@@ -67,7 +77,11 @@ export class ChangeJobs {
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobid"],
             "You must specify jobname and jobid for the job you want to change.");
 
+<<<<<<< HEAD
         this.log.info("Changing job %s.%s", parms.jobname, parms.jobid);
+=======
+        this.log.info("Changing job %s(%s).", parms.jobid, parms.jobclass);
+>>>>>>> 5c7dbbb2ee5046b01f42f189dd12a29bad491dfe
         const headers: any = [Headers.APPLICATION_JSON];
 
         // build request
@@ -75,7 +89,11 @@ export class ChangeJobs {
             class: parms.jobclass
         };
 
+<<<<<<< HEAD
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
+=======
+        const parameters: string = "/" + parms.jobid;
+>>>>>>> 5c7dbbb2ee5046b01f42f189dd12a29bad491dfe
         const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
         const responseFeedback = responseJson as IJobFeedback;
         
