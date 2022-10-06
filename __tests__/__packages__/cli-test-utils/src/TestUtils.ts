@@ -35,12 +35,27 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
             childEnv[key] = testEnvironment.env[key];
         }
 
-        // Execute the command synchronously
-        return spawnSync("sh", [`${scriptPath}`].concat(args), {
+        if (process.platform === "win32") {
+            // Execute the command synchronously
+            return spawnSync("sh", [`${scriptPath}`].concat(args), {
+                cwd: testEnvironment.workingDir,
+                env: childEnv,
+                encoding: "buffer"
+            });
+        }
+
+        // Check to see if the file is executable
+        try {
+            fs.accessSync(scriptPath, fs.constants.X_OK);
+        } catch {
+            fs.chmodSync(scriptPath, "755");
+        }
+        return spawnSync(scriptPath, args, {
             cwd: testEnvironment.workingDir,
             env: childEnv,
             encoding: "buffer"
         });
+
     } else {
         throw new Error(`The script file ${scriptPath} doesn't exist`);
 

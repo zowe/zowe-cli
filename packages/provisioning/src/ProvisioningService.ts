@@ -48,7 +48,7 @@ export class ProvisioningService {
      * @memberof ProvisioningService
      */
     public static readPropertiesFromYamlFile(path: string): IPropertiesInput[] {
-        const props = readYaml.safeLoad(fs.readFileSync(path, "utf8"));
+        const props = readYaml.load(fs.readFileSync(path, "utf8"));
         const propsArrayObj: IPropertiesInput[] = [];
 
         if (typeof props !== "object") {

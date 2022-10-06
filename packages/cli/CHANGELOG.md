@@ -5,6 +5,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added `ZosFilesCreateOptions.alcunit` option to PDS definition. [#1203](https://github.com/zowe/zowe-cli/issues/1203)
+
+## `7.6.2`
+
+- BugFix: Updated `minimatch` and `keytar` dependencies for technical currency.
 - BugFix: Updated example for `zowe profiles create zosmf-profile` command. [#1152](https://github.com/zowe/zowe-cli/issues/1152)
 - BugFix: Restore info message on daemon startup. [#1506](https://github.com/zowe/zowe-cli/issues/1506)
 
