@@ -28,16 +28,16 @@ export class ModifyJobs {
      * Modify a job
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-    //  * @param {string} jobname - job name to be translated into parms object
+     * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
      * @param {string} jobclass - job class to be translated into parms object
      * @param {string} holdstatus - job status to be translated into parms object
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
-    public static async ModifyJob(session: AbstractSession, jobname: string, jobid: string, jobclass?: string, holdstatus?: string): Promise<undefined|IJobFeedback> {
+    public static async modifyJob(session: AbstractSession, jobname: string, jobid: string, jobclass?: string, holdstatus?: string): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJob called with jobname %s jobid %s", jobname, jobid);
-        return ModifyJobs.ModifyJobCommon(session, { jobname, jobid, jobclass, holdstatus });
+        return ModifyJobs.modifyJobCommon(session, { jobname, jobid, jobclass, holdstatus });
     }
 
     /**
@@ -49,13 +49,13 @@ export class ModifyJobs {
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
-    public static async ModifyJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
+    public static async modifyJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobForJob called with job %s", JSON.stringify(job));
-        return ModifyJobs.ModifyJobCommon(session, { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, holdstatus: job.holdstatus });
+        return ModifyJobs.modifyJobCommon(session, { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, holdstatus: job.holdstatus });
     }
 
     /**
-     * odify a job
+     * Modify a job
      * Full version of the API with a parameter object
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
@@ -63,17 +63,18 @@ export class ModifyJobs {
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
-    public static async ModifyJobCommon(session: AbstractSession, parms: IModifyJobParms): Promise<undefined|IJobFeedback> {
+    public static async modifyJobCommon(session: AbstractSession, parms: IModifyJobParms): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobid"],
             "You must specify jobname and jobid for the job you want to modify.");
 
-        this.log.info("Changing job %s.%s", parms.jobname, parms.jobid);
+        this.log.info("Modifying job %s.%s", parms.jobname, parms.jobid);
         const headers: any = [Headers.APPLICATION_JSON];
 
-        // build request
+        // build request to change class
         const request: IModifyJob = {
-            class: parms.jobclass
+            class: parms.jobclass,
+            request: parms.holdstatus,
         };
 
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;

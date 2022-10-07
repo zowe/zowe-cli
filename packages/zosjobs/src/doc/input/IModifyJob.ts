@@ -20,5 +20,6 @@
      * @type {string}
      * @memberof IModifyJob
      */
-    class: string;
+    class?: string;
+    request?: string;
 }
