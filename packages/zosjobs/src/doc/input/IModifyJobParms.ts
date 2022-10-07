@@ -12,30 +12,34 @@
 /**
  * Interface for change job z/OSMF API
  * @export
- * @interface IChangeJobParms
+ * @interface IModifyJobParms
  */
-export interface IChangeJobParms {
-<<<<<<< HEAD
+export interface IModifyJobParms {
     /**
      * job name for the job you want to change
      * @type {string}
-     * @memberof IChangeJobParms
+     * @memberof IModifyJobParms
      */
      jobname: string;
-=======
->>>>>>> 5c7dbbb2ee5046b01f42f189dd12a29bad491dfe
 
     /**
      * job id for the job you want to change
      * @type {string}
-     * @memberof IChangeJobParms
+     * @memberof IModifyJobParms
      */
     jobid: string;
 
     /**
      * job name for the job you want to change
      * @type {string}
-     * @memberof IChangeJobParms
+     * @memberof IModifyJobParms
      */
     jobclass: string;
+
+    /**
+     * job name for the job you want to change
+     * @type {string}
+     * @memberof IModifyJobParms
+     */
+    holdstatus: string;
 }

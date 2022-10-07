@@ -12,13 +12,13 @@
 /**
  * Interface for change job z/OSMF API
  * @export
- * @interface IChangeJob
+ * @interface IModifyJob
  */
- export interface IChangeJob {
+ export interface IModifyJob {
     /**
      * updated class for job
      * @type {string}
-     * @memberof IChangeJob
+     * @memberof IModifyJob
      */
     class: string;
 }
