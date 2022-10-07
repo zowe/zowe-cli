@@ -41,30 +41,32 @@ export default {
             }
         }
     },
-    CHANGE: {
-        SUMMARY: "CHANGE a z/OS job",
-        DESCRIPTION: "CHANGE a single job by job ID. This CHANGE the job if it is running or on input.",
+    MODIFY: {
+        SUMMARY: "Modify a z/OS job",
+        DESCRIPTION: "Modify the job class or the hold status of a job via job name and job ID.",
         ACTIONS: {
             JOB: {
-                SUMMARY: "CHANGE a single job by job ID",
-                DESCRIPTION: "CHANGE a single job by job ID",
+                SUMMARY: "Modify a single job using job name and job ID",
+                DESCRIPTION: "Modify the job class or the hold status of a job via job name and job ID.",
                 POSITIONALS: {
-                    JOB_NAME: "The job name (e.g. AT895450) of the job. Job NAME is an identifier for z/OS batch jobs ",
+                    JOB_NAME: "The job name (e.g. AT895450) of the job. Job name is an identifier for z/OS batch jobs ",
                     JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
-                        "the job ID if desired. You can use, for example \"J123\".", 
-                    JOB_CLASS: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
-                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
-                        "the job ID if desired. You can use, for example \"J123\".",                         
+                        "the job ID if desired. You can use, for example \"J123\".",           
+                },
+                OPTIONS: {
+                    JOB_CLASS: "The job class (e.g. 'A') of the job.",    
+                    HOLD_STATUS: "Setting this option to 'hold' will prevent a job from executing until"+
+                    "using this option again to change a job to 'release'",           
                 },
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Change job with job ID JOB03456 and job NAME AT895450",
+                        DESCRIPTION: "Modify job with job ID JOB03456 and job NAME AT895450 - TO FIX",
                         OPTIONS: "`AT895450` `JOB03456`"
                     },
                     EX2: {
-                        DESCRIPTION: "Change job with job ID JOB03456 synchronously",
-                        OPTIONS: "JOB03456 --modify-version \"2.0\""
+                        DESCRIPTION: "TO FIX",
+                        OPTIONS: "TO FIX"
                     }
                 }
             }

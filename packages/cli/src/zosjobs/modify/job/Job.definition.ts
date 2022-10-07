@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
 
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).CHANGE;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).MODIFY;
 
 export const JobDefinition: ICommandDefinition = {
     name: "job",
@@ -37,11 +37,20 @@ export const JobDefinition: ICommandDefinition = {
             type: "string",
             required: true
         },
+    ],
+    options: [
         {
             name: "jobclass",
-            description: strings.ACTIONS.JOB.POSITIONALS.JOB_CLASS,
+            description: strings.ACTIONS.JOB.OPTIONS.JOB_CLASS,
             type: "string",
-            required: true
+            required: false,
+        },
+        {
+            name: "hold-status",
+            description: strings.ACTIONS.JOB.OPTIONS.HOLD_STATUS,
+            type: "string",
+            required: false,
+            defaultValue: "release"
         }
     ],
     examples: [

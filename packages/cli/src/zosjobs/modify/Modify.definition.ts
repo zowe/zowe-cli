@@ -14,11 +14,11 @@ import { JobDefinition } from "./job/Job.definition";
 
 import i18nTypings from "../-strings-/en";
 
-const strings = (require("../-strings-/en").default as typeof i18nTypings).CHANGE;
+const strings = (require("../-strings-/en").default as typeof i18nTypings).MODIFY;
 
-export const ChangeDefinition: ICommandDefinition = {
-    name: "change",
-    aliases: ["chg"],
+export const ModifyDefinition: ICommandDefinition = {
+    name: "modify",
+    aliases: ["mdf"],
     type: "group",
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,

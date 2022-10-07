@@ -46,18 +46,7 @@ export default class JobHandler extends ZosmfBaseHandler {
 
         // Change the job
         const response = await ChangeJobs.changeJob(this.mSession, jobname, jobid, jobclass);
-<<<<<<< HEAD
         this.data.setObj(job)
         this.console.log(response.message);
-=======
-        let message: string;
-
-        // Print message to console
-        this.console.log(message);
-
-        // Return as an object when using --response-format-json
-        this.data.setMessage(message);
-        this.data.setObj(job);
->>>>>>> 5c7dbbb2ee5046b01f42f189dd12a29bad491dfe
     }
 }

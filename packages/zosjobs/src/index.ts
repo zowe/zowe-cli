@@ -11,8 +11,8 @@
 
 export * from "./doc/input/ICancelJob";
 export * from "./doc/input/ICancelJobParms";
-export * from "./doc/input/IChangeJob";
-export * from "./doc/input/IChangeJobParms";
+export * from "./doc/input/IModifyJob";
+export * from "./doc/input/IModifyJobParms";
 export * from "./doc/input/ICommonJobParms";
 export * from "./doc/input/IDeleteJobParms";
 export * from "./doc/input/IDownloadAllSpoolContentParms";
@@ -42,7 +42,7 @@ export * from "./types/JobResolve";
 export * from "./types/JobStatus";
 
 export * from "./CancelJobs";
-export * from "./ChangeJobs";
+export * from "./ModifyJobs";
 export * from "./DeleteJobs";
 export * from "./DownloadJobs";
 export * from "./GetJobs";

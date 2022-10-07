@@ -71,6 +71,13 @@ export interface IJob {
     class: string;
 
     /**
+     * job hold status
+     * @type {string}
+     * @memberof IJob
+     */
+    holdstatus: string;
+
+    /**
      * return code of the job
      * @type {string}
      * @memberof IJob
