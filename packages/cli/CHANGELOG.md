@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes 
+- Enhancement: Added new command, `zowe zosjobs modify job [jobname] [jobid]` with options `--jobclass` and `--hold-status`. Can now
+change the class of a job that has yet to run and also release or hold the running of jobs.   
+
 ## `7.6.2`
 
 - BugFix: Updated `minimatch` and `keytar` dependencies for technical currency.
