@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { ModifyJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -47,7 +47,7 @@ export default class JobHandler extends ZosmfBaseHandler {
 
         // Modify the job
         const response = await ModifyJobs.modifyJob(this.mSession, jobname, jobid, jobclass, holdstatus);
-        this.data.setObj(job)
+        this.data.setObj(job);
         this.console.log(response.message);
     }
 }

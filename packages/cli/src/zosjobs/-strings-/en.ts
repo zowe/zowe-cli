@@ -52,12 +52,12 @@ export default {
                     JOB_NAME: "The job name (e.g. AT895450) of the job. Job name is an identifier for z/OS batch jobs ",
                     JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
-                        "the job ID if desired. You can use, for example \"J123\".",           
+                        "the job ID if desired. You can use, for example \"J123\".",
                 },
                 OPTIONS: {
-                    JOB_CLASS: "The job class (e.g. 'A') of the job.",    
+                    JOB_CLASS: "The job class (e.g. 'A') of the job.",
                     HOLD_STATUS: "Setting this option to 'hold' will prevent a job from executing until"+
-                    "using this option again to change a job to 'release'",           
+                    "using this option again to change a job to 'release'",
                 },
                 EXAMPLES: {
                     EX1: {
