@@ -2,9 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes 
+## Recent Changes
 - Enhancement: Added new command, `zowe zosjobs modify job [jobname] [jobid]` with options `--jobclass` and `--hold-status`. Can now
-change the class of a job that has yet to run and also release or hold the running of jobs.   
+change the class of a job that has yet to run and also release or hold the running of jobs. [#1156] (https://github.com/zowe/zowe-cli/issues/1156)
+- Enhancement: Added `ZosFilesCreateOptions.alcunit` option to PDS definition. [#1203](https://github.com/zowe/zowe-cli/issues/1203)
 
 ## `7.6.2`
 

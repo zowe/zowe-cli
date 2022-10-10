@@ -695,7 +695,9 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `View the contents of the data set member "ibmuser.cntl(iefbr14)"`,
-                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`
+                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`,
+                    EX3: `View only the first two lines of content for data set member "ibmuser.cntl(iefbr14)"`,
+                    EX4: `View only lines six through eight (zero-based) in the contents of the data set member "ibmuser.cntl(iefbr14)"`
                 }
             },
             USS_FILE: {
@@ -718,7 +720,9 @@ export default {
                 " to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records." +
                 " Conflicts with binary.",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
-            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC."
+            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
+            RANGE: "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records " +
+            "or SSS,NNN where is is the start and NNN is the number of records retrieved."
         }
     },
     COMPARE: {
