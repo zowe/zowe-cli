@@ -190,6 +190,26 @@ describe("z/OS Files - View", () => {
                 [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
+        it("should send range header when range option is specified", async () => {
+            let response;
+            let caughtError;
+            const range = "000,001";
+
+            try {
+                response = await Get.dataSet(dummySession, dsname, {range});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Record-Range": range }]);
+        });
+
         it("should get data set content with responseTimeout", async () => {
             let response;
             let caughtError;

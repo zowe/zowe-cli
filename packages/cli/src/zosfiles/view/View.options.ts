@@ -59,11 +59,21 @@ export const ViewOptions: { [key: string]: ICommandOptionDefinition } = {
      * The volume serial
      * @type {ICommandOptionDefinition}
      */
-
     volume: {
         name: "volume-serial",
         aliases: ["vs"],
         description: strings.VOLUME,
+        type: "string"
+    },
+
+    /**
+     * The range of records to return
+     * @type {ICommandOptionDefinition}
+     */
+    range: {
+        name: "range",
+        aliases: ["R"],
+        description: strings.RANGE,
         type: "string"
     }
 };
