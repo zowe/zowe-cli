@@ -55,18 +55,22 @@ export default {
                         "the job ID if desired. You can use, for example \"J123\".",
                 },
                 OPTIONS: {
-                    JOB_CLASS: "The job class (e.g. 'A') of the job.",
+                    JOB_CLASS: "The job class (e.g. 'A', 'B', ...) of the job.",
                     HOLD_STATUS: "Setting this option to 'hold' will prevent a job from executing until"+
                     "using this option again to change a job to 'release'",
                 },
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Modify job with job ID JOB03456 and job NAME AT895450 - TO FIX",
-                        OPTIONS: "`AT895450` `JOB03456`"
+                        DESCRIPTION: "Modify class of job with job ID JOB03456 and job name AT895450",
+                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass A"
                     },
                     EX2: {
-                        DESCRIPTION: "TO FIX",
-                        OPTIONS: "TO FIX"
+                        DESCRIPTION: "Modify hold status of job with job ID JOB03456 and job name AT895450",
+                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --hold-status hold"
+                    },
+                    EX3: {
+                        DESCRIPTION: "Modify hold status and class of job with job ID JOB03456 and job name AT895450",
+                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass B --hold-status release"
                     }
                 }
             }

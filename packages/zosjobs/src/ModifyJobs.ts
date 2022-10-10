@@ -73,6 +73,7 @@ export class ModifyJobs {
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
         let response: IJobFeedback;
         let request: IModifyJob;
+        let mergedMessage: string;
 
         // build request to change class, if defined
         if (parms.jobclass != "undefined"){
@@ -81,6 +82,7 @@ export class ModifyJobs {
             };
             const responseJsonClass = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
             response = responseJsonClass as IJobFeedback;
+            mergedMessage = 'Job class response: ' + response.message;
         }
 
         // build request to change holdStatus, if defined
@@ -90,6 +92,7 @@ export class ModifyJobs {
             };
             const responseJsonHold = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
             response = responseJsonHold as IJobFeedback;
+            response.message = 'Hold status response: ' + response.message + ' ' + mergedMessage;
         }
 
         return response;
