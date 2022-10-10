@@ -41,7 +41,7 @@ export default class JobHandler extends ZosmfBaseHandler {
         const jobname: string = this.arguments.jobname + "";
         const jobid: string = this.arguments.jobid + "";
         const jobclass: string = this.arguments.jobclass + "";
-        const holdstatus: string = this.arguments.holdstatus + "";
+        const holdstatus: string = this.arguments.holdStatus + "";
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 

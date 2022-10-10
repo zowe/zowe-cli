@@ -50,7 +50,6 @@ export const JobDefinition: ICommandDefinition = {
             description: strings.ACTIONS.JOB.OPTIONS.HOLD_STATUS,
             type: "string",
             required: false,
-            defaultValue: "release"
         }
     ],
     examples: [

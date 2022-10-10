@@ -67,21 +67,32 @@ export class ModifyJobs {
         this.log.trace("ModifyJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobid"],
             "You must specify jobname and jobid for the job you want to modify.");
-
         this.log.info("Modifying job %s.%s", parms.jobname, parms.jobid);
+
         const headers: any = [Headers.APPLICATION_JSON];
-
-        // build request to change class
-        const request: IModifyJob = {
-            class: parms.jobclass,
-            request: parms.holdstatus,
-        };
-
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
-        const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
-        const responseFeedback = responseJson as IJobFeedback;
-        
-        return responseFeedback;
+        let response: IJobFeedback;
+        let request: IModifyJob;
+
+        // build request to change class, if defined
+        if (parms.jobclass != "undefined"){
+            request = {
+                class: parms.jobclass,
+            };
+            const responseJsonClass = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+            response = responseJsonClass as IJobFeedback;
+        }
+
+        // build request to change holdStatus, if defined
+        if (parms.holdstatus != "undefined"){
+            request = {
+                request: parms.holdstatus,
+            };
+            const responseJsonHold = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+            response = responseJsonHold as IJobFeedback;
+        }
+
+        return response;
 
     }
 
