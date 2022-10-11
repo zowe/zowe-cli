@@ -16,5 +16,13 @@ import { IOptions } from "../../../doc/IOptions";
  * @export
  * @interface IGetOptions
  */
-// NOTE(Kelosky): allow empty interface for backwards compatibility
-export type IGetOptions = IOptions;
+export interface IGetOptions extends IOptions {
+
+    /**
+     * Range of records to return
+     * @type {string}
+     * @memberof IGetOptions
+     */
+    range?: string;
+}
+

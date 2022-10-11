@@ -4,7 +4,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed Example 3 where no `--like` option is specified in `zowe zos-files create data-set`.
+- Enhancement: Allow `zowe files view ds ... --range SSS-EEE | SSS,NNN`. [#1539](https://github.com/zowe/zowe-cli/issues/1539)
+- Enhancement: Added `ZosFilesCreateOptions.alcunit` option to PDS definition. [#1203](https://github.com/zowe/zowe-cli/issues/1203)
+- BugFix: Fixed example 3 where no `--like` option is specified in `zowe zos-files create data-set`. [#1252](https://github.com/zowe/zowe-cli/issues/1252)
 
 ## `7.6.2`
 
