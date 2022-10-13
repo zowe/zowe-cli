@@ -15,6 +15,7 @@
  * @interface IJobFeedback
  */
 export interface IJobFeedback {
+    response: import("c:/Users/at895452/Desktop/zowe-cli/packages/zosjobs/src/index").IJob;
 
     /**
      * job id for a job
@@ -35,7 +36,7 @@ export interface IJobFeedback {
      * @type {string}
      * @memberof IJob
      */
-    holdstatus: string;
+    holdStatus: string;
 
     /**
      * Original job id

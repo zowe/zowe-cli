@@ -9,6 +9,8 @@
 *
 */
 
+import { HOLD_STATUS } from "../../types/HoldStatus";
+
 /**
  * Interface for change job z/OSMF API
  * @export
@@ -20,7 +22,7 @@ export interface IModifyJobParms {
      * @type {string}
      * @memberof IModifyJobParms
      */
-     jobname: string;
+    jobname: string;
 
     /**
      * job id for the job you want to change
@@ -38,8 +40,8 @@ export interface IModifyJobParms {
 
     /**
      * job name for the job you want to change
-     * @type {string}
+     * @type {HOLD_STATUS}
      * @memberof IModifyJobParms
      */
-    holdstatus: string;
+    holdStatus: HOLD_STATUS;
 }

@@ -58,6 +58,7 @@ export default {
                     JOB_CLASS: "The job class (e.g. 'A', 'B', ...) of the job.",
                     HOLD_STATUS: "Setting this option to 'hold' will prevent a job from executing until"+
                     "using this option again to change a job to 'release'",
+                    SHOW_JOB: "Boolean flag to display current job data with along with your response"
                 },
                 EXAMPLES: {
                     EX1: {
@@ -71,6 +72,10 @@ export default {
                     EX3: {
                         DESCRIPTION: "Modify hold status and class of job with job ID JOB03456 and job name AT895450",
                         OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass B --hold-status release"
+                    },
+                    EX4: {
+                        DESCRIPTION: "Modify class of job and view current job data",
+                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass B --show-job true"
                     }
                 }
             }

@@ -14,7 +14,7 @@
  * @export
  * @interface IModifyJob
  */
- export interface IModifyJob {
+export interface IModifyJob {
     /**
      * updated class for job
      * @type {string}

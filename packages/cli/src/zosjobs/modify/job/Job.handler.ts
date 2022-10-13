@@ -40,14 +40,16 @@ export default class JobHandler extends ZosmfBaseHandler {
         // Force yargs parameters to be strings
         const jobname: string = this.arguments.jobname + "";
         const jobid: string = this.arguments.jobid + "";
-        const jobclass: string = this.arguments.jobclass + "";
-        const holdstatus: string = this.arguments.holdStatus + "";
+
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 
-        // Modify the job
-        const response = await ModifyJobs.modifyJob(this.mSession, jobname, jobid, jobclass, holdstatus);
+        // Modify the job and print output
+        const response = await ModifyJobs.modifyJob(this.mSession, jobname, jobid, this.arguments.jobClass, this.arguments.holdStatus);
         this.data.setObj(job);
+        if(this.arguments.showJob){
+            this.console.log("\nCURRENT JOB STATUS:\n"+JSON.stringify(job, null));
+        }
         this.console.log(response.message);
     }
 }

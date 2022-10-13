@@ -40,15 +40,24 @@ export const JobDefinition: ICommandDefinition = {
     ],
     options: [
         {
-            name: "jobclass",
+            name: "job-class",
             description: strings.ACTIONS.JOB.OPTIONS.JOB_CLASS,
             type: "string",
+            defaultValue: undefined,
             required: false,
         },
         {
             name: "hold-status",
             description: strings.ACTIONS.JOB.OPTIONS.HOLD_STATUS,
-            type: "string",
+            type: "HOLD_STATUS",
+            defaultValue: undefined,
+            required: false,
+        },
+        {
+            name: "show-job",
+            description: strings.ACTIONS.JOB.OPTIONS.SHOW_JOB,
+            type: "boolean",
+            defaultValue: false,
             required: false,
         }
     ],
