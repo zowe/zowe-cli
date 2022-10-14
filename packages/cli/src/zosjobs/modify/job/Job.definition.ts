@@ -49,7 +49,7 @@ export const JobDefinition: ICommandDefinition = {
         {
             name: "hold-status",
             description: strings.ACTIONS.JOB.OPTIONS.HOLD_STATUS,
-            type: "HOLD_STATUS",
+            type: "string",
             defaultValue: undefined,
             required: false,
         },

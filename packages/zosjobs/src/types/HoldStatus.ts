@@ -16,10 +16,6 @@
  */
 export type HOLD_STATUS = "hold" | "release";
 export const HOLD_STATUS = {
-    // Hold indicates that the job will not run/execute.
     HOLD: "hold" as HOLD_STATUS,
-    // Release indicates that the job can be released for execution.
     RELEASE: "release" as HOLD_STATUS,
 };
-
-export const JOB_STATUS_ORDER: HOLD_STATUS[] = ["hold", "release"];
