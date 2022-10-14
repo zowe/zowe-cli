@@ -43,9 +43,9 @@ export default class JobHandler extends ZosmfBaseHandler {
         const jobid: string = this.arguments.jobid + "";
 
         // Enforce typing of hold status
-        if (this.arguments.holdStatus != HOLD_STATUS.HOLD ){}
-        // tell user that they did it wrong if not matching types, give back response object (params.response) with error 
-        
+        if(!HOLD_STATUS.has(this.arguments.holdStatus)){
+            throw new Error("ERROR! '--hold-status' only accepts a value of either 'hold' or 'release'");
+        }      
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);

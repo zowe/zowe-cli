@@ -8,14 +8,5 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-
-/**
- * The possible hold status strings (as specified by the z/OSMF documentation). Used in the Jobs APIs for modifying
- * holdStatus.
- * @type {HOLD_STATUS} (string)
- */
-export type HOLD_STATUS = "hold" | "release";
-export const HOLD_STATUS = {
-    HOLD: "hold" as HOLD_STATUS,
-    RELEASE: "release" as HOLD_STATUS,
-};
+ export type HoldStatus = "hold" | "release";
+ export const HOLD_STATUS = new Set<string>(['hold', 'release']);

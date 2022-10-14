@@ -9,7 +9,7 @@
 *
 */
 
-import { HOLD_STATUS } from "../../types/HoldStatus";
+import { HoldStatus } from "../../types/HoldStatus";
 import { IJobStepData } from "../response/IJobStepData";
 
 /**
@@ -73,10 +73,10 @@ export interface IJob {
 
     /**
      * job hold status
-     * @type {HOLD_STATUS}
+     * @type {HoldStatus}
      * @memberof IJob
      */
-    holdStatus: HOLD_STATUS;
+    holdStatus: HoldStatus;
 
     /**
      * return code of the job

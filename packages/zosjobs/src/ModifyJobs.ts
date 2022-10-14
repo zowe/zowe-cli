@@ -16,7 +16,7 @@ import { IJob } from "./doc/response/IJob";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
 import { IModifyJob } from "./doc/input/IModifyJob";
 import { IJobFeedback } from "./doc/response/IJobFeedback";
-import { HOLD_STATUS } from "./types/HoldStatus";
+import { HoldStatus } from "./types/HoldStatus";
 
 /**
  * Class to handle modify of jobclass and holdStatus information
@@ -32,12 +32,12 @@ export class ModifyJobs {
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
      * @param {string} jobclass - job class to be translated into parms object
-     * @param {HOLD_STATUS} holdStatus - job status to be translated into parms object
+     * @param {HoldStatus} holdStatus - job status to be translated into parms object
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
     public static async modifyJob(session: AbstractSession, jobname: string, jobid: string,
-        jobclass?: string, holdStatus?: HOLD_STATUS): Promise<undefined|IJobFeedback> {
+        jobclass?: string, holdStatus?: HoldStatus): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJob called with jobname %s jobid %s", jobname, jobid);
         return ModifyJobs.modifyJobCommon(session, { jobname, jobid, jobclass, holdStatus });
     }
