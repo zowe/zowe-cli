@@ -32,13 +32,6 @@ export interface IJobFeedback {
     jobname: string;
 
     /**
-     * job name for a job
-     * @type {string}
-     * @memberof IJob
-     */
-    holdStatus: string;
-
-    /**
      * Original job id
      * @type {string}
      * @memberof IJobFeedback

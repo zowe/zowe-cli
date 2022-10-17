@@ -9,7 +9,6 @@
 *
 */
 
-import { HoldStatus } from "../../types/HoldStatus";
 
 /**
  * Interface for change job z/OSMF API

@@ -9,7 +9,6 @@
 *
 */
 
-import { HoldStatus } from "../../types/HoldStatus";
 import { IJobStepData } from "../response/IJobStepData";
 
 /**
