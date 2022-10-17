@@ -39,9 +39,16 @@ export interface IModifyJobParms {
     jobclass: string;
 
     /**
-     * job name for the job you want to change
-     * @type {HoldStatus}
+     * //
+     * @type {boolean}
      * @memberof IModifyJobParms
      */
-    holdStatus: HoldStatus;
+    hold: boolean;
+
+    /**
+     * //
+     * @type {boolean}
+     * @memberof IModifyJobParms
+     */
+    release: boolean;
 }

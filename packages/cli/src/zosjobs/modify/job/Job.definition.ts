@@ -47,9 +47,17 @@ export const JobDefinition: ICommandDefinition = {
             required: false,
         },
         {
-            name: "hold-status",
-            description: strings.ACTIONS.JOB.OPTIONS.HOLD_STATUS,
-            type: "string",
+            name: "hold",
+            description: strings.ACTIONS.JOB.OPTIONS.HOLD,
+            type: "boolean",
+            defaultValue: undefined,
+            required: false,
+            conflictsWith: ["release"]
+        },
+        {
+            name: "release",
+            description: strings.ACTIONS.JOB.OPTIONS.RELEASE,
+            type: "boolean",
             defaultValue: undefined,
             required: false,
         },

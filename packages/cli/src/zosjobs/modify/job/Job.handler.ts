@@ -12,7 +12,6 @@
 import { IHandlerParameters } from "@zowe/imperative";
 import { ModifyJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
-import { HOLD_STATUS } from "@zowe/zos-jobs-for-zowe-sdk/lib/types/HoldStatus";
 
 /**
  * "zos-jobs modify job" command handler. Modify a job by name and ID.
@@ -41,19 +40,17 @@ export default class JobHandler extends ZosmfBaseHandler {
         // Force yargs parameters to be strings
         const jobname: string = this.arguments.jobname + "";
         const jobid: string = this.arguments.jobid + "";
-
-        // Enforce typing of hold status
-        if(!HOLD_STATUS.has(this.arguments.holdStatus)){
-            throw new Error("ERROR! '--hold-status' only accepts a value of either 'hold' or 'release'");
-        }      
+        const hold: boolean = this.arguments.hold;
+        const release: boolean = this.arguments.release;
+        const showJob: boolean = this.arguments.showJob;
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 
         // Modify the job and print output
-        const response = await ModifyJobs.modifyJob(this.mSession, jobname, jobid, this.arguments.jobClass, this.arguments.holdStatus);
+        const response = await ModifyJobs.modifyJob(this.mSession, jobname, jobid, this.arguments.jobClass, hold, release);
         this.data.setObj(job);
-        if(this.arguments.showJob){
+        if(showJob){
             const indentSpaces = 4;
             this.console.log("\nCURRENT JOB STATUS:\n"+JSON.stringify(job, null, indentSpaces));
         }

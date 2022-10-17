@@ -55,28 +55,29 @@ export default {
                         "the job ID if desired. You can use, for example \"J123\".",
                 },
                 OPTIONS: {
-                    JOB_CLASS: "The job class (e.g. 'A', 'B', ...) of the job.",
-                    HOLD_STATUS: "Setting this option to 'hold' will prevent a job from executing until"+
-                    "using this option again to change a job to 'release'",
-                    SHOW_JOB: "Boolean flag to display current job data with along with your response"
+                    JOB_CLASS: "The job class (e.g. 'A', 'B', ...) assigned to the job.",
+                    HOLD: "Setting this flag will prevent a job from executing until"+
+                    "entering a second command with the '--release' flag",
+                    RELEASE: "Flag that releases a held a job for execution", 
+                    SHOW_JOB: "Flag to display current job data with along with your command output"
                 },
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Modify class of job with job ID JOB03456 and job name AT895450",
-                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass A"
+                        DESCRIPTION: "Modify class of job with job ID JOB03456 and job name AT123456",
+                        OPTIONS: "AT123456 JOB03456 --jobclass A",
                     },
                     EX2: {
-                        DESCRIPTION: "Modify hold status of job with job ID JOB03456 and job name AT895450",
-                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --hold-status hold"
+                        DESCRIPTION: "Hold job with job ID JOB03456 and job name AT123456",
+                        OPTIONS: "AT123456 JOB03456 --hold",
                     },
                     EX3: {
-                        DESCRIPTION: "Modify hold status and class of job with job ID JOB03456 and job name AT895450",
-                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass B --hold-status release"
+                        DESCRIPTION: "Release job with job ID JOB03456 and job name AT123456",
+                        OPTIONS: "AT123456 JOB03456 --release",
                     },
                     EX4: {
-                        DESCRIPTION: "Modify class of job and view current job data",
-                        OPTIONS: "zowe jobs modify job AT895450 JOB03456 --jobclass B --show-job true"
-                    }
+                        DESCRIPTION: "Modify class of job with job ID JOB03456 and job name AT123456 and show job details",
+                        OPTIONS: "AT123456 JOB03456 -jobclass B --show-job",
+                    },
                 }
             }
         }

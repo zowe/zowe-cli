@@ -16,7 +16,6 @@ import { IJob } from "./doc/response/IJob";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
 import { IModifyJob } from "./doc/input/IModifyJob";
 import { IJobFeedback } from "./doc/response/IJobFeedback";
-import { HoldStatus } from "./types/HoldStatus";
 
 /**
  * Class to handle modify of jobclass and holdStatus information
@@ -32,14 +31,15 @@ export class ModifyJobs {
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
      * @param {string} jobclass - job class to be translated into parms object
-     * @param {HoldStatus} holdStatus - job status to be translated into parms object
+     * @param {boolean} hold - flag that holds a job from execution
+     * @param {boolean} release - flag that releases a held a job for execution
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
     public static async modifyJob(session: AbstractSession, jobname: string, jobid: string,
-        jobclass?: string, holdStatus?: HoldStatus): Promise<undefined|IJobFeedback> {
+        jobclass?: string, hold?: boolean, release?: boolean): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJob called with jobname %s jobid %s", jobname, jobid);
-        return ModifyJobs.modifyJobCommon(session, { jobname, jobid, jobclass, holdStatus });
+        return ModifyJobs.modifyJobCommon(session, { jobname, jobid, jobclass, hold, release});
     }
 
     /**
@@ -52,7 +52,7 @@ export class ModifyJobs {
      */
     public static async modifyJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobForJob called with job %s", JSON.stringify(job));
-        return ModifyJobs.modifyJobCommon(session, { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, holdStatus: job.holdStatus });
+        return ModifyJobs.modifyJobCommon(session, { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, hold: job.hold, release: job.release });
     }
 
     /**
@@ -77,30 +77,26 @@ export class ModifyJobs {
         let mergedMessage: string = "";
         let exception: boolean = false;
 
-        // build request to change holdStatus, if defined
-        if (parms.holdStatus != undefined){
-            request = {
-                request: parms.holdStatus,
-            };
+        if(parms.hold || parms.release){
+            parms.hold ? request = { request: "hold"} : request = { request: "release"};
             try{
                 response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
             }
             catch(err){
                 exception = true;
-                err.mMessage=err.mMessage.concat('"--hold-status" Modify Request Error');
+                err.mMessage=err.mMessage.concat('Modify Request Error');
                 return err;
             }
-            response.message = mergedMessage = '\n"--hold-status" Modify Request Response: ' + response.message;
+            response.message = mergedMessage = '\nModify Request Response: ' + response.message;
         }
 
-        // build request to change class, if defined
+        // build request to change class, only if defined and no exception from potential previous request
         if (parms.jobclass != undefined && !exception){
             request = {
                 class: parms.jobclass,
             };
             response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
-            //a catch here will never get caught bc imperative/zosmf interaction doesnt trigger an error from invalid classname
-            response.message = mergedMessage + '\n"--jobclass" Modify Request Response: ' + response.message + '\n';
+            response.message = mergedMessage + '\nModify Request Response: ' + response.message + '\n';
         }
         return response;
     }
