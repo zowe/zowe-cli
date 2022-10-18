@@ -269,6 +269,12 @@ describe("GetJobs tests", () => {
             expect(jobs).toMatchSnapshot();
         });
 
+        it("should allow getting jobs by common method with status", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            const jobs = await GetJobs.getJobsCommon(pretendSession, {status: 'active'});
+            expect(jobs).toMatchSnapshot();
+        });
+
         it("should have proper URI when using no parms", () => {
             (ZosmfRestClient.getExpectJSON as any) =
                 jest.fn<object>((session: AbstractSession, resource: string, headers?: any[]) => {
@@ -509,6 +515,19 @@ describe("GetJobs tests", () => {
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
+        });
+    });
+
+    describe("getJobsByParameters", () => {
+        it("should get jobs even when no params are passed in", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            const jobs = await GetJobs.getJobsByParameters(pretendSession, {});
+            expect(jobs).toMatchSnapshot();
+        });
+        it("should get jobs when any of the valid parameters are passed in", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            const jobs = await GetJobs.getJobsByParameters(pretendSession, { status: 'active', owner: '*'});
+            expect(jobs).toMatchSnapshot();
         });
     });
 });

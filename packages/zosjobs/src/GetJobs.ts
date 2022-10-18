@@ -92,9 +92,6 @@ export class GetJobs {
      */
     public static async getJobsByParameters(session: AbstractSession, params: IGetJobsParms) {
         Logger.getAppLogger().trace("GetJobs.getJobsByParameters()");
-        const { owner, prefix } = params;
-        ImperativeExpect.toBeDefinedAndNonBlank(owner, "owner");
-        ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix");
         return GetJobs.getJobsCommon(session, { ...params});
     }
 
