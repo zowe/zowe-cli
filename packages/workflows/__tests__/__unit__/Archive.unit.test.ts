@@ -25,11 +25,11 @@ const session: AbstractSession = new Session({
 const workflowKeyConst: string = "0123-456789-abc-def";
 
 describe("Archive workflow unit tests - successful scenarios", () => {
-    it("Successful archive", async ()=>{
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
-            return new Promise((resolve)=>{
+    it("Successful archive", async () => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
+            return new Promise((resolve) => {
                 Imperative.console.info("Using mocked function");
-                process.nextTick(()=>{
+                process.nextTick(() => {
                     const promiseOutput: IArchivedWorkflow = {
                         workflowKey: workflowKeyConst
                     };
@@ -51,8 +51,8 @@ describe("Archive workflow unit tests - successful scenarios", () => {
     });
 });
 
-describe("Missing session", ()=>{
-    it("Undefined session", async ()=>{
+describe("Missing session", () => {
+    it("Undefined session", async () => {
         try {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
@@ -62,7 +62,7 @@ describe("Missing session", ()=>{
             expect(error.mDetails).toEqual(expectedError);
         }
     });
-    it("Null session", async ()=>{
+    it("Null session", async () => {
         try {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
@@ -72,7 +72,7 @@ describe("Missing session", ()=>{
             expect(error.mDetails).toEqual(expectedError);
         }
     });
-    it("Empty session", async ()=>{
+    it("Empty session", async () => {
         try {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
@@ -84,8 +84,8 @@ describe("Missing session", ()=>{
     });
 });
 
-describe("Missing workflow key", ()=> {
-    it("Undefined workflow key", async ()=>{
+describe("Missing workflow key", () => {
+    it("Undefined workflow key", async () => {
         try {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
@@ -95,7 +95,7 @@ describe("Missing workflow key", ()=> {
             expect(error.mDetails).toEqual(expectedError);
         }
     });
-    it("Null workflow key", async ()=>{
+    it("Null workflow key", async () => {
         try {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
@@ -105,7 +105,7 @@ describe("Missing workflow key", ()=> {
             expect(error.mDetails).toEqual(expectedError);
         }
     });
-    it("Empty workflow key", async ()=>{
+    it("Empty workflow key", async () => {
         try {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
@@ -117,10 +117,10 @@ describe("Missing workflow key", ()=> {
     });
 });
 
-describe("Missing z/OSMF version", ()=>{
-    it("Missing z/OSMF REST API version", async ()=>{
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
-            return new Promise((resolve)=>{
+describe("Missing z/OSMF version", () => {
+    it("Missing z/OSMF REST API version", async () => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
+            return new Promise((resolve) => {
                 Imperative.console.info("Using mocked function");
                 process.nextTick(()=>{
                     const promiseOutput: IArchivedWorkflow = {
@@ -144,11 +144,11 @@ describe("Missing z/OSMF version", ()=>{
     });
 });
 
-describe("Errors caused by the user interaction", ()=>{
-    it("400 Bad Request", async ()=>{
+describe("Errors caused by the user interaction", () => {
+    it("400 Bad Request", async () => {
         const errorCodeConst = "400";
         const msgConst = "Bad Request";
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise(()=>{
                 Imperative.console.info("Using mocked function");
                 const error =  new ImperativeError({
@@ -167,10 +167,10 @@ describe("Errors caused by the user interaction", ()=>{
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
-    it("403 Forbidden", async ()=>{
+    it("403 Forbidden", async () => {
         const errorCodeConst = "403";
         const msgConst = "Forbidden";
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise(()=>{
                 Imperative.console.info("Using mocked function");
                 const error =  new ImperativeError({
@@ -189,10 +189,10 @@ describe("Errors caused by the user interaction", ()=>{
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
-    it("404 Not Found", async ()=>{
+    it("404 Not Found", async () => {
         const errorCodeConst = "404";
         const msgConst = "Not Found";
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise(()=>{
                 Imperative.console.info("Using mocked function");
                 const error =  new ImperativeError({
@@ -211,10 +211,10 @@ describe("Errors caused by the user interaction", ()=>{
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
-    it("409 Request Conflict", async ()=>{
+    it("409 Request Conflict", async () => {
         const errorCodeConst = "409";
         const msgConst = "Request Conflict";
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise(()=>{
                 Imperative.console.info("Using mocked function");
                 const error =  new ImperativeError({
@@ -233,10 +233,10 @@ describe("Errors caused by the user interaction", ()=>{
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
-    it("401 Unauthorized", async ()=>{
+    it("401 Unauthorized", async () => {
         const errorCodeConst = "401";
         const msgConst = "Unauthorized";
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise(()=>{
                 Imperative.console.info("Using mocked function");
                 const error =  new ImperativeError({

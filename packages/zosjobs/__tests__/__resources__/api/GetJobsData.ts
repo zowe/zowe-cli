@@ -174,7 +174,7 @@ export class GetJobsData {
      * @memberof GetJobsData
      */
     public static readonly SAMPLE_IEFBR14_JCL: string =
-    "//RUNMAIN  JOB 105300000,                                               JOB07172" +
+        "//RUNMAIN  JOB 105300000,                                               JOB07172" +
         "// USER=KELDA16" +
         "//* test" +
         "//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G";
@@ -185,8 +185,7 @@ export class GetJobsData {
      * @type {IJobFile[]}
      * @memberof GetJobsData
      */
-    public static readonly SAMPLE_SPOOL_FILES: IJobFile[] =
-    [
+    public static readonly SAMPLE_SPOOL_FILES: IJobFile[] = [
         {
             "recfm": "UA",
             "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
@@ -243,8 +242,7 @@ export class GetJobsData {
      * @type {IJobFile}
      * @memberof GetJobsData
      */
-    public static readonly SAMPLE_JOB_FILE: IJobFile =
-    {
+    public static readonly SAMPLE_JOB_FILE: IJobFile = {
         "recfm": "UA",
         "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
         "stepname": "JES2",
@@ -268,7 +266,7 @@ export class GetJobsData {
      * @memberof GetJobsData
      */
     public static readonly SAMPLE_JES_MSG_LG: string =
-    "    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D" +
+        "    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D" +
         "    0" +
         " 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ----" +
         " 08.26.22 JOB01544  TSS7000I KELDA16 Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO" +

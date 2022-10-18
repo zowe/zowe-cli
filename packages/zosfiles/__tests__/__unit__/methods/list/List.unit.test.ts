@@ -42,7 +42,7 @@ describe("z/OS Files - List", () => {
     describe("allMembers", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -231,7 +231,7 @@ describe("z/OS Files - List", () => {
     describe("dataSet", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should throw error when data set name is not specified", async () => {
@@ -516,7 +516,7 @@ describe("z/OS Files - List", () => {
     describe("fileList", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should throw error when path name is not specified", async () => {
@@ -717,12 +717,418 @@ describe("z/OS Files - List", () => {
                 [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
+        describe("options", () => {
+
+            const testApiResponse = {
+                items: [
+                    {
+                        name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                    },
+                    {
+                        name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                    },
+                    {
+                        name: ".profile", mode: "-rwxrwxrwx", size: 849, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2013-02-13T12:08:29"
+                    },
+                    {
+                        name: ".sh_history", mode: "-rw-------", size: 4662, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2013-06-06T18:09:28"
+                    },
+                    {
+                        name: "myFile.txt", mode: "-rw-r--r--", size: 20, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                    },
+                    {
+                        name: "profile.add", mode: "-rwxrwxrwx", size: 888, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2013-05-07T11:23:08"
+                    }
+                ],  returnedRows: 6, totalRows: 6, JSONversion: 1
+            };
+            const endpointTemplate = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+
+            it("should add the group name parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_GROUP}=ZOWE`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {group: "ZOWE"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the group ID parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_GROUP}=1000`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {group: 1000});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the user name parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_USER}=ZOWE`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {user: "ZOWE"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the user ID parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_USER}=1000`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {user: 1000});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+
+            it("should add the name parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_NAME}=*`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {name: "*"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the mtime parameter to the URI - number", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_MTIME}=2`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {mtime: 2});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the mtime parameter to the URI - string", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_MTIME}=%2B2`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {mtime: "+2"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the size parameter to the URI - number", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_SIZE}=1024`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {size: 1024});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the size parameter to the URI - string", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_SIZE}=%2B1024`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {size: "+1024"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the perm parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_PERM}=7777`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {perm: "7777"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the type parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_TYPE}=d`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {type: "d"});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the depth parameter to the URI", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_NAME}=*&${ZosFilesConstants.RES_DEPTH}=1`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {name: "*", depth: 1});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the filesys parameter to the URI - true", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_NAME}=*&${ZosFilesConstants.RES_FILESYS}=all`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {name: "*", filesys: true});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the filesys parameter to the URI - false", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_NAME}=*&${ZosFilesConstants.RES_FILESYS}=same`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {name: "*", filesys: false});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the symlinks parameter to the URI - true", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_NAME}=*&${ZosFilesConstants.RES_SYMLINKS}=report`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {name: "*", symlinks: true});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should add the symlinks parameter to the URI - false", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_NAME}=*&${ZosFilesConstants.RES_SYMLINKS}=follow`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {name: "*", symlinks: false});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse).toBe(testApiResponse);
+                expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+                expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            });
+
+            it("should fail to add the depth parameter because it is missing a required parameter", async () => {
+                let response;
+                let error;
+
+                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_DEPTH}=1`;
+                expectJsonSpy.mockResolvedValue(testApiResponse);
+
+                try {
+                    response = await List.fileList(dummySession, path, {depth: 1});
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeTruthy();
+                expect(error instanceof ImperativeError).toBe(true);
+                expect(error.message).toContain("option to be specified");
+                expect(expectJsonSpy).toHaveBeenCalledTimes(0);
+            });
+        });
+
     });
 
     describe("fs", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(() => listApiResponse);
+            expectJsonSpy.mockImplementation(async () => listApiResponse);
         });
 
         it("should list all mounted filesystems", async () => {
@@ -898,7 +1304,7 @@ describe("z/OS Files - List", () => {
 
         beforeEach(() => {
             listDataSetSpy.mockClear();
-            listDataSetSpy.mockResolvedValue(undefined);
+            listDataSetSpy.mockResolvedValue({} as any);
         });
 
         it("should successfully list PS and PO data sets using the List.dataSet API", async () => {
@@ -906,7 +1312,7 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            listDataSetSpy.mockImplementation(async () => {
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [dataSetPS, dataSetPO]
@@ -999,7 +1405,7 @@ describe("z/OS Files - List", () => {
 
             listDataSetSpy.mockImplementationOnce(async () => {
                 throw new Error("test2");
-            }).mockImplementation(async () => {
+            }).mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [dataSetPS]
@@ -1029,7 +1435,7 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            List.dataSet = jest.fn(async () => {
+            List.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     apiResponse: {
                         items: [dataSetPS]

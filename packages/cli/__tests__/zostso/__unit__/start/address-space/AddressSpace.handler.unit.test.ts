@@ -62,7 +62,7 @@ describe("start address-space handler tests", () => {
     });
 
     it("should be able to start address-space", async () => {
-        jest.spyOn(StartTso, "start").mockImplementation((session, commandParms, startParms) => {
+        jest.spyOn(StartTso, "start").mockImplementation(async (session, commandParms, startParms) => {
             expect(startParms).toBeDefined();
             expect(startParms).toMatchSnapshot();
             return StartTsoData.SAMPLE_START_RESPONSE;
@@ -94,7 +94,7 @@ describe("start address-space handler tests", () => {
     it("should throw an error if the response is not successful", async () => {
         const failure = "failed to start the address space";
         let error;
-        jest.spyOn(StartTso, "start").mockImplementation((session, commandParms) => {
+        jest.spyOn(StartTso, "start").mockImplementation(async (session, commandParms): Promise<any> => {
             return {
                 success: false,
                 failureResponse: {

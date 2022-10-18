@@ -75,7 +75,7 @@ function expectZosmfResponseFailed(response: IProvisionTemplateResponse, error: 
 describe("ProvisionPublishedTemplate", () => {
 
     it("provisionTemplate should succeed without passed optional parameters", async () => {
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -97,7 +97,7 @@ describe("ProvisionPublishedTemplate", () => {
     });
 
     it("provisionTemplate should succeed with passed optional parameters", async () => {
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -185,7 +185,7 @@ describe("ProvisionPublishedTemplate", () => {
     });
 
     it("provisionTemplateCommon should succeed with all correct parameters", async () => {
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);

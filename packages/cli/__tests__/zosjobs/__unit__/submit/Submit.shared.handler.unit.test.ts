@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
+import { MonitorJobs, SubmitJobs, ISubmitJobUSSParms, ISubmitJobParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IHandlerParameters, ImperativeError, IO } from "@zowe/imperative";
 import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
 import {
@@ -82,7 +82,7 @@ describe("submit shared handler", () => {
             // Mock the submit JCL function
             const errMsg = "YOUR JCL IS BAD!";
             let dataSetSpecified: string;
-            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+            SubmitJobs.submitJobCommon = jest.fn((session, dataset: ISubmitJobParms) => {
                 dataSetSpecified = dataset.jobDataSet;
                 throw new ImperativeError({msg: errMsg});
             });
@@ -117,7 +117,7 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, dataset: ISubmitJobParms): Promise<any> => {
                 dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
@@ -153,7 +153,7 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, dataset: ISubmitJobParms): Promise<any> => {
                 dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
@@ -176,7 +176,7 @@ describe("submit shared handler", () => {
             });
 
             SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
-                return MonitorJobs.waitForJobOutputStatus(session, parms);
+                return MonitorJobs.waitForJobOutputStatus(session, parms as any);
             });
             // The handler should fail
             const theDataSet = "DATA.SET";
@@ -207,7 +207,7 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, dataset: ISubmitJobParms): Promise<any> => {
                 dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
@@ -230,7 +230,7 @@ describe("submit shared handler", () => {
             });
 
             SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
-                return MonitorJobs.waitForStatusCommon(session, parms);
+                return MonitorJobs.waitForStatusCommon(session, parms as any);
             });
             // The handler should fail
             const theDataSet = "DATA.SET";
@@ -261,7 +261,7 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, dataset: ISubmitJobParms): Promise<any> => {
                 dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
@@ -270,7 +270,7 @@ describe("submit shared handler", () => {
                     retcode: "UNKNOWN"
                 };
             });
-            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+            SubmitJobs.checkSubmitOptions = jest.fn(async (session, parms): Promise<any> => {
                 return [{
                     ddName: "fakeDD1",
                     id: 1,
@@ -312,7 +312,7 @@ describe("submit shared handler", () => {
             let ussFileSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, opts) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, opts: ISubmitJobUSSParms): Promise<any> => {
                 ussFileSpecified = opts.jobUSSFile;
                 return {
                     jobname: "MYJOB",
@@ -348,7 +348,7 @@ describe("submit shared handler", () => {
             let ussFileSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, opts) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, opts: ISubmitJobUSSParms): Promise<any> => {
                 ussFileSpecified = opts.jobUSSFile;
                 return {
                     jobname: "MYJOB",
@@ -371,7 +371,7 @@ describe("submit shared handler", () => {
             });
 
             SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
-                return MonitorJobs.waitForJobOutputStatus(session, parms);
+                return MonitorJobs.waitForJobOutputStatus(session, parms as any);
             });
             // The handler should fail
             const theFile = "/a/the/file.txt";
@@ -402,7 +402,7 @@ describe("submit shared handler", () => {
             let ussFileSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, opts) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, opts: ISubmitJobUSSParms): Promise<any> => {
                 ussFileSpecified = opts.jobUSSFile;
                 return {
                     jobname: "MYJOB",
@@ -425,7 +425,7 @@ describe("submit shared handler", () => {
             });
 
             SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
-                return MonitorJobs.waitForStatusCommon(session, parms);
+                return MonitorJobs.waitForStatusCommon(session, parms as any);
             });
             // The handler should fail
             const theFile = "/a/the/file.txt";
@@ -456,7 +456,7 @@ describe("submit shared handler", () => {
             let ussFileSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJobCommon = jest.fn((session, opts) => {
+            SubmitJobs.submitJobCommon = jest.fn(async (session, opts: ISubmitJobUSSParms): Promise<any> => {
                 ussFileSpecified = opts.jobUSSFile;
                 return {
                     jobname: "MYJOB",
@@ -465,7 +465,7 @@ describe("submit shared handler", () => {
                     retcode: "UNKNOWN"
                 };
             });
-            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+            SubmitJobs.checkSubmitOptions = jest.fn(async (session, parms): Promise<any> => {
                 return [{
                     ddName: "fakeDD1",
                     id: 1,
@@ -504,13 +504,13 @@ describe("submit shared handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let LocalFileSpecified: ISubmitParms;
+            let LocalFileSpecified: string;
 
             // Local file
             const theLocalFile: string = "test.txt";
 
             // Mock the submit JCL function
-            SubmitJobs.submitJclString = jest.fn((session, localFile) => {
+            SubmitJobs.submitJclString = jest.fn(async (session, localFile): Promise<any> => {
                 LocalFileSpecified = localFile;
                 return {
                     jobname: "MYJOB",
@@ -547,13 +547,13 @@ describe("submit shared handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let LocalFileSpecified: ISubmitParms;
+            let LocalFileSpecified: string;
 
             // Local file
             const theLocalFile: string = "test.txt";
 
             // Mock the submit JCL function
-            SubmitJobs.submitJclString = jest.fn((session, localFile) => {
+            SubmitJobs.submitJclString = jest.fn(async (session, localFile): Promise<any> => {
                 LocalFileSpecified = localFile;
                 return [{
                     ddName: "fakeDD1",

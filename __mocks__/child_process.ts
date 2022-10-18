@@ -32,7 +32,7 @@ function setSpawnSyncOutput(outputVal: string) {
 function execSyncMock(cmd: string, options: Object) {
     if (execSyncOutput === useRealFunction) {
         // run the real execSync
-        const execSyncReal = require.requireActual("child_process").execSync;
+        const execSyncReal = jest.requireActual("child_process").execSync;
         return execSyncReal(cmd, options);
     } else {
         // return the output that the test set with setExecSyncOutput().
@@ -44,7 +44,7 @@ function execSyncMock(cmd: string, options: Object) {
 function spawnSyncMock(cmd: string, args: [string], options: Object) {
     if (spawnSyncOutput.stdout === useRealFunction) {
         // run the real spawnSync
-        const spawnSyncReal = require.requireActual("child_process").spawnSync;
+        const spawnSyncReal = jest.requireActual("child_process").spawnSync;
         return spawnSyncReal(cmd, args, options);
     } else {
         // return the output that the test set with setSpawnSyncOutput().

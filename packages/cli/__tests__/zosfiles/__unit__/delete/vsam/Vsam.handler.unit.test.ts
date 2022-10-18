@@ -9,14 +9,15 @@
 *
 */
 
-import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Delete, IDeleteVsamResponse } from "@zowe/zos-files-for-zowe-sdk";
 import VsamHandler from "../../../../../src/zosfiles/delete/vsam/Vsam.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("VsamHandler", () => {
-    const defaultReturn: IZosFilesResponse = {
+    const defaultReturn: IDeleteVsamResponse = {
         success        : true,
-        commandResponse: "THIS IS A TEST"
+        commandResponse: "THIS IS A TEST",
+        apiResponse    : undefined as any
     };
 
     const deleteVsamDatasetSpy = jest.spyOn(Delete, "vsam");

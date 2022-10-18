@@ -29,12 +29,9 @@ describe("View USS file handler", () => {
             let fakeSession = null;
 
             // Mock the view USS file function
-            Get.USSFile = jest.fn((session) => {
+            Get.USSFile = jest.fn(async (session) => {
                 fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "Retrieved"
-                };
+                return Buffer.from("Retrieved");
             });
 
             // Mocked function references

@@ -33,7 +33,7 @@ let listSystemsHandler: ICommandHandler = null;
 describe("List systems behavior", () => {
     beforeEach(() => {
         ListDefinedSystems.listDefinedSystems = jest.fn(
-            (session, servletKey) => {
+            async (session): Promise<any> => {
                 return {
                     numRows: "1",
                     items: [
@@ -82,7 +82,7 @@ describe("List systems behavior", () => {
     it("should pass the rest client error to the command processor (no transformation)", async () => {
         const parmsToUse = Object.assign({}, ...[goodCmdParms]);
         ListDefinedSystems.listDefinedSystems = jest.fn(
-            (session, servletKey) => {
+            (session) => {
                 throw new Error("Mock GetInfo Error");
             }
         );

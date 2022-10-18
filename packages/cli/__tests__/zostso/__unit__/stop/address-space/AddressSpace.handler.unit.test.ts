@@ -35,7 +35,7 @@ describe("stop address-space handler tests", () => {
     });
 
     it("should be able to stop address-space", async () => {
-        StopTso.stop = jest.fn((session, servletKey) => {
+        StopTso.stop = jest.fn(async (session, servletKey) => {
             return StopTsoData.SAMPLE_STOP_RESPONSE;
         });
         const handler = new AddressSpaceHandler.default();

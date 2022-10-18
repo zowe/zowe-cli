@@ -37,6 +37,14 @@ Array [
     "name": "volume-serial",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "R",
+    ],
+    "description": "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records or SSS,NNN where is is the start and NNN is the number of records retrieved.",
+    "name": "range",
+    "type": "string",
+  },
 ]
 `;
 
@@ -49,6 +57,14 @@ Array [
   Object {
     "description": "View the contents of the data set member \\"ibmuser.test.loadlib(main)\\" in binary mode",
     "options": "\\"ibmuser.test.loadlib(main)\\" --binary",
+  },
+  Object {
+    "description": "View only the first two lines of content for data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\" --range 0,2",
+  },
+  Object {
+    "description": "View only lines six through eight (zero-based) in the contents of the data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\" --range 5-7",
   },
 ]
 `;

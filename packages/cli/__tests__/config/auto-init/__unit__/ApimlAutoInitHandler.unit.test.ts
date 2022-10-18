@@ -16,7 +16,7 @@ import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-
 import * as lodash from "lodash";
 import stripAnsi = require("strip-ansi");
 
-function mockConfigApi(properties: IConfig | undefined) {
+function mockConfigApi(properties: IConfig | undefined): any {
     return {
         api: {
             layers: {

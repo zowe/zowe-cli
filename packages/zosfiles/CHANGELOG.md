@@ -2,6 +2,22 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.7.0`
+
+- Enhancement: Add options to `Get.dataSet` to get a range value of `SSS-EEE` or `SSS,NNN`.
+
+## `7.6.2`
+
+- BugFix: Updated `minimatch` dependency for technical currency.
+- BugFix: Added to the description of Create.ts `cmdType`. [#48](https://github.com/zowe/zowe-cli/issues/48)
+- BugFix: Modified the progress bar for USS file uploads to increase readibility. [#451](https://github.com/zowe/zowe-cli/issues/451)
+
+## `7.6.0`
+
+- Enhancement: Updated the `List.fileList` method to support z/OSMF filter parameters such as "mtime" and "name".
+- Enhancement: Added `Download.ussDir` method to download the contents of a USS directory.
+- Enhancement: Updated the `Upload.streamToUssFile` method to "chtag" files after uploading them.
+
 ## `7.4.2`
 
 - BugFix: Added errorMessage property to `IZosFilesResponse` to provide more specific error messages.

@@ -41,7 +41,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -113,7 +113,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session): Promise<any> => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -122,7 +122,7 @@ describe("Archive workflow details handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -197,13 +197,13 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `archive failed`});
             });
@@ -271,13 +271,13 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `archive failed`});
             });
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {workflows: []};
             });
@@ -349,13 +349,13 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `archive failed`});
             });
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });

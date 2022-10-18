@@ -132,7 +132,7 @@ describe("Invoke", () => {
         });
 
         it("should throw and error if there is a statement longer than the maximum allowed length", async () => {
-            const errorContextMock = getErrorContext as jest.Mock<typeof getErrorContext>;
+            const errorContextMock = jest.mocked(getErrorContext);
 
             // Formulate the long string
             let longStatement = "";

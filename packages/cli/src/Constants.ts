@@ -60,8 +60,7 @@ export class Constants {
      * @static
      * @memberof Constants
      */
-    public static readonly DESCRIPTION =
-    `Welcome to ${Constants.DISPLAY_NAME}!
+    public static readonly DESCRIPTION = `Welcome to ${Constants.DISPLAY_NAME}!
 
 ${Constants.DISPLAY_NAME} is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
 

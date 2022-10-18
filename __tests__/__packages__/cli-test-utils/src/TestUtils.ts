@@ -35,12 +35,27 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
             childEnv[key] = testEnvironment.env[key];
         }
 
-        // Execute the command synchronously
-        return spawnSync("sh", [`${scriptPath}`].concat(args), {
+        if (process.platform === "win32") {
+            // Execute the command synchronously
+            return spawnSync("sh", [`${scriptPath}`].concat(args), {
+                cwd: testEnvironment.workingDir,
+                env: childEnv,
+                encoding: "buffer"
+            });
+        }
+
+        // Check to see if the file is executable
+        try {
+            fs.accessSync(scriptPath, fs.constants.X_OK);
+        } catch {
+            fs.chmodSync(scriptPath, "755");
+        }
+        return spawnSync(scriptPath, args, {
             cwd: testEnvironment.workingDir,
             env: childEnv,
             encoding: "buffer"
         });
+
     } else {
         throw new Error(`The script file ${scriptPath} doesn't exist`);
 
@@ -95,7 +110,7 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             data: {
                 setMessage: jest.fn((setMsgArgs) => {
                     expect(setMsgArgs).toMatchSnapshot();
-                }),
+                }) as any,
                 setObj: jest.fn((setObjArgs) => {
                     expect(Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs).toMatchSnapshot();
                 }),
@@ -104,12 +119,12 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             console: {
                 log: jest.fn((logs) => {
                     expect(logs.toString()).toMatchSnapshot();
-                }),
+                }) as any,
                 error: jest.fn((errors) => {
                     expect(errors.toString()).toMatchSnapshot();
-                }),
-                errorHeader: jest.fn(() => undefined),
-                prompt: jest.fn(() => null)
+                }) as any,
+                errorHeader: jest.fn(() => undefined) as any,
+                prompt: jest.fn(async () => null) as any
             },
             progress: {
                 startBar: jest.fn((parms) => undefined),

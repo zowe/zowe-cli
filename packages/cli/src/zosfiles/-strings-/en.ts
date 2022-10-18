@@ -313,6 +313,18 @@ export default {
                     EX2: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" in binary mode`
                 }
             },
+            USS_DIR: {
+                SUMMARY: "Download content from a USS directory",
+                DESCRIPTION: "Download content from a USS directory to a local directory on your PC",
+                POSITIONALS: {
+                    USSDIRNAME: "The name of the USS directory you want to download"
+                },
+                EXAMPLES: {
+                    EX1: `Download the directory "/a/ibmuser" to "./" in binary mode`,
+                    EX2: `Download the directory "/a/ibmuser" to "./localDir"`,
+                    EX3: `Download files from the directory "/a/ibmuser" that match the name "*.log" and were modified within the last day`
+                }
+            },
             DATA_SETS_MATCHING: {
                 SUMMARY: "Download multiple data sets at once",
                 DESCRIPTION: "Download all data sets that match a DSLEVEL pattern (see help below). " +
@@ -339,6 +351,7 @@ export default {
             }
         },
         OPTIONS: {
+            ATTRIBUTES: "Path of an attributes file to control how files are downloaded",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process " +
@@ -349,6 +362,7 @@ export default {
             ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                 "specified.",
             FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",
+            FAIL_FAST_USS: "Set this option to false to continue downloading USS files if one or more fail.",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
             EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension. When no extension " +
@@ -356,10 +370,11 @@ export default {
             DIRECTORY: "The directory to where you want to save the members. The command creates the directory for you when it does not already " +
                 "exist. By default, the command creates a folder structure based on the data set qualifiers. For example, the data set " +
                 "ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).",
-            EXTENSION_MAP: `Use this option to map data set names that match your pattern to the desired
-            extension. A comma delimited key value pairing (e.g. "cntl=.jcl,cpgm=.c" to map
-            the last segment of each data set (also known as the "low level qualifier" to
-            the desired local file extension).`,
+            DIRECTORY_USS: "The directory to where you want to save the files. The command creates the directory for you when it does not already " +
+                "exist. By default, the command downloads the files to the current directory.",
+            EXTENSION_MAP: `Use this option to map data set names that match your pattern to the desired extension. A comma delimited key value ` +
+                `pairing (e.g. "cntl=.jcl,cpgm=.c" to map the last segment of each data set (also known as the "low level qualifier" to the ` +
+                `desired local file extension).`,
             EXCLUDE_PATTERN: "Exclude data sets that match these DSLEVEL patterns. Any data sets that match" +
                 " this pattern will not be downloaded.",
             MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to download members." +
@@ -370,7 +385,17 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
                 " without a maximum number of concurrent requests. ",
-            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case"
+            MAX_CONCURRENT_REQUESTS_USS: "Specifies the maximum number of concurrent z/OSMF REST API requests to download files." +
+                " Increasing the value results in faster downloads. " +
+                "However, increasing the value increases resource consumption on z/OS and can be prone " +
+                "to errors caused by making too many concurrent requests. If the download process encounters an error, " +
+                "the following message displays:\n" +
+                "The maximum number of TSO address spaces have been created. When you specify 0, " +
+                Constants.DISPLAY_NAME + " attempts to download all files at once" +
+                " without a maximum number of concurrent requests. ",
+            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case",
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot",
+            OVERWRITE: "Overwrite files that already exist in your local environment"
         }
     },
     INVOKE: {
@@ -464,13 +489,28 @@ export default {
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
+            NAME: "Filters files in USS based on the name of the file or directory.",
             PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against " +
                 "all members, e.g. \"*\".",
             PATH: "Specifies the path where the file system is mounted." +
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
                 " This option and --path are mutually exclusive.",
-            START: "An optional search parameter that specifies the first data set name to return in the response document."
+            START: "An optional search parameter that specifies the first data set name to return in the response document.",
+            GROUP: "Filters content in USS based on the owning group name or ID.",
+            OWNER: "Filters content in USS based on the owning user name or ID.",
+            MTIME: "Filters content in USS based on the last modification time." +
+                " N - specify an exact number of days, +N - older than N days, -N - newer than N days ",
+            SIZE: "Filters content in USS based on the size." +
+                " Default units are bytes. Add a suffix of K for kilobytes, M for megabytes, or G for gigabytes." +
+                " N - specify an exact file size, +N - larger than N size, -N - smaller than N size",
+            PERM: "Filters content in USS based on the octal permissions string.",
+            TYPE: "Filters content in USS based on the type of content." +
+                " f - regular file, d - directory, l - symbolic link, p - FIFO named pipe, s - socket",
+            DEPTH: "Filters content in USS based on the number of directories to traverse down.",
+            FILESYS: "Filters content in USS based on the filesystem the data is on." +
+                " true - all filesystems, false - same filesystem as search directory.",
+            SYMLINKS: "Filters content in USS based on whether or not to follow symbolic links. true - report symlinks, false - follow symlinks"
         }
     },
     MOUNT: {
@@ -569,10 +609,10 @@ export default {
                     "An optional .zosattributes file in the source directory can be used to control file conversion and tagging.\n\n" +
                     "An example .zosattributes file:{{space}}{{space}}\n" +
                     "# pattern        local-encoding        remote-encoding{{space}}{{space}}\n" +
-                    "# Don't upload the node_modules directory{{space}}{{space}\n" +
-                    "node_modules     -{{space}}{{space}\n" +
+                    "# Don't upload the node_modules directory{{space}}{{space}}\n" +
+                    "node_modules     -{{space}}{{space}}\n" +
                     "# Don't upload files that start with periods{{space}}{{space}}\n" +
-                    ".*               - {{space}}{{space}\n" +
+                    ".*               -{{space}}{{space}}\n" +
                     "# Upload jpg images in binary{{space}}{{space}}\n" +
                     "*.jpg            binary                binary{{space}}{{space}}\n" +
                     "# Convert CICS Node.js profiles to EBCDIC{{space}}{{space}}\n" +
@@ -587,8 +627,6 @@ export default {
                     "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
                     "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are " +
                     "transferred in binary mode. Remote files are tagged either with the remote encoding or as binary.\n\n" +
-                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the z/OS " +
-                    "system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n" +
                     "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
                     "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",
 
@@ -597,15 +635,15 @@ export default {
                     USSDIR: "The name of the USS directory to which you want to upload the local directory"
                 },
                 EXAMPLES: {
-                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
+                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory`,
                     EX2: `Upload all files from the "local_dir" directory and all its sub-directories, ` +
-                        `to the "/a/ibmuser/my_dir" USS directory:`,
+                        `to the "/a/ibmuser/my_dir" USS directory`,
                     EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                        `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
+                        `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode`,
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                        `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`,
+                        `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode`,
                     EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
-                        `specifying files to ignore and file encodings in the local file my_global_attributes:`
+                        `specifying files to ignore and file encodings in the local file my_global_attributes`
                 }
             }
         },
@@ -641,7 +679,8 @@ export default {
                 "the following message displays:\n" +
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to upload all members at once" +
-                " without a maximum number of concurrent requests. "
+                " without a maximum number of concurrent requests. ",
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot"
         }
     },
     VIEW: {
@@ -656,7 +695,9 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `View the contents of the data set member "ibmuser.cntl(iefbr14)"`,
-                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`
+                    EX2: `View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode`,
+                    EX3: `View only the first two lines of content for data set member "ibmuser.cntl(iefbr14)"`,
+                    EX4: `View only lines six through eight (zero-based) in the contents of the data set member "ibmuser.cntl(iefbr14)"`
                 }
             },
             USS_FILE: {
@@ -679,7 +720,9 @@ export default {
                 " to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records." +
                 " Conflicts with binary.",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
-            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC."
+            "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
+            RANGE: "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records " +
+            "or SSS,NNN where is is the start and NNN is the number of records retrieved."
         }
     },
     COMPARE: {
@@ -697,7 +740,71 @@ export default {
                     EX1: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"`,
                     EX2: `Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers`
                 }
-            }
+            },
+            LOCAL_FILE_DATA_SET: {
+                SUMMARY: "Compare content of a local file and a z/os dataset",
+                DESCRIPTION: "Compare content of a local file and a z/os dataset on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    DATASETNAME: "The name of the data set you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"`,
+                    EX2: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"` +
+                     `without sequence numbers`
+                }
+            },
+            USS_FILE: {
+                SUMMARY: "Compare content of a local file and a z/os uss files",
+                DESCRIPTION: "Compare the contents of a two uss files on your terminal (stdout). browser.",
+                POSITIONALS: {
+                    USSFILEPATH1: "The path of the first uss file you want to compare.",
+                    USSFILEPATH2: "The path of the second uss file you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the uss file "/u/user/test.txt" and "/u/user/test.txt"`,
+                    EX2: `Compare the contents of the uss file "/u/user/test.txt" and "/u/user/test.txt" without sequence numbers`
+                }
+            },
+            LOCAL_FILE_USS_FILE: {
+                SUMMARY: "Compare content of a local file and a z/os uss file",
+                DESCRIPTION: "Compare content of a local file and a z/os uss file on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    USSFILEPATH: "The path of the uss file set you want to compare."
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "/u/user/test.txt"`,
+                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "/u/user/test.txt"` +
+                     `without sequence numbers`
+                }
+            },
+            SPOOL_DD: {
+                SUMMARY: "Compare content of two spool dds",
+                DESCRIPTION: "Compare content of two spool dds on your terminal (stdout).",
+                POSITIONALS: {
+                    SPOOLDDDESCRIPTION1: "The name of the first job with the id of spool dd",
+                    SPOOLDDDESCRIPTION2: "The name of the second job with the id of spool dd"
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"`,
+                    EX2: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"` +
+                     `without sequence numbers`
+                }
+            },
+            LOCAL_FILE_SPOOL_DD: {
+                SUMMARY: "Compare content of a local file and a spool dd",
+                DESCRIPTION: "Compare content of a local-file and a spool-dd on your terminal (stdout).",
+                POSITIONALS: {
+                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    SPOOLDDDESCRIPTION: "The name of the job with the id of spool dd"
+                },
+                EXAMPLES: {
+                    EX1: `Compare the contents of a local-file and a spool dd "./a.txt"  "jobName:jobId:spoolId"`,
+                    EX2: `Compare the contents of a local-file and a spool dd  "./a.txt"  "jobName:jobId:spoolId"` +
+                     `without sequence numbers`
+                }
+            },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
@@ -722,7 +829,7 @@ export default {
                 "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
                 "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +
                 "of 0 strips all matching lines.",
-            BROWSERVIEW: "Open the data-sets diffs in browser"
+            BROWSERVIEW: "Opens the diffs between two given files in browser"
         }
     },
     HMIGRATE: {

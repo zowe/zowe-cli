@@ -36,7 +36,7 @@ describe("ping address-space handler tests", () => {
     });
 
     it("should be able to ping address-space", async () => {
-        PingTso.ping = jest.fn((session, servletKey) => {
+        PingTso.ping = jest.fn(async (session, servletKey) => {
             return PingTsoData.SAMPLE_PING_RESPONSE;
         });
         const handler = new PingAddressSpaceHandler.default();

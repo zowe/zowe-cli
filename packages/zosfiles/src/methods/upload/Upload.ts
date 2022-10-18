@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -25,12 +25,12 @@ import { IUploadResult } from "./doc/IUploadResult";
 import { Create } from "../create";
 import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
-import { ZosFilesAttributes, TransferMode } from "../../utils/ZosFilesAttributes";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
+import { TransferMode } from "../../utils/ZosFilesAttributes";
 
 
 export class Upload {
@@ -378,7 +378,7 @@ export class Upload {
                     // update the progress bar if any
                     const LAST_FIFTEEN_CHARS = -15;
                     const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
-                    options.task.statusMessage = "Uploading ..." + abbreviatedFile;
+                    options.task.statusMessage = "Uploading... " + abbreviatedFile;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / uploadFileList.length));
                     uploadsInitiated++;
@@ -477,9 +477,10 @@ export class Upload {
     public static async streamToUssFile(session: AbstractSession,
         ussname: string,
         uploadStream: Readable,
-        options: IUploadOptions = {}) {
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        const origUssname = ussname;
         ussname = path.posix.normalize(ussname);
         ussname = ZosFilesUtils.formatUnixFilepath(ussname);
         ussname = encodeURIComponent(ussname);
@@ -499,6 +500,12 @@ export class Upload {
             restOptions.dataToReturn = [CLIENT_PROPERTY.response];
         }
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
+
+        if (options.encoding != null) {
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+        } else if (options.binary) {
+            await Utilities.chtag(session, origUssname, Tag.BINARY);
+        }
 
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {};
@@ -639,14 +646,14 @@ export class Upload {
             const createFileUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
                 if (options.task != null) {
-                    options.task.statusMessage = "Uploading ..." + this.formatStringForDisplay(file.fileName);
+                    options.task.statusMessage = "Uploading... " + this.formatStringForDisplay(file.fileName);
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / filesArray.length));
                     uploadsInitiated++;
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(fileName,ussFilePath,session,options);
+                return this.uploadFile(fileName, ussFilePath, session, options);
             };
 
             if (maxConcurrentRequests === 0) {
@@ -744,7 +751,7 @@ export class Upload {
             });
         }
 
-        const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+        const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false, !options.includeHidden);
 
         files.forEach(async (file) => {
             let tempBinary = options.binary;
@@ -793,7 +800,7 @@ export class Upload {
             const createUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
                 if (options.task != null) {
-                    options.task.statusMessage = "Uploading ..." + this.formatStringForDisplay(file.fileName);
+                    options.task.statusMessage = "Uploading... " + this.formatStringForDisplay(file.fileName);
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / filesArray.length));
                     uploadsInitiated++;
@@ -824,48 +831,34 @@ export class Upload {
 
     private static async uploadFile(localPath: string, ussPath: string,
         session: AbstractSession, options: IUploadOptions) {
-        let tempBinary;
+        const tempOptions: Partial<IUploadOptions> = {};
 
         if (options.attributes) {
-            await this.uploadFileAndTagBasedOnAttributes(localPath, ussPath, session, options.attributes);
-        }
-        else {
+            if (!options.attributes.fileShouldBeUploaded(localPath)) {
+                return;
+            }
+            tempOptions.binary = options.attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
+            const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
+            if (remoteEncoding != null && remoteEncoding !== Tag.BINARY) {
+                tempOptions.encoding = remoteEncoding;
+            }
+            if (!tempOptions.binary) {
+                tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
+            }
+        } else {
             if (options.filesMap) {
                 if (options.filesMap.fileNames.indexOf(path.basename(localPath)) > -1) {
-                    tempBinary = options.filesMap.binary;
+                    tempOptions.binary = options.filesMap.binary;
+                } else {
+                    tempOptions.binary = options.binary;
                 }
-                else {
-                    tempBinary = options.binary;
-                }
-            }
-            else {
-                tempBinary = options.binary;
-            }
-            await this.fileToUssFile(session, localPath, ussPath, {binary: tempBinary});
-        }
-    }
-
-    private static async uploadFileAndTagBasedOnAttributes(localPath: string,
-        ussPath: string,
-        session: AbstractSession,
-        attributes: ZosFilesAttributes) {
-        if (attributes.fileShouldBeUploaded(localPath)) {
-            const binary = attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
-            if (binary) {
-                await this.fileToUssFile(session, localPath, ussPath, {binary});
             } else {
-                await this.fileToUssFile(session, localPath, ussPath, {binary, localEncoding: attributes.getLocalEncoding(localPath)});
-            }
-
-            const tag = attributes.getRemoteEncoding(localPath);
-            if (tag === Tag.BINARY.valueOf() ) {
-                await Utilities.chtag(session,ussPath,Tag.BINARY);
-            } else {
-                await Utilities.chtag(session,ussPath,Tag.TEXT,tag);
+                tempOptions.binary = options.binary;
             }
         }
-    }
 
+        await this.fileToUssFile(session, localPath, ussPath, tempOptions);
+    }
 
     /**
      * Get Log
@@ -938,17 +931,21 @@ export class Upload {
                     reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
                 } else if (options.record) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
-                } else if (options.localEncoding) {
-                    reqHeaders.push({"Content-Type": options.localEncoding});
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                } else if (options.encoding) {
-                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                    const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                    header[keys[0]] = value;
-                    reqHeaders.push(header);
                 } else {
-                    reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+                    if (options.encoding) {
+                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                        const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                        const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+                        header[keys[0]] = value;
+                        reqHeaders.push(header);
+                    } else {
+                        reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    }
+                    if (options.localEncoding) {
+                        reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });
+                    } else {
+                        reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+                    }
                 }
                 reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {

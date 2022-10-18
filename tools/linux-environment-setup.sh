@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 #######################################################
 # SCRIPT PROMPT DEFAULTS                              #
@@ -52,7 +52,7 @@ checkForCommand()
   NAME=$2
 
   echo -n "${NAME}..."
-  
+
   # Checks that the command passed in exists and print ok if it does.
   # If the command doesn't exist then we go into the statements after
   # the double bar, which will mark the PREREQ_MET variable as false
@@ -60,7 +60,7 @@ checkForCommand()
     echo -e "${RED}NOT OK${NC}"
     echo -e >&2 "  ${RED}${NAME} installation not found.${NC}"
     PREREQ_MET=$FALSE
-  }  
+  }
 }
 
 # Simple check to see if the commands exists. We do not currently validate the versions

@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## `7.6.2`
+- BugFix: Updated example for `zowe profiles create zosmf-profile` command. [#1152](https://github.com/zowe/zowe-cli/issues/1152)
+
 ## `7.1.0`
 
 - Enhancement: Exposed `zosmf` profile type configuration.

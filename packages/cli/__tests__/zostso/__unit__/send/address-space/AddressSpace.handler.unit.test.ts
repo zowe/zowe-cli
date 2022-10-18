@@ -36,7 +36,7 @@ describe("send address-space handler tests", () => {
     });
 
     it("should be able to send data to address-space", async () => {
-        SendTso.sendDataToTSOCollect = jest.fn((session, servletKey, data) => {
+        SendTso.sendDataToTSOCollect = jest.fn(async (session, servletKey, data) => {
             return SendTsoData.SAMPLE_SEND_RESPONSE;
         });
         const handler = new SendToAddressSpace.default();

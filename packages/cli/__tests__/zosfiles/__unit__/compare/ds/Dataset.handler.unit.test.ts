@@ -28,12 +28,9 @@ describe("Compare data set handler", () => {
         let fakeSession: object;
 
         // Mock the compare ds function
-        Get.dataSet = jest.fn((session) => {
+        Get.dataSet = jest.fn(async (session) => {
             fakeSession = session;
-            return {
-                success: true,
-                commandResponse: "compared"
-            };
+            return Buffer.from("compared");
         });
         // Mocked function references
         const profFunc = jest.fn((args) => {
@@ -87,7 +84,7 @@ describe("Compare data set handler", () => {
 
         it("should compare two data sets in terminal", async () => {
 
-            DiffUtils.getDiffString = jest.fn(() => {
+            DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
             });
 

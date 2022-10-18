@@ -28,7 +28,7 @@ describe("List AllMembers handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            List.allMembers = jest.fn((session) => {
+            List.allMembers = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

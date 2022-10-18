@@ -4,8 +4,8 @@
         "**/node_modules/**",
         "**/__tests__/**"
     ],
-    "disableOutputCheck": true,
-    "ignoreCompilerErrors": true,
-    "mode": "file",
-    "external-modulemap": ".*packages\/([^\/]+)\/.*"
+    "cleanOutputDir": true,
+    "entryPoints": ["./"],
+    "entryPointStrategy": "packages",
+    "readme": "./README.md"
 }
