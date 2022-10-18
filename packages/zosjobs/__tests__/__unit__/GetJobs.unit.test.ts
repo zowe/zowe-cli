@@ -275,6 +275,14 @@ describe("GetJobs tests", () => {
             expect(jobs).toMatchSnapshot();
         });
 
+        it("should have proper URI when using status", () => {
+            (ZosmfRestClient.getExpectJSON as any) =
+                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                    expect(resource).toMatchSnapshot();
+                });
+            GetJobs.getJobsCommon(pretendSession, {status: "active"});
+        });
+
         it("should have proper URI when using no parms", () => {
             (ZosmfRestClient.getExpectJSON as any) =
                 jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
