@@ -177,7 +177,7 @@ describe("IssueCommand buildZosmfConsoleApiParameters", () => {
 describe("IssueCommand issueCommon", () => {
 
     it("with correct parameters should succeed.", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -241,7 +241,7 @@ describe("IssueCommand issueCommon", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn(() => {
             throw new ImperativeError({msg: "Issue error message"}, {tag: "some tag"});
         });
 
@@ -262,7 +262,7 @@ describe("IssueCommand issueCommon", () => {
 describe("IssueCommand issueDefConsoleCommon", () => {
 
     it("with correct parameters should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -304,7 +304,7 @@ describe("IssueCommand issue", () => {
 
 
     it("with correct parameters should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -329,7 +329,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("with default console name should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -352,7 +352,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("with custom console name should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -375,7 +375,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("with keyword should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_KEYWORD_RESPONSE);
@@ -398,7 +398,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             throw new ImperativeError({msg: "Test error message"}, {tag: "some tag"});
         });
 
@@ -420,7 +420,7 @@ describe("IssueCommand issue", () => {
 describe("IssueCommand issueSimple", () => {
 
     it("with correct parameters should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -448,7 +448,7 @@ describe("IssueCommand issueSimple", () => {
 describe("IssueCommand issueAndCollect", () => {
 
     it("should succeed.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issue as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -456,7 +456,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<object> => {
+        (CollectCommand.collect as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -484,7 +484,7 @@ describe("IssueCommand issueAndCollect", () => {
     });
 
     it("should not call collect method if response key from issue is empty.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<IConsoleResponse> => {
+        (IssueCommand.issue as any) = jest.fn((): Promise<IConsoleResponse> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_NO_KEY_RESPONSE);
@@ -492,7 +492,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<IConsoleResponse> => {
+        (CollectCommand.collect as any) = jest.fn((): Promise<IConsoleResponse> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -516,7 +516,7 @@ describe("IssueCommand issueAndCollect", () => {
     });
 
     it("should not call collect if keyword was detected after issue.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issue as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_SOLICITED_RESPONSE);
@@ -524,7 +524,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<object> => {
+        (CollectCommand.collect as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -548,7 +548,7 @@ describe("IssueCommand issueAndCollect", () => {
     });
 
     it("should not call collect if issue call returns Imperative error.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issue as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(IMPERATIVE_ERROR_RESPONSE);
@@ -556,7 +556,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<object> => {
+        (CollectCommand.collect as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);

@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files compare sdd command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "cl",
+    ],
+    "description": "The number of context lines that display before and after detected non-matching lines. By default all matching lines display. If you want to limit the amount of data returned to only lines with differences use the context lines option to reduce the matching lines to only those before and after non-matching lines. Using the value of 0 strips all matching lines.",
+    "name": "context-lines",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "bv",
+    ],
+    "description": "Opens the diffs between two given files in browser",
+    "name": "browser-view",
+    "type": "boolean",
+  },
+]
+`;
+
+exports[`zos-files compare sdd command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Compare the contents of the two spool dds \\"jobName1:jobId1:spoolId1\\"  \\"jobName2:jobId2:spoolId2\\"",
+    "options": "\\"jobName1:jobId1:spoolId1\\" \\"jobName2:jobId2:spoolId2\\"",
+  },
+  Object {
+    "description": "Compare the contents of the two spool dds \\"jobName1:jobId1:spoolId1\\"  \\"jobName2:jobId2:spoolId2\\"without sequence numbers",
+    "options": "\\"jobName1:jobId1:spoolId1\\" \\"jobName2:jobId2:spoolId2\\" --no-seqnum",
+  },
+]
+`;

@@ -27,7 +27,6 @@ const TIMEOUT = 20000;
 describe("View Data Set", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            installPlugin: true,
             testName: "view_data_set",
             tempProfileTypes: ["zosmf"]
         });
@@ -65,6 +64,23 @@ describe("View Data Set", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         }, TIMEOUT);
+
+        it("should view first two lines of a data set", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
+            const response = runCliScript(shellScript, testEnvironment, [`SYS1.MACLIB(ABEND)`, `--range 0-2`]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        }, TIMEOUT);
+
+        it("should view only one line of a data set", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
+            const response = runCliScript(shellScript, testEnvironment, [`SYS1.MACLIB(ABEND)`, `--range 0,1`]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        }, TIMEOUT);
+
     });
     describe("Expected failures", () => {
         it("should fail due to specified data set name does not existed", async () => {

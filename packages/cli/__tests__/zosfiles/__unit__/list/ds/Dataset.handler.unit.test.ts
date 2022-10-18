@@ -27,7 +27,7 @@ describe("List Dataset handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            List.dataSet = jest.fn((session) => {
+            List.dataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

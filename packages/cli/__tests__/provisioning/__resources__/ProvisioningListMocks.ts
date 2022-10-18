@@ -20,8 +20,7 @@ export class ProvisioningListMocks {
      * Mocked list template catalog response
      * @type {IPublishedTemplates}
      */
-    public static readonly LIST_CATALOG_TEMPLATES_RESPONSE: IPublishedTemplates =
-    {
+    public static readonly LIST_CATALOG_TEMPLATES_RESPONSE: IPublishedTemplates = {
         "psc-list": [
             {
                 "name": "cics_empty_wait",
@@ -40,8 +39,7 @@ export class ProvisioningListMocks {
      * Mocked list registry instances response
      * @type {IProvisionedInstances}
      */
-    public static readonly LIST_REGISTRY_INSTANCES_RESPONSE: IProvisionedInstances =
-    {
+    public static readonly LIST_REGISTRY_INSTANCES_RESPONSE: IProvisionedInstances = {
         "scr-list": [
             {
                 "system": "CA32",

@@ -72,6 +72,76 @@ export const ZosFilesConstants: { [key: string]: any } = {
     RES_FSNAME: "fsname",
 
     /**
+     * Indicator of the user parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_USER: "user",
+
+    /**
+     * Indicator of the group parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_GROUP: "group",
+
+    /**
+     * Indicator of the modification time parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_MTIME: "mtime",
+
+    /**
+     * Indicator of the name parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_NAME: "name",
+
+    /**
+     * Indicator of the size parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_SIZE: "size",
+
+    /**
+     * Indicator of the permission octal mask parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_PERM: "perm",
+
+    /**
+     * Indicator of the file type parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_TYPE: "type",
+
+    /**
+     * Indicator of the depth parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_DEPTH: "depth",
+
+    /**
+     * Indicator of the filesystem behavior parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_FILESYS: "filesys",
+
+    /**
+     * Indicator of the symlink behavior parameter for files operations
+     * @type {string}
+     * @memberof ZosFilesConstants
+     */
+    RES_SYMLINKS: "symlinks",
+
+    /**
      * Indicator the query parameters used to qualify the request
      */
     RES_DS_LEVEL: "dslevel",

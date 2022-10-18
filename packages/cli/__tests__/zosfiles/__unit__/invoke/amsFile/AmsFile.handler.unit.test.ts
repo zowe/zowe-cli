@@ -21,7 +21,7 @@ describe("Invoke AMS files handler", () => {
 
         beforeEach(() => {
             // Mock the submit JCL function
-            Invoke.ams = jest.fn((session) => {
+            Invoke.ams = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

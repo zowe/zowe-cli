@@ -29,7 +29,7 @@ describe("Upload stdin-to-data-set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.streamToDataSet = jest.fn((session) => {
+            Upload.streamToDataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -100,7 +100,7 @@ describe("Upload stdin-to-data-set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.streamToDataSet = jest.fn((session) => {
+            Upload.streamToDataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -180,7 +180,7 @@ describe("Upload stdin-to-data-set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.streamToDataSet = jest.fn((session) => {
+            Upload.streamToDataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

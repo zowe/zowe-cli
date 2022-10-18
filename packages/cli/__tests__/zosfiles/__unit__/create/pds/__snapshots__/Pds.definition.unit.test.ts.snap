@@ -4,6 +4,15 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
 Array [
   Object {
     "aliases": Array [
+      "asu",
+    ],
+    "defaultValue": "CYL",
+    "description": "The allocation unit (for example, CYL for Cylinders)",
+    "name": "allocation-space-unit",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "a",
     ],
     "description": "Show the full allocation attributes",

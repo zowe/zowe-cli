@@ -34,12 +34,12 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 describe("download output handler tests", () => {
     it("should download a job output using defaults", async () => {
         let passedSession: Session = null;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
-            (session, options) => {
+            async (session, options) => {
                 return;
             }
         );
@@ -64,12 +64,12 @@ describe("download output handler tests", () => {
     it("should download a job output to a specific directory", async () => {
         const outputDir: string = "output-dir";
         let passedSession: Session;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
-            (session, options) => {
+            async (session, options) => {
                 return;
             }
         );
@@ -95,12 +95,12 @@ describe("download output handler tests", () => {
     it("should download a job output with a specific extension", async () => {
         let passedSession: Session;
         const extension: string = ".log";
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
-            (session, options) => {
+            async (session, options) => {
                 return;
             }
         );
@@ -126,12 +126,12 @@ describe("download output handler tests", () => {
 
     it("should download a job output omitting the output directory", async () => {
         let passedSession: Session;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
-            (session, options) => {
+            async (session, options) => {
                 return;
             }
         );
@@ -176,7 +176,7 @@ describe("download output handler tests", () => {
     it("should not transform an error from the DownloadJob class", async () => {
         const failMessage = "You fail in DownloadJob";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         DownloadJobs.downloadAllSpoolContentCommon = jest.fn(

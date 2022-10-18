@@ -119,7 +119,7 @@ describe("Check Status Api", () => {
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
             expect(error.message).toContain(`Error: connect ECONNREFUSED`);
-            expect(error.message).toContain(badPort);
+            expect(error.message).toContain(badPort.toString());
         });
     });
 });

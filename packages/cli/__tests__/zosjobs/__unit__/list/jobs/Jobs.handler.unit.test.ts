@@ -35,7 +35,7 @@ describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs using defaults", async () => {
         let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn((session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
@@ -51,7 +51,7 @@ describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs for a specific owner", async () => {
         let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn((session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
@@ -68,7 +68,7 @@ describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs for a specific prefix", async () => {
         let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn((session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;

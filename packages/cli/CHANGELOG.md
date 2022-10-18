@@ -2,9 +2,45 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.7.0`
+
+- Enhancement: Allow `zowe files view ds ... --range SSS-EEE | SSS,NNN`. [#1539](https://github.com/zowe/zowe-cli/issues/1539)
+- Enhancement: Added `ZosFilesCreateOptions.alcunit` option to PDS definition. [#1203](https://github.com/zowe/zowe-cli/issues/1203)
+- BugFix: Fixed example 3 where no `--like` option is specified in `zowe zos-files create data-set`. [#1252](https://github.com/zowe/zowe-cli/issues/1252)
+
+## `7.6.2`
+
+- BugFix: Updated `minimatch` and `keytar` dependencies for technical currency.
+- BugFix: Updated example for `zowe profiles create zosmf-profile` command. [#1152](https://github.com/zowe/zowe-cli/issues/1152)
+- BugFix: Restore info message on daemon startup. [#1506](https://github.com/zowe/zowe-cli/issues/1506)
+
+## `7.6.1`
+
+- BugFix: Updated `ssh2` dependency to fix "Received unexpected packet type" error on SSH commands. [#1516](https://github.com/zowe/zowe-cli/issues/1516)
+- BugFix: Updated Imperative to include bugfixes in version `5.5.3`.
+
+## `7.6.0`
+
+- Enhancement: Added the `zowe files download uss-dir` command to download the contents of a USS directory. [#1038](https://github.com/zowe/zowe-cli/issues/1038)
+- Enhancement: Updated the `zowe files upload file-to-uss` and `zowe files upload dir-to-uss` commands to improve how they handle file encoding. [#1479](https://github.com/zowe/zowe-cli/issues/1479)
+  - Both commands now "chtag" files after uploading them to indicate their remote encoding. This matches the already existing behavior of the `zowe files download uss-file` command which checks file tags before downloading.
+  - The behavior of ".zosattributes" files which can specify local and remote encoding has been changed. Files are now converted to the remote encoding, not just tagged. If no encoding is specified, the default transfer mode is text instead of binary to be consistent with z/OSMF default behavior.
+- BugFix: Updated Imperative to include bugfixes in version `5.5.2`.
+
+## `7.5.1`
+
+- BugFix: Updated Imperative to include bugfixes in version `5.5.1`.
+
+## `7.5.0`
 
 - Enhancement: Added the browser-view option to `zowe zos-files compare data-set` command to compare two datasets and display the differences on the browser. [#1443](https://github.com/zowe/zowe-cli/issues/1443)
+- Enhancement: Added a command `zowe zos-files compare local-file-data-set` to compare a local-file and a dataset, & display the differences in the browser and terminal. [#1444](https://github.com/zowe/zowe-cli/issues/1444)
+- Enhancement: Added a command `zowe zos-files compare uss-files` to compare two uss-files, & display the differences in the browser and terminal. [#1445](https://github.com/zowe/zowe-cli/issues/1445)
+- Enhancement: Added a command `zowe zos-files compare local-file-uss-file` to compare a local-file and a uss-file, & display the differences in the browser and terminal. [#1446](https://github.com/zowe/zowe-cli/issues/1446)
+- Enhancement: Added a command `zowe zos-files compare spool-dd` to compare two spool-dds', & display the differences in the browser and terminal. [#1447](https://github.com/zowe/zowe-cli/issues/1447)
+- Enhancement: Added a command `zowe zos-files compare local-file-spool-dd` to compare a local-file and a spool-dd', & display the differences in the browser and terminal. [#1448](https://github.com/zowe/zowe-cli/issues/1448)
+- Enhancement: Added `ZOWE_CLI_PLUGINS_DIR` environment variable to override location where plugins are installed. [#1483](https://github.com/zowe/zowe-cli/issues/1483)
+- BugFix: Updated Imperative to include bugfixes in version `5.5.0`.
 
 ## `7.4.2`
 

@@ -299,10 +299,15 @@ describe("CoreUtils", () => {
     });
 
     describe("sleep", () => {
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
         it("should sleep the default amount", async () => {
             const defaultSleepTime = 1000;
 
             jest.useFakeTimers();
+            jest.spyOn(global, "setTimeout");
 
             const waitForSleep = CoreUtils.sleep();
 
@@ -320,6 +325,7 @@ describe("CoreUtils", () => {
             const specifiedTime = 5000;
 
             jest.useFakeTimers();
+            jest.spyOn(global, "setTimeout");
 
             const waitForSleep = CoreUtils.sleep(specifiedTime);
 
@@ -340,7 +346,7 @@ describe("CoreUtils", () => {
             const poolSize = 2;
             let sum = 0;
             const createPromiseFunction = (numberToAdd: number) => {
-                return new Promise((resolve, reject) => {
+                return new Promise<void>((resolve, reject) => {
                     sum += numberToAdd;
                     resolve();
                 });
@@ -354,7 +360,7 @@ describe("CoreUtils", () => {
             const poolSize = 2;
             let sum = 0;
             const createPromiseFunction = (numberToAdd: number) => {
-                return new Promise((resolve, reject) => {
+                return new Promise<void>((resolve, reject) => {
                     if (numberToAdd > 0) {
                         sum += numberToAdd;
                         resolve();

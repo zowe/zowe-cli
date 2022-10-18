@@ -34,8 +34,8 @@ describe("list template info handler tests", () => {
 
     it("should be able to list catalog", async () => {
         ListTemplateInfo.listTemplateCommon = jest.fn(
-            () => {
-                return {};
+            async () => {
+                return {} as any;
             }
         );
         const handler = new Handler.default();

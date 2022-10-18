@@ -9,8 +9,6 @@
 *
 */
 
-jest.mock("../../../../../../zosfiles/lib/utils/ZosFilesAttributes");
-
 import { Upload, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as fs from "fs";
@@ -69,7 +67,7 @@ describe("Upload dir-to-uss handler", () => {
 
         beforeEach(() => {
 
-            Upload.dirToUSSDir = jest.fn((session) => {
+            Upload.dirToUSSDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -134,21 +132,12 @@ describe("Upload dir-to-uss handler", () => {
         });
 
         it("should override .zosattributes content with --attributes content", async () => {
-            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            jest.spyOn(fs, "readFileSync").mockImplementationOnce((path: string) => {
+            const mockAttributesFromParam = { attributes: "--attributes" };
+            const mockAttributesFromLocalFile = { attributes: ".zosattributes" };
+            jest.spyOn(ZosFilesAttributes, "loadFromFile").mockImplementationOnce((path?: string): any => {
                 if (path === "real file") {
-                    return "--attributes file contents";
-                } else if (path.endsWith(".zosattributes")) {
-                    return ".zosattributes file contents";
-                }
-            });
-            const mockAttributesFromParam = {attributes: "--attributes"};
-            const mockAttributesFromLocalFile = {attributes: ".zosattributes"};
-
-            (ZosFilesAttributes as any).mockImplementation((fileContents: string) => {
-                if (fileContents === "--attributes file contents") {
                     return mockAttributesFromParam;
-                } else if (fileContents === ".zosattributes file contents") {
+                } else if (path?.endsWith(".zosattributes")) {
                     return mockAttributesFromLocalFile;
                 }
             });
@@ -160,7 +149,6 @@ describe("Upload dir-to-uss handler", () => {
 
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
             expect((Upload.dirToUSSDir as jest.Mock).mock.calls[0][UPLOAD_OPTIONS_ARG_INDEX].attributes).toBe(mockAttributesFromParam);
-
         });
 
         async function testHandlerWorksWithDefaultParameters() {

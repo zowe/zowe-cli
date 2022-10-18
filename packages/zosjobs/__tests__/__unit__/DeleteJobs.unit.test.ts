@@ -16,7 +16,7 @@ import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnDeleteJobsDataAsync = async () => {
+const returnDeleteJobsDataAsync = async (): Promise<any> => {
     return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
 };
 
@@ -72,7 +72,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 1_0)", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]): Promise<any> => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
@@ -81,7 +81,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 2_0)", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]): Promise<any> => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
@@ -90,7 +90,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 2_0) and receive a failure", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]): Promise<any> => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });
@@ -112,7 +112,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 1_0)", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]): Promise<any> => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
@@ -121,7 +121,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 2_0)", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]): Promise<any> => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
@@ -130,7 +130,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 2_0) and receive a failure", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]): Promise<any> => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });

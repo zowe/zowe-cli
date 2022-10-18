@@ -331,7 +331,7 @@ describe("Disable daemon handler", () => {
         });
 
         it("should detect powershell-not-on-path error", async () => {
-            const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
+            const killSpy = jest.spyOn(process, 'kill').mockImplementation();
 
             // mock disable handler's private static readMyDaemonPid() function to ensure we match our PID
             const fakePid = 1234567890;
@@ -363,7 +363,7 @@ describe("Disable daemon handler", () => {
         });
 
         it("should succeed when no daemon PID matches", async () => {
-            const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
+            const killSpy = jest.spyOn(process, 'kill').mockImplementation();
 
             // mock disable handler's private static readMyDaemonPid() function to return my PID
             const myPid = 11221122;
@@ -398,7 +398,7 @@ describe("Disable daemon handler", () => {
         });
 
         it("should succeed when a zowe daemon is running", async () => {
-            const killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {return;});
+            const killSpy = jest.spyOn(process, 'kill').mockImplementation();
 
             /* The find-process module returns a single function as its default export.
              * This concoction enables us to override that function.
@@ -442,17 +442,17 @@ describe("Disable daemon handler", () => {
 
             const readFileSyncReal = IO.readFileSync;
             IO.readFileSync = jest.fn(() => {
-                return "This is not a JSON buffer";
+                return Buffer.from("This is not a JSON buffer");
             });
 
             let logMsg = "";
-            const getAppLoggerReal = Logger["getAppLogger"];
-            Logger["getAppLogger"] = jest.fn(() => {
+            const getAppLoggerReal = Logger.getAppLogger;
+            Logger.getAppLogger = jest.fn(() => {
                 return {
                     error: jest.fn((errMsg) => {
                         logMsg = errMsg;
                     })
-                };
+                } as any;
             });
 
             // run our test and check results
@@ -479,13 +479,13 @@ describe("Disable daemon handler", () => {
             });
 
             let logMsg = "";
-            const getAppLoggerReal = Logger["getAppLogger"];
-            Logger["getAppLogger"] = jest.fn(() => {
+            const getAppLoggerReal = Logger.getAppLogger;
+            Logger.getAppLogger = jest.fn(() => {
                 return {
                     error: jest.fn((errMsg) => {
                         logMsg = errMsg;
                     })
-                };
+                } as any;
             });
 
             // run our test and check results
@@ -511,13 +511,13 @@ describe("Disable daemon handler", () => {
             });
 
             let logMsg = "";
-            const getAppLoggerReal = Logger["getAppLogger"];
-            Logger["getAppLogger"] = jest.fn(() => {
+            const getAppLoggerReal = Logger.getAppLogger;
+            Logger.getAppLogger = jest.fn(() => {
                 return {
                     error: jest.fn((errMsg) => {
                         logMsg = errMsg;
                     })
-                };
+                } as any;
             });
 
             // run our test and check results

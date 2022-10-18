@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `7.6.1`
+
+- BugFix: Updated `ssh2` dependency to fix "Received unexpected packet type" error. [#1516](https://github.com/zowe/zowe-cli/issues/1516)
+
 ## `7.1.2`
 
 - BugFix: Fixed an issue where privateKey is not being respected. [#1398](https://github.com/zowe/zowe-cli/issues/1398) [#1392](https://github.com/zowe/zowe-cli/issues/1392)
