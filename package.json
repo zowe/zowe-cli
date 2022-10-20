@@ -76,7 +76,6 @@
     "madge": "^4.0.1",
     "mustache": "^4.2.0",
     "npm-lockfile": "^3.0.4",
-    "registry-url": "^5.1.0",
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
     "syncpack": "^5.6.10",
