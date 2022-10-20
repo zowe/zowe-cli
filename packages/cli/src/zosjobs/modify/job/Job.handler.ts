@@ -37,8 +37,7 @@ export default class JobHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
 
-        // Force yargs parameters to be strings
-        const jobname: string = this.arguments.jobname + "";
+        // Force yargs parameters to be proper types
         const jobid: string = this.arguments.jobid + "";
         const hold: boolean = this.arguments.hold;
         const release: boolean = this.arguments.release;
@@ -48,7 +47,7 @@ export default class JobHandler extends ZosmfBaseHandler {
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 
         // Modify the job and print output
-        const response = await ModifyJobs.modifyJob(this.mSession, jobname, jobid, this.arguments.jobClass, hold, release);
+        const response = await ModifyJobs.modifyJob(this.mSession, job.jobname, jobid, this.arguments.jobClass, hold, release);
         this.data.setObj(job);
         if(showJob){
             const indentSpaces = 4;

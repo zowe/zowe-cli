@@ -26,12 +26,6 @@ export const JobDefinition: ICommandDefinition = {
     },
     positionals: [
         {
-            name: "jobname",
-            description: strings.ACTIONS.JOB.POSITIONALS.JOB_NAME,
-            type: "string",
-            required: true
-        },
-        {
             name: "jobid",
             description: strings.ACTIONS.JOB.POSITIONALS.JOB_ID,
             type: "string",
