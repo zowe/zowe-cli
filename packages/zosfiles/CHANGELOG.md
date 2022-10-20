@@ -2,7 +2,11 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.7.0`
+
+- Enhancement: Add options to `Get.dataSet` to get a range value of `SSS-EEE` or `SSS,NNN`.
+
+## `7.6.2`
 
 - BugFix: Updated `minimatch` dependency for technical currency.
 - BugFix: Added to the description of Create.ts `cmdType`. [#48](https://github.com/zowe/zowe-cli/issues/48)

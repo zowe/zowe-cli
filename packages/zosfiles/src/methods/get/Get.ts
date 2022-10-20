@@ -42,6 +42,10 @@ export class Get {
 
         const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
+        if (options.range) {
+            reqHeaders.push({"X-IBM-Record-Range": options.range});
+        }
+
         if (options.volume) {
             endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
         }
