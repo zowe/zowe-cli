@@ -182,7 +182,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
   release:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
 
