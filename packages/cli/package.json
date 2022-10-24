@@ -41,7 +41,6 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "prepublishOnly": "node ./scripts/rewriteShrinkwrap && npm i --package-lock-only --ignore-scripts --no-audit && npm dedupe --production",
     "preinstall": "node ./scripts/preinstall",
     "postinstall": "node ./scripts/validatePlugins && node ./scripts/printSuccessMessage",
     "build": "tsc --pretty",
@@ -53,7 +52,8 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "prepack": "node ../../scripts/prepareLicenses.js",
+    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "6.40.7",
