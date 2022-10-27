@@ -15,6 +15,7 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+const LOCAL_JCL_FILE: string = __dirname + "/__scripts__/job/" + "jcl.txt";
 
 describe("zos-jobs modify job command", () => {
     // Create the unique test environment
@@ -29,24 +30,39 @@ describe("zos-jobs modify job command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/job/help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
-    it("should display an error when jobid is missing", () => {
-        const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
-    });
-
-    it("should display an error when jobid and jobname are missing", () => {
-        const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid_and_jobname.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
-    });
+    describe("successful response", () => {
+        it("should display the help", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/help.sh", TEST_ENVIRONMENT);
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(
+                "Modify the job class or the hold status of a job via job name and job ID"
+            );
+        });
+    })
+    describe("error handling", () => {
+        it("should display an error when jobid is missing", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid.sh", TEST_ENVIRONMENT);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain(
+                "Missing Positional Argument: jobid"
+            );
+        });
+    
+        it("should display an error when command includes conflicting flags", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/conflicting_flags.sh", TEST_ENVIRONMENT);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain(
+                "Syntax Error:\nThe following options conflict (mutually exclusive):\n"+
+                "--hold\n--release"
+            );
+        });
+    
+        it("should display an error when command includes an undefined option", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/bogus_flag.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain(
+                "Command failed due to improper syntax"
+            );
+        });
+    })
 });

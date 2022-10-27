@@ -52,7 +52,8 @@ export class ModifyJobs {
      */
     public static async modifyJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobForJob called with job %s", JSON.stringify(job));
-        return ModifyJobs.modifyJobCommon(session, { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, hold: job.hold, release: job.release });
+        return ModifyJobs.modifyJobCommon(session,
+            { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, hold: job.hold, release: job.release });
     }
 
     /**

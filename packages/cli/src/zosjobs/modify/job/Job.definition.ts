@@ -34,7 +34,7 @@ export const JobDefinition: ICommandDefinition = {
     ],
     options: [
         {
-            name: "job-class",
+            name: "jobclass",
             description: strings.ACTIONS.JOB.OPTIONS.JOB_CLASS,
             type: "string",
             defaultValue: undefined,

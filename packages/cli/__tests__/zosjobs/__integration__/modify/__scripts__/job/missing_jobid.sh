@@ -1,3 +1,4 @@
 #!/bin/bash
-zowe zos-jobs modify job fakejobn
+
+zowe zos-jobs modify job
 exit $?
