@@ -38,7 +38,7 @@ describe("zos-jobs modify job command", () => {
                 "Modify the job class or the hold status of a job via job name and job ID"
             );
         });
-    })
+    });
     describe("error handling", () => {
         it("should display an error when jobid is missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid.sh", TEST_ENVIRONMENT);
@@ -47,7 +47,7 @@ describe("zos-jobs modify job command", () => {
                 "Missing Positional Argument: jobid"
             );
         });
-    
+
         it("should display an error when command includes conflicting flags", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/conflicting_flags.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
@@ -56,7 +56,7 @@ describe("zos-jobs modify job command", () => {
                 "--hold\n--release"
             );
         });
-    
+
         it("should display an error when command includes an undefined option", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/bogus_flag.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             expect(response.status).toBe(1);
@@ -64,5 +64,5 @@ describe("zos-jobs modify job command", () => {
                 "Command failed due to improper syntax"
             );
         });
-    })
+    });
 });
