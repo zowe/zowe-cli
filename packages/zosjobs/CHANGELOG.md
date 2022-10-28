@@ -3,7 +3,7 @@
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
 ## Recent Changes 
-- Enhancement: Added new functions to support the changing of a job class and the hold status of a job. Can now call `zowe jobs modify job [jobname] [jobid]` with options `--jobclass` and `--hold-status`. [#1156](https://github.com/zowe/zowe-cli/issues/1156)
+- Enhancement: Added new functions to support the changing of a job class and the hold status of a job. Can now call `zowe jobs modify job [jobid]` with options `--jobclass`, `--hold` and `--release`. [#1156](https://github.com/zowe/zowe-cli/issues/1156)
 
 ## `7.2.0`
 

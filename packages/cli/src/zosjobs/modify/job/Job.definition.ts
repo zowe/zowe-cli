@@ -15,15 +15,15 @@ import i18nTypings from "../../-strings-/en";
 
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).MODIFY;
 let examplesJSON = "";
-let examplesList = JSON.parse(JSON.stringify(strings.ACTIONS.JOB.EXAMPLES));
+const examplesList = JSON.parse(JSON.stringify(strings.ACTIONS.JOB.EXAMPLES));
 
 Object.keys(examplesList).forEach(function(item) {
-    examplesJSON = Object.assign(examplesJSON, 
+    examplesJSON = Object.assign(examplesJSON,
         {
             description: examplesList[item].DESCRIPTION,
             options: examplesList[item].OPTIONS
         }
-    )
+    );
 });
 
 export const JobDefinition: ICommandDefinition = {

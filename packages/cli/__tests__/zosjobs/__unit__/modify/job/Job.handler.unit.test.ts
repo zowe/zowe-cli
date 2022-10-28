@@ -33,10 +33,13 @@ const SUCCESS_FEEDBACK: IJobFeedback = {
     "job-correlator": "J0007913USILCA11DC4DAED0.......:",
     "class": "A",
     "jobid": 'JOB01234',
-    "jobname": "AT0000",
     "message": 'Request was successful.',
     "owner": "AT0000",
-    "status": "0"
+    "status": "0",
+    "member": "",
+    "sysname": "",
+    "internal-code": "",
+    "original-jobid": ""
 };
 
 describe("modify job handler tests", () => {
