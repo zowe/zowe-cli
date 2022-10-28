@@ -48,6 +48,13 @@ export default class JobHandler extends ZosmfBaseHandler {
         // Modify the job and print output
         const response = await ModifyJobs.modifyJob(this.mSession, job.jobname, jobid, this.arguments.jobclass, hold, release);
         this.data.setObj(job);
+        if(this.arguments.jobclass){     
+            const oldJobClass = job.class;
+            response.message = response.message + "\nClass Change: " + oldJobClass + " -> " + this.arguments.jobclass;
+        }
+        if(this.arguments.hold || this.arguments.release){
+            this.arguments.hold ? response.message = response.message + "\nJob Held" : response.message = response.message + "\nJob Released";
+        }
         this.console.log(response.message);
     }
 }
