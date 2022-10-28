@@ -85,10 +85,10 @@ export class ModifyJobs {
             }
             catch(err){
                 exception = true;
-                err.mMessage=err.mMessage.concat('Modify Request Error');
+                err.mMessage=err.mMessage.concat('Modification Error');
                 return err;
             }
-            response.message = mergedMessage = '\nModify Request Response: ' + response.message;
+            response.message = mergedMessage = '\n' + response.message;
         }
 
         // build request to change class, only if defined and no exception from potential previous request
@@ -97,7 +97,7 @@ export class ModifyJobs {
                 class: parms.jobclass,
             };
             response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
-            response.message = mergedMessage + '\nModify Request Response: ' + response.message + '\n';
+            response.message = mergedMessage + '\n' + response.message;
         }
         return response;
     }
