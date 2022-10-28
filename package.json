@@ -36,14 +36,14 @@
     "typedoc": "typedoc",
     "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "prepare": "husky install",
-    "prepack": "node scripts/prepareLicenses.js"
+    "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.5.4",
+    "@zowe/imperative": "5.6.0",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
+    "@octorelease/lerna": "^0.1.4",
     "@types/jest": "^28.0.0",
     "@types/node": "^14.18.28",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
@@ -75,6 +75,7 @@
     "lerna": "^5.4.3",
     "madge": "^4.0.1",
     "mustache": "^4.2.0",
+    "npm-lockfile": "^3.0.4",
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
     "syncpack": "^5.6.10",

@@ -1,17 +1,15 @@
 #!/bin/bash
-# Usage: bash bundleDaemon.sh <daemonVersion> [githubAuthHeader]
 set -ex
 
-daemonVersion=$1
-githubAuthHeader=$2
+cd "$(git rev-parse --show-toplevel)"
+daemonVersion=$(cd zowex && cargo metadata --no-deps | jq -r .packages[0].version)
 
-until [[ $(curl -fs https://$githubAuthHeader@api.github.com/repos/zowe/zowe-cli/releases/tags/native-v$daemonVersion |
+until [[ $(curl -fs https://$GITHUB_TOKEN@api.github.com/repos/zowe/zowe-cli/releases/tags/native-v$daemonVersion |
     jq -r '.assets | length') == "3" ]]; do
     echo "Waiting for Rust CLI Publish workflow to complete..."
     sleep 30
 done
 
-cd "$(git rev-parse --show-toplevel)"
 rm -rf prebuilds
 mkdir prebuilds && cd prebuilds
 
