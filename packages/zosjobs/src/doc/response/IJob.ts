@@ -39,14 +39,14 @@ export interface IJob {
      * @type {boolean}
      * @memberof IJob
      */
-    hold: boolean;
+    hold?: boolean;
 
     /**
      * flag that releases a held a job for execution
      * @type {boolean}
      * @memberof IJob
      */
-    release: boolean;
+    release?: boolean;
 
     /**
      * The primary or secondary JES subsystem.
