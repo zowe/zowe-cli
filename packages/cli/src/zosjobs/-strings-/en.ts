@@ -43,11 +43,11 @@ export default {
     },
     MODIFY: {
         SUMMARY: "Modify a z/OS job",
-        DESCRIPTION: "Modify the job class or the hold status of a job via job name and job ID.",
+        DESCRIPTION: "Modify the job class or the hold status of a job.",
         ACTIONS: {
             JOB: {
-                SUMMARY: "Modify a single job using job name and job ID",
-                DESCRIPTION: "Modify the job class or the hold status of a job via job name and job ID.",
+                SUMMARY: "Modify the job class or the hold status of a job",
+                DESCRIPTION: "Modify the job class or the hold status of a job.",
                 POSITIONALS: {
                     JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
@@ -58,24 +58,19 @@ export default {
                     HOLD: "Setting this flag will prevent a job from executing until"+
                     "entering a second command with the '--release' flag",
                     RELEASE: "Flag that releases a held a job for execution",
-                    SHOW_JOB: "Flag to display current job data with along with your command output"
                 },
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Modify class of job with job ID JOB03456 and job name AT123456",
-                        OPTIONS: "AT123456 JOB03456 --jobclass A",
+                        DESCRIPTION: "Modify class of job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --jobclass A",
                     },
                     EX2: {
-                        DESCRIPTION: "Hold job with job ID JOB03456 and job name AT123456",
-                        OPTIONS: "AT123456 JOB03456 --hold",
+                        DESCRIPTION: "Hold job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --hold",
                     },
                     EX3: {
-                        DESCRIPTION: "Release job with job ID JOB03456 and job name AT123456",
-                        OPTIONS: "AT123456 JOB03456 --release",
-                    },
-                    EX4: {
-                        DESCRIPTION: "Modify class of job with job ID JOB03456 and job name AT123456 and show job details",
-                        OPTIONS: "AT123456 JOB03456 -jobclass B --show-job",
+                        DESCRIPTION: "Release job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --release",
                     },
                 }
             }

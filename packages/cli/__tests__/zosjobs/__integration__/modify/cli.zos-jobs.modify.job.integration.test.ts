@@ -35,7 +35,7 @@ describe("zos-jobs modify job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/help.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
-                "Modify the job class or the hold status of a job via job name and job ID"
+                "Modify the job class or the hold status of a job"
             );
         });
     });

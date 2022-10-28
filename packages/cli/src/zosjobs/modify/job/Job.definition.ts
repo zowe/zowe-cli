@@ -15,6 +15,19 @@ import i18nTypings from "../../-strings-/en";
 
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).MODIFY;
 
+let examples: ICommandDefinition["examples"];
+let examplesList = JSON.parse(JSON.stringify(strings.ACTIONS.JOB.EXAMPLES));
+
+Object.keys(examplesList).forEach(function(item) {
+    examples.concat(
+        {
+            description: examplesList[item].DESCRIPTION,
+            options: examplesList[item].OPTIONS
+        }
+    )
+});
+
+
 export const JobDefinition: ICommandDefinition = {
     name: "job",
     type: "command",
@@ -54,19 +67,7 @@ export const JobDefinition: ICommandDefinition = {
             type: "boolean",
             defaultValue: undefined,
             required: false,
-        },
-        {
-            name: "show-job",
-            description: strings.ACTIONS.JOB.OPTIONS.SHOW_JOB,
-            type: "boolean",
-            defaultValue: false,
-            required: false,
         }
     ],
-    examples: [
-        {
-            description: strings.ACTIONS.JOB.EXAMPLES.EX1.DESCRIPTION,
-            options: strings.ACTIONS.JOB.EXAMPLES.EX1.OPTIONS
-        }
-    ]
+    examples: examples
 };

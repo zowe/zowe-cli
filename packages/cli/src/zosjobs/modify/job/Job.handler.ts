@@ -41,7 +41,6 @@ export default class JobHandler extends ZosmfBaseHandler {
         const jobid: string = this.arguments.jobid + "";
         const hold: boolean = this.arguments.hold;
         const release: boolean = this.arguments.release;
-        const showJob: boolean = this.arguments.showJob;
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
@@ -49,10 +48,6 @@ export default class JobHandler extends ZosmfBaseHandler {
         // Modify the job and print output
         const response = await ModifyJobs.modifyJob(this.mSession, job.jobname, jobid, this.arguments.jobclass, hold, release);
         this.data.setObj(job);
-        if(showJob){
-            const indentSpaces = 4;
-            this.console.log("\nCURRENT JOB STATUS:\n"+JSON.stringify(job, null, indentSpaces));
-        }
         this.console.log(response.message);
     }
 }

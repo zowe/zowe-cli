@@ -49,13 +49,6 @@ export interface IJob {
     release: boolean;
 
     /**
-     * flag to show job details with response
-     * @type {boolean}
-     * @memberof IJob
-     */
-    showJob: boolean;
-
-    /**
      * The primary or secondary JES subsystem.
      * If this value is null, the job was processed by the primary subsystem.
      * @type {string}
