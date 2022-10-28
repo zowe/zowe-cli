@@ -31,7 +31,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 
 const SUCCESS_FEEDBACK: IJobFeedback = {
     "job-correlator": "J0007913USILCA11DC4DAED0.......:",
-    "class": "A",
+    "jobname": "AT0000",
     "jobid": 'JOB01234',
     "message": 'Request was successful.',
     "owner": "AT0000",
@@ -51,7 +51,7 @@ describe("modify job handler tests", () => {
     describe("successful response", () => {
         it("should be able to modify class of job", async () => {
             // faking out function with the correct signature
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, jobid, jobclass) => {
                 return SUCCESS_FEEDBACK;
             });
             const handler = new ModifyHandler.default();
@@ -71,7 +71,7 @@ describe("modify job handler tests", () => {
         it("should be able respond with error message if any error", async () => {
             const failMessage = "You fail";
             let error;
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, jobid, jobclass) => {
                 throw new ImperativeError({msg: failMessage});
             });
             const handler = new ModifyHandler.default();

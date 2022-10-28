@@ -24,17 +24,19 @@ export interface IJobFeedback {
     jobid: string;
 
     /**
+     * job name for a job
+     * @type {string}
+     * @memberof IJob
+     */
+    jobname: string;
+
+    /**
      * Original job id
      * @type {string}
      * @memberof IJobFeedback
      */
     "original-jobid": string;
-    class: string;
-    /**
-     * job name for a job
-     * @type {string}
-     * @memberof IJob
-     */
+
     /**
      * Job owner
      * @type {string}
