@@ -32,7 +32,6 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 
 const DEFAULT_RESPONSE_FEEDBACK: IJobFeedback = {
     jobid: undefined,
-    jobname: undefined,
     "original-jobid": undefined,
     owner: undefined,
     member: undefined,
@@ -45,7 +44,6 @@ const DEFAULT_RESPONSE_FEEDBACK: IJobFeedback = {
 
 const DEFAULT_RESPONSE_FEEDBACK_2: IJobFeedback = {
     jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
-    jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
     "original-jobid": GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
     owner: GetJobsData.SAMPLE_COMPLETE_JOB.owner,
     member: "fakemem",
@@ -58,7 +56,6 @@ const DEFAULT_RESPONSE_FEEDBACK_2: IJobFeedback = {
 
 const DEFAULT_RESPONSE_FEEDBACK_2_BAD: IJobFeedback = {
     jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
-    jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
     "original-jobid": GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
     owner: GetJobsData.SAMPLE_COMPLETE_JOB.owner,
     member: "fakemem",

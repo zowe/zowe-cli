@@ -26,15 +26,15 @@ export class CancelJobsData {
      */
     public static readonly SAMPLE_JOB_FEEDBACK_GOOD: IJobFeedback = {
         "jobid": "TSUxxx",
-        "jobname": "IBMUSER$",
         "original-jobid": "TSUxxx",
+        "class": "A",
         "owner": "IBMUSER",
         "member": "JES2",
         "sysname": "SY1",
         "job-correlator": "J0000000000.....C0000000.......",
         "status": "0",
-        "internal-code": undefined,
-        "message": undefined
+        "internal-code": "",
+        "message": "Success"
     };
 
     /**
@@ -45,7 +45,7 @@ export class CancelJobsData {
      */
     public static readonly SAMPLE_JOB_FEEDBACK_BAD: IJobFeedback = {
         "jobid": "TSUxxx",
-        "jobname": "IBMUSER$",
+        "class": "A",
         "original-jobid": "TSUxxx",
         "owner": "IBMUSER",
         "member": "MEMBER",
