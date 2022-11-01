@@ -179,8 +179,6 @@ For information about implementing user profiles, see [Profile Guidelines](./doc
 
 ## Build Process Guidelines
 
-We use [gulp](https://gulpjs.com/) for build tasks, to invoke the linter, generate documentation, and check for circular dependencies
-
 Use build tasks to enforce rules where possible.
 
 ## Documentation Guidelines
