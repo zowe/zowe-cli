@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modify job handler tests successful response should be able to modify class of job 1`] = `
+{
+  "class": "A",
+  "jobname": "AT0000",
+}
+`;
+
+exports[`modify job handler tests successful response should be able to modify class of job 2`] = `
+"Request was successful.
+Class Change: A -> A"
+`;
