@@ -301,7 +301,8 @@ export default class EnableDaemonHandler implements ICommandHandler {
              */
 
             const ioOptions: StdioOptions = ["pipe", "pipe", "pipe"];
-            const spawnResult = spawnSync("setx",
+            const setxPath = process.env.SystemRoot ? nodeJsPath.join(process.env.SystemRoot, 'System32', 'setx.exe') : 'setx.exe';
+            const spawnResult = spawnSync(setxPath,
                 ["zowe_set_env_test", pathToZoweBin + ";" + process.env.PATH],
                 {
                     stdio: ioOptions,
