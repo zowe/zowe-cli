@@ -26,7 +26,7 @@ export function getDataSet(name: string): IDataSet {
         };
     } else {
         return {
-            dsn: parts[0]
+            dsn: name
         };
     }
 }
