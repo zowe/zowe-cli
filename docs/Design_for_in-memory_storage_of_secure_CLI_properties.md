@@ -1,26 +1,6 @@
 # <span class="c25">Design for in-memory storage of secure Zowe CLI properties</span>
 
 <span class="c2 c1"></span>
-
-<span class="c9 c18 c19 c15">[Overview](#h.6jmu2spkqbf8)</span>
-
-<span class="c9 c15">[Use case](#h.aolhl4860uk3)</span>
-
-<span class="c9 c18 c19 c15">[Technical approach](#h.kprnl9ff3r1g)</span>
-
-<span class="c9 c18 c19 c15">[Security considerations](#h.wfxp6zit1nh7)</span>
-
-<span class="c9 c18 c19 c15">[In-memory secure properties in CI/CD pipelines](#h.3og4ocjuky49)</span>
-
-<span class="c9 c18 c19 c15">[Detailed design](#h.j5ioqvisua63)</span>
-
-<span class="c9 c18 c19 c15">[Pseudo code](#h.hz3fvdiwrwzf)</span>
-
-<span class="c9 c18 c19 c15">[Findings on available crypto libraries](#h.chrqtn7hchb)</span>
-
-<span class="c9 c18 c19 c15">[Proposed user documentation](#h.y21186yciq3d)</span>
-
-<span class="c2 c1"></span>
 # <span class="c25">Overview</span>
 <span class="c2 c1">This document describes the design for storing secure CLI properties in memory as an alternative to using the Zowe Secure Credential Store.</span>
 # <span class="c25">Use case</span>
