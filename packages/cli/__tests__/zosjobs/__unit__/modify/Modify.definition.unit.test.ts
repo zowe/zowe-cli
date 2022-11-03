@@ -18,8 +18,6 @@ describe("zos-jobs modify job definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = ModifyDefintion.ModifyDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(VIEW_CHILDREN);
-        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });
