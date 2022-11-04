@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.8.0`
 
 - Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
 - Enhancement: Added design documentation for roadmap feature to store secure properties in memory.
