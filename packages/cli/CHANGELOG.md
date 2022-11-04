@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
+- Enhancement: Added design documentation for roadmap feature to store secure properties in memory.
+
 ## `7.7.0`
 
 - Enhancement: Allow `zowe files view ds ... --range SSS-EEE | SSS,NNN`. [#1539](https://github.com/zowe/zowe-cli/issues/1539)
