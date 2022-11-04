@@ -71,7 +71,7 @@ export class PropertiesWorkflow {
 
         for(const step of steps) {
             let miscValue: string = "N/A";
-            if(step.submitAs && step.submitAs.match(/.*JCL/)) {
+            if(step.submitAs?.includes('JCL')) {
                 if(step.jobInfo && step.jobInfo.jobstatus) {
                     miscValue = step.jobInfo.jobstatus.jobid;
                 }

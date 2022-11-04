@@ -18,12 +18,11 @@ import { IDataSet } from "@zowe/zos-files-for-zowe-sdk";
  * @param {string} name  - the name in the form USER.DATA.SET | USER.DATA.SET(mem1)
  */
 export function getDataSet(name: string): IDataSet {
-    const match = name.match(/(.*)\((.*)\)/);
-    if (match) {
-        const [, dsn, member] = match;
+    const parts = name.replace(')', '').split('(');
+    if (parts.length > 1) {
         return {
-            dsn,
-            member
+            dsn: parts[0],
+            member: parts[1]
         };
     } else {
         return {

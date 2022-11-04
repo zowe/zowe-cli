@@ -98,7 +98,7 @@ The following guidelines apply to the top-level "package.json" file:
 
 The following guidelines apply to development of Zowe CLI and Zowe CLI plugins:
 * Do not use relative imports to require a file from another package in the same monorepo. Each package must be independent. Relative imports within the same package are allowed.
-* Include full package names when importing from other packages, even if they are sourced in the same monorepo. Use [`lerna bootstrap`](https://github.com/lerna/lerna/tree/master/commands/bootstrap#lernabootstrap) to symlink together all packages that are dependencies of each other.
+* Include full package names when importing from other packages, even if they are sourced in the same monorepo. The `npm install` command uses [workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces) and symlinks together all packages that are dependencies of each other.
 * When importing from modules in another package, always import from the top level (e.g., `"@zowe/zos-files-for-zowe-sdk"`). In any package you are creating, ensure that objects which should be publicly accessible to import from your package are exported so they’re accessible at the top level.
 * When importing from other modules in the same package, make the imports as specific as possible (e.g., `"./doc/response/IJob"`). This helps to avoid circular dependencies between packages in the monorepo.
 
@@ -115,9 +115,9 @@ In order for each package to be independent, they cannot import from each other 
 import { Download } from "../zosfiles/api";
 ```
 
-Instead of using relative imports, add other packages as dependencies and reference them by their name in import statements. For example, to rewrite the relative import above, declare `@zowe/zos-files-for-zowe-sdk` as a dependency in the "package.json" for `@zowe/cli`, and import from it like this:
+Instead of using relative imports, add other packages as dependencies and reference them by their name in import statements. For example, to rewrite the relative import above, declare "@zowe/zos-files-for-zowe-sdk" as a dependency in the "package.json" for "@zowe/cli", and import from it like this:
 ```javascript
 import { Download } from "@zowe/zos-files-for-zowe-sdk";
 ```
 
-This works when the `@zowe/cli` package is published, because it has declared the zos-files SDK as a dependency. It also works in a local build, because Lerna creates a symlink to the zos-files SDK in the "node_modules" folder for `@zowe/cli`.
+This works when the "@zowe/cli" package is published, because it has declared the zos-files SDK as a dependency. It also works in a local build, because `npm install` creates a symlink to the zos-files SDK in the "node_modules" folder for "@zowe/cli".
