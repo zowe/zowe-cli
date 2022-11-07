@@ -1,10 +1,11 @@
 {
-  "version": "7.7.0",
+  "version": "7.8.0",
   "command": {
     "publish": {
       "ignoreChanges": [
         "packages/**/__tests__/**"
-      ]
+      ],
+      "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
     }
   },
   "useWorkspaces": true

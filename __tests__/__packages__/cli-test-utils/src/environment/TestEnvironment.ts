@@ -126,7 +126,7 @@ export class TestEnvironment {
      * Load the properties file specified with system test configuration information.
      * @static
      * @param {string} filePath - Specify the filePath of the properties file. Leave empty to use the properties
-     *  file specified in the process.env (see gulp tasks for more information).
+     *  file specified in the process.env.
      * @param {string} testDirectory - the working directory to log  informational messages to
      * @returns {ITestPropertiesSchema} - The parsed test properties.
      * @memberof TestEnvironment
