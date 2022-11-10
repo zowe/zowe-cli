@@ -9,13 +9,14 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
 import { IModifyJob } from "./doc/input/IModifyJob";
 import { IJobFeedback } from "./doc/response/IJobFeedback";
+
 
 /**
  * Class to handle modify of jobclass and holdStatus information
@@ -77,6 +78,10 @@ export class ModifyJobs {
         let request: IModifyJob;
         let mergedMessage: string = "";
         let exception: boolean = false;
+
+        if(parms.hold && parms.release){
+            throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
+        }    
 
         if(parms.hold || parms.release){
             parms.hold ? request = { request: "hold"} : request = { request: "release"};

@@ -12,7 +12,6 @@
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { GetJobs, IJob, IJobFeedback, ModifyJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-// import { ModifyJobs } from "../../../../../../../packages/zosjobs/src/ModifyJobs";
 import * as ModifyDefintion from "../../../../../src/zosjobs/modify/job/Job.definition";
 import * as ModifyHandler from "../../../../../src/zosjobs/modify/job/Job.handler";
 import {
@@ -59,6 +58,10 @@ const SUCCESS_FEEDBACK: IJobFeedback = {
     "original-jobid": ""
 };
 
+const fakeJobName = "FAKEJBNM";
+const fakeJobID = "JOB01234";
+const fakeJobClass = "A";
+
 describe("modify job handler tests", () => {
 
     afterEach(() => {
@@ -67,34 +70,26 @@ describe("modify job handler tests", () => {
 
     describe("successful response", () => {
         it("should be able to modify class of job", async () => {
-            const jobname = "AT0000";
-            const jobid = "JOB01234";
-            const jobclass = "A";
             let mySession;
-            // faking out function with the correct signature
-            GetJobs.getJob = jest.fn().mockResolvedValue({jobname, class: jobclass});
+            GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
             ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
                 mySession = session;
                 return SUCCESS_FEEDBACK;
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            params.arguments.jobid = jobid;
-            params.arguments.jobname = jobname;
-            params.arguments.jobclass = jobclass;
+            params.arguments.jobid = fakeJobID;
+            params.arguments.jobname = fakeJobName;
+            params.arguments.jobclass = fakeJobClass;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(ModifyJobs.modifyJob).toHaveBeenCalledWith(mySession, jobname, jobid, jobclass, undefined, undefined);
+            expect(ModifyJobs.modifyJob).toHaveBeenCalledWith(mySession, fakeJobName, fakeJobID, fakeJobClass, undefined, undefined);
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
             expect(SUCCESS_FEEDBACK.message).toContain("Class Change");
         });
         it("should be able to hold a job", async () => {
-            const jobname = "AT0000";
-            const jobid = "JOB01234";
-            const jobclass = "A";
             let mySession;
-            // faking out function with the correct signature
-            GetJobs.getJob = jest.fn().mockResolvedValue({jobname, class: jobclass});
+            GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
             ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass, hold, release) => {
                 mySession = session;
                 return SUCCESS_FEEDBACK;
@@ -102,8 +97,8 @@ describe("modify job handler tests", () => {
             ModifyJobs.modifyJobCommon = jest.fn().mockResolvedValue(SUCCESS_FEEDBACK);
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            params.arguments.jobid = jobid;
-            params.arguments.jobname = jobname;
+            params.arguments.jobid = fakeJobID;
+            params.arguments.jobname = fakeJobName;
             params.arguments.hold = true;
             params.arguments.release = undefined;
             await handler.process(params);
@@ -111,53 +106,23 @@ describe("modify job handler tests", () => {
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
             expect(SUCCESS_FEEDBACK.message).toContain("Job Held");
         });
-        // it("should be able respond with imperative error if jobid is not defined", async () => {
-        //     const jobname = "AT0000";
-        //     const jobid = "JOB01234";
-        //     const jobclass = "A";
-        //     let mySession;
-        //     // faking out function with the correct signature
-        //     GetJobs.getJob = jest.fn().mockResolvedValue({jobname, class: "A", jobid: jobid});
-        //     // ModifyJobs.modifyJob = jest.fn().mockResolvedValue(SUCCESS_FEEDBACK);
-        //     // ModifyJobs.modifyJobCommon = jest.fn().mockReturnValue(SUCCESS_FEEDBACK); //new Promise(resolve => 
-        //     // ZosmfRestClient.putExpectJSON = jest.fn().mockImplementation(() => Promise.resolve(SUCCESS_FEEDBACK));
-        //     // ModifyJobs.modifyJobCommon = jest.fn().mockImplementation(() => Promise.resolve(SUCCESS_FEEDBACK));
-        //     // ModifyJobs.modifyJobCommon = jest.fn().mockResolvedValue(SUCCESS_FEEDBACK);
-        //     ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
-        //         mySession = session;
-        //         return SUCCESS_FEEDBACK;
-        //     });
-
-        //     const handler = new ModifyHandler.default();
-        //     const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-        //     params.arguments.jobid = jobid;
-        //     params.arguments.jobname = jobname;
-        //     params.arguments.hold = undefined;
-        //     params.arguments.release = true;
-        //     await handler.process(params);
-        //     expect(ModifyJobs.modifyJobCommon).toHaveBeenCalledTimes(1);
-        //     expect(ModifyJobs.modifyJobCommon).toHaveBeenCalledWith(mySession, {jobname, jobid, jobclass});
-        // });
         
         it("should be able to release a job", async () => {
-            const jobname = "AT0000";
-            const jobid = "JOB01234";
             let mySession;
-            // faking out function with the correct signature
-            GetJobs.getJob = jest.fn().mockResolvedValue({jobname, class: "A"});
+            GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
             ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
                 mySession = session;
                 return SUCCESS_FEEDBACK;
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            params.arguments.jobid = jobid;
-            params.arguments.jobname = jobname;
+            params.arguments.jobid = fakeJobID;
+            params.arguments.jobname = fakeJobName;
             params.arguments.hold = undefined;
             params.arguments.release = true;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(ModifyJobs.modifyJob).toHaveBeenCalledWith(mySession, jobname, jobid, "A", undefined, true);
+            expect(ModifyJobs.modifyJob).toHaveBeenCalledWith(mySession, fakeJobName, fakeJobID, fakeJobClass, undefined, true);
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
             expect(SUCCESS_FEEDBACK.message).toContain("Job Released");
         });
@@ -175,9 +140,9 @@ describe("modify job handler tests", () => {
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            params.arguments.jobid = "JOB01234";
-            params.arguments.jobname = "AT0000";
-            params.arguments.jobclass = "A";
+            params.arguments.jobid = fakeJobID;
+            params.arguments.jobname = fakeJobName;
+            params.arguments.jobclass = fakeJobClass;
             try {
                 await handler.process(params);
             } catch (thrownError) {
@@ -200,8 +165,8 @@ describe("modify job handler tests", () => {
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            params.arguments.jobname = "AT0000";
-            params.arguments.jobclass = "A";
+            params.arguments.jobname = fakeJobName;
+            params.arguments.jobclass = fakeJobClass;
             try {
                 await handler.process(params);
             } catch (thrownError) {
@@ -210,25 +175,22 @@ describe("modify job handler tests", () => {
             expect(error.message).toContain(failMessage);
         });
         
-        it("should send zosmf error if an issue with modifying hold or release", async () => {
-            const failMessage = "Missing Positional Argument: jobid";
+        it("should send error if an issue with modifying class||hold||release", async () => {
+            const failMessage = "Modification Error";
             let error;
             
             GetJobs.getJob = jest.fn(async (session, jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJobCommon = jest.fn(async (session, parms) => {
-                throw new Error(failMessage);
-            });
-            //  ZosmfRestClient.putExpectJSON
             ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
                 throw new Error(failMessage);
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            params.arguments.jobid = "JOB01234";
-            params.arguments.jobname = "AT0000";
-            params.arguments.hold = true;
+            params.arguments.jobid = fakeJobID;
+            params.arguments.jobname = fakeJobName;
+            params.arguments.class = undefined;
+            params.arguments.hold = undefined;
             params.arguments.release = undefined;
             try {
                 await handler.process(params);

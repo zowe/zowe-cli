@@ -13,10 +13,10 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 const LOCAL_JCL_FILE: string = __dirname + "/__scripts__/job/" + "jcl.txt";
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let jclMember: string;
-
+let jobclass: string;
 
 describe("zos-jobs modify job command", () => {
     // Create the unique test environment
@@ -25,23 +25,23 @@ describe("zos-jobs modify job command", () => {
             testName: "zos_jobs_modify_job_command",
             tempProfileTypes: ["zosmf"]
         });
-        jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
-        //not yet set up on DE20, need to wait to use jclMember parameterized method
+        jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.sleepMember;
+        jobclass = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
     describe("error handling", () => {
-        it("should surface an error from z/OSMF if the jobclass is invalid", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/bogus_jobclass.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+        it("should catch if the jobclass is invalid", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/bogus_jobclass.sh", TEST_ENVIRONMENT, [jclMember]);
             // zosmf doesn't consider invalid jobclass as an error
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Job class invalid");
         });
-        it("should surface an error from z/OSMF if the jobid doesn't exist", () => {
+        it("should surface an Imperative error if the jobid is invalid", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/bogus_jobid.sh", TEST_ENVIRONMENT);
-            // zosmf doesn't consider not finding job an error (correctly searched for and did not find)
+            // potential fix needed in imperative to count this type of error as status = 1
             expect(response.status).toBe(0);
             expect(response.stderr.toString()).toContain("Job not found");
         });
@@ -50,29 +50,29 @@ describe("zos-jobs modify job command", () => {
     describe("successful response", () => {
         it("should use an existing jobid when attempting to modify job", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/real_jobid.sh",
-                TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+                TEST_ENVIRONMENT, [jclMember]);
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Request was successful");
         });
 
         it("should be able to modify job class", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/real_jobclass.sh",
-                TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+                TEST_ENVIRONMENT, [jclMember, jobclass]);
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain('"class": "C"');
+            expect(response.stdout.toString()).toContain('class\": \"' + jobclass);
             expect(response.stdout.toString()).toContain("Request was successful");
         });
 
         it("should be able to hold a job", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/hold_job.sh",
-                TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            expect(response.status).toBe(0);
+                TEST_ENVIRONMENT, [jclMember]);
             expect(response.stdout.toString()).toContain("Request was successful");
+            expect(response.status).toBe(0);
         });
 
         it("should be able to release a job", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/release_job.sh",
-                TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+                TEST_ENVIRONMENT, [jclMember]);
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Request was successful");
         });

@@ -13,6 +13,8 @@ export interface ITestZosJobsSchema {
     iefbr14Member: string;
     iefbr14PSDataSet: string;
     iefbr14USSFile: string;
+    sleepMember: string;
     jobclass: string;
+    modifiedJobclass: string;
     sysaff: string;
 }

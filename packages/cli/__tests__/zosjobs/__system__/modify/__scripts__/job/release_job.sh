@@ -7,7 +7,7 @@ ATTEMPTS=10
 WAIT=10
 
 # Submit the job and ensure the RC is 0
-JOBID=`zowe jobs submit lf "$1" --rff jobid --rft string`
+JOBID=`zowe jobs submit ds "$1" --rff jobid --rft string`
 RC=$?
 if [ $RC -gt 0 ]
 then
@@ -18,8 +18,9 @@ fi
 
 # Modify the job with a different class
 zowe zos-jobs modify job $JOBID --release
-RC=$?
-
 # view the status of the job
 zowe zos-jobs view job-status-by-jobid $JOBID --rfj
+# cleanup and cancel fake job
+zowe zos-jobs cancel job $JOBID
+zowe zos-jobs delete job $JOBID
 exit $?
