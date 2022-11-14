@@ -122,7 +122,7 @@ export class SshSession {
     };
 
     /**
-     * Option used in profile creation and commands for passphrase for private key
+     * Option used in profile creation to set handshake timeout. If unset, defaults to no timeout.
      */
     public static SSH_OPTION_HANDSHAKETIMEOUT: ICommandOptionDefinition = {
         name: "handshakeTimeout",
