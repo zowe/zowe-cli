@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to absorb bugfixes introduced in version `4.18.10`.
+
 ## `6.40.8`
 
 - BugFix: Updated `minimatch` dependency for technical currency.
