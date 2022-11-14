@@ -8,18 +8,20 @@ on:
 jobs:
   sonar:
     runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        repository: ${{ github.event.workflow_run.head_repository.full_name }}
+        ref: ${{ github.event.workflow_run.head_branch }}
         fetch-depth: 0
-        ref: ${{ github.event.workflow_run.head_ref }}
 
     - name: Configure Sonar Scan
       uses: zowe-actions/octorelease-script@master
       env:
-        COVERAGE_ARTIFACT: "zowe-cli.yml/ubuntu-latest-18.x-results:__tests__/__results__"
+        COVERAGE_ARTIFACT: "ubuntu-latest-18.x-results:__tests__/__results__"
       with:
         script: sonarConfig
 
