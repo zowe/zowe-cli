@@ -33,11 +33,11 @@ describe("Modify Jobs - System Tests", () => {
         });
         systemProps = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        account = systemProps.tso.account; 
+        account = systemProps.tso.account;
         jobname = testEnvironment.systemTestProperties.zosmf.user;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
         modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
-        sleepJob = await SubmitJobs.submitJob(REAL_SESSION, 
+        sleepJob = await SubmitJobs.submitJob(REAL_SESSION,
             testEnvironment.systemTestProperties.zosjobs.sleepMember
         );
     });
@@ -57,7 +57,7 @@ describe("Modify Jobs - System Tests", () => {
                 release: false,
             });
             expect(job.jobid).toMatch(sleepJob.jobid);
-            expect(job.message).toContain("Request was successful")
+            expect(job.message).toContain("Request was successful");
         });
 
         it("should return a success message once hold has been added to job", async () => {
@@ -69,7 +69,7 @@ describe("Modify Jobs - System Tests", () => {
                 release: false,
             });
             expect(job.jobid).toMatch(sleepJob.jobid);
-            expect(job.message).toContain("Request was successful")
+            expect(job.message).toContain("Request was successful");
         });
 
         it("should return a success message once job has been released", async () => {
@@ -81,7 +81,7 @@ describe("Modify Jobs - System Tests", () => {
                 release: true,
             });
             expect(job.jobid).toMatch(sleepJob.jobid);
-            expect(job.message).toContain("Request was successful")
+            expect(job.message).toContain("Request was successful");
         });
     });
 

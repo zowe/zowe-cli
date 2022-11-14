@@ -106,7 +106,7 @@ describe("modify job handler tests", () => {
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
             expect(SUCCESS_FEEDBACK.message).toContain("Job Held");
         });
-        
+
         it("should be able to release a job", async () => {
             let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
@@ -174,11 +174,10 @@ describe("modify job handler tests", () => {
             }
             expect(error.message).toContain(failMessage);
         });
-        
+
         it("should send error if an issue with modifying class||hold||release", async () => {
             const failMessage = "Modification Error";
             let error;
-            
             GetJobs.getJob = jest.fn(async (session, jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
@@ -199,6 +198,5 @@ describe("modify job handler tests", () => {
             }
             expect(error.message).toContain(failMessage);
         });
-        
     });
 });

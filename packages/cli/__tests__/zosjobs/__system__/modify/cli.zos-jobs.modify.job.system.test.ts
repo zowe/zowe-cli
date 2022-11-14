@@ -59,7 +59,7 @@ describe("zos-jobs modify job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/real_jobclass.sh",
                 TEST_ENVIRONMENT, [jclMember, jobclass]);
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain('class\": \"' + jobclass);
+            expect(response.stdout.toString()).toContain('class": "' + jobclass);
             expect(response.stdout.toString()).toContain("Request was successful");
         });
 

@@ -81,7 +81,7 @@ export class ModifyJobs {
 
         if(parms.hold && parms.release){
             throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
-        }    
+        }
 
         if(parms.hold || parms.release){
             parms.hold ? request = { request: "hold"} : request = { request: "release"};
