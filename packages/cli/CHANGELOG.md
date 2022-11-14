@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.40.9`
 
 - BugFix: Updated Imperative to absorb bugfixes introduced in version `4.18.10`.
 
