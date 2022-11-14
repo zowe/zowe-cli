@@ -1,79 +1,79 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files compare ds command definition should not have changed 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "b",
     ],
     "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both datasets are transferred in binary mode.",
     "name": "binary",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "b2",
     ],
     "description": "Transfer the content of the second data set in binary mode.",
     "name": "binary2",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ec",
     ],
     "description": "Transfer the content of the first data set with encoding mode, which means that data conversion is performed using the file encoding specified. If encoding mode is set and the encoding2 flag is not set both data sets are transferred in encoding mode.",
     "name": "encoding",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ec2",
     ],
     "description": "Transfer the content of the second data set with encoding mode.",
     "name": "encoding2",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "r",
     ],
-    "conflictsWith": Array [
+    "conflictsWith": [
       "binary",
     ],
     "description": "Transfer the content for the first data set in record mode, which means that no data conversion is performed and the record length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records. If encoding mode is set and the encoding2 flag is not set both data sets are transferred in encoding mode. This option conflicts with binary mode.",
     "name": "record",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "r2",
     ],
-    "conflictsWith": Array [
+    "conflictsWith": [
       "binary2",
     ],
     "description": "Transfer the content for the second data set in record mode. Conflicts with binary2.",
     "name": "record2",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "vs",
     ],
     "description": "The volume serial (VOLSER) where the first data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
     "name": "volume-serial",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "vs2",
     ],
     "description": "The volume serial (VOLSER) where the second data set resides.",
     "name": "volume-serial2",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "sn",
     ],
     "defaultValue": true,
@@ -81,16 +81,16 @@ Array [
     "name": "seqnum",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "cl",
     ],
     "description": "The number of context lines that display before and after detected non-matching lines. By default all matching lines display. If you want to limit the amount of data returned to only lines with differences use the context lines option to reduce the matching lines to only those before and after non-matching lines. Using the value of 0 strips all matching lines.",
     "name": "context-lines",
     "type": "number",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "bv",
     ],
     "description": "Opens the diffs between two given files in browser",
@@ -101,14 +101,14 @@ Array [
 `;
 
 exports[`zos-files compare ds command definition should not have changed 2`] = `
-Array [
-  Object {
-    "description": "Compare the contents of the data set members \\"sys1.samplib(antptso)\\" and \\"sys1.samplib(antxtso)\\"",
-    "options": "\\"sys1.samplib(antptso)\\" \\"sys1.samplib(antxtso)\\"",
+[
+  {
+    "description": "Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)"",
+    "options": ""sys1.samplib(antptso)" "sys1.samplib(antxtso)"",
   },
-  Object {
-    "description": "Compare the contents of the data set members \\"sys1.samplib(antptso)\\" and \\"sys1.samplib(antxtso)\\" without sequence numbers",
-    "options": "\\"sys1.samplib(antptso)\\" \\"sys1.samplib(antxtso)\\" --no-seqnum",
+  {
+    "description": "Compare the contents of the data set members "sys1.samplib(antptso)" and "sys1.samplib(antxtso)" without sequence numbers",
+    "options": ""sys1.samplib(antptso)" "sys1.samplib(antxtso)" --no-seqnum",
   },
 ]
 `;
