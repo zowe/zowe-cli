@@ -60,7 +60,7 @@ export interface ISshSession {
     keyPassphrase?: string;
 
     /**
-     * password to unlock the private key.
+     * How long in milliseconds to wait for the SSH handshake to complete. If unset, defaults to 0 - no timeout.
      * @type {string}
      * @memberof ISession
      */
