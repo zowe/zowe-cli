@@ -81,9 +81,10 @@ describe("modify job handler tests", () => {
             params.arguments.jobid = fakeJobID;
             params.arguments.jobname = fakeJobName;
             params.arguments.jobclass = fakeJobClass;
+            params.arguments.hold = false;
+            params.arguments.release = false; 
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(ModifyJobs.modifyJob).toHaveBeenCalledWith(mySession, fakeJobName, fakeJobID, fakeJobClass, undefined, undefined);
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
             expect(SUCCESS_FEEDBACK.message).toContain("Class Change");
         });
@@ -100,7 +101,7 @@ describe("modify job handler tests", () => {
             params.arguments.jobid = fakeJobID;
             params.arguments.jobname = fakeJobName;
             params.arguments.hold = true;
-            params.arguments.release = undefined;
+            params.arguments.release = false;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
@@ -118,11 +119,10 @@ describe("modify job handler tests", () => {
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.jobid = fakeJobID;
             params.arguments.jobname = fakeJobName;
-            params.arguments.hold = undefined;
+            params.arguments.hold = false;
             params.arguments.release = true;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(ModifyJobs.modifyJob).toHaveBeenCalledWith(mySession, fakeJobName, fakeJobID, fakeJobClass, undefined, true);
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
             expect(SUCCESS_FEEDBACK.message).toContain("Job Released");
         });
@@ -189,8 +189,8 @@ describe("modify job handler tests", () => {
             params.arguments.jobid = fakeJobID;
             params.arguments.jobname = fakeJobName;
             params.arguments.class = undefined;
-            params.arguments.hold = undefined;
-            params.arguments.release = undefined;
+            params.arguments.hold = false;
+            params.arguments.release = false;
             try {
                 await handler.process(params);
             } catch (thrownError) {
