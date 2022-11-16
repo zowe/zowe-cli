@@ -10,14 +10,12 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import * as ModifyDefintion from "../../../../src/zosjobs/modify/Modify.definition";
-
-const VIEW_CHILDREN: number = 3;
 
 describe("zos-jobs modify job definition", () => {
+    const definition: ICommandDefinition = require("../../../../src/zosjobs/modify/Modify.definition").ModifyDefinition;
     it("should not have changed", () => {
-        const definition: ICommandDefinition = ModifyDefintion.ModifyDefinition;
         expect(definition).toBeDefined();
+        delete definition.handler;
         expect(definition).toMatchSnapshot();
     });
 });
