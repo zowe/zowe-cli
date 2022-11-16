@@ -188,7 +188,21 @@ export class GetJobs {
         resource += (query === JobsConstants.QUERY_ID) ? "" : query;
         Logger.getAppLogger().info("GetJobs.getJobsCommon() resource: " + resource);
 
-        return ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);
+        const test = await ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);
+        Logger.getAppLogger().info("GetJobs.getJobsCommon() results: " + test);
+        // let statusResults = test;
+        // if (params.status && params.status.toLowerCase() != 'active') {
+        //     Logger.getAppLogger().info("GetJobs.getJobsCommon() params.status: " + params.status);
+        //     statusResults = test.filter(result => {
+        //         const resultStatusLower = result.status.toLowerCase();
+        //         const paramStatusLower = params.status.toLowerCase();
+        //         if (resultStatusLower === paramStatusLower) {
+        //             return result;
+        //         }
+        //         return undefined;
+        //     });
+        // }
+        return test;
     }
 
     /**
