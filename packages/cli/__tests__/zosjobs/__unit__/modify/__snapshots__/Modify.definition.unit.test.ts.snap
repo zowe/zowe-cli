@@ -12,7 +12,7 @@ Object {
         "description": "Release job with job ID JOB0000",
         "options": "JOB0000 --release",
       },
-      "handler": "C:\\\\Users\\\\at895452\\\\Desktop\\\\zowe-cli\\\\packages\\\\cli\\\\src\\\\zosjobs\\\\modify\\\\job/Job.handler",
+      "handler": "D:\\a\\zowe-cli\\zowe-cli\\packages\\cli\\src\\zosjobs\\modify\\job/Job.handler",
       "name": "job",
       "options": Array [
         Object {
