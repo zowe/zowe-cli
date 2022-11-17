@@ -188,21 +188,9 @@ export class GetJobs {
         resource += (query === JobsConstants.QUERY_ID) ? "" : query;
         Logger.getAppLogger().info("GetJobs.getJobsCommon() resource: " + resource);
 
-        const test = await ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);
-        Logger.getAppLogger().info("GetJobs.getJobsCommon() results: " + test);
-        // let statusResults = test;
-        // if (params.status && params.status.toLowerCase() != 'active') {
-        //     Logger.getAppLogger().info("GetJobs.getJobsCommon() params.status: " + params.status);
-        //     statusResults = test.filter(result => {
-        //         const resultStatusLower = result.status.toLowerCase();
-        //         const paramStatusLower = params.status.toLowerCase();
-        //         if (resultStatusLower === paramStatusLower) {
-        //             return result;
-        //         }
-        //         return undefined;
-        //     });
-        // }
-        return test;
+        const jobs = await ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);
+
+        return GetJobs.filterResultsByStatuses(jobs, params);
     }
 
     /**
@@ -392,5 +380,20 @@ export class GetJobs {
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT;
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
+    }
+
+    private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms): IJob[] {
+        if (params?.status && params.status.toLowerCase() != 'active') {
+            const statusJobs = jobs.filter(job => {
+                const resultStatusLower = job.status.toLowerCase();
+                const paramStatusLower = params.status.toLowerCase();
+                if (resultStatusLower === paramStatusLower) {
+                    return job;
+                }
+                return undefined;
+            });
+            return statusJobs;
+        }
+        return jobs;
     }
 }
