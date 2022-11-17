@@ -10,6 +10,7 @@ on:
 jobs:
   changelog:
     runs-on: ubuntu-latest
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
 
     steps:
     - name: Checkout
@@ -18,8 +19,6 @@ jobs:
         fetch-depth: 0
 
     - name: Check Changelog Updated
-      id: checkchangelogupdated
-      if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
       uses: awharn/check_changelog_action@v1
       with:
         header: '## Recent Changes'
