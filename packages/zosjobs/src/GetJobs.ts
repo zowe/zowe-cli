@@ -383,7 +383,7 @@ export class GetJobs {
     }
 
     private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms): IJob[] {
-        if (params?.status?.toLowerCase() != "active") {
+        if (params?.status && params.status.toLowerCase() != "active") {
             return jobs.filter(job => job.status.toLowerCase() === params.status.toLowerCase());
         }
         return jobs;

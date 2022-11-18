@@ -567,5 +567,48 @@ describe("GetJobs tests", () => {
             const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'active', owner: 'zowe' });
             expect(filteredResults).toEqual(jobs);
         });
+        it("should return only Output", () => {
+            const jobs = [
+                {
+                    jobid: '1', jobname: 'a', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const expectedJobs = [
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'OUTPUT', owner: 'zowe' });
+            expect(filteredResults).toEqual(expectedJobs);
+        });
     });
 });
