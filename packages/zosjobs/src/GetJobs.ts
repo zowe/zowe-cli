@@ -383,16 +383,8 @@ export class GetJobs {
     }
 
     private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms): IJob[] {
-        if (params?.status && params.status.toLowerCase() != 'active') {
-            const statusJobs = jobs.filter(job => {
-                const resultStatusLower = job.status.toLowerCase();
-                const paramStatusLower = params.status.toLowerCase();
-                if (resultStatusLower === paramStatusLower) {
-                    return job;
-                }
-                return undefined;
-            });
-            return statusJobs;
+        if (params?.status?.toLowerCase() != "active") {
+            return jobs.filter(job => job.status.toLowerCase() === params.status.toLowerCase());
         }
         return jobs;
     }
