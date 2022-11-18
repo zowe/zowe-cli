@@ -2,64 +2,52 @@
 
 exports[`zos-jobs modify job definition should not have changed 1`] = `
 Object {
-  "aliases": Array [
-    "mdf",
-  ],
-  "children": Array [
+  "description": "Modify the job class or the hold status of a job.",
+  "examples": String {
+    "description": "Release job with job ID JOB0000",
+    "options": "JOB0000 --release",
+  },
+  "name": "job",
+  "options": Array [
     Object {
-      "description": "Modify the job class or the hold status of a job.",
-      "examples": String {
-        "description": "Release job with job ID JOB0000",
-        "options": "JOB0000 --release",
-      },
-      "handler": "C:\\\\Users\\\\at895452\\\\Desktop\\\\zowe-cli\\\\packages\\\\cli\\\\src\\\\zosjobs\\\\modify\\\\job/Job.handler",
-      "name": "job",
-      "options": Array [
-        Object {
-          "defaultValue": undefined,
-          "description": "The job class (e.g. 'A', 'B', ...) assigned to the job.",
-          "name": "jobclass",
-          "required": false,
-          "type": "string",
-        },
-        Object {
-          "conflictsWith": Array [
-            "release",
-          ],
-          "defaultValue": undefined,
-          "description": "Setting this flag will prevent a job from executing untilentering a second command with the '--release' flag",
-          "name": "hold",
-          "required": false,
-          "type": "boolean",
-        },
-        Object {
-          "defaultValue": undefined,
-          "description": "Flag that releases a held a job for execution",
-          "name": "release",
-          "required": false,
-          "type": "boolean",
-        },
+      "defaultValue": undefined,
+      "description": "The job class (e.g. 'A', 'B', ...) assigned to the job.",
+      "name": "jobclass",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "conflictsWith": Array [
+        "release",
       ],
-      "positionals": Array [
-        Object {
-          "description": "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate the job ID if desired. You can use, for example \\"J123\\".",
-          "name": "jobid",
-          "required": true,
-          "type": "string",
-        },
-      ],
-      "profile": Object {
-        "optional": Array [
-          "zosmf",
-        ],
-      },
-      "summary": "Modify the job class or the hold status of a job",
-      "type": "command",
+      "defaultValue": undefined,
+      "description": "Setting this flag will prevent a job from executing until entering a second command with the '--release' flag",
+      "name": "hold",
+      "required": false,
+      "type": "boolean",
+    },
+    Object {
+      "defaultValue": undefined,
+      "description": "Flag that releases a held a job for execution",
+      "name": "release",
+      "required": false,
+      "type": "boolean",
     },
   ],
-  "description": "Modify the job class or the hold status of a job.",
-  "name": "modify",
-  "summary": "Modify a z/OS job",
-  "type": "group",
+  "positionals": Array [
+    Object {
+      "description": "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate the job ID if desired. You can use, for example \\"J123\\".",
+      "name": "jobid",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Modify the job class or the hold status of a job",
+  "type": "command",
 }
 `;

@@ -82,7 +82,7 @@ describe("modify job handler tests", () => {
             params.arguments.jobname = fakeJobName;
             params.arguments.jobclass = fakeJobClass;
             params.arguments.hold = false;
-            params.arguments.release = false; 
+            params.arguments.release = false;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
             expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
