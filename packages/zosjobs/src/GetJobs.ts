@@ -382,9 +382,10 @@ export class GetJobs {
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
     }
 
-    private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms): IJob[] {
-        if (params?.status && params.status.toLowerCase() != "active") {
-            return jobs.filter(job => job.status.toLowerCase() === params.status.toLowerCase());
+    private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms | undefined): IJob[] {
+        if (params?.status && params.status.toLowerCase() != "active" && params.status != "*") {
+            const newJobs = jobs.filter(job => job.status.toLowerCase() === params.status.toLowerCase());
+            return newJobs;
         }
         return jobs;
     }

@@ -610,5 +610,86 @@ describe("GetJobs tests", () => {
             const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'OUTPUT', owner: 'zowe' });
             expect(filteredResults).toEqual(expectedJobs);
         });
+        it("should return all status jobs for status *", () => {
+            const jobs = [
+                {
+                    jobid: '1', jobname: 'a', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Input', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: '*', owner: 'zowe' });
+            expect(filteredResults).toEqual(jobs);
+        });
+        it("should return all jobs if parameters are missing", () => {
+            const jobs = [
+                {
+                    jobid: '1', jobname: 'a', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Input', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, undefined);
+            expect(filteredResults).toEqual(jobs);
+        });
+        it("should return all jobs if status in params is missing", () => {
+            const jobs = [
+                {
+                    jobid: '1', jobname: 'a', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Input', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { owner: 'zowe'});
+            expect(filteredResults).toEqual(jobs);
+        });
     });
 });
