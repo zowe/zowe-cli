@@ -538,4 +538,34 @@ describe("GetJobs tests", () => {
             expect(jobs).toMatchSnapshot();
         });
     });
+
+    describe("filterResultsByStatuses", () => {
+        it("should return all results if status is active", () => {
+            const jobs = [
+                {
+                    jobid: '1', jobname: 'a', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'active', owner: 'zowe' });
+            expect(filteredResults).toEqual(jobs);
+        });
+    });
 });
