@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal 1`] = `
-{
-  "apiResponse": {},
+Object {
+  "apiResponse": Object {},
   "commandResponse": "compared string",
   "success": true,
 }

@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files view uss file command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "b",
     ],
     "description": "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
     "name": "binary",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "ec",
     ],
     "description": "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
@@ -22,14 +22,14 @@ exports[`zos-files view uss file command definition should not have changed 1`] 
 `;
 
 exports[`zos-files view uss file command definition should not have changed 2`] = `
-[
-  {
-    "description": "View the contents of the USS file "/a/ibmuser/my_text.txt"",
-    "options": ""/a/ibmuser/my_text.txt"",
+Array [
+  Object {
+    "description": "View the contents of the USS file \\"/a/ibmuser/my_text.txt\\"",
+    "options": "\\"/a/ibmuser/my_text.txt\\"",
   },
-  {
-    "description": "View the contents of the USS file "/a/ibmuser/MyJavaClass.class" in binary mode",
-    "options": ""/a/ibmuser/MyJavaClass.class" --binary",
+  Object {
+    "description": "View the contents of the USS file \\"/a/ibmuser/MyJavaClass.class\\" in binary mode",
+    "options": "\\"/a/ibmuser/MyJavaClass.class\\" --binary",
   },
 ]
 `;

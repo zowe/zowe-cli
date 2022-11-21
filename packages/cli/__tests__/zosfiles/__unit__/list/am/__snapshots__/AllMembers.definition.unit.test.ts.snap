@@ -1,25 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files list am command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "a",
     ],
     "description": "Display more information about each member. Data sets with an undefined record format display information related to executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
     "name": "attributes",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "max",
     ],
     "description": "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items. If you specify an incorrect value, the parameter returns up to 1000 items.",
     "name": "max-length",
     "type": "number",
   },
-  {
-    "description": "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. "*".",
+  Object {
+    "description": "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. \\"*\\".",
     "name": "pattern",
     "type": "string",
   },
@@ -27,22 +27,22 @@ exports[`zos-files list am command definition should not have changed 1`] = `
 `;
 
 exports[`zos-files list am command definition should not have changed 2`] = `
-[
-  {
-    "description": "Show members of the data set "ibmuser.asm"",
-    "options": ""ibmuser.asm"",
+Array [
+  Object {
+    "description": "Show members of the data set \\"ibmuser.asm\\"",
+    "options": "\\"ibmuser.asm\\"",
   },
-  {
-    "description": "Show attributes of members of the data set "ibmuser.cntl"",
-    "options": ""ibmuser.cntl" -a",
+  Object {
+    "description": "Show attributes of members of the data set \\"ibmuser.cntl\\"",
+    "options": "\\"ibmuser.cntl\\" -a",
   },
-  {
-    "description": "Show the first 5 members of the data set "ibmuser.cntl"",
-    "options": ""ibmuser.cntl" --max 5",
+  Object {
+    "description": "Show the first 5 members of the data set \\"ibmuser.cntl\\"",
+    "options": "\\"ibmuser.cntl\\" --max 5",
   },
-  {
-    "description": "Show the first 4 members of the data set "ibmuser.cntl" matching an input pattern"",
-    "options": ""sys1.maclib" --pattern IJK* --max 4",
+  Object {
+    "description": "Show the first 4 members of the data set \\"ibmuser.cntl\\" matching an input pattern\\"",
+    "options": "\\"sys1.maclib\\" --pattern IJK* --max 4",
   },
 ]
 `;

@@ -3,8 +3,8 @@
 exports[`zos-files unmount fs command definition should not have changed 1`] = `undefined`;
 
 exports[`zos-files unmount fs command definition should not have changed 2`] = `
-[
-  {
+Array [
+  Object {
     "description": "Unmount a mounted file system",
     "options": "MY.FS",
   },

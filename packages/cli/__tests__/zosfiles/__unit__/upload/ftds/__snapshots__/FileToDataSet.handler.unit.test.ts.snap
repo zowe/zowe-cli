@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upload file-to-data-set handler process method should display error when upload file to data set 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "test-file",
       "success": false,
       "to": "testing",
@@ -17,9 +17,9 @@ exports[`Upload file-to-data-set handler process method should display error whe
 exports[`Upload file-to-data-set handler process method should display error when upload file to data set 2`] = `""`;
 
 exports[`Upload file-to-data-set handler process method should upload a file to a data set if requested 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "test-file",
       "success": true,
       "to": "testing",
@@ -49,9 +49,9 @@ uploaded"
 `;
 
 exports[`Upload file-to-data-set handler process method should upload a file to a data set in binary format if requested 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "test-file",
       "success": true,
       "to": "testing",
@@ -81,9 +81,9 @@ uploaded"
 `;
 
 exports[`Upload file-to-data-set handler process method should upload a file to a data set in record format if requested 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "test-file",
       "success": true,
       "to": "testing",

@@ -1,44 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files view ds command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "b",
     ],
     "description": "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
     "name": "binary",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "ec",
     ],
     "description": "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
     "name": "encoding",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "r",
     ],
-    "conflictsWith": [
+    "conflictsWith": Array [
       "binary",
     ],
     "description": "Transfer the file content in record mode, which means that no data conversion is performed and the record length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records. Conflicts with binary.",
     "name": "record",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "vs",
     ],
     "description": "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
     "name": "volume-serial",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "R",
     ],
     "description": "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records or SSS,NNN where is is the start and NNN is the number of records retrieved.",
@@ -49,22 +49,22 @@ exports[`zos-files view ds command definition should not have changed 1`] = `
 `;
 
 exports[`zos-files view ds command definition should not have changed 2`] = `
-[
-  {
-    "description": "View the contents of the data set member "ibmuser.cntl(iefbr14)"",
-    "options": ""ibmuser.cntl(iefbr14)"",
+Array [
+  Object {
+    "description": "View the contents of the data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\"",
   },
-  {
-    "description": "View the contents of the data set member "ibmuser.test.loadlib(main)" in binary mode",
-    "options": ""ibmuser.test.loadlib(main)" --binary",
+  Object {
+    "description": "View the contents of the data set member \\"ibmuser.test.loadlib(main)\\" in binary mode",
+    "options": "\\"ibmuser.test.loadlib(main)\\" --binary",
   },
-  {
-    "description": "View only the first two lines of content for data set member "ibmuser.cntl(iefbr14)"",
-    "options": ""ibmuser.cntl(iefbr14)" --range 0,2",
+  Object {
+    "description": "View only the first two lines of content for data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\" --range 0,2",
   },
-  {
-    "description": "View only lines six through eight (zero-based) in the contents of the data set member "ibmuser.cntl(iefbr14)"",
-    "options": ""ibmuser.cntl(iefbr14)" --range 5-7",
+  Object {
+    "description": "View only lines six through eight (zero-based) in the contents of the data set member \\"ibmuser.cntl(iefbr14)\\"",
+    "options": "\\"ibmuser.cntl(iefbr14)\\" --range 5-7",
   },
 ]
 `;

@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files create pds command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "asu",
     ],
     "defaultValue": "CYL",
@@ -11,16 +11,16 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "allocation-space-unit",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "a",
     ],
     "description": "Show the full allocation attributes",
     "name": "attributes",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "bs",
       "blksize",
     ],
@@ -29,16 +29,16 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "block-size",
     "type": "number",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "dc",
     ],
     "description": "The SMS data class to use for the allocation",
     "name": "data-class",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "dst",
       "dsntype",
     ],
@@ -46,8 +46,8 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "data-set-type",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "dt",
       "unit",
     ],
@@ -55,8 +55,8 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "device-type",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "db",
       "dirblks",
     ],
@@ -65,16 +65,16 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "directory-blocks",
     "type": "number",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "mc",
     ],
     "description": "The SMS management class to use for the allocation",
     "name": "management-class",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "ps",
     ],
     "defaultValue": 1,
@@ -82,18 +82,18 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "primary-space",
     "type": "number",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "rf",
       "recfm",
     ],
     "defaultValue": "FB",
-    "description": "The record format for the data set (for example, FB for "Fixed Block")",
+    "description": "The record format for the data set (for example, FB for \\"Fixed Block\\")",
     "name": "record-format",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "rl",
       "lrecl",
     ],
@@ -102,16 +102,16 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "record-length",
     "type": "number",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "ss",
     ],
     "description": "The secondary space allocation (for example, 1)",
     "name": "secondary-space",
     "type": "number",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "pa",
     ],
     "description": "Show the full allocation attributes",
@@ -119,24 +119,24 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
     "name": "show-attributes",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "sz",
     ],
     "description": "The size of the data set (specified as nCYL or nTRK - where n is the number of cylinders or tracks). Sets the primary allocation (the secondary allocation becomes ~10% of the primary).",
     "name": "size",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "sc",
     ],
     "description": "The SMS storage class to use for the allocation",
     "name": "storage-class",
     "type": "string",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "vs",
       "volser",
     ],
@@ -148,12 +148,12 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
 `;
 
 exports[`zos-files create pds command definition should not have changed 2`] = `
-[
-  {
+Array [
+  Object {
     "description": "Create an empty PDS with default parameters",
     "options": "NEW.PDS.DATASET",
   },
-  {
+  Object {
     "description": "Create an empty PDSE using data set type LIBRARY",
     "options": "NEW.PDSE.DATASET --data-set-type LIBRARY",
   },

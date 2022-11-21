@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Compare localfile-spooldd handler process method should compare a local-file and a spool-dd in terminal 1`] = `
-{
-  "apiResponse": {},
+Object {
+  "apiResponse": Object {},
   "commandResponse": "compared string",
   "success": true,
 }

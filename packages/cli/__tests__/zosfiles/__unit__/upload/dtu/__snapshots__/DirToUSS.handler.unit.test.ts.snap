@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upload dir-to-uss handler process method should override .zosattributes content with --attributes content 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "/somedir/test_dir",
       "success": true,
       "to": "USS_dir",
     },
-    {
+    Object {
       "from": "testfrom",
       "success": false,
       "to": "testto",
     },
-    {
+    Object {
       "from": "dummy",
       "success": undefined,
       "to": "nowhere",
@@ -73,19 +73,19 @@ uploaded"
 `;
 
 exports[`Upload dir-to-uss handler process method should pass attributes when a .zosattributes file is present 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "/somedir/test_dir",
       "success": true,
       "to": "USS_dir",
     },
-    {
+    Object {
       "from": "testfrom",
       "success": false,
       "to": "testto",
     },
-    {
+    Object {
       "from": "dummy",
       "success": undefined,
       "to": "nowhere",
@@ -131,19 +131,19 @@ uploaded"
 `;
 
 exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 1`] = `
-{
-  "apiResponse": [
-    {
+Object {
+  "apiResponse": Array [
+    Object {
       "from": "/somedir/test_dir",
       "success": true,
       "to": "USS_dir",
     },
-    {
+    Object {
       "from": "testfrom",
       "success": false,
       "to": "testto",
     },
-    {
+    Object {
       "from": "dummy",
       "success": undefined,
       "to": "nowhere",

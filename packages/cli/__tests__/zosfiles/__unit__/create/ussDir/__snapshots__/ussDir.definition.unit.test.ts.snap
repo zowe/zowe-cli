@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files create uss directory command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "m",
     ],
     "description": "Specifies the file permission bits to use when creating the directory.",
     "name": "mode",
-    "stringLengthRange": [
+    "stringLengthRange": Array [
       9,
       9,
     ],
@@ -18,13 +18,13 @@ exports[`zos-files create uss directory command definition should not have chang
 `;
 
 exports[`zos-files create uss directory command definition should not have changed 2`] = `
-[
-  {
-    "description": "Create a USS directory named "testDir" ",
+Array [
+  Object {
+    "description": "Create a USS directory named \\"testDir\\" ",
     "options": "testDir",
   },
-  {
-    "description": "Create a USS directory named "testDir" with mode "rwxrwxrwx" ",
+  Object {
+    "description": "Create a USS directory named \\"testDir\\" with mode \\"rwxrwxrwx\\" ",
     "options": "testDir -m rwxrwxrwx",
   },
 ]

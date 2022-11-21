@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files compare lfsdd command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "sn",
     ],
     "defaultValue": true,
@@ -11,16 +11,16 @@ exports[`zos-files compare lfsdd command definition should not have changed 1`] 
     "name": "seqnum",
     "type": "boolean",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "cl",
     ],
     "description": "The number of context lines that display before and after detected non-matching lines. By default all matching lines display. If you want to limit the amount of data returned to only lines with differences use the context lines option to reduce the matching lines to only those before and after non-matching lines. Using the value of 0 strips all matching lines.",
     "name": "context-lines",
     "type": "number",
   },
-  {
-    "aliases": [
+  Object {
+    "aliases": Array [
       "bv",
     ],
     "description": "Opens the diffs between two given files in browser",
@@ -31,14 +31,14 @@ exports[`zos-files compare lfsdd command definition should not have changed 1`] 
 `;
 
 exports[`zos-files compare lfsdd command definition should not have changed 2`] = `
-[
-  {
-    "description": "Compare the contents of a local-file and a spool dd "./a.txt"  "jobName:jobId:spoolId"",
-    "options": ""./a.txt" "jobName:jobId:spoolId"",
+Array [
+  Object {
+    "description": "Compare the contents of a local-file and a spool dd \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"",
+    "options": "\\"./a.txt\\" \\"jobName:jobId:spoolId\\"",
   },
-  {
-    "description": "Compare the contents of a local-file and a spool dd  "./a.txt"  "jobName:jobId:spoolId"without sequence numbers",
-    "options": ""./a.txt" "jobName:jobId:spoolId" --no-seqnum",
+  Object {
+    "description": "Compare the contents of a local-file and a spool dd  \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"without sequence numbers",
+    "options": "\\"./a.txt\\" \\"jobName:jobId:spoolId\\" --no-seqnum",
   },
 ]
 `;

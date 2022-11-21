@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`List AllMembers handler process method should list all members from a PDS if requested 1`] = `
-{
-  "apiResponse": {
-    "items": [
-      {
+Object {
+  "apiResponse": Object {
+    "items": Array [
+      Object {
         "member": "test-item",
       },
     ],

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Mount file system handler process method should mount a FS if requested 1`] = `
-{
+Object {
   "commandResponse": "mounted",
   "success": true,
 }

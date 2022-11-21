@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files recall ds command definition should not have changed 1`] = `
-[
-  {
-    "aliases": [
+Array [
+  Object {
+    "aliases": Array [
       "w",
     ],
     "defaultValue": false,
@@ -16,10 +16,10 @@ exports[`zos-files recall ds command definition should not have changed 1`] = `
 `;
 
 exports[`zos-files recall ds command definition should not have changed 2`] = `
-[
-  {
+Array [
+  Object {
     "description": "Recall a data set using default options",
-    "options": ""USER.DATA.SET"",
+    "options": "\\"USER.DATA.SET\\"",
   },
 ]
 `;
