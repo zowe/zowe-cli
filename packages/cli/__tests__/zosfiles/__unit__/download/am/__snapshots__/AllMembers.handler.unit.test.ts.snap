@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download AllMembers handler process method should download all members from a PDS if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -15,7 +15,7 @@ downloaded"
 `;
 
 exports[`Download AllMembers handler process method should download all members from a PDS in binary format if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -29,7 +29,7 @@ downloaded"
 `;
 
 exports[`Download AllMembers handler process method should download all members from a PDS in record format if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }

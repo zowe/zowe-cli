@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download uss dir handler process method should download a uss dir and follow symlinks 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -15,7 +15,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -29,7 +29,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file permission bitmask 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -43,7 +43,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file size 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -57,7 +57,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file type 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -71,7 +71,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular group 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -85,7 +85,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular modification time 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -99,7 +99,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular owner 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -113,7 +113,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and use a specific file system 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -127,7 +127,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir and use a specific folder depth 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -141,7 +141,7 @@ downloaded"
 `;
 
 exports[`Download uss dir handler process method should download a uss dir if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }

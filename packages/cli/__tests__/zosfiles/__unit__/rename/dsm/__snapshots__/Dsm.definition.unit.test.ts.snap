@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DsmDefinition should use the correct object for strings 1`] = `
-Array [
-  Object {
+[
+  {
     "description": "In the data set 'USER.DATA.SET', rename the member named 'MEM1' to 'MEM2'.",
-    "options": "\\"USER.DATA.SET\\" \\"MEM1\\" \\"MEM2",
+    "options": ""USER.DATA.SET" "MEM1" "MEM2",
   },
 ]
 `;

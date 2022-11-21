@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files delete zfs command definition should not have changed 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "f",
     ],
     "description": "Specify this option to confirm that you want to delete the ZFS permanently.",
@@ -15,10 +15,10 @@ Array [
 `;
 
 exports[`zos-files delete zfs command definition should not have changed 2`] = `
-Array [
-  Object {
+[
+  {
     "description": "Delete the z/OS file system 'HLQ.MYNEW.ZFS'",
-    "options": "\\"HLQ.MYNEW.ZFS\\" -f",
+    "options": ""HLQ.MYNEW.ZFS" -f",
   },
 ]
 `;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download data set handler process method should download a single data set if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -15,7 +15,7 @@ downloaded"
 `;
 
 exports[`Download data set handler process method should download a single data set in binary mode if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -29,7 +29,7 @@ downloaded"
 `;
 
 exports[`Download data set handler process method should download a single data set in record mode if requested 1`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }

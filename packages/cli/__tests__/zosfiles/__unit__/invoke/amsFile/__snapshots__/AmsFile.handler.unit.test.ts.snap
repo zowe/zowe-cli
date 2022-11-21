@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Invoke AMS files handler process method should invoke AMS if requested and read statements from a file 1`] = `
-Object {
-  "apiResponse": Object {},
+{
+  "apiResponse": {},
   "commandResponse": "sent",
   "success": true,
 }

@@ -1,37 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files list ds command definition should not have changed 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "a",
     ],
     "description": "Display more information about each member. Data sets with an undefined record format display information related to executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
     "name": "attributes",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "max",
     ],
     "description": "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items. If you specify an incorrect value, the parameter returns up to 1000 items.",
     "name": "max-length",
     "type": "number",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "vs",
     ],
     "description": "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
     "name": "volume-serial",
-    "stringLengthRange": Array [
+    "stringLengthRange": [
       1,
       6,
     ],
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "s",
     ],
     "description": "An optional search parameter that specifies the first data set name to return in the response document.",
@@ -42,26 +42,26 @@ Array [
 `;
 
 exports[`zos-files list ds command definition should not have changed 2`] = `
-Array [
-  Object {
-    "description": "Show the data set \\"ibmuser.asm\\"",
-    "options": "\\"ibmuser.asm\\"",
+[
+  {
+    "description": "Show the data set "ibmuser.asm"",
+    "options": ""ibmuser.asm"",
   },
-  Object {
-    "description": "Show attributes of the data set \\"ibmuser.cntl\\"",
-    "options": "\\"ibmuser.cntl\\" -a",
+  {
+    "description": "Show attributes of the data set "ibmuser.cntl"",
+    "options": ""ibmuser.cntl" -a",
   },
-  Object {
-    "description": "Show all data sets of the user \\"ibmuser\\"",
-    "options": "\\"ibmuser.*\\"",
+  {
+    "description": "Show all data sets of the user "ibmuser"",
+    "options": ""ibmuser.*"",
   },
-  Object {
-    "description": "Show attributes of all data sets of the user \\"ibmuser\\"",
-    "options": "\\"ibmuser.*\\" -a",
+  {
+    "description": "Show attributes of all data sets of the user "ibmuser"",
+    "options": ""ibmuser.*" -a",
   },
-  Object {
-    "description": "Show the first 5 data sets of the user \\"ibmuser\\"",
-    "options": "\\"ibmuser.cntl\\" --max 5",
+  {
+    "description": "Show the first 5 data sets of the user "ibmuser"",
+    "options": ""ibmuser.cntl" --max 5",
   },
 ]
 `;
