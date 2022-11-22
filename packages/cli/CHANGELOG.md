@@ -4,11 +4,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated imperative to incorporate small updates to `zowe plugins` command group from imperative `5.7.1`.
+- BugFix: Updated Imperative to include bugfixes in version `5.7.2`.
 
 ## `7.8.0`
 
-- Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
+- Enhancement: Updated Imperative to incorporate new `zowe config report-env` command from version `5.7.0`.
 - Enhancement: Added design documentation for roadmap feature to store secure properties in memory.
 
 ## `7.7.0`
