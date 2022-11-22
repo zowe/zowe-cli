@@ -33,16 +33,19 @@ describe("zos-jobs modify job command", () => {
     describe("successful response", () => {
         it("should display the help", async () => {
             const response = runCliScript(__dirname + "/__scripts__/job/help.sh", TEST_ENVIRONMENT);
+            expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
                 "Modify the job class or the hold status of a job"
             );
         });
     });
+
     describe("error handling", () => {
         it("should display an error when jobid is missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
+            expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toContain(
                 "Missing Positional Argument: jobid"
             );
@@ -51,6 +54,7 @@ describe("zos-jobs modify job command", () => {
         it("should display an error when command includes conflicting flags", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/conflicting_flags.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
+            expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toContain(
                 "Syntax Error:\nThe following options conflict (mutually exclusive):\n"+
                 "--hold\n--release"
@@ -60,6 +64,7 @@ describe("zos-jobs modify job command", () => {
         it("should display an error when command includes an undefined option", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/bogus_flag.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             expect(response.status).toBe(1);
+            expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toContain(
                 "Command failed due to improper syntax"
             );

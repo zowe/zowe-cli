@@ -14,17 +14,6 @@ import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../../-strings-/en";
 
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).MODIFY;
-let examplesJSON = "";
-const examplesList = JSON.parse(JSON.stringify(strings.ACTIONS.JOB.EXAMPLES));
-
-Object.keys(examplesList).forEach(function(item) {
-    examplesJSON = Object.assign(examplesJSON,
-        {
-            description: examplesList[item].DESCRIPTION,
-            options: examplesList[item].OPTIONS
-        }
-    );
-});
 
 export const JobDefinition: ICommandDefinition = {
     name: "job",
@@ -67,5 +56,8 @@ export const JobDefinition: ICommandDefinition = {
             required: false,
         }
     ],
-    examples: examplesJSON as unknown as ICommandDefinition['examples']
+    examples: Object.values(strings.ACTIONS.JOB.EXAMPLES).map((item: any) => ({
+        description: item.DESCRIPTION,
+        options: item.OPTIONS
+    }))
 };

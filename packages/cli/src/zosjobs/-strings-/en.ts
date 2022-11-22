@@ -55,8 +55,8 @@ export default {
                 },
                 OPTIONS: {
                     JOB_CLASS: "The job class (e.g. 'A', 'B', ...) assigned to the job.",
-                    HOLD: "Setting this flag will prevent a job from executing until"+
-                    "entering a second command with the '--release' flag",
+                    HOLD: "Setting this flag will prevent a job from executing until " +
+                        "entering a second command with the '--release' flag",
                     RELEASE: "Flag that releases a held a job for execution",
                 },
                 EXAMPLES: {

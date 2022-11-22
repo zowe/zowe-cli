@@ -11,11 +11,12 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-jobs modify job definition", () => {
-    const definition: ICommandDefinition = require("../../../../src/zosjobs/modify/Modify.definition").ModifyDefinition;
+describe("zos-jobs modify definition", () => {
     it("should not have changed", () => {
+        const definition: ICommandDefinition = require("../../../../src/zosjobs/modify/Modify.definition").ModifyDefinition;
         expect(definition).toBeDefined();
-        delete definition.handler;
+        expect(definition.children.length).toBe(1);
+        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });
