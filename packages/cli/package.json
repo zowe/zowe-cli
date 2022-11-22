@@ -83,7 +83,7 @@
     "@types/tar": "^6.1.2",
     "@types/which": "^2.0.1",
     "@zowe/cli-test-utils": "7.8.0",
-    "comment-json": "^4.1.0",
+    "comment-json": "^4.1.1",
     "eslint": "^8.22.0",
     "js-yaml": "^4.1.0",
     "madge": "^4.0.1",
