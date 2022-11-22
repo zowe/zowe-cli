@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Zowe CLI CI
+name: Zowe CLI
 
 on:
   push:
@@ -47,8 +47,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -98,20 +96,6 @@ jobs:
       uses: codecov/codecov-action@v1.0.7
       with:
         env_vars: OS,NODE
-
-    - name: Configure Sonar Scan
-      id: sonar-config
-      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
-      uses: zowe-actions/octorelease-script@master
-      with:
-        script: sonarConfig
-
-    - name: SonarCloud Scan
-      if: ${{ always() && steps.sonar-config.outcome == 'success' }}
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
   release:
     if: github.event_name == 'push' && github.ref_protected
