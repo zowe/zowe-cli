@@ -45,7 +45,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "comment-json": "4.1.0",
+    "comment-json": "4.1.1",
     "string-width": "4.2.3"
   },
   "devDependencies": {
