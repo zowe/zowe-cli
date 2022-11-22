@@ -9,13 +9,14 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
-
+// import * as ModifyDefinition from "../../../../../src/zosjobs/modify/Modify.definition";
+ 
 describe("zos-jobs modify job definition", () => {
-    const definition: ICommandDefinition = require("../../../../../src/zosjobs/modify/Modify.definition").ModifyDefinition;
     it("should not have changed", () => {
+        const definition = require("../../../../../src/zosjobs/modify/Modify.definition").ModifyDefinition;
+        // const definition = ModifyDefinition.ModifyDefinition;
         expect(definition).toBeDefined();
-        delete definition.handler;
+        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });
