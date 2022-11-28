@@ -2,12 +2,12 @@
 
 exports[`modify job handler tests successful response should be able to modify class of job 1`] = `
 Object {
-  "class": "A",
+  "class": "C",
   "fakeJobName": "FAKEJBNM",
 }
 `;
 
 exports[`modify job handler tests successful response should be able to modify class of job 2`] = `
-"Request was successful.
-Class Change: A -> A"
+"
+Successful. Class Change: C -> A"
 `;

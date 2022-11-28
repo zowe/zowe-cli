@@ -30,7 +30,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 });
 
 const SAMPLE_COMPLETE_JOB: IJob= {
-    "class": "A",
+    "class": "C",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0007913USILCA11DC4DAED0.......:",
     "jobid": "JOB01234",
@@ -60,7 +60,8 @@ const SUCCESS_FEEDBACK: IJobFeedback = {
 
 const fakeJobName = "FAKEJBNM";
 const fakeJobID = "JOB01234";
-const fakeJobClass = "A";
+const fakeJobClass = "C";
+const fakeJobClassChange = "A";
 
 describe("modify job handler tests", () => {
 
@@ -72,7 +73,7 @@ describe("modify job handler tests", () => {
         it("should be able to modify class of job", async () => {
             let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
                 mySession = session;
                 return SUCCESS_FEEDBACK;
             });
@@ -80,7 +81,7 @@ describe("modify job handler tests", () => {
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.jobid = fakeJobID;
             params.arguments.jobname = fakeJobName;
-            params.arguments.jobclass = fakeJobClass;
+            params.arguments.jobclass = fakeJobClassChange;
             params.arguments.hold = false;
             params.arguments.release = false;
             await handler.process(params);
@@ -91,7 +92,7 @@ describe("modify job handler tests", () => {
         it("should be able to hold a job", async () => {
             let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass, hold, release) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass, hold, release}) => {
                 mySession = session;
                 return SUCCESS_FEEDBACK;
             });
@@ -111,7 +112,7 @@ describe("modify job handler tests", () => {
         it("should be able to release a job", async () => {
             let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
                 mySession = session;
                 return SUCCESS_FEEDBACK;
             });
@@ -135,14 +136,14 @@ describe("modify job handler tests", () => {
             GetJobs.getJob = jest.fn(async (session, jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
                 throw new ImperativeError({msg: failMessage});
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.jobid = fakeJobID;
             params.arguments.jobname = fakeJobName;
-            params.arguments.jobclass = fakeJobClass;
+            params.arguments.jobclass = fakeJobClassChange;
             try {
                 await handler.process(params);
             } catch (thrownError) {
@@ -160,13 +161,13 @@ describe("modify job handler tests", () => {
             GetJobs.getJob = jest.fn(async (session, jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
                 throw new Error(failMessage);
             });
             const handler = new ModifyHandler.default();
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.jobname = fakeJobName;
-            params.arguments.jobclass = fakeJobClass;
+            params.arguments.jobclass = fakeJobClassChange;
             try {
                 await handler.process(params);
             } catch (thrownError) {
@@ -181,7 +182,7 @@ describe("modify job handler tests", () => {
             GetJobs.getJob = jest.fn(async (session, jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJob = jest.fn(async (session, jobname, jobid, jobclass) => {
+            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
                 throw new Error(failMessage);
             });
             const handler = new ModifyHandler.default();

@@ -98,7 +98,7 @@ export class ModifyJobs {
             catch(err){
                 exception = true;
                 err.mMessage=err.mMessage.concat('Modification Error');
-                return err;
+                throw err;
             }
             response.message = mergedMessage = '\n' + response.message;
         }

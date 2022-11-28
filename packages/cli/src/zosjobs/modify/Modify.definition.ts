@@ -18,7 +18,7 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).MODIF
 
 export const ModifyDefinition: ICommandDefinition = {
     name: "modify",
-    aliases: ["mdf"],
+    aliases: ["mod"],
     type: "group",
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,

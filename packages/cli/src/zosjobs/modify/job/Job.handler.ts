@@ -50,13 +50,18 @@ export default class JobHandler extends ZosmfBaseHandler {
         ImperativeExpect.toNotBeNullOrUndefined(response,
             "You must specify at least one option to modify your job with.");
         this.data.setObj(job);
+        let mergedMessage: string = "";
         if(this.arguments.jobclass){
-            const oldJobClass = job.class;
-            response.message = response.message + "\nClass Change: " + oldJobClass + " -> " + this.arguments.jobclass;
+            response.message.includes("Job class invalid") ?
+                mergedMessage = "\nUnsucessful. Job class '"+this.arguments.jobclass+"' invalid" :
+                mergedMessage = "\nSuccessful. Class Change: " + job.class + " -> " + this.arguments.jobclass;
         }
         if(this.arguments.hold || this.arguments.release){
-            this.arguments.hold ? response.message = response.message + "\nJob Held" : response.message = response.message + "\nJob Released";
+            this.arguments.hold ?
+                mergedMessage = mergedMessage + "\nSuccessful. Job Held" :
+                mergedMessage = mergedMessage + "\nSuccessful. Job Released";
         }
+        response.message = mergedMessage;
         this.console.log(response.message);
     }
 }
