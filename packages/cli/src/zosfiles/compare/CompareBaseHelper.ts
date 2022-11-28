@@ -9,7 +9,9 @@
 *
 */
 
-import { IHandlerParameters, DiffUtils } from "@zowe/imperative";
+import * as path from "path";
+import * as fs from "fs";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
@@ -59,7 +61,14 @@ export class CompareBaseHelper {
      * @private
      * @memberof CompareBaseHelper
      */
-    public  browserView: boolean;
+    public browserView: boolean;
+
+    /**
+     * task
+     * @private
+     * @memberof CompareBaseHelper
+     */
+    public task: ITaskWithStatus;
 
     /**
      * Creates an instance of CompareBaseHelper
@@ -69,11 +78,11 @@ export class CompareBaseHelper {
     constructor(commandParameters: IHandlerParameters){
         this.file1Options.binary = commandParameters.arguments.binary;
         this.file2Options.binary = commandParameters.arguments.binary2;
-        this.file1Options.encoding = commandParameters.arguments.encoding2;
+        this.file1Options.encoding = commandParameters.arguments.encoding;
         this.file2Options.encoding = commandParameters.arguments.encoding2;
-        this.file1Options.record = commandParameters.arguments.record2;
+        this.file1Options.record = commandParameters.arguments.record;
         this.file2Options.record = commandParameters.arguments.record2;
-        this.file1Options.volumeSerial = commandParameters.arguments.volumeSerial2;
+        this.file1Options.volumeSerial = commandParameters.arguments.volumeSerial;
         this.file2Options.volumeSerial = commandParameters.arguments.volumeSerial2;
 
         if (this.file2Options?.binary == undefined) {
@@ -90,45 +99,82 @@ export class CompareBaseHelper {
         this.browserView = commandParameters.arguments.browserView;
         this.contextLines = commandParameters.arguments.contextLines;
         this.responseTimeout = commandParameters.arguments.responseTimeout;
+        this.file1Options.responseTimeout = this.responseTimeout;
+        this.file2Options.responseTimeout = this.responseTimeout;
+
+        // Clear undefined properties
+        this.file1Options = JSON.parse(JSON.stringify(this.file1Options));
+        this.file2Options = JSON.parse(JSON.stringify(this.file2Options));
+    }
+
+    /**
+     * Parse the spool description and split them into individual properties
+     * @param spoolDescription Colon-separated (:) spool descriptor
+     * @returns Object containing the name, job id, and spool id
+     */
+    public prepareSpoolDescriptor(spoolDescription: string): {jobName: string, jobId: string, spoolId: number} {
+        const descriptionSeperator: string = ":";
+        const spoolDescArr = spoolDescription.split(descriptionSeperator);
+        const jobName: string = spoolDescArr[0];
+        const jobId: string = spoolDescArr[1];
+        const spoolId: number = Number(spoolDescArr[2]);
+        return {jobName, jobId, spoolId};
+    }
+
+    /**
+     * Helper function that compare-related handlers will use to get the contents of a local file
+     * @param filePath Path to the file to compate against
+     * @returns Buffer with the contents of the file
+     */
+    public prepareLocalFile(filePath: string): Buffer {
+        let localFile: string;
+
+        // resolving to full path if local path passed is not absolute
+        if (path.isAbsolute(filePath)) {
+            localFile = filePath;
+        } else {
+            localFile = path.resolve(filePath);
+        }
+
+        // check if the path given is of a file or not
+        try {
+            if(!fs.lstatSync(localFile).isFile()){
+                throw new ImperativeError({
+                    msg: 'Path given is not of a file, do recheck your path again'
+                });
+            }
+        } catch (error) {
+            if (error instanceof ImperativeError) throw error;
+            throw new ImperativeError({
+                msg: 'Path not found. Please check the path and try again'
+            });
+        }
+
+        // return local file as buffer
+        return fs.readFileSync(localFile);
     }
 
     /**
      * This method will prepare the strings for comparison ready
-     * @param {string | Buffer } content1 - Content string or buffer of file 1
+     * @param {string | Buffer } content - Content string or buffer of file 1
      * @param {string | Buffer } content2 - - Content string or buffer of file 2
      * @returns
      * @public
      * @memberof CompareBaseHelper
      */
-    public prepareStrings(content1: string | Buffer, content2: string | Buffer ) {
-        let contentString1: string;
-        let contentString2: string;
-
+    public prepareContent(content: string | Buffer): string {
+        let contentString = content.toString();
         if(!this.seqnum){
             const seqnumlen = 8;
 
-            const stringArray1 = content1.toString().split("\n");
-            for (const i in stringArray1) {
-                const sl = stringArray1[i].length;
-                const tempString = stringArray1[i].substring(0, sl - seqnumlen);
-                contentString1 += tempString + "\n";
-            }
-
-            const stringArray2 = content2.toString().split("\n");
-            for (const i in stringArray2) {
-                const sl = stringArray2[i].length;
-                const tempString = stringArray2[i].substring(0, sl - seqnumlen);
-                contentString2 += tempString + "\n";
+            const stringArray = content.toString().split("\n");
+            for (const i in stringArray) {
+                const sl = stringArray[i].length;
+                const tempString = stringArray[i].substring(0, sl - seqnumlen);
+                contentString += tempString + "\n";
             }
         }
-        else {
-            contentString1 = content1.toString();
-            contentString2 = content2.toString();
-        }
-
-        return {
-            contentString1, contentString2
-        };
+        return contentString;
     }
 
     /**

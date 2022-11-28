@@ -100,7 +100,7 @@ describe("Compare data set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Retrieving second dataset"
+                    statusMessage: "Retrieving content for the second file/dataset"
                 }
             });
             expect(jsonObj).toMatchSnapshot();

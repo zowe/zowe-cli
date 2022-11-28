@@ -9,15 +9,15 @@
 *
 */
 
-import { CompareBaseHelper } from '../../../../src/zosfiles/compare/CompareBaseHelper';
-import {DiffUtils} from '@zowe/imperative';
+import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
+import {DiffUtils} from "@zowe/imperative";
 
-describe('Comapare Base Helper', () => {
+describe("Comapare Base Helper", () => {
 
     const fakeCommandParam = {
         arguments: {
-            $0: 'fake',
-            _: ['fake'],
+            $0: "fake",
+            _: ["fake"],
             browserView: false,
         },
     };
@@ -26,22 +26,19 @@ describe('Comapare Base Helper', () => {
     const string1: string = "test string 1";
     const string2: string = "test string 2";
 
-    helper.prepareStrings = jest.fn((string1: string | Buffer, string2: string | Buffer)=> {
-        return {
-            contentString1: 'prepared string 1',
-            contentString2: 'prepared string 2'
-        };
+    helper.prepareContent = jest.fn((string: string | Buffer)=> {
+        return "prepared string 1";
     });
-    describe('it should prepare the comtent strings for comparison', () => {
-        it('should return the prepared strings', async ()=>{
-            const returnedStrings = await helper.prepareStrings(string1, string2);
-            expect(returnedStrings).toMatchSnapshot();
+    describe("it should prepare the comtent strings for comparison", () => {
+        it("should return the prepared strings", async ()=>{
+            const returnedStrings = await helper.prepareContent(string1);
+            expect(returnedStrings).toContain("prepared");
         });
 
     });
 
-    describe('it should return the response as per the options passed either in termianl or in browser', () => {
-        it('should give response in terminal', ()=>{
+    describe("it should return the response as per the options passed either in termianl or in browser", () => {
+        it("should give response in terminal", ()=>{
             DiffUtils.getDiffString = jest.fn( async () => {
                 return "compared string";
             });
@@ -50,7 +47,7 @@ describe('Comapare Base Helper', () => {
         });
 
 
-        it('should initiate the diff opening in browser', ()=>{
+        it("should initiate the diff opening in browser", ()=>{
             helper.browserView = true;
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
             helper.getResponse(string1, string2);

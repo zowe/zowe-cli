@@ -9,46 +9,19 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { AbstractSession, ICommandArguments } from "@zowe/imperative";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { CompareBaseHandler } from "../CompareBase.handler";
 import {CompareBaseHelper} from '../CompareBaseHelper';
 /**
  * Handler to view a data set's content
  * @export
  */
-export default class DatasetHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const helper = new CompareBaseHelper(commandParameters);
-        const task: ITaskWithStatus = {
-            percentComplete: 0,
-            statusMessage: `Retrieving first dataset`,
-            stageName: TaskStage.IN_PROGRESS
-        };
-
-        commandParameters.response.progress.startBar({ task });
-
-        const dsContentBuf1 = await Get.dataSet(session, commandParameters.arguments.dataSetName1,
-            {
-                ...helper.file1Options,
-                responseTimeout: helper.responseTimeout,
-                task: task
-            }
-        );
-        commandParameters.response.progress.endBar();
-        commandParameters.response.progress.startBar({ task });
-
-        task.statusMessage = `Retrieving second dataset`;
-        const dsContentBuf2 = await Get.dataSet(session, commandParameters.arguments.dataSetName2,
-            {
-                ...helper.file2Options,
-                responseTimeout: helper.responseTimeout,
-                task: task
-            }
-        );
-
-        const {contentString1, contentString2} = helper.prepareStrings(dsContentBuf1, dsContentBuf2);
-
-        return helper.getResponse(contentString1, contentString2);
+export default class DatasetHandler extends CompareBaseHandler {
+    public async getFile1(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+        return await Get.dataSet(session, args.dataSetName1, { ...helper.file1Options, task: helper.task });
+    }
+    public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+        return await Get.dataSet(session, args.dataSetName2, { ...helper.file2Options, task: helper.task });
     }
 }

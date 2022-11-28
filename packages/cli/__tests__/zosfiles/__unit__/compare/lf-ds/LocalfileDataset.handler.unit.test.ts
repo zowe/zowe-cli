@@ -101,7 +101,7 @@ describe("Compare local-file and data-set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Retrieving dataset"
+                    statusMessage: "Retrieving content for the second file/dataset"
                 }
             });
             expect(jsonObj).toMatchSnapshot();

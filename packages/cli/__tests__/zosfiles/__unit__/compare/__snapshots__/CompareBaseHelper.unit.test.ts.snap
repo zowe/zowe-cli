@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Comapare Base Helper it should prepare the comtent strings for comparison should return the prepared strings 1`] = `
-Object {
-  "contentString1": "prepared string 1",
-  "contentString2": "prepared string 2",
-}
-`;
