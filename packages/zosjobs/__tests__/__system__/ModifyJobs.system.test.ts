@@ -23,7 +23,7 @@ let jobname: string;
 let jobclass: string;
 let modifiedJobClass: string;
 let sleepJob: IJob;
-const badJobID = "Job1234";
+const badJobName = "Job1234";
 
 describe("Modify Jobs - System Tests", () => {
 
@@ -49,37 +49,31 @@ describe("Modify Jobs - System Tests", () => {
 
     describe("Positive tests", () => {
         it("should return a success message once jobclass has been modified", async () => {
-            const job: any = await ModifyJobs.modifyJobCommon(REAL_SESSION, {
-                jobname: sleepJob.jobname,
-                jobid: sleepJob.jobid,
-                jobclass: modifiedJobClass,
-                hold: false,
-                release: false,
-            });
+            const job: any = await ModifyJobs.modifyJobCommon(
+                REAL_SESSION,
+                {jobname: sleepJob.jobname, jobid: sleepJob.jobid},
+                {jobclass: modifiedJobClass, hold: false, release: false}
+            );
             expect(job.jobid).toMatch(sleepJob.jobid);
             expect(job.message).toContain("Request was successful");
         });
 
         it("should return a success message once hold has been added to job", async () => {
-            const job: any = await ModifyJobs.modifyJobCommon(REAL_SESSION, {
-                jobname: sleepJob.jobname,
-                jobid: sleepJob.jobid,
-                jobclass: modifiedJobClass,
-                hold: true,
-                release: false,
-            });
+            const job: any = await ModifyJobs.modifyJobCommon(
+                REAL_SESSION,
+                {jobname: sleepJob.jobname, jobid: sleepJob.jobid},
+                {jobclass: modifiedJobClass, hold: true, release: false}
+            );
             expect(job.jobid).toMatch(sleepJob.jobid);
             expect(job.message).toContain("Request was successful");
         });
 
         it("should return a success message once job has been released", async () => {
-            const job: any = await ModifyJobs.modifyJobCommon(REAL_SESSION, {
-                jobname: sleepJob.jobname,
-                jobid: sleepJob.jobid,
-                jobclass: modifiedJobClass,
-                hold: false,
-                release: true,
-            });
+            const job: any = await ModifyJobs.modifyJobCommon(
+                REAL_SESSION,
+                {jobname: sleepJob.jobname, jobid: sleepJob.jobid},
+                {jobclass: modifiedJobClass, hold: false, release: true}
+            );
             expect(job.jobid).toMatch(sleepJob.jobid);
             expect(job.message).toContain("Request was successful");
         });
@@ -90,13 +84,11 @@ describe("Modify Jobs - System Tests", () => {
         it("should surface an error from z/OSMF when calling an unknown jobid", async () => {
             let err: any;
             try {
-                await ModifyJobs.modifyJobCommon(REAL_SESSION, {
-                    jobname: badJobID,
-                    jobid: sleepJob.jobid,
-                    jobclass: modifiedJobClass,
-                    hold: false,
-                    release: false,
-                });
+                await ModifyJobs.modifyJobCommon(
+                    REAL_SESSION,
+                    {jobname: badJobName, jobid: sleepJob.jobid},
+                    {jobclass: modifiedJobClass, hold: false, release: false}
+                );
             } catch (e) {
                 err = e;
             }
