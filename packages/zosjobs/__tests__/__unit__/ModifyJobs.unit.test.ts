@@ -33,20 +33,22 @@ describe("Modify Jobs API", () => {
     describe("Positive tests", () => {
         it("should allow users to call modifyJob with correct parameters", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
-            const job: any = await ModifyJobs.modifyJob(fakeSession, fakeJobID, fakeJobName, fakeClass);
+            const job: any = await ModifyJobs.modifyJob(
+                fakeSession,
+                {jobid: fakeJobID, jobname: fakeJobName},
+                {jobclass: fakeClass}
+            );
             // mocking worked if fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
         });
 
         it("should allow users to call modifyJobCommon with correct parameters", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
-            const job: any  = await ModifyJobs.modifyJobCommon(fakeSession, {
-                jobid: fakeJobID,
-                jobname: fakeJobName,
-                jobclass: fakeClass,
-                hold: false,
-                release: false,
-            });
+            const job: any  = await ModifyJobs.modifyJobCommon(
+                fakeSession,
+                {jobid: fakeJobID, jobname: fakeJobName},
+                {jobclass: fakeClass, hold: false, release: false}
+            );
             // mocking worked if fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
         });
@@ -57,7 +59,11 @@ describe("Modify Jobs API", () => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             let err: any;
             try {
-                await ModifyJobs.modifyJob(fakeSession, fakeJobID, fakeJobName, fakeClass);
+                await ModifyJobs.modifyJob(
+                    fakeSession,
+                    {jobid: fakeJobID, jobname: fakeJobName},
+                    {jobclass: fakeClass}
+                );
             } catch (e) {
                 err = e;
             }
@@ -69,13 +75,11 @@ describe("Modify Jobs API", () => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             let err: any;
             try {
-                await ModifyJobs.modifyJobCommon(fakeSession, {
-                    jobid: fakeJobID,
-                    jobname: fakeJobName,
-                    jobclass: fakeClass,
-                    hold: false,
-                    release: false,
-                });
+                await ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: fakeJobID, jobname: fakeJobName},
+                    {jobclass: fakeClass, hold: false, release: false}
+                );
             } catch (e) {
                 err = e;
             }
@@ -90,9 +94,8 @@ describe("Modify Jobs API", () => {
                 (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
                 ModifyJobs.modifyJob(
                     fakeSession,
-                    fakeJobID,
-                    fakeJobName,
-                    fakeClass
+                    {jobid: fakeJobID, jobname: fakeJobName},
+                    {jobclass: fakeClass}
                 ).then(() => {
                     expect("Should have called .catch()").toEqual("test failed");
                 }).catch((e) => {
@@ -106,13 +109,11 @@ describe("Modify Jobs API", () => {
         it("should be able to catch errors from modifyJobForJob with Promise.catch() syntax", () => {
             return new Promise((done:any) => {
                 (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
-                ModifyJobs.modifyJobCommon(fakeSession, {
-                    jobid: fakeJobID,
-                    jobname: fakeJobName,
-                    jobclass: fakeClass,
-                    hold: false,
-                    release: false,
-                }).then(() => {
+                ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: fakeJobID, jobname: fakeJobName},
+                    {jobclass: fakeClass, hold: false, release: false}
+                ).then(() => {
                     expect("Should have called .catch()").toEqual("test failed");
                 }).catch((e) => {
                     expect(e).toBeDefined();
@@ -128,13 +129,11 @@ describe("Modify Jobs API", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: any;
             try {
-                await ModifyJobs.modifyJobCommon(fakeSession, {
-                    jobname: fakeJobName,
-                    jobid: "",
-                    jobclass: "A",
-                    hold: true,
-                    release: false,
-                });
+                await ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: "", jobname: fakeJobName},
+                    {jobclass: "A", hold: true, release: false}
+                );
             } catch (e) {
                 err = e;
             }
@@ -147,13 +146,11 @@ describe("Modify Jobs API", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: any;
             try {
-                await ModifyJobs.modifyJobCommon(fakeSession, {
-                    jobname: fakeJobName,
-                    jobid: undefined,
-                    jobclass: "A",
-                    hold: true,
-                    release: false,
-                });
+                await ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: undefined, jobname: fakeJobName},
+                    {jobclass: "A", hold: true, release: false}
+                );
             } catch (e) {
                 err = e;
             }
