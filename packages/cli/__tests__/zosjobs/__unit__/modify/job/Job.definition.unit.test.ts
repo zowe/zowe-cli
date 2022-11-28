@@ -8,7 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
- 
+
 describe("zos-jobs modify job definition", () => {
     it("should not have changed", () => {
         const definition = require("../../../../../src/zosjobs/modify/Modify.definition").ModifyDefinition;

@@ -14,6 +14,7 @@ import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
+import { IModifyJobOptions } from "./doc/input/IModifyJobOptions";
 import { IModifyJob } from "./doc/input/IModifyJob";
 import { IJobFeedback } from "./doc/response/IJobFeedback";
 
@@ -29,18 +30,16 @@ export class ModifyJobs {
      * Modify a job
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} jobname - job name to be translated into parms object
-     * @param {string} jobid - job id to be translated into parms object
-     * @param {string} jobclass - job class to be translated into parms object
-     * @param {boolean} hold - flag that holds a job from execution
-     * @param {boolean} release - flag that releases a held a job for execution
+     * @param {IModifyJobParms} parms - parms object (see IModifyJobParms interface for details)
+     * @param {IModifyJobOptions} options - options object (see IModifyJobOptions interface for details)
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
-    public static async modifyJob(session: AbstractSession, jobname: string, jobid: string,
-        jobclass?: string, hold?: boolean, release?: boolean): Promise<undefined|IJobFeedback> {
-        this.log.trace("ModifyJob called with jobname %s jobid %s", jobname, jobid);
-        return ModifyJobs.modifyJobCommon(session, { jobname, jobid, jobclass, hold, release});
+    public static async modifyJob(session: AbstractSession,
+        parms: { jobname: string, jobid: string },
+        options: { jobclass?: string, hold?: boolean, release?: boolean }): Promise<undefined|IJobFeedback> {
+        this.log.trace("ModifyJob called with jobname %s jobid %s", parms);
+        return ModifyJobs.modifyJobCommon(session, parms, options);
     }
 
     /**
@@ -53,8 +52,11 @@ export class ModifyJobs {
      */
     public static async modifyJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobForJob called with job %s", JSON.stringify(job));
-        return ModifyJobs.modifyJobCommon(session,
-            { jobname:job.jobname, jobid: job.jobid, jobclass: job.class, hold: job.hold, release: job.release });
+        return ModifyJobs.modifyJobCommon(
+            session,
+            {jobname:job.jobname, jobid: job.jobid},
+            {jobclass: job.class, hold: job.hold, release: job.release}
+        );
     }
 
     /**
@@ -63,10 +65,15 @@ export class ModifyJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IModifyJobParms} parms - parm object (see IModifyJobParms interface for details)
+     * @param {IModifyJobOptions} options - options object (see IModifyJobOptions interface for details)
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
-    public static async modifyJobCommon(session: AbstractSession, parms: IModifyJobParms): Promise<undefined|IJobFeedback> {
+    public static async modifyJobCommon(
+        session: AbstractSession,
+        parms: IModifyJobParms,
+        options: IModifyJobOptions
+    ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobid", "jobname"],
             "You must specify both the jobname and jobid for the job you want to modify.");
@@ -79,12 +86,12 @@ export class ModifyJobs {
         let mergedMessage: string = "";
         let exception: boolean = false;
 
-        if(parms.hold && parms.release){
+        if(options.hold && options.release){
             throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
         }
 
-        if(parms.hold || parms.release){
-            parms.hold ? request = { request: "hold"} : request = { request: "release"};
+        if(options.hold || options.release){
+            options.hold ? request = { request: "hold"} : request = { request: "release"};
             try{
                 response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
             }
@@ -97,9 +104,9 @@ export class ModifyJobs {
         }
 
         // build request to change class, only if defined and no exception from potential previous request
-        if (parms.jobclass != undefined && !exception){
+        if (options.jobclass != undefined && !exception){
             request = {
-                class: parms.jobclass,
+                class: options.jobclass,
             };
             response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
             response.message = mergedMessage + '\n' + response.message;

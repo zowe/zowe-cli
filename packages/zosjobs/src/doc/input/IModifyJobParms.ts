@@ -29,25 +29,4 @@ export interface IModifyJobParms {
      * @memberof IModifyJobParms
      */
     jobid: string;
-
-    /**
-     * job name for the job you want to change
-     * @type {string}
-     * @memberof IModifyJobParms
-     */
-    jobclass: string;
-
-    /**
-     * //
-     * @type {boolean}
-     * @memberof IModifyJobParms
-     */
-    hold: boolean;
-
-    /**
-     * //
-     * @type {boolean}
-     * @memberof IModifyJobParms
-     */
-    release: boolean;
 }

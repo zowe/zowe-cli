@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeExpect } from "@zowe/imperative";
 import { ModifyJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -46,7 +46,9 @@ export default class JobHandler extends ZosmfBaseHandler {
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 
         // Modify the job and print output
-        const response = await ModifyJobs.modifyJob(this.mSession, job.jobname, jobid, this.arguments.jobclass, hold, release);
+        const response = await ModifyJobs.modifyJob(this.mSession, {jobname: job.jobname, jobid}, {jobclass: this.arguments.jobclass, hold, release});
+        ImperativeExpect.toNotBeNullOrUndefined(response,
+            "You must specify at least one option to modify your job with.");
         this.data.setObj(job);
         if(this.arguments.jobclass){
             const oldJobClass = job.class;
