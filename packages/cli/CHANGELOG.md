@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.40.11`
 
 - BugFix: Document that token-type and token-value do not apply to SSH commands.
 
