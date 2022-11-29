@@ -3,7 +3,7 @@
 exports[`zos-jobs modify definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "mdf",
+    "mod",
   ],
   "description": "Modify the job class or the hold status of a job.",
   "name": "modify",
