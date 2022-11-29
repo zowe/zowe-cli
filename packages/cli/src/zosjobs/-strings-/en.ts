@@ -41,6 +41,41 @@ export default {
             }
         }
     },
+    MODIFY: {
+        SUMMARY: "Modify a z/OS job",
+        DESCRIPTION: "Modify the job class or the hold status of a job.",
+        ACTIONS: {
+            JOB: {
+                SUMMARY: "Modify the job class or the hold status of a job",
+                DESCRIPTION: "Modify the job class or the hold status of a job.",
+                POSITIONALS: {
+                    JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
+                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
+                        "the job ID if desired. You can use, for example \"J123\".",
+                },
+                OPTIONS: {
+                    JOB_CLASS: "The job class (e.g. 'A', 'B', ...) assigned to the job.",
+                    HOLD: "Setting this flag will prevent a job from executing until " +
+                        "entering a second command with the '--release' flag",
+                    RELEASE: "Flag that releases a held a job for execution",
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Modify class of job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --jobclass A",
+                    },
+                    EX2: {
+                        DESCRIPTION: "Hold job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --hold",
+                    },
+                    EX3: {
+                        DESCRIPTION: "Release job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --release",
+                    },
+                }
+            }
+        }
+    },
     DELETE: {
         SUMMARY: "Delete a z/OS job or jobs",
         DESCRIPTION: "Delete a single job by job ID or delete multiple jobs in OUTPUT status.",

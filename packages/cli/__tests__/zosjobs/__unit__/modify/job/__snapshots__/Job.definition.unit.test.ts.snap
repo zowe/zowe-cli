@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs modify job definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "mod",
+  ],
+  "description": "Modify the job class or the hold status of a job.",
+  "name": "modify",
+  "summary": "Modify a z/OS job",
+  "type": "group",
+}
+`;

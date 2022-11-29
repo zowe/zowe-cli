@@ -17,6 +17,7 @@ import { CancelDefinition } from "./cancel/Cancel.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { DownloadDefinition } from "./download/Download.definition";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { ModifyDefinition } from "./modify/Modify.definition";
 
 export const definition: ICommandDefinition = {
     name: "zos-jobs",
@@ -30,6 +31,7 @@ export const definition: ICommandDefinition = {
         ViewDefinition,
         ListDefinition,
         DeleteDefinition,
+        ModifyDefinition,
         CancelDefinition
     ],
     passOn: [

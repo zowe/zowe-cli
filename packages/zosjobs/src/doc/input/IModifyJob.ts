@@ -9,12 +9,17 @@
 *
 */
 
-export interface ITestZosJobsSchema {
-    iefbr14Member: string;
-    iefbr14PSDataSet: string;
-    iefbr14USSFile: string;
-    sleepMember: string;
-    jobclass: string;
-    modifiedJobclass: string;
-    sysaff: string;
+/**
+ * Interface for change job z/OSMF API
+ * @export
+ * @interface IModifyJob
+ */
+export interface IModifyJob {
+    /**
+     * updated class for job
+     * @type {string}
+     * @memberof IModifyJob
+     */
+    class?: string;
+    request?: string;
 }

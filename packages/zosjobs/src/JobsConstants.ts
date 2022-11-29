@@ -150,6 +150,20 @@ export class JobsConstants {
     public static readonly DEFAULT_CANCEL_VERSION = "1.0";
 
     /**
+     * Hold a job
+     * @static
+     * @memberof JobsConstants
+     */
+    public static readonly REQUEST_HOLD = "hold";
+
+    /**
+     * Release a job
+     * @static
+     * @memberof JobsConstants
+     */
+    public static readonly REQUEST_RELEASE = "release";
+
+    /**
      * Execution data query string
      * @static
      * @type {string}
