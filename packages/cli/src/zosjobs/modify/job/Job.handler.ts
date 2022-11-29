@@ -53,7 +53,7 @@ export default class JobHandler extends ZosmfBaseHandler {
         let mergedMessage: string = "";
         if(this.arguments.jobclass){
             response.message.includes("Job class invalid") ?
-                mergedMessage = "\nUnsucessful. Job class '"+this.arguments.jobclass+"' invalid" :
+                mergedMessage = "\nUnsuccessful. Job class '"+this.arguments.jobclass+"' invalid" :
                 mergedMessage = "\nSuccessful. Class Change: " + job.class + " -> " + this.arguments.jobclass;
         }
         if(this.arguments.hold || this.arguments.release){
