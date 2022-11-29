@@ -57,14 +57,13 @@ export default class JobHandler extends ZosmfBaseHandler {
             }else{
                 mergedMessage = "\nSuccessful. Class Change: " + job.class + " -> " + this.arguments.jobclass;
             }
-                
         }
         if(this.arguments.hold || this.arguments.release){
             if(this.arguments.hold){
                 mergedMessage = mergedMessage + "\nSuccessful. Job Held";
             }else{
                 mergedMessage = mergedMessage + "\nSuccessful. Job Released";
-            }               
+            }   
         }
         this.console.log(mergedMessage);
     }
