@@ -35,20 +35,6 @@ export interface IJob {
     jobname: string;
 
     /**
-     * flag that holds a job from execution
-     * @type {boolean}
-     * @memberof IJob
-     */
-    hold?: boolean;
-
-    /**
-     * flag that releases a held a job for execution
-     * @type {boolean}
-     * @memberof IJob
-     */
-    release?: boolean;
-
-    /**
      * The primary or secondary JES subsystem.
      * If this value is null, the job was processed by the primary subsystem.
      * @type {string}

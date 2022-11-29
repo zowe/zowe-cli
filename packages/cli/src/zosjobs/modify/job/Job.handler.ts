@@ -52,16 +52,20 @@ export default class JobHandler extends ZosmfBaseHandler {
         this.data.setObj(job);
         let mergedMessage: string = "";
         if(this.arguments.jobclass){
-            response.message.includes("Job class invalid") ?
-                mergedMessage = "\nUnsuccessful. Job class '"+this.arguments.jobclass+"' invalid" :
+            if(response.message.includes("Job class invalid")){
+                mergedMessage = "\nUnsuccessful. Job class '"+this.arguments.jobclass+"' invalid";
+            }else{
                 mergedMessage = "\nSuccessful. Class Change: " + job.class + " -> " + this.arguments.jobclass;
+            }
+                
         }
         if(this.arguments.hold || this.arguments.release){
-            this.arguments.hold ?
-                mergedMessage = mergedMessage + "\nSuccessful. Job Held" :
+            if(this.arguments.hold){
+                mergedMessage = mergedMessage + "\nSuccessful. Job Held";
+            }else{
                 mergedMessage = mergedMessage + "\nSuccessful. Job Released";
+            }               
         }
-        response.message = mergedMessage;
-        this.console.log(response.message);
+        this.console.log(mergedMessage);
     }
 }
