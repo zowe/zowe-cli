@@ -45,6 +45,41 @@ Array [
 ]
 `;
 
+exports[`GetJobs tests getJobs APIs should allow getting jobs by common method with status 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and getJobsCommon 1`] = `
 Array [
   Object {
@@ -376,6 +411,8 @@ exports[`GetJobs tests getJobs APIs should have proper URI when using owner 1`] 
 
 exports[`GetJobs tests getJobs APIs should have proper URI when using prefix 1`] = `"/zosmf/restjobs/jobs?prefix=fakePrefix"`;
 
+exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`] = `"/zosmf/restjobs/jobs?status=active"`;
+
 exports[`GetJobs tests getJobs APIs should locate a job by jobid 1`] = `
 Object {
   "class": "A",
@@ -407,6 +444,76 @@ exports[`GetJobs tests getJobs APIs should require prefix for getJobsByPrefix 1`
 exports[`GetJobs tests getJobs APIs should throw an error if more than one job is returned for a job id 1`] = `"Obtaining job info for a single job id TSUxxx on Test:443 failed: Expected 1 job returned but received 2"`;
 
 exports[`GetJobs tests getJobs APIs should throw an error if zero jobs are returned when getting jobs by ID 1`] = `"Obtaining job info for a single job id TSUxxx on Test:443 failed: Job not found"`;
+
+exports[`GetJobs tests getJobsByParameters should get jobs even when no params are passed in 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobsByParameters should get jobs when any of the valid parameters are passed in 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
 
 exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 1`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I KELDA16 Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=KELOSKY, DANIEL L 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
 

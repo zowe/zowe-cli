@@ -83,6 +83,19 @@ export class GetJobs {
     }
 
     /**
+     * Get a list of jobs that match various parameters
+     * @static
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string}
+     * @returns {Promise<IJob[]>} - promise that resolves to an array of IJob objects (matching jobs)
+     * @memberof GetJobs
+     */
+    public static async getJobsByParameters(session: AbstractSession, params: IGetJobsParms) {
+        Logger.getAppLogger().trace("GetJobs.getJobsByParameters()");
+        return GetJobs.getJobsCommon(session, { ...params});
+    }
+
+    /**
      * Get a single job object from an input job id
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
@@ -121,47 +134,53 @@ export class GetJobs {
      * Get jobs filtered by owner and prefix.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {IGetJobsParms} parms - parm object (see IGetJobsParms interface for details)
+     * @param {IGetJobsParms} params - parm object (see IGetJobsParms interface for details)
      * @returns {Promise<IJob[]>} - promise that resolves to an array of IJob objects (matching jobs)
      * @memberof GetJobs
      */
-    public static async getJobsCommon(session: AbstractSession, parms?: IGetJobsParms) {
+    public static async getJobsCommon(session: AbstractSession, params?: IGetJobsParms) {
         // TODO(Kelosky): after **REMOVED** is fixed we can remove this message
         Logger.getAppLogger().trace("GetJobs.getJobsCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         let query = JobsConstants.QUERY_ID;
 
-        if (parms) {
-            if (parms.owner) {
-                query += (JobsConstants.QUERY_OWNER + parms.owner);
+        if (params) {
+            if (params.owner) {
+                query += (JobsConstants.QUERY_OWNER + params.owner);
             }
-            if (parms.prefix) {
-                if (parms.prefix !== JobsConstants.DEFAULT_PREFIX) {
+            if (params.prefix) {
+                if (params.prefix !== JobsConstants.DEFAULT_PREFIX) {
                     if (RestClient.hasQueryString(query)) {
                         query += JobsConstants.COMBO_ID;
                     }
-                    query += JobsConstants.QUERY_PREFIX + parms.prefix;
+                    query += JobsConstants.QUERY_PREFIX + params.prefix;
                 }
             }
-            if (parms.maxJobs) {
-                if (parms.maxJobs !== JobsConstants.DEFAULT_MAX_JOBS) {
+            if (params.maxJobs) {
+                if (params.maxJobs !== JobsConstants.DEFAULT_MAX_JOBS) {
                     if (RestClient.hasQueryString(query)) {
                         query += JobsConstants.COMBO_ID;
                     }
-                    query += (JobsConstants.QUERY_MAX_JOBS + parms.maxJobs);
+                    query += (JobsConstants.QUERY_MAX_JOBS + params.maxJobs);
                 }
             }
-            if (parms.jobid) {
+            if (params.jobid) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
-                query += (JobsConstants.QUERY_JOBID + parms.jobid);
+                query += (JobsConstants.QUERY_JOBID + params.jobid);
             }
-            if (parms.execData) {
+            if (params.execData) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
                 query += (JobsConstants.EXEC_DATA);
+            }
+            if (params.status) {
+                if (RestClient.hasQueryString(query)) {
+                    query += JobsConstants.COMBO_ID;
+                }
+                query += (JobsConstants.QUERY_STATUS + params.status);
             }
         }
 
@@ -169,7 +188,9 @@ export class GetJobs {
         resource += (query === JobsConstants.QUERY_ID) ? "" : query;
         Logger.getAppLogger().info("GetJobs.getJobsCommon() resource: " + resource);
 
-        return ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);
+        const jobs = await ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);
+
+        return GetJobs.filterResultsByStatuses(jobs, params);
     }
 
     /**
@@ -359,5 +380,13 @@ export class GetJobs {
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT;
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
+    }
+
+    private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms | undefined): IJob[] {
+        if (params?.status && params.status.toLowerCase() != "active" && params.status != "*") {
+            const newJobs = jobs.filter(job => job.status.toLowerCase() === params.status.toLowerCase());
+            return newJobs;
+        }
+        return jobs;
     }
 }
