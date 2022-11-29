@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Documented that token-type and token-value do not apply to SSH commands.
 - BugFix: Updated Imperative to include bugfixes in version `5.7.2`.
 
 ## `7.8.0`
