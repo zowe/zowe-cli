@@ -4,11 +4,12 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Document that token-type and token-value do not apply to SSH commands.
+- BugFix: Documented that token-type and token-value do not apply to SSH commands.
+- BugFix: Updated Imperative to include bugfixes in version `5.7.2`.
 
 ## `7.8.0`
 
-- Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
+- Enhancement: Updated Imperative to incorporate new `zowe config report-env` command from version `5.7.0`.
 - Enhancement: Added design documentation for roadmap feature to store secure properties in memory.
 
 ## `7.7.0`
