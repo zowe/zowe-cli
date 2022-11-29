@@ -34,9 +34,11 @@ export class ModifyJobs {
      * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof ModifyJobs
      */
-    public static async modifyJob(session: AbstractSession,
-        parms: { jobname: string, jobid: string },
-        options: { jobclass?: string, hold?: boolean, release?: boolean }): Promise<undefined|IJobFeedback> {
+    public static async modifyJob(
+        session: AbstractSession,
+        parms: IModifyJobParms,
+        options: IModifyJobOptions
+    ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJob called with jobname %s jobid %s", parms);
         return ModifyJobs.modifyJobCommon(session, parms, options);
     }
@@ -57,9 +59,10 @@ export class ModifyJobs {
         options: IModifyJobOptions
     ): Promise<undefined|IJobFeedback> {
         this.log.trace("ModifyJobCommon called with parms %s", JSON.stringify(parms));
+        this.log.info("Modifying job %s.%s", parms.jobname, parms.jobid);
+
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobid", "jobname"],
             "You must specify both the jobname and jobid for the job you want to modify.");
-        this.log.info("Modifying job %s.%s", parms.jobname, parms.jobid);
 
         const headers: any = [Headers.APPLICATION_JSON];
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
@@ -99,7 +102,6 @@ export class ModifyJobs {
 
 
     /**
-     * Getter for brightside logger
      * @returns {Logger}
      */
     private static get log(): Logger {
