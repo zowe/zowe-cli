@@ -44,23 +44,6 @@ export class ModifyJobs {
 
     /**
      * Modify a job
-     * @static
-     * @param {AbstractSession} session - z/OSMF connection info
-     * @param {IJob} job - the job that you want to modify
-     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
-     * @memberof ModifyJobs
-     */
-    public static async modifyJobForJob(session: AbstractSession, job: IJob ): Promise<undefined|IJobFeedback> {
-        this.log.trace("ModifyJobForJob called with job %s", JSON.stringify(job));
-        return ModifyJobs.modifyJobCommon(
-            session,
-            {jobname:job.jobname, jobid: job.jobid},
-            {jobclass: job.class, hold: job.hold, release: job.release}
-        );
-    }
-
-    /**
-     * Modify a job
      * Full version of the API with a parameter object
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
@@ -100,7 +83,7 @@ export class ModifyJobs {
                 err.mMessage=err.mMessage.concat('Modification Error');
                 throw err;
             }
-            response.message = mergedMessage = '\n' + response.message;
+            mergedMessage = mergedMessage = '\n' + response.message;
         }
 
         // build request to change class, only if defined and no exception from potential previous request
@@ -109,8 +92,9 @@ export class ModifyJobs {
                 class: options.jobclass,
             };
             response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
-            response.message = mergedMessage + '\n' + response.message;
+            mergedMessage = mergedMessage + '\n' + response.message;
         }
+        response.message = mergedMessage;
         return response;
     }
 

@@ -20,14 +20,14 @@ const fakeSession: any = {};
 const fakeJobID = "JOB00001";
 const fakeJobName = "MYJOB1";
 const fakeClass = "A";
-const returnIJob = async () => {
+const mockErrorText = "Fake error for sdk modify unit test has this text";
+const returnIJob: any = async () => {
     return {jobid: fakeJobID, jobname: fakeJobName, retcode: "CC 0000", owner: "dummy"};
 };
-
-const mockErrorText = "Fake error for sdk modify unit test has this text";
 const throwImperativeError = async () => {
     throw new ImperativeError({msg: mockErrorText});
 };
+
 describe("Modify Jobs API", () => {
 
     describe("Positive tests", () => {
@@ -52,6 +52,7 @@ describe("Modify Jobs API", () => {
             // mocking worked if fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
         });
+
     });
 
     describe("Error handling tests - async/await", () => {
@@ -86,41 +87,37 @@ describe("Modify Jobs API", () => {
             expect(err).toBeDefined();
             expect(err.message).toEqual(mockErrorText);
         });
-    });
 
-    describe("Error handling tests - Promise catch() syntax", () => {
-        it("should be able to catch errors from modifyJob with Promise.catch() syntax", () => {
-            return new Promise((done:any) => { //https://github.com/jest-community/eslint-plugin-jest/blob/main/docs/rules/no-done-callback.md
-                (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
-                ModifyJobs.modifyJob(
+        it("should be able to catch error if using params in conflict", async () => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
+            let err: any;
+            try {
+                await ModifyJobs.modifyJobCommon(
                     fakeSession,
                     {jobid: fakeJobID, jobname: fakeJobName},
-                    {jobclass: fakeClass}
-                ).then(() => {
-                    expect("Should have called .catch()").toEqual("test failed");
-                }).catch((e) => {
-                    expect(e).toBeDefined();
-                    expect(e.message).toEqual(mockErrorText);
-                    done();
-                });
-            });
+                    {jobclass: fakeClass, hold: true, release: true}
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toEqual("Parameters `hold` and `release` are in conflict and cannot be specified together");
         });
 
-        it("should be able to catch errors from modifyJobForJob with Promise.catch() syntax", () => {
-            return new Promise((done:any) => {
-                (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
-                ModifyJobs.modifyJobCommon(
+        it("should be able to catch error if ZOSMF Error when using params in conflict", async () => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError;
+            let err: any;
+            try {
+                await ModifyJobs.modifyJobCommon(
                     fakeSession,
                     {jobid: fakeJobID, jobname: fakeJobName},
-                    {jobclass: fakeClass, hold: false, release: false}
-                ).then(() => {
-                    expect("Should have called .catch()").toEqual("test failed");
-                }).catch((e) => {
-                    expect(e).toBeDefined();
-                    expect(e.message).toEqual(mockErrorText);
-                    done();
-                });
-            });
+                    {jobclass: fakeClass, hold: true, release: false}
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("Modification Error");
         });
     });
 
