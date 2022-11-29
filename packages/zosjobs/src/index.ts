@@ -13,6 +13,7 @@ export * from "./doc/input/ICancelJob";
 export * from "./doc/input/ICancelJobParms";
 export * from "./doc/input/IModifyJob";
 export * from "./doc/input/IModifyJobParms";
+export * from "./doc/input/IModifyJobOptions";
 export * from "./doc/input/ICommonJobParms";
 export * from "./doc/input/IDeleteJobParms";
 export * from "./doc/input/IDownloadAllSpoolContentParms";

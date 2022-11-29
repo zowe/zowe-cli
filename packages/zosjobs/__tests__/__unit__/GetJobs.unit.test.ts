@@ -269,6 +269,20 @@ describe("GetJobs tests", () => {
             expect(jobs).toMatchSnapshot();
         });
 
+        it("should allow getting jobs by common method with status", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            const jobs = await GetJobs.getJobsCommon(pretendSession, {status: 'active'});
+            expect(jobs).toMatchSnapshot();
+        });
+
+        it("should have proper URI when using status", () => {
+            (ZosmfRestClient.getExpectJSON as any) =
+                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                    expect(resource).toMatchSnapshot();
+                });
+            GetJobs.getJobsCommon(pretendSession, {status: "active"});
+        });
+
         it("should have proper URI when using no parms", () => {
             (ZosmfRestClient.getExpectJSON as any) =
                 jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
@@ -509,6 +523,125 @@ describe("GetJobs tests", () => {
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
+        });
+    });
+
+    describe("getJobsByParameters", () => {
+        it("should get jobs even when no params are passed in", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            const jobs = await GetJobs.getJobsByParameters(pretendSession, {});
+            expect(jobs).toMatchSnapshot();
+        });
+        it("should get jobs when any of the valid parameters are passed in", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            const jobs = await GetJobs.getJobsByParameters(pretendSession, { status: 'active', owner: '*'});
+            expect(jobs).toMatchSnapshot();
+        });
+    });
+
+    describe("filterResultsByStatuses", () => {
+        it("should return all results if status is active", () => {
+            const jobs: any[] = [
+                {
+                    jobid: '1', status: 'active'
+                },
+                {
+                    jobid: '2', status: 'active'
+                },
+                {
+                    jobid: '3',  status: 'active'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'active' });
+            expect(filteredResults).toEqual(jobs);
+        });
+        it("should return only Output", () => {
+            const jobs = [
+                {
+                    jobid: '1', jobname: 'a', subsystem: 'sub',
+                    owner: 'zowe', status: 'active', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const expectedJobs = [
+                {
+                    jobid: '2', jobname: 'b', subsystem: 'sub',
+                    owner: 'zowe', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                },
+                {
+                    jobid: '3', jobname: 'c', subsystem: 'sub',
+                    owner: 'kri', status: 'Output', type: 't',
+                    class: 'c', retcode: 'r', url: '',
+                    'files-url': '', 'job-correlator': '',
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'OUTPUT', owner: 'zowe' });
+            expect(filteredResults).toEqual(expectedJobs);
+        });
+        it("should return all status jobs for status *", () => {
+            const jobs: any[] = [
+                {
+                    jobid: '1', status: 'active'
+                },
+                {
+                    jobid: '2', status: 'Output'
+                },
+                {
+                    jobid: '3', status: 'Input'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: '*' });
+            expect(filteredResults).toEqual(jobs);
+        });
+        it("should return all jobs if parameters are missing", () => {
+            const jobs: any[] = [
+                {
+                    jobid: '1', status: 'active'
+                },
+                {
+                    jobid: '2', status: 'Output'
+                },
+                {
+                    jobid: '3', status: 'Input'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, undefined);
+            expect(filteredResults).toEqual(jobs);
+        });
+        it("should return all jobs if status in params is missing", () => {
+            const jobs: any[] = [
+                {
+                    jobid: '1', status: 'active'
+                },
+                {
+                    jobid: '2', status: 'Output'
+                },
+                {
+                    jobid: '3', status: 'Input'
+                }
+            ];
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { owner: 'zowe'});
+            expect(filteredResults).toEqual(jobs);
         });
     });
 });
