@@ -541,30 +541,18 @@ describe("GetJobs tests", () => {
 
     describe("filterResultsByStatuses", () => {
         it("should return all results if status is active", () => {
-            const jobs = [
+            const jobs: any[] = [
                 {
-                    jobid: '1', jobname: 'a', subsystem: 'sub',
-                    owner: 'zowe', status: 'active', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '1', status: 'active'
                 },
                 {
-                    jobid: '2', jobname: 'b', subsystem: 'sub',
-                    owner: 'zowe', status: 'active', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '2', status: 'active'
                 },
                 {
-                    jobid: '3', jobname: 'c', subsystem: 'sub',
-                    owner: 'kri', status: 'active', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '3',  status: 'active'
                 }
             ];
-            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'active', owner: 'zowe' });
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'active' });
             expect(filteredResults).toEqual(jobs);
         });
         it("should return only Output", () => {
@@ -611,81 +599,45 @@ describe("GetJobs tests", () => {
             expect(filteredResults).toEqual(expectedJobs);
         });
         it("should return all status jobs for status *", () => {
-            const jobs = [
+            const jobs: any[] = [
                 {
-                    jobid: '1', jobname: 'a', subsystem: 'sub',
-                    owner: 'zowe', status: 'active', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '1', status: 'active'
                 },
                 {
-                    jobid: '2', jobname: 'b', subsystem: 'sub',
-                    owner: 'zowe', status: 'Output', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '2', status: 'Output'
                 },
                 {
-                    jobid: '3', jobname: 'c', subsystem: 'sub',
-                    owner: 'kri', status: 'Input', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '3', status: 'Input'
                 }
             ];
-            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: '*', owner: 'zowe' });
+            const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: '*' });
             expect(filteredResults).toEqual(jobs);
         });
         it("should return all jobs if parameters are missing", () => {
-            const jobs = [
+            const jobs: any[] = [
                 {
-                    jobid: '1', jobname: 'a', subsystem: 'sub',
-                    owner: 'zowe', status: 'active', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '1', status: 'active'
                 },
                 {
-                    jobid: '2', jobname: 'b', subsystem: 'sub',
-                    owner: 'zowe', status: 'Output', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '2', status: 'Output'
                 },
                 {
-                    jobid: '3', jobname: 'c', subsystem: 'sub',
-                    owner: 'kri', status: 'Input', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '3', status: 'Input'
                 }
             ];
             const filteredResults = GetJobs['filterResultsByStatuses'](jobs, undefined);
             expect(filteredResults).toEqual(jobs);
         });
         it("should return all jobs if status in params is missing", () => {
-            const jobs = [
+            const jobs: any[] = [
                 {
-                    jobid: '1', jobname: 'a', subsystem: 'sub',
-                    owner: 'zowe', status: 'active', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '1', status: 'active'
                 },
                 {
-                    jobid: '2', jobname: 'b', subsystem: 'sub',
-                    owner: 'zowe', status: 'Output', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '2', status: 'Output'
                 },
                 {
-                    jobid: '3', jobname: 'c', subsystem: 'sub',
-                    owner: 'kri', status: 'Input', type: 't',
-                    class: 'c', retcode: 'r', url: '',
-                    'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    jobid: '3', status: 'Input'
                 }
             ];
             const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { owner: 'zowe'});
