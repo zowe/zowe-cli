@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes 
 - Enhancement: Added new functions to support the changing of a job class and the hold status of a job. Can now call `zowe jobs modify job [jobid]` with options `--jobclass`, `--hold` and `--release`. [#1156](https://github.com/zowe/zowe-cli/issues/1156)
 - BugFix: Document that token-type and token-value do not apply to SSH commands.
+
 ## `7.8.0`
 
 - Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
