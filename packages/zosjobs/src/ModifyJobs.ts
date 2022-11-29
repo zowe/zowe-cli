@@ -12,7 +12,6 @@
 import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IJob } from "./doc/response/IJob";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
 import { IModifyJobOptions } from "./doc/input/IModifyJobOptions";
 import { IModifyJob } from "./doc/input/IModifyJob";
@@ -83,7 +82,7 @@ export class ModifyJobs {
                 err.mMessage=err.mMessage.concat('Modification Error');
                 throw err;
             }
-            mergedMessage = mergedMessage = '\n' + response.message;
+            mergedMessage = mergedMessage + '\n' + response.message;
         }
 
         // build request to change class, only if defined and no exception from potential previous request
