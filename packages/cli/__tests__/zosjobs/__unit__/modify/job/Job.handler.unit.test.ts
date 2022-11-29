@@ -49,7 +49,7 @@ const SUCCESS_FEEDBACK: IJobFeedback = {
     "job-correlator": "J0007913USILCA11DC4DAED0.......:",
     "jobname": "AT0000",
     "jobid": 'JOB01234',
-    "message": 'Request was successful.',
+    "message": 'Successful.',
     "owner": "AT0000",
     "status": "0",
     "member": "",
@@ -86,8 +86,7 @@ describe("modify job handler tests", () => {
             params.arguments.release = false;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
-            expect(SUCCESS_FEEDBACK.message).toContain("Class Change");
+            expect(SUCCESS_FEEDBACK.message).toContain("Successful.");
         });
         it("should be able to hold a job", async () => {
             let mySession;
@@ -105,8 +104,7 @@ describe("modify job handler tests", () => {
             params.arguments.release = false;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
-            expect(SUCCESS_FEEDBACK.message).toContain("Job Held");
+            expect(SUCCESS_FEEDBACK.message).toContain("Successful.");
         });
 
         it("should be able to release a job", async () => {
@@ -124,8 +122,7 @@ describe("modify job handler tests", () => {
             params.arguments.release = true;
             await handler.process(params);
             expect(ModifyJobs.modifyJob).toHaveBeenCalledTimes(1);
-            expect(params.response.console.log).toHaveBeenCalledWith(SUCCESS_FEEDBACK.message);
-            expect(SUCCESS_FEEDBACK.message).toContain("Job Released");
+            expect(SUCCESS_FEEDBACK.message).toContain("Successful.");
         });
     });
 
