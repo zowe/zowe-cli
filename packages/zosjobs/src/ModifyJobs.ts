@@ -71,6 +71,7 @@ export class ModifyJobs {
         let request: IModifyJob;
         let mergedMessage: string = "";
         let exception: boolean = false;
+        
         if (Object.keys(options).length != 0){
             if(options.hold && options.release){
                 throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
