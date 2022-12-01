@@ -63,7 +63,7 @@ export default class JobHandler extends ZosmfBaseHandler {
                 mergedMessage = mergedMessage + "\nSuccessful. Job Held";
             }else{
                 mergedMessage = mergedMessage + "\nSuccessful. Job Released";
-            }   
+            }
         }
         this.console.log(mergedMessage);
     }

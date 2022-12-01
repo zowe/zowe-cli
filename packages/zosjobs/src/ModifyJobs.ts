@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError, unableToLoadRequestedProfilesError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
@@ -58,7 +58,6 @@ export class ModifyJobs {
         parms: IModifyJobParms,
         options: IModifyJobOptions
     ): Promise<undefined|IJobFeedback> {
-        
         this.log.trace("ModifyJobCommon called with parms %s", JSON.stringify(parms));
         this.log.info("Modifying job %s.%s", parms.jobname, parms.jobid);
 
@@ -71,7 +70,7 @@ export class ModifyJobs {
         let request: IModifyJob;
         let mergedMessage: string = "";
         let exception: boolean = false;
-        
+
         if (Object.keys(options).length != 0){
             if(options.hold && options.release){
                 throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
