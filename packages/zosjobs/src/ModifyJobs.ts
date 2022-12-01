@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError, unableToLoadRequestedProfilesError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
@@ -58,6 +58,7 @@ export class ModifyJobs {
         parms: IModifyJobParms,
         options: IModifyJobOptions
     ): Promise<undefined|IJobFeedback> {
+        
         this.log.trace("ModifyJobCommon called with parms %s", JSON.stringify(parms));
         this.log.info("Modifying job %s.%s", parms.jobname, parms.jobid);
 
@@ -70,36 +71,36 @@ export class ModifyJobs {
         let request: IModifyJob;
         let mergedMessage: string = "";
         let exception: boolean = false;
-
-        if(options.hold && options.release){
-            throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
-        }
-
-        if(options.hold || options.release){
-            options.hold ? request = { request: "hold"} : request = { request: "release"};
-            try{
+        if (Object.keys(options).length != 0){
+            if(options.hold && options.release){
+                throw new ImperativeError({msg: "Parameters `hold` and `release` are in conflict and cannot be specified together"});
+            }
+            if(options.hold || options.release){
+                options.hold ? request = { request: "hold"} : request = { request: "release"};
+                try{
+                    response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+                }
+                catch(err){
+                    exception = true;
+                    err.mMessage=err.mMessage.concat('Modification Error');
+                    throw err;
+                }
+                mergedMessage = mergedMessage + '\n' + response.message;
+            }
+            // build request to change class, only if defined and no exception from potential previous request
+            if (options.jobclass != undefined && !exception){
+                request = {
+                    class: options.jobclass,
+                };
                 response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+                mergedMessage = mergedMessage + '\n' + response.message;
             }
-            catch(err){
-                exception = true;
-                err.mMessage=err.mMessage.concat('Modification Error');
-                throw err;
-            }
-            mergedMessage = mergedMessage + '\n' + response.message;
+            response.message = mergedMessage;
+            return response;
+        }else{
+            throw new ImperativeError({msg: "At least one option needs to be selected for modification: `hold`, `release`, `jobclass`"});
         }
-
-        // build request to change class, only if defined and no exception from potential previous request
-        if (options.jobclass != undefined && !exception){
-            request = {
-                class: options.jobclass,
-            };
-            response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
-            mergedMessage = mergedMessage + '\n' + response.message;
-        }
-        response.message = mergedMessage;
-        return response;
     }
-
 
     /**
      * @returns {Logger}
