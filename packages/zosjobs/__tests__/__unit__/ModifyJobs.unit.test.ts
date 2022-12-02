@@ -91,7 +91,7 @@ describe("Modify Jobs API", () => {
     });
 
     describe("Parameter validation", () => {
-        it("should reject calls to modifyJob that don't contain a jobid", async () => {
+        it("should reject calls to modifyJob that contain an empty string jobid", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: any;
             try {
@@ -140,21 +140,6 @@ describe("Modify Jobs API", () => {
             expect(err.message).toContain("Modification Error");
         });
 
-        it("should be able to catch ZOSMF error if using params in conflict", async () => {
-            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
-            let err: any;
-            try {
-                await ModifyJobs.modifyJobCommon(
-                    fakeSession,
-                    {jobid: fakeJobID, jobname: fakeJobName},
-                    {jobclass: fakeClass, hold: true, release: true}
-                );
-            } catch (e) {
-                err = e;
-            }
-            expect(err).toBeDefined();
-            expect(err.message).toEqual("Parameters `hold` and `release` are in conflict and cannot be specified together");
-        });
         it("should reject calls to modifyJobCommon that have an empty options object", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: any;
@@ -168,7 +153,7 @@ describe("Modify Jobs API", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err.message).toContain("Cannot set properties of undefined (setting 'message')");
+            expect(err.message).toContain("Cannot set property 'message' of undefined");
         });
     });
 });

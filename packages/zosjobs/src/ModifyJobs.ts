@@ -70,7 +70,7 @@ export class ModifyJobs {
         let request: IModifyJob;
         let mergedMessage: string = "";
         let exception: boolean = false;
-        if (Object.keys(options).length != 0){
+        if (options.release || options.hold || options.jobclass != null){
             if(options.hold || options.release){
                 options.hold ? request = { request: "hold"} : request = { request: "release"};
                 try{
