@@ -141,7 +141,7 @@ describe("Modify Jobs API", () => {
         });
 
         it("should reject calls to modifyJobCommon that have an empty options object", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError;
             let err: any;
             try {
                 await ModifyJobs.modifyJobCommon(
@@ -153,7 +153,7 @@ describe("Modify Jobs API", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err.message).toContain("Cannot set property 'message' of undefined");
+            expect(err.message).toContain("At least one option needs to be selected for modification: `hold`, `release`, `jobclass`");
         });
     });
 });
