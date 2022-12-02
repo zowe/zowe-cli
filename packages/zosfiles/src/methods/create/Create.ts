@@ -144,14 +144,14 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
-        // Removes undefined properties
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+        const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        if (options && options.responseTimeout != null) {
+            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
         Create.dataSetValidateOptions(tempOptions);
-
-        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
-
-        await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
-
+        await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
         return {
             success: true,
             commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
@@ -455,7 +455,9 @@ export class Create {
 
         const jsonContent = JSON.stringify(tempOptions);
         const headers = [{ "Content-Length": jsonContent.length }, ZosmfHeaders.ACCEPT_ENCODING];
-
+        if (options && options.responseTimeout != null) {
+            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
 
         return {

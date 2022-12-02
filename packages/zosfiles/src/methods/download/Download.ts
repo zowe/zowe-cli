@@ -140,6 +140,9 @@ export class Download {
                 requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
+            if (options && options.responseTimeout != null) {
+                requestOptions.reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
 
@@ -819,6 +822,9 @@ export class Download {
 
     private static generateHeadersBasedOnOptions(options: IDownloadOptions) {
         const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+        if (options && options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         if (!options.binary && !options.record) {
             if (options.localEncoding) {
                 reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });
