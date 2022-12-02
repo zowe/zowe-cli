@@ -72,7 +72,12 @@ export class ModifyJobs {
         let exception: boolean = false;
         if (options.release || options.hold || options.jobclass != null){
             if(options.hold || options.release){
-                options.hold ? request = { request: "hold"} : request = { request: "release"};
+                if (options.hold){
+                    request = { request: "hold"};
+                }
+                if (options.release){
+                    request = { request: "release"};
+                }
                 try{
                     response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
                 }
