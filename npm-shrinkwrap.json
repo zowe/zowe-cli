@@ -23028,7 +23028,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "7.9.0",
+      "version": "7.9.1",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -23038,7 +23038,7 @@
         "@zowe/provisioning-for-zowe-sdk": "7.9.0",
         "@zowe/zos-console-for-zowe-sdk": "7.9.0",
         "@zowe/zos-files-for-zowe-sdk": "7.9.0",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.9.0",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.9.1",
         "@zowe/zos-logs-for-zowe-sdk": "7.9.0",
         "@zowe/zos-tso-for-zowe-sdk": "7.9.0",
         "@zowe/zos-uss-for-zowe-sdk": "7.9.0",
@@ -23232,7 +23232,7 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "7.9.0",
+      "version": "7.9.1",
       "license": "EPL-2.0",
       "dependencies": {
         "@zowe/zos-files-for-zowe-sdk": "7.9.0"
@@ -29800,7 +29800,7 @@
         "@zowe/provisioning-for-zowe-sdk": "7.9.0",
         "@zowe/zos-console-for-zowe-sdk": "7.9.0",
         "@zowe/zos-files-for-zowe-sdk": "7.9.0",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.9.0",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.9.1",
         "@zowe/zos-logs-for-zowe-sdk": "7.9.0",
         "@zowe/zos-tso-for-zowe-sdk": "7.9.0",
         "@zowe/zos-uss-for-zowe-sdk": "7.9.0",

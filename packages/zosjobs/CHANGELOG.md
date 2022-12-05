@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `7.9.1`
 -BugFix: Introduced check to ensure ModifyJobs.modifyJobCommon can not be called with an empty options object
 
 ## `7.9.0`
