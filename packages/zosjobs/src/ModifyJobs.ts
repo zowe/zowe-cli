@@ -69,27 +69,24 @@ export class ModifyJobs {
         let response: IJobFeedback;
         let request: IModifyJob;
         let mergedMessage: string = "";
-        let exception: boolean = false;
         if (options.release || options.hold || options.jobclass != null){
             if(options.hold || options.release){
                 if (options.hold){
                     request = { request: "hold"};
-                }
-                if (options.release){
+                }else{
                     request = { request: "release"};
                 }
                 try{
                     response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+                    mergedMessage = mergedMessage + '\n' + response.message;
                 }
                 catch(err){
-                    exception = true;
                     err.mMessage=err.mMessage.concat('Modification Error');
                     throw err;
                 }
-                mergedMessage = mergedMessage + '\n' + response.message;
             }
             // build request to change class, only if defined and no exception from potential previous request
-            if (options.jobclass != undefined && !exception){
+            if (options.jobclass != undefined && options.jobclass != ""){
                 request = {
                     class: options.jobclass,
                 };
