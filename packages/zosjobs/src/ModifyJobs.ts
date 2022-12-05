@@ -69,7 +69,7 @@ export class ModifyJobs {
         let response: IJobFeedback;
         let request: IModifyJob;
         let mergedMessage: string = "";
-        if (options.release || options.hold || options.jobclass != undefined){
+        if (options.release || options.hold || options.jobclass){
             if(options.hold || options.release){
                 if (options.hold){
                     request = { request: "hold"};
