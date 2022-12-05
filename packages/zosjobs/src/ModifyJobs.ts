@@ -86,7 +86,7 @@ export class ModifyJobs {
                 }
             }
             // build request to change class, only if defined and no exception from potential previous request
-            if (options.jobclass != ""){
+            if (options.jobclass){
                 request = {
                     class: options.jobclass,
                 };
