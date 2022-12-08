@@ -88,41 +88,10 @@ describe("Modify Jobs API", () => {
             expect(err.message).toEqual(mockErrorText);
         });
 
-        it("should be able to catch error if using params in conflict", async () => {
-            (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
-            let err: any;
-            try {
-                await ModifyJobs.modifyJobCommon(
-                    fakeSession,
-                    {jobid: fakeJobID, jobname: fakeJobName},
-                    {jobclass: fakeClass, hold: true, release: true}
-                );
-            } catch (e) {
-                err = e;
-            }
-            expect(err).toBeDefined();
-            expect(err.message).toEqual("Parameters `hold` and `release` are in conflict and cannot be specified together");
-        });
-
-        it("should be able to catch error if ZOSMF Error when using params in conflict", async () => {
-            (ZosmfRestClient as any).putExpectJSON = throwImperativeError;
-            let err: any;
-            try {
-                await ModifyJobs.modifyJobCommon(
-                    fakeSession,
-                    {jobid: fakeJobID, jobname: fakeJobName},
-                    {jobclass: fakeClass, hold: true, release: false}
-                );
-            } catch (e) {
-                err = e;
-            }
-            expect(err).toBeDefined();
-            expect(err.message).toContain("Modification Error");
-        });
     });
 
     describe("Parameter validation", () => {
-        it("should reject calls to modifyJob that don't contain a jobid", async () => {
+        it("should reject calls to modifyJob that contain an empty string jobid", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: any;
             try {
@@ -154,6 +123,37 @@ describe("Modify Jobs API", () => {
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
+        });
+        it("should be able to catch error if error when using params in conflict", async () => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError;
+            let err: any;
+            try {
+                await ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: fakeJobID, jobname: fakeJobName},
+                    {jobclass: fakeClass, hold: true, release: false}
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("Modification Error");
+        });
+
+        it("should reject calls to modifyJobCommon that have an empty options object", async () => {
+            (ZosmfRestClient as any).putExpectJSON = throwImperativeError;
+            let err: any;
+            try {
+                await ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: fakeJobID, jobname: fakeJobName},
+                    {jobclass: undefined, hold: undefined, release: undefined}
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("At least one option needs to be selected for modification: `hold`, `release`, `jobclass`");
         });
     });
 });
