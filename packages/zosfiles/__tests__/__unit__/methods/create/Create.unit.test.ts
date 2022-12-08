@@ -181,6 +181,30 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a dataSetLike with responseTimeout", async () => {
+            dsOptions.dsntype = "PDS";
+            dsOptions.responseTimeout = 5;
+
+            await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+            const response2 = await Create.dataSetLike(dummySession, dataSetName, "testing2", dsOptions);
+
+            expect(response2.success).toBe(true);
+            expect(response2.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
+            dsOptions.responseTimeout = undefined;
+        });
+
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
             const custOptions = {
                 dsorg: "PS",
