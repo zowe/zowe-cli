@@ -447,7 +447,7 @@ export class Create {
 
         this.zfsValidateOptions(tempOptions);
         tempOptions.JSONversion = 1;
-        let headers = [];
+        const headers = [];
 
         if (!isNullOrUndefined(tempOptions.timeout)) {
             endpoint += `?timeout=${tempOptions.timeout}`;
@@ -457,7 +457,7 @@ export class Create {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             delete tempOptions.responseTimeout;
         }
-        
+
         const jsonContent = JSON.stringify(tempOptions);
         headers.push(ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length });
         const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);

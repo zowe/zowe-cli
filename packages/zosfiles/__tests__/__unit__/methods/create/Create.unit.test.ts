@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
-import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions, ICreateZfsOptions } from "../../../../src";
+import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
@@ -1430,8 +1430,7 @@ describe("Create ZFS", () => {
         };
 
         try {
-            const response = await Create.zfs(dummySession, fileSystemName, options);
-            console.log(response);
+            response = await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
             caughtError = e;
         }
