@@ -45,9 +45,7 @@ export class Get {
         if (options.range) {
             reqHeaders.push({"X-IBM-Record-Range": options.range});
         }
-        if (options && options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
+        
         if (options.volume) {
             endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
         }
@@ -83,9 +81,6 @@ export class Get {
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
         const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-        if (options && options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
 
         if (options.binary === true) {
             reqHeaders.unshift(ZosmfHeaders.X_IBM_BINARY);
