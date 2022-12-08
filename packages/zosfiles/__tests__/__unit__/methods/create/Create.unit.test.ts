@@ -1430,7 +1430,7 @@ describe("Create ZFS", () => {
         };
 
         try {
-            response = await Create.zfs(dummySession, fileSystemName, options);
+            await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
             caughtError = e;
         }
