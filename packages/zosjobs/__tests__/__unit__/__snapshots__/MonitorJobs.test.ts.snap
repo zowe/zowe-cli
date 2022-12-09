@@ -1,17 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Monitor Jobs Private Methods checkStatus should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status "undefined" was received."`;
+
+exports[`Monitor Jobs Private Methods checkStatus should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status "something-invalid" was received."`;
+
+exports[`Monitor Jobs Public Methods waitForJobOutputStatus should throw an error when job is not passed 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws a normal error 1`] = `
+"Error obtaining status for jobname "JOB1234" jobid "123456".
+THIS IS A NORMAL ERROR"
+`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws an ImperativeError 1`] = `
+"Error obtaining status for jobname "JOB1234" jobid "123456".
+EXPECT THIS TO BE THROWN"
+`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if missing parms 1`] = `"Expect Error: IMonitorJobParms object required"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if missing parms.jobid 1`] = `"Expect Error: Required parameter 'jobid' must be defined"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if missing parms.jobname 1`] = `"Expect Error: Required parameter 'jobname' must be defined"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if missing session 1`] = `"Expect Error: Required session must be defined"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if parms.attempts is not valid 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if parms.attempts is not valid 2`] = `"Expect Error: "attempts" must be a positive integer"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if parms.status is not valid 1`] = `"Expect Error: The required entry was NOT found within the input array: 'INPUT','ACTIVE','OUTPUT'"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if parms.watchDelay is not valid 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
+
+exports[`Monitor Jobs Public Methods waitForStatusCommon expects should error if parms.watchDelay is not valid 2`] = `"Expect Error: "watchDelay" must be a positive integer"`;
+
 exports[`Monitor Jobs api method wait for job output status initial status check should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for job output status initial status check should produce a 'wrapped' error message if getJobs throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for job output status initial status check should return immediately if the initial status is OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -33,22 +67,22 @@ exports[`Monitor Jobs api method wait for job output status parameter checks sho
 exports[`Monitor Jobs api method wait for job output status parameter checks should detect missing IJob 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
 
 exports[`Monitor Jobs api method wait for job output status polling should expire after the max attempts and the total time should exceed the attempts multiplied by the delay 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"4\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "4""
 `;
 
 exports[`Monitor Jobs api method wait for job output status polling should produce a 'wrapped' error message if a follow-up poll does not return a status 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`Monitor Jobs api method wait for job output status polling should produce a 'wrapped' error message if a follow-up poll throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for job output status polling should return after the status has changed from ACTIVE to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -56,7 +90,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for job output status polling should return after the status has changed from INPUT to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -64,17 +98,17 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for output status initial status check should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for output status initial status check should produce a 'wrapped' error message if getJobs throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for output status initial status check should return immediately if the initial status is OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -94,22 +128,22 @@ exports[`Monitor Jobs api method wait for output status parameter checks should 
 exports[`Monitor Jobs api method wait for output status parameter checks should detect a missing session 1`] = `"Expect Error: Required session must be defined"`;
 
 exports[`Monitor Jobs api method wait for output status polling should expire after the max attempts and the total time should exceed the attempts multiplied by the delay 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"4\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "4""
 `;
 
 exports[`Monitor Jobs api method wait for output status polling should produce a 'wrapped' error message if a follow-up poll does not return a status 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`Monitor Jobs api method wait for output status polling should produce a 'wrapped' error message if a follow-up poll throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for output status polling should return after the status has changed from ACTIVE to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -117,7 +151,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for output status polling should return after the status has changed from INPUT to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -125,22 +159,22 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should produce a 'wrapped' error message if getJobs throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is ACTIVE and the expected status is ACTIVE 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "ACTIVE",
@@ -148,7 +182,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is ACTIVE and the expected status is INPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "ACTIVE",
@@ -156,7 +190,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is INPUT and the expected status is INPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "INPUT",
@@ -164,7 +198,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is OUTPUT and the expected status is ACTIVE 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -172,7 +206,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is OUTPUT and the expected status is INPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -180,7 +214,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is OUTPUT and the expected status is OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -188,7 +222,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common initial status check should return immediately if the initial status is the expected status 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -209,43 +243,43 @@ exports[`Monitor Jobs api method wait for status common parameter checks should 
 
 exports[`Monitor Jobs api method wait for status common parameter checks should detect an invalid status 1`] = `"Expect Error: The required entry was NOT found within the input array: 'INPUT','ACTIVE','OUTPUT'"`;
 
-exports[`Monitor Jobs api method wait for status common parameter checks should detect invalid attempts 1`] = `"Expect Error: \\"attempts\\" must be a positive integer"`;
+exports[`Monitor Jobs api method wait for status common parameter checks should detect invalid attempts 1`] = `"Expect Error: "attempts" must be a positive integer"`;
 
 exports[`Monitor Jobs api method wait for status common parameter checks should detect invalid attempts type 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
 
-exports[`Monitor Jobs api method wait for status common parameter checks should detect invalid watchDelay 1`] = `"Expect Error: \\"watchDelay\\" must be a positive integer"`;
+exports[`Monitor Jobs api method wait for status common parameter checks should detect invalid watchDelay 1`] = `"Expect Error: "watchDelay" must be a positive integer"`;
 
 exports[`Monitor Jobs api method wait for status common parameter checks should detect invalid watchDelay type 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
 
 exports[`Monitor Jobs api method wait for status common parameter checks should detect missing IMonitorJobParms 1`] = `"Expect Error: IMonitorJobParms object required"`;
 
 exports[`Monitor Jobs api method wait for status common polling should expire after the max attempts and the total time should exceed the attempts multiplied by the delay 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"4\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "4""
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should expire after the specified number of max attempts 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"10\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "10""
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should expire after the specified number of max attempts and use the default watch delay 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"2\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "2""
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should produce a 'wrapped' error message if a follow-up poll does not return a status 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should produce a 'wrapped' error message if a follow-up poll throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should return after the status has changed from ACTIVE to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -253,7 +287,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should return after the status has changed from INPUT to ACTIVE 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "ACTIVE",
@@ -261,7 +295,7 @@ Object {
 `;
 
 exports[`Monitor Jobs api method wait for status common polling should return after the status has changed from INPUT to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
