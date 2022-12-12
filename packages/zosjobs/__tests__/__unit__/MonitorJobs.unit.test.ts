@@ -118,7 +118,7 @@ describe("MonitorJobs", () => {
                     expect(error instanceof ImperativeError).toBe(true);
                     expect(error.message).toMatchSnapshot();
                 });
-    
+
                 it("should error if missing session", async () => {
                     let error: Error;
 
@@ -133,18 +133,6 @@ describe("MonitorJobs", () => {
 
                     expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
-                });
-
-                it("should detect a missing session - then/catch", (done) => {
-                    const obj = {jobname: "fake", jobid: "fake"};
-                    MonitorJobs.waitForStatusCommon(undefined, obj).then((response) => {
-                        done(`Monitor jobs should have thrown an error because the session is missing.`);
-                    }).catch((error) => {
-                        expect(error).toBeDefined();
-                        expect(error instanceof ImperativeError).toBe(true);
-                        expect(error.message).toMatchSnapshot();
-                        done();
-                    });
                 });
 
                 it("should error if parms.status is not valid", async () => {
@@ -227,7 +215,7 @@ describe("MonitorJobs", () => {
                     expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
                 });
-    
+
                 it("should detect invalid attempts type", async () => {
                     let error;
                     try {
@@ -844,7 +832,7 @@ describe("MonitorJobs", () => {
                     done();
                 });
             });
-        });        
+        });
         describe("polling", () => {
             it("should expire after the specified number of max attempts", async () => {
                 const attempts: number = 10;
@@ -889,37 +877,6 @@ describe("MonitorJobs", () => {
                 expect(error.message).toMatchSnapshot();
                 expect(mockedGetJobsCommon).toHaveBeenCalledTimes(attempts);
             });
-
-            // it("should expire after the max attempts and the total time should exceed the attempts multiplied by the delay", async () => {
-            //     const attempts: number = 4;
-
-            //     // Mock GetJobs.getStatusCommon
-            //     const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-            //         return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
-            //     });
-            //     GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-            //     let error;
-
-            //     // Start time
-            //     const start = new Date().getTime();
-            //     try {
-            //         const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-            //             {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts});
-            //     } catch (e) {
-            //         error = e;
-            //     }
-
-            //     // Stop time & difference in milliseconds
-            //     const stop = new Date().getTime();
-            //     const diff = stop - start;
-
-            //     expect(diff).toBeGreaterThan((attempts - 1) * MonitorJobs.DEFAULT_WATCH_DELAY);
-            //     expect(error).toBeDefined();
-            //     expect(error instanceof ImperativeError).toBe(true);
-            //     expect(error.message).toMatchSnapshot();
-            //     expect(mockedGetJobsCommon).toHaveBeenCalledTimes(attempts);
-            // }, LONGER_TIMEOUT);
 
             it("should return after the status has changed from INPUT to ACTIVE", async () => {
                 // Mock GetJobs.getStatusCommon
