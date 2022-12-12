@@ -1,22 +1,153 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MonitorJobs Private Methods checkStatus should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status "null" was received."`;
+exports[`MonitorJobs Private Methods checkStatus should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status \\"null\\" was received."`;
 
-exports[`MonitorJobs Private Methods checkStatus should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status "something-invalid" was received."`;
+exports[`MonitorJobs Private Methods checkStatus should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status \\"something-invalid\\" was received."`;
+
+exports[`MonitorJobs Private Methods initial status check should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+ERROR GETTING JOBS!"
+`;
+
+exports[`MonitorJobs Private Methods initial status check should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+ERROR GETTING JOBS!"
+`;
+
+exports[`MonitorJobs Private Methods initial status check should produce a 'wrapped' error message if getJobs throws an error 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+ERROR GETTING JOBS!"
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is ACTIVE and the expected status is ACTIVE 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "ACTIVE",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is ACTIVE and the expected status is INPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "ACTIVE",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is INPUT and the expected status is INPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "INPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is OUTPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is OUTPUT and the expected status is ACTIVE 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is OUTPUT and the expected status is INPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is OUTPUT and the expected status is OUTPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods initial status check should return immediately if the initial status is the expected status 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods polling should expire after the specified number of max attempts 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: Reached max poll attempts of \\"10\\""
+`;
+
+exports[`MonitorJobs Private Methods polling should expire after the specified number of max attempts and use the default watch delay 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: Reached max poll attempts of \\"2\\""
+`;
+
+exports[`MonitorJobs Private Methods polling should produce a 'wrapped' error message if a follow-up poll does not return a status 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: An unknown status \\"undefined\\" was received."
+`;
+
+exports[`MonitorJobs Private Methods polling should produce a 'wrapped' error message if a follow-up poll throws an error 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+ERROR GETTING JOBS!"
+`;
+
+exports[`MonitorJobs Private Methods polling should return after the status has changed from ACTIVE to OUTPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods polling should return after the status has changed from INPUT to ACTIVE 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "ACTIVE",
+}
+`;
+
+exports[`MonitorJobs Private Methods polling should return after the status has changed from INPUT to OUTPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
 
 exports[`MonitorJobs Public Methods waitForJobOutputStatus should throw an error when job is not passed 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws a normal error 1`] = `
-"Error obtaining status for jobname "JOB1234" jobid "123456".
+"Error obtaining status for jobname \\"JOB1234\\" jobid \\"123456\\".
 THIS IS A NORMAL ERROR"
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws an ImperativeError 1`] = `
-"Error obtaining status for jobname "JOB1234" jobid "123456".
+"Error obtaining status for jobname \\"JOB1234\\" jobid \\"123456\\".
 EXPECT THIS TO BE THROWN"
 `;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if missing parms 1`] = `"Expect Error: IMonitorJobParms object required"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect a blank jobid 1`] = `"Expect Error: Required parameter 'jobid' must not be blank"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect a blank jobname 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect a missing session - then/catch 1`] = `"Expect Error: Required session must be defined"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect invalid attempts type 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect missing IMonitorJobParms 1`] = `"Expect Error: IMonitorJobParms object required"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if missing parms.jobid 1`] = `"Expect Error: Required parameter 'jobid' must be defined"`;
 
@@ -26,13 +157,13 @@ exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if 
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.attempts is not valid 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.attempts is not valid 2`] = `"Expect Error: "attempts" must be a positive integer"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.attempts is not valid 2`] = `"Expect Error: \\"attempts\\" must be a positive integer"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.status is not valid 1`] = `"Expect Error: The required entry was NOT found within the input array: 'INPUT','ACTIVE','OUTPUT'"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.watchDelay is not valid 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.watchDelay is not valid 2`] = `"Expect Error: "watchDelay" must be a positive integer"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if parms.watchDelay is not valid 2`] = `"Expect Error: \\"watchDelay\\" must be a positive integer"`;
 
 exports[`MonitorJobs constant defaults should have a job status 1`] = `"OUTPUT"`;
 
