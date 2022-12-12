@@ -58,7 +58,7 @@ export class Mount {
 
         const jsonContent = JSON.stringify(tempOptions);
         const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];
-        if (options.responseTimeout != null) {
+        if (options && options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
