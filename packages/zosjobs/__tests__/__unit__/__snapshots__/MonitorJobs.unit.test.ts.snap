@@ -143,8 +143,6 @@ exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect a 
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect a blank jobname 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect a missing session - then/catch 1`] = `"Expect Error: Required session must be defined"`;
-
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect invalid attempts type 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should detect missing IMonitorJobParms 1`] = `"Expect Error: IMonitorJobParms object required"`;
