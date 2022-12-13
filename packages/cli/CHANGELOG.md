@@ -1,6 +1,8 @@
 # Change Log
 
 All notable changes to the Zowe CLI package will be documented in this file.
+## Recent Changes
+- BugFix: Removing all line break encodings from strings for `zos-files compare local-file-data-set` [#1528](https://github.com/zowe/zowe-cli/issues/1528)
 
 ## `7.9.0`
 
