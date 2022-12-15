@@ -1,12 +1,3 @@
-<style>
-.indent1 {
-    padding-left: 30px;
-}
-.indent2 {
-    padding-left: 60px;
-}
-</style>
-
 # Securing Zowe CLI properties with NodeJS Crypto
 
 ## **Overview**
@@ -21,8 +12,7 @@ While evaluating alternative solutions to the Keytar retirement, an option to en
 
 ## **Advantages of a NodeJS Crypto approach**
 
-<u>**A NodeJS solution could avoid installation problems**</u>
-<div class="indent1">
+### **A NodeJS solution could avoid installation problems** ###
 
 The Keytar component is a platform-specific binary library that is installed during the installation of Zowe CLI.
 
@@ -31,34 +21,27 @@ The Zowe Secure Credential Store (SCS) works reliably after Keytar has been succ
 Typically, the CLI installation completes and CLI commands will work. However, a CLI command that tries to access data in the SCS fails to load the SCS due to a previously failed SCS installation. The majority of the CLI commands connect to z/OS, which require credentials. Those credentials should be stored in the SCS. Thus, most CLI commands become unusable when the SCS fails to install.
 
 It is felt that an implementation in purely Typescript, using NodeJS-supplied cryptographic functions would not experience the same installation problems.
-</div>
 
-<u>**Support for USS**</u>
+### **Support for USS** ###
 
-<p class="indent1">
 Another scenario for which a NodeJS Crypto solution could provide value is the use of Zowe CLI on USS. Because no Keytar binary is available for USS, customers must currently store credentials in plain text. A Zowe NodeJS Crypto solution will use the same NodeJS-supplied technology on every platform, including USS.
-</p>
 
 ## **Shortcomings of a NodeJS Crypto approach**
 Because a different approach is used for encrypting data, consumers will experience some operational changes after a NodeJS Crypto solution is delivered.
 
-<u>**Consumers must re-enter all secure values after upgrade**</u>
-<div class="indent1">
+### **Consumers must re-enter all secure values after upgrade** ###
 
 Because secure values will no longer be stored in the same vault, consumers must re-enter their values one time so that they are available for future use by Zowe CLI commands.
 
 The re-storage of secure properties would be accomplished with the **'zowe config secure'** command, which will prompt the user for every secure property recorded in the Zowe CLI configuration file.
-</div>
 
-<u>**Consumers must enter a new 'encryption password' each session**</u>
-<p class="indent1">
+### **Consumers must enter a new 'encryption password' each session** ###
+
 To securely encrypt data, a user must supply one secret password that will be used to generate an encryption key, which is then used during cryptographic operations. The entry of such a password would probably occur once per day.
-</p>
 
-<u>**May introduce changes to client-side SDK functions**</u>
-<p class="indent1">
+### **May introduce changes to client-side SDK functions** ###
+
 Apps that call the Zowe CLI SDK may have to change some programming logic and application behavior. To enable this different form of encrypting, the SDK functions could require different parameters than they require today.
-</p>
 
 ## **NodeJS Crypto functions not applicable to VS Code extensions**
 Applications like Zowe Explorer, which are extensions to Visual Studio Code, utilize a version of Keytar automatically supplied by VS Code. Our expectation is that VS Code will provide a plug-compatible replacement for Keytar. Our suspicion is that VS Code will create Keytar-like wrappers around the Electron secure store mechanism. VS Code is built on the Electron GUI framework.
@@ -104,23 +87,20 @@ We expect that a common practice may be to run the 'password process' for a full
 
 Program memory can be paged to disk. We believe that the OS kernels restrict access to the page file, making it harder for a normal user to access that file. None-the-less, these factors may make the in-memory encryption of the password worthwhile.
 
-<u>**Cryptographic algorithms**</u>
-<div class="indent1">
+### **Cryptographic algorithms** ###
 
 The CLI will generate keyForKey from the user-supplied password using a Password-Based Key Derivation Function from a cryptographic library.
 
 The CLI will generate keyForProps by using 256 bits of output from a cryptographically strong pseudorandom data function.
 
 The CLI will encrypt data using AES 256 bit encryption.
-</div>
 
-<u>**Periodic key change**</u>
-<div class="indent1">
+### **Periodic key change** ###
+
 A good security practice is to periodically change a secret key that is used for encryption. When the key is changed, the CLI must decrypt all secure properties stored on disk with the old key and then encrypt the properties again with a new key. A new Zowe team configuration property named 'securePropKeyDuration' can be set by customers to adjust how often the key should be changed. Because re-encryption will slow performance, the default value will be once per week and the minimum value that the CLI will accept is 1 hour.
-</div>
 
-<u>**Password change**</u>
-<div class="indent1">
+
+### **Password change** ###
 
 The user will be prompted for a decryption password when required. The user must supply that same password every time (s)he is prompted. The user may want the ability to change that password.
 
@@ -132,12 +112,10 @@ We feel that the creation of a new zowe command would be the best approach - som
   - Store the newly re-encrypted keyForProps to disk
 
   Because the scope of this design is already significant, we do not plan to provide such a new command at this time. Also, an in-the-field workaround will exist. A user could delete the keyForProps.json and secureProps.json files. While the user will have to enter every secure value again, the user could supply a new password at that time. This will also be the required technique if the user forgets his/her password.
-</div>
 
-<u>**Performance**</u>
-<p class="indent1">
+### **Performance** ###
+
 Encryption and decryption are CPU-intensive operations which can impact performance. It is not clear how much performing our own encryption will affect performance. It should be noted that Keytar and its underlying tools must also perform encryption and decryption, so theoretically the performance could be similar to what we observe today with SCS. We will not be able to assess any performance impact until the new features are implemented.
-</p>
 
 ## **Secure properties in CI/CD pipelines**
 
@@ -158,8 +136,7 @@ If any of the secure property values change, or if the site changes the password
 ## **Data Structures**
 This section provides details about how data will be stored on disk.
 
-<u>**Data structure to hold the key for decrypting secure properties**</u>
-<div class="indent1">
+### **Data structure to hold the key for decrypting secure properties** ###
 
 ```
 $ZOWE_CLI_HOME\keyForProps.json
@@ -169,10 +146,8 @@ $ZOWE_CLI_HOME\keyForProps.json
     lastKeyGenTime :  // the time that a keyForProps was last generated
 }
 ```
-</div>
 
-<u>**Data structure to store secure properties on disk**</u>
-<div class="indent1">
+### **Data structure to store secure properties on disk** ###
 
 This object must be structured similarly to the in-memory representation of our team configuration. Doing so will enable our code to most easily find the encrypted value of a desired secure property. This object would only have to contain the secure properties. No other properties will be required in this object. Using the zowe.config.json structure for illustrative purposes, the content of our in-memory credentials might be similar to the following.
 
@@ -194,7 +169,6 @@ $ZOWE_CLI_HOME\secureProps.json
         …
     }
 ```
-</div>
 
 ## **Pseudo code**
 
@@ -243,8 +217,8 @@ When a CLI command is issued it will perform the following logic.
 
 ## **Findings on available crypto libraries**
 
-<u>**Javascript crypto libraries**</u>
-<div class="indent1">
+### **Javascript crypto libraries** ###
+
 Our NodeJS Javascript daemon must perform secure encryption. Numerous Javascript packages exist which provide encryption capabilities. Little objective information exists on what differentiates one package from another. We investigated overview information for the following packages.
 
   - crypto-js
@@ -268,7 +242,7 @@ Our NodeJS Javascript daemon must perform secure encryption. Numerous Javascript
       - 3,698,340 downloads of the full Node.js package on Aug 4, 2022
       - MIT License
 
-  <u>**Selected package**</u>
+  ### **Selected NodeJS package** ###
 
   The Javascript crypto library that we plan to use is Node.js Crypto for the following reasons:
 
@@ -285,10 +259,9 @@ Our NodeJS Javascript daemon must perform secure encryption. Numerous Javascript
   - The data encryption and decryption worked successfully.
 
 Our interpretation of the Node.js Crypto disclaimer is that you may not have the crypto library if you compile nodeJS yourself. We assume that if you download a standard LTS version of Node.js, it will contain a working crypto module.
-</div>
 
-<u>**Rust hash libraries**</u>
-<div class="indent1">
+
+### **Rust hash libraries** ###
 
 In an earlier design iteration, we intended to use a cryptographic hash function in the Rust program. After some design changes, we no longer need any cryptographic functions in the Rust program. We have chosen to retain the following information as a record of our analysis of Rust hashing options.
 
@@ -318,7 +291,7 @@ Numerous Rust crates exist which provide encryption capabilities. Our Rust comma
       - 30,000 downloads on Aug 1, 2022
       - MIT OR Apache-2.0 License
 
-  <u>**Selected crate**</u>
+  ### **Selected Rust crate** ###
 
   The Rust hash crate that we plan to use is RustCrypto/hashes for the following reasons:
   - It is a true cryptographic hash.
@@ -332,7 +305,6 @@ Numerous Rust crates exist which provide encryption capabilities. Our Rust comma
   - Within an existing Rust command, we used the RustCrypto/hashes crate to create a SHA3 256 bit hash from some hard-coded input.
     - This hash should be the right size for a key to be used in the AES 256 encryption that will be done in the daemon.
   - The hash generation worked successfully.
-</div>
 
 ## **Footnotes**
 [[a] ](#cmnt_ref1) During review, it was pointed out that since encrypted data must be unencrypted to perform a user's operation, that unencrypted data will remain in memory when using a garbage-collection type of language like JavaScript. This is a true statement. I added a justification to this document for why we still encrypt secure data when keeping it in memory indefinitely.
