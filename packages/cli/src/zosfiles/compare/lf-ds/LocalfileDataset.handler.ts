@@ -12,7 +12,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils, IO } from "@zowe/imperative";
 import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
@@ -115,11 +115,11 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         let jsonDiff = "";
         const contextLinesArg = commandParameters.arguments.contextlines;
 
-        jsonDiff = await DiffUtils.getDiffString(lfContentString, dsContentString, {
+        //remove all line break encodings from strings
+        jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
             outputFormat: 'terminal',
             contextLinesArg: contextLinesArg
         });
-
 
         return {
             success: true,
