@@ -5,11 +5,7 @@ name: Zowe CLI
 
 on:
   push:
-    paths-ignore:
-      - zowex/**
   pull_request:
-    paths-ignore:
-      - zowex/**
   workflow_dispatch:
     inputs:
       binary-type:
@@ -106,10 +102,19 @@ jobs:
 
     - name: Build Binary
       id: build-binary
-      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
+      if: matrix.os != 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push')
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe
+
+    - name: Build Binary (Windows)
+      id: build-windows-binary
+      if: matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push')
+      run: |
+        cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe.exe
+      env:
+        RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
