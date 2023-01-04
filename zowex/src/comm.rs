@@ -244,6 +244,7 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                     exit_code = p.exitCode.unwrap_or(EXIT_CODE_SUCCESS);
                     _progress = p.progress.unwrap_or(false);
 
+                    #[cfg(target_family = "windows")]
                     if p.exitCode.is_some() {
                         // we have the exit code, assume the transmission is over
                         // fixes the broken pipe error in #1538
