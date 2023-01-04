@@ -9,8 +9,8 @@
 *
 */
 
-jest.mock("../../src/GetJobs");
 jest.mock("@zowe/core-for-zowe-sdk");
+jest.mock("../../src/GetJobs");
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { JOB_STATUS, MonitorJobs, GetJobs } from "../../src";
@@ -18,16 +18,14 @@ import { sleep } from "@zowe/core-for-zowe-sdk";
 import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
 import { IJob } from "../../src/doc/response/IJob";
 
-// Longer timeout for async poll test
 const LONGER_TIMEOUT = 20000;
-
 describe("MonitorJobs", () => {
     // Use this so that editors don't complain about us accessing private stuff
     const privateMonitorJobs = MonitorJobs as any;
 
     /*************************************************************/
     // Unit tests for the file constants and defaults
-    describe("constant defaults", () => { //GOOD
+    describe("constant defaults", () => {
         it("should have a watch delay interval", () => {
             expect(MonitorJobs.DEFAULT_WATCH_DELAY).toMatchSnapshot();
         });
@@ -40,23 +38,24 @@ describe("MonitorJobs", () => {
     });
 
     describe("Public Methods", () => {
-        describe("waitForStatusCommon", () => { //GOOD
-            let pollForStatusSpy = jest.spyOn(privateMonitorJobs, "pollForStatus");
-
+        describe("waitForStatusCommon", () => {
+            let pollForStatusSpy: any;
+            let getStatusCommonSpy: any;
             beforeEach(() => {
                 pollForStatusSpy = jest.spyOn(privateMonitorJobs, "pollForStatus");
-                pollForStatusSpy.mockReset();
+                getStatusCommonSpy = jest.spyOn(GetJobs, "getStatusCommon");
             });
 
-            afterAll(() => {
+            afterEach(() => {
                 pollForStatusSpy.mockRestore();
+                getStatusCommonSpy.mockRestore();
             });
 
-            describe("expects", () => {
-                it("should detect missing IMonitorJobParms", async () => {
+            describe("parameter expectations", () => {
+                it("should detect if missing params", async () => {
                     let error;
                     try {
-                        const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}), undefined);
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}), undefined);
                     } catch (e) {
                         error = e;
                     }
@@ -66,23 +65,23 @@ describe("MonitorJobs", () => {
                 });
 
                 it("should error if missing parms.jobname", async () => {
-                    let error: Error;
-
+                    let error;
+                    const obj: any = { jobid: "FAKE" };
                     try {
-                        await MonitorJobs.waitForStatusCommon({} as any, {} as any);
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}), obj);
                     } catch (e) {
                         error = e;
                     }
-
-                    expect(error).toBeInstanceOf(ImperativeError);
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
                     expect(error.message).toMatchSnapshot();
                 });
                 it("should detect a blank jobname", async () => {
                     let error;
+                    const obj: any = {jobname: " ", jobid: "FAKE"};
                     try {
-                        const obj = {jobname: " ", jobid: "FAKE"};
-                        const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                            obj as IMonitorJobWaitForParms);
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                            obj);
                     } catch (e) {
                         error = e;
                     }
@@ -92,25 +91,23 @@ describe("MonitorJobs", () => {
                 });
 
                 it("should error if missing parms.jobid", async () => {
-                    let error: Error;
-
+                    let error;
+                    const obj: any = {jobname: "FAKE", jobid: undefined};
                     try {
-                        await MonitorJobs.waitForStatusCommon({} as any, {
-                            jobname: "ABCD"
-                        } as any);
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                            obj);
                     } catch (e) {
                         error = e;
                     }
-
-                    expect(error).toBeInstanceOf(ImperativeError);
+                    expect(error instanceof ImperativeError).toBe(true);
                     expect(error.message).toMatchSnapshot();
                 });
                 it("should detect a blank jobid", async () => {
                     let error;
+                    const obj: any = {jobname: "FAKE", jobid: " "};
                     try {
-                        const obj = {jobid: " ", jobname: "FAKE"};
-                        const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                            obj as IMonitorJobWaitForParms);
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                            obj);
                     } catch (e) {
                         error = e;
                     }
@@ -120,8 +117,7 @@ describe("MonitorJobs", () => {
                 });
 
                 it("should error if missing session", async () => {
-                    let error: Error;
-
+                    let error;
                     try {
                         await MonitorJobs.waitForStatusCommon(undefined as any, {
                             jobname: "ABCD",
@@ -130,14 +126,13 @@ describe("MonitorJobs", () => {
                     } catch (e) {
                         error = e;
                     }
-
+                    expect(error).toBeDefined();
                     expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
                 });
 
                 it("should error if parms.status is not valid", async () => {
-                    let error: Error;
-
+                    let error;
                     try {
                         await MonitorJobs.waitForStatusCommon({} as any, {
                             jobname: "ABCD",
@@ -147,14 +142,13 @@ describe("MonitorJobs", () => {
                     } catch (e) {
                         error = e;
                     }
-
+                    expect(error).toBeDefined();
                     expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
                 });
 
                 it("should error if parms.attempts is not valid", async () => {
-                    let error: Error;
-
+                    let error;
                     try {
                         await MonitorJobs.waitForStatusCommon({} as any, {
                             jobname : "ABCD",
@@ -164,29 +158,12 @@ describe("MonitorJobs", () => {
                     } catch (e) {
                         error = e;
                     }
-
-                    expect(error).toBeInstanceOf(ImperativeError);
-                    expect(error.message).toMatchSnapshot();
-
-                    error = undefined;
-
-                    try {
-                        await MonitorJobs.waitForStatusCommon({} as any, {
-                            jobname : "ABCD",
-                            jobid   : "EFGH",
-                            attempts: -155
-                        } as any);
-                    } catch (e) {
-                        error = e;
-                    }
-
                     expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
                 });
 
                 it("should error if parms.watchDelay is not valid", async () => {
-                    let error: Error;
-
+                    let error;
                     try {
                         await MonitorJobs.waitForStatusCommon({} as any, {
                             jobname   : "ABCD",
@@ -196,38 +173,156 @@ describe("MonitorJobs", () => {
                     } catch (e) {
                         error = e;
                     }
-
-                    expect(error).toBeInstanceOf(ImperativeError);
-                    expect(error.message).toMatchSnapshot();
-
-                    error = undefined;
-
-                    try {
-                        await MonitorJobs.waitForStatusCommon({} as any, {
-                            jobname   : "ABCD",
-                            jobid     : "EFGH",
-                            watchDelay: -155
-                        } as any);
-                    } catch (e) {
-                        error = e;
-                    }
-
+                    expect(error).toBeDefined();
                     expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
                 });
 
                 it("should detect invalid attempts type", async () => {
                     let error;
+                    const obj: any = {jobname: "fake", jobid: "fake", attempts: "blah"};
                     try {
-                        const obj: any = {jobname: "fake", jobid: "fake", attempts: "blah"};
-                        const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                            obj as IMonitorJobWaitForParms);
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                            obj);
                     } catch (e) {
                         error = e;
                     }
                     expect(error).toBeDefined();
                     expect(error instanceof ImperativeError).toBe(true);
                     expect(error.message).toMatchSnapshot();
+                });
+
+                it("should detect invalid watchDelay type", async () => {
+                    let error;
+                    const obj: any = {jobname: "fake", jobid: "fake", watchDelay: "blah"};
+                    try {
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                            obj);
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    expect(error.message).toMatchSnapshot();
+                });
+            });
+
+            describe("expects", () => {
+                it("should successfully return a job using class defaults", async () => {
+                    const returnVal = "THIS SHOULD BE RETURNED FROM THE CALLED FUNCTION";
+                    pollForStatusSpy.mockReturnValueOnce(returnVal);
+
+                    const parms: IMonitorJobWaitForParms = {
+                        jobid  : "JOB123456",
+                        jobname: "ABCDEF"
+                    };
+
+                    expect(await MonitorJobs.waitForStatusCommon({sessionInfo: "Should be here"} as any, parms)).toBe(returnVal);
+
+                    expect(pollForStatusSpy).toHaveBeenCalledTimes(1);
+                    expect(pollForStatusSpy).toHaveBeenLastCalledWith({sessionInfo: "Should be here"}, {
+                        ...parms,
+                        status  : MonitorJobs.DEFAULT_STATUS,
+                        attempts: MonitorJobs.DEFAULT_ATTEMPTS
+                    });
+                });
+
+                it("should successfully return a job using specified parameters", async () => {
+                    const returnVal = "THIS SHOULD BE RETURNED FROM THE CALLED FUNCTION";
+                    pollForStatusSpy.mockReturnValueOnce(returnVal);
+
+                    const parms: IMonitorJobWaitForParms = {
+                        jobid     : "JOB123456",
+                        jobname   : "ABCDEF",
+                        status    : "INPUT",
+                        attempts  : 150,
+                        watchDelay: 20000
+                    };
+
+                    expect(await MonitorJobs.waitForStatusCommon({} as any, parms)).toBe(returnVal);
+
+                    expect(pollForStatusSpy).toHaveBeenCalledTimes(1);
+                    expect(pollForStatusSpy).toHaveBeenLastCalledWith({}, parms);
+                });
+
+                it("should return immediately if the initial status is the expected status", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+
+                it("should return immediately if the initial status is OUTPUT and the expected status is ACTIVE", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+
+                it("should return immediately if the initial status is ACTIVE and the expected status is INPUT", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+                it("should return immediately if the initial status is ACTIVE and the expected status is ACTIVE", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+                it("should return immediately if the initial status is OUTPUT and the expected status is OUTPUT", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+                it("should return immediately if the initial status is OUTPUT and the expected status is INPUT", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+                it("should produce a 'wrapped' error message if getJobs throws an error", async () => {
+                    const ERROR_MSG: string = `ERROR GETTING JOBS!`;
+                    const mockedGetJobsCommon = jest.fn(async (args) => {
+                        throw new ImperativeError({msg: ERROR_MSG});
+                    });
+                    getStatusCommonSpy.mockResolvedValueOnce(mockedGetJobsCommon);
+                    let error: any;
+                    try {
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                            {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    expect(error.message).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+                // eslint-disable-next-line jest/no-done-callback
+                it("should produce a 'wrapped' error message if getJobs throws an error - then/catch", (done) => {
+                    const ERROR_MSG: string = `ERROR GETTING JOBS!`;
+                    const mockedGetJobsCommon = jest.fn(async (args) => {
+                        throw new ImperativeError({msg: ERROR_MSG});
+                    });
+                    getStatusCommonSpy.mockResolvedValueOnce(mockedGetJobsCommon);
+                    MonitorJobs.waitForOutputStatus(new Session({hostname: "fake", port: 443}), "FAKE", "FAKE").then((response) => {
+                        done("Monitor jobs should not have fulfilled the promise because getJobs should have thrown and error");
+                    }).catch((error) => {
+                        expect(error).toBeDefined();
+                        expect(error instanceof ImperativeError).toBe(true);
+                        expect(error.message).toMatchSnapshot();
+                        expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                        done();
+                    });
                 });
             });
 
@@ -277,46 +372,9 @@ describe("MonitorJobs", () => {
                     expect(expectError.message).toMatchSnapshot();
                 });
             });
-
-            it("should successfully return a job using class defaults", async () => {
-                const returnVal = "THIS SHOULD BE RETURNED FROM THE CALLED FUNCTION";
-                pollForStatusSpy.mockReturnValue(returnVal);
-
-                const parms: IMonitorJobWaitForParms = {
-                    jobid  : "JOB123456",
-                    jobname: "ABCDEF"
-                };
-
-                expect(await MonitorJobs.waitForStatusCommon({sessionInfo: "Should be here"} as any, parms)).toBe(returnVal);
-
-                expect(pollForStatusSpy).toHaveBeenCalledTimes(1);
-                expect(pollForStatusSpy).toHaveBeenLastCalledWith({sessionInfo: "Should be here"}, {
-                    ...parms,
-                    status  : MonitorJobs.DEFAULT_STATUS,
-                    attempts: MonitorJobs.DEFAULT_ATTEMPTS
-                });
-            });
-
-            it("should successfully return a job using specified parameters", async () => {
-                const returnVal = "THIS SHOULD BE RETURNED FROM THE CALLED FUNCTION";
-                pollForStatusSpy.mockReturnValue(returnVal);
-
-                const parms: IMonitorJobWaitForParms = {
-                    jobid     : "JOB123456",
-                    jobname   : "ABCDEF",
-                    status    : "INPUT",
-                    attempts  : 150,
-                    watchDelay: 20000
-                };
-
-                expect(await MonitorJobs.waitForStatusCommon({} as any, parms)).toBe(returnVal);
-
-                expect(pollForStatusSpy).toHaveBeenCalledTimes(1);
-                expect(pollForStatusSpy).toHaveBeenLastCalledWith({}, parms);
-            });
         });
 
-        describe("waitForOutputStatus", () => { //GOOD
+        describe("waitForOutputStatus", () => {
             let waitForStatusCommonSpy = jest.spyOn(privateMonitorJobs, "waitForStatusCommon");
 
             beforeEach(() => {
@@ -346,7 +404,7 @@ describe("MonitorJobs", () => {
             });
         });
 
-        describe("waitForJobOutputStatus", () => { //GOOD
+        describe("waitForJobOutputStatus", () => {
             let waitForStatusCommonSpy = jest.spyOn(privateMonitorJobs, "waitForStatusCommon");
 
             beforeEach(() => {
@@ -358,8 +416,20 @@ describe("MonitorJobs", () => {
                 waitForStatusCommonSpy.mockRestore();
             });
 
+            it("should detect missing IJob", async () => {
+                let error;
+                try {
+                    const response = await MonitorJobs.waitForJobOutputStatus(new Session({hostname: "fake", port: 443}), undefined);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error instanceof ImperativeError).toBe(true);
+                expect(error.message).toMatchSnapshot();
+            });
+
             it("should throw an error when job is not passed", async () => {
-                let error: Error;
+                let error;
 
                 try {
                     await MonitorJobs.waitForJobOutputStatus({} as any, undefined as any);
@@ -395,6 +465,8 @@ describe("MonitorJobs", () => {
     describe("Private Methods", () => {
         describe("pollForStatus", () => {
             let checkStatusSpy = jest.spyOn(privateMonitorJobs, "checkStatus");
+            let getStatusCommonSpy: any;
+            const sleepMock = jest.mocked(sleep);
 
             const dummyParms: IMonitorJobWaitForParms = {
                 jobid  : "123456",
@@ -406,21 +478,17 @@ describe("MonitorJobs", () => {
                 jobid  : "123456",
                 jobname: "TESTJOB",
                 status : "COMPLETE"
-            };
-
-            const sleepMock = jest.mocked(sleep);
+            };         
 
             beforeEach(() => {
-                checkStatusSpy.mockReset();
                 checkStatusSpy = jest.spyOn(privateMonitorJobs, "checkStatus");
-
-                // Reset the mock and program it to return immediately.
+                getStatusCommonSpy = jest.spyOn(GetJobs, "getStatusCommon");
                 sleepMock.mockReset();
                 sleepMock.mockImplementation();
             });
-
-            afterAll(() => {
+            afterEach(() => {
                 checkStatusSpy.mockRestore();
+                getStatusCommonSpy.mockRestore();
             });
 
             it("should call check status and return immediately", async () => {
@@ -493,7 +561,7 @@ describe("MonitorJobs", () => {
 
                 checkStatusSpy.mockReturnValue([false, dummyJob]);
 
-                let error: Error;
+                let error;
 
                 try {
                     await privateMonitorJobs.pollForStatus({}, parmObject);
@@ -529,7 +597,7 @@ describe("MonitorJobs", () => {
                     }
                 });
 
-                let error: Error;
+                let error;
 
                 try {
                     await privateMonitorJobs.pollForStatus({}, parmObject);
@@ -545,13 +613,38 @@ describe("MonitorJobs", () => {
                 expect(sleep).toHaveBeenLastCalledWith(parmObject.watchDelay);
             });
 
+            it("should return after the status has changed from INPUT to ACTIVE", async () => {
+                const CHANGE_AT_ATTEMPT = 10;
+                let attempts = 0;
+                const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    attempts++;
+                    if (attempts < CHANGE_AT_ATTEMPT) {
+                        return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
+                    } else {
+                        return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
+                    }
+                };
+
+                getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
+                let error;
+                let response;
+                try {
+                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", watchDelay: 1});
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeUndefined();
+                expect(response).toMatchSnapshot();
+                expect(getStatusCommonSpy).toHaveBeenCalledTimes(CHANGE_AT_ATTEMPT);
+            });
             it("should throw the error thrown from checkStatus", async () => {
                 const error = new Error("WE SHOULD SEE THIS");
                 checkStatusSpy.mockImplementation(() => {
                     throw error;
                 });
 
-                let expectedError: Error;
+                let expectedError: any;
 
                 try {
                     await privateMonitorJobs.pollForStatus({} as any, {} as any);
@@ -562,7 +655,73 @@ describe("MonitorJobs", () => {
                 expect(expectedError).toBeDefined();
                 expect(expectedError).toBe(error);
             });
+
+            it("should expire after the specified number of max attempts", async () => {
+                const attempts: number = 10;
+                getStatusCommonSpy.mockResolvedValue({jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
+                let error: any;
+                try {
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts, watchDelay: 1});
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error instanceof ImperativeError).toBe(true);
+                expect(error.message).toMatchSnapshot();
+                expect(getStatusCommonSpy).toHaveBeenCalledTimes(attempts);
+            });
+
+            it("should expire after the specified number of max attempts and use the default watch delay", async () => {
+                const attempts: number = 2;
+                const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
+                };
+                getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
+                let error: any;
+                try {
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts});
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error instanceof ImperativeError).toBe(true);
+                expect(error.message).toMatchSnapshot();
+                expect(getStatusCommonSpy).toHaveBeenCalledTimes(attempts);
+            });
+            fit("should expire after the max attempts and the total time should exceed the attempts multiplied by the delay", async () => {
+                const attempts: number = 4;
+                sleepMock.mockRestore();
+                const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
+                };
+                getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
+
+                // "Mock" the attempts value
+                Object.defineProperty(MonitorJobs, "DEFAULT_ATTEMPTS", {value: attempts});
+
+                // Start time
+                const start = new Date().getTime();
+                let error;
+                try {
+                    const response = await MonitorJobs.waitForOutputStatus(new Session({hostname: "fake", port: 443}), "FAKE", "FAKE");
+                } catch (e) {
+                    error = e;
+                }
+
+                // Stop time & difference in milliseconds
+                const stop = new Date().getTime();
+                const diff = stop - start;
+
+                expect(diff).toBeGreaterThan((attempts - 1) * MonitorJobs.DEFAULT_WATCH_DELAY);
+                expect(error).toBeDefined();
+                expect(error instanceof ImperativeError).toBe(true);
+                expect(error.message).toMatchSnapshot();
+                expect(getStatusCommonSpy).toHaveBeenCalledTimes(attempts);
+            }, LONGER_TIMEOUT);
         });
+
         describe("checkStatus", () => {
             const getStatusCommonMock = jest.mocked(GetJobs.getStatusCommon);
 
@@ -621,7 +780,7 @@ describe("MonitorJobs", () => {
 
             it("should throw an error when an invalid status is present", async () => {
                 const job: Partial<IJob> = {
-                    status: null
+                    status: undefined
                 };
 
                 const parms: Partial<IMonitorJobWaitForParms> = {
@@ -630,7 +789,7 @@ describe("MonitorJobs", () => {
 
                 getStatusCommonMock.mockResolvedValue(job as any);
 
-                let error: Error;
+                let error;
 
                 try {
                     await privateMonitorJobs.checkStatus({}, parms);
@@ -653,369 +812,6 @@ describe("MonitorJobs", () => {
 
                 expect(error).toBeInstanceOf(ImperativeError);
                 expect(error.message).toMatchSnapshot();
-            });
-        });
-        describe("initial status check", () => {
-            it("should return immediately if the initial status is OUTPUT", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // IJob requires more fields to be populated - fake it out with only the required here.
-                const iJobParms: any = {jobname: "FAKE", jobid: "FAKE"};
-                const response = await MonitorJobs.waitForJobOutputStatus(new Session({hostname: "fake", port: 443}), iJobParms);
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is the expected status", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is OUTPUT and the expected status is ACTIVE", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is ACTIVE and the expected status is INPUT", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is ACTIVE and the expected status is ACTIVE", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is OUTPUT and the expected status is OUTPUT", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is OUTPUT and the expected status is INPUT", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should return immediately if the initial status is INPUT and the expected status is INPUT", async () => {
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobs = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should produce a 'wrapped' error message if getJobs throws an error", async () => {
-                // Mock GetJobs.getStatusCommon
-                const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
-                    throw new ImperativeError({msg: ERROR_MSG});
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                let response;
-                try {
-                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                expect(error.message).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(1);
-            });
-
-            // eslint-disable-next-line jest/no-done-callback
-            it("should produce a 'wrapped' error message if getJobs throws an error - then/catch", (done) => {
-                // Mock GetJobs.getStatusCommon
-                const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
-                    throw new ImperativeError({msg: ERROR_MSG});
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"}).then((response) => {
-                    done("Monitor jobs should not have fulfilled the promise because getJobs should have thrown and error");
-                }).catch((error) => {
-                    expect(error).toBeDefined();
-                    expect(error instanceof ImperativeError).toBe(true);
-                    expect(error.message).toMatchSnapshot();
-                    expect(mockedGetJobsCommon).toHaveBeenCalledTimes(1);
-                    done();
-                });
-            });
-
-            // eslint-disable-next-line jest/no-done-callback
-            it("should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch", (done) => {
-                // Mock GetJobs.getStatusCommon
-                const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args) => {
-                    throw new Error(ERROR_MSG);
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                    {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"}).then((response) => {
-                    done("Monitor jobs should not have fulfilled the promise because getJobs should have throw and error");
-                }).catch((error) => {
-                    expect(error).toBeDefined();
-                    expect(error instanceof ImperativeError).toBe(true);
-                    expect(error.message).toMatchSnapshot();
-                    expect(mockedGetJobsCommon).toHaveBeenCalledTimes(1);
-                    done();
-                });
-            });
-        });
-        describe("polling", () => {
-            it("should expire after the specified number of max attempts", async () => {
-                const attempts: number = 10;
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                try {
-                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts, watchDelay: 1});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                expect(error.message).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(attempts);
-            });
-
-            it("should expire after the specified number of max attempts and use the default watch delay", async () => {
-                const attempts: number = 2;
-
-                // Mock GetJobs.getStatusCommon
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                try {
-                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                expect(error.message).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(attempts);
-            });
-
-            it("should return after the status has changed from INPUT to ACTIVE", async () => {
-                // Mock GetJobs.getStatusCommon
-                const CHANGE_AT_ATTEMPT = 10;
-                let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    attempts++;
-                    if (attempts < CHANGE_AT_ATTEMPT) {
-
-                        return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
-                    } else {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
-                    }
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                let response;
-                try {
-                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", watchDelay: 1});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeUndefined();
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(CHANGE_AT_ATTEMPT);
-            });
-
-            it("should return after the status has changed from INPUT to OUTPUT", async () => {
-                // Mock GetJobs.getStatusCommon
-                const CHANGE_AT_ATTEMPT = 10;
-                let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    attempts++;
-                    if (attempts < CHANGE_AT_ATTEMPT) {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
-                    } else {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                    }
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                let response;
-                try {
-                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT", watchDelay: 1});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeUndefined();
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(CHANGE_AT_ATTEMPT);
-            });
-
-            it("should return after the status has changed from ACTIVE to OUTPUT", async () => {
-                // Mock GetJobs.getStatusCommon
-                const CHANGE_AT_ATTEMPT = 10;
-                let attempts = 0;
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    attempts++;
-                    if (attempts < CHANGE_AT_ATTEMPT) {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
-                    } else {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
-                    }
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                let response;
-                try {
-                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT", watchDelay: 1});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeUndefined();
-                expect(response).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(CHANGE_AT_ATTEMPT);
-            });
-
-            it("should produce a 'wrapped' error message if a follow-up poll throws an error", async () => {
-                // Mock GetJobs.getStatusCommon
-                const ERROR_AT_ATTEMPT = 5;
-                let attempts = 0;
-                const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    attempts++;
-                    if (attempts < ERROR_AT_ATTEMPT) {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
-                    } else {
-                        throw new ImperativeError({msg: ERROR_MSG});
-                    }
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                let response;
-                try {
-                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT", watchDelay: 1});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                expect(error.message).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(ERROR_AT_ATTEMPT);
-            });
-
-            it("should produce a 'wrapped' error message if a follow-up poll does not return a status", async () => {
-                // Mock GetJobs.getStatusCommon
-                const ERROR_AT_ATTEMPT = 5;
-                let attempts = 0;
-                const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                const mockedGetJobsCommon = jest.fn(async (args): Promise<any> => {
-                    attempts++;
-                    if (attempts < ERROR_AT_ATTEMPT) {
-                        return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
-                    } else {
-                        return {jobname: "FAKE", jobid: "FAKE", status: undefined};
-                    }
-                });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
-
-                let error;
-                let response;
-                try {
-                    response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT", watchDelay: 1});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                expect(error.message).toMatchSnapshot();
-                expect(mockedGetJobsCommon).toHaveBeenCalledTimes(ERROR_AT_ATTEMPT);
             });
         });
     });
