@@ -73,7 +73,7 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        let conn_result = DaemonClient::connect(&daemon_socket);
+        let conn_result = DaemonClient::connect(daemon_socket);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
             break good_stream;
