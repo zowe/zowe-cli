@@ -1,8 +1,14 @@
 # Change Log
 
 All notable changes to the Zowe CLI package will be documented in this file.
+
+## Recent Changes
+
+- BugFix: Fixed daemon broken pipe error on Windows [#1538](https://github.com/zowe/zowe-cli/issues/1538)
+
 ## `7.9.4`
-- BugFix: Removing all line break encodings from strings for `zos-files compare local-file-data-set` [#1528](https://github.com/zowe/zowe-cli/issues/1528)
+
+- BugFix: Removed all line break encodings from strings for `zos-files compare local-file-data-set` [#1528](https://github.com/zowe/zowe-cli/issues/1528)
 
 ## `7.9.3`
 

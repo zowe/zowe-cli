@@ -168,6 +168,8 @@ jobs:
 
     - name: Build
       run: cargo build --verbose --release
+      env:
+        RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
     - name: Get Upload URL
       id: get_upload_url
