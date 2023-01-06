@@ -1,25 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MonitorJobs Private Methods checkStatus should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status \\"undefined\\" was received."`;
+exports[`MonitorJobs Private Methods checkStatus error handling should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status \\"undefined\\" was received."`;
 
-exports[`MonitorJobs Private Methods checkStatus should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status \\"something-invalid\\" was received."`;
+exports[`MonitorJobs Private Methods checkStatus error handling should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status \\"something-invalid\\" was received."`;
 
-exports[`MonitorJobs Private Methods pollForStatus should expire after the max attempts and the total time should exceed the attempts multiplied by the delay 1`] = `
+exports[`MonitorJobs Private Methods pollForStatus error handling should produce a 'wrapped' error message if a follow-up poll does not return a status 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: An unknown status \\"undefined\\" was received."
+`;
+
+exports[`MonitorJobs Private Methods pollForStatus error handling should produce a 'wrapped' error message if a follow-up poll throws an error 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+ERROR GETTING JOBS!"
+`;
+
+exports[`MonitorJobs Private Methods pollForStatus expects should expire after the max attempts and the total time should exceed the attempts multiplied by the delay 1`] = `
 "Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
 Error Details: Reached max poll attempts of \\"4\\""
 `;
 
-exports[`MonitorJobs Private Methods pollForStatus should expire after the specified number of max attempts 1`] = `
+exports[`MonitorJobs Private Methods pollForStatus expects should expire after the specified number of max attempts 1`] = `
 "Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
 Error Details: Reached max poll attempts of \\"10\\""
 `;
 
-exports[`MonitorJobs Private Methods pollForStatus should expire after the specified number of max attempts and use the default watch delay 1`] = `
+exports[`MonitorJobs Private Methods pollForStatus expects should expire after the specified number of max attempts and use the default watch delay 1`] = `
 "Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
 Error Details: Reached max poll attempts of \\"2\\""
 `;
 
-exports[`MonitorJobs Private Methods pollForStatus should return after the status has changed from INPUT to ACTIVE 1`] = `
+exports[`MonitorJobs Private Methods pollForStatus expects should return after the status has changed from ACTIVE to OUTPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`MonitorJobs Private Methods pollForStatus expects should return after the status has changed from INPUT to ACTIVE 1`] = `
 Object {
   "jobid": "FAKE",
   "jobname": "FAKE",
@@ -27,28 +45,59 @@ Object {
 }
 `;
 
-exports[`MonitorJobs Public Methods waitForJobOutputStatus should detect missing IJob 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
+exports[`MonitorJobs Private Methods pollForStatus expects should return after the status has changed from INPUT to OUTPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "OUTPUT",
+}
+`;
 
-exports[`MonitorJobs Public Methods waitForJobOutputStatus should throw an error when job is not passed 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
+exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching a normal error 1`] = `"THIS IS A NORMAL ERROR"`;
+
+exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching a wrapped error 1`] = `"THIS IS A WRAPPED ERROR!"`;
+
+exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching an ImperativeError 1`] = `"EXPECT THIS ERROR TO BE THROWN"`;
+
+exports[`MonitorJobs Public Methods waitForJobOutputStatus expects should detect missing IJob 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
+
+exports[`MonitorJobs Public Methods waitForJobOutputStatus expects should detect missing session 1`] = `"Expect Error: Session must be defined"`;
+
+exports[`MonitorJobs Public Methods waitForOutputStatus error handling should throw the proper error if catching a normal error 1`] = `"THIS IS A NORMAL ERROR"`;
+
+exports[`MonitorJobs Public Methods waitForOutputStatus error handling should throw the proper error if catching a wrapped error 1`] = `"THIS IS A WRAPPED ERROR!"`;
+
+exports[`MonitorJobs Public Methods waitForOutputStatus error handling should throw the proper error if catching an ImperativeError 1`] = `"EXPECT THIS ERROR TO BE THROWN"`;
+
+exports[`MonitorJobs Public Methods waitForOutputStatus expects should error if missing jobid 1`] = `"Expect Error: Jobid required"`;
+
+exports[`MonitorJobs Public Methods waitForOutputStatus expects should error if missing jobname 1`] = `"Expect Error: Jobname required"`;
+
+exports[`MonitorJobs Public Methods waitForOutputStatus expects should error if missing session 1`] = `"Expect Error: Session must be defined"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon error handling should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: An unknown status \\"undefined\\" was received."
+`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon error handling should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: An unknown status \\"undefined\\" was received."
+`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon error handling should produce a 'wrapped' error message if getJobs throws an error 1`] = `
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+Error Details: An unknown status \\"undefined\\" was received."
+`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws a normal error 1`] = `
-"Error obtaining status for jobname \\"JOB1234\\" jobid \\"123456\\".
+"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
 THIS IS A NORMAL ERROR"
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws an ImperativeError 1`] = `
-"Error obtaining status for jobname \\"JOB1234\\" jobid \\"123456\\".
-EXPECT THIS TO BE THROWN"
-`;
-
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
 "Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
-`;
-
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should produce a 'wrapped' error message if getJobs throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+EXPECT THIS ERROR TO BE THROWN"
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is ACTIVE and the expected status is ACTIVE 1`] = `
@@ -99,27 +148,29 @@ Object {
 }
 `;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should detect a blank jobid 1`] = `"Expect Error: Required parameter 'jobid' must not be blank"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if blank parms.jobid 1`] = `"Expect Error: Required parameter 'jobid' must not be blank"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should detect a blank jobname 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if blank parms.jobname 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should detect if missing params 1`] = `"Expect Error: IMonitorJobParms object required"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if invalid parms.attempts 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should detect invalid attempts type 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if invalid parms.status 1`] = `"Expect Error: The required entry was NOT found within the input array: 'INPUT','ACTIVE','OUTPUT'"`;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should detect invalid watchDelay type 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if invalid parms.watchDelay 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if invalid type for attempts 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if invalid type for status 1`] = `"Expect Error: The required entry was NOT found within the input array: 'INPUT','ACTIVE','OUTPUT'"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if invalid type for watchDelay 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
+
+exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if missing parms 1`] = `"Expect Error: IMonitorJobParms object required"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if missing parms.jobid 1`] = `"Expect Error: Required parameter 'jobid' must be defined"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if missing parms.jobname 1`] = `"Expect Error: Required parameter 'jobname' must be defined"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if missing session 1`] = `"Expect Error: Required session must be defined"`;
-
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if parms.attempts is not valid 1`] = `"Expect Error: Object key 'attempts' must be of type 'number'"`;
-
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if parms.status is not valid 1`] = `"Expect Error: The required entry was NOT found within the input array: 'INPUT','ACTIVE','OUTPUT'"`;
-
-exports[`MonitorJobs Public Methods waitForStatusCommon parameter expectations should error if parms.watchDelay is not valid 1`] = `"Expect Error: Object key 'watchDelay' must be of type 'number'"`;
 
 exports[`MonitorJobs constant defaults should have a job status 1`] = `"OUTPUT"`;
 
