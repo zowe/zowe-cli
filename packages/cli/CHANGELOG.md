@@ -2,6 +2,18 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.9.5`
+
+- BugFix: Fixed daemon broken pipe error on Windows [#1538](https://github.com/zowe/zowe-cli/issues/1538)
+
+## `7.9.4`
+
+- BugFix: Removed all line break encodings from strings for `zos-files compare local-file-data-set` [#1528](https://github.com/zowe/zowe-cli/issues/1528)
+
+## `7.9.3`
+
+- BugFix: Updated Imperative to include bugfixes in version `5.7.5`.
+
 ## `7.9.0`
 
 - Enhancement: Added new functions to support the changing of a job class and the hold status of a job. Can now call `zowe jobs modify job [jobid]` with options `--jobclass`, `--hold` and `--release`. [#1156](https://github.com/zowe/zowe-cli/issues/1156)

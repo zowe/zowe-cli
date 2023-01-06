@@ -148,7 +148,7 @@ pub fn proc_get_daemon_info() -> DaemonProcInfo {
            next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION
         {
             // ensure we have found the daemon for the current user
-            if my_daemon_pid_opt != None && &my_daemon_pid_opt.unwrap() == next_pid {
+            if my_daemon_pid_opt.is_some() && &my_daemon_pid_opt.unwrap() == next_pid {
                 // convert the process's command line from a vector to a string
                 let mut proc_cmd: String = String::new();
                 for cmd_part in next_process.cmd() {

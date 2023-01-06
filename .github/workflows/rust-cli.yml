@@ -100,6 +100,8 @@ jobs:
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+      env:
+        RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
     - name: Create Archive
       run: |
