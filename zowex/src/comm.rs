@@ -73,7 +73,7 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        let conn_result = DaemonClient::connect(&daemon_socket);
+        let conn_result = DaemonClient::connect(daemon_socket);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
             break good_stream;
@@ -243,6 +243,13 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
 
                     exit_code = p.exitCode.unwrap_or(EXIT_CODE_SUCCESS);
                     _progress = p.progress.unwrap_or(false);
+
+                    #[cfg(target_family = "windows")]
+                    if p.exitCode.is_some() {
+                        // we have the exit code, assume the transmission is over
+                        // fixes the broken pipe error in #1538
+                        break;
+                    }
                 } else {
                     // end of reading
                     break;
