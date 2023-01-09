@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to include bugfixes in version `5.7.6`.
+
 ## `7.9.5`
 
 - BugFix: Fixed daemon broken pipe error on Windows [#1538](https://github.com/zowe/zowe-cli/issues/1538)
