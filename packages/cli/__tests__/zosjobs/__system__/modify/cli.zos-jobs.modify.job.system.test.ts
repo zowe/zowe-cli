@@ -13,7 +13,6 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-const LOCAL_JCL_FILE: string = __dirname + "/__scripts__/job/" + "jcl.txt";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let jclMember: string;
 let jobclass: string;
@@ -25,7 +24,7 @@ describe("zos-jobs modify job command", () => {
             testName: "zos_jobs_modify_job_command",
             tempProfileTypes: ["zosmf"]
         });
-        jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.sleepMember;
+        jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         jobclass = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
     });
 

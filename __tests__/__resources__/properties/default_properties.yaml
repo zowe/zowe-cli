@@ -100,6 +100,8 @@ zosjobs:
   iefbr14USSFile: zosjobs-iefbr14USSFile
   # The jobclass for a non-held, etc jobclass
   jobclass: A
+  # A second jobclass used when modifying jobs
+  modifiedJobclass: B
   # System affinity
   sysaff: zosjobs-sysaff
 #-----------------------------------------------------------------------------#
