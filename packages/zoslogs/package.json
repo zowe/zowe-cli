@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-logs-for-zowe-sdk",
-  "version": "7.9.6",
+  "version": "7.9.7",
   "description": "Zowe SDK to interact with the z/OS logs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -46,8 +46,8 @@
   },
   "devDependencies": {
     "@types/node": "^14.18.28",
-    "@zowe/cli-test-utils": "7.9.6",
-    "@zowe/core-for-zowe-sdk": "7.9.6",
+    "@zowe/cli-test-utils": "7.9.7",
+    "@zowe/core-for-zowe-sdk": "7.9.7",
     "@zowe/imperative": "5.7.7",
     "eslint": "^8.22.0",
     "madge": "^4.0.1",
