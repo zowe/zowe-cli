@@ -309,6 +309,14 @@ describe("MonitorJobs", () => {
                     expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
                 });
 
+                it("should return immediately if the initial status is INPUT and the expected status is INPUT", async () => {
+                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
+                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
+                        {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
+                    expect(response).toMatchSnapshot();
+                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
+                });
+
                 it("should return immediately if the initial status is ACTIVE and the expected status is INPUT", async () => {
                     getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
                     const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
