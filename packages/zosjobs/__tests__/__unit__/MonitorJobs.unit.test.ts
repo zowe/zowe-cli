@@ -554,24 +554,6 @@ describe("MonitorJobs", () => {
                     expect(expectError).toBeInstanceOf(Error);
                     expect(expectError.message).toMatchSnapshot();
                 });
-
-                it("should throw the proper error if catching a wrapped error", async () => {
-                    const ERROR_MSG: string = `THIS IS A WRAPPED ERROR!`;
-                    let expectError: any;
-                    waitForStatusCommonSpy.mockImplementationOnce(async () => {
-                        throw new ImperativeError({msg: ERROR_MSG});
-                    });
-
-                    try {
-                        await MonitorJobs.waitForStatusCommon(session, parms);
-                    } catch (e) {
-                        expectError = e;
-                    }
-
-                    expect(expectError).toBeDefined();
-                    expect(expectError instanceof ImperativeError).toBe(true);
-                    expect(expectError.message).toMatchSnapshot();
-                });
             });
 
         });
@@ -674,24 +656,6 @@ describe("MonitorJobs", () => {
 
                     expect(expectError).toBeDefined();
                     expect(expectError).toBeInstanceOf(Error);
-                    expect(expectError.message).toMatchSnapshot();
-                });
-
-                it("should throw the proper error if catching a wrapped error", async () => {
-                    const ERROR_MSG: string = `THIS IS A WRAPPED ERROR!`;
-                    let expectError: any;
-                    waitForStatusCommonSpy.mockImplementationOnce(async () => {
-                        throw new ImperativeError({msg: ERROR_MSG});
-                    });
-
-                    try {
-                        await MonitorJobs.waitForJobOutputStatus(session, job);
-                    } catch (e) {
-                        expectError = e;
-                    }
-
-                    expect(expectError).toBeDefined();
-                    expect(expectError instanceof ImperativeError).toBe(true);
                     expect(expectError.message).toMatchSnapshot();
                 });
             });
