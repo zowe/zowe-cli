@@ -55,8 +55,6 @@ Object {
 
 exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching a normal error 1`] = `"THIS IS A NORMAL ERROR"`;
 
-exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching a wrapped error 1`] = `"THIS IS A WRAPPED ERROR!"`;
-
 exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching an ImperativeError 1`] = `"EXPECT THIS ERROR TO BE THROWN"`;
 
 exports[`MonitorJobs Public Methods waitForJobOutputStatus expects should detect missing IJob 1`] = `"Expect Error: IJob object (containing jobname and jobid) required"`;
@@ -64,8 +62,6 @@ exports[`MonitorJobs Public Methods waitForJobOutputStatus expects should detect
 exports[`MonitorJobs Public Methods waitForJobOutputStatus expects should detect missing session 1`] = `"Expect Error: Session must be defined"`;
 
 exports[`MonitorJobs Public Methods waitForOutputStatus error handling should throw the proper error if catching a normal error 1`] = `"THIS IS A NORMAL ERROR"`;
-
-exports[`MonitorJobs Public Methods waitForOutputStatus error handling should throw the proper error if catching a wrapped error 1`] = `"THIS IS A WRAPPED ERROR!"`;
 
 exports[`MonitorJobs Public Methods waitForOutputStatus error handling should throw the proper error if catching an ImperativeError 1`] = `"EXPECT THIS ERROR TO BE THROWN"`;
 
@@ -116,6 +112,14 @@ Object {
 }
 `;
 
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is INPUT and the expected status is INPUT 1`] = `
+Object {
+  "jobid": "FAKE",
+  "jobname": "FAKE",
+  "status": "INPUT",
+}
+`;
+
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is OUTPUT and the expected status is ACTIVE 1`] = `
 Object {
   "jobid": "FAKE",
@@ -132,15 +136,7 @@ Object {
 }
 `;
 
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is OUTPUT and the expected status is OUTPUT 1`] = `
-Object {
-  "jobid": "FAKE",
-  "jobname": "FAKE",
-  "status": "OUTPUT",
-}
-`;
-
-exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is the expected status 1`] = `
+exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is the expected status, ie: OUTPUT/ OUTPUT 1`] = `
 Object {
   "jobid": "FAKE",
   "jobname": "FAKE",

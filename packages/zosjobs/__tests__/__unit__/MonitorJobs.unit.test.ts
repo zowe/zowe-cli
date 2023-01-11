@@ -277,7 +277,7 @@ describe("MonitorJobs", () => {
                     expect(pollForStatusSpy).toHaveBeenLastCalledWith({}, parms);
                 });
 
-                it("should return immediately if the initial status is the expected status", async () => {
+                it("should return immediately if the initial status is the expected status, ie: OUTPUT/ OUTPUT", async () => {
                     getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
                     const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
                         {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
@@ -289,14 +289,6 @@ describe("MonitorJobs", () => {
                     getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
                     const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
                         {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
-                    expect(response).toMatchSnapshot();
-                    expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
-                });
-
-                it("should return immediately if the initial status is OUTPUT and the expected status is OUTPUT", async () => {
-                    getStatusCommonSpy.mockResolvedValueOnce({jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
-                    const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
                     expect(response).toMatchSnapshot();
                     expect(getStatusCommonSpy).toHaveBeenCalledTimes(1);
                 });
