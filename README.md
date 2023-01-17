@@ -198,3 +198,7 @@ npm run test:system
     Connection details can now be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/)
     
     Secure credential encryption is now included in the core CLI. The CLI prompts you to enter the username and password securely by default. Commands in the zowe config command group now let you manage security for any option value.
+
+<br/>
+
+Don't see what you're looking for? Browse questions from the community or ask your own in the [Q&A section](https://github.com/zowe/zowe-cli/discussions/categories/q-a) of our repo.
