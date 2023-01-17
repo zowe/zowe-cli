@@ -189,4 +189,12 @@ npm run test:system
     ```
     npm i -g @zowe/cli@latest --ignore-scripts
     ```
-    **Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
+    **WARNING!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
+
+**What is the difference between V1 and V2?**
+
+  - V2 comes with **team profiles** and the **deprecation of the Secure Credential Store** (SCS) plug-in.
+
+    Connection details can now be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/)
+    
+    Secure credential encryption is now included in the core CLI. The CLI prompts you to enter the username and password securely by default. Commands in the zowe config command group now let you manage security for any option value.
