@@ -43,7 +43,6 @@ Guidelines for contributing to Zowe SDKs| [SDK Guidelines](./docs/SDKGuidelines.
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs/MaintainerVersioning.md) |
 | Miscellaneous tips for development | [Development Tips](./docs/DevelopmentTips.md)
 
-
 **Tip:** 
 - Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://docs.zowe.org/stable/extend/extend-cli/cli-devTutorials.html).
 
@@ -70,8 +69,6 @@ When you update `package.json` to include new dependencies, or when you pull cha
 npm update
 ```
 
-<br/>
-
 **Tip:** 
 - When necessary, you can run the install command again to update dependencies changed in `package.json`.
 
@@ -83,8 +80,6 @@ From your copy of this repository, after a build, navigate to the `packages/cli`
 ```
 npm install -g
 ```
-
-<br/>
 
 **Notes:** 
 - Depending on how you configured npm on Linux or Mac, you might need to prefix the `npm install -g` command or the `npm uninstall -g` command with `sudo` to let npm have write access to the installation directory.
@@ -119,8 +114,6 @@ zowe zosmf check status
 
 For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-usingcli.html).
 
-<br/>
-
 **Tip:** 
 - When you confirm that your profile connects to and communicates with your mainframe system successfully, you can issue the same command at any time to verify the availability and status of the z/OSMF subsystem on your mainframe.
 
@@ -131,8 +124,6 @@ For detailed information about creating service profiles, creating base profiles
 The Zowe Node Client SDK consists of APIs that enable you to build client applications that interface with the mainframe. Use the APIs to build your own client applications or automation scripts, independent of Zowe CLI.
 
 For information about downloading and getting started with the SDK, see the [Zowe Docs](https://docs.zowe.org/stable/user-guide/sdks-using). To view the Zowe Node.js SDK doc, see [Zowe SDK Docs](https://docs.zowe.org/stable/typedoc/index.html).
-
-<br/>
 
 **Tip:** 
 - Alternatively, you can import Zowe CLI into your project to call the Node APIs. However, importing all of Zowe CLI will increase the size of your project. For example, use the following statement to import packages from Zowe CLI:
@@ -198,5 +189,4 @@ npm run test:system
     ```
     npm i -g @zowe/cli@latest --ignore-scripts
     ```
-
     **Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
