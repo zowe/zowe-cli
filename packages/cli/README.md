@@ -193,11 +193,11 @@ npm run test:system
 
 **What is the difference between V1 and V2?**
 
-  - V2 comes with **team profiles** and the **deprecation of the Secure Credential Store** (SCS) plug-in.
+  - V2 uses **team profiles** and **deprecates the Secure Credential Store** (SCS) plug-in.
 
-    Connection details can now be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/)
+    Connection details can be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/)
     
-    Secure credential encryption is now included in the core CLI. The CLI prompts you to enter the username and password securely by default. Commands in the zowe config command group now let you manage security for any option value.
+    Secure credential encryption is included in the core CLI.
 
 <br/>
 
