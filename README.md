@@ -79,7 +79,10 @@ npm update
 
 ## **Install Zowe CLI From Source**
 From your copy of this repository, after a build, navigate to the `packages/cli` directory, then issue the following command to install Zowe CLI from source:
->npm install -g
+
+```
+npm install -g
+```
 
 <br/>
 
@@ -91,7 +94,10 @@ From your copy of this repository, after a build, navigate to the `packages/cli`
 
 ## **Uninstall Zowe CLI**
 From your local copy of this repository, issue the following command to uninstall Zowe CLI:
->npm uninstall --global @zowe/cli
+
+```
+npm uninstall --global @zowe/cli
+```
 
 <br/>
 
@@ -100,10 +106,16 @@ From your local copy of this repository, issue the following command to uninstal
 Zowe CLI configuration is made up of different **profiles**. The profiles contain the information that Zowe CLI needs to communicate with the mainframe system. For example, credentials and z/OSMF host name. If you try to use Zowe CLI functionality and you get an error message that Zowe CLI failed to load any profiles, see the `zowe profiles create --help` command for the group of commands that you are trying to use (if any) to initialize your configuration.
 
 The most fundamental Zowe CLI profile is a `zosmf` profile. Issue the following command to understand how to create a `zosmf` profile in Zowe CLI:
->zowe profiles create zosmf-profile --help
+
+```
+zowe profiles create zosmf-profile --help
+```
 
 After you create your profile, you can confirm that the properties of your profile can connect to and communicate with your mainframe system successfully by issuing the following command:
->zowe zosmf check status
+
+```
+zowe zosmf check status
+```
 
 For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-usingcli.html).
 
@@ -125,8 +137,9 @@ For information about downloading and getting started with the SDK, see the [Zow
 **Tip:** 
 - Alternatively, you can import Zowe CLI into your project to call the Node APIs. However, importing all of Zowe CLI will increase the size of your project. For example, use the following statement to import packages from Zowe CLI:
 
-  >import { <interfaceName> } from @zowe/cli
-
+  ```
+  import { <interfaceName> } from @zowe/cli
+  ```
     Where `<interfaceName>` is the name of an interface that you populate (i.e. `IIssueParms`) or a function that submits requests (i.e `IssueCommand`).
 
 
@@ -153,16 +166,22 @@ For example usage syntax, see the readme for each API package in this repository
 In addition to Node.js, you must have a means to execute `.sh` (bash) scripts, which are required for running integration tests. On Windows, you can install "Git Bash" (bundled with the standard [Git](https://git-scm.com/downloads) installation - check "Use Git and Unix Tools from Windows Command Prompt" installation option).
 
 After downloading/installing the prerequisites, ensure that you can execute the following commands and receive success responses:
->1. node --version
->2. npm --version
->3. where sh  <i>(Windows only)</i> 
+
+```
+1. `node --version`
+2. `npm --version`
+3. On Windows: `where sh`
+```
 
 To run Zowe CLI system tests, you need a configured properties file with proper system information present.
 
 A dummy properties file is present in the `__tests__/__resources__/properties folder`, `default_properties.yaml`. Using this file as a template, you should create a `custom_properties.yaml` file within the same directory. Git is configured to ignore all properties files in the properties folder, except for the `default_properties.yaml` file. If the `custom_properties.yaml` file cannot be found or loaded, an error with relevant details will be thrown when attempting to run tests.
 
 You can then run the system tests by issuing the following command:
->npm run test:system
+
+```
+npm run test:system
+```
 
 <br/>
 
@@ -176,6 +195,8 @@ You can then run the system tests by issuing the following command:
 
   - You can install the CLI as root so that all users can access the CLI without installing it individually on their user account. As the root user on Mac/Linux, issue the following command:
 
-    >npm i -g @zowe/cli@latest --ignore-scripts
+    ```
+    npm i -g @zowe/cli@latest --ignore-scripts
+    ```
 
     **Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
