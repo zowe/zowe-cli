@@ -10,12 +10,12 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 ## **Contents**  <!-- omit in toc -->
  - [Documentation](#documentation)
  - [Contribution Guidelines](#contribution-guidelines)
- - [Build Zowe CLI From Source](#build-zowe-cli-from-source)
- - [Install Zowe CLI From Source](#install-zowe-cli-from-source)
- - [Uninstall Zowe CLI](#uninstall-zowe-cli)
- - [Configure Zowe CLI](#configure-zowe-cli)
+ - [Building Zowe CLI From Source](#build-zowe-cli-from-source)
+ - [Installing Zowe CLI From Source](#install-zowe-cli-from-source)
+ - [Uninstalling Zowe CLI](#uninstall-zowe-cli)
+ - [Configuring Zowe CLI](#configure-zowe-cli)
  - [Zowe Node Client SDK](#zowe-node-client-sdk)
- - [Run System Tests](#run-system-tests)
+ - [Running System Tests](#run-system-tests)
  - [FAQs](#frequently-asked-questions)
 
 <br/>
@@ -48,7 +48,7 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 
 <br/>
 
-## **Build Zowe CLI From Source**
+## **Building Zowe CLI From Source**
 Zowe CLI requires NPM version 7 to install from source. Before proceeding, check your NPM version with `npm --version` and if it's older than 7.x, update with `npm install -g npm`.
 
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
@@ -74,7 +74,7 @@ npm update
 
 <br/>
 
-## **Install Zowe CLI From Source**
+## **Installing Zowe CLI From Source**
 From your copy of this repository, after a build, navigate to the `packages/cli` directory, then issue the following command to install Zowe CLI from source:
 
 ```
@@ -87,7 +87,7 @@ npm install -g
 
 <br/>
 
-## **Uninstall Zowe CLI**
+## **Uninstalling Zowe CLI**
 From your local copy of this repository, issue the following command to uninstall Zowe CLI:
 
 ```
@@ -96,7 +96,7 @@ npm uninstall --global @zowe/cli
 
 <br/>
 
-## **Configure Zowe CLI**
+## **Configuring Zowe CLI**
 
 Zowe CLI configuration is made up of different **profiles**. The profiles contain the information that Zowe CLI needs to communicate with the mainframe system. For example, credentials and z/OSMF host name. If you try to use Zowe CLI functionality and you get an error message that Zowe CLI failed to load any profiles, see the `zowe profiles create --help` command for the group of commands that you are trying to use (if any) to initialize your configuration.
 
@@ -152,7 +152,7 @@ For example usage syntax, see the readme for each API package in this repository
 
 <br/>
 
-## **Run System Tests**
+## **Running System Tests**
 
 In addition to Node.js, you must have a means to execute `.sh` (bash) scripts, which are required for running integration tests. On Windows, you can install "Git Bash" (bundled with the standard [Git](https://git-scm.com/downloads) installation - check "Use Git and Unix Tools from Windows Command Prompt" installation option).
 
