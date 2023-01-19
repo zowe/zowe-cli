@@ -50,6 +50,22 @@ export const OutputDefinition: ICommandDefinition = {
             description: "If specified, job output will be saved directly to the specified " +
                 "directory rather than creating a subdirectory named after the ID of the job.",
             type: "boolean"
+        },
+        {
+            name: "binary",
+            aliases: ["b"],
+            description: "If specified, job output will be downloaded in binary format instead " +
+                "of performing text conversion. Conflicts with record.",
+            type: "boolean",
+            conflictsWith: ["record"]
+        },
+        {
+            name: "record",
+            aliases: ["r"],
+            description: "If specified, job output will be downloaded in record format instead " +
+                "of performing text conversion. Conflicts with binary.",
+            type: "boolean",
+            conflictsWith: ["binary"]
         }
     ] as ICommandOptionDefinition[]),
     examples: [
