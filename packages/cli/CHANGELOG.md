@@ -2,6 +2,8 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- BugFix: Fixed the default version from "1.0" to "2.0" across job commands [#1459](https://github.com/zowe/zowe-cli/issues/1459)
 ## `7.9.7`
 
 - BugFix: Updated Imperative to include bugfixes in version `5.7.7`.
