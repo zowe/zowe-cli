@@ -44,7 +44,7 @@ export const OldJobsDefinition: ICommandDefinition = {
             description: strings.ACTIONS.JOB.OPTIONS.MODIFY_VERSION,
             type: "string",
             required: false,
-            defaultValue: "1.0"
+            defaultValue: "2.0"
         }
     ],
     examples: [
