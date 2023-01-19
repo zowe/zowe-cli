@@ -111,7 +111,7 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
+        const contextLinesArg = commandParameters.arguments.contextLines;
 
         jsonDiff = await DiffUtils.getDiffString(lfContentString, ussContentString, {
             outputFormat: 'terminal',

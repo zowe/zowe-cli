@@ -62,7 +62,7 @@ export default class SpoolddHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
+        const contextLinesArg = commandParameters.arguments.contextLines;
 
         jsonDiff = await DiffUtils.getDiffString(spoolContentString1, spoolContentString2, {
             outputFormat: 'terminal',

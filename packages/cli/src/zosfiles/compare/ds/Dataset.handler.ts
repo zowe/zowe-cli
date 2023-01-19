@@ -105,13 +105,12 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
+        const contextLines = commandParameters.arguments.contextLines;
 
         jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
             outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
+            contextLinesArg: contextLines
         });
-
 
         return {
             success: true,

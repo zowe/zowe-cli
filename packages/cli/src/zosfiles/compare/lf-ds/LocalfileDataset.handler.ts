@@ -113,7 +113,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
+        const contextLinesArg = commandParameters.arguments.contextLines;
 
         //remove all line break encodings from strings
         jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
