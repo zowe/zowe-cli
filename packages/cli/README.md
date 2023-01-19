@@ -23,7 +23,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 ## **Documentation**
 For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/getting-started/cli-getting-started/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
-To view the Web Help for all Zowe CLI commands and contributed plug-ins, see the [Zowe CLI Web Help](https://docs.zowe.org/stable/web_help/index.html). To view all locally accessible commands, run `zowe --help-web`. For more use cases and tutorials visit [Medium.com/zowe](https://medium.com/zowe).
+Engineering design documentation is contained in the 'docs' directory in this repository. To view the Web Help for all Zowe CLI commands and contributed plug-ins, see the [Zowe CLI Web Help](https://docs.zowe.org/stable/web_help/index.html). To view all locally accessible commands, run `zowe --help-web`. For more use cases and tutorials visit [Medium.com/zowe](https://medium.com/zowe).
 
 <br/>
 
@@ -39,7 +39,6 @@ Guidelines for contributing to Zowe SDKs| [SDK Guidelines](./docs/SDKGuidelines.
 | Guidelines for running tests on the plug-ins that you build| [Plug-in Testing Guidelines](./docs/PluginTESTINGGuidelines.md) |
 | Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
 | Naming CLI commands and developing syntax | [Command Format Standards](./docs/CommandFormatStandards.md) |
-| Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs/MaintainerVersioning.md) |
 | Miscellaneous tips for development | [Development Tips](./docs/DevelopmentTips.md)
 
@@ -112,7 +111,7 @@ After you create your profile, you can confirm that the properties of your profi
 zowe zosmf check status
 ```
 
-For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-usingcli.html).
+For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-using-usingcli/).
 
 **Tip:** 
 - When you confirm that your profile connects to and communicates with your mainframe system successfully, you can issue the same command at any time to verify the availability and status of the z/OSMF subsystem on your mainframe.
@@ -195,7 +194,7 @@ npm run test:system
 
   - V2 uses **team profiles** and **deprecates the Secure Credential Store** (SCS) plug-in.
 
-    Connection details can be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/)
+    Connection details can be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/).
     
     Secure credential encryption is included in the core CLI.
 
