@@ -4,11 +4,6 @@ exports[`zos-jobs download output command should display an error when binary an
 "
 Syntax Error:
 The following options conflict (mutually exclusive):
---binary
---record
-
-Syntax Error:
-The following options conflict (mutually exclusive):
 --record
 --binary
 
