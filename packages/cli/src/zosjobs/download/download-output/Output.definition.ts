@@ -56,8 +56,7 @@ export const OutputDefinition: ICommandDefinition = {
             aliases: ["b"],
             description: "If specified, job output will be downloaded in binary format instead " +
                 "of performing text conversion. Conflicts with record.",
-            type: "boolean",
-            conflictsWith: ["record"]
+            type: "boolean"
         },
         {
             name: "record",

@@ -39,4 +39,11 @@ describe("zos-jobs download output command", () => {
         expect(response.stderr.toString()).toMatchSnapshot();
     });
 
+    it("should display an error when binary and record are both specified", () => {
+        const response = runCliScript(__dirname + "/__scripts__/download-output/conflicting_options.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stdout.toString()).toBe("");
+        expect(response.stderr.toString()).toMatchSnapshot();
+    });
+
 });

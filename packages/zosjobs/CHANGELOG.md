@@ -2,10 +2,16 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added support for downloading job spool content in binary and record formats.
+
 ## `7.9.1`
+
 -BugFix: Introduced check to ensure ModifyJobs.modifyJobCommon can not be called with an empty options object
 
 ## `7.9.0`
+
 - Enhancement: New api call added to request a list of jobs by any supported parameter including status
 - Enhancement: Added new methods to support the changing of a job class and the hold status of a job: `ModifyJobs.modifyJob`, `ModifyJobs.modifyJobCommon` [#1156](https://github.com/zowe/zowe-cli/issues/1156)
 
