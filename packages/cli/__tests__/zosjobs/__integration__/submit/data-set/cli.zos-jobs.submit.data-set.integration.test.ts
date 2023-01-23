@@ -39,35 +39,35 @@ describe("zos-jobs submit data-set command", () => {
     });
 
     describe("syntax errors", () => {
-        it("should occur if the data set name is missing", async () => {
+        it("should occur if the data set name is missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_missing_data_set.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should throw an error if extension option passed while directory option wasn't", async () => {
+        it("should throw an error if extension option passed while directory option wasn't", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_conflict_options.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if an extra unknown option is specified", async () => {
+        it("should occur if an extra unknown option is specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_invalid_parm.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if both --wait-for-active and --directory is specified", async () => {
+        it("should occur if both --wait-for-active and --directory is specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_directory.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if both --wait-for-active and --vasc is specified", async () => {
+        it("should occur if both --wait-for-active and --vasc is specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_vasc.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");

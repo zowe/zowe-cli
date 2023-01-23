@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`download output handler tests should download a job output in binary mode 1`] = `
+"Successfully downloaded the job output
+Destination: ./output"
+`;
+
+exports[`download output handler tests should download a job output in binary mode 2`] = `Object {}`;
+
+exports[`download output handler tests should download a job output in record mode 1`] = `
+"Successfully downloaded the job output
+Destination: ./output"
+`;
+
+exports[`download output handler tests should download a job output in record mode 2`] = `Object {}`;
+
 exports[`download output handler tests should download a job output omitting the output directory 1`] = `
 "Successfully downloaded the job output
 Destination: ./output"
