@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 zowe zos-jobs submit stdin -h
