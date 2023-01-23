@@ -30,6 +30,7 @@ describe("zos-jobs submit command", () => {
     it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/submit_help.sh", TEST_ENVIRONMENT);
         expect(response.status).not.toBe(null); // FIXME
+        expect(response.status).toBe(0); // FIXME
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
