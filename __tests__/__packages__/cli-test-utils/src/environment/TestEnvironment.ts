@@ -175,7 +175,9 @@ export class TestEnvironment {
         let installScript: string = TempTestProfiles.SHEBANG;
         installScript += `zowe plugins install ${pluginRelPath}\n`; // install plugin from root of project
         installScript += `zowe plugins validate ${packageJson.name}\n`;
-        installScript += `zowe ${pluginConfig.name} --help\n`; // check that the plugin help is available
+        if (pluginConfig.definitions != null && pluginConfig.definitions.length > 0) {
+            installScript += `zowe ${pluginConfig.name} --help\n`; // check that the plugin help is available
+        }
         const scriptPath = testEnvironment.workingDir + "/install_plugin.sh";
         IO.writeFile(scriptPath, Buffer.from(installScript));
         fs.chmodSync(scriptPath, "755");
