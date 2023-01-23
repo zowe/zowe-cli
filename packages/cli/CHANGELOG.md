@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.10.0`
 
 - Enhancement: Added support for downloading job spool content in binary and record formats.
 

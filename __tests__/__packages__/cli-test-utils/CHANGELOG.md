@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
-## Recent Changes
+## `7.10.0`
 
 - BugFix: Fixed plugin install failing if plugin does not contribute command definitions.
 
