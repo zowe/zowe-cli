@@ -25,7 +25,7 @@ describe("zos-jobs download output command", () => {
         });
     });
 
-    it("should display the help", async () => {
+    it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/download-output/help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -34,6 +34,13 @@ describe("zos-jobs download output command", () => {
 
     it("should display an error when jobid is missing", () => {
         const response = runCliScript(__dirname + "/__scripts__/download-output/missing_jobid.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stdout.toString()).toBe("");
+        expect(response.stderr.toString()).toMatchSnapshot();
+    });
+
+    it("should display an error when binary and record are both specified", () => {
+        const response = runCliScript(__dirname + "/__scripts__/download-output/conflicting_options.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
         expect(response.stdout.toString()).toBe("");
         expect(response.stderr.toString()).toMatchSnapshot();
