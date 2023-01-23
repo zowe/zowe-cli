@@ -37,14 +37,14 @@ describe("zos-jobs view spool-file-by-id command", () => {
     });
 
     describe("syntax errors", () => {
-        it("should occur if the jobid and spool file id are missing", async () => {
+        it("should occur if the jobid and spool file id are missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/missing_jobid_and_spool_id.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
             expect(response.status).toBe(1);
         });
 
-        it("should occur if the spool file id is missing", async () => {
+        it("should occur if the spool file id is missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/missing_spool_id.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();

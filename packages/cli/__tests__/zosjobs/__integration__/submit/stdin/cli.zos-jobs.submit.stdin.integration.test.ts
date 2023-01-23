@@ -27,7 +27,7 @@ describe("zos-jobs submit command", () => {
         });
     });
 
-    it("should display the help", async () => {
+    it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/submit_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -35,8 +35,7 @@ describe("zos-jobs submit command", () => {
     });
 
     describe("Syntax errors", () => {
-        it("should occur if --wfa and --directory are both specified", async () => {
-
+        it("should occur if --wfa and --directory are both specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_directory.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.status).toBe(1);
@@ -44,8 +43,7 @@ describe("zos-jobs submit command", () => {
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if --wfa and --vasc are both specified", async () => {
-
+        it("should occur if --wfa and --vasc are both specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_vasc.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.status).toBe(1);
