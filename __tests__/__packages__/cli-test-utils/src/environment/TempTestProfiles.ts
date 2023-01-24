@@ -19,7 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Config, ImperativeError, IO } from "@zowe/imperative";
 
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { runCliScript, isStderrEmptyForProfilesCommand } from "../TestUtils";
+import { runCliScript, stripProfileDeprecationMessages } from "../TestUtils";
 
 /**
  * Utilities for creating and cleaning up temporary profiles for tests
@@ -116,7 +116,7 @@ export class TempTestProfiles {
      * profiles.
      */
     private static get usingTeamConfig(): boolean {
-        if (this.forceOldProfiles) return true;
+        if (this.forceOldProfiles) return false;
         const envOldProfiles = process.env.ZOWE_CLI_TEST_OLD_PROFILES;
         return envOldProfiles !== "1" && envOldProfiles?.toLowerCase() !== "true";
     }
@@ -137,7 +137,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || !isStderrEmptyForProfilesCommand(output.stderr)) {
+        if (output.status !== 0 || stripProfileDeprecationMessages(output.stderr).length > 0) {
             throw new ImperativeError({
                 msg: `Creation of ${profileType} profile '${profileName}' failed! You should delete the script: ` +
                     `'${scriptPath}' after reviewing it to check for possible errors. Stderr of the profile create ` +
@@ -187,7 +187,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_delete_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, deleteProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || !isStderrEmptyForProfilesCommand(output.stderr)) {
+        if (output.status !== 0 || stripProfileDeprecationMessages(output.stderr).length > 0) {
             throw new ImperativeError({
                 msg: "Deletion of " + profileType + " profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
