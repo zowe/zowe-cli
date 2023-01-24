@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
-## Recent Changes
+## `7.10.1`
 
 - BugFix: Fixed team config being created instead of v1 profiles when `createOldProfiles` was true.
 - Deprecated: Removed the utility method `isStderrEmptyForProfilesCommand`. Use `stripProfileDeprecationMessages(output).length === 0` instead.
