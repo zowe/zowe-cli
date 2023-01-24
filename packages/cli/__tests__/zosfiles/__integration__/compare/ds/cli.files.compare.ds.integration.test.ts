@@ -45,7 +45,7 @@ describe("Compare two data sets", () => {
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
         expect(response.stderr.toString()).toContain("dataSetName1");
     });
-    
+
     it("should display an error when command includes an undefined option", () => {
         const response = runCliScript(__dirname + "/__scripts__/bogus_flag.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);

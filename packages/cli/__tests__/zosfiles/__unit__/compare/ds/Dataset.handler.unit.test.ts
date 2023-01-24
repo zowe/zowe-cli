@@ -111,16 +111,16 @@ describe("Compare data set handler", () => {
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
         it("should compare two data sets in terminal with --context-lines option", async () => {
-            let contextLinesArg: number = 2;
-            let processArgCopy: any = {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
                     contextLines: contextLinesArg
                 }
             };
-            let options: IDiffOptions = {
-                contextLinesArg, 
+            const options: IDiffOptions = {
+                contextLinesArg,
                 outputFormat: "terminal"
             };
 
@@ -147,7 +147,7 @@ describe("Compare data set handler", () => {
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options)
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two data sets in browser", async () => {

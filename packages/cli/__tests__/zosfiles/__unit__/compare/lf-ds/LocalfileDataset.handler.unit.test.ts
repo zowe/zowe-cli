@@ -85,7 +85,6 @@ describe("Compare local-file and data-set handler", () => {
         });
 
         it("should compare local-file and data-set in terminal", async () => {
-
             DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
             });
@@ -112,19 +111,19 @@ describe("Compare local-file and data-set handler", () => {
         });
 
         it("should compare local-file and data-set in terminal with --context-lines option", async () => {
-            let contextLinesArg: number = 2;
-            let processArgCopy: any = {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
                     contextLines: contextLinesArg
                 }
-            }
-            let options: IDiffOptions = {
-                contextLinesArg, 
+            };
+            const options: IDiffOptions = {
+                contextLinesArg,
                 outputFormat: "terminal"
-            }
-            
+            };
+
             DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
             });
@@ -148,7 +147,7 @@ describe("Compare local-file and data-set handler", () => {
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options)
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
 
         it("should compare local-file and data-set in browser", async () => {

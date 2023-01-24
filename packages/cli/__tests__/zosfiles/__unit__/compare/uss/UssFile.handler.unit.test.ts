@@ -74,7 +74,7 @@ describe("Compare data set handler", () => {
                 get: profFunc
             }
         };
-        
+
         beforeEach(()=> {
             // Mock the get uss function
             Get.USSFile = jest.fn(async (session) => {
@@ -113,19 +113,19 @@ describe("Compare data set handler", () => {
         });
 
         it("should compare two uss-files in terminal with --context-lines option", async () => {
-            let contextLinesArg: number = 2;
-            let processArgCopy: any = {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
                     contextLines: contextLinesArg
                 }
             };
-            let options: IDiffOptions = {
-                contextLinesArg, 
+            const options: IDiffOptions = {
+                contextLinesArg,
                 outputFormat: "terminal"
             };
-            
+
             DiffUtils.getDiffString = jest.fn(async () => {
                 return "compared string";
 

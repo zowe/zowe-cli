@@ -85,7 +85,7 @@ describe("Compare local-file and uss-file handler", () => {
             });
             logMessage = "";
         });
-        
+
         it("should compare local-file and uss-file in terminal", async () => {
 
             DiffUtils.getDiffString = jest.fn(async () => {
@@ -114,16 +114,16 @@ describe("Compare local-file and uss-file handler", () => {
         });
 
         it("should compare local-file and uss-file in terminal with --context-lines option", async () => {
-            let contextLinesArg: number = 2;
-            let processArgCopy: any = {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
                     contextLines: contextLinesArg
                 }
             };
-            let options: IDiffOptions = {
-                contextLinesArg, 
+            const options: IDiffOptions = {
+                contextLinesArg,
                 outputFormat: "terminal"
             };
 

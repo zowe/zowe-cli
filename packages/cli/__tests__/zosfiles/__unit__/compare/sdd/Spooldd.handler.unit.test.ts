@@ -12,8 +12,6 @@
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { DiffUtils, IDiffOptions } from "@zowe/imperative";
-import { readFileSync } from "fs";
-
 describe("Compare spooldd handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
@@ -118,16 +116,16 @@ describe("Compare spooldd handler", () => {
         });
 
         it("should compare two spooldd in terminal with --context-lines option", async () => {
-            let contextLinesArg: number = 2;
-            let processArgCopy: any = {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
                     contextLines: contextLinesArg
                 }
             };
-            let options: IDiffOptions = {
-                contextLinesArg, 
+            const options: IDiffOptions = {
+                contextLinesArg,
                 outputFormat: "terminal"
             };
 
@@ -149,9 +147,9 @@ describe("Compare spooldd handler", () => {
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options)
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
         });
-        
+
         it("should compare two spooldd in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 
