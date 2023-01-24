@@ -7,3 +7,11 @@ Object {
   "success": true,
 }
 `;
+
+exports[`Compare data set handler process method should compare two data sets in terminal with --context-lines option 1`] = `
+Object {
+  "apiResponse": Object {},
+  "commandResponse": "compared string",
+  "success": true,
+}
+`;

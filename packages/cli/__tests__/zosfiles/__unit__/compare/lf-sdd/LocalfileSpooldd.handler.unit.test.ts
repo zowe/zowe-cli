@@ -11,7 +11,8 @@
 
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { readFileSync } from "fs";
 
 describe("Compare localfile-spooldd handler", () => {
     describe("process method", () => {
@@ -32,11 +33,6 @@ describe("Compare localfile-spooldd handler", () => {
         const jobId: string = spoolDescArr[1];
         const spoolId: number = Number(spoolDescArr[2]);
 
-        // Mock the get uss function
-        GetJobs.getSpoolContentById = jest.fn(async (session) => {
-            fakeSession = session;
-            return "compared";
-        });
         // Mocked function references
         const profFunc = jest.fn((args) => {
             return {
@@ -85,7 +81,15 @@ describe("Compare localfile-spooldd handler", () => {
                 get: profFunc
             }
         };
-
+        
+        beforeEach(()=> {
+            // Mock the get uss function
+            GetJobs.getSpoolContentById = jest.fn(async (session) => {
+                fakeSession = session;
+                return "compared";
+            });
+            logMessage = "";
+        });
 
         it("should compare a local-file and a spool-dd in terminal", async () => {
 
@@ -107,6 +111,41 @@ describe("Compare localfile-spooldd handler", () => {
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+        });
+
+        it("should compare a local-file and a spool-dd in terminal with --context-lines option", async () => {
+            let contextLinesArg: number = 2;
+            let processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    contextLines: contextLinesArg
+                }
+            };
+            let options: IDiffOptions = {
+                contextLinesArg, 
+                outputFormat: "terminal"
+            };
+
+            DiffUtils.getDiffString = jest.fn(async () => {
+                return "compared string";
+
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName, jobId, spoolId);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);   
         });
 
         it("should compare a local-file and a spool-dd in browser", async () => {

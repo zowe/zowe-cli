@@ -11,7 +11,7 @@
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions } from "@zowe/imperative";
 
 describe("Compare data set handler", () => {
     describe("process method", () => {
@@ -27,11 +27,6 @@ describe("Compare data set handler", () => {
         let logMessage = "";
         let fakeSession: object;
 
-        // Mock the get uss function
-        Get.USSFile = jest.fn(async (session) => {
-            fakeSession = session;
-            return Buffer.from("compared");
-        });
         // Mocked function references
         const profFunc = jest.fn((args) => {
             return {
@@ -43,7 +38,6 @@ describe("Compare data set handler", () => {
                 rejectUnauthorized: "fake",
             };
         });
-
         const processArguments = {
             arguments: {
                 $0: "fake",
@@ -80,7 +74,15 @@ describe("Compare data set handler", () => {
                 get: profFunc
             }
         };
-
+        
+        beforeEach(()=> {
+            // Mock the get uss function
+            Get.USSFile = jest.fn(async (session) => {
+                fakeSession = session;
+                return Buffer.from("compared");
+            });
+            logMessage = "";
+        });
 
         it("should compare two uss-files in terminal", async () => {
 
@@ -108,6 +110,47 @@ describe("Compare data set handler", () => {
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+        });
+
+        it("should compare two uss-files in terminal with --context-lines option", async () => {
+            let contextLinesArg: number = 2;
+            let processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    contextLines: contextLinesArg
+                }
+            };
+            let options: IDiffOptions = {
+                contextLinesArg, 
+                outputFormat: "terminal"
+            };
+            
+            DiffUtils.getDiffString = jest.fn(async () => {
+                return "compared string";
+
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(Get.USSFile).toHaveBeenCalledTimes(2);
+            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Retrieving second uss-file"
+                }
+            });
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two uss-files in browser", async () => {

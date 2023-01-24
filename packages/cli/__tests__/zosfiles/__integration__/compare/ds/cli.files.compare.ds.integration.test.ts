@@ -31,7 +31,7 @@ describe("Compare two data sets", () => {
     });
 
     it("should display the help", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command_compare_data_set_help.sh");
+        const shellScript = path.join(__dirname, "__scripts__/compare_data_set_help.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT);
         expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
@@ -39,10 +39,20 @@ describe("Compare two data sets", () => {
     });
 
     it("should fail due to missing data set name", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command", "command_compare_data_set.sh");
+        const shellScript = path.join(__dirname, "__scripts__/compare_data_set.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
         expect(response.stderr.toString()).toContain("dataSetName1");
     });
+    
+    it("should display an error when command includes an undefined option", () => {
+        const response = runCliScript(__dirname + "/__scripts__/bogus_flag.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stdout.toString()).toBe("");
+        expect(response.stderr.toString()).toContain(
+            "Command failed due to improper syntax"
+        );
+    });
+
 });

@@ -78,7 +78,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         let lfContentString = "";
         let dsContentString = "";
 
-        if (!commandParameters.arguments.seqnum) {
+        if (commandParameters.arguments.seqnum === false) {
             const seqnumlen = 8;
 
             const lfStringArray = lfContentBuf.toString().split("\n");

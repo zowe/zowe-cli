@@ -58,7 +58,7 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
         const lfContentBuf = fs.readFileSync(localFile);
 
         let lfContentString: string = "";
-        if (!commandParameters.arguments.seqnum) {
+        if (commandParameters.arguments.seqnum === false) {
             const seqnumlen = 8;
 
             const lfStringArray = lfContentBuf.toString().split("\n");

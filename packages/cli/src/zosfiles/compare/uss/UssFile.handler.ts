@@ -63,7 +63,7 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         let ussContentString1 = "";
         let ussContentString2 = "";
 
-        if(!commandParameters.arguments.seqnum){
+        if(commandParameters.arguments.seqnum === false){
             const seqnumlen = 8;
 
             const ussFileStringArray1 = ussFileContentBuf1.toString().split("\n");

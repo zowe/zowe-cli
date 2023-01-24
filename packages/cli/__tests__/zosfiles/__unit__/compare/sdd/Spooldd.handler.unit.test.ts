@@ -11,7 +11,8 @@
 
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { readFileSync } from "fs";
 
 describe("Compare spooldd handler", () => {
     describe("process method", () => {
@@ -37,11 +38,6 @@ describe("Compare spooldd handler", () => {
         const jobId2: string = spoolDescArr2[1];
         const spoolId2: number = Number(spoolDescArr2[2]);
 
-        // Mock the get uss function
-        GetJobs.getSpoolContentById = jest.fn(async (session) => {
-            fakeSession = session;
-            return "compared";
-        });
         // Mocked function references
         const profFunc = jest.fn((args) => {
             return {
@@ -90,7 +86,14 @@ describe("Compare spooldd handler", () => {
                 get: profFunc
             }
         };
-
+        beforeEach(()=> {
+            // Mock the get uss function
+            GetJobs.getSpoolContentById = jest.fn(async (session) => {
+                fakeSession = session;
+                return "compared";
+            });
+            logMessage = "";
+        });
 
         it("should compare two spooldd in terminal", async () => {
 
@@ -114,6 +117,41 @@ describe("Compare spooldd handler", () => {
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
+        it("should compare two spooldd in terminal with --context-lines option", async () => {
+            let contextLinesArg: number = 2;
+            let processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    contextLines: contextLinesArg
+                }
+            };
+            let options: IDiffOptions = {
+                contextLinesArg, 
+                outputFormat: "terminal"
+            };
+
+            DiffUtils.getDiffString = jest.fn(async () => {
+                return "compared string";
+
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(2);
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options)
+        });
+        
         it("should compare two spooldd in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
 

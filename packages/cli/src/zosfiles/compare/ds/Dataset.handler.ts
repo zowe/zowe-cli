@@ -70,7 +70,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         let dsContentString1 = "";
         let dsContentString2 = "";
 
-        if(!commandParameters.arguments.seqnum){
+        if(commandParameters.arguments.seqnum===false){
             const seqnumlen = 8;
 
             const dsStringArray1 = dsContentBuf1.toString().split("\n");
