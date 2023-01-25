@@ -2,6 +2,24 @@
 
 Zowe CLI commands require connection properties and application-specific properties to perform desired operations against various mainframe services. Zowe CLI team configuration profiles are a means to store such properties on disk so that a user does not have to specify every required property on every zowe command. This document describes the behavior of merging configuration profiles when using Zowe CLI team configuration files.
 
+**Table of Contents:**
+
+- [How Zowe CLI team configuration files are merged together](#how-zowe-cli-team-configuration-files-are-merged-together)
+  - [General rules for merging profiles from team configuration files](#general-rules-for-merging-profiles-from-team-configuration-files)
+    - [**Configuration merging diagram**](#configuration-merging-diagram)
+  - [Best Practices](#best-practices)
+    - [**Advantages of only using a global configuration**](#advantages-of-only-using-a-global-configuration)
+    - [**Advantages of only using a project configuration**](#advantages-of-only-using-a-project-configuration)
+    - [**Considerations when using both global and project configurations**](#considerations-when-using-both-global-and-project-configurations)
+  - [Behavior of configuration files in specific scenarios](#behavior-of-configuration-files-in-specific-scenarios)
+    - [**Using a global team config and a global user config**](#using-a-global-team-config-and-a-global-user-config)
+    - [**Using a project-level team config and a project-level user config**](#using-a-project-level-team-config-and-a-project-level-user-config)
+    - [**Using a global team config and a project-level team config**](#using-a-global-team-config-and-a-project-level-team-config)
+    - [**Using a global team config and a project-level user config**](#using-a-global-team-config-and-a-project-level-user-config)
+    - [**Using a global user config and a project-level team config**](#using-a-global-user-config-and-a-project-level-team-config)
+    - [**Using a global user config and a project-level user config**](#using-a-global-user-config-and-a-project-level-user-config)
+    - [**Using all 4 config files at the same time**](#using-all-4-config-files-at-the-same-time)
+
 ## General rules for merging profiles from team configuration files
 
 Global configuration files reside in the ZOWE_CLI_HOME directory (which is YourUserHomeDirectory/.zowe by default). Project configuration files are placed in a directory of your choice. Such a project config file is only applied when you run a CLI command in that project directory or one of its subdirectories.
@@ -21,6 +39,7 @@ Any combination from one to all four of these configuration files can be used to
 
 The following diagram shows the order in which the four configuration files will be merged and describes how the profile properties of these configuration files will be merged together to form the configuration used by Zowe CLI commands.
 
+### **Configuration merging diagram**
 
 ```mermaid
 flowchart TB
@@ -34,7 +53,7 @@ flowchart TB
 
     projTeam
       -- 3 - Merge the results of the previous merge with project user config
-      --> projUser[Project user config = some/project/directory/zowe.config.user.json \n\n * When an identically named property exists within an identically \n named profile in both the results of the previous merge and this \n project user config, the property value from this project user \n config will be used in the resulting configuration. \n\n * When an identically named profile exists in both the result of the \n previous merge and this project user config, but a property of \n that profile only exists in one of the two configurations, that \n property will also be included in the resulting configuration. \n\n * If a profile exists in the results of the previous merge or in this project \n user config file, but not both, that profile will be included, in its \n entirety, in the resulting configuration]
+      --> projUser[Project user config = some/project/directory/zowe.config.user.json \n\n * When an identically named property exists within an identically \n named profile in both the results of the previous merge and this \n project user config, the property value from this project user \n config will be used in the resulting configuration. \n\n * When an identically named profile exists in both the result of the \n previous merge and this project user config, but a property of \n that profile only exists in one of the two configurations, that \n property will also be included in the resulting configuration. \n\n * If a profile exists in the results of the previous merge or in this \n project user config file, but not both, that profile will be \n included, in its entirety, in the resulting configuration]
 ```
 
 ## Best Practices
@@ -120,86 +139,360 @@ T:\proj_config\zowe.config.user.json:
     ... Many more properties are displayed ...
 
 ```
+<br/>
 
-## Details of specific scenarios
+## Behavior of configuration files in specific scenarios
 
-The following sections describe the detailed behavior that occurs under specific deployments of configuration files.
+Upcoming sections describe the detailed behavior that occurs under specific deployments of configuration files. Before describing each scenario, we identify some general considerations.
 
-### **Using a global team config and a global user config**
+The behavior for merging configuration files is the same in Zowe Explorer as with Zowe CLI. However, the following behavior of Zowe Explorer can mislead you into believing that Zowe Explorer merges configuration files differently than the CLI, but the merging behavior is the same in both products.
+
+- A Zowe Explorer behavior that may appear to be a difference in merging, is actually a difference in how Zowe Explorer sets the protocol. If you set the zosmf protocol to "https" in one config file, but override the protocol with "http" in an overriding config file, the CLI will report a `socket hang up` error because the service will only accept https connections. However, Zowe Explorer will successfully perform the operation. This gives the appearance that Zowe Explorer does not override the protocol in the configuration. However, we believe that the configuration merging is fine. We believe that Zowe Explorer hard-codes the use of the "https" protocol, rather than accept the value from the profile configuration.
+
+- When a user name or password is not specified in the configuration, Zowe Explorer will prompt for the user name or password. If the configuration does not specify a default base profile, Zowe Explorer will issue the following errors. The CLI runs successfully in such a configuration. To avoid the following errors in Zowe Explorer, the default "base" profile name must have a value. When `autoStore` is false, Zowe Explorer does not even try to save the values for which it prompted, so the base profile itself does not have to exist.
+
+  ```
+  Error encountered in checkCurrentProfile.optionalProfiles! TypeError: Cannot read properties of undefined (reading 'name')
+
+  Error running command zowe.ds.pattern: Cannot read properties of undefined (reading 'status'). This is likely caused by the extension that contributes zowe.ds.pattern.
+  ```
+
+Another behavior described in the scenarios below is where properties are automatically stored.
+
+- When connection properties are not supplied, both the CLI and ZE prompt the user for any missing connection properties. When the `autoStore` property is true, both apps automatically store those property values into a zowe configuration file. We identify into which config file the properties are stored.
+
+- In our prompt-related tests used to gather the data for this document, we pre-configured a plain-text password, and placed no user in the configuration. We also set the `autoStore` property to true. Thus, CLI and ZE will prompt for the user property and automatically store the user value into a config file.
+
+- In the prompt-related tests, we only use secure connection properties because no ZE unsecure properties can be used in a test to confirm where prompted values are stored. This is because ZE requires host to exist in a config file, and port and protocol have default values, so a user is not prompted for those properties.
+
+<br/>
+
+### <u>**Using a global team config and a global user config**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | Yes    |
+| Global User Config  | Yes    |
+| Project Team Config | -      |
+| Project User Config | -      |
+
+This scenario can be created with the following CLI commands.
+
     zowe config init --global-config
     zowe config init --global-config --user-config
 
-In this scenario, you only have config files at the global level.
-
 This creates a set of set of empty profiles and empty secure arrays in the user config. In this configuration, the empty properties objects and empty secure arrays in the zosmf and base profiles in the user config are ignored. You do not have to update the user config file for the team config file to successfully run zowe commands.
 
-After you place property values into the same profile in both the team global config and global user config, the user config overrides property values from the team config. This is done on a property-by-property basis. In other words, the user config profile does not override the **ENTIRE** profile from the team config.
+<br/>
 
-### **Using a project-level team config and a project-level user config**
+**Merge behavior**
+> After you place property values into the same profile in both the global team config and global user config, the user config overrides property values from the team config. This is done on a property-by-property basis. In other words, the user config profile does **NOT** override the **ENTIRE** profile from the team config.
+
+<br/>
+
+**Storage of a secure connection property for which user is prompted**
+> Profile is only in global team config
+>> **CLI**: User is added to secure array in the profile in the global team config. Existing plain-text password *REMAINS* in plain text in the profile of the global team config.
+
+>> **ZE** : User is added to secure array in the profile in the global team config. Existing plain-text password *MOVED* to secure array in the profile of the global team config.
+
+<br/>
+
+> Profile is only in global user config
+>> **CLI**: Same as 1st item, but changes are made to the global user config.
+
+>> **ZE** : Same as 1st item, but changes are made to the global user config.
+
+<br/>
+
+> Profile is in both global team config and global user config
+>> **CLI**: Same as 1st item, but changes are made to the global user config.
+
+>> **ZE** : User is added to the secure array in the profile in the global user config.
+>> - If plain-text password previously existed in the profile in the global user config, it is moved to the secure array in the profile in the global user config.
+>> - If plain-text password previously existed in the profile in the global *TEAM* config, it is created in the secure array in the profile in the global user config, but the plain-text password remains in the profile in the global team config.
+
+<br/>
+
+### <u>**Using a project-level team config and a project-level user config**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | -      |
+| Global User Config  | -      |
+| Project Team Config | Yes    |
+| Project User Config | Yes    |
+
+This scenario can be created with the following CLI commands.
 
     zowe config init
     zowe config init --user-config
 
-In this scenario, you only have config files at the project level.
-
 This creates a set of set of empty profiles and empty secure arrays in the user config. In this configuration, the empty properties objects and empty secure arrays in the zosmf and base profiles in the user config are ignored. You do not have to update the user config file for the team config file to successfully run zowe commands.
 
-After you place property values into the same profile in both the project team config and project user config, the user config overrides property values from the team config. This is done on a property-by-property basis. In other words, the user config profile does **NOT** override the **ENTIRE** profile from the team config.
+<br/>
 
-This is the same behavior as when both a team config and user config exist at the global level.
+**Merge behavior**
 
-### **Using a global team config and a project-level team config**
+All merge behavior in this scenario are the same as when both a team config and user config exist at the global level.
+
+> After you place property values into the same profile in both the project team config and project user config, the user config overrides property values from the team config. This is done on a property-by-property basis. In other words, the user config profile does **NOT** override the **ENTIRE** profile from the team config.
+
+<br/>
+
+**Storage of a secure connection property for which user is prompted**
+
+All storage behaviors in this scenario are the same as when both a team config and user config exist at the global level.
+
+> Profile is only in project team config
+>> **CLI**: User is added to secure array in the profile in the project team config. Existing plain-text password *REMAINS* in plain text in the profile of the project team config.
+
+>> **ZE** : User is added to secure array in the profile in the project team config. Existing plain-text password *MOVED* to secure array in the profile of the project team config.
+
+<br/>
+
+> Profile is only in project user config
+>> **CLI**: Same as 1st item, but changes are made to the project user config.
+
+>> **ZE** : Same as 1st item, but changes are made to the project user config.
+
+<br/>
+
+> Profile is in both project team config and project user config
+>> **CLI**: Same as 1st item, but changes are made to the project user config.
+
+>> **ZE** : User is added to the secure array in the profile in the project user config.
+>> - If plain-text password previously existed in the profile in the project user config, it is moved to the secure array in the profile in the project user config.
+>> - If plain-text password previously existed in the profile in the project *TEAM* config, it is created in the secure array in the profile in the project user config, but the plain-text password remains in the profile in the project team config.
+
+<br/>
+
+### <u>**Using a global team config and a project-level team config**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | Yes    |
+| Global User Config  | -      |
+| Project Team Config | Yes    |
+| Project User Config | -      |
+
+This scenario can be created with the following CLI commands.
 
     zowe config init --global-config
     zowe config init
 
-In this scenario, you have no user config files. You only have a global team config and a project team config file.
+<br/>
 
-After you place property values into profiles in both the global team config and project team config, overrides are done on a per-profile basis (not a per property basis). The profiles in the project team config will completely replace profiles of the same name from the global team config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+**Merge behavior**
+> After you place property values into profiles in both the global team config and project team config, overrides are done on a per-profile basis (not a per property basis). The profiles in the project team config will completely replace profiles of the same name from the global team config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
 
-### **Using a global team config and a project-level user config**
+<br/>
+
+**Storage of a secure connection property for which user is prompted**
+> Profile is only in project team config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+> Profile is only in project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+> Profile is in both project team config and project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+### <u>**Using a global team config and a project-level user config**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | Yes    |
+| Global User Config  | -      |
+| Project Team Config | -      |
+| Project User Config | Yes    |
+
+This scenario can be created with the following CLI commands.
 
     zowe config init --global-config
     zowe config init --user-config
-
-In this scenario, you only have a team config at the global level and only have a user config at the project level.
 
 In this merge, overrides are done on a per-profile basis (not a per-property basis).
+This merging behavior is the same as when team config files exist at both the global and project level. However, due to the creation of empty profiles in a user config, the observed behavior looks different.
 
 The `zowe config init --user-config` command creates a set of empty profiles in the user config. The empty profiles in the user config will completely replace profiles of the same name from a global config. For example, if you want to override the zosmf port, you must create a zosmf profile in the project user config, **AND** delete the empty base config in the project user config so that it does not override the global base profile (which contains host and rejectUnauthorized) with an empty base profile.
 
-After you place property values into profiles in both the global team config and project user config, overrides continue to be done on a per-profile basis. The profiles in the project user config will completely replace profiles of the same name from the global team config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+<br/>
 
-This merging behavior is the same as when team config files exist at both the global and project level.
+**Merge behavior**
+> After you place property values into profiles in both the global team config and project user config, overrides are done on a per-profile basis. The profiles in the project user config will completely replace profiles of the same name from the global team config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+<br/><br/>
+Once values are placed in both config files, the merging behavior is observably the same as when team config files exist at both the global and project level.
 
-### **Using a global user config and a project-level team config**
+<br/>
+
+**Storage of a secure connection property for which user is prompted**
+> Profile is only in project team config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is only in project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is in both project team config and project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+### <u>**Using a global user config and a project-level team config**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | -      |
+| Global User Config  | Yes    |
+| Project Team Config | Yes    |
+| Project User Config | -      |
+
+This scenario can be created with the following CLI commands.
 
     zowe config init
     zowe config init --user-config --global-config
 
 In this scenario, your global user config contains profiles with **NO** properties. The profiles in the project-level team config contain values for which you were prompted during the `zowe config init` command. The project team config profiles completely replace profiles of the same name from the global user config. As a result, the behavior will be as if you did not even have a global user config file.
 
-After you place property values into profiles in both the global user config and project team config, overrides continue to be done on a per-profile basis. The profiles in the project team config will completely replace profiles of the same name from the global user config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+<br/>
 
-### **Using a global user config and a project-level user config**
+**Merge behavior**
+> After you place property values into profiles in both the global user config and project team config, overrides are done on a per-profile basis. The profiles in the project team config will completely replace profiles of the same name from the global user config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+<br/><br/>
+> Once values are placed in both config files, the merging behavior is the same as when team config files exist at both the global and project level.
+
+<br/>
+
+**Storage of a secure connection property for which user is prompted**
+> Profile is only in project team config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is only in project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is in both project team config and project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+### <u>**Using a global user config and a project-level user config**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | -      |
+| Global User Config  | Yes    |
+| Project Team Config | -      |
+| Project User Config | Yes    |
+
+This scenario can be created with the following CLI commands.
 
     zowe config init --user-config --global-config
     zowe config init --user-config
 
-In this scenario, you have no team config files. You only have a global user config and a project user config file.
+After the commands above, neither user config file has property values initially populated. As a result, a user will be prompted for every required connection property.
 
-After the commands above, neither user config file has property values initially populated. Once profile property values are added, overrides continue to be done on a per-profile basis (not a per property basis). The profiles in the project user config will completely replace profiles of the same name from the global user config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+<br/>
 
-This merging behavior is the same as when team config files exist at both the global and project level.
+**Merge behavior**
+> Once profile property values are added, overrides are done on a per-profile basis (not a per property basis). The profiles in the project user config will completely replace profiles of the same name from the global user config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
+<br/><br/>
+> Once values are placed in both config files, the merging behavior is the same as when team config files exist at both the global and project level.
 
-### **Using all 4 config files at the same time**
+<br/>
 
-In this scenario, you have a global team config, a global user config, a project team config, and a project user config.
+**Storage of a secure connection property for which user is prompted**
+> Profile is only in project team config
+>> **CLI**: ToDo: Gather results.
 
-1. The global user config overrides the global team config on a per-property basis.
-2. The project team config overrides the results of step 1 on a per-profile basis.
-3. The project user config overrides the results of step 2 on a per-property  basis.
+>> **ZE** : ToDo: Gather results.
 
-## Differences in merging when using Zowe Explorer
+<br/>
 
-***To be supplied***
+> Profile is only in project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is in both project team config and project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+### <u>**Using all 4 config files at the same time**</u>
+
+| Config Files in use |        |
+| :------------------ | :----- |
+| Global Team Config  | Yes    |
+| Global User Config  | Yes    |
+| Project Team Config | Yes    |
+| Project User Config | Yes    |
+
+This scenario can be created with the following CLI commands.
+
+    zowe config init --global-config
+    zowe config init --global-config --user-config
+    zowe config init
+    zowe config init --user-config
+
+In each phase of merging occurs, you apply previously identified merging behavior to each phase, as it occurs.
+
+<br/>
+
+**Merge behavior**
+> 1. The global user config overrides the global team config on a per-property basis.
+> 2. The project team config overrides the results of step 1 on a per-profile basis.
+> 3. The project user config overrides the results of step 2 on a per-property  basis..
+
+<br/>
+
+**Storage of a secure connection property for which user is prompted**
+> Profile is only in project team config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is only in project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
+
+<br/>
+
+> Profile is in both project team config and project user config
+>> **CLI**: ToDo: Gather results.
+
+>> **ZE** : ToDo: Gather results.
