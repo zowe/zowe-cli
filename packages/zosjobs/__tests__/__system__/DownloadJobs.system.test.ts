@@ -66,7 +66,6 @@ describe("Download Jobs - System tests", () => {
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
         DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
-
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
@@ -96,7 +95,6 @@ describe("Download Jobs - System tests", () => {
         });
 
         it("should be able to download a single DD from job output", async () => {
-
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile
             );
@@ -116,6 +114,48 @@ describe("Download Jobs - System tests", () => {
             for (const file of jobFiles) {
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
+            }
+        });
+
+        it("should be able to download all DDs from job output in binary mode", async () => {
+            const downloadDir = outputDirectory + "/downloadall/";
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: downloadDir,
+                jobid,
+                jobname,
+                binary: true
+            });
+
+            for (const file of jobFiles) {
+                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                expect(IO.existsSync(expectedFile)).toEqual(true);
+                if (file.ddname === "JESJCL") {
+                    // Record is 90 characters long, starts with 8 spaces
+                    expect(IO.readFileSync(expectedFile).toString()).not.toContain(Buffer.from('0000005A4040404040404040', 'hex').toString());
+                    // EBCDIC for "EXEC PGM=IEFBR14"
+                    expect(IO.readFileSync(expectedFile).toString()).toContain(Buffer.from('c5e7c5c340d7c7d47ec9c5c6c2c9c1c4', 'hex').toString());
+                }
+            }
+        });
+
+        it("should be able to download all DDs from job output in record mode", async () => {
+            const downloadDir = outputDirectory + "/downloadall/";
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: downloadDir,
+                jobid,
+                jobname,
+                record: true
+            });
+
+            for (const file of jobFiles) {
+                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                expect(IO.existsSync(expectedFile)).toEqual(true);
+                if (file.ddname === "JESJCL") {
+                    // Record is 90 characters long, starts with 8 spaces
+                    expect(IO.readFileSync(expectedFile).toString()).toContain(Buffer.from('0000005A4040404040404040', 'hex').toString());
+                    // EBCDIC for "EXEC PGM=IEFBR14"
+                    expect(IO.readFileSync(expectedFile).toString()).toContain(Buffer.from('c5e7c5c340d7c7d47ec9c5c6c2c9c1c4', 'hex').toString());
+                }
             }
         });
 

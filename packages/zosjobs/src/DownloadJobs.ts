@@ -83,7 +83,9 @@ export class DownloadJobs {
             await DownloadJobs.downloadSpoolContentCommon(session, {
                 jobFile: {...file, ddname: uniqueDDName},
                 outDir: parms.outDir,
-                omitJobidDirectory: parms.omitJobidDirectory
+                omitJobidDirectory: parms.omitJobidDirectory,
+                binary: parms.binary,
+                record: parms.record
             });
             usedStepNames[file.stepname] = [...usedStepNames[file.stepname] || [], uniqueDDName];
         }
@@ -112,9 +114,14 @@ export class DownloadJobs {
         IO.createDirsSyncFromFilePath(file);
         IO.createFileSync(file);
 
-        const parameters: string = "/" + parms.jobFile.jobname + "/" + parms.jobFile.jobid +
+        let parameters: string = "/" + parms.jobFile.jobname + "/" + parms.jobFile.jobid +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + parms.jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT;
 
+        if (parms.binary) {
+            parameters += "?mode=binary";
+        } else if (parms.record) {
+            parameters += "?mode=record";
+        }
 
         const writeStream = IO.createWriteStream(file);
         await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, undefined, writeStream,

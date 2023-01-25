@@ -29,7 +29,7 @@ describe("zos-jobs cancel command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
+    it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/cancel_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);

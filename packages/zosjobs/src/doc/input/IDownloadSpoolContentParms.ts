@@ -41,4 +41,18 @@ export interface IDownloadSpoolContentParms {
      * @memberof IDownloadSpoolContentParms
      */
     omitJobidDirectory?: boolean;
+
+    /**
+     * If you specify true for this field, the file will be downloaded in binary mode
+     * @type {boolean}
+     * @memberof IDownloadSpoolContentParms
+     */
+    binary?: boolean;
+
+    /**
+     * If you specify true for this field, the file will be downloaded in record mode
+     * @type {boolean}
+     * @memberof IDownloadSpoolContentParms
+     */
+    record?: boolean;
 }

@@ -154,6 +154,68 @@ describe("download output handler tests", () => {
         );
     });
 
+    it("should download a job output in binary mode", async () => {
+        let passedSession: Session = null;
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
+            passedSession = session;
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            async (session, options) => {
+                return;
+            }
+        );
+        const handler = new OutputHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.jobid = GetJobsData.SAMPLE_COMPLETE_JOB.jobid;
+        params.arguments.binary = true;
+        const opts: IDownloadAllSpoolContentParms = {
+            jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
+            jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
+            outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
+            omitJobidDirectory: false,
+            binary: true
+        };
+        await handler.process(params);
+        expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            opts
+        );
+    });
+
+    it("should download a job output in record mode", async () => {
+        let passedSession: Session = null;
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
+            passedSession = session;
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            async (session, options) => {
+                return;
+            }
+        );
+        const handler = new OutputHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.jobid = GetJobsData.SAMPLE_COMPLETE_JOB.jobid;
+        params.arguments.record = true;
+        const opts: IDownloadAllSpoolContentParms = {
+            jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
+            jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
+            outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
+            omitJobidDirectory: false,
+            record: true
+        };
+        await handler.process(params);
+        expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            opts
+        );
+    });
+
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail in z/OSMF";
         let error;

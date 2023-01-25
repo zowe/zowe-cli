@@ -2,6 +2,18 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.10.0`
+
+- Enhancement: Added support for downloading job spool content in binary and record formats.
+
+## `7.10.0`
+
+- Enhancement: Added support for downloading job spool content in binary and record formats.
+
+## `7.10.0`
+
+- Enhancement: Added support for downloading job spool content in binary and record formats.
+
 ## Recent Changes
 - BugFix: Fixed the default version from "1.0" to "2.0" across job commands [#1459](https://github.com/zowe/zowe-cli/issues/1459)
 ## `7.9.7`
