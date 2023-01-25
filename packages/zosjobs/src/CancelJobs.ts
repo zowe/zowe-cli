@@ -67,10 +67,10 @@ export class CancelJobs {
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
 
-        // set to default if default, unset or invalid
-        if (parms.version !== "2.0") {
-            parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
+        if (parms.version !== "1.0") { 
+            parms.version = JobsConstants.DEFAULT_CANCEL_VERSION; 
         }
+        
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
         const headers: any = [Headers.APPLICATION_JSON];
 

@@ -147,7 +147,7 @@ export class JobsConstants {
      * @static
      * @memberof JobsConstants
      */
-    public static readonly DEFAULT_CANCEL_VERSION = "1.0";
+    public static readonly DEFAULT_CANCEL_VERSION = "2.0";
 
     /**
      * Hold a job
