@@ -16,7 +16,7 @@ Object {
   "name": "job",
   "options": Array [
     Object {
-      "defaultValue": "1.0",
+      "defaultValue": "2.0",
       "description": "Using this option to set X-IBM-Job-Modify-Version to \\"2.0\\" will make the cancel job API synchronous. Otherwise, it will be asynchronous by default.",
       "name": "modify-version",
       "required": false,
