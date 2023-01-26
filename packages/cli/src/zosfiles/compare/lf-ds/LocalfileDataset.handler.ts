@@ -39,9 +39,11 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             localFile = path.resolve(commandParameters.arguments.localFilePath);
         }
 
+        let localFileHandle: number;
         // check if the path given is of a file or not
         try {
-            if(!fs.lstatSync(localFile).isFile()){
+            localFileHandle = fs.openSync(localFile, 'r');
+            if(!fs.fstatSync(localFileHandle).isFile()){
                 throw new ImperativeError({
                     msg: 'Path given is not of a file, do recheck your path again'
                 });
@@ -54,7 +56,8 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         }
 
         // reading local file as buffer
-        const lfContentBuf = fs.readFileSync(localFile);
+        const lfContentBuf = fs.readFileSync(localFileHandle);
+        fs.closeSync(localFileHandle);
 
         commandParameters.response.progress.endBar();
 
