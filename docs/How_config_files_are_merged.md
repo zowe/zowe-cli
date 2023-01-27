@@ -86,11 +86,11 @@ While you commit your project team configuration file into your source control t
 
 As displayed in the diagram earlier in this document, you can potentially have four Zowe config files in effect at one time (global-team, global-user, project-team, and project-user). Each config file can override some or all properties of other config files. You can encounter unexpected results if you forget which config files you have deployed in which locations.
 
-If you are working in a project directory, you will have a configuration composed of up to all four configuration files. If you change up one directory out of your project directory, your configuration will only be composed of your global configuration files. You may start to communicate to different hosts, on different ports, using different credentials. If you then changes into another project directory, all of those things could change again. You must be aware of this dynamic to properly understand what is happening.
+If you are working in a project directory, you will have a configuration composed of up to all four configuration files. If you change up one directory out of your project directory, your configuration will only be composed of your global configuration files. You may start to communicate to different hosts, on different ports, using different credentials. If you then change into another project directory, all of those things could change again. You must be aware of this dynamic to properly understand what is happening.
 
-If become confused by connection problems in a such a multiple configuration environment, a few Zowe commands can help identify from where your current property values are obtained.
+If you become confused by connection problems in a such a multiple configuration environment, a few Zowe commands can help identify from where your current property values are obtained.
 
-Placing the `--show-inputs-only` option on a command will display the final merged property values that will be used by the Zowe command to which you add the  `--show-inputs-only` option. You will **NOT** actually run the command. The output will help you identify if the command will not work because you are using an unintended configuration property.
+Placing the `--show-inputs-only` option on a command will display the final merged property values that will be used by the Zowe command to which you add the  `--show-inputs-only` option. You will **NOT** actually run the command. The output can help you identify if the command will not work because you are using an unintended configuration property.
 
 ```
 zowe zos-files list data-set "SYS1.PARMLIB*" --show-inputs-only
@@ -113,7 +113,7 @@ locations:
   - C:\Users\YourUserName\.zowe\zowe.config.json
 ```
 
-The following command will list the set of configuration files that are in effect for the directory in which you run this command. After running the command, you see how many (and which) files you must inspect to find a property value that you are inadvertently using.
+The following command will list the set of configuration files that are in effect for the directory in which you run this command. After running the command, you see how many (and which) files you must inspect to find a property value that you might be inadvertently using.
 
 ```
 zowe config list --locations --root
@@ -123,7 +123,7 @@ C:\Users\YourUserName\.zowe\zowe.config.user.json
 C:\Users\YourUserName\.zowe\zowe.config.json
 ```
 
-The following command shows every value obtained from every configuration file. With this command you do **NOT** see the resulting values after the configurations are merged. Instead, you see each value from each configuration file. While it requires a detailed inspection of the output, you can find the incorrect property value and know from which configuration file that value came.
+The following command shows every value obtained from every configuration file. With this command you do **NOT** see the resulting values after the configurations are merged. Instead, you see each value from each configuration file. While it requires a detailed inspection of the output, you can find an incorrect property value and know from which configuration file that value came.
 ```
 zowe config list --locations
 T:\proj_config\zowe.config.user.json:
@@ -147,9 +147,9 @@ Upcoming sections describe the detailed behavior that occurs under specific depl
 
 The behavior for merging configuration files is the same in Zowe Explorer as with Zowe CLI. However, the following behavior of Zowe Explorer can mislead you into believing that Zowe Explorer merges configuration files differently than the CLI, but the merging behavior is the same in both products.
 
-- A Zowe Explorer behavior that may appear to be a difference in merging, is actually a difference in how Zowe Explorer sets the protocol. If you set the zosmf protocol to "https" in one config file, but override the protocol with "http" in an overriding config file, the CLI will report a `socket hang up` error because the service will only accept https connections. However, Zowe Explorer will successfully perform the operation. This gives the appearance that Zowe Explorer does not override the protocol in the configuration. However, we believe that the configuration merging is fine. We believe that Zowe Explorer hard-codes the use of the "https" protocol, rather than accept the value from the profile configuration.
+- A Zowe Explorer behavior that may appear to be a difference in merging, is actually a difference in how Zowe Explorer sets the protocol. If you set the zosmf protocol to "https" in one config file, but override the protocol with "http" in an overriding config file, the CLI will report a `socket hang up` error when the service only accepts https connections. However, Zowe Explorer will successfully perform the operation. This gives the appearance that Zowe Explorer does not override the protocol in the configuration. However, we believe that the configuration merging is fine. We believe that Zowe Explorer hard-codes the use of the "https" protocol, rather than accept the value from the profile configuration.
 
-- When a user name or password is not specified in the configuration, Zowe Explorer will prompt for the user name or password. If the configuration does not specify a default base profile, Zowe Explorer will issue the following errors. The CLI runs successfully in such a configuration. To avoid the following errors in Zowe Explorer, the default "base" profile name must have a value. When `autoStore` is false, Zowe Explorer does not even try to save the values for which it prompted, so the base profile itself does not have to exist.
+- When a user name or password is not specified in the configuration, Zowe Explorer will prompt for the user name or password. If the configuration does not specify a default base profile, Zowe Explorer will display the errors below. The CLI runs successfully in such a configuration. To avoid the following errors in Zowe Explorer, the default "base" profile name must have a value. When `autoStore` is false, Zowe Explorer does not even try to save the values for which it prompted, so the base profile itself does not have to exist.
 
   ```
   Error encountered in checkCurrentProfile.optionalProfiles! TypeError: Cannot read properties of undefined (reading 'name')
@@ -157,7 +157,7 @@ The behavior for merging configuration files is the same in Zowe Explorer as wit
   Error running command zowe.ds.pattern: Cannot read properties of undefined (reading 'status'). This is likely caused by the extension that contributes zowe.ds.pattern.
   ```
 
-Another behavior described in the scenarios below is where properties are automatically stored.
+Another behavior described in the scenarios below is the location where properties are automatically stored. Here are a few configuration set-up choices used to identify the automatic storage behavior of the CLI and Zowe Explorer.
 
 - When connection properties are not supplied, both the CLI and ZE prompt the user for any missing connection properties. When the `autoStore` property is true, both apps automatically store those property values into a zowe configuration file. We identify into which config file the properties are stored.
 
@@ -191,26 +191,32 @@ This creates a set of set of empty profiles and empty secure arrays in the user 
 <br/>
 
 **Storage of a secure connection property for which user is prompted**
-> Profile is only in global team config
->> **CLI**: User is added to secure array in the profile in the global team config. Existing plain-text password *REMAINS* in plain text in the profile of the global team config.
-
->> **ZE** : User is added to secure array in the profile in the global team config. Existing plain-text password *MOVED* to secure array in the profile of the global team config.
-
-<br/>
-
-> Profile is only in global user config
->> **CLI**: Same as 1st item, but changes are made to the global user config.
-
->> **ZE** : Same as 1st item, but changes are made to the global user config.
+1. Profile is only in the global team config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global team config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the global team config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the global team config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the global team config.
 
 <br/>
 
-> Profile is in both global team config and global user config
->> **CLI**: Same as 1st item, but changes are made to the global user config.
+2. Profile is only in the global user config
+   - Same as 1st item, but changes are made to the global user config.
 
->> **ZE** : User is added to the secure array in the profile in the global user config.
->> - If plain-text password previously existed in the profile in the global user config, it is moved to the secure array in the profile in the global user config.
->> - If plain-text password previously existed in the profile in the global *TEAM* config, it is created in the secure array in the profile in the global user config, but the plain-text password remains in the profile in the global team config.
+<br/>
+
+3. Profile is in both global team config and global user config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global user config.
+   - When the plain-text password already exists in the profile in the global user config
+     - **CLI**: The existing plain-text password in the profile in the global user config *REMAINS* in plain text.
+     - **ZE** : The existing plain-text password is *REMOVED* from the profile in the global user config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the global user config.
+   - When the plain-text password already exists in *ONLY* the profile in the global team config
+     - The existing plain-text password in the profile in the global team config *REMAINS* in plain text.
+     - **ZE** : The password is also added to the secure array in the profile in the global user config.
 
 <br/>
 
@@ -234,7 +240,7 @@ This creates a set of set of empty profiles and empty secure arrays in the user 
 
 **Merge behavior**
 
-All merge behavior in this scenario are the same as when both a team config and user config exist at the global level.
+All merge behavior in this scenario is the same as when both a team config and user config exist at the global level.
 
 > After you place property values into the same profile in both the project team config and project user config, the user config overrides property values from the team config. This is done on a property-by-property basis. In other words, the user config profile does **NOT** override the **ENTIRE** profile from the team config.
 
@@ -244,26 +250,32 @@ All merge behavior in this scenario are the same as when both a team config and 
 
 All storage behaviors in this scenario are the same as when both a team config and user config exist at the global level.
 
-> Profile is only in project team config
->> **CLI**: User is added to secure array in the profile in the project team config. Existing plain-text password *REMAINS* in plain text in the profile of the project team config.
-
->> **ZE** : User is added to secure array in the profile in the project team config. Existing plain-text password *MOVED* to secure array in the profile of the project team config.
-
-<br/>
-
-> Profile is only in project user config
->> **CLI**: Same as 1st item, but changes are made to the project user config.
-
->> **ZE** : Same as 1st item, but changes are made to the project user config.
+1. Profile is only in the project team config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the project team config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the project team config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the project team config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the project team config.
 
 <br/>
 
-> Profile is in both project team config and project user config
->> **CLI**: Same as 1st item, but changes are made to the project user config.
+2. Profile is only in the project user config
+   - Same as 1st item, but changes are made to the project user config.
 
->> **ZE** : User is added to the secure array in the profile in the project user config.
->> - If plain-text password previously existed in the profile in the project user config, it is moved to the secure array in the profile in the project user config.
->> - If plain-text password previously existed in the profile in the project *TEAM* config, it is created in the secure array in the profile in the project user config, but the plain-text password remains in the profile in the project team config.
+<br/>
+
+3. Profile is in both project team config and project user config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in the profile in the project user config
+     - **CLI**: An existing plain-text password in the profile in the project user config *REMAINS* in plain text.
+     - **ZE** : An existing plain-text password is *REMOVED* from the profile in the project user config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in *ONLY* the profile in the project team config
+     - The existing plain-text password in the profile in the project team config *REMAINS* in plain text.
+     - **ZE** : The password is also added to the secure array in the profile in the project user config.
 
 <br/>
 
@@ -289,20 +301,23 @@ This scenario can be created with the following CLI commands.
 <br/>
 
 **Storage of a secure connection property for which user is prompted**
-> Profile is only in project team config
->> **CLI**: ToDo: Gather results.
+1. Profile is only in the global team config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global team config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the global team config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the global team config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the global team config.
 
->> **ZE** : ToDo: Gather results.
+<br/>
 
-> Profile is only in project user config
->> **CLI**: ToDo: Gather results.
+2. Profile is only in the project team config
+   - Same as 1st item, but changes are made to the project team config.
 
->> **ZE** : ToDo: Gather results.
+<br/>
 
-> Profile is in both project team config and project user config
->> **CLI**: ToDo: Gather results.
-
->> **ZE** : ToDo: Gather results.
+3. Profile is in both global team config and project team config
+   - Same as 1st item, but changes are made to the project team config.
 
 <br/>
 
@@ -330,29 +345,38 @@ The `zowe config init --user-config` command creates a set of empty profiles in 
 **Merge behavior**
 > After you place property values into profiles in both the global team config and project user config, overrides are done on a per-profile basis. The profiles in the project user config will completely replace profiles of the same name from the global team config. A profile that exists in one config file but **NOT** in the other config file is recognized and used successfully.
 <br/><br/>
-Once values are placed in both config files, the merging behavior is observably the same as when team config files exist at both the global and project level.
+Once values are placed in both config files, the merging behavior is the same as when team config files exist at both the global and project level.
 
 <br/>
 
 **Storage of a secure connection property for which user is prompted**
-> Profile is only in project team config
->> **CLI**: ToDo: Gather results.
-
->> **ZE** : ToDo: Gather results.
-
-<br/>
-
-> Profile is only in project user config
->> **CLI**: ToDo: Gather results.
-
->> **ZE** : ToDo: Gather results.
+1. Profile is only in the global team config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global team config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the global team config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the global team config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the global team config.
 
 <br/>
 
-> Profile is in both project team config and project user config
->> **CLI**: ToDo: Gather results.
+2. Profile is only in the project user config
+   - Same as 1st item, but changes are made to the project user config.
 
->> **ZE** : ToDo: Gather results.
+<br/>
+
+3. Profile is in both global team config and project user config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in the profile in the project user config
+     - **CLI**: The existing plain-text password in the profile in the project user config *REMAINS* in plain text.
+     - **ZE** : The existing plain-text password is *REMOVED* from the profile in the project user config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in *ONLY* the profile in the global team config
+     - You are also prompted for the password.
+     - The password is added to the secure array in the profile in the project user config.
+     - The existing plain-text password in the profile in the global team config *REMAINS* in plain text.
 
 <br/>
 
@@ -382,24 +406,35 @@ In this scenario, your global user config contains profiles with **NO** properti
 <br/>
 
 **Storage of a secure connection property for which user is prompted**
-> Profile is only in project team config
->> **CLI**: ToDo: Gather results.
 
->> **ZE** : ToDo: Gather results.
-
-<br/>
-
-> Profile is only in project user config
->> **CLI**: ToDo: Gather results.
-
->> **ZE** : ToDo: Gather results.
+1. Profile is only in the global user config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global user config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the global user config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the global user config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the global user config.
 
 <br/>
 
-> Profile is in both project team config and project user config
->> **CLI**: ToDo: Gather results.
+2. Profile is only in the project team config
+   - Same as 1st item, but changes are made to the project team config.
 
->> **ZE** : ToDo: Gather results.
+<br/>
+
+3. Profile is in both global user config and project team config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the project team config.
+   - When the plain-text password already exists in the profile in the project team config
+     - **CLI**: The existing plain-text password in the profile in the project team config *REMAINS* in plain text.
+     - **ZE** : The existing plain-text password is *REMOVED* from the profile in the project team config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the project team config.
+   - When the plain-text password already exists in *ONLY* the profile in the global user config
+     - You are also prompted for the password.
+     - The password is added to the secure array in the profile in the project team config.
+     - The existing plain-text password in the profile in the global user config *REMAINS* in plain text.
+
 
 <br/>
 
@@ -417,7 +452,7 @@ This scenario can be created with the following CLI commands.
     zowe config init --user-config --global-config
     zowe config init --user-config
 
-After the commands above, neither user config file has property values initially populated. As a result, a user will be prompted for every required connection property.
+The commands above create a set of empty profiles in both user config file. As a result, a user will be prompted for every required connection property that does not have a default value.
 
 <br/>
 
@@ -429,24 +464,33 @@ After the commands above, neither user config file has property values initially
 <br/>
 
 **Storage of a secure connection property for which user is prompted**
-> Profile is only in project team config
->> **CLI**: ToDo: Gather results.
 
->> **ZE** : ToDo: Gather results.
-
-<br/>
-
-> Profile is only in project user config
->> **CLI**: ToDo: Gather results.
-
->> **ZE** : ToDo: Gather results.
+1. Profile is only in the global user config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global user config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the global user config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the global user config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the global user config.
 
 <br/>
 
-> Profile is in both project team config and project user config
->> **CLI**: ToDo: Gather results.
+2. Profile is only in the project user config
+   - Same as 1st item, but changes are made to the project user config.
 
->> **ZE** : ToDo: Gather results.
+<br/>
+
+3. Profile is in both global user config and project user config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in the profile in the project user config
+     - **CLI**: The existing plain-text password in the profile in the project user config *REMAINS* in plain text.
+     - **ZE** : The existing plain-text password is *REMOVED* from the profile in the project user config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in *ONLY* the profile in the global user config
+     - The password is added to the secure array in the profile in the project user config.
+     - The existing plain-text password in the profile in the global user config *REMAINS* in plain text.
 
 <br/>
 
@@ -466,7 +510,7 @@ This scenario can be created with the following CLI commands.
     zowe config init
     zowe config init --user-config
 
-In each phase of merging occurs, you apply previously identified merging behavior to each phase, as it occurs.
+In each phase of merging, you apply previously identified merging behavior to each phase, as it occurs.
 
 <br/>
 
@@ -478,21 +522,55 @@ In each phase of merging occurs, you apply previously identified merging behavio
 <br/>
 
 **Storage of a secure connection property for which user is prompted**
-> Profile is only in project team config
->> **CLI**: ToDo: Gather results.
 
->> **ZE** : ToDo: Gather results.
-
-<br/>
-
-> Profile is only in project user config
->> **CLI**: ToDo: Gather results.
-
->> **ZE** : ToDo: Gather results.
+1. Profile is only in the global team config
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the global team config.
+   - **CLI**: An existing plain-text password *REMAINS* in plain text in the profile in the global team config.
+   - **ZE** : An existing plain-text password is *REMOVED* from the profile in the global team config and
+     <br/>
+     the password is *ADDED* to the secure array in the profile in the global team config.
 
 <br/>
 
-> Profile is in both project team config and project user config
->> **CLI**: ToDo: Gather results.
+2. Profile is only in the global user config
+   - Same as 1st item, but changes are made to the global user config.
 
->> **ZE** : ToDo: Gather results.
+<br/>
+
+3. Profile is only in the project team config
+   - Same as 1st item, but changes are made to the project team config.
+
+<br/>
+
+4. Profile is only in the project user config
+   - Same as 1st item, but changes are made to the project user config.
+
+<br/>
+
+5. Profile is in all 4 configuration files
+   - You are prompted for user.
+   - The user is added to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in the profile in all 4 config files
+     - **CLI**: The existing plain-text passwords *REMAIN* in plain text in all 4 config files.
+     - **ZE** : The existing plain-text passwords *REMAIN* in plain text in 3 config files.
+       <br/>
+       The existing plain-text password is *REMOVED* from the profile in the project user config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the project user config.
+   - When the plain-text password already exists in *ONLY* the profile in the global team config
+     - You are also prompted for password.
+     - The password is added to the secure array in the profile in the project user config.
+     - The existing plain-text password in the profile in the global team config *REMAINS* in plain text.
+   - When the plain-text password already exists in *ONLY* the profile in the global user config
+     - You are also prompted for password.
+     - The password is added to the secure array in the profile in the project user config.
+     - The existing plain-text password in the profile in the global user config *REMAINS* in plain text.
+   - When the plain-text password already exists in *ONLY* the profile in the project team config
+     - The password is added to the secure array in the profile in the project user config.
+     - The existing plain-text password in the profile in the project team config *REMAINS* in plain text.
+   - When the plain-text password already exists in *ONLY* the profile in the project user config
+     - **CLI**: The existing plain-text password *REMAINS* in plain text in the project user config.
+     - **ZE** : The existing plain-text password is *REMOVED* from the profile in the project user config and
+       <br/>
+       the password is *ADDED* to the secure array in the profile in the project user config.
