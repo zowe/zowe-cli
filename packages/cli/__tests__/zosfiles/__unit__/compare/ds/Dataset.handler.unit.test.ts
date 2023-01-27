@@ -26,8 +26,10 @@ describe("Compare data set handler", () => {
         let jsonObj: object;
         let logMessage = "";
         let fakeSession: object;
-
-        // Mocked function references
+        // Mocks
+        const getDataSetSpy = jest.spyOn(Get, "dataSet");
+        const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
+        const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
         const profFunc = jest.fn((args) => {
             return {
                 host: "fake",
@@ -75,21 +77,20 @@ describe("Compare data set handler", () => {
             }
         };
 
-        beforeEach(()=> {
-            // Mock the compare ds function
-            Get.dataSet = jest.fn(async (session) => {
+        beforeEach(() => {
+            getDataSetSpy.mockReset();
+            getDataSetSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared");
-            });
+            }));
+            getDiffStringSpy.mockReset();
+            getDiffStringSpy.mockImplementation(jest.fn(async () => {
+                return "compared string";
+            }));
             logMessage = "";
         });
 
         it("should compare two data sets in terminal", async () => {
-
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
@@ -97,8 +98,8 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(2);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
+            expect(getDataSetSpy).toHaveBeenCalledTimes(2);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -108,7 +109,7 @@ describe("Compare data set handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
         });
         it("should compare two data sets in terminal with --context-lines option", async () => {
             const contextLinesArg: number = 2;
@@ -124,10 +125,6 @@ describe("Compare data set handler", () => {
                 outputFormat: "terminal"
             };
 
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy);
@@ -135,8 +132,8 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(2);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
+            expect(getDataSetSpy).toHaveBeenCalledTimes(2);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -146,13 +143,12 @@ describe("Compare data set handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two data sets in browser", async () => {
-            jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
-
+            openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -160,8 +156,7 @@ describe("Compare data set handler", () => {
             } catch (e) {
                 error = e;
             }
-
-            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledTimes(1);
+            expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
 });

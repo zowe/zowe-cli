@@ -1,4 +1,4 @@
 #!/bin/bash
 
-zowe zos-files compare ds "AT895452.TESTING.JCL(ECONTXTL)" "AT895452.TESTING.JCL(CONTXTLN)" --bogus-flag
+zowe zos-files compare ds "IBMUSER.TESTING.JCL(ECONTXTL)" "IBMUSER.TESTING.JCL(CONTXTLN)" --bogus-flag
 exit $?

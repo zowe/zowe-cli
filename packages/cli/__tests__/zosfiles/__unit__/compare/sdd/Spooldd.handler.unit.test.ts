@@ -36,7 +36,10 @@ describe("Compare spooldd handler", () => {
         const jobId2: string = spoolDescArr2[1];
         const spoolId2: number = Number(spoolDescArr2[2]);
 
-        // Mocked function references
+        // Mocks
+        const getSpoolContentByIdSpy = jest.spyOn(GetJobs, "getSpoolContentById");
+        const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
+        const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
         const profFunc = jest.fn((args) => {
             return {
                 host: "fake",
@@ -85,21 +88,19 @@ describe("Compare spooldd handler", () => {
             }
         };
         beforeEach(()=> {
-            // Mock the get uss function
-            GetJobs.getSpoolContentById = jest.fn(async (session) => {
+            getSpoolContentByIdSpy.mockReset();
+            getSpoolContentByIdSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return "compared";
-            });
+            }));
+            getDiffStringSpy.mockReset();
+            getDiffStringSpy.mockImplementation(jest.fn(async () => {
+                return "compared string";
+            }));
             logMessage = "";
         });
 
         it("should compare two spooldd in terminal", async () => {
-
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
@@ -107,12 +108,12 @@ describe("Compare spooldd handler", () => {
                 error = e;
             }
 
-            expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(2);
-            expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledTimes(2);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should compare two spooldd in terminal with --context-lines option", async () => {
@@ -128,12 +129,6 @@ describe("Compare spooldd handler", () => {
                 contextLinesArg,
                 outputFormat: "terminal"
             };
-
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -141,18 +136,17 @@ describe("Compare spooldd handler", () => {
                 error = e;
             }
 
-            expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(2);
-            expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledTimes(2);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two spooldd in browser", async () => {
-            jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
-
+            openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -160,8 +154,7 @@ describe("Compare spooldd handler", () => {
             } catch (e) {
                 error = e;
             }
-
-            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledTimes(1);
+            expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
 });

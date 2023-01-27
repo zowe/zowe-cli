@@ -26,8 +26,10 @@ describe("Compare data set handler", () => {
         let jsonObj: object;
         let logMessage = "";
         let fakeSession: object;
-
-        // Mocked function references
+        // Mocks
+        const getUSSFileSpy = jest.spyOn(Get, "USSFile");
+        const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
+        const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
         const profFunc = jest.fn((args) => {
             return {
                 host: "fake",
@@ -76,21 +78,19 @@ describe("Compare data set handler", () => {
         };
 
         beforeEach(()=> {
-            // Mock the get uss function
-            Get.USSFile = jest.fn(async (session) => {
+            getUSSFileSpy.mockReset();
+            getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared");
-            });
+            }));
+            getDiffStringSpy.mockReset();
+            getDiffStringSpy.mockImplementation(jest.fn(async () => {
+                return "compared string";
+            }));
             logMessage = "";
         });
 
         it("should compare two uss-files in terminal", async () => {
-
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
@@ -98,8 +98,8 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
-            expect(Get.USSFile).toHaveBeenCalledTimes(2);
-            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
+            expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -109,7 +109,7 @@ describe("Compare data set handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should compare two uss-files in terminal with --context-lines option", async () => {
@@ -126,11 +126,6 @@ describe("Compare data set handler", () => {
                 outputFormat: "terminal"
             };
 
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -138,8 +133,8 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
-            expect(Get.USSFile).toHaveBeenCalledTimes(2);
-            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
+            expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -149,13 +144,12 @@ describe("Compare data set handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two uss-files in browser", async () => {
-            jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
-
+            openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -163,8 +157,7 @@ describe("Compare data set handler", () => {
             } catch (e) {
                 error = e;
             }
-
-            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledTimes(1);
+            expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
 });

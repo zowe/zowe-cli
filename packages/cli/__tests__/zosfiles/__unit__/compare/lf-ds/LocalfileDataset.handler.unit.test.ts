@@ -27,7 +27,10 @@ describe("Compare local-file and data-set handler", () => {
         let jsonObj:object;
         let logMessage = "";
         let fakeSession: object;
-        // Mocked function references
+        // Mocks
+        const getDataSetSpy = jest.spyOn(Get, "dataSet");
+        const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
+        const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
         const profFunc = jest.fn((args) => {
             return {
                 host: "fake",
@@ -76,19 +79,19 @@ describe("Compare local-file and data-set handler", () => {
         };
 
         beforeEach(()=> {
-            // Mock the compare ds function
-            Get.dataSet = jest.fn(async (session) => {
+            getDataSetSpy.mockReset();
+            getDataSetSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared");
-            });
+            }));
+            getDiffStringSpy.mockReset();
+            getDiffStringSpy.mockImplementation(jest.fn(async () => {
+                return "compared string";
+            }));
             logMessage = "";
         });
 
         it("should compare local-file and data-set in terminal", async () => {
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
@@ -96,8 +99,8 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(1);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
+            expect(getDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -123,11 +126,6 @@ describe("Compare local-file and data-set handler", () => {
                 contextLinesArg,
                 outputFormat: "terminal"
             };
-
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -135,8 +133,8 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
-            expect(Get.dataSet).toHaveBeenCalledTimes(1);
-            expect(Get.dataSet).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
+            expect(getDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -146,13 +144,12 @@ describe("Compare local-file and data-set handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
 
         it("should compare local-file and data-set in browser", async () => {
-            jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
-
+            openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -160,8 +157,7 @@ describe("Compare local-file and data-set handler", () => {
             } catch (e) {
                 error = e;
             }
-
-            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledTimes(1);
+            expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
 });

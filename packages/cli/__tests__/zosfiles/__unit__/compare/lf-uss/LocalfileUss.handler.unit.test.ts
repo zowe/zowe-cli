@@ -28,8 +28,10 @@ describe("Compare local-file and uss-file handler", () => {
         let jsonObj:object;
         let logMessage = "";
         let fakeSession: object;
-
-        // Mocked function references
+        // Mocks
+        const getUSSFileSpy = jest.spyOn(Get, "USSFile");
+        const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
+        const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
         const profFunc = jest.fn((args) => {
             return {
                 host: "fake",
@@ -78,20 +80,19 @@ describe("Compare local-file and uss-file handler", () => {
         };
 
         beforeEach(()=> {
-            // Mock the compare uss function
-            Get.USSFile = jest.fn(async (session) => {
+            getUSSFileSpy.mockReset();
+            getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared");
-            });
+            }));
+            getDiffStringSpy.mockReset();
+            getDiffStringSpy.mockImplementation(jest.fn(async () => {
+                return "compared string";
+            }));
             logMessage = "";
         });
 
         it("should compare local-file and uss-file in terminal", async () => {
-
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
@@ -99,8 +100,8 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
-            expect(Get.USSFile).toHaveBeenCalledTimes(1);
-            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath, {
+            expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -110,7 +111,7 @@ describe("Compare local-file and uss-file handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should compare local-file and uss-file in terminal with --context-lines option", async () => {
@@ -127,10 +128,6 @@ describe("Compare local-file and uss-file handler", () => {
                 outputFormat: "terminal"
             };
 
-            DiffUtils.getDiffString = jest.fn(async () => {
-                return "compared string";
-            });
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -138,8 +135,8 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
-            expect(Get.USSFile).toHaveBeenCalledTimes(1);
-            expect(Get.USSFile).toHaveBeenCalledWith(fakeSession as any, ussFilePath, {
+            expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
@@ -149,13 +146,12 @@ describe("Compare local-file and uss-file handler", () => {
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
-            expect(DiffUtils.getDiffString).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
 
         it("should compare local-file and uss-file in browser", async () => {
-            jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
-
+            openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -163,8 +159,7 @@ describe("Compare local-file and uss-file handler", () => {
             } catch (e) {
                 error = e;
             }
-
-            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledTimes(1);
+            expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -27,7 +27,6 @@ const buffer = Buffer.from("buff");
 describe("Compare Data Sets", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            // installPlugin: true,
             testName: "compare_data_sets",
             tempProfileTypes: ["zosmf"]
         });
