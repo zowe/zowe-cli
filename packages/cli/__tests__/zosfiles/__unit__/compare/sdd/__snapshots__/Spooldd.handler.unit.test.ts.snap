@@ -15,3 +15,11 @@ Object {
   "success": true,
 }
 `;
+
+exports[`Compare spooldd handler process method should compare two spooldd in terminal with --context-lines option, --seqnum specified 1`] = `
+Object {
+  "apiResponse": Object {},
+  "commandResponse": "compared string",
+  "success": true,
+}
+`;

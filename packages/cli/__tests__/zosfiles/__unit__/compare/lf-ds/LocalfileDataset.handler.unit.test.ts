@@ -148,6 +148,42 @@ describe("Compare local-file and data-set handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
 
+        it("should compare local-file and data-set in terminal with --context-lines option, --seqnum specified", async () => {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    contextLines: contextLinesArg, 
+                    seqnum: true,
+                }
+            };
+            const options: IDiffOptions = {
+                contextLinesArg,
+                outputFormat: "terminal"
+            };
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Retrieving dataset"
+                }
+            });
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
+        });
+
         it("should compare local-file and data-set in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;

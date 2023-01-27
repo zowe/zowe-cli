@@ -148,6 +148,43 @@ describe("Compare data set handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
+        it("should compare two uss-files in terminal with --context-lines option, --seqnum specified", async () => {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    contextLines: contextLinesArg,
+                    seqnum: true,
+                }
+            };
+            const options: IDiffOptions = {
+                contextLinesArg,
+                outputFormat: "terminal"
+            };
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Retrieving second uss-file"
+                }
+            });
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
+        });
+
         it("should compare two uss-files in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;

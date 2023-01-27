@@ -15,3 +15,11 @@ Object {
   "success": true,
 }
 `;
+
+exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal with --context-lines option, --seqnum specified 1`] = `
+Object {
+  "apiResponse": Object {},
+  "commandResponse": "compared string",
+  "success": true,
+}
+`;

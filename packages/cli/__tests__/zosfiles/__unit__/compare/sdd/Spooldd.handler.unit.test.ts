@@ -145,6 +145,36 @@ describe("Compare spooldd handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
+        it("should compare two spooldd in terminal with --context-lines option, --seqnum specified", async () => {
+            const contextLinesArg: number = 2;
+            const processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    contextLines: contextLinesArg,
+                    seqnum: true,
+                }
+            };
+            const options: IDiffOptions = {
+                contextLinesArg,
+                outputFormat: "terminal"
+            };
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledTimes(2);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
+        });
+
         it("should compare two spooldd in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
