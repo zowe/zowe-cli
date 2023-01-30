@@ -69,30 +69,22 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
 
         let dsContentString1 = "";
         let dsContentString2 = "";
+        const seqnumlen = 8;
 
-        if(commandParameters.arguments.seqnum===false){
-            const seqnumlen = 8;
-
-            const dsStringArray1 = dsContentBuf1.toString().split("\n");
-            for (const i in dsStringArray1) {
-                const sl = dsStringArray1[i].length;
-                const tempString = dsStringArray1[i].substring(0, sl - seqnumlen);
-                dsContentString1 += tempString + "\n";
-            }
-
-            const dsStringArray2 = dsContentBuf2.toString().split("\n");
-            for (const i in dsStringArray2) {
-                const sl = dsStringArray2[i].length;
-                const tempString = dsStringArray2[i].substring(0, sl - seqnumlen);
-                dsContentString2 += tempString + "\n";
-            }
+        if(commandParameters.arguments.seqnum === false){
+            dsContentString1 = dsContentBuf1.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            dsContentString2 = dsContentBuf2.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
         }
         else {
             dsContentString1 = dsContentBuf1.toString();
             dsContentString2 = dsContentBuf2.toString();
         }
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (browserView) {
 
             await DiffUtils.openDiffInbrowser(dsContentString1, dsContentString2);

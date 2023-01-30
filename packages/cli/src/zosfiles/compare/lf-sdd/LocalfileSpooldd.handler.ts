@@ -56,18 +56,15 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
         }
 
         const lfContentBuf = fs.readFileSync(localFile);
-
         let lfContentString: string = "";
-        if (commandParameters.arguments.seqnum === false) {
-            const seqnumlen = 8;
+        const seqnumlen = 8;
 
-            const lfStringArray = lfContentBuf.toString().split("\n");
-            for (const i in lfStringArray) {
-                const sl = lfStringArray[i].length;
-                const tempString = lfStringArray[i].substring(0, sl - seqnumlen);
-                lfContentString += tempString + "\n";
-            }
-        }else{
+        if(commandParameters.arguments.seqnum === false){
+            lfContentString = lfContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+        }
+        else {
             lfContentString = lfContentBuf.toString();
         }
 
@@ -84,8 +81,7 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
 
         const spoolContentString = await GetJobs.getSpoolContentById(session, jobName, jobId, spoolId);
 
-
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (commandParameters.arguments.browserView) {
 
             await DiffUtils.openDiffInbrowser(lfContentString, spoolContentString);
@@ -104,7 +100,6 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
             outputFormat: 'terminal',
             contextLinesArg: contextLinesArg
         });
-
 
         return {
             success: true,

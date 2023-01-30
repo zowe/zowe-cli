@@ -19,7 +19,7 @@ describe("Compare localfile-spooldd handler", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/compare/lf-sdd/LocalfileSpooldd.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lf-sdd/LocalfileSpooldd.definition.unit.test.ts";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/testing.txt";
         const spoolDescription = "jobName:jobId:3";
         // Vars populated by the mocked function
         let error;
@@ -147,6 +147,40 @@ describe("Compare localfile-spooldd handler", () => {
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
             expect(DiffUtils.getDiffString).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
+
+        it("should compare a local-file and a spool-dd in terminal with --seqnum specified", async () => {
+            const processArgCopy: any = {
+                ...processArguments,
+                arguments:{
+                    ...processArguments.arguments,
+                    seqnum: false,
+                }
+            };
+            const options: IDiffOptions = {
+                outputFormat: "terminal"
+            };
+
+            DiffUtils.getDiffString = jest.fn(async () => {
+                return "compared12345678";
+
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(processArgCopy as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
+            expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName, jobId, spoolId);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared12345678");
+            expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
+            expect(DiffUtils.getDiffString).toHaveBeenCalledWith("compared", "compared", options);
+        });
+
 
         it("should compare a local-file and a spool-dd in browser", async () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());

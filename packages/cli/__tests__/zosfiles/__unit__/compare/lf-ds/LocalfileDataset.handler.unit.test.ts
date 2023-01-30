@@ -19,8 +19,8 @@ describe("Compare local-file and data-set handler", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/lf-ds/LocalfileDataset.definition.unit.test.ts";
-        const dataSetName = "testing2";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/testing.txt";
+        const dataSetName = "testing";
         // Vars populated by the mocked function
         let error;
         let apiMessage = "";
@@ -86,7 +86,7 @@ describe("Compare local-file and data-set handler", () => {
             }));
             getDiffStringSpy.mockReset();
             getDiffStringSpy.mockImplementation(jest.fn(async () => {
-                return "compared string";
+                return "compared12345678";
             }));
             logMessage = "";
         });
@@ -109,7 +109,7 @@ describe("Compare local-file and data-set handler", () => {
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
-            expect(logMessage).toEqual("compared string");
+            expect(logMessage).toEqual("compared12345678");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
         });
 
@@ -143,25 +143,27 @@ describe("Compare local-file and data-set handler", () => {
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
-            expect(logMessage).toEqual("compared string");
+            expect(logMessage).toEqual("compared12345678");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
 
-        it("should compare local-file and data-set in terminal with --context-lines option, --seqnum specified", async () => {
-            const contextLinesArg: number = 2;
+        it("should compare local-file and data-set in terminal with --seqnum specified", async () => {
             const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
-                    contextLines: contextLinesArg, 
-                    seqnum: true,
+                    seqnum: false,
                 }
             };
             const options: IDiffOptions = {
-                contextLinesArg,
                 outputFormat: "terminal"
             };
+            getDataSetSpy.mockImplementation(jest.fn(async (session) => {
+                fakeSession = session;
+                return Buffer.from("compared12345678");
+            }));
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -179,9 +181,9 @@ describe("Compare local-file and data-set handler", () => {
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
-            expect(logMessage).toEqual("compared string");
+            expect(logMessage).toEqual("compared12345678");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
-            expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare local-file and data-set in browser", async () => {

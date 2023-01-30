@@ -49,7 +49,7 @@ export default class SpoolddHandler extends ZosFilesBaseHandler {
         const spoolContentString2 = await GetJobs.getSpoolContentById(session, jobName2, jobId2, spoolId2);
 
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (commandParameters.arguments.browserView) {
 
             await DiffUtils.openDiffInbrowser(spoolContentString1, spoolContentString2);

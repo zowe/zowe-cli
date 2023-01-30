@@ -20,7 +20,7 @@ describe("Compare local-file and uss-file handler", () => {
         const handlerReq = require("../../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler");
         const handler = new handlerReq.default();
         // any local repo file
-        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/lf-uss/LocalfileUss.definition.unit.test.ts' ;
+        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/testing.txt';
         const ussFilePath = "./testing2";
         // Vars populated by the mocked function
         let error;
@@ -150,21 +150,21 @@ describe("Compare local-file and uss-file handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
         });
 
-        it("should compare local-file and uss-file in terminal with --context-lines option, --seqnum specified", async () => {
-            const contextLinesArg: number = 2;
+        it("should compare local-file and uss-file in terminal with --seqnum specified", async () => {
             const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
-                    contextLines: contextLinesArg, 
-                    seqnum: true,
+                    seqnum: false,
                 }
             };
             const options: IDiffOptions = {
-                contextLinesArg,
                 outputFormat: "terminal"
             };
-
+            getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
+                fakeSession = session;
+                return Buffer.from("compared12345678");
+            }));
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -184,7 +184,7 @@ describe("Compare local-file and uss-file handler", () => {
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
-            expect(getDiffStringSpy).toHaveBeenCalledWith(readFileSync(localFilePath).toString(), "compared", options);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare local-file and uss-file in browser", async () => {

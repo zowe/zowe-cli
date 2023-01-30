@@ -15,3 +15,11 @@ Object {
   "success": true,
 }
 `;
+
+exports[`Compare localfile-spooldd handler process method should compare a local-file and a spool-dd in terminal with --seqnum specified 1`] = `
+Object {
+  "apiResponse": Object {},
+  "commandResponse": "compared12345678",
+  "success": true,
+}
+`;

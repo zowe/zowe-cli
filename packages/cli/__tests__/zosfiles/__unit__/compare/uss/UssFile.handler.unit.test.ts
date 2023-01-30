@@ -148,21 +148,21 @@ describe("Compare data set handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
-        it("should compare two uss-files in terminal with --context-lines option, --seqnum specified", async () => {
-            const contextLinesArg: number = 2;
+        it("should compare two uss-files in terminal with --seqnum specified", async () => {
             const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
-                    contextLines: contextLinesArg,
-                    seqnum: true,
+                    seqnum: false,
                 }
             };
             const options: IDiffOptions = {
-                contextLinesArg,
                 outputFormat: "terminal"
             };
-
+            getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
+                fakeSession = session;
+                return Buffer.from("compared12345678");
+            }));
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);

@@ -3,7 +3,7 @@
 exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal 1`] = `
 Object {
   "apiResponse": Object {},
-  "commandResponse": "compared string",
+  "commandResponse": "compared12345678",
   "success": true,
 }
 `;
@@ -11,15 +11,15 @@ Object {
 exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal with --context-lines option 1`] = `
 Object {
   "apiResponse": Object {},
-  "commandResponse": "compared string",
+  "commandResponse": "compared12345678",
   "success": true,
 }
 `;
 
-exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal with --context-lines option, --seqnum specified 1`] = `
+exports[`Compare local-file and data-set handler process method should compare local-file and data-set in terminal with --seqnum specified 1`] = `
 Object {
   "apiResponse": Object {},
-  "commandResponse": "compared string",
+  "commandResponse": "compared12345678",
   "success": true,
 }
 `;

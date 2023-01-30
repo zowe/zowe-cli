@@ -35,7 +35,6 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             }
         );
 
-
         commandParameters.response.progress.endBar();
         commandParameters.response.progress.startBar({ task });
 
@@ -62,30 +61,22 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
 
         let ussContentString1 = "";
         let ussContentString2 = "";
+        const seqnumlen = 8;
 
         if(commandParameters.arguments.seqnum === false){
-            const seqnumlen = 8;
-
-            const ussFileStringArray1 = ussFileContentBuf1.toString().split("\n");
-            for (const i in ussFileStringArray1) {
-                const sl = ussFileStringArray1[i].length;
-                const tempString = ussFileStringArray1[i].substring(0, sl - seqnumlen);
-                ussContentString1 += tempString + "\n";
-            }
-
-            const ussFileStringArray2 = ussFileContentBuf2.toString().split("\n");
-            for (const i in ussFileStringArray2) {
-                const sl = ussFileStringArray2[i].length;
-                const tempString = ussFileStringArray2[i].substring(0, sl - seqnumlen);
-                ussContentString2 += tempString + "\n";
-            }
+            ussContentString1 = ussFileContentBuf1.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            ussContentString2 = ussFileContentBuf2.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
         }
         else {
             ussContentString1 = ussFileContentBuf1.toString();
             ussContentString2 = ussFileContentBuf2.toString();
         }
 
-        //  CHECHKING IsetsF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (browserView) {
 
             await DiffUtils.openDiffInbrowser(ussContentString1, ussContentString2);
@@ -104,7 +95,6 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             outputFormat: 'terminal',
             contextLinesArg: contextLinesArg
         });
-
 
         return {
             success: true,

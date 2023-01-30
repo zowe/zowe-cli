@@ -70,35 +70,26 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
             }
         );
 
-
-        const browserView = commandParameters.arguments.browserView;
-
         let lfContentString = "";
         let ussContentString = "";
+        const seqnumlen = 8;
 
-        if (commandParameters.arguments.seqnum === false) {
-            const seqnumlen = 8;
-
-            const lfStringArray = lfContentBuf.toString().split("\n");
-            for (const i in lfStringArray) {
-                const sl = lfStringArray[i].length;
-                const tempString = lfStringArray[i].substring(0, sl - seqnumlen);
-                lfContentString += tempString + "\n";
-            }
-
-            const ussStringArray = ussContentBuf.toString().split("\n");
-            for (const i in ussStringArray) {
-                const sl = ussStringArray[i].length;
-                const tempString = ussStringArray[i].substring(0, sl - seqnumlen);
-                ussContentString += tempString + "\n";
-            }
+        if(commandParameters.arguments.seqnum === false){
+            lfContentString = lfContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            ussContentString = ussContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
         }
         else {
             lfContentString = lfContentBuf.toString();
             ussContentString = ussContentBuf.toString();
         }
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        const browserView = commandParameters.arguments.browserView;
+
         if (browserView) {
 
             await DiffUtils.openDiffInbrowser(lfContentString, ussContentString);

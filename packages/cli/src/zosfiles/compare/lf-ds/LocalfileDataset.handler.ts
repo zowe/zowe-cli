@@ -72,35 +72,25 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             }
         );
 
-
-        const browserView = commandParameters.arguments.browserView;
-
         let lfContentString = "";
         let dsContentString = "";
+        const seqnumlen = 8;
 
-        if (commandParameters.arguments.seqnum === false) {
-            const seqnumlen = 8;
-
-            const lfStringArray = lfContentBuf.toString().split("\n");
-            for (const i in lfStringArray) {
-                const sl = lfStringArray[i].length;
-                const tempString = lfStringArray[i].substring(0, sl - seqnumlen);
-                lfContentString += tempString + "\n";
-            }
-
-            const dsStringArray = dsContentBuf.toString().split("\n");
-            for (const i in dsStringArray) {
-                const sl = dsStringArray[i].length;
-                const tempString = dsStringArray[i].substring(0, sl - seqnumlen);
-                dsContentString += tempString + "\n";
-            }
+        if(commandParameters.arguments.seqnum === false){
+            lfContentString = lfContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            dsContentString = dsContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
         }
         else {
             lfContentString = lfContentBuf.toString();
             dsContentString = dsContentBuf.toString();
         }
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        const browserView = commandParameters.arguments.browserView;
         if (browserView) {
 
             await DiffUtils.openDiffInbrowser(lfContentString, dsContentString);
@@ -115,7 +105,6 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         let jsonDiff = "";
         const contextLinesArg = commandParameters.arguments.contextLines;
 
-        //remove all line break encodings from strings
         jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
             outputFormat: 'terminal',
             contextLinesArg: contextLinesArg

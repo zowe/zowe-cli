@@ -23,3 +23,11 @@ Object {
   "success": true,
 }
 `;
+
+exports[`Compare local-file and uss-file handler process method should compare local-file and uss-file in terminal with --seqnum specified 1`] = `
+Object {
+  "apiResponse": Object {},
+  "commandResponse": "compared string",
+  "success": true,
+}
+`;
