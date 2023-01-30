@@ -28,7 +28,7 @@ When a team configuration and a user configuration are placed at the same level 
 
 When configuration files (either team or user) exist at both the global level and in a project directory, a profile from a project config completely replaces a profile of the same name from the global config. All profiles that exist in one config file but **NOT** in the other config file are included in the resulting configuration that is used by a CLI command.
 
-Potentially, four configuration file can be in used at once:
+Potentially, four configuration files can be in use at once:
 
 - A global team configuration file
 - A global user configuration file
@@ -49,7 +49,7 @@ flowchart TB
 
     globUser
       -- 2 - Merge the results of the previous merge with project team config
-      --> projTeam[Project team config = some/project/directory/zowe.config.user.json \n\n * When an identically named profile exists in both the results of the \n previous merge and in this project team config file, that profile \n will be completely replaced by the profile from this project \n team config. \n\n * If a profile only exists in the results of the previous merge or in \n this project team config file, but not both, that profile will \n also be included, in its entirety, in the resulting configuration]
+      --> projTeam[Project team config = some/project/directory/zowe.config.json \n\n * When an identically named profile exists in both the results of the \n previous merge and in this project team config file, that profile \n will be completely replaced by the profile from this project \n team config. \n\n * If a profile only exists in the results of the previous merge or in \n this project team config file, but not both, that profile will \n also be included, in its entirety, in the resulting configuration]
 
     projTeam
       -- 3 - Merge the results of the previous merge with project user config
