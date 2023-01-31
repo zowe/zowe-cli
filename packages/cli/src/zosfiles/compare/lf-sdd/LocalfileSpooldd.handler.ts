@@ -64,7 +64,7 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
             fs.closeSync(localFileHandle);
         }
 
-        const lfContentBuf = fs.readFileSync(localFile);
+        lfContentBuf = fs.readFileSync(localFile);
         let lfContentString: string = "";
         const seqnumlen = 8;
 
