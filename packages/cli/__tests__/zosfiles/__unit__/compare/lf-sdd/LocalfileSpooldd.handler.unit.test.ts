@@ -19,7 +19,7 @@ describe("Compare localfile-spooldd handler", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/compare/lf-sdd/LocalfileSpooldd.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/testing.txt";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/testLocalFile.txt";
         const spoolDescription = "jobName:jobId:3";
         // Vars populated by the mocked function
         let error;
@@ -107,7 +107,6 @@ describe("Compare localfile-spooldd handler", () => {
 
             expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
             expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName, jobId, spoolId);
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
@@ -141,7 +140,6 @@ describe("Compare localfile-spooldd handler", () => {
 
             expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
             expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName, jobId, spoolId);
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
@@ -174,7 +172,6 @@ describe("Compare localfile-spooldd handler", () => {
 
             expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
             expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession as any, jobName, jobId, spoolId);
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared12345678");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);

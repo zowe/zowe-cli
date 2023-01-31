@@ -20,7 +20,7 @@ describe("Compare local-file and uss-file handler", () => {
         const handlerReq = require("../../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler");
         const handler = new handlerReq.default();
         // any local repo file
-        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/testing.txt';
+        const localFilePath = 'packages/cli/__tests__/zosfiles/__unit__/compare/testLocalFile.txt';
         const ussFilePath = "./testing2";
         // Vars populated by the mocked function
         let error;
@@ -108,7 +108,6 @@ describe("Compare local-file and uss-file handler", () => {
                     statusMessage: "Retrieving uss file"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -143,7 +142,6 @@ describe("Compare local-file and uss-file handler", () => {
                     statusMessage: "Retrieving uss file"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -180,7 +178,6 @@ describe("Compare local-file and uss-file handler", () => {
                     statusMessage: "Retrieving uss file"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);

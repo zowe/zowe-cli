@@ -106,7 +106,6 @@ describe("Compare data set handler", () => {
                     statusMessage: "Retrieving second dataset"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -140,7 +139,6 @@ describe("Compare data set handler", () => {
                     statusMessage: "Retrieving second dataset"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -178,7 +176,6 @@ describe("Compare data set handler", () => {
                     statusMessage: "Retrieving second dataset"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);

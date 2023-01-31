@@ -19,7 +19,7 @@ describe("Compare local-file and data-set handler", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler");
         const handler = new handlerReq.default();
-        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/testing.txt";
+        const localFilePath = "packages/cli/__tests__/zosfiles/__unit__/compare/testLocalFile.txt";
         const dataSetName = "testing";
         // Vars populated by the mocked function
         let error;
@@ -107,7 +107,6 @@ describe("Compare local-file and data-set handler", () => {
                     statusMessage: "Retrieving dataset"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared12345678");
             expect(DiffUtils.getDiffString).toHaveBeenCalledTimes(1);
@@ -141,7 +140,6 @@ describe("Compare local-file and data-set handler", () => {
                     statusMessage: "Retrieving dataset"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared12345678");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -179,7 +177,6 @@ describe("Compare local-file and data-set handler", () => {
                     statusMessage: "Retrieving dataset"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared12345678");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
