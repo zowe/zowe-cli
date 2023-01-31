@@ -4,7 +4,7 @@
 - [Feature overview](#feature-overview)
   - [Benefits](#benefits)
   - [Changes to secure credential storage](#changes-to-secure-credential-storage)
-- [Installing @next version](#installing-next-version)
+- [Installing CLI V2 version](#installing-cli-v2-version)
 - [Initializing team configuration](#initializing-team-configuration)
 - [(Optional) Initializing user-specific configuration](#optional-initializing-user-specific-configuration)
 - [Editing configuration](#editing-configuration)
@@ -34,9 +34,9 @@ In this version, Secure Credential Store (SCS) Plug-in is deprecated. The `zowe 
 
 With the new configuration, the CLI prompts you to enter username and password securely by default. Commands in the new `zowe config` command group let you manage security for any option value.
 
-## Installing @next version
+## Installing CLI V2 version
 
-To get started, install the Zowe CLI `@next` version from the online registry. You can follow this procedure for a first-time installation, or to update a currently installed version.
+To get started, install the Zowe CLI V2 LTS version from the online registry. You can follow this procedure for a first-time installation, or to update a currently installed version.
 
 **Follow these steps:**
 
@@ -45,15 +45,15 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 2. To install or update the core CLI, open a command-line window and issue the following command:
 
    ```
-   npm install -g @zowe/cli@next
+   npm install -g @zowe/cli@zowe-v2-lts
    ```
 
 3. Meet the [software requirements for each plug-in](https://docs.zowe.org/stable/user-guide/cli-swreqplugins.html#software-requirements-for-zowe-cli-plug-ins).
 
-4. (Optional) Check [npmjs.com](https://www.npmjs.com/) for any Zowe plug-ins that have an `@next` version available. If an `@next` version is available, you can issue the following command (substituting the plugin name) to install it. If no `@next` version, try installing the `@latest` version of the plug-in:
+4. (Optional) Check [npmjs.com](https://www.npmjs.com/) for any Zowe plug-ins that have a V2 LTS version available. If an V2 version is available, you can issue the following command (substituting the plugin name) to install it. If no V2 version exists, try installing the `@latest` version of the plug-in:
 
     ```
-    zowe plugins install @zowe/<plugin-name>@next
+    zowe plugins install @zowe/<plugin-name>@zowe-v2-lts
     ```
 
    Zowe CLI and optional plug-ins are installed!
@@ -117,7 +117,7 @@ Additionally, you can generate a *user-specific* configuration file. In your use
 
 Issue the command `zowe config init --global-config` or `zowe config init --gc` to create the global (`zowe.config.json`) and `zowe config init --global-config --user-config` or `zowe config init --gc --uc` to generate the user (`zowe.config.user.json`) config files.
 
-In your user-specific file, notice that the top level defaults, plugins, and secure fields are empty. The profiles do not have any properties. You can add your connection details as properties here to override properties in `zowe.config.json`, or add add new connections.
+In your user-specific file, notice that the top level defaults and secure fields are empty. The profiles do not have any properties. You can add your connection details as properties here to override properties in `zowe.config.json`, or add add new connections.
 ## Editing configuration
 
 After the initial setup, you can define additional mainframe services to your team or user config.
@@ -149,7 +149,7 @@ Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your compute
     "defaults": {
         "zosmf": "lpar1.zosmf"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -201,7 +201,7 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
         // Change to lpar2.zosmf if you wish to change default profile
         "zosmf": "lpar1.zosmf"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -278,7 +278,7 @@ In the following example, the username and password fields for ZOSMF1 and ZOSMF2
         "zosmf": "lpar1.zosmf",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -361,7 +361,7 @@ In this example configuration, the settings are accessing multiple services dire
         "ssh": "lpar1.ssh",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 In this example configuration, the settings are accessing multiple services via the API ML (where MFA/SSO is achievable via token-based authorization).
@@ -410,7 +410,7 @@ In this example configuration, the settings are accessing multiple services via 
         "db2": "lpar1.db2",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 In this example configuration, the settings are accessing multiple services directly on LPAR1 and LPAR2 where username and password varies between the LPAR1 and LPAR2 services. This example is identical to first example except that LPAR1 and LPAR2 each contain a secure array, instead of just one secure array in the "my_base" profile.
@@ -479,7 +479,7 @@ In this example configuration, the settings are accessing multiple services dire
         "ssh": "lpar1.ssh",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -562,6 +562,6 @@ In this example configuration, API ML is leveraged to access production services
         "ssh": "dev.ssh",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
