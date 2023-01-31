@@ -52,7 +52,7 @@
     "@types/node": "^14.18.28",
     "@zowe/cli-test-utils": "7.10.1",
     "@zowe/core-for-zowe-sdk": "7.10.1",
-    "@zowe/imperative": "5.8.0",
+    "@zowe/imperative": "5.8.2",
     "@zowe/zos-uss-for-zowe-sdk": "7.10.1",
     "eslint": "^8.22.0",
     "madge": "^4.0.1",
