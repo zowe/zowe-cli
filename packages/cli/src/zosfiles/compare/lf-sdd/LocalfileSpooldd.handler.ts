@@ -64,7 +64,6 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
             fs.closeSync(localFileHandle);
         }
 
-        lfContentBuf = fs.readFileSync(localFile);
         let lfContentString: string = "";
         const seqnumlen = 8;
 
@@ -90,7 +89,8 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
 
         const spoolContentString = await GetJobs.getSpoolContentById(session, jobName, jobId, spoolId);
 
-        // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+
+        //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (commandParameters.arguments.browserView) {
 
             await DiffUtils.openDiffInbrowser(lfContentString, spoolContentString);
@@ -103,7 +103,7 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
         }
 
         let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextLines;
+        const contextLinesArg = commandParameters.arguments.contextlines;
 
         jsonDiff = await DiffUtils.getDiffString(lfContentString, spoolContentString, {
             outputFormat: 'terminal',
