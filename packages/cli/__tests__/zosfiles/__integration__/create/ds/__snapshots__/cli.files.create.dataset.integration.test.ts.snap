@@ -183,10 +183,6 @@ exports[`Create  Data Set should display the help 1`] = `
 
       Display help text
 
-   --help-examples (boolean)
-
-      Display examples for all the commands in a group
-
    --help-web | --hw (boolean)
 
       Display HTML help in browser

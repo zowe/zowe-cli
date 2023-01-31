@@ -145,7 +145,7 @@ describe("System Tests - Monitor Jobs", () => {
                         expect(status.status).toBe("OUTPUT");
                         done();
                     }).catch((error) => {
-                        if (!done) {
+                        if (!doneCalled) {
                             doneCalled = true;
                             done(`wait for status error: ${error.message}`);
                         }
@@ -164,7 +164,7 @@ describe("System Tests - Monitor Jobs", () => {
                         }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
-                            if (!done) {
+                            if (!doneCalled) {
                                 doneCalled = true;
                                 done(`Release error: ${releaseErr.message}`);
                             }
@@ -229,7 +229,7 @@ describe("System Tests - Monitor Jobs", () => {
                         expect(status.status).toBe("OUTPUT");
                         done();
                     }).catch((error) => {
-                        if (!done) {
+                        if (!doneCalled) {
                             doneCalled = true;
                             done(`wait for status error: ${error.message}`);
                         }
@@ -248,7 +248,7 @@ describe("System Tests - Monitor Jobs", () => {
                         }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
-                            if (!done) {
+                            if (!doneCalled) {
                                 doneCalled = true;
                                 done(`Release error: ${releaseErr.message}`);
                             }
@@ -551,7 +551,7 @@ describe("System Tests - Monitor Jobs", () => {
                         expect(status.status).toBe("ACTIVE");
                         done();
                     }).catch((error) => {
-                        if (!done) {
+                        if (!doneCalled) {
                             doneCalled = true;
                             done(`wait for status error: ${error.message}`);
                         }
@@ -570,7 +570,7 @@ describe("System Tests - Monitor Jobs", () => {
                         }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
-                            if (!done) {
+                            if (!doneCalled) {
                                 doneCalled = true;
                                 done(`Release error: ${releaseErr.message}`);
                             }
@@ -604,7 +604,7 @@ describe("System Tests - Monitor Jobs", () => {
                         expect(status.status).toBe("OUTPUT");
                         done();
                     }).catch((error) => {
-                        if (!done) {
+                        if (!doneCalled) {
                             doneCalled = true;
                             done(`wait for status error: ${error.message}`);
                         }
@@ -623,7 +623,7 @@ describe("System Tests - Monitor Jobs", () => {
                         }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
-                            if (!done) {
+                            if (!doneCalled) {
                                 doneCalled = true;
                                 done(`Release error: ${releaseErr.message}`);
                             }

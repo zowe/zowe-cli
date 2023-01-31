@@ -41,18 +41,27 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
             localFile = path.resolve(commandParameters.arguments.localFilePath);
         }
 
-        // check if the path given is of a file or not
+        const localFileHandle = fs.openSync(localFile, 'r');
+        let lfContentBuf: Buffer;
         try {
-            if(!fs.lstatSync(localFile).isFile()){
+            // check if the path given is of a file or not
+            try {
+                if (!fs.fstatSync(localFileHandle).isFile()) {
+                    throw new ImperativeError({
+                        msg: 'Path given is not of a file, do recheck your path again'
+                    });
+                }
+            } catch (error) {
+                if (error instanceof ImperativeError) throw error;
                 throw new ImperativeError({
-                    msg: 'Path given is not of a file, do recheck your path again'
+                    msg: 'Path not found. Please check the path and try again'
                 });
             }
-        } catch (error) {
-            if (error instanceof ImperativeError) throw error;
-            throw new ImperativeError({
-                msg: 'Path not found. Please check the path and try again'
-            });
+
+            // reading local file as buffer
+            lfContentBuf = fs.readFileSync(localFileHandle);
+        } finally {
+            fs.closeSync(localFileHandle);
         }
 
         const lfContentBuf = fs.readFileSync(localFile);
