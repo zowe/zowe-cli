@@ -152,12 +152,14 @@ The behavior for merging configuration files is the same in Zowe Explorer as wit
 - A Zowe Explorer behavior that may appear to be a difference in merging, is actually a difference in how Zowe Explorer sets the protocol. If you set the zosmf protocol to "https" in one config file, but override the protocol with "http" in an overriding config file, the CLI will report a `socket hang up` error when the service only accepts https connections. However, Zowe Explorer will successfully perform the operation. This gives the appearance that Zowe Explorer does not override the protocol in the configuration. However, we believe that the configuration merging is fine. We believe that Zowe Explorer hard-codes the use of the "https" protocol, rather than accept the value from the profile configuration.
 
 - When a user name or password is not specified in the configuration, Zowe Explorer will prompt for the user name or password. If the configuration does not specify a default base profile, Zowe Explorer will display the errors below. The CLI runs successfully in such a configuration. To avoid the following errors in Zowe Explorer, the default "base" profile name must have a value. When `autoStore` is false, Zowe Explorer does not even try to save the values for which it prompted, so the base profile itself does not have to exist.
+The status of this behavior can be viewed in the GitHub issue [Errors occur with no default base profile #2107](https://github.com/zowe/vscode-extension-for-zowe/issues/2107)
 
   ```
   Error encountered in checkCurrentProfile.optionalProfiles! TypeError: Cannot read properties of undefined (reading 'name')
 
   Error running command zowe.ds.pattern: Cannot read properties of undefined (reading 'status'). This is likely caused by the extension that contributes zowe.ds.pattern.
   ```
+
 
 Another behavior described in the scenarios below is the location where properties are automatically stored. Here are a few configuration set-up choices used to identify the automatic storage behavior of the CLI and Zowe Explorer.
 
