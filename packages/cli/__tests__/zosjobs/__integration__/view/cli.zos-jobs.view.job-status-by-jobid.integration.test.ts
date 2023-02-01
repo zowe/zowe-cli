@@ -38,7 +38,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
     });
 
     describe("syntax errors", () => {
-        it("should occur if the jobid is missing", async () => {
+        it("should occur if the jobid is missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/job-status-by-jobid/job_syntax_missing_jobid.sh",
                 TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
@@ -46,7 +46,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if an extra unknown option is specified", async () => {
+        it("should occur if an extra unknown option is specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/job-status-by-jobid/job_syntax_invalid_parm.sh",
                 TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");

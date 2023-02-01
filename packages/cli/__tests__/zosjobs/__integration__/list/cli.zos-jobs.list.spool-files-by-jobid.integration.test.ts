@@ -29,7 +29,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
+    it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -37,7 +37,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
     });
 
     describe("syntax", () => {
-        it("should detect a missing jobid", async () => {
+        it("should detect a missing jobid", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/missing_jobid.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
