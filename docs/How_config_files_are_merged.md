@@ -6,7 +6,7 @@ Zowe CLI commands require connection properties and application-specific propert
 
 - [How Zowe CLI team configuration files are merged together](#how-zowe-cli-team-configuration-files-are-merged-together)
   - [General rules for merging profiles from team configuration files](#general-rules-for-merging-profiles-from-team-configuration-files)
-    - [**Configuration merging diagram**](#configuration-merging-diagram)
+    - [**Configuration merging example**](#configuration-merging-example)
   - [Best Practices](#best-practices)
     - [**Advantages of only using a global configuration**](#advantages-of-only-using-a-global-configuration)
     - [**Advantages of only using a project configuration**](#advantages-of-only-using-a-project-configuration)
@@ -37,24 +37,33 @@ Potentially, four configuration files can be in use at once:
 
 Any combination from one to all four of these configuration files can be used together. When any file is not present, the same rules for merging files in the same directory versus merging a global configuration into a project configuration still apply. When configuration files are merged, none of the configuration files themselves are changed. A logical merged result is simply used by the desired Zowe CLI command.
 
-The following diagram shows the order in which the four configuration files will be merged and describes how the profile properties of these configuration files will be merged together to form the configuration used by Zowe CLI commands.
 
-### **Configuration merging diagram**
+### **Configuration merging example**
 
-```mermaid
-flowchart TB
-    globTeam[Global team config = $ZOWE_CLI_HOME/zowe.config.json]
-      -- 1 - Merge the global team config with the global user config
-      --> globUser[Global user config = $ZOWE_CLI_HOME/zowe.config.user.json \n\n * When an identically named property exists within an identically \n named profile in both the global team config and this global \n user config, the property value from this global user config \n will be used in the resulting configuration. \n\n * When an identically named profile exists in both the global team \n config and this global user config, but a property of   that profile \n only exists in one of the two configurations, that property will \n also be included in the resulting configuration. \n\n * If a profile exists in only one of these two config files, that profile \n will be included, in its entirety, in the resulting  configuration]
+For an example of how profiles are merged, assume that profiles named A, B, C, D, E, and F exist within your configuration files as shown below.
 
-    globUser
-      -- 2 - Merge the results of the previous merge with project team config
-      --> projTeam[Project team config = some/project/directory/zowe.config.json \n\n * When an identically named profile exists in both the results of the \n previous merge and in this project team config file, that profile \n will be completely replaced by the profile from this project \n team config. \n\n * If a profile only exists in the results of the previous merge or in \n this project team config file, but not both, that profile will \n also be included, in its entirety, in the resulting configuration]
+| Profiles in Global Team Config <br/> $ZOWE_CLI_HOME/zowe.config.json |  Profiles in Global User Config <br/> $ZOWE_CLI_HOME/zowe.config.user.json |
+| :---------------------- | :----------------------- |
+| A - global team         | A - global user          |
+| B - global team         | C - global user          |
+|                         | D - global user          |
 
-    projTeam
-      -- 3 - Merge the results of the previous merge with project user config
-      --> projUser[Project user config = some/project/directory/zowe.config.user.json \n\n * When an identically named property exists within an identically \n named profile in both the results of the previous merge and this \n project user config, the property value from this project user \n config will be used in the resulting configuration. \n\n * When an identically named profile exists in both the result of the \n previous merge and this project user config, but a property of \n that profile only exists in one of the two configurations, that \n property will also be included in the resulting configuration. \n\n * If a profile exists in the results of the previous merge or in this \n project user config file, but not both, that profile will be \n included, in its entirety, in the resulting configuration]
-```
+
+| Profiles in Project Team Config </br> Some/project/dir/zowe.config.json |  Profiles in Project User Config </br> Some/project/dir/zowe.config.user.json |
+| :----------------------  | :------------------------ |
+| A - project team         | A - project user          |
+| C - project team         | C - project user          |
+| E - project team         | F - project user          |
+
+The following table shows the order in which the four configuration files will be merged and describes how the profile properties of these configuration files will be merged together to form the configuration used by Zowe CLI commands. Any combination of the four configuration files may exist. This example assumes that all four configuration files exist.
+
+
+| Merge Step |  Merge Policy | Merge Result |
+| :--------- | :------------ |:------------ |
+| Global team config is merged with global user config | - When an identically named property exists within an identically named profile in both the global team config and the global user config, the property value from the global user config will be used in the resulting profile. <br/> - When an identically named profile exists in both the global team config and the global user config, but a property of that profile only exists in one of the two configurations, that property will also be included in the resulting profile. <br/> - If a profile exists in only one of these two config files, that profile will be included, in its entirety, in the resulting  configuration | A - Global user config profile properties override properties with the same name from global team profile <br/> B - global team profile is kept in its entirety <br/> C - global user profile is kept in its entirety <br/> D - global user profile is kept in its entirety |
+| Results of previous merge is merged with project team config | - When an identically named profile exists in both the results of the previous merge and in the project team config file, that profile will be completely replaced by the profile from the project team config. <br/> - If a profile only exists in the results of the previous merge or in the project team config file, but not both, that profile will also be included, in its entirety, in the resulting configuration | A - project team profile completely replaces A from the previous merge <br/> B - global team config is kept in its entirety <br/> C - project team profile completely replaces C from the previous merge  <br/> D - global user profile is kept in its entirety <br/> E - project team profile is kept in its entirety |
+| Results of previous merge is merged with user team config | - When an identically named property exists within an identically named profile in both the results of the previous merge and the project user config, the property value from the project user config will be included in the resulting profile. <br/> - When an identically named profile exists in both the result of the previous merge and the project user config, but a property of that profile only exists in one of the two configurations, that property will also be included in the resulting profile. <br/> - If a profile exists in the results of the previous merge or in the project user config file, but not both, that profile will be included, in its entirety, in the resulting configuration |  A - project user profile properties override properties with the same name from the previous merge <br/> B - global team config is kept in its entirety <br/> C - project user profile properties override properties with the same name from the previous merge  <br/> D - global user profile is kept in its entirety <br/> E - project team profile is kept in its entirety <br/> F - project user profile is kept in its entirety |
+
 
 ## Best Practices
 
