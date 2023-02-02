@@ -28,17 +28,16 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
+
+        // CHECKING IF LOCAL FILE EXISTS, THEN RETRIEVING IT
         commandParameters.response.progress.startBar({ task });
-
         let localFile: string;
-
-        // resolving to full path if local path passed is not absolute
         if (path.isAbsolute(commandParameters.arguments.localFilePath)) {
+            // resolving to full path if local path passed is not absolute
             localFile = commandParameters.arguments.localFilePath;
         } else {
             localFile = path.resolve(commandParameters.arguments.localFilePath);
         }
-
         const localFileHandle = fs.openSync(localFile, 'r');
         let lfContentBuf: Buffer;
         try {
@@ -61,12 +60,12 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
         } finally {
             fs.closeSync(localFileHandle);
         }
-
         commandParameters.response.progress.endBar();
 
-        // retrieving the data-set to compare
-        commandParameters.response.progress.startBar({ task });
+
+        // RETRIEVING THE DATA-SET TO COMPARE
         task.statusMessage = "Retrieving dataset";
+        commandParameters.response.progress.startBar({ task });
         const dsContentBuf = await Get.dataSet(session, commandParameters.arguments.dataSetName,
             {
                 binary: commandParameters.arguments.binary,
@@ -77,11 +76,13 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
                 task: task
             }
         );
+        commandParameters.response.progress.endBar();
 
+
+        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
         let lfContentString = "";
         let dsContentString = "";
         const seqnumlen = 8;
-
         if(commandParameters.arguments.seqnum === false){
             lfContentString = lfContentBuf.toString().split("\n")
                 .map((line)=>line.slice(0,-seqnumlen))
@@ -95,12 +96,10 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             dsContentString = dsContentBuf.toString();
         }
 
-        //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        const browserView = commandParameters.arguments.browserView;
-        if (browserView) {
-
+        
+        // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
+        if (commandParameters.arguments.browserView) {
             await DiffUtils.openDiffInbrowser(lfContentString, dsContentString);
-
             return {
                 success: true,
                 commandResponse: "Launching local-file and data-set diffs in browser...",
@@ -108,14 +107,12 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             };
         }
 
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextLines;
-
-        jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
+        
+        // RETURNING DIFF
+        let jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
             outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
+            contextLinesArg: commandParameters.arguments.contextLines
         });
-
         return {
             success: true,
             commandResponse: jsonDiff,

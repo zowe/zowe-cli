@@ -12,6 +12,7 @@
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+
 describe("Compare spooldd handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
@@ -35,7 +36,6 @@ describe("Compare spooldd handler", () => {
         const jobName2: string = spoolDescArr2[0];
         const jobId2: string = spoolDescArr2[1];
         const spoolId2: number = Number(spoolDescArr2[2]);
-
         // Mocks
         const getSpoolContentByIdSpy = jest.spyOn(GetJobs, "getSpoolContentById");
         const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
@@ -50,7 +50,6 @@ describe("Compare spooldd handler", () => {
                 rejectUnauthorized: "fake",
             };
         });
-
         const processArguments = {
             arguments: {
                 $0: "fake",
@@ -87,12 +86,18 @@ describe("Compare spooldd handler", () => {
                 get: profFunc
             }
         };
+        const options: IDiffOptions = {
+            outputFormat: "terminal"
+        };
+
         beforeEach(()=> {
+            // mock reading from spool (string1 and string2)
             getSpoolContentByIdSpy.mockReset();
             getSpoolContentByIdSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return "compared";
             }));
+            // mock diff
             getDiffStringSpy.mockReset();
             getDiffStringSpy.mockImplementation(jest.fn(async () => {
                 return "compared string";
@@ -109,11 +114,12 @@ describe("Compare spooldd handler", () => {
             }
 
             expect(getSpoolContentByIdSpy).toHaveBeenCalledTimes(2);
-            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
-            expect(jsonObj).toMatchSnapshot();
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two spooldd in terminal with --context-lines option", async () => {
@@ -125,10 +131,7 @@ describe("Compare spooldd handler", () => {
                     contextLines: contextLinesArg
                 }
             };
-            const options: IDiffOptions = {
-                contextLinesArg,
-                outputFormat: "terminal"
-            };
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -137,12 +140,12 @@ describe("Compare spooldd handler", () => {
             }
 
             expect(getSpoolContentByIdSpy).toHaveBeenCalledTimes(2);
-            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
-            expect(jsonObj).toMatchSnapshot();
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
-            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared",  {...options, contextLinesArg: contextLinesArg});
         });
 
         it("should compare two spooldd in terminal with --seqnum specified", async () => {
@@ -153,12 +156,13 @@ describe("Compare spooldd handler", () => {
                     seqnum: false,
                 }
             };
-            const options: IDiffOptions = {
-                outputFormat: "terminal"
-            };
-            getDiffStringSpy.mockImplementation(jest.fn(async () => {
+
+            //overwrite spool(strings 1 & 2) to include seqnums to chop off in LocalFileDatasetHandler
+            getSpoolContentByIdSpy.mockImplementation(jest.fn(async (session) => {
+                fakeSession = session;
                 return "compared12345678";
             }));
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -167,23 +171,25 @@ describe("Compare spooldd handler", () => {
             }
 
             expect(getSpoolContentByIdSpy).toHaveBeenCalledTimes(2);
-            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toEqual("");
-            expect(logMessage).toEqual("compared12345678");
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(apiMessage).toEqual("");
+            expect(logMessage).toEqual("compared string");
+            expect(getSpoolContentByIdSpy).toHaveBeenCalledWith(fakeSession as any, jobName1, jobId1, spoolId1);
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two spooldd in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
-            processArguments.arguments.browserView = true ;
+            processArguments.arguments.browserView = true;
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
             } catch (e) {
                 error = e;
             }
+
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });

@@ -24,8 +24,9 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
-        commandParameters.response.progress.startBar({ task });
 
+        // RETRIEVING USS FILE
+        commandParameters.response.progress.startBar({ task });
         const ussFileContentBuf1 = await Get.USSFile(session, commandParameters.arguments.ussFilePath1,
             {
                 binary: commandParameters.arguments.binary,
@@ -34,22 +35,20 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
                 task: task
             }
         );
-
         commandParameters.response.progress.endBar();
-        commandParameters.response.progress.startBar({ task });
 
+
+        // RETRIEVING THE SECOND USS FILE TO COMPARE
+        task.statusMessage = "Retrieving second uss-file";
+        commandParameters.response.progress.startBar({ task });
         let binary2 = commandParameters.arguments.binary2;
         let encoding2 = commandParameters.arguments.encoding2;
-        const browserView = commandParameters.arguments.browserView;
-
         if (binary2 == undefined) {
             binary2 = commandParameters.arguments.binary;
         }
         if (encoding2 == undefined) {
             encoding2 = commandParameters.arguments.encoding;
         }
-
-        task.statusMessage = "Retrieving second uss-file";
         const ussFileContentBuf2 = await Get.USSFile(session, commandParameters.arguments.ussFilePath2,
             {
                 binary: binary2,
@@ -58,11 +57,13 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
                 task: task
             }
         );
+        commandParameters.response.progress.endBar();
 
+
+        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
         let ussContentString1 = "";
         let ussContentString2 = "";
         const seqnumlen = 8;
-
         if(commandParameters.arguments.seqnum === false){
             ussContentString1 = ussFileContentBuf1.toString().split("\n")
                 .map((line)=>line.slice(0,-seqnumlen))
@@ -76,11 +77,10 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             ussContentString2 = ussFileContentBuf2.toString();
         }
 
+
         // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (browserView) {
-
+        if (commandParameters.arguments.browserView) {
             await DiffUtils.openDiffInbrowser(ussContentString1, ussContentString2);
-
             return {
                 success: true,
                 commandResponse: "Launching uss files diffs in browser...",
@@ -88,14 +88,12 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             };
         }
 
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextLines;
 
-        jsonDiff = await DiffUtils.getDiffString(ussContentString1, ussContentString2, {
+        // RETURNING DIFF
+        let jsonDiff = await DiffUtils.getDiffString(ussContentString1, ussContentString2, {
             outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
+            contextLinesArg: commandParameters.arguments.contextLines
         });
-
         return {
             success: true,
             commandResponse: jsonDiff,

@@ -25,7 +25,7 @@ describe("Compare data set handler", () => {
         let apiMessage = "";
         let jsonObj: object;
         let logMessage = "";
-        let fakeSession: object;
+        let fakeSession: object;   
         // Mocks
         const getUSSFileSpy = jest.spyOn(Get, "USSFile");
         const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
@@ -76,13 +76,23 @@ describe("Compare data set handler", () => {
                 get: profFunc
             }
         };
+        const options: IDiffOptions = {
+            outputFormat: "terminal"
+        };
+        const ussTask = {
+            percentComplete: 0,
+            stageName: 0,
+            statusMessage: "Retrieving second uss-file"
+        };
 
         beforeEach(()=> {
+            // mock reading from uss file (string1 and string2)
             getUSSFileSpy.mockReset();
             getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared");
             }));
+            // mock diff
             getDiffStringSpy.mockReset();
             getDiffStringSpy.mockImplementation(jest.fn(async () => {
                 return "compared string";
@@ -99,16 +109,12 @@ describe("Compare data set handler", () => {
             }
 
             expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
-            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving second uss-file"
-                }
-            });
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, { task: ussTask });
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two uss-files in terminal with --context-lines option", async () => {
@@ -120,10 +126,6 @@ describe("Compare data set handler", () => {
                     contextLines: contextLinesArg
                 }
             };
-            const options: IDiffOptions = {
-                contextLinesArg,
-                outputFormat: "terminal"
-            };
 
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -133,17 +135,12 @@ describe("Compare data set handler", () => {
             }
 
             expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
-            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving second uss-file"
-                }
-            });
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
-            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, { task: ussTask });
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared",  {...options, contextLinesArg: contextLinesArg});
         });
 
         it("should compare two uss-files in terminal with --seqnum specified", async () => {
@@ -154,13 +151,13 @@ describe("Compare data set handler", () => {
                     seqnum: false,
                 }
             };
-            const options: IDiffOptions = {
-                outputFormat: "terminal"
-            };
+
+            //overwrite ds(strings 1 & 2) to include seqnums to chop off in LocalFileDatasetHandler
             getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared12345678");
             }));
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
@@ -169,28 +166,25 @@ describe("Compare data set handler", () => {
             }
 
             expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
-            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving second uss-file"
-                }
-            });
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath1, { task: ussTask });
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two uss-files in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
             } catch (e) {
                 error = e;
             }
+            
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });

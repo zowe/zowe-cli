@@ -76,13 +76,23 @@ describe("Compare data set handler", () => {
                 get: profFunc
             }
         };
+        const options: IDiffOptions = {
+            outputFormat: "terminal"
+        };
+        const dsTask = {
+            percentComplete: 0,
+            stageName: 0,
+            statusMessage: "Retrieving second dataset"
+        };
 
         beforeEach(() => {
+            // mock reading from data set (string1 and string2)
             getDataSetSpy.mockReset();
             getDataSetSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared");
             }));
+            // mock diff
             getDiffStringSpy.mockReset();
             getDiffStringSpy.mockImplementation(jest.fn(async () => {
                 return "compared string";
@@ -99,17 +109,14 @@ describe("Compare data set handler", () => {
             }
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(2);
-            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving second dataset"
-                }
-            });
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, { task: dsTask });
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
+        
         it("should compare two data sets in terminal with --context-lines option", async () => {
             const contextLinesArg: number = 2;
             const processArgCopy: any = {
@@ -118,10 +125,6 @@ describe("Compare data set handler", () => {
                     ...processArguments.arguments,
                     contextLines: contextLinesArg
                 }
-            };
-            const options: IDiffOptions = {
-                contextLinesArg,
-                outputFormat: "terminal"
             };
 
             try {
@@ -132,17 +135,12 @@ describe("Compare data set handler", () => {
             }
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(2);
-            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving second dataset"
-                }
-            });
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
-            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, { task: dsTask });
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared",  {...options, contextLinesArg: contextLinesArg});
         });
 
         it("should compare two data sets in terminal with --seqnum specified", async () => {
@@ -153,9 +151,8 @@ describe("Compare data set handler", () => {
                     seqnum: false,
                 }
             };
-            const options: IDiffOptions = {
-                outputFormat: "terminal"
-            };
+
+            //overwrite ds(strings 1 & 2) to include seqnums to chop off in LocalFileDatasetHandler
             getDataSetSpy.mockImplementation(jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("compared12345678");
@@ -169,28 +166,25 @@ describe("Compare data set handler", () => {
             }
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(2);
-            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Retrieving second dataset"
-                }
-            });
+            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+            expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, { task: dsTask });
+            expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
         it("should compare two data sets in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
             } catch (e) {
                 error = e;
             }
+            
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
