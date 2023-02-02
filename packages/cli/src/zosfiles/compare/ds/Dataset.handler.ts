@@ -96,9 +96,9 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             };
         }
 
-        
+
         // RETURNING DIFF
-        let jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
+        const jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
             outputFormat: 'terminal',
             contextLinesArg: commandParameters.arguments.contextLines
         });

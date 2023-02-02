@@ -96,7 +96,7 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             dsContentString = dsContentBuf.toString();
         }
 
-        
+
         // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
         if (commandParameters.arguments.browserView) {
             await DiffUtils.openDiffInbrowser(lfContentString, dsContentString);
@@ -107,9 +107,9 @@ export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
             };
         }
 
-        
+
         // RETURNING DIFF
-        let jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
+        const jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
             outputFormat: 'terminal',
             contextLinesArg: commandParameters.arguments.contextLines
         });

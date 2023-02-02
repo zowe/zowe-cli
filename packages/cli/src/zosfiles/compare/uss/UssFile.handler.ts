@@ -90,7 +90,7 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
 
 
         // RETURNING DIFF
-        let jsonDiff = await DiffUtils.getDiffString(ussContentString1, ussContentString2, {
+        const jsonDiff = await DiffUtils.getDiffString(ussContentString1, ussContentString2, {
             outputFormat: 'terminal',
             contextLinesArg: commandParameters.arguments.contextLines
         });

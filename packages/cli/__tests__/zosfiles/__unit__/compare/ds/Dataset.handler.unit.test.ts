@@ -116,7 +116,7 @@ describe("Compare data set handler", () => {
             expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
-        
+
         it("should compare two data sets in terminal with --context-lines option", async () => {
             const contextLinesArg: number = 2;
             const processArgCopy: any = {
@@ -184,7 +184,7 @@ describe("Compare data set handler", () => {
             } catch (e) {
                 error = e;
             }
-            
+
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });

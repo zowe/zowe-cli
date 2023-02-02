@@ -26,7 +26,7 @@ export default class SpoolddHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
-        
+
         // RETRIEVING INFO FOR FIRST SPOOLDD
         commandParameters.response.progress.startBar({ task });
         const spoolDescription1 = commandParameters.arguments.spoolDescription1;
@@ -74,7 +74,7 @@ export default class SpoolddHandler extends ZosFilesBaseHandler {
 
 
         // RETURNING DIFF
-        let jsonDiff = await DiffUtils.getDiffString(spoolContentString1, spoolContentString2, {
+        const jsonDiff = await DiffUtils.getDiffString(spoolContentString1, spoolContentString2, {
             outputFormat: 'terminal',
             contextLinesArg: commandParameters.arguments.contextLines
         });

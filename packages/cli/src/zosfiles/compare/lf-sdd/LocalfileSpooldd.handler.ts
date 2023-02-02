@@ -101,9 +101,9 @@ export default class LocalfileSpoolddHandler extends ZosFilesBaseHandler {
             };
         }
 
-        
+
         // RETURNING DIFF
-        let jsonDiff = await DiffUtils.getDiffString(lfContentString, spoolContentString, {
+        const jsonDiff = await DiffUtils.getDiffString(lfContentString, spoolContentString, {
             outputFormat: 'terminal',
             contextLinesArg: commandParameters.arguments.contextLines
         });

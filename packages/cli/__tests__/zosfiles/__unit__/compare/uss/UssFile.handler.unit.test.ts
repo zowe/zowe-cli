@@ -25,7 +25,7 @@ describe("Compare data set handler", () => {
         let apiMessage = "";
         let jsonObj: object;
         let logMessage = "";
-        let fakeSession: object;   
+        let fakeSession: object;
         // Mocks
         const getUSSFileSpy = jest.spyOn(Get, "USSFile");
         const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
@@ -184,7 +184,7 @@ describe("Compare data set handler", () => {
             } catch (e) {
                 error = e;
             }
-            
+
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });

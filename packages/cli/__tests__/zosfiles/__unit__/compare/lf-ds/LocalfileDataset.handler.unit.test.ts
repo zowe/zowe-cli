@@ -91,7 +91,7 @@ describe("Compare local-file and data-set handler", () => {
             // mock reading from local file (string 1)
             fstatSyncSpy.mockReset();
             fstatSyncSpy.mockImplementation(jest.fn(() => {
-                return {isFile: () => true} as any
+                return {isFile: () => true} as any;
             }));
             readFileSyncSpy.mockReset();
             readFileSyncSpy.mockImplementation(jest.fn(() => {
@@ -195,7 +195,7 @@ describe("Compare local-file and data-set handler", () => {
         it("should compare local-file and data-set in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
             processArguments.arguments.browserView = true ;
-            
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);

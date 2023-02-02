@@ -86,13 +86,13 @@ describe("Compare local-file and uss-file handler", () => {
             percentComplete: 0,
             stageName: 0,
             statusMessage: "Retrieving uss file"
-        }
+        };
 
         beforeEach(()=> {
             // mock reading from local file (string 1)
             fstatSyncSpy.mockReset();
             fstatSyncSpy.mockImplementation(jest.fn(() => {
-                return {isFile: () => true} as any
+                return {isFile: () => true} as any;
             }));
             readFileSyncSpy.mockReset();
             readFileSyncSpy.mockImplementation(jest.fn(() => {
@@ -203,7 +203,7 @@ describe("Compare local-file and uss-file handler", () => {
             } catch (e) {
                 error = e;
             }
-            
+
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
     });
