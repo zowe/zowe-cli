@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Compare Data Sets Success scenarios should compare data sets 1`] = `
+"================Z/OS FILES COMPARE DATA SET===============
+Compared values have no visual difference.
+"
+`;

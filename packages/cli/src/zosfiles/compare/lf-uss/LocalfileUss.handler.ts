@@ -28,17 +28,16 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
+
+        // CHECKING IF LOCAL FILE EXISTS, THEN RETRIEVING IT
         commandParameters.response.progress.startBar({ task });
-
         let localFile: string;
-
-        // resolving to full path if local path passed is not absolute
         if (path.isAbsolute(commandParameters.arguments.localFilePath)) {
+            // resolving to full path if local path passed is not absolute
             localFile = commandParameters.arguments.localFilePath;
         } else {
             localFile = path.resolve(commandParameters.arguments.localFilePath);
         }
-
         const localFileHandle = fs.openSync(localFile, 'r');
         let lfContentBuf: Buffer;
         try {
@@ -55,18 +54,17 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
                     msg: 'Path not found. Please check the path and try again'
                 });
             }
-
             // reading local file as buffer
             lfContentBuf = fs.readFileSync(localFileHandle);
         } finally {
             fs.closeSync(localFileHandle);
         }
-
         commandParameters.response.progress.endBar();
 
-        // retrieving the data-set to compare
-        commandParameters.response.progress.startBar({ task });
+
+        // RETRIEVING USS FILE TO COMPARE
         task.statusMessage = "Retrieving uss file";
+        commandParameters.response.progress.startBar({ task });
         const ussContentBuf = await Get.USSFile(session, commandParameters.arguments.ussFilePath,
             {
                 binary: commandParameters.arguments.binary,
@@ -75,40 +73,30 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
                 task: task
             }
         );
+        commandParameters.response.progress.endBar();
 
 
-        const browserView = commandParameters.arguments.browserView;
-
+        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
         let lfContentString = "";
         let ussContentString = "";
-
-        if (!commandParameters.arguments.seqnum) {
-            const seqnumlen = 8;
-
-            const lfStringArray = lfContentBuf.toString().split("\n");
-            for (const i in lfStringArray) {
-                const sl = lfStringArray[i].length;
-                const tempString = lfStringArray[i].substring(0, sl - seqnumlen);
-                lfContentString += tempString + "\n";
-            }
-
-            const ussStringArray = ussContentBuf.toString().split("\n");
-            for (const i in ussStringArray) {
-                const sl = ussStringArray[i].length;
-                const tempString = ussStringArray[i].substring(0, sl - seqnumlen);
-                ussContentString += tempString + "\n";
-            }
+        const seqnumlen = 8;
+        if(commandParameters.arguments.seqnum === false){
+            lfContentString = lfContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            ussContentString = ussContentBuf.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
         }
         else {
             lfContentString = lfContentBuf.toString();
             ussContentString = ussContentBuf.toString();
         }
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (browserView) {
 
+        // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
+        if (commandParameters.arguments.browserView) {
             await DiffUtils.openDiffInbrowser(lfContentString, ussContentString);
-
             return {
                 success: true,
                 commandResponse: "Launching local-filee and uss-file diffs in browser...",
@@ -116,15 +104,12 @@ export default class LocalfileUssHandler extends ZosFilesBaseHandler {
             };
         }
 
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
 
-        jsonDiff = await DiffUtils.getDiffString(lfContentString, ussContentString, {
+        // RETURNING DIFF
+        const jsonDiff = await DiffUtils.getDiffString(lfContentString, ussContentString, {
             outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
+            contextLinesArg: commandParameters.arguments.contextLines
         });
-
-
         return {
             success: true,
             commandResponse: jsonDiff,
