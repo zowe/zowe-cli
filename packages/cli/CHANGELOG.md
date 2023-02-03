@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.10.3`
 - BugFix: Fix in employing `--context-lines` option for all diff/compare commands. Fixed broken `--seqnum` option implementation.[#1529](https://github.com/zowe/zowe-cli/issues/1529)
 
 ## `7.10.2`
