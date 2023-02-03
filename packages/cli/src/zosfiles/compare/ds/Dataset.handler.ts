@@ -24,8 +24,8 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
 
+        // RETRIEVING THE FIRST DATA-SET
         commandParameters.response.progress.startBar({ task });
-
         const dsContentBuf1 = await Get.dataSet(session, commandParameters.arguments.dataSetName1,
             {
                 binary: commandParameters.arguments.binary,
@@ -37,14 +37,15 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             }
         );
         commandParameters.response.progress.endBar();
-        commandParameters.response.progress.startBar({ task });
 
+
+        // RETRIEVING THE DATA-SET TO COMPARE
+        task.statusMessage = "Retrieving second dataset";
+        commandParameters.response.progress.startBar({ task });
         let binary2 = commandParameters.arguments.binary2;
         let encoding2 = commandParameters.arguments.encoding2;
         let record2 = commandParameters.arguments.record2;
-        const browserView = commandParameters.arguments.browserView;
         const volumeSerial2 = commandParameters.arguments.volumeSerial2;
-
         if (binary2 == undefined) {
             binary2 = commandParameters.arguments.binary;
         }
@@ -54,8 +55,6 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         if (record2 == undefined) {
             record2 = commandParameters.arguments.record;
         }
-
-        task.statusMessage = "Retrieving second dataset";
         const dsContentBuf2 = await Get.dataSet(session, commandParameters.arguments.dataSetName2,
             {
                 binary: binary2,
@@ -66,37 +65,30 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                 task: task
             }
         );
+        commandParameters.response.progress.endBar();
 
+
+        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
         let dsContentString1 = "";
         let dsContentString2 = "";
-
-        if(!commandParameters.arguments.seqnum){
-            const seqnumlen = 8;
-
-            const dsStringArray1 = dsContentBuf1.toString().split("\n");
-            for (const i in dsStringArray1) {
-                const sl = dsStringArray1[i].length;
-                const tempString = dsStringArray1[i].substring(0, sl - seqnumlen);
-                dsContentString1 += tempString + "\n";
-            }
-
-            const dsStringArray2 = dsContentBuf2.toString().split("\n");
-            for (const i in dsStringArray2) {
-                const sl = dsStringArray2[i].length;
-                const tempString = dsStringArray2[i].substring(0, sl - seqnumlen);
-                dsContentString2 += tempString + "\n";
-            }
+        const seqnumlen = 8;
+        if(commandParameters.arguments.seqnum === false){
+            dsContentString1 = dsContentBuf1.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            dsContentString2 = dsContentBuf2.toString().split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
         }
         else {
             dsContentString1 = dsContentBuf1.toString();
             dsContentString2 = dsContentBuf2.toString();
         }
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (browserView) {
 
+        // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
+        if (commandParameters.arguments.browserView) {
             await DiffUtils.openDiffInbrowser(dsContentString1, dsContentString2);
-
             return {
                 success: true,
                 commandResponse: "Launching data-sets diffs in browser...",
@@ -104,15 +96,12 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             };
         }
 
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
 
-        jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
+        // RETURNING DIFF
+        const jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
             outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
+            contextLinesArg: commandParameters.arguments.contextLines
         });
-
-
         return {
             success: true,
             commandResponse: jsonDiff,

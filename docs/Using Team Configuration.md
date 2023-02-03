@@ -1,30 +1,28 @@
-# Using global profile configuration with Zowe CLI <!-- omit in toc -->
-
-**Early access feature:** Global profiles are available in the `@next` version of Zowe CLI. If you already installed the supported version `@zowe-v1-lts`, switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
+# Using team profile configuration with Zowe CLI <!-- omit in toc -->
 
 **Table of Contents:**
 - [Feature overview](#feature-overview)
   - [Benefits](#benefits)
   - [Changes to secure credential storage](#changes-to-secure-credential-storage)
-- [Installing @next version](#installing-next-version)
-- [Initializing global configuration](#initializing-global-configuration)
+- [Installing CLI V2 version](#installing-cli-v2-version)
+- [Initializing team configuration](#initializing-team-configuration)
 - [(Optional) Initializing user-specific configuration](#optional-initializing-user-specific-configuration)
 - [Editing configuration](#editing-configuration)
 - [Managing credential security](#managing-credential-security)
 - [Tips for efficient configuration](#tips-for-efficient-configuration)
   - [Tips for using the base array](#tips-for-using-the-base-array)
-- [Sharing global configuration](#sharing-global-configuration)
+- [Sharing team configuration](#sharing-team-configuration)
 - [Example configurations](#example-configurations)
 
 ## Feature overview
 
 In the V1-LTS version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile contains the host, port, username, and password for a specific mainframe service instance. While that approach is effective, users often need to duplicate values across profiles and spend time managing many profiles separately.
 
-The **global profile functionality** simplifies profile management by letting you edit, store, and share mainframe configuration details in one location. You can use a text editor to populate configuration files with connection details for your mainframe services.
+The **team profile functionality** simplifies profile management by letting you edit, store, and share mainframe configuration details in one location. You can use a text editor to populate configuration files with connection details for your mainframe services.
 
 ### Benefits
 
-Global profile configuration can improve your Zowe CLI experience in the following ways:
+Team profile configuration can improve your Zowe CLI experience in the following ways:
 
 - As a CLI user, you can manage your connection details efficiently in one location.
 - As a team leader, you can share a configuration file with your team members so that they can easily access mainframe services. You can add the file directly to your project in an SCM.
@@ -36,9 +34,9 @@ In this version, Secure Credential Store (SCS) Plug-in is deprecated. The `zowe 
 
 With the new configuration, the CLI prompts you to enter username and password securely by default. Commands in the new `zowe config` command group let you manage security for any option value.
 
-## Installing @next version
+## Installing CLI V2 version
 
-To get started, install the Zowe CLI `@next` version from the online registry. You can follow this procedure for a first-time installation, or to update a currently installed version.
+To get started, install the Zowe CLI V2 LTS version from the online registry. You can follow this procedure for a first-time installation, or to update a currently installed version.
 
 **Follow these steps:**
 
@@ -47,15 +45,15 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 2. To install or update the core CLI, open a command-line window and issue the following command:
 
    ```
-   npm install -g @zowe/cli@next
+   npm install -g @zowe/cli@zowe-v2-lts
    ```
 
 3. Meet the [software requirements for each plug-in](https://docs.zowe.org/stable/user-guide/cli-swreqplugins.html#software-requirements-for-zowe-cli-plug-ins).
 
-4. (Optional) Check [npmjs.com](https://www.npmjs.com/) for any Zowe plug-ins that have an `@next` version available. If an `@next` version is available, you can issue the following command (substituting the plugin name) to install it. If no `@next` version, try installing the `@latest` version of the plug-in:
+4. (Optional) Check [npmjs.com](https://www.npmjs.com/) for any Zowe plug-ins that have a V2 LTS version available. If an V2 version is available, you can issue the following command (substituting the plugin name) to install it. If no V2 version exists, try installing the `@latest` version of the plug-in:
 
     ```
-    zowe plugins install @zowe/<plugin-name>@next
+    zowe plugins install @zowe/<plugin-name>@zowe-v2-lts
     ```
 
    Zowe CLI and optional plug-ins are installed!
@@ -79,7 +77,7 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
    **Important!** Prior to deleting the contents of the `/profiles` directory, take note of any mainframe service details that you need (host, port, etc...). You might want to save the entire `/profiles` directory to another location on your computer so that you can reference or restore the profiles later.
 
 You can now configure the CLI and issue commands.
-## Initializing global configuration
+## Initializing team configuration
 
 To begin, define a connection to z/OSMF and initialize your configuration files. We recommend this method for getting started, but you can choose create the configuration files manually if desired.
 
@@ -97,7 +95,7 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
    After you respond to the prompts, the following file is added to your local `.zowe` directory:
 
-   - `zowe.config.json` - A global configuration file. This is the primary location where your MF service connection details such as host and port are defined. Use this configuration file for the following procedures.
+   - `zowe.config.json` - A team configuration file. This is the primary location where your MF service connection details such as host and port are defined. Use this configuration file for the following procedures.
 
 3. Edit the zowe.config.json file to change the name of the LPAR, to supply a value for the host name, and to change the port number if needed.
 
@@ -115,14 +113,14 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
 ## (Optional) Initializing user-specific configuration
 
-Additionally, you can generate a *user-specific* configuration file. In your user config, you can override values that are defined in the global `zowe.config.json`.
+Additionally, you can generate a *user-specific* configuration file. In your user config, you can override values that are defined in the team `zowe.config.json`.
 
 Issue the command `zowe config init --global-config` or `zowe config init --gc` to create the global (`zowe.config.json`) and `zowe config init --global-config --user-config` or `zowe config init --gc --uc` to generate the user (`zowe.config.user.json`) config files.
 
-In your user-specific file, notice that the top level defaults, plugins, and secure fields are empty. The profiles do not have any properties. You can add your connection details as properties here to override properties in `zowe.config.json`, or add add new connections.
+In your user-specific file, notice that the top level defaults and secure fields are empty. The profiles do not have any properties. You can add your connection details as properties here to override properties in `zowe.config.json`, or add add new connections.
 ## Editing configuration
 
-After the initial setup, you can define additional mainframe services to your global or user config.
+After the initial setup, you can define additional mainframe services to your team or user config.
 
 Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The profiles object should contain connection and other frequently needed information for accessing various services. For example:
 
@@ -151,7 +149,7 @@ Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your compute
     "defaults": {
         "zosmf": "lpar1.zosmf"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -203,7 +201,7 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
         // Change to lpar2.zosmf if you wish to change default profile
         "zosmf": "lpar1.zosmf"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -280,7 +278,7 @@ In the following example, the username and password fields for ZOSMF1 and ZOSMF2
         "zosmf": "lpar1.zosmf",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -291,11 +289,11 @@ The base array is a useful tool for sharing option values between services. You 
 - You want to store a web token to access all services through Zowe API Mediation Layer.
 - You want to trust a known self-signed certificate, or your site does not have server certificates configured. You can define `reject-unauthorized` in the base array with a value of  `false` to apply to all services. Understand the security implications of accepting self-signed certificates at your site before you use this method.
 
-## Sharing global configuration
+## Sharing team configuration
 
 You might want to share configuration in the following scenarios:
-- Share global config with developers so that they can begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `~/.zowe` folder before issuing CLI commands.
-- Add global config to your project directory in an SCM tool such as GitHub. This lets other developers pull the project to their local machine and make use of the defined configuration. Zowe CLI commands that you issue from within the project directory automatically use the project's config scheme.
+- Share team config with developers so that they can begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `~/.zowe` folder before issuing CLI commands.
+- Add team config to your project directory in an SCM tool such as GitHub. This lets other developers pull the project to their local machine and make use of the defined configuration. Zowe CLI commands that you issue from within the project directory automatically use the project's config scheme.
 - Enable test automation and CI/CD, letting your pipelines make use of the project configuration.
 
 ## Example configurations
@@ -363,7 +361,7 @@ In this example configuration, the settings are accessing multiple services dire
         "ssh": "lpar1.ssh",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 In this example configuration, the settings are accessing multiple services via the API ML (where MFA/SSO is achievable via token-based authorization).
@@ -412,7 +410,7 @@ In this example configuration, the settings are accessing multiple services via 
         "db2": "lpar1.db2",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 In this example configuration, the settings are accessing multiple services directly on LPAR1 and LPAR2 where username and password varies between the LPAR1 and LPAR2 services. This example is identical to first example except that LPAR1 and LPAR2 each contain a secure array, instead of just one secure array in the "my_base" profile.
@@ -481,7 +479,7 @@ In this example configuration, the settings are accessing multiple services dire
         "ssh": "lpar1.ssh",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```
 
@@ -564,6 +562,6 @@ In this example configuration, API ML is leveraged to access production services
         "ssh": "dev.ssh",
         "base": "my_base"
     },
-    "plugins": []
+    "autoStore": true
 }
 ```

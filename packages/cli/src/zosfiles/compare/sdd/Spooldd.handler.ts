@@ -19,41 +19,52 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class SpoolddHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        const descriptionSeperator: string = ":";
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Retrieving first spool dd",
             stageName: TaskStage.IN_PROGRESS
         };
-        const descriptionSeperator: string = ":";
+
+
+        // RETRIEVING INFO FOR FIRST SPOOLDD
         commandParameters.response.progress.startBar({ task });
         const spoolDescription1 = commandParameters.arguments.spoolDescription1;
-
-        // retrieving information for first spooldd
         const spoolDescArr1 = spoolDescription1.split(descriptionSeperator);
         const jobName1: string = spoolDescArr1[0];
         const jobId1: string = spoolDescArr1[1];
         const spoolId1: number = Number(spoolDescArr1[2]);
-        const spoolContentString1 = await GetJobs.getSpoolContentById(session, jobName1, jobId1, spoolId1);
-
+        let spoolContentString1 = await GetJobs.getSpoolContentById(session, jobName1, jobId1, spoolId1);
         commandParameters.response.progress.endBar();
-        commandParameters.response.progress.startBar({ task });
 
+
+        // RETRIEVING INFO FOR SECOND SPOOLDD
         task.statusMessage = "Retrieving second spooldd";
-        // retrieving information for second spooldd
+        commandParameters.response.progress.startBar({ task });
         const spoolDescription2 = commandParameters.arguments.spoolDescription2;
         const spoolDescArr2 = spoolDescription2.split(descriptionSeperator);
         const jobName2: string = spoolDescArr2[0];
         const jobId2: string = spoolDescArr2[1];
         const spoolId2: number = Number(spoolDescArr2[2]);
+        let spoolContentString2 = await GetJobs.getSpoolContentById(session, jobName2, jobId2, spoolId2);
+        commandParameters.response.progress.endBar();
 
-        const spoolContentString2 = await GetJobs.getSpoolContentById(session, jobName2, jobId2, spoolId2);
+
+        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
+        const seqnumlen = 8;
+        if(commandParameters.arguments.seqnum === false){
+            spoolContentString1 = spoolContentString1.split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+            spoolContentString2 = spoolContentString2.split("\n")
+                .map((line)=>line.slice(0,-seqnumlen))
+                .join("\n");
+        }
 
 
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
         if (commandParameters.arguments.browserView) {
-
             await DiffUtils.openDiffInbrowser(spoolContentString1, spoolContentString2);
-
             return {
                 success: true,
                 commandResponse: "Launching spool-dds' diffs in browser...",
@@ -61,15 +72,12 @@ export default class SpoolddHandler extends ZosFilesBaseHandler {
             };
         }
 
-        let jsonDiff = "";
-        const contextLinesArg = commandParameters.arguments.contextlines;
 
-        jsonDiff = await DiffUtils.getDiffString(spoolContentString1, spoolContentString2, {
+        // RETURNING DIFF
+        const jsonDiff = await DiffUtils.getDiffString(spoolContentString1, spoolContentString2, {
             outputFormat: 'terminal',
-            contextLinesArg: contextLinesArg
+            contextLinesArg: commandParameters.arguments.contextLines
         });
-
-
         return {
             success: true,
             commandResponse: jsonDiff,
