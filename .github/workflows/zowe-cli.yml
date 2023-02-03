@@ -174,7 +174,8 @@ jobs:
         env_vars: OS,NODE
 
   release:
-    if: github.event_name == 'push' && github.ref_protected
+    # if: github.event_name == 'push' && github.ref_protected
+    if: github.event_name == 'push'
     needs: test
     runs-on: ubuntu-latest
 

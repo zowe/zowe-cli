@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated Imperative to include bugfixes in version `5.7.8`.
+- BugFix: Updated dependencies in npm-shrinkwrap for technical currency.
 
 ## `7.9.7`
 

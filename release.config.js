@@ -1,15 +1,19 @@
 module.exports = {
     branches: [
         {
-            name: "master",
-            level: "minor",
-            dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
-        },
-        {
-            name: "zowe-v?-lts",
-            level: "patch",
-            dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+            name: "fix-7.9.8",
+            level: "patch"
         }
+        // {
+        //     name: "master",
+        //     level: "minor",
+        //     dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+        // },
+        // {
+        //     name: "zowe-v?-lts",
+        //     level: "patch",
+        //     dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+        // }
         // {
         //     name: "next",
         //     prerelease: true,
