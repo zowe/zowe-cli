@@ -31,7 +31,7 @@ module.exports = {
             smokeTest: true
         }],
         ["@octorelease/github", {
-            checkPrLabels: true
+            // checkPrLabels: true
         }],
         "@octorelease/git"
     ]
