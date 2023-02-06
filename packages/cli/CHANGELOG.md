@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- BugFix: Changed default value for modify-jobs option in the zowe jobs command group to 2.0. This change results in calls to z/OSMF becoming synchronous, and a successful response from the modify, cancel, and delete commands indicates the requested action was completed successfully. [#1459](https://github.com/zowe/zowe-cli/issues/1459)
+
 ## `7.10.3`
 - BugFix: Fix in employing `--context-lines` option for all diff/compare commands. Fixed broken `--seqnum` option implementation.[#1529](https://github.com/zowe/zowe-cli/issues/1529)
 

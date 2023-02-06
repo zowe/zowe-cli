@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 jest.mock("fs");
 
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
