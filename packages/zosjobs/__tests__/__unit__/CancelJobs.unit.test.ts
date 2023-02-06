@@ -21,7 +21,7 @@ describe("Cancel Jobs unit tests", () => {
         throw new ImperativeError({ msg: mockErrorText });
     };
     const returnCancelJobsDataAsync = async (): Promise<any> => {
-        return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
+        return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
     };
     const mockErrorText = "My fake error for unit tests has this text - Cancel Jobs unit tests";
     const fakeSession: any = {};
@@ -44,7 +44,7 @@ describe("Cancel Jobs unit tests", () => {
     };
     describe("Positive tests", () => {
         it("should allow users to call cancelJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            ZosmfRestClient.putExpectJSON = await Promise.resolve(jest.fn(returnCancelJobsDataAsync));
             let caughtError;
             let response;
             try {
@@ -53,11 +53,11 @@ describe("Cancel Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            ZosmfRestClient.putExpectJSON = await Promise.resolve(jest.fn(returnCancelJobsDataAsync));
             let caughtError;
             let response;
             try {
@@ -66,7 +66,7 @@ describe("Cancel Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 1_0)", async () => {
@@ -97,7 +97,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            ZosmfRestClient.putExpectJSON = await Promise.resolve(jest.fn(returnCancelJobsDataAsync));
             let caughtError;
             let response;
             try {
@@ -106,7 +106,7 @@ describe("Cancel Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 1_0)", async () => {

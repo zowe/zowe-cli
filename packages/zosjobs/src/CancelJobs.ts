@@ -67,7 +67,7 @@ export class CancelJobs {
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
 
-        if (parms.version == undefined) {
+        if (parms.version !== "1.0") {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
         }
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
@@ -83,11 +83,11 @@ export class CancelJobs {
         const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
 
         if (parms.version === "2.0") {
+            //"2.0" indicates an synchronous request
             const responseFeedback = responseJson as IJobFeedback;
             // Turns out status is a number, but we cannot introduce breaking changes.
-            if (responseFeedback != undefined){
-                responseFeedback.status = responseFeedback.status.toString();
-            }
+            responseFeedback.status = responseFeedback.status.toString();
+            
             return responseFeedback;
         } else { return undefined; }
     }
