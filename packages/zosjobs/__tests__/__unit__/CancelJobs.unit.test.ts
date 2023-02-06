@@ -142,7 +142,7 @@ describe("Cancel Jobs unit tests", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
-                await CancelJobs.cancelJob(fakeSession, fakeJobName, "JOB0000");
+                await CancelJobs.cancelJob(fakeSession, fakeJobName, fakeJobId);
             } catch (e) {
                 err = e;
             }
@@ -170,7 +170,7 @@ describe("Cancel Jobs unit tests", () => {
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
                     jobname: fakeJobName,
-                    jobid: "JOB0001"
+                    jobid: fakeJobId
                 });
             } catch (e) {
                 err = e;
@@ -185,7 +185,7 @@ describe("Cancel Jobs unit tests", () => {
         /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors from cancelJob with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
-            CancelJobs.cancelJob(fakeSession, fakeJobName, "JOB0000").then(() => {
+            CancelJobs.cancelJob(fakeSession, fakeJobName, fakeJobId).then(() => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
                 expect(err).toBeDefined();
@@ -212,7 +212,7 @@ describe("Cancel Jobs unit tests", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             CancelJobs.cancelJobCommon(fakeSession, {
                 jobname: fakeJobName,
-                jobid: "JOB0001"
+                jobid: fakeJobId
             }).then(() => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
@@ -231,7 +231,7 @@ describe("Cancel Jobs unit tests", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
-                await CancelJobs.cancelJob(fakeSession, undefined, "JOB0000");
+                await CancelJobs.cancelJob(fakeSession, undefined, fakeJobId);
             } catch (e) {
                 err = e;
             }
@@ -289,7 +289,7 @@ describe("Cancel Jobs unit tests", () => {
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
                     jobname: undefined,
-                    jobid: "JOB0001"
+                    jobid: fakeJobId
                 });
             } catch (e) {
                 err = e;
