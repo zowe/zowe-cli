@@ -2,9 +2,26 @@
 
 ## Contents
 
+ - [Linking Imperative from source](#linking-imperative-from-source)
  - [Debugging in VS Code](#debugging-in-vs-code)
  - [Profiling with `pprof`](#profiling-with-pprof)
  - [Using Development Mode](#using-development-mode)
+
+## Linking Imperative from source
+
+If you make changes in a local copy of Imperative and want to test them in Zowe CLI, you need to replace the `node_modules/@zowe/imperative` directory with a symlink to the Imperative repo.
+
+To set up this symlink, run the following command at the top level of the Zowe CLI repo:
+
+    npm run link:imperative
+
+The first time this command is run, you may see a warning that "Symlink wanted name was occupied by directory or file" which is safe to ignore.
+
+This command must be repeated to recreate the link after running `npm install` or any other command that updates dependencies in the `node_modules` folder.
+
+**Note:** The command assumes your Imperative repo is located in an `imperative` folder alongside your `zowe-cli` folder. If it is located somewhere else, run the command like this:
+
+    npm run link:imperative -- <pathToImperativeRepo>
 
 ## Debugging in VS Code
 
