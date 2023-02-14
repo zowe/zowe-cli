@@ -9,15 +9,9 @@
 *
 */
 
-import * as path from "path";
-import * as fs from "fs";
-
-
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, ImperativeError, TaskStage, ICommandArguments } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, ICommandArguments } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import {CompareBaseHelper} from "../CompareBaseHelper";
+import { CompareBaseHelper } from "../CompareBaseHelper";
 import { CompareBaseHandler } from "../CompareBase.handler";
 
 /**

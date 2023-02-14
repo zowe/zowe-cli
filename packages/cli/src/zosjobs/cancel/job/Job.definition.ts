@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { ZosJobsOptions } from "../../ZosJobs.options";
 
 import i18nTypings from "../../-strings-/en";
 
@@ -32,15 +33,7 @@ export const JobDefinition: ICommandDefinition = {
             required: true
         }
     ],
-    options: [
-        {
-            name: "modify-version",
-            description: strings.ACTIONS.JOB.OPTIONS.MODIFY_VERSION,
-            type: "string",
-            required: false,
-            defaultValue: "1.0"
-        }
-    ],
+    options:  [ZosJobsOptions.modifyVersion],
     examples: [
         {
             description: strings.ACTIONS.JOB.EXAMPLES.EX1.DESCRIPTION,

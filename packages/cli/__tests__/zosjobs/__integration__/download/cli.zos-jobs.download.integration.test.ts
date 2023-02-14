@@ -25,7 +25,7 @@ describe("zos-jobs download command", () => {
         });
     });
 
-    it("should display the help", async () => {
+    it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/download_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);

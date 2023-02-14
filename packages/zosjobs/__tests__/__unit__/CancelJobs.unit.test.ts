@@ -16,21 +16,20 @@ import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnCancelJobsDataAsync = async (): Promise<any> => {
-    return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
-};
-
-const mockErrorText = "My fake error for unit tests has this text - Cancel Jobs unit tests";
-const throwImperativeError = async () => {
-    throw new ImperativeError({ msg: mockErrorText });
-};
-const fakeSession: any = {};
-
 describe("Cancel Jobs unit tests", () => {
-
+    const throwImperativeError = async () => {
+        throw new ImperativeError({ msg: mockErrorText });
+    };
+    const returnCancelJobsDataAsync = async (): Promise<any> => {
+        return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
+    };
+    const mockErrorText = "My fake error for unit tests has this text - Cancel Jobs unit tests";
+    const fakeSession: any = {};
+    const fakeJobId: string = "JOB00001";
+    const fakeJobName: string = "MYJOB1";
     const fakeJob: IJob = {
-        "jobid": "JOB00001",
-        "jobname": "MYJOB1",
+        "jobid": fakeJobId,
+        "jobname": fakeJobName,
         "retcode": "CC 0000",
         "owner": "dummy",
         "subsystem": "JES2",
@@ -43,23 +42,22 @@ describe("Cancel Jobs unit tests", () => {
         "phase-name": "OUTPUT",
         "job-correlator": "mycorrelator"
     };
-
     describe("Positive tests", () => {
         it("should allow users to call cancelJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            ZosmfRestClient.putExpectJSON = await Promise.resolve(jest.fn(returnCancelJobsDataAsync));
             let caughtError;
             let response;
             try {
-                response = await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB00001");
+                response = await CancelJobs.cancelJob(fakeSession, fakeJobName, fakeJobId);
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            ZosmfRestClient.putExpectJSON = await Promise.resolve(jest.fn(returnCancelJobsDataAsync));
             let caughtError;
             let response;
             try {
@@ -68,7 +66,7 @@ describe("Cancel Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 1_0)", async () => {
@@ -99,16 +97,16 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            ZosmfRestClient.putExpectJSON = await Promise.resolve(jest.fn(returnCancelJobsDataAsync));
             let caughtError;
             let response;
             try {
-                response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001" });
+                response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: fakeJobName, jobid: fakeJobId });
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 1_0)", async () => {
@@ -116,7 +114,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
-            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "1.0" });
+            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: fakeJobName, jobid: fakeJobId, version: "1.0" });
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
@@ -125,7 +123,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
-            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "2.0" });
+            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: fakeJobName, jobid: fakeJobId, version: "2.0" });
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
@@ -134,7 +132,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });
-            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "2.0" });
+            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: fakeJobName, jobid: fakeJobId, version: "2.0" });
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });
     });
@@ -144,7 +142,7 @@ describe("Cancel Jobs unit tests", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
-                await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB0000");
+                await CancelJobs.cancelJob(fakeSession, fakeJobName, fakeJobId);
             } catch (e) {
                 err = e;
             }
@@ -171,8 +169,8 @@ describe("Cancel Jobs unit tests", () => {
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
-                    jobname: "MYJOB1",
-                    jobid: "JOB0001"
+                    jobname: fakeJobName,
+                    jobid: fakeJobId
                 });
             } catch (e) {
                 err = e;
@@ -187,7 +185,7 @@ describe("Cancel Jobs unit tests", () => {
         /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors from cancelJob with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
-            CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB0000").then(() => {
+            CancelJobs.cancelJob(fakeSession, fakeJobName, fakeJobId).then(() => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
                 expect(err).toBeDefined();
@@ -213,8 +211,8 @@ describe("Cancel Jobs unit tests", () => {
         it("should be able to catch errors from cancelJobCommon with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             CancelJobs.cancelJobCommon(fakeSession, {
-                jobname: "MYJOB1",
-                jobid: "JOB0001"
+                jobname: fakeJobName,
+                jobid: fakeJobId
             }).then(() => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
@@ -233,7 +231,7 @@ describe("Cancel Jobs unit tests", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
-                await CancelJobs.cancelJob(fakeSession, undefined, "JOB0000");
+                await CancelJobs.cancelJob(fakeSession, undefined, fakeJobId);
             } catch (e) {
                 err = e;
             }
@@ -246,7 +244,7 @@ describe("Cancel Jobs unit tests", () => {
             ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
-                await CancelJobs.cancelJob(fakeSession, "MYJOB1", undefined);
+                await CancelJobs.cancelJob(fakeSession, fakeJobName, undefined);
             } catch (e) {
                 err = e;
             }
@@ -291,7 +289,7 @@ describe("Cancel Jobs unit tests", () => {
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
                     jobname: undefined,
-                    jobid: "JOB0001"
+                    jobid: fakeJobId
                 });
             } catch (e) {
                 err = e;
@@ -306,7 +304,7 @@ describe("Cancel Jobs unit tests", () => {
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
-                    jobname: "MYJOB1",
+                    jobname: fakeJobName,
                     jobid: undefined
                 });
             } catch (e) {

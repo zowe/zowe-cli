@@ -24,10 +24,7 @@ export default {
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
                         "the job ID if desired. You can use, for example \"J123\"."
                 },
-                OPTIONS: {
-                    MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"2.0\" will make the cancel job API synchronous. " +
-                        "Otherwise, it will be asynchronous by default."
-                },
+                OPTIONS: {},
                 EXAMPLES: {
                     EX1: {
                         DESCRIPTION: "Cancel job with job ID JOB03456",
@@ -37,6 +34,41 @@ export default {
                         DESCRIPTION: "Cancel job with job ID JOB03456 synchronously",
                         OPTIONS: "JOB03456 --modify-version \"2.0\""
                     }
+                }
+            }
+        }
+    },
+    MODIFY: {
+        SUMMARY: "Modify a z/OS job",
+        DESCRIPTION: "Modify the job class or the hold status of a job.",
+        ACTIONS: {
+            JOB: {
+                SUMMARY: "Modify the job class or the hold status of a job",
+                DESCRIPTION: "Modify the job class or the hold status of a job.",
+                POSITIONALS: {
+                    JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
+                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
+                        "the job ID if desired. You can use, for example \"J123\".",
+                },
+                OPTIONS: {
+                    JOB_CLASS: "The job class (e.g. 'A', 'B', ...) assigned to the job.",
+                    HOLD: "Setting this flag will prevent a job from executing until " +
+                        "entering a second command with the '--release' flag",
+                    RELEASE: "Flag that releases a held a job for execution",
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Modify class of job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --jobclass A",
+                    },
+                    EX2: {
+                        DESCRIPTION: "Hold job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --hold",
+                    },
+                    EX3: {
+                        DESCRIPTION: "Release job with job ID JOB0000",
+                        OPTIONS: "JOB0000 --release",
+                    },
                 }
             }
         }
@@ -53,10 +85,7 @@ export default {
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
                         "the job ID if desired. You can use, for example \"J123\"."
                 },
-                OPTIONS: {
-                    MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"2.0\" will make the delete job API synchronous. " +
-                        "Otherwise, it will be asynchronous by default."
-                },
+                OPTIONS: {},
                 EXAMPLES: {
                     EX1: {
                         DESCRIPTION: "Delete job with job ID JOB03456",
@@ -92,6 +121,10 @@ export default {
     DOWNLOAD: {
     },
     LIST: {
+    },
+    OPTIONS: {
+        MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"1.0\" will make the delete job API aynchronous. " +
+            "Otherwise, it will be synchronous by default."
     },
     SUBMIT: {
         SUMMARY: "Submit a z/OS job",

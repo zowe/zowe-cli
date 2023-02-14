@@ -12,7 +12,7 @@
 import { AbstractSession, ICommandArguments } from "@zowe/imperative";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { CompareBaseHandler } from "../CompareBase.handler";
-import {CompareBaseHelper} from "../CompareBaseHelper";
+import { CompareBaseHelper } from "../CompareBaseHelper";
 
 /**
  * Handler to view a data set's content

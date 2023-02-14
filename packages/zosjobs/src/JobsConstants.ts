@@ -64,6 +64,14 @@ export class JobsConstants {
     public static readonly QUERY_JOBID: string = "jobid=";
 
     /**
+     * Query id for getting a specific job id
+     * @static
+     * @type {string}
+     * @memberof JobsConstants
+     */
+    public static readonly QUERY_STATUS: string = "status=";
+
+    /**
      * Query id for getting max jobs
      * @static
      * @type {string}
@@ -86,6 +94,14 @@ export class JobsConstants {
      * @memberof JobsConstants
      */
     public static readonly DEFAULT_MAX_JOBS: number = 1000;
+
+    /**
+     * Maximum number of jobs to obtain
+     * @static
+     * @type {number}
+     * @memberof JobsConstants
+     */
+    public static readonly DEFAULT_STATUS: string = '*';
 
     /**
      * URI base jobs API
@@ -131,7 +147,21 @@ export class JobsConstants {
      * @static
      * @memberof JobsConstants
      */
-    public static readonly DEFAULT_CANCEL_VERSION = "1.0";
+    public static readonly DEFAULT_CANCEL_VERSION = "2.0";
+
+    /**
+     * Hold a job
+     * @static
+     * @memberof JobsConstants
+     */
+    public static readonly REQUEST_HOLD = "hold";
+
+    /**
+     * Release a job
+     * @static
+     * @memberof JobsConstants
+     */
+    public static readonly REQUEST_RELEASE = "release";
 
     /**
      * Execution data query string

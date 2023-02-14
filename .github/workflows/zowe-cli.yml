@@ -5,11 +5,7 @@ name: Zowe CLI
 
 on:
   push:
-    paths-ignore:
-      - zowex/**
   pull_request:
-    paths-ignore:
-      - zowex/**
   workflow_dispatch:
     inputs:
       binary-type:
@@ -51,13 +47,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        check-latest: true
 
     - name: Disable Lint Annotations
       run: |
@@ -108,10 +103,19 @@ jobs:
 
     - name: Build Binary
       id: build-binary
-      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
+      if: matrix.os != 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push')
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe
+
+    - name: Build Binary (Windows)
+      id: build-windows-binary
+      if: matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push')
+      run: |
+        cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe.exe
+      env:
+        RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
@@ -168,20 +172,6 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         env_vars: OS,NODE
-
-    - name: Configure Sonar Scan
-      id: sonar-config
-      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x' }}
-      uses: zowe-actions/octorelease-script@master
-      with:
-        script: sonarConfig
-
-    - name: SonarCloud Scan
-      if: ${{ always() && steps.sonar-config.outcome == 'success' }}
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
   release:
     if: github.event_name == 'push' && github.ref_protected

@@ -1,0 +1,32 @@
+name: SonarCloud
+
+on:
+  workflow_run:
+    workflows: ["Zowe CLI"]
+    types: [completed]
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ github.event.workflow_run.head_repository.full_name }}
+        ref: ${{ github.event.workflow_run.head_branch }}
+        fetch-depth: 0
+
+    - name: Configure Sonar Scan
+      uses: zowe-actions/octorelease-script@master
+      env:
+        COVERAGE_ARTIFACT: "ubuntu-latest-18.x-results:__tests__/__results__"
+      with:
+        script: sonarConfig
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}

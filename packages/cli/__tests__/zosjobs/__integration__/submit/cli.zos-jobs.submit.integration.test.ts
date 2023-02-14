@@ -27,7 +27,7 @@ describe("zos-jobs submit command", () => {
         });
     });
 
-    it("should display the help", async () => {
+    it("should display the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/submit_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);

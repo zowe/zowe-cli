@@ -61,6 +61,7 @@ export class MonitorJobs {
      */
     public static waitForJobOutputStatus(session: AbstractSession, job: IJob): Promise<IJob> {
         ImperativeExpect.toNotBeNullOrUndefined(job, "IJob object (containing jobname and jobid) required");
+        ImperativeExpect.toNotBeNullOrUndefined(session, "Session must be defined");
         return MonitorJobs.waitForStatusCommon(session, {jobname: job.jobname, jobid: job.jobid, status: JOB_STATUS.OUTPUT});
     }
 
@@ -79,6 +80,9 @@ export class MonitorJobs {
      * @memberof MonitorJobs
      */
     public static waitForOutputStatus(session: AbstractSession, jobname: string, jobid: string): Promise<IJob> {
+        ImperativeExpect.toNotBeNullOrUndefined(jobname, "Jobname required");
+        ImperativeExpect.toNotBeNullOrUndefined(jobid, "Jobid required");
+        ImperativeExpect.toNotBeNullOrUndefined(session, "Session must be defined");
         return MonitorJobs.waitForStatusCommon(session, {jobname, jobid, status: JOB_STATUS.OUTPUT});
     }
 

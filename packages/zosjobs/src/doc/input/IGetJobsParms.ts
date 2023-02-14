@@ -33,6 +33,14 @@ export interface IGetJobsParms {
     prefix?: string;
 
     /**
+     * Optional parameter to limit the returned data to only jobs that are currently active. This parameter is case-insensitive
+     * Default: *
+     * @type {string}
+     * @memberof IGetJobsParms
+     */
+    status?: string;
+
+    /**
      * Max jobs to return in a list
      * Default: JobsConstants.DEFAULT_MAX_JOBS
      * @type {number}

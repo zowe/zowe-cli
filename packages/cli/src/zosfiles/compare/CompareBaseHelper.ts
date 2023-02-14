@@ -85,13 +85,13 @@ export class CompareBaseHelper {
         this.file1Options.volumeSerial = commandParameters.arguments.volumeSerial;
         this.file2Options.volumeSerial = commandParameters.arguments.volumeSerial2;
 
-        if (this.file2Options?.binary == undefined) {
+        if (this.file2Options?.binary == null) {
             this.file2Options.binary = this.file1Options.binary;
         }
-        if (this.file2Options.encoding == undefined) {
+        if (this.file2Options.encoding == null) {
             this.file2Options.encoding = this.file1Options.encoding;
         }
-        if (this.file2Options.record == undefined) {
+        if (this.file2Options.record == null) {
             this.file2Options.record = this.file1Options.record;
         }
 
@@ -118,7 +118,7 @@ export class CompareBaseHelper {
         const jobName: string = spoolDescArr[0];
         const jobId: string = spoolDescArr[1];
         const spoolId: number = Number(spoolDescArr[2]);
-        return {jobName, jobId, spoolId};
+        return { jobName, jobId, spoolId };
     }
 
     /**
@@ -127,31 +127,29 @@ export class CompareBaseHelper {
      * @returns Buffer with the contents of the file
      */
     public prepareLocalFile(filePath: string): Buffer {
-        let localFile: string;
-
-        // resolving to full path if local path passed is not absolute
-        if (path.isAbsolute(filePath)) {
-            localFile = filePath;
-        } else {
-            localFile = path.resolve(filePath);
-        }
-
-        // check if the path given is of a file or not
+        const localFile = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+        const localFileHandle = fs.openSync(localFile, 'r');
+        let lfContentBuf: Buffer;
         try {
-            if(!fs.lstatSync(localFile).isFile()){
+            // check if the path given is of a file or not
+            try {
+                if(!fs.fstatSync(localFileHandle).isFile()){
+                    throw new ImperativeError({
+                        msg: 'Path given is not of a file, do recheck your path again'
+                    });
+                }
+            } catch (error) {
+                if (error instanceof ImperativeError) throw error;
                 throw new ImperativeError({
-                    msg: 'Path given is not of a file, do recheck your path again'
+                    msg: 'Path not found. Please check the path and try again'
                 });
             }
-        } catch (error) {
-            if (error instanceof ImperativeError) throw error;
-            throw new ImperativeError({
-                msg: 'Path not found. Please check the path and try again'
-            });
+            // reading local file as buffer
+            lfContentBuf = fs.readFileSync(localFile);
+        } finally {
+            fs.closeSync(localFileHandle);
         }
-
-        // return local file as buffer
-        return fs.readFileSync(localFile);
+        return lfContentBuf;
     }
 
     /**
@@ -164,15 +162,9 @@ export class CompareBaseHelper {
      */
     public prepareContent(content: string | Buffer): string {
         let contentString = content.toString();
-        if(!this.seqnum){
+        if(this.seqnum === false) {
             const seqnumlen = 8;
-
-            const stringArray = content.toString().split("\n");
-            for (const i in stringArray) {
-                const sl = stringArray[i].length;
-                const tempString = stringArray[i].substring(0, sl - seqnumlen);
-                contentString += tempString + "\n";
-            }
+            contentString = content.toString().split("\n").map((line) => line.slice(0, -seqnumlen)).join("\n");
         }
         return contentString;
     }
@@ -188,9 +180,7 @@ export class CompareBaseHelper {
     public async getResponse(string1: string, string2: string): Promise<IZosFilesResponse>{
         //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (this.browserView) {
-
             await DiffUtils.openDiffInbrowser(string1, string2);
-
             return {
                 success: true,
                 commandResponse: "Launching data-sets diffs in browser...",
@@ -198,13 +188,10 @@ export class CompareBaseHelper {
             };
         }
 
-        let jsonDiff = "";
-
-        jsonDiff = await DiffUtils.getDiffString(string1, string2, {
+        const jsonDiff = await DiffUtils.getDiffString(string1, string2, {
             outputFormat: 'terminal',
             contextLinesArg: this.contextLines
         });
-
         return {
             success: true,
             commandResponse: jsonDiff,

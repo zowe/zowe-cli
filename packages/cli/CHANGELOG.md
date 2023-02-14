@@ -2,13 +2,48 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.10.4`
+- BugFix: Changed default value for modify-jobs option in the zowe jobs command group to 2.0. This change results in calls to z/OSMF becoming synchronous, and a successful response from the modify, cancel, and delete commands indicates the requested action was completed successfully. [#1459](https://github.com/zowe/zowe-cli/issues/1459)
 
-- Enhancement: Added a compare base helper with common methods to be used by every files compare command to reduce the code redundancy.
+## `7.10.3`
+- BugFix: Fix in employing `--context-lines` option for all diff/compare commands. Fixed broken `--seqnum` option implementation.[#1529](https://github.com/zowe/zowe-cli/issues/1529)
+
+## `7.10.2`
+- BugFix: Updated Imperative to include bugfixes in version `5.8.2`.
+
+## `7.10.0`
+
+- Enhancement: Added support for downloading job spool content in binary and record formats.
+
+## `7.9.7`
+
+- BugFix: Updated Imperative to include bugfixes in version `5.7.7`.
+
+## `7.9.6`
+
+- BugFix: Updated Imperative to include bugfixes in version `5.7.6`.
+
+## `7.9.5`
+
+- BugFix: Fixed daemon broken pipe error on Windows [#1538](https://github.com/zowe/zowe-cli/issues/1538)
+
+## `7.9.4`
+
+- BugFix: Removed all line break encodings from strings for `zos-files compare local-file-data-set` [#1528](https://github.com/zowe/zowe-cli/issues/1528)
+
+## `7.9.3`
+
+- BugFix: Updated Imperative to include bugfixes in version `5.7.5`.
+
+## `7.9.0`
+
+- Enhancement: Added new functions to support the changing of a job class and the hold status of a job. Can now call `zowe jobs modify job [jobid]` with options `--jobclass`, `--hold` and `--release`. [#1156](https://github.com/zowe/zowe-cli/issues/1156)
+- BugFix: Documented that token-type and token-value do not apply to SSH commands.
+- BugFix: Updated Imperative to include bugfixes in version `5.7.2`.
 
 ## `7.8.0`
 
-- Enhancement: Updated imperative to incorporate new `zowe config report-env` command from imperative `5.7.0`.
+- Enhancement: Updated Imperative to incorporate new `zowe config report-env` command from version `5.7.0`.
 - Enhancement: Added design documentation for roadmap feature to store secure properties in memory.
 
 ## `7.7.0`

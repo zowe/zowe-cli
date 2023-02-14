@@ -39,6 +39,25 @@ Object {
       "name": "omit-jobid-directory",
       "type": "boolean",
     },
+    Object {
+      "aliases": Array [
+        "b",
+      ],
+      "description": "If specified, job output will be downloaded in binary format instead of performing text conversion. Conflicts with record.",
+      "name": "binary",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "r",
+      ],
+      "conflictsWith": Array [
+        "binary",
+      ],
+      "description": "If specified, job output will be downloaded in record format instead of performing text conversion. Conflicts with binary.",
+      "name": "record",
+      "type": "boolean",
+    },
   ],
   "positionals": Array [
     Object {

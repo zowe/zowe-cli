@@ -181,6 +181,30 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a dataSetLike with responseTimeout", async () => {
+            dsOptions.dsntype = "PDS";
+            dsOptions.responseTimeout = 5;
+
+            await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+            const response2 = await Create.dataSetLike(dummySession, dataSetName, "testing2", dsOptions);
+
+            expect(response2.success).toBe(true);
+            expect(response2.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
+            dsOptions.responseTimeout = undefined;
+        });
+
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
             const custOptions = {
                 dsorg: "PS",
@@ -1298,6 +1322,16 @@ describe("Create VSAM Data Set", () => {
 describe("Create ZFS", () => {
     const dummySession: any = {};
     const fileSystemName = "TEST.ZFS";
+    let mySpy: any;
+
+    beforeEach(() => {
+        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockResolvedValue("");
+    });
+
+    afterEach(() => {
+        mySpy.mockReset();
+        mySpy.mockRestore();
+    });
 
     it("should succeed with correct parameters", async () => {
         (ZosmfRestClient as any).postExpectString = jest.fn(() => {
@@ -1404,6 +1438,38 @@ describe("Create ZFS", () => {
         expect(caughtError).toBeDefined();
         expect(caughtError.message).toContain(ZosFilesMessages.missingZfsOption.message);
         expect(caughtError.message).toContain("timeout");
+    });
+
+    it("should add responseTimeout header when supplied in Create.zfs", async () => {
+        let caughtError: undefined;
+        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName + "?timeout=5";
+        const options: any = {
+            perms: 755,
+            cylsPri: 100,
+            cylsSec: 10,
+            timeout: 5,
+            responseTimeout: 5,
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            caughtError = e;
+        }
+
+        delete options.timeout;
+        delete options.responseTimeout;
+        options.JSONversion = 1;
+        const jsonContent = JSON.stringify(options);
+
+        expect(caughtError).toBeUndefined();
+        expect(mySpy).toHaveBeenCalledWith(
+            dummySession,
+            endpoint,
+            [{[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }, ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length }],
+            JSON.stringify(options)
+        );
+
     });
 
     it("should fail if REST client throws error", async () => {
