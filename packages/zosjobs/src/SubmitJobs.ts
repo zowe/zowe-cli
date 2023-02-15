@@ -247,16 +247,15 @@ export class SubmitJobs {
                 status: "ACTIVE"
             });
             return activeJob;
-        }
-        // if viewAppSpoolContent option passed, it waits till job status is output
-        // then get content of each spool file and return array of ISpoolFiles object
-        if (parms.directory) {
-            // waits job status to be output
+        } else {
+            // wait for job status to be OUTPUT for all other situations
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
             }
-            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
+        }
+        const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
+        if (parms.directory) {
             const downloadParms: IDownloadAllSpoolContentParms = {
                 jobid: job.jobid,
                 jobname: job.jobname,
@@ -270,15 +269,10 @@ export class SubmitJobs {
                     (job.retcode == null ? "" : ", " + job.retcode);
                 parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
-            (await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms));
+            await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
             return job;
         }
         if (parms.viewAllSpoolContent || parms.waitForOutput) {
-            if (parms.task != null) {
-                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
-                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
-            }
-            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             if (!parms.viewAllSpoolContent) {
                 return job;
             }
@@ -287,7 +281,6 @@ export class SubmitJobs {
                     (job.retcode == null ? "" : ", " + job.retcode);
                 parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
-
             const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
             const arrOfSpoolFile: ISpoolFile[] = [];
             for (const file of spoolFiles) {
@@ -301,9 +294,6 @@ export class SubmitJobs {
                 });
             }
             return arrOfSpoolFile;
-
-            // if directory option passed, it waits till job status is output
-            // then downloads content of all spool files and returns IJob object
         }
         return responseJobInfo;
     }
