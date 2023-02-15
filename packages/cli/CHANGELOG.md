@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.40.14`
 
 - BugFix: Updated `http-cache-semantics`dependency for technical currency. 
 
