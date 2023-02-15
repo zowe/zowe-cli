@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated `http-cache-semantics`, `qs`, and `decode-uri-component` dependencies for technical currency. 
+- BugFix: Updated `http-cache-semantics`dependency for technical currency. 
 
 ## `6.40.13`
 
