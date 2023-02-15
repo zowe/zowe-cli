@@ -82,10 +82,7 @@ export class DownloadJobs {
             }
             await DownloadJobs.downloadSpoolContentCommon(session, {
                 jobFile: {...file, ddname: uniqueDDName},
-                outDir: parms.outDir,
-                omitJobidDirectory: parms.omitJobidDirectory,
-                binary: parms.binary,
-                record: parms.record
+                ...parms
             });
             usedStepNames[file.stepname] = [...usedStepNames[file.stepname] || [], uniqueDDName];
         }
@@ -104,11 +101,7 @@ export class DownloadJobs {
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
 
-        if (parms.outDir == null) {
-            parms.outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
-        }
-
-        const file = DownloadJobs.getSpoolDownloadFile(parms.jobFile, parms.omitJobidDirectory, parms.outDir);
+        const file = DownloadJobs.getSpoolDownloadFilePath(parms);
         this.log.debug("Downloading spool file %s for job %s(%s) to file %s",
             parms.jobFile.ddname, parms.jobFile.jobname, parms.jobFile.jobid, file);
         IO.createDirsSyncFromFilePath(file);
@@ -130,6 +123,7 @@ export class DownloadJobs {
 
     /**
      * Get the file where a specified spool file (IJobFile) would be downloaded to
+     * @deprecated Use getSpoolDownloadFilePath instead
      * @static
      * @param {IJobFile} jobFile - the spool file that would be downloaded
      * @param {boolean} omitJobidDirectory - if true, the job ID of the jobFile will not be included in the file path
@@ -154,6 +148,36 @@ export class DownloadJobs {
         }
 
         return directory + IO.FILE_DELIM + jobFile.ddname + DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+    }
+
+    /**
+     * Get the file where a specified spool file (IJobFile) would be downloaded to
+     * @static
+     * @param {IDownloadSpoolContentParms} parms - parm object (see IDownloadSpoolContentParms interface for details)
+     * @returns {string} the file path that the spool file would be downloaded to
+     * @memberof DownloadJobs
+     */
+    public static getSpoolDownloadFilePath(parms: IDownloadSpoolContentParms): string {
+        this.log.trace("getSpoolDownloadFile called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
+            JSON.stringify(parms.jobFile), parms.omitJobidDirectory + "", parms.outDir);
+
+        let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
+
+        if (parms.omitJobidDirectory == null || parms.omitJobidDirectory === false) {
+            directory += IO.FILE_DELIM + parms.jobFile.jobid;
+        }
+
+        if (parms.jobFile.procstep != null) {
+            directory += IO.FILE_DELIM + parms.jobFile.procstep;
+        }
+
+        if (parms.jobFile.stepname != null) {
+            directory += IO.FILE_DELIM + parms.jobFile.stepname;
+        }
+
+        const extension = parms.extension ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+
+        return directory + IO.FILE_DELIM + parms.jobFile.ddname + extension;
     }
 
     /**

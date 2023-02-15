@@ -11,48 +11,18 @@
 
 // unit tests for submit jobs
 
-import { DownloadJobs, GetJobs, IJob, IJobFile, MonitorJobs, SubmitJobs } from "../../src";
+import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJob, IJobFile, MonitorJobs, SubmitJobs } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, IHeaderContent, ImperativeError, IO } from "@zowe/imperative";
+import { IHeaderContent, ImperativeError, IO } from "@zowe/imperative";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/MonitorJobs");
 
-IO.writeFileAsync = jest.fn(async (file: any, content: any) => {
-    // do nothing
-});
-
-IO.createFileSync = jest.fn((directory: string) => {
-    // do nothing;
-});
-
-IO.createWriteStream = jest.fn((file: string): any => {
-    // do nothing;
-});
-
 const fakeSession: any = {};
 const fakeJobName = "MYJOB1";
 const fakeJobID = "JOB0001";
-const expectedMockSpoolContent = "Hello! This is my spool content.";
 const mockErrorText = "My fake error for unit tests has this text";
 
-// mocked spool job files
-const jobFile: IJobFile[] = [{
-    "jobid": fakeJobID,
-    "jobname": fakeJobName,
-    "id": 0,
-    "recfm": "FB",
-    "lrecl": 80,
-    "byte-count": expectedMockSpoolContent.length,
-    "record-count": expectedMockSpoolContent.split("\n").length,
-    "job-correlator": "hiasdfasdf",
-    "class": "A",
-    "ddname": "JESJCL",
-    "records-url": "notreal.com",
-    "subsystem": "JES2",
-    "stepname": "STEP1",
-    "procstep": "PROC1"
-}];
 
 const returnIJob = async () => {
     return {jobid: fakeJobID, jobname: fakeJobName, retcode: "CC 0000", owner: "dummy"};
@@ -116,38 +86,41 @@ describe("Submit Jobs API", () => {
                 expect((finishedJob as IJob).status).toEqual("OUTPUT");
                 expect((finishedJob as IJob).retcode).toEqual("CC 0000");
             });
-        
-        it("should allow users to call submitJob and download output to directory ",
+
+        it("should allow users to call submitJob and download output to directory with specified file extension",
             async () => {
-                // FIRST wait for output
                 (ZosmfRestClient as any).putExpectJSON = returnIJob;
                 const job = await SubmitJobs.submitJob(fakeSession,
                     "DATA.SET"
                 );
+
+                let downloadParms = {} as any;
+
                 MonitorJobs.waitForJobOutputStatus = jest.fn(async (session, jobToWaitFor) => {
                     jobToWaitFor.status = "OUTPUT";
                     jobToWaitFor.retcode = "CC 0000";
                     return jobToWaitFor;
                 });
+                DownloadJobs.downloadAllSpoolContentCommon = jest.fn (async (session, parms)=>{
+                    downloadParms = parms;
+                })
+
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
                     waitForOutput: true,
-                    jclSource: "dataset"
+                    jclSource: "dataset",
+                    directory: "/fakedir",
+                    extension: ".md",
                 }, job);
 
-                // SECOND download the faked spool content to directory
-                DownloadJobs.downloadSpoolContent= jest.fn(async (session, jobFile)=> {
-                    jobFile.jobid = fakeJobID;
-                    jobFile.jobname = fakeJobName;
-                    return;
-                });
-                await DownloadJobs.downloadSpoolContent(fakeSession, jobFile[0]);
-                const downloadFilePath = DownloadJobs.getSpoolDownloadFile(jobFile[0]);
-                
-                expect(job.jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).status).toEqual("OUTPUT");
                 expect((finishedJob as IJob).retcode).toEqual("CC 0000");
-                expect(downloadFilePath).toContain(fakeJobID);
+                expect(downloadParms).toMatchObject({
+                    outDir: "/fakedir",
+                    extension: ".md",
+                    jobname: fakeJobName,
+                    jobid: fakeJobID
+                });
             });
 
         it("should allow users to call submitJob and wait for ACTIVE status",
