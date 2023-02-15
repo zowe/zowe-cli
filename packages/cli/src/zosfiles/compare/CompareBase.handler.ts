@@ -9,17 +9,10 @@
 *
 */
 
-import {
-    AbstractSession,
-    ICommandArguments,
-    IHandlerParameters,
-    ITaskWithStatus,
-    TaskStage
-} from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, ICommandArguments, IHandlerParameters, TaskStage } from "@zowe/imperative";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../ZosFilesBase.handler";
 import { CompareBaseHelper } from "./CompareBaseHelper";
-
 
 /**
  * This class is used by the various zosfiles-compare handlers as the base class for their implementation.
