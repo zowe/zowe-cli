@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
-import { CancelJobs, SubmitJobs, IJob, ICancelJobParms } from "../../src";
+import { CancelJobs, SubmitJobs, IJob } from "../../src";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
