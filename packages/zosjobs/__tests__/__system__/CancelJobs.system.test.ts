@@ -59,7 +59,7 @@ describe("CancelJobs System tests", () => {
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid, "2.0");
             expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual(0); // intermittent failure
+            expect(response?.status).toEqual("0"); // intermittent failure
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJob (modify version default)", async () => {
@@ -67,7 +67,7 @@ describe("CancelJobs System tests", () => {
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
             expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual(0); // intermittent failure
+            expect(response?.status).toEqual("0"); // intermittent failure
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob (modify version 1)", async () => {
@@ -82,7 +82,7 @@ describe("CancelJobs System tests", () => {
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job, "2.0");
             expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual(0); // intermittent failure
+            expect(response?.status).toEqual("0"); // intermittent failure
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob (modify version default)", async () => {
@@ -90,7 +90,7 @@ describe("CancelJobs System tests", () => {
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
             expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual(0); // intermittent failure
+            expect(response?.status).toEqual("0"); // intermittent failure
         }, LONG_TIMEOUT);
          
         it("should be able to cancel a job using cancelJobCommon (job version 1)", async () => {
