@@ -145,7 +145,7 @@ export class CompareBaseHelper {
                 });
             }
             // reading local file as buffer
-            lfContentBuf = fs.readFileSync(localFile);
+            lfContentBuf = fs.readFileSync(localFileHandle);
         } finally {
             fs.closeSync(localFileHandle);
         }
