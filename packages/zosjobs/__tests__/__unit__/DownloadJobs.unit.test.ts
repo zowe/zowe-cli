@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
-import { DownloadJobs, GetJobs, IJobFile } from "../../src";
+import { DownloadJobs, GetJobs, IDownloadSpoolContentParms, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
@@ -35,14 +35,16 @@ describe("DownloadJobs", () => {
     IO.createWriteStream = jest.fn((file: string): any => {
         // do nothing;
     });
-    const expectedMockSpoolContent = "Hello! This is my spool content.";
 
     const fakeSession: any = {};
-
+    const fakeJobName = "MYJOB1";
+    const fakeJobID = "JOB0001";
+    const expectedMockSpoolContent = "Hello! This is my spool content.";
+    
     // mocked spool job files
     const jobFiles: IJobFile[] = [{
-        "jobid": "JOB0001",
-        "jobname": "MYJOB1",
+        "jobid": fakeJobID,
+        "jobname": fakeJobName,
         "id": 0,
         "recfm": "FB",
         "lrecl": 80,
@@ -71,9 +73,8 @@ describe("DownloadJobs", () => {
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
                 // do nothing;
             });
-            await DownloadJobs.downloadSpoolContent(fakeSession, jobFiles[0]
-            );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
+            await DownloadJobs.downloadSpoolContent(fakeSession, jobFiles[0]);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(jobFiles[0]);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
 
@@ -82,7 +83,7 @@ describe("DownloadJobs", () => {
                 // do nothing;
             });
             await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: "MYJOB", jobid: "JOB0001"}
+                {jobname: fakeJobName, jobid: fakeJobID}
             );
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
             expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
@@ -94,7 +95,7 @@ describe("DownloadJobs", () => {
                 // do nothing;
             });
             await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: "MYJOB", jobid: "JOB0001", binary: true}
+                {jobname: fakeJobName, jobid: fakeJobID, binary: true}
             );
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
             expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
@@ -106,11 +107,29 @@ describe("DownloadJobs", () => {
                 // do nothing;
             });
             await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: "MYJOB", jobid: "JOB0001", record: true}
+                {jobname: fakeJobName, jobid: fakeJobID, record: true}
             );
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
             expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
+        });
+
+        it("should allow users download output to directory with specified file extension",
+        async () => {
+            //test that custom directory was created for spool content
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFiles[0],
+                outDir: "/fakedir",
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                extension: ".md",
+            }
+
+            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+            expect(downloadFilePath).toContain("/fakedir");
+            expect(downloadFilePath).toContain(fakeJobID);
+            expect(downloadFilePath).toContain(".md");
         });
 
         it("should allow users to call downloadAllSpoolContentCommon with a job containing duplicate step names", async () => {
@@ -122,7 +141,7 @@ describe("DownloadJobs", () => {
                 // do nothing;
             });
             await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: "MYJOB", jobid: "JOB0001"}
+                {jobname: fakeJobName, jobid: fakeJobID}
             );
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
@@ -228,7 +247,7 @@ describe("DownloadJobs", () => {
             try {
                 await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, {
                     outDir: "./",
-                    jobname: "MYJOB",
+                    jobname: fakeJobName,
                     jobid: "JOB00001"
                 });
             } catch (e) {
@@ -274,7 +293,7 @@ describe("DownloadJobs", () => {
             ZosmfRestClient.getExpectString = jest.fn(throwError);
             DownloadJobs.downloadAllSpoolContentCommon(fakeSession, {
                 outDir: "./",
-                jobname: "MYJOB",
+                jobname: fakeJobName,
                 jobid: "JOB00001"
             }).then(() => {
                 expect("Should have called .catch()").toEqual("test failed");
@@ -320,7 +339,7 @@ describe("DownloadJobs", () => {
             try {
                 await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, {
                     outDir: "./",
-                    jobname: "MYJOB",
+                    jobname: fakeJobName,
                     jobid: undefined
                 });
             } catch (e) {
@@ -367,25 +386,62 @@ describe("DownloadJobs", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
             delete jobFile.stepname;
             delete jobFile.procstep;
-            expect(DownloadJobs.getSpoolDownloadFile(jobFile, true)).toMatchSnapshot();
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFile,
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: true
+            }
+            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+            expect(downloadFilePath).toContain("./output");
         });
 
         it("should generate a file path for a job file with no procstep, no stepname. Job ID included. Default output dir", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
             delete jobFile.stepname;
             delete jobFile.procstep;
-            expect(DownloadJobs.getSpoolDownloadFile(jobFile)).toMatchSnapshot();
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFile,
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: false
+            }
+            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+            expect(downloadFilePath).toContain("./output");
+            expect(downloadFilePath).toContain(fakeJobID);
         });
 
         it("should generate a file path for a job file with no procstep, but including a stepname. Job ID omitted. Custom output dir", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
             delete jobFile.procstep;
-            expect(DownloadJobs.getSpoolDownloadFile(jobFile, true, "customDir")).toMatchSnapshot();
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFile,
+                outDir: "/customDir",
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: true
+            }
+            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+            expect(downloadFilePath).toContain("/customDir");
+            expect(downloadFilePath).toContain(jobFile.stepname);
         });
 
         it("should generate a file path for a job file including procstep and jobname. Job ID included. Custom output dir", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
-            expect(DownloadJobs.getSpoolDownloadFile(jobFile, false, "customDir")).toMatchSnapshot();
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFile,
+                outDir: "/customDir",
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: false
+            }
+            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+            expect(downloadFilePath).toContain("/customDir");
+            expect(downloadFilePath).toContain(fakeJobID);
         });
     });
 });
