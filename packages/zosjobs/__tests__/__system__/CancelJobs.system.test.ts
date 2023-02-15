@@ -92,7 +92,7 @@ describe("CancelJobs System tests", () => {
             expect(response).not.toBeUndefined();
             expect(response?.status).toEqual("0"); // intermittent failure
         }, LONG_TIMEOUT);
-         
+
         it("should be able to cancel a job using cancelJobCommon (job version 1)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
