@@ -10,19 +10,14 @@
 */
 
 import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
-import { DownloadJobs, GetJobs, IDownloadSpoolContentParms, IJobFile } from "../../src";
+import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/GetJobs");
 
-// unit tests for DownloadJobs API
+// Unit tests for DownloadJobs API
 describe("DownloadJobs", () => {
-
-    const mockErrorMessage = "This is our mocked error message.";
-    const throwError = async () => {
-        throw new Error(mockErrorMessage);
-    };
 
     IO.writeFileAsync = jest.fn(async (file: any, content: any) => {
         // do nothing
@@ -36,12 +31,15 @@ describe("DownloadJobs", () => {
         // do nothing;
     });
 
+    const mockErrorMessage = "This is our mocked error message.";
+    const throwError = async () => {
+        throw new Error(mockErrorMessage);
+    };
+
     const fakeSession: any = {};
     const fakeJobName = "MYJOB1";
     const fakeJobID = "JOB0001";
     const expectedMockSpoolContent = "Hello! This is my spool content.";
-    
-    // mocked spool job files
     const jobFiles: IJobFile[] = [{
         "jobid": fakeJobID,
         "jobname": fakeJobName,
@@ -64,58 +62,28 @@ describe("DownloadJobs", () => {
             GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
                 return jobFiles;
             });
-        });
-
-        it("should allow users to call downloadSpoolContent with correct parameters", async () => {
             ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                // do nothing
+                // do nothing; method called within DowloadJobs.downloadSpoolContentCommon
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
+                // do nothing; method called within DowloadJobs.downloadSpoolContentCommon
             });
+        });
+
+        it ("should allow users to call downloadSpoolContent with correct parameters",async () => {
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFiles[0],
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+            };
+
             await DownloadJobs.downloadSpoolContent(fakeSession, jobFiles[0]);
-            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(jobFiles[0]);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
 
-        it("should allow users to call downloadAllSpoolContentCommon with correct parameters", async () => {
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
-            });
-            await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: fakeJobName, jobid: fakeJobID}
-            );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-        });
-
-        it("should allow users to call downloadAllSpoolContentCommon with correct parameters and binary mode", async () => {
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
-            });
-            await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: fakeJobName, jobid: fakeJobID, binary: true}
-            );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-        });
-
-        it("should allow users to call downloadAllSpoolContentCommon with correct parameters and record mode", async () => {
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
-            });
-            await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: fakeJobName, jobid: fakeJobID, record: true}
-            );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-        });
-
-        it("should allow users download output to directory with specified file extension",
-        async () => {
+        it("should allow users to call getSpoolDownloadFilePath with specified file extension and output dir",async () => {
             //test that custom directory was created for spool content
             const spoolParms: IDownloadSpoolContentParms = {
                 jobFile: jobFiles[0],
@@ -123,7 +91,7 @@ describe("DownloadJobs", () => {
                 jobid: fakeJobID,
                 jobname: fakeJobName,
                 extension: ".md",
-            }
+            };
 
             const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
@@ -132,112 +100,181 @@ describe("DownloadJobs", () => {
             expect(downloadFilePath).toContain(".md");
         });
 
-        it("should allow users to call downloadAllSpoolContentCommon with a job containing duplicate step names", async () => {
-            const sampJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
-            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
-                return [sampJobFile, sampJobFile, sampJobFile];
+        describe("downloadAllSpoolContentCommon", () => {
+            it("should allow users to call downloadAllSpoolContentCommon with correct parameters", async () => {
+                const allSpoolParms: IDownloadAllSpoolContentParms = {
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                };
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFiles[0]
+                };
+
+                await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, allSpoolParms);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
             });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
+
+            it("should allow users to call downloadAllSpoolContentCommon with correct parameters and binary mode", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
+                const allSpoolParms: IDownloadAllSpoolContentParms = {
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    binary: true
+                };
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFiles[0]
+                };
+
+                await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, allSpoolParms);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
+                expect(uri).toContain("?mode=binary");
             });
-            await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
-                {jobname: fakeJobName, jobid: fakeJobID}
-            );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
-            expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
-            expect((IO.createDirsSyncFromFilePath as any).mock.calls).toEqual([
-                [expectedFile],
-                [expectedFile.slice(0, -expectedExt.length) + "(1)" + expectedExt],
-                [expectedFile.slice(0, -expectedExt.length) + "(2)" + expectedExt]
-            ]);
+
+            it("should allow users to call downloadAllSpoolContentCommon with correct parameters and record mode", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
+                const allSpoolParms: IDownloadAllSpoolContentParms = {
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    record: true
+                };
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFiles[0]
+                };
+
+                await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, allSpoolParms);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
+                expect(uri).toContain("?mode=record");
+            });
+
+            it("should allow users to call downloadAllSpoolContentCommon with a job containing duplicate step names", async () => {
+                const sampJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                    return [sampJobFile, sampJobFile, sampJobFile];
+                });
+                const allSpoolParms: IDownloadAllSpoolContentParms = {
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                };
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFiles[0]
+                };
+
+                await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, allSpoolParms);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+                const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+                expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
+                expect((IO.createDirsSyncFromFilePath as any).mock.calls).toEqual([
+                    [expectedFile],
+                    [expectedFile.slice(0, -expectedExt.length) + "(1)" + expectedExt],
+                    [expectedFile.slice(0, -expectedExt.length) + "(2)" + expectedExt]
+                ]);
+            });
         });
 
-        it("should allow users to call downloadSpoolContentCommon with correct parameters " +
-            "(jobFile with no procstep - procstep should be omitted from the download directory)", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                // do nothing
-            });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
-            });
-            const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
-            delete jobFile.procstep;
-            const outDir = "./myDir";
-            await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
-                outDir,
-                jobFile
-            });
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFile, false, outDir);
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-        });
+        describe("downloadSpoolContentCommon", () => {
+            it("should allow users to call downloadSpoolContentCommon with correct params (jobFile with no procstep in default outDir)", async () => {
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                delete jobFile.procstep;
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    outDir: "./myDir",
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-        it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory)", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                // do nothing;
-            });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(downloadFilePath).not.toContain("PROC");
             });
 
-            await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
-                jobFile: jobFiles[0]
-            });
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-        });
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory)", async () => {
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-        it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory and binary mode)", async () => {
-            let uri: string = "";
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                uri = resource;
-            });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
-            });
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
 
-            await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
-                jobFile: jobFiles[0],
-                binary: true
-            });
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-            expect(uri).toContain("?mode=binary");
-        });
-
-        it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory and record mode)", async () => {
-            let uri: string = "";
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                uri = resource;
-            });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(downloadFilePath).toContain(DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR);
             });
 
-            await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
-                jobFile: jobFiles[0],
-                record: true
-            });
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-            expect(uri).toContain("?mode=record");
-        });
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (default outDir and binary mode)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    binary: true
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-        it("should allow users to call downloadSpoolContentCommon with correct parameters (omitting job ID in the resulting directory)", async () => {
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                // do nothing
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(uri).toContain("?mode=binary");
             });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
-                // do nothing;
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (default outDir and record mode)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    record: true
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(uri).toContain("?mode=record");
             });
-            const outDir = "./myDir";
-            const content = await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
-                outDir,
-                jobFile: jobFiles[0],
-                omitJobidDirectory: true
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (omitting job ID in the resulting dir)", async () => {
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    outDir: "./myDir",
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    omitJobidDirectory: true
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(downloadFilePath).not.toContain(spoolParms.jobid);
             });
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0], true, outDir);
-            expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
     });
     describe("Error catching - async/ await", () => {
@@ -391,10 +428,13 @@ describe("DownloadJobs", () => {
                 jobid: fakeJobID,
                 jobname: fakeJobName,
                 omitJobidDirectory: true
-            }
+            };
             const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-            expect(downloadFilePath).toContain("./output");
+            expect(downloadFilePath).toContain(DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR);
+            expect(downloadFilePath).not.toContain(spoolParms.jobid);
+            expect(downloadFilePath).not.toContain("PROC");
+            expect(downloadFilePath).not.toContain("STEP");
         });
 
         it("should generate a file path for a job file with no procstep, no stepname. Job ID included. Default output dir", () => {
@@ -406,11 +446,13 @@ describe("DownloadJobs", () => {
                 jobid: fakeJobID,
                 jobname: fakeJobName,
                 omitJobidDirectory: false
-            }
+            };
             const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-            expect(downloadFilePath).toContain("./output");
-            expect(downloadFilePath).toContain(fakeJobID);
+            expect(downloadFilePath).toContain(DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR);
+            expect(downloadFilePath).toContain(spoolParms.jobid);
+            expect(downloadFilePath).not.toContain("PROC");
+            expect(downloadFilePath).not.toContain("STEP");
         });
 
         it("should generate a file path for a job file with no procstep, but including a stepname. Job ID omitted. Custom output dir", () => {
@@ -422,26 +464,29 @@ describe("DownloadJobs", () => {
                 jobid: fakeJobID,
                 jobname: fakeJobName,
                 omitJobidDirectory: true
-            }
+            };
             const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-            expect(downloadFilePath).toContain("/customDir");
-            expect(downloadFilePath).toContain(jobFile.stepname);
+            expect(downloadFilePath).toContain(spoolParms.outDir);
+            expect(downloadFilePath).not.toContain(spoolParms.jobid);
+            expect(downloadFilePath).not.toContain("PROC");
+            expect(downloadFilePath).toContain("STEP");
         });
 
-        it("should generate a file path for a job file including procstep and jobname. Job ID included. Custom output dir", () => {
-            const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+        it("should generate a file path for a job file including procstep and stepname. Job ID included. Custom output dir", () => {
             const spoolParms: IDownloadSpoolContentParms = {
-                jobFile: jobFile,
+                jobFile: jobFiles[0],
                 outDir: "/customDir",
                 jobid: fakeJobID,
                 jobname: fakeJobName,
                 omitJobidDirectory: false
-            }
+            };
             const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
-            expect(downloadFilePath).toContain("/customDir");
-            expect(downloadFilePath).toContain(fakeJobID);
+            expect(downloadFilePath).toContain(spoolParms.outDir);
+            expect(downloadFilePath).toContain(spoolParms.jobid);
+            expect(downloadFilePath).toContain("PROC");
+            expect(downloadFilePath).toContain("STEP");
         });
     });
 });

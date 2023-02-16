@@ -41,5 +41,5 @@ export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolConten
      * @memberof IDownloadAllSpoolContentParms
      */
     jobid?: string;
-    
+
 }
