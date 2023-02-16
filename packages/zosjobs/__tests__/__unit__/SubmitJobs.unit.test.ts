@@ -11,9 +11,9 @@
 
 // unit tests for submit jobs
 
-import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJob, IJobFile, MonitorJobs, SubmitJobs } from "../../src";
+import { DownloadJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IHeaderContent, ImperativeError, IO } from "@zowe/imperative";
+import { IHeaderContent, ImperativeError } from "@zowe/imperative";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/MonitorJobs");
@@ -103,7 +103,7 @@ describe("Submit Jobs API", () => {
                 });
                 DownloadJobs.downloadAllSpoolContentCommon = jest.fn (async (session, parms)=>{
                     downloadParms = parms;
-                })
+                });
 
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
                     waitForOutput: true,
