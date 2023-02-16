@@ -11,7 +11,8 @@
 
 // unit tests for submit jobs
 
-import { DownloadJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
+import { DownloadJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
+import { IJobFile, ISpoolFile, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IHeaderContent, ImperativeError } from "@zowe/imperative";
 
@@ -21,6 +22,23 @@ jest.mock("../../src/MonitorJobs");
 const fakeSession: any = {};
 const fakeJobName = "MYJOB1";
 const fakeJobID = "JOB0001";
+const expectedMockSpoolContent = "Hello! This is my spool content.";
+const jobFiles: IJobFile[] = [{
+    "jobid": fakeJobID,
+    "jobname": fakeJobName,
+    "id": 0,
+    "recfm": "FB",
+    "lrecl": 80,
+    "byte-count": expectedMockSpoolContent.length,
+    "record-count": expectedMockSpoolContent.split("\n").length,
+    "job-correlator": "hiasdfasdf",
+    "class": "A",
+    "ddname": "JESJCL",
+    "records-url": "notreal.com",
+    "subsystem": "JES2",
+    "stepname": "STEP1",
+    "procstep": "PROC1"
+}];
 const mockErrorText = "My fake error for unit tests has this text";
 
 
@@ -123,23 +141,25 @@ describe("Submit Jobs API", () => {
                 });
             });
 
-        it("should allow users to call submitJob and wait for ACTIVE status",
+        it("should allow users to call submitJob with wait for ACTIVE status",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
-                const job = await SubmitJobs.submitJob(fakeSession,
-                    "DATA.SET"
-                );
-                // mocking worked if this fake job name is filled in
-                expect(job.jobname).toEqual(fakeJobName);
                 MonitorJobs.waitForStatusCommon = jest.fn(async (session, jobToWaitFor: any) => {
                     jobToWaitFor.status = "ACTIVE";
                     jobToWaitFor.retcode = null;
                     return jobToWaitFor;
                 });
+
+                const job = await SubmitJobs.submitJob(fakeSession,
+                    "DATA.SET"
+                );
+                job.jobid = fakeJobID;
+                job.jobname = fakeJobName;
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
                     waitForActive: true,
                     jclSource: "dataset"
                 }, job);
+
                 expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).status).toEqual("ACTIVE");
                 expect((finishedJob as IJob).retcode).toEqual(null);
@@ -148,20 +168,22 @@ describe("Submit Jobs API", () => {
         it("should allow users to call submitUSSJob and wait for output status",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
-                const job = await SubmitJobs.submitUSSJob(fakeSession,
-                    "/u/users/ibmuser/fake.jcl"
-                );
-                // mocking worked if this fake job name is filled in
-                expect(job.jobname).toEqual(fakeJobName);
                 MonitorJobs.waitForJobOutputStatus = jest.fn(async (session, jobToWaitFor) => {
                     jobToWaitFor.status = "OUTPUT";
                     jobToWaitFor.retcode = "CC 0000";
                     return jobToWaitFor;
                 });
+
+                const job = await SubmitJobs.submitUSSJob(fakeSession,
+                    "/u/users/ibmuser/fake.jcl"
+                );
+                job.jobid = fakeJobID;
+                job.jobname = fakeJobName;
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
                     waitForOutput: true,
                     jclSource: "uss-file"
                 }, job);
+
                 expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).status).toEqual("OUTPUT");
                 expect((finishedJob as IJob).retcode).toEqual("CC 0000");
@@ -170,20 +192,22 @@ describe("Submit Jobs API", () => {
         it("should allow users to call submitUSSJob and wait for ACTIVE status",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
-                const job = await SubmitJobs.submitUSSJob(fakeSession,
-                    "/u/users/ibmuser/fake.jcl"
-                );
-                // mocking worked if this fake job name is filled in
-                expect(job.jobname).toEqual(fakeJobName);
                 MonitorJobs.waitForStatusCommon = jest.fn(async (session, jobToWaitFor: any) => {
                     jobToWaitFor.status = "ACTIVE";
                     jobToWaitFor.retcode = null;
                     return jobToWaitFor;
                 });
+
+                const job = await SubmitJobs.submitUSSJob(fakeSession,
+                    "/u/users/ibmuser/fake.jcl"
+                );
+                job.jobid = fakeJobID;
+                job.jobname = fakeJobName;
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
                     waitForActive: true,
                     jclSource: "uss-file"
                 }, job);
+
                 expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).status).toEqual("ACTIVE");
                 expect((finishedJob as IJob).retcode).toEqual(null);
@@ -290,6 +314,44 @@ describe("Submit Jobs API", () => {
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
         });
+
+        it("should allow users to call submitJob to wait for output and download spool content to default dir",
+            async () => {
+                (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                const submitParms: ISubmitParms = {
+                    jclSource: "dataset",
+                    waitForOutput: true,
+                    viewAllSpoolContent: true
+                };
+                MonitorJobs.waitForJobOutputStatus = jest.fn(async (session, ijob) => {
+                    ijob.status = "OUTPUT";
+                    ijob.jobid = fakeJobID;
+                    ijob.jobname = fakeJobName;
+                    return ijob;
+                });
+                GetJobs.getSpoolContent = jest.fn(async (fakeSession, spoolFile) => {
+                    return expectedMockSpoolContent.toString();
+                });
+                SubmitJobs.checkSubmitOptions = jest.fn(async (fakeSession, submitParms, responseJobInfo): Promise <IJob | ISpoolFile[]> => {
+                    const arrOfSpoolFile: ISpoolFile[] = [{
+                        id: jobFiles[0].id,
+                        ddName: jobFiles[0].ddname,
+                        stepName: jobFiles[0].stepname,
+                        procName: jobFiles[0].procstep,
+                        data: expectedMockSpoolContent
+                    }];
+                    return arrOfSpoolFile;
+                });
+
+                const job = await SubmitJobs.submitJob(fakeSession,
+                    "DATA.SET"
+                );
+                const ijob: IJob = await MonitorJobs.waitForJobOutputStatus(fakeSession, job);
+                const spoolData = (await SubmitJobs.checkSubmitOptions(fakeSession, submitParms, ijob)) as ISpoolFile[];
+
+                expect(ijob.status).toBe("OUTPUT");
+                expect(spoolData[0].data).toContain(expectedMockSpoolContent);
+            });
     });
 
 
