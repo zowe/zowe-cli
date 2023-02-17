@@ -14,11 +14,12 @@
 import { DownloadJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { IJobFile, ISpoolFile, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IHeaderContent, ImperativeError } from "@zowe/imperative";
+import { IHeaderContent, ImperativeError, TaskStage} from "@zowe/imperative";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/MonitorJobs");
 
+const mockErrorText = "My fake error for unit tests has this text";
 const fakeSession: any = {};
 const fakeJobName = "MYJOB1";
 const fakeJobID = "JOB0001";
@@ -39,18 +40,43 @@ const jobFiles: IJobFile[] = [{
     "stepname": "STEP1",
     "procstep": "PROC1"
 }];
-const mockErrorText = "My fake error for unit tests has this text";
+const sampleJob: IJob = {
+    "jobid": fakeJobID,
+    "jobname": fakeJobName,
+    "subsystem": "JES2",
+    "owner": "IBMUSER",
+    "status": "OUTPUT",
+    "type": "job",
+    "class": "A",
+    "retcode": "CC 0000",
+    "url": "www.nowhere.com/restjobs/jobs",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "phase": 88,
+    "phase-name": "testagain"
+};
+const arrOfSpoolFile: ISpoolFile[] = [{
+    id: jobFiles[0].id,
+    ddName: jobFiles[0].ddname,
+    stepName: jobFiles[0].stepname,
+    procName: jobFiles[0].procstep,
+    data: expectedMockSpoolContent
+}];
 
-
+// mocks
+const privateMonitorJobs = MonitorJobs as any;
+const privateSubmitJobs = SubmitJobs as any;
+const waitForJobOutputStatusSpy = jest.spyOn(privateMonitorJobs, "waitForJobOutputStatus");
+const checkSubmitOptionsSpy = jest.spyOn(privateSubmitJobs, "checkSubmitOptions");
 const returnIJob = async () => {
     return {jobid: fakeJobID, jobname: fakeJobName, retcode: "CC 0000", owner: "dummy"};
 };
-
 const throwImperativeError = async () => {
     throw new ImperativeError({msg: mockErrorText});
 };
 
 describe("Submit Jobs API", () => {
+
     describe("Positive tests", () => {
         it("should allow users to call submitJCLCommon with correct parameters", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
@@ -318,40 +344,45 @@ describe("Submit Jobs API", () => {
         it("should allow users to call submitJob to wait for output and download spool content to default dir",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                GetJobs.getSpoolContent = jest.fn(async (fakeSession, spoolFile) => {
+                    return expectedMockSpoolContent.toString();
+                });
+                waitForJobOutputStatusSpy.mockReturnValueOnce(sampleJob as IJob);
+                checkSubmitOptionsSpy.mockReturnValueOnce(arrOfSpoolFile as ISpoolFile[]);
+
                 const submitParms: ISubmitParms = {
                     jclSource: "dataset",
                     waitForOutput: true,
                     viewAllSpoolContent: true
                 };
-                MonitorJobs.waitForJobOutputStatus = jest.fn(async (session, ijob) => {
-                    ijob.status = "OUTPUT";
-                    ijob.jobid = fakeJobID;
-                    ijob.jobname = fakeJobName;
-                    return ijob;
-                });
-                GetJobs.getSpoolContent = jest.fn(async (fakeSession, spoolFile) => {
-                    return expectedMockSpoolContent.toString();
-                });
-                SubmitJobs.checkSubmitOptions = jest.fn(async (fakeSession, submitParms, responseJobInfo): Promise <IJob | ISpoolFile[]> => {
-                    const arrOfSpoolFile: ISpoolFile[] = [{
-                        id: jobFiles[0].id,
-                        ddName: jobFiles[0].ddname,
-                        stepName: jobFiles[0].stepname,
-                        procName: jobFiles[0].procstep,
-                        data: expectedMockSpoolContent
-                    }];
-                    return arrOfSpoolFile;
-                });
-
                 const job = await SubmitJobs.submitJob(fakeSession,
                     "DATA.SET"
                 );
-                const ijob: IJob = await MonitorJobs.waitForJobOutputStatus(fakeSession, job);
-                const spoolData = (await SubmitJobs.checkSubmitOptions(fakeSession, submitParms, ijob)) as ISpoolFile[];
 
-                expect(ijob.status).toBe("OUTPUT");
+                const outputJob: IJob = await MonitorJobs.waitForJobOutputStatus(fakeSession, job);
+                const spoolData = (await SubmitJobs.checkSubmitOptions(fakeSession, submitParms, sampleJob)) as ISpoolFile[];
+
+                expect(outputJob.status).toBe("OUTPUT");
                 expect(spoolData[0].data).toContain(expectedMockSpoolContent);
             });
+
+        it("should allow users to call submitJclString with correct parameters", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            const submitParms: ISubmitParms = {
+                jclSource: "//EXEC PGM=IEFBR14",
+                waitForOutput: true,
+                task: {
+                    percentComplete: 70,
+                    statusMessage:"Waiting for " + fakeJobID + " to enter OUTPUT",
+                    stageName: TaskStage.IN_PROGRESS
+                }
+            };
+            checkSubmitOptionsSpy.mockReturnValueOnce(sampleJob as IJob);
+
+            const job = (await SubmitJobs.submitJclString(fakeSession, submitParms.jclSource, submitParms)) as IJob;
+
+            expect(job).toMatchObject(sampleJob);
+        });
     });
 
 
