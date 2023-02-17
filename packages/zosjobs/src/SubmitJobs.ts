@@ -239,7 +239,6 @@ export class SubmitJobs {
      * @memberof SubmitJobs
      */
     public static async checkSubmitOptions(session: AbstractSession, parms: ISubmitParms, responseJobInfo: IJob): Promise<IJob | ISpoolFile[]> {
-
         if (parms.waitForActive) {
             const activeJob = await MonitorJobs.waitForStatusCommon(session, {
                 jobid: responseJobInfo.jobid,
@@ -247,12 +246,11 @@ export class SubmitJobs {
                 status: "ACTIVE"
             });
             return activeJob;
-        } else {
-            // wait for job status to be OUTPUT for all other situations
-            if (parms.task != null) {
-                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
-                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
-            }
+        }
+        // wait for job status to be OUTPUT for all other situations
+        if (parms.task != null) {
+            parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
+            parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
         }
         const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
         if (parms.directory) {
