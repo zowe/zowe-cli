@@ -14,7 +14,7 @@
 import { DownloadJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { IJobFile, ISpoolFile, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IHeaderContent, ImperativeError, TaskStage} from "@zowe/imperative";
+import { IHeaderContent, ImperativeError, ITaskWithStatus, TaskStage} from "@zowe/imperative";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/MonitorJobs");
@@ -375,9 +375,14 @@ describe("Submit Jobs API", () => {
                     percentComplete: 70,
                     statusMessage:"Waiting for " + fakeJobID + " to enter OUTPUT",
                     stageName: TaskStage.IN_PROGRESS
-                }
+                } as ITaskWithStatus
             };
             checkSubmitOptionsSpy.mockReturnValueOnce(sampleJob as IJob);
+            SubmitJobs.checkSubmitOptions = jest.fn(async (fakeSession, parms, responseJobInfo): Promise <IJob | ISpoolFile[]> => {
+                parms = submitParms;
+                responseJobInfo = sampleJob;
+                return sampleJob as IJob;
+            });
 
             const job = (await SubmitJobs.submitJclString(fakeSession, submitParms.jclSource, submitParms)) as IJob;
 
