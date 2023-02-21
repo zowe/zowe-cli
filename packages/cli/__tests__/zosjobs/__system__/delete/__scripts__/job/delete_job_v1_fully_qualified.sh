@@ -1,15 +1,20 @@
 #!/bin/bash
 
+JCL=$1
+HOST=$2
+PORT=$3
+USER=$4
+PASS=$5
+
 # Max attempt count
 ATTEMPTS=10
 
 # Wait time between attempts
 WAIT=10
 
-# Submit a job and ensure the RC is 0
-JOBID=`zowe jobs submit ds "$1" --rff jobid --rft string`
+# Submit the job and ensure the RC is 0
+JOBID=`zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string`
 RC=$?
-shift
 if [ $RC -gt 0 ]
 then
     echo $JOBID 1>&2
@@ -20,7 +25,7 @@ fi
 # Loop until the job goes to the output queue
 until [ $ATTEMPTS -gt 0 ]
 do
-    STATUS=`zowe jobs view job-status-by-jobid $JOBID --rff status --rft string`
+    STATUS=`zowe jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff status --rft string`
     RC=$?
     if [ $RC -gt 0 ] ; then
         echo $STATUS 1>&2
@@ -41,12 +46,12 @@ if [ $ATTEMPTS -eq 0 -a "$STATUS" != "OUTPUT" ]; then
     exit 1
 fi
 
-# Purge the jobs
-zowe jobs delete old-jobs $@
+# Purge the job
+zowe jobs delete job $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --modify-version 1.0
 RC=$?
 
 if [ $RC -gt 0 ]
 then
-    echo "The delete old-jobs command returned a non-zero rc: $RC" 1>&2
+    echo "The delete job command returned a non-zero rc: $RC" 1>&2
     exit $RC
 fi

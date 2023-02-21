@@ -60,7 +60,7 @@ describe("Compare Data Sets", () => {
         });
 
         it("should compare data sets", async () => {
-            const shellScript = path.join(__dirname, "__scripts__/compare_data_set.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "compare_data_set.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname+"(MEMB1)", dsname+"(MEMB2)"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -69,7 +69,7 @@ describe("Compare Data Sets", () => {
     });
     describe("Expected failures", () => {
         it("should fail due to specified data set name does not exist", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_compare_data_set.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "compare_data_set.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname+".dummy(MEMB1)", dsname+"(MEMB2)"]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");

@@ -37,7 +37,7 @@ describe("zos-jobs delete old-jobs command", () => {
     });
 
     describe("successful scenario", () => {
-        it("should delete all old jobs sequentially", () => {
+        it("should delete all old jobs sequentially default", () => {
             const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL]);
             expect(response.status).toBe(0);
@@ -45,7 +45,7 @@ describe("zos-jobs delete old-jobs command", () => {
             expect(response.stdout.toString()).toContain("Successfully deleted");
         });
 
-        it("should delete all old jobs in parallel", () => {
+        it("should delete all old jobs in parallel default", () => {
             const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0"]);
             expect(response.status).toBe(0);
@@ -53,9 +53,33 @@ describe("zos-jobs delete old-jobs command", () => {
             expect(response.stdout.toString()).toContain("Successfully deleted");
         });
 
-        it("should delete all old jobs with modifyVersion 2.0", () => {
+        it("should delete all old jobs with modifyVersion 1.0 sequentially", () => {
+            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL, "--modify-version", "1.0"]);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toContain("Successfully deleted");
+        });
+
+        it("should delete all old jobs with modifyVersion 1.0 parallel", () => {
+            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0", "--modify-version", "1.0"]);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toContain("Successfully deleted");
+        });
+
+        it("should delete all old jobs with modifyVersion 2.0 sequentially", () => {
             const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL, "--modify-version", "2.0"]);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toContain("Successfully deleted");
+        });
+
+        it("should delete all old jobs with modifyVersion 2.0 parallel", () => {
+            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0", "--modify-version", "2.0"]);
             expect(response.status).toBe(0);
             expect(response.stderr.toString()).toBe("");
             expect(response.stdout.toString()).toContain("Successfully deleted");

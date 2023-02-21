@@ -40,8 +40,8 @@ describe("zos-jobs delete job command", () => {
     });
 
     describe("successful scenario", () => {
-        it("should delete a job", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/delete_job.sh",
+        it("should delete a job 1.0", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v1.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -50,6 +50,14 @@ describe("zos-jobs delete job command", () => {
 
         it("should delete a job 2.0", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v2.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Successfully deleted job");
+        });
+
+        it("should delete a job default", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/delete_job.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -74,7 +82,7 @@ describe("zos-jobs delete job command", () => {
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
-            it("delete a job without a profile", async () => {
+            it("delete a job without a profile 1.0", async () => {
                 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
                 // if API Mediation layer is being used (basePath has a value) then
@@ -83,7 +91,7 @@ describe("zos-jobs delete job command", () => {
                     TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
                 }
 
-                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
+                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v1_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
                         IEFBR14_JCL,
@@ -107,6 +115,29 @@ describe("zos-jobs delete job command", () => {
                 }
 
                 const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v2_fully_qualified.sh",
+                    TEST_ENVIRONMENT_NO_PROF,
+                    [
+                        IEFBR14_JCL,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.password,
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully deleted job");
+            });
+
+            it("delete a job without a profile default", async () => {
+                const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+                // if API Mediation layer is being used (basePath has a value) then
+                // set an ENVIRONMENT variable to be used by zowe.
+                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                }
+
+                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
                         IEFBR14_JCL,
