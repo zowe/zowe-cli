@@ -176,7 +176,7 @@ export class Services {
      *          "zosmf": {
      *              "type": "zosmf",
      *              "properties": {
-     *                  "basePath": "/zosmf/api/v1"
+     *                  "basePath": "/api/v1"
      *              }
      *          },
      *          "ibmzosmf": {
