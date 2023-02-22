@@ -159,7 +159,7 @@ export class Services {
      *      {
      *          profName: 'zosmf',
      *          profType: 'zosmf',
-     *          basePaths: [ '/zosmf/api/v1' ],
+     *          basePaths: [ '/api/v1' ],
      *          pluginConfigs: Set(1) { [IApimlSvcAttrsLoaded] },
      *          conflictTypes: [ 'profType' ]
      *      },
@@ -176,7 +176,7 @@ export class Services {
      *          "zosmf": {
      *              "type": "zosmf",
      *              "properties": {
-     *                  "basePath": "/zosmf/api/v1"
+     *                  "basePath": "/api/v1"
      *              }
      *          },
      *          "ibmzosmf": {
