@@ -55,13 +55,6 @@ const sampleJob: IJob = {
     "phase": 88,
     "phase-name": "testagain"
 };
-const arrOfSpoolFile: ISpoolFile[] = [{
-    id: jobFiles[0].id,
-    ddName: jobFiles[0].ddname,
-    stepName: jobFiles[0].stepname,
-    procName: jobFiles[0].procstep,
-    data: expectedMockSpoolContent
-}];
 
 // mocks
 const privateMonitorJobs = MonitorJobs as any;
