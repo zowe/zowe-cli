@@ -379,8 +379,6 @@ describe("Submit Jobs API", () => {
             };
             checkSubmitOptionsSpy.mockReturnValueOnce(sampleJob as IJob);
             SubmitJobs.checkSubmitOptions = jest.fn(async (fakeSession, parms, responseJobInfo): Promise <IJob | ISpoolFile[]> => {
-                parms = submitParms;
-                responseJobInfo = sampleJob;
                 return sampleJob as IJob;
             });
 

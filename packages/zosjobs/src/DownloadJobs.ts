@@ -81,8 +81,8 @@ export class DownloadJobs {
                 }
             }
             await DownloadJobs.downloadSpoolContentCommon(session, {
+                ...parms,
                 jobFile: {...file, ddname: uniqueDDName},
-                ...parms
             });
             usedStepNames[file.stepname] = [...usedStepNames[file.stepname] || [], uniqueDDName];
         }
