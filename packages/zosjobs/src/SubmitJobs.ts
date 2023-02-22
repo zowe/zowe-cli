@@ -247,13 +247,13 @@ export class SubmitJobs {
             });
             return activeJob;
         }
-        // wait for job status to be OUTPUT for all other situations
-        if (parms.task != null) {
-            parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
-            parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
-        }
+        //otherwise wait for output
         const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
         if (parms.directory) {
+            if (parms.task != null) {
+                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
+                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
+            }
             const downloadParms: IDownloadAllSpoolContentParms = {
                 jobid: job.jobid,
                 jobname: job.jobname,
@@ -269,8 +269,11 @@ export class SubmitJobs {
             }
             await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
             return job;
-        }
-        if (parms.viewAllSpoolContent || parms.waitForOutput) {
+        } else if (parms.viewAllSpoolContent || parms.waitForOutput) {
+            if (parms.task != null) {
+                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
+                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
+            }
             if (!parms.viewAllSpoolContent) {
                 return job;
             }
