@@ -350,8 +350,8 @@ describe("Submit Jobs API", () => {
                 GetJobs.getSpoolContent = jest.fn(async (fakeSession, spoolFile) => {
                     return expectedMockSpoolContent.toString();
                 });
+            
                 waitForJobOutputStatusSpy.mockReturnValueOnce(sampleJob as IJob);
-                checkSubmitOptionsSpy.mockReturnValueOnce(arrOfSpoolFile as ISpoolFile[]);
 
                 const submitParms: ISubmitParms = {
                     jclSource: "dataset",
@@ -365,11 +365,9 @@ describe("Submit Jobs API", () => {
                 };
 
                 const spoolData = (await SubmitJobs.checkSubmitOptions(fakeSession, submitParms, sampleJob)) as ISpoolFile[];
-                const outputJob: IJob = await MonitorJobs.waitForJobOutputStatus(fakeSession, sampleJob);
                 const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(fakeSession, sampleJob);
                 const spoolContent = await GetJobs.getSpoolContent(fakeSession, jobFiles[0]);
 
-                expect(outputJob.status).toBe("OUTPUT");
                 expect(spoolContent).toContain(expectedMockSpoolContent.toString())
                 expect(spoolFiles).toEqual(jobFiles)
                 expect(spoolData[0].data).toContain(expectedMockSpoolContent);
