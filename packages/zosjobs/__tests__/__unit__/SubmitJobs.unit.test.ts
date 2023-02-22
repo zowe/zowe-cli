@@ -344,6 +344,9 @@ describe("Submit Jobs API", () => {
         it("should allow users to call submitJob to wait for output and download spool content to default dir",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                GetJobs.getSpoolFilesForJob = jest.fn(async (fakeSession, sampleJob) => {
+                    return jobFiles;
+                });
                 GetJobs.getSpoolContent = jest.fn(async (fakeSession, spoolFile) => {
                     return expectedMockSpoolContent.toString();
                 });
@@ -353,16 +356,22 @@ describe("Submit Jobs API", () => {
                 const submitParms: ISubmitParms = {
                     jclSource: "dataset",
                     waitForOutput: true,
-                    viewAllSpoolContent: true
+                    viewAllSpoolContent: true,
+                    task: {
+                        percentComplete: 70,
+                        statusMessage:"Waiting for " + fakeJobID + " to enter OUTPUT",
+                        stageName: TaskStage.IN_PROGRESS
+                    } as ITaskWithStatus, 
                 };
-                const job = await SubmitJobs.submitJob(fakeSession,
-                    "DATA.SET"
-                );
 
-                const outputJob: IJob = await MonitorJobs.waitForJobOutputStatus(fakeSession, job);
                 const spoolData = (await SubmitJobs.checkSubmitOptions(fakeSession, submitParms, sampleJob)) as ISpoolFile[];
+                const outputJob: IJob = await MonitorJobs.waitForJobOutputStatus(fakeSession, sampleJob);
+                const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(fakeSession, sampleJob);
+                const spoolContent = await GetJobs.getSpoolContent(fakeSession, jobFiles[0]);
 
                 expect(outputJob.status).toBe("OUTPUT");
+                expect(spoolContent).toContain(expectedMockSpoolContent.toString())
+                expect(spoolFiles).toEqual(jobFiles)
                 expect(spoolData[0].data).toContain(expectedMockSpoolContent);
             });
 

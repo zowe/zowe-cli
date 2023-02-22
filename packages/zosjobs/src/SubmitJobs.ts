@@ -248,8 +248,8 @@ export class SubmitJobs {
             return activeJob;
         }
         //otherwise wait for output
-        const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
         if (parms.directory) {
+            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
@@ -270,6 +270,7 @@ export class SubmitJobs {
             await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
             return job;
         } else if (parms.viewAllSpoolContent || parms.waitForOutput) {
+            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
