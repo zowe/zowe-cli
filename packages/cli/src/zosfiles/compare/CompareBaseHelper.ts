@@ -131,12 +131,12 @@ export class CompareBaseHelper {
         let lfContentBuf: Buffer;
         let localFileHandle: number;
         try {
-            localFileHandle = fs.openSync(localFile, 'r');
-            // check if the path given is of a file or not
             try {
+                // check if the path given is of a file or not
+                localFileHandle = fs.openSync(localFile, 'r');
                 if(!fs.fstatSync(localFileHandle).isFile()){
                     throw new ImperativeError({
-                        msg: 'Path given is not of a file, do recheck your path again'
+                        msg: 'Path is not of a file. Please check the path and try again'
                     });
                 }
             } catch (error) {
@@ -148,7 +148,7 @@ export class CompareBaseHelper {
             // reading local file as buffer
             lfContentBuf = fs.readFileSync(localFileHandle);
         } finally {
-            fs.closeSync(localFileHandle);
+            if (localFileHandle != null) fs.closeSync(localFileHandle);
         }
         return lfContentBuf;
     }

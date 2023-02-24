@@ -10,7 +10,8 @@
 */
 
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
-import {DiffUtils} from "@zowe/imperative";
+import { DiffUtils, ImperativeError } from "@zowe/imperative";
+import * as fs from "fs";
 
 describe("Comapare Base Helper", () => {
 
@@ -54,6 +55,57 @@ describe("Comapare Base Helper", () => {
             expect(DiffUtils.openDiffInbrowser).toBeCalled();
             expect(DiffUtils.openDiffInbrowser).toBeCalledWith(string1, string2);
 
+        });
+    });
+
+    describe("Edge case testing", () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should get the contents of a local file", () => {
+            jest.spyOn(fs, "openSync").mockReturnValue(0);
+            jest.spyOn(fs, "fstatSync").mockReturnValue({isFile: () => true} as any);
+            jest.spyOn(fs, "readFileSync").mockReturnValue("test");
+            jest.spyOn(fs, "closeSync").mockImplementation();
+
+            const response = helper.prepareLocalFile("/absolute/path/to/real/file");
+
+            expect(response).toEqual("test");
+        });
+
+        it("should fail if the given path is not a file", () => {
+            jest.spyOn(fs, "openSync").mockReturnValue(0);
+            jest.spyOn(fs, "fstatSync").mockReturnValue({isFile: () => false} as any);
+            jest.spyOn(fs, "closeSync").mockImplementation();
+
+            let caughtError: ImperativeError = null as any;
+            let response;
+            try {
+                response = helper.prepareLocalFile("/absolute/path/to/directory");
+            } catch (err) {
+                caughtError = err;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError.message).toContain("Path is not of a file");
+        });
+
+        it("should fail if the given path is does not exist", () => {
+            jest.spyOn(fs, "openSync").mockReturnValue(0);
+            jest.spyOn(fs, "fstatSync").mockImplementation(() => { throw "path not found"; });
+            jest.spyOn(fs, "closeSync").mockImplementation();
+
+            let caughtError: ImperativeError = null as any;
+            let response;
+            try {
+                response = helper.prepareLocalFile("/absolute/path/to/missing/file");
+            } catch (err) {
+                caughtError = err;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError.message).toContain("Path not found");
         });
     });
 });
