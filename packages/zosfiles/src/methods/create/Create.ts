@@ -276,6 +276,7 @@ export class Create {
                             case "FB":
                             case "V":
                             case "VB":
+                            case "VBS":
                             case "U":
                                 break;
                             default:
