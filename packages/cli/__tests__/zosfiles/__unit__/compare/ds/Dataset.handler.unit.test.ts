@@ -82,7 +82,7 @@ describe("Compare data set handler", () => {
         const dsTask = {
             percentComplete: 0,
             stageName: 0,
-            statusMessage: "Retrieving second dataset"
+            statusMessage: "Retrieving content for the second file/dataset"
         };
 
         beforeEach(() => {
@@ -187,5 +187,6 @@ describe("Compare data set handler", () => {
 
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         });
+
     });
 });

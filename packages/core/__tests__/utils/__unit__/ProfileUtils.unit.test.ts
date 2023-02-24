@@ -10,7 +10,7 @@
 */
 
 import * as ProfileUtils from "../../../src/utils/ProfileUtils";
-import { ImperativeConfig, EnvironmentalVariableSettings } from "@zowe/imperative";
+import { ImperativeConfig, EnvironmentalVariableSettings, CliProfileManager, ImperativeError } from "@zowe/imperative";
 import * as os from "os";
 import * as path from "path";
 
@@ -29,7 +29,7 @@ describe("ProfileUtils", () => {
 
         beforeEach(() => {
             jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ cliHome: { value: null } } as any);
-            ImperativeConfig.instance.loadedConfig = undefined;
+            ImperativeConfig.instance.loadedConfig = undefined as any;
             jest.spyOn(os, "homedir").mockReturnValue(expectedLoadedConfig.defaultHome);
             defaultHome = path.join(expectedLoadedConfig.defaultHome, ".zowe");
         });
@@ -60,6 +60,21 @@ describe("ProfileUtils", () => {
             ImperativeConfig.instance.loadedConfig = expectedLoadedConfig;
             expect(ProfileUtils.getZoweDir()).toEqual(defaultHome);
             expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+        });
+    });
+
+    describe("getDefaultProfile", () => {
+        it("should throw an error if the CLIProfileManager fails to load a profile", async () => {
+            jest.spyOn(CliProfileManager.prototype, "load").mockRejectedValueOnce("failed to load a profile");
+            let caughtError;
+            try {
+                await ProfileUtils.getDefaultProfile("test");
+            } catch (err) {
+                caughtError = err;
+            }
+
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toContain("Failed to load default profile");
         });
     });
 });
