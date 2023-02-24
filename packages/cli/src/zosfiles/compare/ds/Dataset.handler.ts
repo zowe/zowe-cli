@@ -9,103 +9,19 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { AbstractSession, ICommandArguments } from "@zowe/imperative";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { CompareBaseHandler } from "../CompareBase.handler";
+import { CompareBaseHelper } from '../CompareBaseHelper';
 /**
  * Handler to view a data set's content
  * @export
  */
-export default class DatasetHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const task: ITaskWithStatus = {
-            percentComplete: 0,
-            statusMessage: "Retrieving first dataset",
-            stageName: TaskStage.IN_PROGRESS
-        };
-
-        // RETRIEVING THE FIRST DATA-SET
-        commandParameters.response.progress.startBar({ task });
-        const dsContentBuf1 = await Get.dataSet(session, commandParameters.arguments.dataSetName1,
-            {
-                binary: commandParameters.arguments.binary,
-                encoding: commandParameters.arguments.encoding,
-                record: commandParameters.arguments.record,
-                volume: commandParameters.arguments.volumeSerial,
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
-            }
-        );
-        commandParameters.response.progress.endBar();
-
-
-        // RETRIEVING THE DATA-SET TO COMPARE
-        task.statusMessage = "Retrieving second dataset";
-        commandParameters.response.progress.startBar({ task });
-        let binary2 = commandParameters.arguments.binary2;
-        let encoding2 = commandParameters.arguments.encoding2;
-        let record2 = commandParameters.arguments.record2;
-        const volumeSerial2 = commandParameters.arguments.volumeSerial2;
-        if (binary2 == undefined) {
-            binary2 = commandParameters.arguments.binary;
-        }
-        if (encoding2 == undefined) {
-            encoding2 = commandParameters.arguments.encoding;
-        }
-        if (record2 == undefined) {
-            record2 = commandParameters.arguments.record;
-        }
-        const dsContentBuf2 = await Get.dataSet(session, commandParameters.arguments.dataSetName2,
-            {
-                binary: binary2,
-                encoding: encoding2,
-                record: record2,
-                volume: volumeSerial2,
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
-            }
-        );
-        commandParameters.response.progress.endBar();
-
-
-        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
-        let dsContentString1 = "";
-        let dsContentString2 = "";
-        const seqnumlen = 8;
-        if(commandParameters.arguments.seqnum === false){
-            dsContentString1 = dsContentBuf1.toString().split("\n")
-                .map((line)=>line.slice(0,-seqnumlen))
-                .join("\n");
-            dsContentString2 = dsContentBuf2.toString().split("\n")
-                .map((line)=>line.slice(0,-seqnumlen))
-                .join("\n");
-        }
-        else {
-            dsContentString1 = dsContentBuf1.toString();
-            dsContentString2 = dsContentBuf2.toString();
-        }
-
-
-        // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
-        if (commandParameters.arguments.browserView) {
-            await DiffUtils.openDiffInbrowser(dsContentString1, dsContentString2);
-            return {
-                success: true,
-                commandResponse: "Launching data-sets diffs in browser...",
-                apiResponse: {}
-            };
-        }
-
-
-        // RETURNING DIFF
-        const jsonDiff = await DiffUtils.getDiffString(dsContentString1, dsContentString2, {
-            outputFormat: 'terminal',
-            contextLinesArg: commandParameters.arguments.contextLines
-        });
-        return {
-            success: true,
-            commandResponse: jsonDiff,
-            apiResponse: {}
-        };
+export default class DatasetHandler extends CompareBaseHandler {
+    public async getFile1(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+        return await Get.dataSet(session, args.dataSetName1, { ...helper.file1Options, task: helper.task });
+    }
+    public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+        return await Get.dataSet(session, args.dataSetName2, { ...helper.file2Options, task: helper.task });
     }
 }

@@ -9,95 +9,20 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, DiffUtils } from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { AbstractSession, ICommandArguments } from "@zowe/imperative";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { CompareBaseHandler } from "../CompareBase.handler";
+import { CompareBaseHelper } from "../CompareBaseHelper";
+
 /**
  * Handler to view a data set's content
  * @export
  */
-export default class UssFileHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const task: ITaskWithStatus = {
-            percentComplete: 0,
-            statusMessage: "Retrieving first uss file",
-            stageName: TaskStage.IN_PROGRESS
-        };
-
-
-        // RETRIEVING USS FILE
-        commandParameters.response.progress.startBar({ task });
-        const ussFileContentBuf1 = await Get.USSFile(session, commandParameters.arguments.ussFilePath1,
-            {
-                binary: commandParameters.arguments.binary,
-                encoding: commandParameters.arguments.encoding,
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
-            }
-        );
-        commandParameters.response.progress.endBar();
-
-
-        // RETRIEVING THE SECOND USS FILE TO COMPARE
-        task.statusMessage = "Retrieving second uss-file";
-        commandParameters.response.progress.startBar({ task });
-        let binary2 = commandParameters.arguments.binary2;
-        let encoding2 = commandParameters.arguments.encoding2;
-        if (binary2 == undefined) {
-            binary2 = commandParameters.arguments.binary;
-        }
-        if (encoding2 == undefined) {
-            encoding2 = commandParameters.arguments.encoding;
-        }
-        const ussFileContentBuf2 = await Get.USSFile(session, commandParameters.arguments.ussFilePath2,
-            {
-                binary: binary2,
-                encoding: encoding2,
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
-            }
-        );
-        commandParameters.response.progress.endBar();
-
-
-        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
-        let ussContentString1 = "";
-        let ussContentString2 = "";
-        const seqnumlen = 8;
-        if(commandParameters.arguments.seqnum === false){
-            ussContentString1 = ussFileContentBuf1.toString().split("\n")
-                .map((line)=>line.slice(0,-seqnumlen))
-                .join("\n");
-            ussContentString2 = ussFileContentBuf2.toString().split("\n")
-                .map((line)=>line.slice(0,-seqnumlen))
-                .join("\n");
-        }
-        else {
-            ussContentString1 = ussFileContentBuf1.toString();
-            ussContentString2 = ussFileContentBuf2.toString();
-        }
-
-
-        // CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
-        if (commandParameters.arguments.browserView) {
-            await DiffUtils.openDiffInbrowser(ussContentString1, ussContentString2);
-            return {
-                success: true,
-                commandResponse: "Launching uss files diffs in browser...",
-                apiResponse: {}
-            };
-        }
-
-
-        // RETURNING DIFF
-        const jsonDiff = await DiffUtils.getDiffString(ussContentString1, ussContentString2, {
-            outputFormat: 'terminal',
-            contextLinesArg: commandParameters.arguments.contextLines
-        });
-        return {
-            success: true,
-            commandResponse: jsonDiff,
-            apiResponse: {}
-        };
+export default class UssFileHandler extends CompareBaseHandler {
+    public async getFile1(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+        return await Get.USSFile(session, args.ussFilePath1, { ...helper.file1Options, task: helper.task });
+    }
+    public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+        return await Get.USSFile(session, args.ussFilePath2, { ...helper.file2Options, task: helper.task });
     }
 }
