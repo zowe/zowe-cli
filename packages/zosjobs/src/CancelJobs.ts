@@ -87,7 +87,7 @@ export class CancelJobs {
             const responseFeedback = responseJson as IJobFeedback;
             // Turns out status is a number, but we cannot introduce breaking changes.
             responseFeedback.status = responseFeedback.status.toString();
-            
+
             return responseFeedback;
         } else { return undefined; }
     }

@@ -128,9 +128,10 @@ export class CompareBaseHelper {
      */
     public prepareLocalFile(filePath: string): Buffer {
         const localFile = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-        const localFileHandle = fs.openSync(localFile, 'r');
         let lfContentBuf: Buffer;
+        let localFileHandle: number;
         try {
+            localFileHandle = fs.openSync(localFile, 'r');
             // check if the path given is of a file or not
             try {
                 if(!fs.fstatSync(localFileHandle).isFile()){

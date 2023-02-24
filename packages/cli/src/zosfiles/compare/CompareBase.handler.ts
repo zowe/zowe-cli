@@ -61,7 +61,7 @@ export abstract class CompareBaseHandler extends ZosFilesBaseHandler {
         session: AbstractSession,
         args: ICommandArguments,
         helper: CompareBaseHelper,
-        ): Promise<string | Buffer>;
+    ): Promise<string | Buffer>;
 
     /**
      * Abstract method required for compare handlers to determine how they gather the contents of the file/dataset to compare
@@ -69,7 +69,7 @@ export abstract class CompareBaseHandler extends ZosFilesBaseHandler {
      * @param args Command arguments required for getting the dataset, filepath, or spool descriptor
      * @param helper CompareBaseHelper instance to access prepare- functions
      */
-     public abstract getFile2(
+    public abstract getFile2(
         session: AbstractSession,
         args: ICommandArguments,
         helper: CompareBaseHelper,
