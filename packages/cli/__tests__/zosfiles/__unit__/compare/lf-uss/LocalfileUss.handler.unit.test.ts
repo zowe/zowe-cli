@@ -86,7 +86,7 @@ describe("Compare local-file and uss-file handler", () => {
         const ussTask = {
             percentComplete: 0,
             stageName: 0,
-            statusMessage: "Retrieving uss file"
+            statusMessage: "Retrieving content for the second file/dataset"
         };
 
         beforeEach(()=> {
