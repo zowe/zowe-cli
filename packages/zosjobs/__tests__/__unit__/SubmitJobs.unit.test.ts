@@ -343,7 +343,6 @@ describe("Submit Jobs API", () => {
                 GetJobs.getSpoolContent = jest.fn(async (fakeSession, spoolFile) => {
                     return expectedMockSpoolContent.toString();
                 });
-            
                 waitForJobOutputStatusSpy.mockReturnValueOnce(sampleJob as IJob);
 
                 const submitParms: ISubmitParms = {
@@ -354,15 +353,15 @@ describe("Submit Jobs API", () => {
                         percentComplete: 70,
                         statusMessage:"Waiting for " + fakeJobID + " to enter OUTPUT",
                         stageName: TaskStage.IN_PROGRESS
-                    } as ITaskWithStatus, 
+                    } as ITaskWithStatus,
                 };
 
                 const spoolData = (await SubmitJobs.checkSubmitOptions(fakeSession, submitParms, sampleJob)) as ISpoolFile[];
                 const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(fakeSession, sampleJob);
                 const spoolContent = await GetJobs.getSpoolContent(fakeSession, jobFiles[0]);
 
-                expect(spoolContent).toContain(expectedMockSpoolContent.toString())
-                expect(spoolFiles).toEqual(jobFiles)
+                expect(spoolContent).toContain(expectedMockSpoolContent.toString());
+                expect(spoolFiles).toEqual(jobFiles);
                 expect(spoolData[0].data).toContain(expectedMockSpoolContent);
             });
 
