@@ -10,21 +10,14 @@
 */
 
 import { IJobFile } from "../response/IJobFile";
+import { IDownloadAllSpoolContentParms } from "./IDownloadAllSpoolContentParms";
 
 /**
  * Interface for downloading single spool file with DownloadJobs API
  * @export
  * @interface IDownloadAllSpoolContentParms
  */
-export interface IDownloadSpoolContentParms {
-
-    /**
-     * The directory to which you would like to download the output
-     * Default value: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR
-     * @type {string}
-     * @memberof IDownloadSpoolContentParms
-     */
-    outDir?: string;
+export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolContentParms, "jobname" | "jobid">{
 
     /**
      * Job file document for job output we want to download
@@ -34,25 +27,19 @@ export interface IDownloadSpoolContentParms {
     jobFile?: IJobFile;
 
     /**
-     * If you specify false or do not specify this field, a directory with the jobid of the job as the name
-     * will automatically be appended to the outDir.
-     * If you specify true, no directory will be appended to your outDir.
-     * @type {boolean}
-     * @memberof IDownloadSpoolContentParms
+     * Name of the job for which you want to download all output
+     * e.g. MYJOBNM
+     * @type {string}
+     * @memberof IDownloadAllSpoolContentParms
      */
-    omitJobidDirectory?: boolean;
+    jobname?: string;
 
     /**
-     * If you specify true for this field, the file will be downloaded in binary mode
-     * @type {boolean}
-     * @memberof IDownloadSpoolContentParms
+     * JOB ID of the job for which you want to download all output
+     * e.g. JOB00001
+     * @type {string}
+     * @memberof IDownloadAllSpoolContentParms
      */
-    binary?: boolean;
+    jobid?: string;
 
-    /**
-     * If you specify true for this field, the file will be downloaded in record mode
-     * @type {boolean}
-     * @memberof IDownloadSpoolContentParms
-     */
-    record?: boolean;
 }

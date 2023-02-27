@@ -239,7 +239,6 @@ export class SubmitJobs {
      * @memberof SubmitJobs
      */
     public static async checkSubmitOptions(session: AbstractSession, parms: ISubmitParms, responseJobInfo: IJob): Promise<IJob | ISpoolFile[]> {
-
         if (parms.waitForActive) {
             const activeJob = await MonitorJobs.waitForStatusCommon(session, {
                 jobid: responseJobInfo.jobid,
@@ -248,41 +247,8 @@ export class SubmitJobs {
             });
             return activeJob;
         }
-        // if viewAppSpoolContent option passed, it waits till job status is output
-        // then get content of each spool file and return array of ISpoolFiles object
-        if (parms.viewAllSpoolContent || parms.waitForOutput) {
-            if (parms.task != null) {
-                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
-                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
-            }
-            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
-            if (!parms.viewAllSpoolContent) {
-                return job;
-            }
-            if (parms.task != null) {
-                parms.task.statusMessage = "Retrieving spool content for " + job.jobid +
-                    (job.retcode == null ? "" : ", " + job.retcode);
-                parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
-            }
-
-            const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
-            const arrOfSpoolFile: ISpoolFile[] = [];
-            for (const file of spoolFiles) {
-                const spoolContent = await GetJobs.getSpoolContent(session, file);
-                arrOfSpoolFile.push({
-                    id: file.id,
-                    ddName: file.ddname,
-                    stepName: file.stepname,
-                    procName: file.procstep,
-                    data: spoolContent
-                });
-            }
-            return arrOfSpoolFile;
-
-            // if directory option passed, it waits till job status is output
-            // then downloads content of all spool files and returns IJob object
-        } else if (parms.directory) {
-            // waits job status to be output
+        //otherwise wait for output
+        if (parms.directory) {
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
@@ -301,8 +267,36 @@ export class SubmitJobs {
                     (job.retcode == null ? "" : ", " + job.retcode);
                 parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
-            (await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms));
+            await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
             return job;
+        } else if (parms.viewAllSpoolContent || parms.waitForOutput) {
+            if (parms.task != null) {
+                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
+                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
+            }
+            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
+
+            if (!parms.viewAllSpoolContent) {
+                return job;
+            }
+            if (parms.task != null) {
+                parms.task.statusMessage = "Retrieving spool content for " + job.jobid +
+                    (job.retcode == null ? "" : ", " + job.retcode);
+                parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
+            }
+            const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
+            const arrOfSpoolFile: ISpoolFile[] = [];
+            for (const file of spoolFiles) {
+                const spoolContent = await GetJobs.getSpoolContent(session, file);
+                arrOfSpoolFile.push({
+                    id: file.id,
+                    ddName: file.ddname,
+                    stepName: file.stepname,
+                    procName: file.procstep,
+                    data: spoolContent
+                });
+            }
+            return arrOfSpoolFile;
         }
         return responseJobInfo;
     }
