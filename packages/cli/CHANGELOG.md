@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Added support for a CLI specific environment variable file. [#1484](https://github.com/zowe/zowe-cli/issues/1484)
+
 ## `7.10.4`
 - BugFix: Changed default value for modify-jobs option in the zowe jobs command group to 2.0. This change results in calls to z/OSMF becoming synchronous, and a successful response from the modify, cancel, and delete commands indicates the requested action was completed successfully. [#1459](https://github.com/zowe/zowe-cli/issues/1459)
 
