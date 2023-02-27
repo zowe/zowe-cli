@@ -9,114 +9,20 @@
 *
 */
 
-import * as fs from 'fs';
-import * as path from 'path';
-
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, DiffUtils, IO } from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { AbstractSession, ICommandArguments } from "@zowe/imperative";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import {CompareBaseHelper} from '../CompareBaseHelper';
+import { CompareBaseHandler } from '../CompareBase.handler';
 
 /**
- * Handler to view a data set's content
+ * Handler to compare a localfile and a dataset content
  * @export
  */
-export default class LocalfileDatasetHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const task: ITaskWithStatus = {
-            percentComplete: 0,
-            statusMessage: "Retrieving local file",
-            stageName: TaskStage.IN_PROGRESS
-        };
-
-
-        // CHECKING IF LOCAL FILE EXISTS, THEN RETRIEVING IT
-        commandParameters.response.progress.startBar({ task });
-        let localFile: string;
-        if (path.isAbsolute(commandParameters.arguments.localFilePath)) {
-            // resolving to full path if local path passed is not absolute
-            localFile = commandParameters.arguments.localFilePath;
-        } else {
-            localFile = path.resolve(commandParameters.arguments.localFilePath);
-        }
-        const localFileHandle = fs.openSync(localFile, 'r');
-        let lfContentBuf: Buffer;
-        try {
-            // check if the path given is of a file or not
-            try {
-                if (!fs.fstatSync(localFileHandle).isFile()) {
-                    throw new ImperativeError({
-                        msg: 'Path given is not of a file, do recheck your path again'
-                    });
-                }
-            } catch (error) {
-                if (error instanceof ImperativeError) throw error;
-                throw new ImperativeError({
-                    msg: 'Path not found. Please check the path and try again'
-                });
-            }
-
-            // reading local file as buffer
-            lfContentBuf = fs.readFileSync(localFileHandle);
-        } finally {
-            fs.closeSync(localFileHandle);
-        }
-        commandParameters.response.progress.endBar();
-
-
-        // RETRIEVING THE DATA-SET TO COMPARE
-        task.statusMessage = "Retrieving dataset";
-        commandParameters.response.progress.startBar({ task });
-        const dsContentBuf = await Get.dataSet(session, commandParameters.arguments.dataSetName,
-            {
-                binary: commandParameters.arguments.binary,
-                encoding: commandParameters.arguments.encoding,
-                record: commandParameters.arguments.record,
-                volume: commandParameters.arguments.volumeSerial,
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
-            }
-        );
-        commandParameters.response.progress.endBar();
-
-
-        //CHECKING IF NEEDING TO SPLIT CONTENT STRINGS FOR SEQNUM OPTION
-        let lfContentString = "";
-        let dsContentString = "";
-        const seqnumlen = 8;
-        if(commandParameters.arguments.seqnum === false){
-            lfContentString = lfContentBuf.toString().split("\n")
-                .map((line)=>line.slice(0,-seqnumlen))
-                .join("\n");
-            dsContentString = dsContentBuf.toString().split("\n")
-                .map((line)=>line.slice(0,-seqnumlen))
-                .join("\n");
-        }
-        else {
-            lfContentString = lfContentBuf.toString();
-            dsContentString = dsContentBuf.toString();
-        }
-
-
-        // CHECK TO OPEN UP DIFF IN BROWSER WINDOW
-        if (commandParameters.arguments.browserView) {
-            await DiffUtils.openDiffInbrowser(lfContentString, dsContentString);
-            return {
-                success: true,
-                commandResponse: "Launching local-file and data-set diffs in browser...",
-                apiResponse: {}
-            };
-        }
-
-
-        // RETURNING DIFF
-        const jsonDiff = await DiffUtils.getDiffString(IO.processNewlines(lfContentString), IO.processNewlines(dsContentString), {
-            outputFormat: 'terminal',
-            contextLinesArg: commandParameters.arguments.contextLines
-        });
-        return {
-            success: true,
-            commandResponse: jsonDiff,
-            apiResponse: {}
-        };
+export default class LocalfileDatasetHandler extends CompareBaseHandler {
+    public async getFile1(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<Buffer> {
+        return helper.prepareLocalFile(args.localFilePath);
+    }
+    public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<Buffer> {
+        return await Get.dataSet(session, args.dataSetName, { ...helper.file2Options, task: helper.task });
     }
 }
