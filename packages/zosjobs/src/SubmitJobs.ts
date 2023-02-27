@@ -249,11 +249,11 @@ export class SubmitJobs {
         }
         //otherwise wait for output
         if (parms.directory) {
-            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
             }
+            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             const downloadParms: IDownloadAllSpoolContentParms = {
                 jobid: job.jobid,
                 jobname: job.jobname,
@@ -270,11 +270,12 @@ export class SubmitJobs {
             await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
             return job;
         } else if (parms.viewAllSpoolContent || parms.waitForOutput) {
-            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
             }
+            const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
+
             if (!parms.viewAllSpoolContent) {
                 return job;
             }
