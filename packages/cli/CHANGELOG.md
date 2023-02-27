@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `7.10.4`
+## Recent Changes
 - BugFix: Missing RECFM values results in the end user not able to create datasets accordingly. [#1639](https://github.com/zowe/zowe-cli/issues/1639)
 
 ## `7.10.4`
