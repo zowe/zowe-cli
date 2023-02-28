@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Missing RECFM values results in the end user not able to create datasets accordingly. [#1639](https://github.com/zowe/zowe-cli/issues/1639)
+
 ## `7.7.0`
 
 - Enhancement: Add options to `Get.dataSet` to get a range value of `SSS-EEE` or `SSS,NNN`.

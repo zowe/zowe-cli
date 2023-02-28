@@ -272,10 +272,18 @@ export class Create {
                         // F, V, or U are required; B, A, M, S, T or additional
                         // VBA works on mainframe but not via zOSMF
                         switch (tempOptions.recfm.toUpperCase()) {
+                            case "D":
+                            case "DB":
+                            case "DBS":
+                            case "DS":
                             case "F":
                             case "FB":
+                            case "FBS":
+                            case "FS":
                             case "V":
                             case "VB":
+                            case "VBS":
+                            case "VS":
                             case "U":
                                 break;
                             default:

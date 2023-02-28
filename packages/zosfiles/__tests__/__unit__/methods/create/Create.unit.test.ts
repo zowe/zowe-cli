@@ -98,6 +98,19 @@ describe("Create data set", () => {
             dsOptions.dsntype = undefined;
         });
 
+        it("explicit testing of recfmtype", async () => {
+            let success: boolean = false;
+            const recfmtypes = ["D", "DB", "DBS", "DS", "F", "FB", "FBS", "FS", "V", "VB", "VBS", "VS", "U"];
+            for (const type of recfmtypes) {
+                dsOptions.recfm = type;
+                try {
+                    await Create.dataSetValidateOptions(dsOptions);
+                } catch (err) {
+                    expect(success).toBe(true);
+                }
+            }
+        });
+
         it("explicit testing of dsntype", async () => {
             let success: boolean = false;
             const dsntypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
