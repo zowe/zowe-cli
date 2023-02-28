@@ -99,7 +99,7 @@ describe("Create data set", () => {
         });
 
         it("explicit testing of recfmtype", async () => {
-            let success: boolean = false;
+            const success: boolean = false;
             const recfmtypes = ["D", "DB", "DBS", "DS", "F", "FB", "FBS", "FS", "V", "VB", "VBS", "VS", "U"];
             for (const type of recfmtypes) {
                 dsOptions.recfm = type;
