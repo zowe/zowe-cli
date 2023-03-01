@@ -186,10 +186,11 @@ jobs:
         persist-credentials: false
         ref: ${{ github.ref }}
 
-    - name: Use Node.js LTS
+    # Use Node 16 until npm@9 bundled with Node 18 becomes more stable
+    - name: Use Node.js 16
       uses: actions/setup-node@v2
       with:
-        node-version: 'lts/*'
+        node-version: '16'
 
     - name: Install Dependencies
       run: npm ci
