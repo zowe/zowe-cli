@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.11.0`
 - Enhancement: Added support for a CLI specific environment variable file. [#1484](https://github.com/zowe/zowe-cli/issues/1484)
 - BugFix: Enabled option to download output from a submitted job with the -d flag. The -e flag now enables changes to file extension as originally intended. [#729](https://github.com/zowe/zowe-cli/issues/729)
 

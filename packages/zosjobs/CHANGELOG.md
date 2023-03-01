@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `7.11.0`
 -BugFix: Enabled option to download output from a submitted job with the "directory" option. The `IDownloadSpoolContentParms` interface now supports an "extension" flag which enables changes to file extension as originally intended. [#729](https://github.com/zowe/zowe-cli/issues/729)
 
 ## `7.10.4`
