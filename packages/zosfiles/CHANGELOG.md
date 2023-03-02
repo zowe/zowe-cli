@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Missing RECFM values results in the end user not able to create datasets accordingly. [#1639](https://github.com/zowe/zowe-cli/issues/1639)
+- BugFix: Added missing RECFM values documented by IBM as valid RECFM values so that an end user does not received invalid RECFM error message while trying to create datasets. [#1639](https://github.com/zowe/zowe-cli/issues/1639)
 
 ## `7.7.0`
 
