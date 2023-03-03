@@ -271,8 +271,6 @@ export class Create {
 
                         // F, V, or U are required; B, A, M, S, T or additional
                         // VBA works on mainframe but not via zOSMF
-                        // F, V, or U are required; B, A, M, S, T or additional
-                        // VBA works on mainframe but not via zOSMF
                         switch (tempOptions.recfm.toUpperCase()) {
                             case "D":
                             case "DB":
