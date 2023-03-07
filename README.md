@@ -1,5 +1,6 @@
 # **Zowe CLI**  <!-- omit in toc -->
-[![Codecov Coverage](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli) [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=zowe_zowe-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=zowe_zowe-cli)
+[![Codecov Coverage](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli)
+[![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=zowe_zowe-cli&metric=coverage)](https://sonarcloud.io/summary/new_code?id=zowe_zowe-cli)
 
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
