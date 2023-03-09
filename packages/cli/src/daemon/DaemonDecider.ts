@@ -87,6 +87,9 @@ export class DaemonDecider {
         this.initialParse();
         if (this.startServer) {
             this.mUser = os.userInfo().username;
+            if (process.platform === "win32") {
+                this.mUser = this.mUser.toLowerCase();
+            }
             this.mServer = net.createServer((c) => {
                 new DaemonClient(c, this.mServer, this.mUser).run();
             });
