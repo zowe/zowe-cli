@@ -135,7 +135,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {
     env::vars()
-        .filter(|&(ref k, _)| k.starts_with("ZOWE_"))
+        .filter(|(k, _)| k.starts_with("ZOWE_"))
         .collect()
 }
 
