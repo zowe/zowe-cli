@@ -38,12 +38,10 @@ use base64::encode;
 extern crate rpassword;
 use rpassword::read_password;
 
-extern crate whoami;
-use whoami::username;
-
 // Zowe daemon executable modules
 use crate::defs::*;
 use crate::proc::*;
+use crate::util::util_get_username;
 
 #[cfg(target_family = "unix")]
     type DaemonClient = UnixStream;
@@ -225,6 +223,8 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                         reply = Some(read_password().unwrap());
                     }
 
+                    let executor = util_get_username();
+
                     if let Some(s) = reply {
                         let response: DaemonResponse = DaemonResponse {
                             argv: None,
@@ -232,7 +232,7 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                             env: None,
                             stdinLength: None,
                             stdin: Some(s),
-                            user: Some(encode(username())),
+                            user: Some(encode(executor)),
                         };
                         let v = serde_json::to_string(&response)?;
                         #[cfg(target_family = "unix")]

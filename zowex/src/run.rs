@@ -24,9 +24,6 @@ use std::time::Duration;
 use atty::Stream;
 use base64::encode;
 
-extern crate whoami;
-use whoami::username;
-
 #[cfg(target_family = "windows")]
     extern crate home;
 #[cfg(target_family = "windows")]
@@ -264,6 +261,8 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
         }
     }
 
+    let executor = util_get_username();
+
     // create the response structure for this message
     let response: DaemonResponse = if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == SHUTDOWN_REQUEST {
         // Sending Control-C shutdown request
@@ -274,7 +273,7 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
             env: None,
             stdinLength: Some(0),
             stdin: Some(control_c),
-            user: Some(encode(username())),
+            user: Some(encode(executor)),
         }
     } else {
         DaemonResponse {
@@ -283,7 +282,7 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
             env: Some(util_get_zowe_env()),
             stdinLength: Some(stdin.len() as i32),
             stdin: None,
-            user: Some(encode(username())),
+            user: Some(encode(executor)),
         }
     };
 

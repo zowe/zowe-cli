@@ -21,10 +21,8 @@ use home::home_dir;
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
-#[cfg(target_family = "windows")]
-    extern crate whoami;
-#[cfg(target_family = "windows")]
-    use whoami::username;
+extern crate whoami;
+use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
@@ -129,7 +127,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 
 #[cfg(target_family = "windows")]
 pub fn util_get_socket_string() -> Result<String, i32> {
-    let mut _socket = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
+    let mut _socket = format!("\\\\.\\pipe\\{}\\{}", util_get_username(), "ZoweDaemon");
 
     if let Ok(pipe_name) = env::var("ZOWE_DAEMON_PIPE") {
         _socket = format!("\\\\.\\pipe\\{}", pipe_name);
@@ -141,4 +139,14 @@ pub fn util_get_zowe_env() -> HashMap<String, String> {
     env::vars().filter(|&(ref k, _)|
         k.starts_with("ZOWE_")
     ).collect()
+}
+
+#[cfg(target_family = "windows")]
+pub fn util_get_username() -> String {
+    username().to_lowercase()
+}
+
+#[cfg(not(target_family = "windows"))]
+pub fn util_get_username() -> String {
+    username()
 }

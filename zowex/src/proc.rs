@@ -23,9 +23,6 @@ use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
 extern crate simple_error;
 use simple_error::SimpleError;
 
-extern crate whoami;
-use whoami::username;
-
 // Zowe daemon executable modules
 use crate::defs::*;
 use crate::util::*;
@@ -218,10 +215,12 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
         }
     };
 
-    if daemon_pid_for_user.user != username() {
+    let executor = util_get_username();
+
+    if daemon_pid_for_user.user != executor {
         // our pid file should only contain our own user name
         println!("User name of '{}' in file '{}' does not match current user = '{}'.",
-            daemon_pid_for_user.user, pid_file_path.display(), username()
+            daemon_pid_for_user.user, pid_file_path.display(), executor
         );
         std::process::exit(EXIT_CODE_CANT_CONVERT_JSON);
     }
