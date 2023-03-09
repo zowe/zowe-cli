@@ -17,9 +17,9 @@ use std::thread;
 use std::time::Duration;
 
 #[cfg(target_family = "unix")]
-    use home::home_dir;
+use home::home_dir;
 #[cfg(target_family = "windows")]
-    use whoami::username;
+use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
@@ -35,27 +35,40 @@ fn unit_test_util_get_socket_string() {
     match util_get_socket_string() {
         #[cfg(target_family = "windows")]
         Ok(ok_val) => {
-            let expected_pipe_path: String = format!("\\\\.\\pipe\\{}\\{}", util_get_username(), "ZoweDaemon");
-            println!("--- test_util_get_socket_string: ok_val = {}  expected_pipe_path = {}", ok_val, expected_pipe_path);
+            let expected_pipe_path: String =
+                format!("\\\\.\\pipe\\{}\\{}", util_get_username(), "ZoweDaemon");
+            println!(
+                "--- test_util_get_socket_string: ok_val = {}  expected_pipe_path = {}",
+                ok_val, expected_pipe_path
+            );
             assert!(ok_val.contains(&expected_pipe_path));
         }
         #[cfg(target_family = "unix")]
         Ok(ok_val) => {
             let mut expected_sock_path: String = "NotYetInitialized".to_string();
             match home_dir() {
-                Some(path_buf_val) => expected_sock_path = format!("{}/.zowe/daemon/daemon.sock", path_buf_val.display()),
+                Some(path_buf_val) => {
+                    expected_sock_path =
+                        format!("{}/.zowe/daemon/daemon.sock", path_buf_val.display())
+                }
                 None => {
-                    assert_eq!("util_get_socket_string should have gotten user home dir",
+                    assert_eq!(
+                        "util_get_socket_string should have gotten user home dir",
                         "It got None"
                     );
                 }
             }
-            println!("--- test_util_get_socket_string: ok_val = {}  expected_sock_path = {}", ok_val, expected_sock_path);
+            println!(
+                "--- test_util_get_socket_string: ok_val = {}  expected_sock_path = {}",
+                ok_val, expected_sock_path
+            );
             assert!(ok_val.contains(&expected_sock_path));
         }
         Err(err_val) => {
-            assert_eq!("util_get_socket_string should have worked",
-                "It Failed", "exit code = {}", err_val
+            assert_eq!(
+                "util_get_socket_string should have worked", "It Failed",
+                "exit code = {}",
+                err_val
             );
         }
     }
@@ -69,8 +82,10 @@ fn unit_test_util_get_socket_string() {
                 assert!(ok_val.contains("\\\\.\\pipe\\FakePipePath"));
             }
             Err(err_val) => {
-                assert_eq!("util_get_socket_string should have worked",
-                    "It Failed", "exit code = {}", err_val
+                assert_eq!(
+                    "util_get_socket_string should have worked", "It Failed",
+                    "exit code = {}",
+                    err_val
                 );
             }
         }
@@ -86,8 +101,10 @@ fn unit_test_util_get_socket_string() {
                 assert!(ok_val.contains("/.zowe/daemon_test_dir/daemon.sock"));
             }
             Err(err_val) => {
-                assert_eq!("util_get_socket_string should have worked",
-                    "It Failed", "exit code = {}", err_val
+                assert_eq!(
+                    "util_get_socket_string should have worked", "It Failed",
+                    "exit code = {}",
+                    err_val
                 );
             }
         }
@@ -117,12 +134,19 @@ fn integration_test_restart() {
         println!("--- test_restart: To initializes test, stop a running daemon.");
         let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
         if let Err(err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
-            assert_eq!("Shutdown should have worked", "Shutdown failed", "exit code = {}", err_val);
+            assert_eq!(
+                "Shutdown should have worked", "Shutdown failed",
+                "exit code = {}",
+                err_val
+            );
         }
 
         // confirm that the daemon has stopped
         daemon_proc_info = proc_get_daemon_info();
-        assert_eq!(daemon_proc_info.is_running, false, "The daemon did not stop.");
+        assert_eq!(
+            daemon_proc_info.is_running, false,
+            "The daemon did not stop."
+        );
     }
 
     // now try the restart
@@ -133,7 +157,10 @@ fn integration_test_restart() {
     // confirm that the daemon is running
     thread::sleep(Duration::from_secs(START_STOP_DELAY));
     daemon_proc_info = proc_get_daemon_info();
-    assert_eq!(daemon_proc_info.is_running, true, "The daemon is not running after restart.");
+    assert_eq!(
+        daemon_proc_info.is_running, true,
+        "The daemon is not running after restart."
+    );
     let first_daemon_pid = daemon_proc_info.pid;
 
     println!("--- test_restart: Run a restart with a daemon already running.");
@@ -143,9 +170,14 @@ fn integration_test_restart() {
     // confirm that a new and different daemon is running
     thread::sleep(Duration::from_secs(START_STOP_DELAY));
     daemon_proc_info = proc_get_daemon_info();
-    assert_eq!(daemon_proc_info.is_running, true, "A daemon should be running now.");
-    assert_ne!(daemon_proc_info.pid, first_daemon_pid,
-        "Last pid = {} should not equal current PID = {}", first_daemon_pid, daemon_proc_info.pid,
+    assert_eq!(
+        daemon_proc_info.is_running, true,
+        "A daemon should be running now."
+    );
+    assert_ne!(
+        daemon_proc_info.pid, first_daemon_pid,
+        "Last pid = {} should not equal current PID = {}",
+        first_daemon_pid, daemon_proc_info.pid,
     );
 
     // As a cleanup step, stop the daemon
@@ -158,6 +190,8 @@ fn integration_test_restart() {
     // confirm that the daemon has stopped
     thread::sleep(Duration::from_secs(START_STOP_DELAY));
     daemon_proc_info = proc_get_daemon_info();
-    assert_eq!(daemon_proc_info.is_running, false, "The daemon should have stopped for the end of the test.");
+    assert_eq!(
+        daemon_proc_info.is_running, false,
+        "The daemon should have stopped for the end of the test."
+    );
 }
-

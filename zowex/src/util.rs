@@ -27,7 +27,6 @@ use whoami::username;
 // Zowe daemon executable modules
 use crate::defs::*;
 
-
 /**
  * Get the file path to the command that runs the NodeJS version of Zowe.
  *
@@ -56,11 +55,7 @@ pub fn util_get_nodejs_zowe_path() -> String {
     let mut njs_zowe_path: String = NOT_FOUND.to_string();
     let path = env::var_os("PATH");
     let path_ext = env::var_os("PATHEXT");
-    for njs_zowe_path_buf in PathSearcher::new(
-        zowe_cmd,
-        path.as_deref(),
-        path_ext.as_deref(),
-    ) {
+    for njs_zowe_path_buf in PathSearcher::new(zowe_cmd, path.as_deref(), path_ext.as_deref()) {
         njs_zowe_path = njs_zowe_path_buf.to_string_lossy().to_string();
         if njs_zowe_path.to_lowercase().eq(&my_exe_path.to_lowercase()) {
             // We do not want our own rust executable. Keep searching.
@@ -105,7 +100,10 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
 
     if !daemon_dir.exists() {
         if let Err(err_val) = std::fs::create_dir_all(&daemon_dir) {
-            println!("Unable to create zowe daemon directory = {}.", &daemon_dir.display());
+            println!(
+                "Unable to create zowe daemon directory = {}.",
+                &daemon_dir.display()
+            );
             println!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
@@ -119,7 +117,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
     let mut socket_path: PathBuf;
     match util_get_daemon_dir() {
         Ok(ok_val) => socket_path = ok_val,
-        Err(err_val) => return Err(err_val)
+        Err(err_val) => return Err(err_val),
     }
     socket_path.push("daemon.sock");
     Ok(socket_path.into_os_string().into_string().unwrap())
@@ -136,9 +134,9 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 }
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {
-    env::vars().filter(|&(ref k, _)|
-        k.starts_with("ZOWE_")
-    ).collect()
+    env::vars()
+        .filter(|&(ref k, _)| k.starts_with("ZOWE_"))
+        .collect()
 }
 
 #[cfg(target_family = "windows")]

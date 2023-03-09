@@ -12,17 +12,14 @@
 // Functions related to daemon cummunication.
 
 use std::io;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::BufReader;
 use std::str;
 use std::thread;
 use std::time::Duration;
 
 #[cfg(target_family = "unix")]
-use {
-    std::net::Shutdown,
-    std::os::unix::net::UnixStream
-};
+use {std::net::Shutdown, std::os::unix::net::UnixStream};
 
 extern crate atty;
 use atty::Stream;
@@ -31,9 +28,9 @@ extern crate base64;
 use base64::encode;
 
 #[cfg(target_family = "windows")]
-    extern crate named_pipe;
+extern crate named_pipe;
 #[cfg(target_family = "windows")]
-    use named_pipe::PipeClient;
+use named_pipe::PipeClient;
 
 extern crate rpassword;
 use rpassword::read_password;
@@ -44,10 +41,10 @@ use crate::proc::*;
 use crate::util::util_get_username;
 
 #[cfg(target_family = "unix")]
-    type DaemonClient = UnixStream;
+type DaemonClient = UnixStream;
 
 #[cfg(target_family = "windows")]
-    type DaemonClient = PipeClient;
+type DaemonClient = PipeClient;
 
 /**
  * Attempt to make a TCP connection to the daemon.
@@ -63,7 +60,10 @@ use crate::util::util_get_username;
  *      A Result containing a stream upon success.
  *      This function exits the process upon error.
  */
-pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io::Result<DaemonClient> {
+pub fn comm_establish_connection(
+    njs_zowe_path: &str,
+    daemon_socket: &str,
+) -> io::Result<DaemonClient> {
     const RETRY_TO_SHOW_DIAG: i32 = 5;
 
     let mut conn_retries = 0;
@@ -87,7 +87,8 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
                 we_started_daemon = true;
                 cmd_to_show = proc_start_daemon(njs_zowe_path);
             } else if we_started_daemon && conn_retries > THREE_MIN_OF_RETRIES {
-                println!("The Zowe daemon that we started is not running on socket: {}.",
+                println!(
+                    "The Zowe daemon that we started is not running on socket: {}.",
                     daemon_socket
                 );
                 println!(
@@ -99,7 +100,10 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
         }
 
         if conn_retries > THREE_MIN_OF_RETRIES {
-            println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
+            println!(
+                "Terminating after {} connection retries.",
+                THREE_MIN_OF_RETRIES
+            );
             std::process::exit(EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON);
         }
 
@@ -114,7 +118,8 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
             } else {
                 println!("Command = {}", daemon_proc_info.cmd);
             }
-            println!("Process name = {}  pid = {}  socket = {}\n",
+            println!(
+                "Process name = {}  pid = {}  socket = {}\n",
                 daemon_proc_info.name, daemon_proc_info.pid, daemon_socket
             );
         }
@@ -125,7 +130,10 @@ pub fn comm_establish_connection(njs_zowe_path: &str, daemon_socket: &str) -> io
             "Attempting to connect to the Zowe daemon"
         };
         if conn_retries > 0 {
-            println!("{} ({} of {})", retry_msg, conn_retries, THREE_MIN_OF_RETRIES);
+            println!(
+                "{} ({} of {})",
+                retry_msg, conn_retries, THREE_MIN_OF_RETRIES
+            );
         }
         conn_retries += 1;
     };
@@ -185,18 +193,16 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                                 io::stderr().flush().unwrap();
                             }
                             continue;
-                        },
-                        result => {
-                            match result {
-                                Ok(ok_val) => {
-                                    p = ok_val;
-                                },
-                                Err(err_val) => {
-                                    eprintln!("You may be running mismatched versions of Zowe executable and Zowe daemon.");
-                                    return Err(std::io::Error::new(std::io::ErrorKind::Other, err_val))
-                                }
-                            }
                         }
+                        result => match result {
+                            Ok(ok_val) => {
+                                p = ok_val;
+                            }
+                            Err(err_val) => {
+                                eprintln!("You may be running mismatched versions of Zowe executable and Zowe daemon.");
+                                return Err(std::io::Error::new(std::io::ErrorKind::Other, err_val));
+                            }
+                        },
                     };
 
                     if let Some(s) = p.stdout {
@@ -254,8 +260,8 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                     // end of reading
                     break;
                 }
-            },
-            Err(err_val) => { return Err(err_val) }
+            }
+            Err(err_val) => return Err(err_val),
         } // end match on read
     } // end loop
 

@@ -69,18 +69,18 @@ pub struct DaemonResponse {
 #[derive(Deserialize)]
 pub struct DaemonPidForUser {
     pub user: String,
-    pub pid: i32
+    pub pid: i32,
 }
 
 pub enum CmdShell {
-    Bash,               // Bourne Again SHell
-    Sh,                 // Standard Linux shell
-    Korn,               // Korn shell
-    Zshell,             // Z shell
-    Cshell,             // C shell
-    Tenex,              // TENEX C shell
-    PowerShellDotNet,   // Newer cross-platform .NET Core PowerShell
-    PowerShellExe,      // Legacy Windows executable PowerShell (version 5.x)
-    WindowsCmd,         // Classic Windows CMD shell
-    Unknown             // A command shell that we do not yet understand
+    Bash,             // Bourne Again SHell
+    Sh,               // Standard Linux shell
+    Korn,             // Korn shell
+    Zshell,           // Z shell
+    Cshell,           // C shell
+    Tenex,            // TENEX C shell
+    PowerShellDotNet, // Newer cross-platform .NET Core PowerShell
+    PowerShellExe,    // Legacy Windows executable PowerShell (version 5.x)
+    WindowsCmd,       // Classic Windows CMD shell
+    Unknown,          // A command shell that we do not yet understand
 }
