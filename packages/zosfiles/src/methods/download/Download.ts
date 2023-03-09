@@ -89,10 +89,10 @@ export class Download {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
 
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${options.volume})`);
+                endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
             }
 
-            endpoint = posix.join(endpoint, dataSetName);
+            endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -508,7 +508,6 @@ export class Download {
             IO.createDirsSyncFromFilePath(destination);
 
             const writeStream = IO.createWriteStream(destination);
-            ussFileName = posix.normalize(ussFileName);
 
             // If data type is not defined by user, check for USS tags
             if (options.binary == null && options.encoding == null) {
@@ -517,11 +516,7 @@ export class Download {
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
-            if (ussFileName.substr(0, 1) === "/") {
-                ussFileName = ussFileName.substr(1);
-            }
-
-            ussFileName = encodeURIComponent(ussFileName);
+            ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);

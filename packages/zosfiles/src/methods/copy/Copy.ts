@@ -48,7 +48,7 @@ export class Copy {
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
-            toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`
+            toMemberName == null ? encodeURIComponent(toDataSetName) : `${encodeURIComponent(toDataSetName)}(${encodeURIComponent(toMemberName)})`
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
