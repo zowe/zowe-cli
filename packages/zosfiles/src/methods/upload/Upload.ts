@@ -684,7 +684,7 @@ export class Upload {
      * @return {Promise<boolean>}
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        ussname = "/" + ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,

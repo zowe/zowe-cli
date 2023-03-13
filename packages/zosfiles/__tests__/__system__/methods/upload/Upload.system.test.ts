@@ -904,7 +904,7 @@ describe("Upload USS file - encoded", () => {
             let error;
             let response;
 
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
 
             try {
                 response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
@@ -956,12 +956,6 @@ describe("Upload USS file - encoded", () => {
 });
 
 describe("Upload a local directory to USS directory", () => {
-    beforeAll(() => {
-        delayTime = 10000;
-    });
-    afterAll(() => {
-        delayTime = 2000;
-    });
     describe("Success scenarios", () => {
         const localDir = `${__dirname}/testfiles`;
         const localDirWithSpaces = `${__dirname}/testfiles/space dir`;
@@ -984,7 +978,7 @@ describe("Upload a local directory to USS directory", () => {
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
-                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname + encodeURIComponent(" space dir"),
+                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname + " space dir"),
                     [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
                 error = err;
@@ -993,7 +987,7 @@ describe("Upload a local directory to USS directory", () => {
 
         afterEach(async () => {
             let error;
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
                 await delay(delayTime);
@@ -1326,12 +1320,6 @@ describe("Upload a local directory to USS directory", () => {
 
 
 describe("Upload a local directory to USS directory - encoded", () => {
-    beforeAll(() => {
-        delayTime = 10000;
-    });
-    afterAll(() => {
-        delayTime = 2000;
-    });
     describe("Success scenarios", () => {
         const localDir = `${__dirname}/testfiles`;
         const localDirWithSpaces = `${__dirname}/testfiles/space dir`;
@@ -1354,7 +1342,7 @@ describe("Upload a local directory to USS directory - encoded", () => {
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
-                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname + encodeURIComponent(" space dir"),
+                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname + " space dir"),
                     [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
                 error = err;
@@ -1363,7 +1351,7 @@ describe("Upload a local directory to USS directory - encoded", () => {
 
         afterEach(async () => {
             let error;
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
                 await delay(delayTime);
