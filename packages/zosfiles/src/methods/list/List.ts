@@ -49,7 +49,11 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, encodeURIComponent(dataSetName), ZosFilesConstants.RES_DS_MEMBERS);
+            let endpoint = posix.join(
+                ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                encodeURIComponent(dataSetName),
+                ZosFilesConstants.RES_DS_MEMBERS);
 
             if (options.pattern) {
                 endpoint += `?pattern=${encodeURIComponent(options.pattern)}`;
