@@ -25,7 +25,7 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
-let delayTime = 2000;
+const delayTime = 2000;
 const inputfile = __dirname + "/testfiles/upload.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
 const uploadOptions: IUploadOptions = {} as any;
