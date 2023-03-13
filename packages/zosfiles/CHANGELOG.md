@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL
 - BugFix: Added missing RECFM values documented by IBM as valid RECFM values so that an end user does not received invalid RECFM error message while trying to create a dataset. [#1639](https://github.com/zowe/zowe-cli/issues/1639)
 
 ## `7.7.0`
