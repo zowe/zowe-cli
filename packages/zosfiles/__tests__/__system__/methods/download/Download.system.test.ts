@@ -1681,7 +1681,7 @@ describe("Download Data Set - encoded", () => {
 
             beforeEach(async () => {
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await delay(delayTime);
                 } catch (err) {
                     // Do nothing
@@ -1690,7 +1690,7 @@ describe("Download Data Set - encoded", () => {
 
             afterEach(async () => {
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
                     // Do nothing
