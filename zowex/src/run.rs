@@ -24,22 +24,16 @@ use std::time::Duration;
 use atty::Stream;
 use base64::encode;
 
-extern crate whoami;
-use whoami::username;
-
 #[cfg(target_family = "windows")]
-    extern crate home;
+extern crate fslock;
 #[cfg(target_family = "windows")]
-    extern crate fslock;
+extern crate home;
 #[cfg(target_family = "windows")]
-    use {
-        fslock::LockFile,
-        std::fs::File
-    };
+use {fslock::LockFile, std::fs::File};
 
 // Zowe daemon executable modules
-use crate::defs::*;
 use crate::comm::*;
+use crate::defs::*;
 use crate::proc::*;
 use crate::util::*;
 
@@ -72,9 +66,9 @@ pub fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
     }
 
     // These commands must be run by a background script.
-    if zowe_cmd_args.len() >= 2       &&
-       zowe_cmd_args[0]  == "daemon"  &&
-       (zowe_cmd_args[1] == "enable"  ||  zowe_cmd_args[1] == "disable")
+    if zowe_cmd_args.len() >= 2
+        && zowe_cmd_args[0] == "daemon"
+        && (zowe_cmd_args[1] == "enable" || zowe_cmd_args[1] == "disable")
     {
         return run_delayed_zowe_command(&njs_zowe_path, zowe_cmd_args);
     }
@@ -138,9 +132,7 @@ fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
         .stderr(Stdio::inherit())
         .output()
     {
-        Ok(new_proc) => {
-            new_proc.status.code().unwrap()
-        }
+        Ok(new_proc) => new_proc.status.code().unwrap(),
         Err(error) => {
             println!("Failed to run the following command:");
             println!(
@@ -188,10 +180,12 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
             println!("{} Terminating.", error);
             return Err(EXIT_CODE_CANT_FIND_CMD_SHELL);
         }
-
     };
     if matches!(curr_cmd_shell, CmdShell::Unknown) {
-        println!("The command shell process named '{}' is unknown to the Zowe CLI. Terminating.", cmd_shell_nm);
+        println!(
+            "The command shell process named '{}' is unknown to the Zowe CLI. Terminating.",
+            cmd_shell_nm
+        );
         return Err(EXIT_CODE_UNKNOWN_CMD_SHELL);
     }
 
@@ -203,14 +197,20 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
 
     // form the command script that we will launch
     let cmd_shell_to_launch: String = form_cmd_script_arg_vec(
-        zowe_cmd_args, njs_zowe_path, & curr_cmd_shell,
-        &mut script_string, &mut script_arg_vec
+        zowe_cmd_args,
+        njs_zowe_path,
+        &curr_cmd_shell,
+        &mut script_string,
+        &mut script_arg_vec,
     );
 
     // The following line gives useful debugging info when it is uncommented.
     // println!("script_arg_vec = {:?}", script_arg_vec);
 
-    println!("The '{}' command will run in the background ...", arg_vec_to_string(zowe_cmd_args));
+    println!(
+        "The '{}' command will run in the background ...",
+        arg_vec_to_string(zowe_cmd_args)
+    );
     let run_result: Result<i32, i32> = match Command::new(cmd_shell_to_launch)
         .args(script_arg_vec)
         .stdin(Stdio::inherit())
@@ -218,9 +218,7 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
         .stderr(Stdio::inherit())
         .spawn()
     {
-        Ok(..) => {
-            Ok(EXIT_CODE_SUCCESS)
-        }
+        Ok(..) => Ok(EXIT_CODE_SUCCESS),
         Err(err_val) => {
             println!("Failed to run the following command:");
             println!(
@@ -247,7 +245,10 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
  * @returns
  *      An empty Result upon success. Otherwise an error Result.
  */
-pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
+pub fn run_daemon_command(
+    njs_zowe_path: &str,
+    zowe_cmd_args: &mut Vec<String>,
+) -> Result<i32, i32> {
     let cwd: PathBuf = match env::current_dir() {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
@@ -264,28 +265,31 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
         }
     }
 
+    let executor = util_get_username();
+
     // create the response structure for this message
-    let response: DaemonResponse = if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == SHUTDOWN_REQUEST {
-        // Sending Control-C shutdown request
-        let control_c: String = "\x03".to_string();
-        DaemonResponse {
-            argv: None,
-            cwd: None,
-            env: None,
-            stdinLength: Some(0),
-            stdin: Some(control_c),
-            user: Some(encode(username())),
-        }
-    } else {
-        DaemonResponse {
-            argv: Some(zowe_cmd_args.to_vec()),
-            cwd: Some(cwd.into_os_string().into_string().unwrap()),
-            env: Some(util_get_zowe_env()),
-            stdinLength: Some(stdin.len() as i32),
-            stdin: None,
-            user: Some(encode(username())),
-        }
-    };
+    let response: DaemonResponse =
+        if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == SHUTDOWN_REQUEST {
+            // Sending Control-C shutdown request
+            let control_c: String = "\x03".to_string();
+            DaemonResponse {
+                argv: None,
+                cwd: None,
+                env: None,
+                stdinLength: Some(0),
+                stdin: Some(control_c),
+                user: Some(encode(executor)),
+            }
+        } else {
+            DaemonResponse {
+                argv: Some(zowe_cmd_args.to_vec()),
+                cwd: Some(cwd.into_os_string().into_string().unwrap()),
+                env: Some(util_get_zowe_env()),
+                stdinLength: Some(stdin.len() as i32),
+                stdin: None,
+                user: Some(encode(executor)),
+            }
+        };
 
     let mut _resp: Vec<u8>;
     match serde_json::to_vec(&response) {
@@ -295,7 +299,7 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
                 _resp.push(b'\x0c');
                 _resp.append(&mut stdin);
             }
-        },
+        }
         Err(err_val) => {
             println!("Failed convert response to JSON\nDetails = {}", err_val);
             return Err(EXIT_CODE_CANT_CONVERT_JSON);
@@ -305,7 +309,7 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
     let mut tries = 0;
     let socket_string: String = match util_get_socket_string() {
         Ok(ok_val) => ok_val,
-        Err(err_val) => return Err(err_val)
+        Err(err_val) => return Err(err_val),
     };
 
     #[cfg(target_family = "windows")]
@@ -319,19 +323,27 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
             match lock_file.try_lock() {
                 Ok(result) if !result => {
                     if tries > THREE_MIN_OF_RETRIES {
-                        println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
+                        println!(
+                            "Terminating after {} connection retries.",
+                            THREE_MIN_OF_RETRIES
+                        );
                         return Err(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
                     }
 
                     tries += 1;
-                    println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
+                    println!(
+                        "The Zowe daemon is in use, retrying ({} of {})",
+                        tries, THREE_MIN_OF_RETRIES
+                    );
 
                     // pause between attempts to connect
                     thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
                     continue;
-                },
-                Ok(_result) => { locked = true; },
-                Err (ref e) => {
+                }
+                Ok(_result) => {
+                    locked = true;
+                }
+                Err(ref e) => {
                     println!("Problem acquiring lock: {:?}", e);
                     return Err(EXIT_CODE_CANNOT_ACQUIRE_LOCK);
                 }
@@ -342,7 +354,10 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
         match comm_establish_connection(njs_zowe_path, &socket_string) {
             Ok(ok_val) => stream = ok_val,
             Err(err_val) => {
-                println!("Unable to establish communication with daemon.\nDetails = {}", err_val);
+                println!(
+                    "Unable to establish communication with daemon.\nDetails = {}",
+                    err_val
+                );
                 return Err(EXIT_CODE_COMM_IO_ERROR);
             }
         }
@@ -350,21 +365,30 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
         match comm_talk(&_resp, &mut stream) {
             Ok(ok_val) => {
                 return Ok(ok_val);
-            },
+            }
             Err(ref err_val) => {
                 if err_val.kind() == io::ErrorKind::ConnectionReset {
                     if tries > THREE_MIN_OF_RETRIES {
-                        println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
+                        println!(
+                            "Terminating after {} connection retries.",
+                            THREE_MIN_OF_RETRIES
+                        );
                         return Err(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
                     }
 
                     tries += 1;
-                    println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
+                    println!(
+                        "The Zowe daemon is in use, retrying ({} of {})",
+                        tries, THREE_MIN_OF_RETRIES
+                    );
 
                     // pause between attempts to connect
                     thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
                 } else {
-                    println!("I/O error during daemon communication.\nDetails = {}", err_val);
+                    println!(
+                        "I/O error during daemon communication.\nDetails = {}",
+                        err_val
+                    );
                     return Err(EXIT_CODE_COMM_IO_ERROR);
                 }
             }
@@ -430,26 +454,31 @@ fn arg_vec_to_string(arg_vec: &[String]) -> String {
 fn form_cmd_script_arg_vec<'a>(
     zowe_cmd_args: &'a [String],
     njs_zowe_path: &'a str,
-    curr_cmd_shell: & CmdShell,
+    curr_cmd_shell: &CmdShell,
     script_string: &'a mut String,
-    script_arg_vec: &mut Vec<&'a str>
+    script_arg_vec: &mut Vec<&'a str>,
 ) -> String {
     const SCRIPT_WAIT_MSG: &str = "echo Wait to see the results below ... ";
     const SCRIPT_PROMPT_MSG_FIXED: &str = "echo Now press ENTER to see your command ";
 
-    if env::consts::OS == "windows"
-    {
+    if env::consts::OS == "windows" {
         return form_win_cmd_script_arg_vec(
-            zowe_cmd_args, njs_zowe_path, curr_cmd_shell,
-            SCRIPT_WAIT_MSG, SCRIPT_PROMPT_MSG_FIXED,
-            script_arg_vec
+            zowe_cmd_args,
+            njs_zowe_path,
+            curr_cmd_shell,
+            SCRIPT_WAIT_MSG,
+            SCRIPT_PROMPT_MSG_FIXED,
+            script_arg_vec,
         );
     }
 
     form_bash_cmd_script_arg_vec(
-        zowe_cmd_args, njs_zowe_path, script_string,
-        SCRIPT_WAIT_MSG, SCRIPT_PROMPT_MSG_FIXED,
-        script_arg_vec
+        zowe_cmd_args,
+        njs_zowe_path,
+        script_string,
+        SCRIPT_WAIT_MSG,
+        SCRIPT_PROMPT_MSG_FIXED,
+        script_arg_vec,
     )
 }
 
@@ -485,7 +514,7 @@ fn form_bash_cmd_script_arg_vec<'a>(
     script_string: &'a mut String,
     script_wait_msg: &'a str,
     script_prompt_msg_fixed: &'a str,
-    script_arg_vec: &mut Vec<&'a str>
+    script_arg_vec: &mut Vec<&'a str>,
 ) -> String {
     // -c goes into the first argument
     script_arg_vec.push("-c");
@@ -545,23 +574,25 @@ fn form_bash_cmd_script_arg_vec<'a>(
 fn form_win_cmd_script_arg_vec<'a>(
     zowe_cmd_args: &'a [String],
     njs_zowe_path: &'a str,
-    curr_cmd_shell: & CmdShell,
+    curr_cmd_shell: &CmdShell,
     script_wait_msg: &'a str,
     script_prompt_msg_fixed: &'a str,
-    script_arg_vec: &mut Vec<&'a str>
+    script_arg_vec: &mut Vec<&'a str>,
 ) -> String {
     // add any required newlines to create some space
     script_arg_vec.push("/C");
     script_arg_vec.push("echo.");
     script_arg_vec.push("&&");
 
-    if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
+    if matches!(
+        curr_cmd_shell,
+        CmdShell::PowerShellDotNet | CmdShell::PowerShellExe
+    ) {
         // PowerShell needs extra newlines before the background process output to create space
-        for _count in [1,2,3,4,5,6] {
+        for _count in [1, 2, 3, 4, 5, 6] {
             script_arg_vec.push("echo.");
             script_arg_vec.push("&&");
         }
-
     } else if matches!(curr_cmd_shell, CmdShell::Bash | CmdShell::Sh) {
         // Bash shell on windows needs a delay and a newline in its spacing
         for next_arg in "sleep 1 && echo. &&".split_whitespace() {
@@ -591,7 +622,10 @@ fn form_win_cmd_script_arg_vec<'a>(
     for next_arg in script_prompt_msg_fixed.split_whitespace() {
         script_arg_vec.push(next_arg);
     }
-    if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
+    if matches!(
+        curr_cmd_shell,
+        CmdShell::PowerShellDotNet | CmdShell::PowerShellExe
+    ) {
         // tell user that prompt will appear in the provided space
         for next_arg in "prompt in the space above.".split_whitespace() {
             script_arg_vec.push(next_arg);
@@ -609,19 +643,25 @@ fn get_win_lock_file() -> Result<LockFile, i32> {
     let mut lock_path: PathBuf;
     match util_get_daemon_dir() {
         Ok(ok_val) => lock_path = ok_val,
-        Err(err_val) => return Err(err_val)
+        Err(err_val) => return Err(err_val),
     }
     lock_path.push("daemon.lock");
 
     if let Err(err_val) = File::create(&lock_path) {
-        println!("Unable to create zowe daemon lock file = {}.", &lock_path.display());
+        println!(
+            "Unable to create zowe daemon lock file = {}.",
+            &lock_path.display()
+        );
         println!("Reason = {}.", err_val);
         return Err(EXIT_CODE_FILE_IO_ERROR);
     }
     let lock_file: LockFile = match LockFile::open(&lock_path) {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
-            println!("Unable to open zowe daemon lock file = {}.", &lock_path.display());
+            println!(
+                "Unable to open zowe daemon lock file = {}.",
+                &lock_path.display()
+            );
             println!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
