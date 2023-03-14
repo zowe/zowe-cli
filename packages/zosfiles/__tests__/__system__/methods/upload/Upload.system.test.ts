@@ -623,27 +623,22 @@ describe("Upload Data Set - encoded", () => {
         describe("Physical sequential", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
                 uploadOptions.etag = undefined;
                 uploadOptions.returnEtag = undefined;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION,
+                    await Create.dataSet(REAL_SESSION,
                         CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
@@ -670,24 +665,18 @@ describe("Upload Data Set - encoded", () => {
         describe("Partitioned data set", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
@@ -901,26 +890,22 @@ describe("Upload USS file - encoded", () => {
         });
 
         afterEach(async () => {
-            let error;
-            let response;
-
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
 
             try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
             } catch (err) {
-                error = err;
+                // Do nothing
             }
         });
 
         it("should upload a USS file", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             const data: Buffer = Buffer.from(testdata);
 
             try {
-                uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
@@ -934,12 +919,11 @@ describe("Upload USS file - encoded", () => {
 
         it("should upload a USS file from local file", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             let tagResponse;
 
             try {
-                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
+                await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
                 tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
@@ -1338,25 +1322,23 @@ describe("Upload a local directory to USS directory - encoded", () => {
         });
 
         afterAll(async () => {
-            let error;
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
                     ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname + " space dir"),
                     [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
-                error = err;
+                // Do nothing
             }
         });
 
         afterEach(async () => {
-            let error;
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
                 await delay(delayTime);
             } catch (err) {
-                error = err;
+                // Do nothing
             }
         });
 

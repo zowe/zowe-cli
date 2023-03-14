@@ -370,24 +370,18 @@ describe("Get - encoded", () => {
         describe("Physical sequential data set", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
@@ -397,7 +391,7 @@ describe("Get - encoded", () => {
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname);
@@ -412,28 +406,23 @@ describe("Get - encoded", () => {
 
         describe("USS File", () => {
             beforeEach(async () => {
-                let response;
-                let error;
                 const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
 
                 try {
-                    response = await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
+                    await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
 
                 try {
-                    response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
+                    await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
@@ -443,7 +432,7 @@ describe("Get - encoded", () => {
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
                     response = await Get.USSFile(REAL_SESSION, ussname);

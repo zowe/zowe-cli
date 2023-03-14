@@ -175,18 +175,16 @@ describe("Create data set - encoded", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -460,18 +458,16 @@ describe("Create VSAM - encoded", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
+            await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
+            await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -614,9 +610,8 @@ describe("Create z/OS file system - encoded", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
@@ -624,9 +619,8 @@ describe("Create z/OS file system - encoded", () => {
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
@@ -760,18 +754,16 @@ describe("Create uss file - encoded", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -819,18 +811,16 @@ describe("Create uss directory", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -896,18 +886,16 @@ describe("Create uss directory - encoded", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }

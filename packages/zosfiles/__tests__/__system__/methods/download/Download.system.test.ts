@@ -1561,33 +1561,27 @@ describe("Download Data Set - encoded", () => {
         describe("Physical sequential data set", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
                 // variable 'file' should be set in the test
                 const folders = file.split("/");
-                let rc = rimraf(folders[0]);
-                rc = rimraf(file);
+                rimraf(folders[0]);
+                rimraf(file);
             });
 
             it("should download a data set", async () => {
@@ -1598,7 +1592,7 @@ describe("Download Data Set - encoded", () => {
                 // upload data to the newly created data set
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
                 await delay(delayTime);
 
                 try {
@@ -1627,31 +1621,25 @@ describe("Download Data Set - encoded", () => {
         describe("Partitioned data set - all members", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
                 const folders = file.split("/");
-                const rc = rimraf(folders[0]);
+                rimraf(folders[0]);
             });
 
             it("should download a data set member", async () => {
@@ -1662,7 +1650,7 @@ describe("Download Data Set - encoded", () => {
                 // upload data to the newly created data set
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname) + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
                 await delay(delayTime);
 
                 try {
@@ -1692,32 +1680,26 @@ describe("Download Data Set - encoded", () => {
         describe("Data sets matching - all data sets - PO", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
-
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
                 try {
                     const folders = file.split("/");
-                    const rc = rimraf(folders[0]);
+                    rimraf(folders[0]);
                 } catch {
                     // Do nothing, sometimes the files are not created.
                 }
@@ -1731,7 +1713,7 @@ describe("Download Data Set - encoded", () => {
                 // upload data to the newly created data set
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname) + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
@@ -1758,32 +1740,26 @@ describe("Download Data Set - encoded", () => {
         describe("Data sets matching - all data sets - PS", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
                 const folders = file.split("/");
-                let rc = rimraf(folders[0]);
-                rc = rimraf(file);
+                rimraf(folders[0]);
+                rimraf(file);
             });
 
             it("should download a data set", async () => {
@@ -1794,7 +1770,7 @@ describe("Download Data Set - encoded", () => {
                 // upload data to the newly created data set
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
@@ -1808,8 +1784,6 @@ describe("Download Data Set - encoded", () => {
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
                 file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());

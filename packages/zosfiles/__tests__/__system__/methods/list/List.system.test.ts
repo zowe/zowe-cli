@@ -831,16 +831,13 @@ describe("List command group - encoded", () => {
 
         describe("Success scenarios", () => {
             beforeAll(async () => {
-                let error;
-                let response;
                 try {
-                    response = await Create.uss(REAL_SESSION, path, "directory");
+                    await Create.uss(REAL_SESSION, path, "directory");
                     await delay(delayTime);
-                    response = await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
+                    await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
                     await delay(delayTime);
                 } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    Imperative.console.info("Error: " + inspect(err));
                 }
             });
 
