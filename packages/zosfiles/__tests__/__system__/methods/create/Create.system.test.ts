@@ -769,8 +769,6 @@ describe("Create uss file - encoded", () => {
         }
     });
 
-    const options: ICreateDataSetOptions = {} as any;
-
     it("should create a uss file", async () => {
         let error;
         let response;
@@ -900,8 +898,6 @@ describe("Create uss directory - encoded", () => {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
-
-    const options: ICreateDataSetOptions = {} as any;
 
     it("should create a uss directory", async () => {
         let error;
