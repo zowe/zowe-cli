@@ -574,7 +574,7 @@ checksum = "9aec5da331524158c6d1a4ac0ab1541149c0b9505fde06423b02f5ef0106b9f0"
 
 [[package]]
 name = "zowe"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "base64",
  "fslock",
