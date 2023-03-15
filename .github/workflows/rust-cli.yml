@@ -16,19 +16,22 @@ jobs:
     name: Build Linux
     runs-on: ubuntu-latest
 
-    # Need to build in container with old version of GLIBC to support RHEL 7
-    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
-    container: quay.io/pypa/manylinux2014_x86_64
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
         components: clippy
+    
+    - name: Prepare Cross
+      run: cargo install cross --git https://github.com/cross-rs/cross
 
+    # Need to build in container with old version of GLIBC to support RHEL 7
+    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
     - name: Build
-      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+      working-directory: zowex 
+      run: cross build --verbose
 
     - name: Create Archive
       run: |
