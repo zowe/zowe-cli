@@ -36,6 +36,7 @@ jobs:
     - name: Create Archive
       run: |
         cd zowex/target/debug
+        ls
         tar -cvzf zowe.tgz zowe
 
     - name: Archive Results
