@@ -39,4 +39,8 @@ jobs:
     # TODO Consider using actions-rs/audit-check after https://github.com/actions-rs/audit-check/issues/116 is fixed
     - name: Check Rust Vulnerabilities
       working-directory: zowex
-      run: cargo audit
+      run: |
+        output=$(cargo audit)
+        echo $output
+        warn=$(echo $output | grep "Warning" || true)
+        if [[ $warn ]] ; then echo "Cargo warning detected, see above output" ; exit 1; fi
