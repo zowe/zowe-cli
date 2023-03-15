@@ -27,9 +27,7 @@ jobs:
       run: npm install -g npm@^8
 
     - name: Install Rust toolchain
-      run: |
-        rustup toolchain install stable --profile minimal
-        rustup default stable
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Check Node Vulnerabilities
       run: npm audit --production --audit-level=moderate
