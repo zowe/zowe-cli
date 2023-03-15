@@ -25,7 +25,7 @@ jobs:
         components: clippy
     
     - name: Prepare Cross
-      run: cargo install cross --git https://github.com/cross-rs/cross
+      run: cargo install cross@0.2.5
 
     # Need to build in container with old version of GLIBC to support RHEL 7
     # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
@@ -35,8 +35,7 @@ jobs:
 
     - name: Create Archive
       run: |
-        cd zowex/target/debug
-        ls
+        cd zowex/target/x86_64-unknown-linux-gnu/debug
         tar -cvzf zowe.tgz zowe
 
     - name: Archive Results
@@ -44,7 +43,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: zowe-linux.tgz
-        path: zowex/target/debug/zowe.tgz
+        path: zowex/target/x86_64-unknown-linux-gnu/debug/zowe.tgz
 
     - name: Run linter
       run: |

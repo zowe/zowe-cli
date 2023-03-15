@@ -52,10 +52,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # Need to build in container with old version of GLIBC to support RHEL 7
-    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
-    container: quay.io/pypa/manylinux2014_x86_64
-
     steps:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -63,9 +59,15 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: repo
+    
+    - name: Prepare Cross
+      run: cargo install cross@0.2.5
 
+    # Need to build in container with old version of GLIBC to support RHEL 7
+    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
     - name: Build
-      run: cargo build --verbose --release
+      working-directory: zowex 
+      run: cross build --verbose --release
 
     - name: Get version
       id: get-version
@@ -74,7 +76,7 @@ jobs:
 
     - name: Create Archive
       run: |
-        cd target/release
+        cd target/x86_64-unknown-linux-gnu/release
         tar -cvzf zowe.tgz zowe
         mv zowe.tgz zowe-linux.tgz
 
@@ -87,7 +89,7 @@ jobs:
         tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
         name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         allowUpdates: true
-        artifacts: target/release/zowe-linux.tgz
+        artifacts: target/release/x86_64-unknown-linux-gnu/zowe-linux.tgz
         asset_content_type: application/octet-stream
 
 
