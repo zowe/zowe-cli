@@ -9,9 +9,9 @@ repository = "https://github.com/zowe/zowe-cli"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-atty = "0.2.14"
 base64 = "0.13.0"
 home = "0.5.3"
+is-terminal = "0.4.4"
 pathsearch = "0.2.0"
 rpassword = "5.0.1"
 serde = { version = "1.0.136", features = ["derive"]}
