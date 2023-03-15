@@ -23,12 +23,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-        components: clippy
+      run: |
+        rustup toolchain install stable --profile minimal --component clippy
+        rustup default stable
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
@@ -40,16 +37,15 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-linux.tgz
         path: zowex/target/debug/zowe.tgz
 
     - name: Run linter
       uses: actions-rs/clippy-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        args: --manifest-path=zowex/Cargo.toml
+      run: |
+        cargo clippy --manifest-path=zowex/Cargo.toml
 
     - name: Run tests
       run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture
@@ -58,14 +54,12 @@ jobs:
     name: Build MacOS
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup default stable
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
@@ -77,7 +71,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-macos.tgz
         path: zowex/target/debug/zowe.tgz
@@ -89,14 +83,12 @@ jobs:
     name: Build Windows
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup default stable
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
@@ -110,7 +102,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-windows.tgz
         path: zowex/target/debug/zowe.tgz

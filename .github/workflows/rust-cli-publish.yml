@@ -17,32 +17,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Get version
       id: get-version
       working-directory: zowex
-      run: echo "::set-output name=ZOWEX_VERSION::$(cargo metadata --no-deps | jq -r .packages[0].version)"
+      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: ncipollo/release-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
-        release_name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         body: |
           Native Zowe CLI client which communicates with a "daemon" version of Zowe CLI.
         draft: false
         prerelease: false
 
-    - name: Output Release URL File
-      run: echo "${{ steps.create_release.outputs.upload_url }}" > zowex/release_url.txt
-
-    - run: "ls -la"
-
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: repo
         path: |
@@ -62,41 +57,39 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
 
     steps:
-
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup default stable
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: repo
 
     - name: Build
       run: cargo build --verbose --release
 
-    - name: Get Upload URL
-      id: get_upload_url
-      run: echo "::set-output name=upload_url::$(cat release_url.txt)"
-
-    - run: echo ${{ steps.get_upload_url.outputs.upload_url }}
+    - name: Get version
+      id: get-version
+      working-directory: zowex
+      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Archive
       run: |
         cd target/release
         tar -cvzf zowe.tgz zowe
+        mv zowe.tgz zowe-linux.tgz
 
     - name: Upload Release Asset
       id: upload-release-asset
-      uses: actions/upload-release-asset@v1
+      uses: ncipollo/release-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: target/release/zowe.tgz
-        asset_name: zowe-linux.tgz
+        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        allowUpdates: true
+        artifacts: target/release/zowe-linux.tgz
         asset_content_type: application/octet-stream
 
 
@@ -110,39 +103,38 @@ jobs:
     steps:
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup default stable
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: repo
 
     - name: Build
       run: cargo build --verbose --release
 
-    - name: Get Upload URL
-      id: get_upload_url
-      run: echo "::set-output name=upload_url::$(cat release_url.txt)"
-
-    - run: echo ${{ steps.get_upload_url.outputs.upload_url }}
+    - name: Get version
+      id: get-version
+      working-directory: zowex
+      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Archive
       run: |
         cd target/release
-        gtar -cvzf zowe.tgz zowe
+        tar -cvzf zowe.tgz zowe
+        mv zowe.tgz zowe-macos.tgz
 
     - name: Upload Release Asset
       id: upload-release-asset
-      uses: actions/upload-release-asset@v1
+      uses: ncipollo/release-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: target/release/zowe.tgz
-        asset_name: zowe-macos.tgz
+        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        allowUpdates: true
+        artifacts: target/release/zowe-macos.tgz
         asset_content_type: application/octet-stream
 
 
@@ -156,13 +148,11 @@ jobs:
     steps:
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      run: |
+        rustup toolchain install stable --profile minimal
+        rustup default stable
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: repo
 
@@ -171,24 +161,25 @@ jobs:
       env:
         RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
-    - name: Get Upload URL
-      id: get_upload_url
-      run: echo "::set-output name=upload_url::$(type release_url.txt)"
-
-    - run: echo "${{ steps.get_upload_url.outputs.upload_url }}"
+    - name: Get version
+      id: get-version
+      working-directory: zowex
+      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Archive
       run: |
         cd target/release
-        tar -cvzf zowe.tgz zowe.exe
+        tar -cvzf zowe.tgz zowe
+        mv zowe.tgz zowe-windows.tgz
 
     - name: Upload Release Asset
       id: upload-release-asset
-      uses: actions/upload-release-asset@v1
+      uses: ncipollo/release-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: target\release\zowe.tgz
-        asset_name: zowe-windows.tgz
+        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        allowUpdates: true
+        artifacts: target/release/zowe-windows.tgz
         asset_content_type: application/octet-stream
