@@ -83,9 +83,7 @@ jobs:
     - name: Install Rust toolchain
       id: install-rust
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
-      run: |
-        rustup toolchain install stable --profile minimal
-        rustup default stable
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Checkout Imperative
       id: checkout-imperative

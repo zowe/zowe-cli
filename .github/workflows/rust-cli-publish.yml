@@ -58,9 +58,7 @@ jobs:
 
     steps:
     - name: Install Rust toolchain
-      run: |
-        rustup toolchain install stable --profile minimal
-        rustup default stable
+      uses: dtolnay/rust-toolchain@stable
 
     - uses: actions/download-artifact@v3
       with:
@@ -103,9 +101,7 @@ jobs:
     steps:
 
     - name: Install Rust toolchain
-      run: |
-        rustup toolchain install stable --profile minimal
-        rustup default stable
+      uses: dtolnay/rust-toolchain@stable
 
     - uses: actions/download-artifact@v3
       with:
@@ -148,9 +144,7 @@ jobs:
     steps:
 
     - name: Install Rust toolchain
-      run: |
-        rustup toolchain install stable --profile minimal
-        rustup default stable
+      uses: dtolnay/rust-toolchain@stable
 
     - uses: actions/download-artifact@v3
       with:
