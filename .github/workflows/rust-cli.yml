@@ -43,7 +43,6 @@ jobs:
         path: zowex/target/debug/zowe.tgz
 
     - name: Run linter
-      uses: actions-rs/clippy-check@v1
       run: |
         cargo clippy --manifest-path=zowex/Cargo.toml
 
