@@ -139,7 +139,7 @@ export class Copy {
                     hostname: targetOptions.targetHost,
                     port: targetOptions.targetPort,
                     type: "basic",
-                    rejectUnauthorized: false
+                    rejectUnauthorized: Session.
                 });
             }
             // TODO: Add team config definition support
@@ -263,18 +263,19 @@ export class Copy {
      *  Private function to convert the ALC value from the format returned by the Get() call in to the format used by the Create() call
      */
     private static convertAlcTozOSMF( zosmfValue: string): string {
-        // TODO: Validate all possible values.
 
-        if(zosmfValue == " BLOCKS")
+        if(zosmfValue == "BLOCKS")
             return "BLKS";
         if(zosmfValue == "CYLINDERS")
             return "CYL";
         if(zosmfValue == "TRACKS")
             return "TRK";
-        if(zosmfValue == "MB")
+        if(zosmfValue == "MEGABYTES")
             return "MB";
-        if(zosmfValue == "KB")
+        if(zosmfValue == "KILOBYTES")
             return "KB";
+        if(zosmfValue == "BYTES")
+            return "BYTE";
 
         return zosmfValue;
     }
