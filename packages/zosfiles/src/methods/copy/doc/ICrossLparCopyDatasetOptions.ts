@@ -69,4 +69,10 @@ export interface ICrossLparCopyDatasetOptions extends IZosFilesOptions {
      */
     replace?: boolean;
 
+    /**
+     * rejectUnauthorized option
+     * @type {boolean}
+     */
+    rejectUnauthorized?: boolean;
+
 }

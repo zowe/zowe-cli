@@ -139,7 +139,7 @@ export class Copy {
                     hostname: targetOptions.targetHost,
                     port: targetOptions.targetPort,
                     type: "basic",
-                    rejectUnauthorized: Session.
+                    rejectUnauthorized: targetOptions.rejectUnauthorized
                 });
             }
             // TODO: Add team config definition support

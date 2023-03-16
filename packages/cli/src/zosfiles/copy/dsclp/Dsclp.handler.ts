@@ -23,6 +23,11 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
 
         const sourceDataset: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
         const targetDataset: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
+        let rejectUnauthorizedFlag = true;
+
+        if(commandParameters.arguments.rejectUnauthorized == false){
+            rejectUnauthorizedFlag = false;
+        }
 
         const options: ICopyDatasetOptions = {
             "from-dataset": sourceDataset,
@@ -39,7 +44,8 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             targetVolser:  commandParameters.arguments.targetVolser,
             targetManagementClass:  commandParameters.arguments.targetManagementClass,
             targetStorageClass:   commandParameters.arguments.targetStorageClass,
-            targetDataClass: commandParameters.arguments.targetDataClass
+            targetDataClass: commandParameters.arguments.targetDataClass,
+            rejectUnauthorized: rejectUnauthorizedFlag
         };
 
         const sourceOptions: IGetOptions = {
