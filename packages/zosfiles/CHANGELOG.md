@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.11.2`
 
 - BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL
 
