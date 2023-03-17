@@ -15,6 +15,8 @@ jobs:
 
     name: Create GitHub Release
     runs-on: ubuntu-latest
+    outputs:
+      ZOWEX_VERSION: ${{ steps.get-version.outputs.ZOWEX_VERSION }}
 
     steps:
     - uses: actions/checkout@v3
@@ -68,10 +70,6 @@ jobs:
     - name: Build
       run: cross build --verbose --release
 
-    - name: Get version
-      id: get-version
-      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
-
     - name: Create Archive
       run: |
         cd target/x86_64-unknown-linux-gnu/release
@@ -84,10 +82,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
-        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        tag: native-v${{ needs.release.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ needs.release.outputs.ZOWEX_VERSION }}
         allowUpdates: true
-        artifacts: target/release/x86_64-unknown-linux-gnu/zowe-linux.tgz
+        artifacts: target/x86_64-unknown-linux-gnu/release/zowe-linux.tgz
         artifactContentType: application/octet-stream
         removeArtifacts: false
         replacesArtifacts: false
@@ -112,10 +110,6 @@ jobs:
     - name: Build
       run: cargo build --verbose --release
 
-    - name: Get version
-      id: get-version
-      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
-
     - name: Create Archive
       run: |
         cd target/release
@@ -128,8 +122,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
-        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        tag: native-v${{ needs.release.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ needs.release.outputs.ZOWEX_VERSION }}
         allowUpdates: true
         artifacts: target/release/zowe-macos.tgz
         artifactContentType: application/octet-stream
@@ -158,10 +152,6 @@ jobs:
       env:
         RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
-    - name: Get version
-      id: get-version
-      run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
-
     - name: Create Archive
       run: |
         cd target/release
@@ -174,8 +164,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
-        name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        tag: native-v${{ needs.release.outputs.ZOWEX_VERSION }}
+        name: Native Client Release ${{ needs.release.outputs.ZOWEX_VERSION }}
         allowUpdates: true
         artifacts: target/release/zowe-windows.tgz
         artifactContentType: application/octet-stream
