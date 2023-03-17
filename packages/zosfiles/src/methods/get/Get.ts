@@ -38,7 +38,7 @@ export class Get {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
+        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, encodeURIComponent(dataSetName));
 
         const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
@@ -47,7 +47,11 @@ export class Get {
         }
 
         if (options.volume) {
-            endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
+            endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                `-(${encodeURIComponent(options.volume)})`,
+                encodeURIComponent(dataSetName)
+            );
         }
 
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
@@ -73,11 +77,7 @@ export class Get {
         USSFileName = posix.normalize(USSFileName);
         // Get a proper destination for the file to be downloaded
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
-        if (USSFileName.substr(0, 1) === "/") {
-            USSFileName = USSFileName.substr(1);
-        }
-
-        const encodedFileName = encodeURIComponent(USSFileName);
+        const encodedFileName = ZosFilesUtils.sanitizeUssPathForRestCall(USSFileName);
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
         const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
