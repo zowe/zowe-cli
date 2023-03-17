@@ -66,12 +66,10 @@ jobs:
     # Need to build in container with old version of GLIBC to support RHEL 7
     # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
     - name: Build
-      working-directory: zowex 
       run: cross build --verbose --release
 
     - name: Get version
       id: get-version
-      working-directory: zowex
       run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Archive
@@ -114,7 +112,6 @@ jobs:
 
     - name: Get version
       id: get-version
-      working-directory: zowex
       run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Archive
@@ -159,7 +156,6 @@ jobs:
 
     - name: Get version
       id: get-version
-      working-directory: zowex
       run: echo "ZOWEX_VERSION=$(cargo metadata --no-deps | jq -r .packages[0].version)" >> $GITHUB_OUTPUT
 
     - name: Create Archive
