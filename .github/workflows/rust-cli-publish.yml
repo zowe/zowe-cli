@@ -87,7 +87,7 @@ jobs:
         tag: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
         name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         allowUpdates: true
-        artifacts: target/release/x86_64-unknown-linux-gnu/zowe-linux.tgz
+        artifacts: target/x86_64-unknown-linux-gnu/release/zowe-linux.tgz
         artifactContentType: application/octet-stream
         removeArtifacts: false
         replacesArtifacts: false
