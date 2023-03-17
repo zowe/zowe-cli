@@ -161,7 +161,7 @@ jobs:
     - name: Create Archive
       run: |
         cd target/release
-        tar -cvzf zowe.tgz zowe
+        tar -cvzf zowe.tgz zowe.exe
         mv zowe.tgz zowe-windows.tgz
 
     - name: Upload Release Asset
