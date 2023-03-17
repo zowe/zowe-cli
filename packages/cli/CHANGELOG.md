@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Updated daemon executable to resolve technical debt
 - BugFix: Fixed URI encoding on `zos-files` commands [#1073](https://github.com/zowe/zowe-cli/issues/1073)
 
 ## `7.11.1`

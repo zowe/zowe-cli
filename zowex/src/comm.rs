@@ -21,11 +21,11 @@ use std::time::Duration;
 #[cfg(target_family = "unix")]
 use {std::net::Shutdown, std::os::unix::net::UnixStream};
 
-extern crate atty;
-use atty::Stream;
-
 extern crate base64;
 use base64::encode;
+
+extern crate is_terminal;
+use is_terminal::IsTerminal;
 
 #[cfg(target_family = "windows")]
 extern crate named_pipe;
@@ -188,7 +188,7 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                     let p: DaemonRequest;
                     match serde_json::from_str(&payload) {
                         Err(_e) if _progress => {
-                            if atty::is(Stream::Stderr) {
+                            if std::io::stderr().is_terminal() {
                                 eprint!("{}", payload);
                                 io::stderr().flush().unwrap();
                             }
