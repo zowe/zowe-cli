@@ -144,6 +144,72 @@ describe("Delete a USS File", () => {
 
 });
 
+describe("Delete a USS File - encoded", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_uss_file_delete"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        ussname = `${defaultSystem.zosmf.user.trim() + ".Enco#ed"}`;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("Success scenarios", () => {
+        beforeEach(async () => {
+            let error;
+            filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFileSingle`.replace(/\./g, "");
+            try {
+                await Create.uss(REAL_SESSION, filename, "file");
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+        });
+
+        it("should delete a uss file", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.ussFile(REAL_SESSION, filename);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
+        });
+
+        it("should delete a uss file even if it has multiple slashes pre-pended", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.ussFile(REAL_SESSION, "//"+filename);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
+        });
+    });
+});
+
 describe("Delete USS Directory", () => {
 
     beforeAll(async () => {
@@ -243,6 +309,54 @@ describe("Delete USS Directory", () => {
     });
 });
 
+describe("Delete USS Directory - encoded", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_uss_directory_delete"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        filename = `${defaultSystem.unix.testdir}/${ussname}.Enco#ed.aTestUssFolderDelete`.replace(/\./g, "");
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("Success scenarios", () => {
+        beforeEach(async () => {
+            let error;
+            let response;
+            try {
+                response = await Create.uss(REAL_SESSION, filename, "directory");
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+        });
+
+        it("should delete a uss directory", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.ussFile(REAL_SESSION, filename);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
+        });
+    });
+});
+
 describe("Delete USS Directory with children", () => {
 
     beforeAll(async () => {
@@ -297,15 +411,14 @@ describe("Delete USS Directory with children", () => {
     describe("Fail scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, filename, "directory");
+                await Create.uss(REAL_SESSION, filename, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
             }
             try {
-                response = await Create.uss(REAL_SESSION, `${filename}/aChild.txt`, "file");
+                await Create.uss(REAL_SESSION, `${filename}/aChild.txt`, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -348,6 +461,57 @@ describe("Delete USS Directory with children", () => {
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
             expect(error.message).toContain("Directory not empty.");
+        });
+    });
+});
+
+describe("Delete USS Directory with children - encoded", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_uss_directory_delete_recursive"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        filename = `${defaultSystem.unix.testdir}/${ussname}.Enco#ed.aTestUssFileDelete`.replace(/\./g, "");
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("Success scenarios", () => {
+        beforeEach(async () => {
+            let error;
+            try {
+                await Create.uss(REAL_SESSION, filename, "directory");
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            try {
+                await Create.uss(REAL_SESSION, `${filename}/aChild.txt`, "file");
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+        });
+
+        it("should be possible to delete a uss directory with children and recursion settings", async () => {
+            let error;
+            let response;
+            try {
+                response = await Delete.ussFile(REAL_SESSION, filename, true);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
         });
     });
 });
