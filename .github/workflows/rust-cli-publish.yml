@@ -88,7 +88,9 @@ jobs:
         name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         allowUpdates: true
         artifacts: target/release/x86_64-unknown-linux-gnu/zowe-linux.tgz
-        asset_content_type: application/octet-stream
+        artifactContentType: application/octet-stream
+        removeArtifacts: false
+        replacesArtifacts: false
 
 
   build-macos:
@@ -130,7 +132,9 @@ jobs:
         name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         allowUpdates: true
         artifacts: target/release/zowe-macos.tgz
-        asset_content_type: application/octet-stream
+        artifactContentType: application/octet-stream
+        removeArtifacts: false
+        replacesArtifacts: false
 
 
   build-windows:
@@ -161,7 +165,7 @@ jobs:
     - name: Create Archive
       run: |
         cd target/release
-        tar -cvzf zowe.tgz zowe
+        tar -cvzf zowe.tgz zowe.exe
         mv zowe.tgz zowe-windows.tgz
 
     - name: Upload Release Asset
@@ -174,4 +178,6 @@ jobs:
         name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         allowUpdates: true
         artifacts: target/release/zowe-windows.tgz
-        asset_content_type: application/octet-stream
+        artifactContentType: application/octet-stream
+        removeArtifacts: false
+        replacesArtifacts: false
