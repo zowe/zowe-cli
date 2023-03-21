@@ -2,6 +2,15 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.11.2`
+
+- BugFix: Updated daemon executable to resolve technical debt
+- BugFix: Fixed URI encoding on `zos-files` commands [#1073](https://github.com/zowe/zowe-cli/issues/1073)
+
+## `7.11.1`
+
+- BugFix: Solved daemon issue where Windows usernames were treated as case-sensitive when checking the daemon process owner during Zowe commands.
+
 ## `7.11.0`
 - Enhancement: Added support for a CLI specific environment variable file. [#1484](https://github.com/zowe/zowe-cli/issues/1484)
 - BugFix: Enabled option to download output from a submitted job with the -d flag. The -e flag now enables changes to file extension as originally intended. [#729](https://github.com/zowe/zowe-cli/issues/729)

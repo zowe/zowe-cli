@@ -126,3 +126,51 @@ describe("Delete Dataset", () => {
     });
 
 });
+
+describe("Delete Dataset - encoded", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_file_delete"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.ENCO#ED.DATA.SET.DELETE`;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("Success scenarios", () => {
+        beforeEach(async () => {
+            let error;
+
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+        });
+
+        it("should delete a partitioned data set", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.dataSet(REAL_SESSION, dsname);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletedSuccessfully.message);
+        });
+    });
+});
