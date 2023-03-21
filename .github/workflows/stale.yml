@@ -22,7 +22,6 @@ jobs:
 
           # Rules applied to Issues
           exempt-issue-labels: "Epic, bug, priority-critical, priority-high, community-upvoted, for-review, security, keep"
-          stale-issue-label: "stale" # Should we use the default: `Stale`?
           stale-issue-message: >
             This issue has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs.
@@ -32,7 +31,6 @@ jobs:
 
           # Rules applied to PRs
           exempt-pr-labels: "community-upvoted, for-review, security, keep"
-          stale-pr-label: "stale" # Should we use the default: `Stale`?
           stale-issue-message: >
             This pull request has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs.
