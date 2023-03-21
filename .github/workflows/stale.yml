@@ -13,17 +13,27 @@ jobs:
     steps:
       - uses: actions/stale@v6
         with:
-          close-issue-message: >
-            This issue has been automatically closed due to lack of activity. In an
-            effort to reduce noise, please do not comment any further.
+          # General rules applied to both, issues and pull requests (PRs)
+          start-date: "2022-07-30T00:00:00Z"
           days-before-close: 14
           days-before-stale: 90
           exempt-all-assignees: true
           exempt-all-milestones: true
-          exempt-issue-labels: "community-upvoted, for-review, keep, security, third-party, Epic, bug"
-          stale-issue-label: "stale"
+
+          # Rules applied to Issues
+          exempt-issue-labels: "Epic, bug, priority-critical, priority-high, community-upvoted, for-review, security, keep"
           stale-issue-message: >
             This issue has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs.
-          stale-pr-label: "stale"
-          start-date: "2022-07-30T00:00:00Z"
+          close-issue-message: >
+            This issue has been automatically closed due to lack of activity. In an
+            effort to reduce noise, please do not comment any further.
+
+          # Rules applied to PRs
+          exempt-pr-labels: "community-upvoted, for-review, security, keep"
+          stale-issue-message: >
+            This pull request has been automatically marked as stale because it has not had
+            recent activity. It will be closed if no further activity occurs.
+          close-issue-message: >
+            This pull request has been automatically closed due to lack of activity. In an
+            effort to reduce noise, please do not comment any further.
