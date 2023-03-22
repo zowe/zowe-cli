@@ -127,21 +127,53 @@ export class File {
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds));
     }
 
+    public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File): Promise<void>{
+        await this.fileComparison(session, commandParameters, lfFile);
+        // 5a. check for default editor and headless environment
+        // 5b. open lf in editor or tell user to open up on their own if headless or no set default
+        // 4ba. perform file comparison, show output in terminal
+        await this.promptUser(Prompt.doneEditing);
+        // 7. once input recieved, upload tmp file with saved ETAG
+    }
 
 
-
-    public static async uploadEdits(session: AbstractSession, lfFile: File): Promise<IZosFilesResponse>{
+    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File, mfFile: File): Promise<boolean>{
     // 7. once input recieved, upload tmp file with saved ETAG
     // 7a. if matching ETAG: sucessful upload, destroy tmp file -> END
     // 7a. if non-matching ETAG: unsucessful upload -> 4a
         let response: IZosFilesResponse;
         try{
             response = await Upload.fileToDataset(session, lfFile.path, lfFile.name, {etag: lfFile.etag});
-            // successful upload
-            return response;
+            if (response.success){
+                // 7a. if matching ETAG & successful upload, destroy tmp file -> END
+                await this.destroyTempFile(lfFile.path);
+                return true;
+            }
+            if (response.errorMessage){
+                if (response.errorMessage.includes("etag")){ //or error 412
+                    //alert user that the version of document theyve been editing has changed.
+                    //ask if they want to continue working w this file
+                    let continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfFile.path);
+                    if (continueToEdit){
+                        // if yes, 
+                        // 1. download dataset again, refresh the etag of lfFile
+                        mfFile.data = await Download.dataSet(session, mfFile.name, {returnEtag: true});
+                        // [TO DO - set etag]
+                        lfFile.etag = mfFile.etag ;
+                        // 2. then perform a file comparision:
+                        await this.makeEdits(session, commandParameters, lfFile);
+                        // 3. perform file comparision w mfds and lf(file youve been editing) with updated etag
+                        return false;
+                    }
+                }
+                throw new ImperativeError({
+                    msg: `Failed to save edits because remote has changed since last downloading file. Edits have been stored locally: ${lfFile.path}`
+                });
+                return false;
+            }
         }catch(err){
             // unsuccessful upload, potential mismatched etag
-            return response;
+            return false;
         }
     }
 

@@ -51,40 +51,16 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         }
         
         await Utils.makeEdits(session, commandParameters, lfFile);
+
+
         // 7. once input recieved, upload tmp file with saved ETAG
+        let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile, mfFile);
+        while (!uploaded) {
+            // might have to make a new object here for uploaded... to indicate if successful and also send back etag to then pass in to new call to uploadEdits...need to change structures around to keep track of etag
+            uploaded = await Utils.uploadEdits(session, commandParameters, lfFile, mfFile);
+        }
 
-
-        let response: IZosFilesResponse = await Utils.uploadEdits(session, lfFile);
-        // if (response.success){
-        //     // 7a. if matching ETAG & successful upload, destroy tmp file -> END
-        //     await Utils.destroyTempFile(lfFile.path);
-        //     return response;
-        // }
-        // if (response.errorMessage){
-            if (response.errorMessage.includes("etag")){
-                // 7a. if non-matching ETAG: unsucessful upload -> 4a
-                //alert user that the version of document theyve been editing has changed.
-                // 1. ask if they want to continue working w this file
-                let continueToEdit: boolean = await Utils.promptUser(Prompt.continueEditing, lfFile.path);
-                if (continueToEdit){
-                    // if yes, 
-                    // 1. download dataset again, refresh the etag of lfFile
-                    mfFile.data = await Download.dataSet(session, mfFile.name, {returnEtag: true});
-                    // [TO DO - set etag]
-                    lfFile.etag = mfFile.etag ;
-                    // 2. then perform a file comparision:
-                    await Utils.makeEdits(session, commandParameters, lfFile);
-                    // 3. perform file comparision w mfds and lf(file youve been editing) with updated etag
-                    
-                }else{
-                    //end program, leave temp file
-                }
-            }else{
-                throw new ImperativeError({
-                    msg: `Temporary file could not be deleted: ${tmpDir}`
-                });
-            }
-        return //something;
+        return //something?;
     }
 }
 

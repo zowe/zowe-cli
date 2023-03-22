@@ -26,15 +26,25 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         };
         commandParameters.response.progress.startBar({task});
 
-        const dsContentBuf = await Get.USSFile(session, commandParameters.arguments.file,
-            {
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
-            }
-        );
+        // 1. get/set editor
+        // 2. build tmp_dir
+        // 2a. hash uss file name
+        // 3. check for tmp_dir's existance as stash
+        // 4a. if prexisting tmp_dir: override stash
+        // 4b. if prexisting tmp_dir: use stash
+        // 4ba. perform file comparison, show output in terminal
+        // 4bb. overwrite ETAG 
+        // 5a. check for default editor and headless environment
+        // 5b. open lf in editor or tell user to open up on their own if headless or no set default
+        // 6. wait for user input to continue
+        // 7. once input recieved, upload tmp file with saved ETAG
+        // 7a. if matching ETAG: sucessful upload, destroy tmp file -> END
+        // 7a. if non-matching ETAG: unsucessful upload -> 4ba
+
+
         return {
             success: true,
-            commandResponse: dsContentBuf.toString(),
+            commandResponse: "",
             apiResponse: {}
         };
     }
