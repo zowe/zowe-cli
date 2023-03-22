@@ -31,9 +31,9 @@ jobs:
 
           # Rules applied to PRs
           exempt-pr-labels: "community-upvoted, for-review, security, keep"
-          stale-issue-message: >
+          stale-pr-message: >
             This pull request has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs.
-          close-issue-message: >
+          close-pr-message: >
             This pull request has been automatically closed due to lack of activity. In an
             effort to reduce noise, please do not comment any further.
