@@ -11,4 +11,4 @@
 
 export * from "./doc/IEditOptions";
 
-export * from "./Get";
+export * from "./Edit";

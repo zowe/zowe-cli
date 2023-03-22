@@ -9,9 +9,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { Get, Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { EditUtilities, Prompt, File } from "../Edit.utils"
 
 /**
  * Handler to edit a data set's content
@@ -19,38 +20,73 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DatasetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        // 1. get/set editor
-        // 2. build tmp_dir
-        // 2a. hash uss file name
-        // 3. check for tmp_dir's existance as stash
-        // 4a. if prexisting tmp_dir: override stash
-        // 4b. if prexisting tmp_dir: use stash
-        // 4ba. perform file comparison, show output in terminal
-        // 4bb. overwrite ETAG 
-        // 5a. check for default editor and headless environment
-        // 5b. open lf in editor or tell user to open up on their own if headless or no set default
-        // 6. wait for user input to continue
-        // 7. once input recieved, upload tmp file with saved ETAG
-        // 7a. if matching ETAG: sucessful upload, destroy tmp file -> END
-        // 7a. if non-matching ETAG: unsucessful upload -> 4a
-
         const task: ITaskWithStatus = {
             percentComplete: 0,
-            statusMessage: "Retrieving data set",
+            statusMessage: "Begining process to Edit data set",
             stageName: TaskStage.IN_PROGRESS
         };
         commandParameters.response.progress.startBar({task});
 
-        const dsContentBuf = await Get.dataSet(session, commandParameters.arguments.dataSetName,
-            {   
-                responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
+        // 1. Setup
+        const Utils = EditUtilities;
+        const mfFile = new File;
+        const lfFile = new File;
+        mfFile.name = commandParameters.arguments.file;
+        mfFile.data = await Download.dataSet(session, mfFile.name, {returnEtag: true});
+        // mfFile.etag = [ TO DO ]
+
+        // 2. Build tmp_dir
+        const tmpDir: string = await Utils.buildTempDir(session, mfFile.name, false);
+
+        // 3. Use or override stash (either way need to retrieve etag)
+        let stash: boolean = await Utils.checkForStash(tmpDir);
+        let overrideStash: boolean = false;
+        if (stash) {
+            overrideStash = await Utils.promptUser(Prompt.useStash);
+        }
+        if (overrideStash || !stash) {
+            lfFile.data = await Utils.newStash(session, mfFile.name);
+            // lfFile.etag = [ TO DO ]
+            lfFile.path = tmpDir;
+        }
+        
+        await Utils.makeEdits(session, commandParameters, lfFile);
+        // 7. once input recieved, upload tmp file with saved ETAG
+
+
+        let response: IZosFilesResponse = await Utils.uploadEdits(session, lfFile);
+        // if (response.success){
+        //     // 7a. if matching ETAG & successful upload, destroy tmp file -> END
+        //     await Utils.destroyTempFile(lfFile.path);
+        //     return response;
+        // }
+        // if (response.errorMessage){
+            if (response.errorMessage.includes("etag")){
+                // 7a. if non-matching ETAG: unsucessful upload -> 4a
+                //alert user that the version of document theyve been editing has changed.
+                // 1. ask if they want to continue working w this file
+                let continueToEdit: boolean = await Utils.promptUser(Prompt.continueEditing, lfFile.path);
+                if (continueToEdit){
+                    // if yes, 
+                    // 1. download dataset again, refresh the etag of lfFile
+                    mfFile.data = await Download.dataSet(session, mfFile.name, {returnEtag: true});
+                    // [TO DO - set etag]
+                    lfFile.etag = mfFile.etag ;
+                    // 2. then perform a file comparision:
+                    await Utils.makeEdits(session, commandParameters, lfFile);
+                    // 3. perform file comparision w mfds and lf(file youve been editing) with updated etag
+                    
+                }else{
+                    //end program, leave temp file
+                }
+            }else{
+                throw new ImperativeError({
+                    msg: `Temporary file could not be deleted: ${tmpDir}`
+                });
             }
-        );
-        return {
-            success: true,
-            commandResponse: dsContentBuf.toString(),
-            apiResponse: {}
-        };
+        return //something;
     }
 }
+
+
+// ended tuesday by trying to refactor/condense uploadEdits.. thinking about how to handle problem of potentially getting stuck in loop where the version youre editing is constantly being changed everytime you try to save

@@ -14,14 +14,14 @@ import { IOptions } from "../../../doc/IOptions";
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
  * @export
- * @interface IGetOptions
+ * @interface IEditOptions
  */
-export interface IGetOptions extends IOptions {
+export interface IEditOptions extends IOptions {
 
     /**
      * Range of records to return
      * @type {string}
-     * @memberof IGetOptions
+     * @memberof IEditOptions
      */
     range?: string;
 }

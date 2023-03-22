@@ -34,7 +34,7 @@ export class Edit {
      *
      * @throws {ImperativeError}
      */
-    public static async dataSet(session: AbstractSession, dataSetName: string, options: IGetOptions = {}): Promise<Buffer> {
+    public static async dataSet(session: AbstractSession, dataSetName: string, options: IEditOptions = {}): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
@@ -66,7 +66,7 @@ export class Edit {
      *
      * @throws {ImperativeError}
      */
-    public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer> {
+    public static async USSFile(session: AbstractSession, USSFileName: string, options: IEditOptions = {}): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);

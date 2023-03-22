@@ -16,15 +16,15 @@ import i18nTypings from "../-strings-/en";
 import {USSFileDefinition} from "./uss/USSFile.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).VIEW;
+const strings = (require("../-strings-/en").default as typeof i18nTypings).EDIT;
 
 /**
- * View group definition containing its description and children
+ * Edit group definition containing its description and children
  * @type {ICommandDefinition}
  */
-export const ViewDefinition: ICommandDefinition = {
-    name: "view",
-    aliases: ["vw"],
+export const EditDefinition: ICommandDefinition = {
+    name: "edit",
+    aliases: ["ed"],
     type: "group",
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
