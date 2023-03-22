@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-# Recent Changes
+## Recent Changes
 
 - BugFix: Fixed URI encoding on `zos-jobs` commands [#1596](https://github.com/zowe/zowe-cli/issues/1596)
 
