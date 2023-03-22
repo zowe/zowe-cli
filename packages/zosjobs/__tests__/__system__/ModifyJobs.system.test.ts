@@ -96,3 +96,57 @@ describe("Modify Jobs - System Tests", () => {
         });
     });
 });
+
+describe("Modify Jobs - System Tests - Encoded", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_modify_jobs_encoded"
+        });
+        systemProps = testEnvironment.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        account = systemProps.tso.account;
+        jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
+        modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
+        iefbr14Job = await SubmitJobs.submitJob(REAL_SESSION,
+            testEnvironment.systemTestProperties.zosjobs.iefbr14Member
+        );
+    });
+
+    afterAll(async () => {
+        await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("Positive tests", () => {
+        it("should return a success message once jobclass has been modified", async () => {
+            const job: any = await ModifyJobs.modifyJobCommon(
+                REAL_SESSION,
+                {jobname: iefbr14Job.jobname, jobid: iefbr14Job.jobid},
+                {jobclass: modifiedJobClass, hold: false, release: false}
+            );
+            expect(job.jobid).toMatch(iefbr14Job.jobid);
+            expect(job.message).toContain("Request was successful");
+        });
+
+        it("should return a success message once hold has been added to job", async () => {
+            const job: any = await ModifyJobs.modifyJobCommon(
+                REAL_SESSION,
+                {jobname: iefbr14Job.jobname, jobid: iefbr14Job.jobid},
+                {jobclass: modifiedJobClass, hold: true, release: false}
+            );
+            expect(job.jobid).toMatch(iefbr14Job.jobid);
+            expect(job.message).toContain("Request was successful");
+        });
+
+        it("should return a success message once job has been released", async () => {
+            const job: any = await ModifyJobs.modifyJobCommon(
+                REAL_SESSION,
+                {jobname: iefbr14Job.jobname, jobid: iefbr14Job.jobid},
+                {jobclass: modifiedJobClass, hold: false, release: true}
+            );
+            expect(job.jobid).toMatch(iefbr14Job.jobid);
+            expect(job.message).toContain("Request was successful");
+        });
+    });
+});

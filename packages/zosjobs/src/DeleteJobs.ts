@@ -75,7 +75,7 @@ export class DeleteJobs {
             headers.push(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
         }
 
-        const parameters: string = IO.FILE_DELIM + parms.jobname + IO.FILE_DELIM + parms.jobid;
+        const parameters: string = IO.FILE_DELIM + encodeURIComponent(parms.jobname) + IO.FILE_DELIM + encodeURIComponent(parms.jobid);
         const responseJson = await ZosmfRestClient.deleteExpectJSON(session, JobsConstants.RESOURCE + parameters, headers);
 
         if (parms.modifyVersion === "2.0") {

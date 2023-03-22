@@ -28,7 +28,7 @@ describe("zos-jobs cancel job command", () => {
         });
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
-        const jcl = JobTestsUtils.getIefbr14JCL(systemProps.zosmf.user, systemProps.tso.account);
+        const jcl = JobTestsUtils.getIefbr14JCL(systemProps.zosmf.user, systemProps.tso.account, systemProps.zosjobs.jobclass);
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(LOCAL_JCL_FILE);
         IO.writeFile(LOCAL_JCL_FILE, bufferJCL);

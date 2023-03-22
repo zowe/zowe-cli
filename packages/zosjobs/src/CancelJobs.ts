@@ -79,7 +79,7 @@ export class CancelJobs {
             version: parms.version
         };
 
-        const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
+        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
         const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
 
         if (parms.version === "2.0") {
