@@ -123,7 +123,7 @@ export class CompareBaseHelper {
 
     /**
      * Helper function that compare-related handlers will use to get the contents of a local file
-     * @param filePath Path to the file to compate against
+     * @param filePath Path to the file to compare against
      * @returns Buffer with the contents of the file
      */
     public prepareLocalFile(filePath: string): Buffer {
@@ -171,15 +171,15 @@ export class CompareBaseHelper {
     }
 
     /**
-     * To get the difference string in ternninal or in browser
-     * @param {string} string1 - string of file 1 comtent
-     * @param  {string} string2 - string of file 2 comtent
+     * To get the difference string in terminal or in browser
+     * @param {string} string1 - string of file 1 content
+     * @param  {string} string2 - string of file 2 content
      * @returns {IZosFilesResponse}
      * @public
      * @memberof CompareBaseHelper
      */
     public async getResponse(string1: string, string2: string): Promise<IZosFilesResponse>{
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+        //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (this.browserView) {
             await DiffUtils.openDiffInbrowser(string1, string2);
             return {

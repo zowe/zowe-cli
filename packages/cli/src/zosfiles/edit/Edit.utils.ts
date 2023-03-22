@@ -9,11 +9,10 @@
 *
 */
 
-import { AbstractSession, ICommandArguments, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { PathLike } from "fs";
 import { tmpdir } from "os";
-import path = require("path");
-import { Download, Upload, IZosFilesOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
@@ -28,20 +27,18 @@ export enum Prompt {
 
 export class File {
     path: string;
-    name: string;
-    data: IZosFilesResponse;
-    etag: string;
+    fileName: string;
+    apiData: IZosFilesResponse;
 }
   
   
   export class EditUtilities {
-
-    // 2. build tmp_dir
-    public static async buildTempDir(session: AbstractSession, fileName: PathLike, isUssFile?: boolean): Promise<string>{
+    // Build tmp_dir
+    public static async buildTempDir(fileName: PathLike, isUssFile?: boolean): Promise<string>{
         let tmpDir = tmpdir();
 
         if (isUssFile){
-            // 2a. hash if uss fileName
+            // Hash in a repeatable way if uss fileName
             const crypto = require("crypto");
             return tmpDir +"/" + crypto.createHash("shake256", { outputLength: 8 })
                 .update(fileName)
@@ -51,7 +48,7 @@ export class File {
         }
     }
 
-    // 3. check for tmp_dir's existance as stash
+    // Check for tmp_dir's existance as stash
     public static async checkForStash(tmpDir: string): Promise<boolean>{
         try {
           if (existsSync(tmpDir)) {
@@ -64,21 +61,13 @@ export class File {
         }
     }
 
-    // override stash?
-    public static async newStash(session: AbstractSession, fileName: string, isUssFile?: boolean): Promise<IZosFilesResponse>{
-        if (isUssFile){
-            return await Download.ussFile(session, fileName, {returnEtag: true});
-        }
-        return await Download.dataSet(session, fileName, {returnEtag: true});
-    }
-
     public static async promptUser(prompt: Prompt, fileInfo?: string): Promise<boolean>{
         let input;
         switch (prompt){
             case Prompt.useStash:
                 input = await CliUtils.readPrompt("Keep and continue editing found stash? Y/n");
                 if (input === null) {
-                    // abort the command
+                    // abort the command ... maybe do something w esc
                 } 
                 if (input == lowerCase("y")){
                     // keep stash
@@ -115,64 +104,52 @@ export class File {
         const handler = new LocalfileDatasetHandler;
         const helper = new CompareBaseHelper(commandParameters);
 
-        // 4ba. perform file comparison, show output in terminal
         commandParameters.arguments.localFilePath = lfFile.path;
         const lf = await handler.getFile1(session, commandParameters.arguments, helper);
         const mfds = await handler.getFile2(session, commandParameters.arguments, helper);
-
-        // ProcessUtils.openInDefaultApp(lfFile.path)
-
-        // // 5a. check for default editor and headless environment
-        // // 5b. open lf in editor or tell user to open up on their own if headless or no set default
+        // Editor will open with local file if default editor was set
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds));
     }
 
     public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File): Promise<void>{
+        // Perform file comparison: show diff in terminal, open lf in editor
         await this.fileComparison(session, commandParameters, lfFile);
-        // 5a. check for default editor and headless environment
-        // 5b. open lf in editor or tell user to open up on their own if headless or no set default
-        // 4ba. perform file comparison, show output in terminal
         await this.promptUser(Prompt.doneEditing);
-        // 7. once input recieved, upload tmp file with saved ETAG
     }
 
 
     public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File, mfFile: File): Promise<boolean>{
-    // 7. once input recieved, upload tmp file with saved ETAG
-    // 7a. if matching ETAG: sucessful upload, destroy tmp file -> END
-    // 7a. if non-matching ETAG: unsucessful upload -> 4a
+    // !! WIP !!
+    // Once input recieved, upload tmp file with saved etag
+    // if matching etag: sucessful upload, destroy tmp file -> END
+    // if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
         let response: IZosFilesResponse;
         try{
-            response = await Upload.fileToDataset(session, lfFile.path, lfFile.name, {etag: lfFile.etag});
+            response = await Upload.fileToDataset(session, lfFile.path, lfFile.fileName, {etag: lfFile.apiData.apiResponse.etag});
             if (response.success){
-                // 7a. if matching ETAG & successful upload, destroy tmp file -> END
+                // If matching etag & successful upload, destroy tmp file -> END
                 await this.destroyTempFile(lfFile.path);
                 return true;
             }
             if (response.errorMessage){
                 if (response.errorMessage.includes("etag")){ //or error 412
-                    //alert user that the version of document theyve been editing has changed.
-                    //ask if they want to continue working w this file
+                    //alert user that the version of document they've been editing has changed
+                    //ask if they want to continue working w their stash (local file)
                     let continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfFile.path);
                     if (continueToEdit){
-                        // if yes, 
-                        // 1. download dataset again, refresh the etag of lfFile
-                        mfFile.data = await Download.dataSet(session, mfFile.name, {returnEtag: true});
-                        // [TO DO - set etag]
-                        lfFile.etag = mfFile.etag ;
-                        // 2. then perform a file comparision:
+                        // Download dataset again, refresh the etag of lfFile
+                        mfFile.apiData, lfFile.apiData = await Download.dataSet(session, lfFile.fileName, {returnEtag: true, file: lfFile.path, overwrite: false});
+                        // Then perform file comparision w mfds and lf(file youve been editing) with updated etag
                         await this.makeEdits(session, commandParameters, lfFile);
-                        // 3. perform file comparision w mfds and lf(file youve been editing) with updated etag
                         return false;
                     }
                 }
                 throw new ImperativeError({
                     msg: `Failed to save edits because remote has changed since last downloading file. Edits have been stored locally: ${lfFile.path}`
                 });
-                return false;
             }
         }catch(err){
-            // unsuccessful upload, potential mismatched etag
+            // do some error handling here
             return false;
         }
     }
