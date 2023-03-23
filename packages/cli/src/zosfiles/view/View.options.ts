@@ -40,7 +40,8 @@ export const ViewOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "encoding",
         aliases: ["ec"],
         description: strings.ENCODING,
-        type: "string"
+        type: "string",
+        conflictsWith: ["binary", "record"]
     },
 
     /**

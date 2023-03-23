@@ -250,6 +250,24 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.subarray(0, data.length)).toEqual(data);
             });
+
+            it("should get uss file content range", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname, {range: "0,1"});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual("abcdefghijklmnopqrstuvwxyz\n");
+            });
         });
     });
 

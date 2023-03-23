@@ -13,7 +13,7 @@ import { posix } from "path";
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, IHeaderContent } from "@zowe/core-for-zowe-sdk";
 import { IGetOptions } from "./doc/IGetOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
@@ -73,17 +73,17 @@ export class Get {
     public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
-        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message); // This should never exist for USS files
         USSFileName = posix.normalize(USSFileName);
         // Get a proper destination for the file to be downloaded
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
         const encodedFileName = ZosFilesUtils.sanitizeUssPathForRestCall(USSFileName);
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
-        if (options.binary === true) {
-            reqHeaders.unshift(ZosmfHeaders.X_IBM_BINARY);
+        if (options.range) {
+            reqHeaders.push({"X-IBM-Record-Range": options.range});
         }
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 

@@ -251,115 +251,162 @@ describe("z/OS Files - View", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
         });
+    });
 
-        describe("uss file", () => {
-            const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+    describe("uss file", () => {
+        const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
 
-            beforeEach(() => {
-                zosmfExpectSecondSpy.mockClear();
-                zosmfExpectSecondSpy.mockImplementation(async () => content);
-            });
+        beforeEach(() => {
+            zosmfExpectSecondSpy.mockClear();
+            zosmfExpectSecondSpy.mockImplementation(async () => content);
+        });
 
-            it("should throw an error if the uss file name is null", async () => {
-                let response;
-                let caughtError;
+        it("should throw an error if the uss file name is null", async () => {
+            let response;
+            let caughtError;
 
-                // Test for NULL
-                try {
-                    response = await Get.USSFile(dummySession, null);
-                } catch (e) {
-                    caughtError = e;
-                }
+            // Test for NULL
+            try {
+                response = await Get.USSFile(dummySession, null);
+            } catch (e) {
+                caughtError = e;
+            }
 
-                expect(response).toBeUndefined();
-                expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
 
-            });
-            it("should throw an error if the uss file name is not defined", async () => {
-                let response;
-                let caughtError;
+        });
+        it("should throw an error if the uss file name is not defined", async () => {
+            let response;
+            let caughtError;
 
-                try {
-                    response = await Get.USSFile(dummySession, undefined);
-                } catch (e) {
-                    caughtError = e;
-                }
+            try {
+                response = await Get.USSFile(dummySession, undefined);
+            } catch (e) {
+                caughtError = e;
+            }
 
-                expect(response).toBeUndefined();
-                expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
-            });
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
 
-            it("should throw an error if the uss file name is empty", async () => {
-                let response;
-                let caughtError;
+        it("should throw an error if the uss file name is empty", async () => {
+            let response;
+            let caughtError;
 
-                try {
-                    response = await Get.USSFile(dummySession, "");
-                } catch (e) {
-                    caughtError = e;
-                }
+            try {
+                response = await Get.USSFile(dummySession, "");
+            } catch (e) {
+                caughtError = e;
+            }
 
-                expect(response).toBeUndefined();
-                expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
-            });
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
 
-            it("should throw an error if the uss file data type is record", async () => {
-                let response;
-                let caughtError;
-                const record = true;
+        it("should throw an error if the uss file data type is record", async () => {
+            let response;
+            let caughtError;
+            const record = true;
 
-                try {
-                    response = await Get.USSFile(dummySession, ussfile, {record});
-                } catch (e) {
-                    caughtError = e;
-                }
+            try {
+                response = await Get.USSFile(dummySession, ussfile, {record});
+            } catch (e) {
+                caughtError = e;
+            }
 
-                expect(response).toBeUndefined();
-                expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain(ZosFilesMessages.unsupportedDataType.message);
-            });
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.unsupportedDataType.message);
+        });
 
-            it("should get uss file content", async () => {
-                let response;
-                let caughtError;
+        it("should get uss file content", async () => {
+            let response;
+            let caughtError;
 
-                try {
-                    response = await Get.USSFile(dummySession, ussfile);
-                } catch (e) {
-                    caughtError = e;
-                }
+            try {
+                response = await Get.USSFile(dummySession, ussfile);
+            } catch (e) {
+                caughtError = e;
+            }
 
-                const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
 
-                expect(caughtError).toBeUndefined();
-                expect(response).toEqual(content);
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
 
-                expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-                expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
-            });
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
+        });
 
-            it("should get uss file content in binary mode", async () => {
-                let response;
-                let caughtError;
-                const binary = true;
+        it("should get uss file content in binary mode", async () => {
+            let response;
+            let caughtError;
+            const binary = true;
 
-                try {
-                    response = await Get.USSFile(dummySession, ussfile, {binary});
-                } catch (e) {
-                    caughtError = e;
-                }
+            try {
+                response = await Get.USSFile(dummySession, ussfile, {binary});
+            } catch (e) {
+                caughtError = e;
+            }
 
-                const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
 
-                expect(caughtError).toBeUndefined();
-                expect(response).toEqual(content);
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
 
-                expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-                expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
-            });
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+        });
+
+        it("should get uss file content with a specific encoding", async () => {
+            let response;
+            let caughtError;
+            const encoding = "1047";
+
+            try {
+                response = await Get.USSFile(dummySession, ussfile, {encoding});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+            header[keys[0]] = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + encoding;
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [
+                header,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ]);
+        });
+
+        it("should get uss file content with a set range", async () => {
+            let response;
+            let caughtError;
+            const range = "0-1000";
+
+            try {
+                response = await Get.USSFile(dummySession, ussfile, {range});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                {"X-IBM-Record-Range": range}
+            ]);
         });
     });
 });
