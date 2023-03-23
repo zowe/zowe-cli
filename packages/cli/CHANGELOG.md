@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed URI encoding on `zos-jobs` commands [#1596](https://github.com/zowe/zowe-cli/issues/1596)
+- BugFix: Updated Imperative to fix an error on Windows preventing plug-ins from installing if a local file or directory contains a space.
+
 ## `7.11.2`
 
 - BugFix: Updated daemon executable to resolve technical debt
