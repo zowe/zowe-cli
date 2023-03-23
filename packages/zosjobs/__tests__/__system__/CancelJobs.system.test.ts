@@ -41,7 +41,7 @@ describe("CancelJobs System tests", () => {
         });
 
         const ACCOUNT = systemProps.tso.account;
-        const maxStepNum = 255;  // Use lots of steps to make the job stay in INPUT status longer
+        const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
 
         sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, ACCOUNT, systemProps.zosjobs.jobclass, maxStepNum);
     });
@@ -197,7 +197,7 @@ describe("CancelJobs System tests - encoded", () => {
         });
 
         const ACCOUNT = systemProps.tso.account;
-        const maxStepNum = 255;  // Use lots of steps to make the job stay in INPUT status longer
+        const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
 
         sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, ACCOUNT, systemProps.zosjobs.jobclass, maxStepNum, true);
     });
