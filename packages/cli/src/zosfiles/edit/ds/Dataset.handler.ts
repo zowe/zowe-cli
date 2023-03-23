@@ -12,7 +12,7 @@
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { EditUtilities, Prompt, File } from "../Edit.utils"
+import { EditUtilities, Prompt, File } from "../Edit.utils";
 
 /**
  * Handler to edit a data set's content
@@ -38,7 +38,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         lfFile.path = await Utils.buildTempDir(mfFile.fileName, false);
 
         // Use or override stash (either way need to retrieve etag)
-        let stash: boolean = await Utils.checkForStash(lfFile.path);
+        const stash: boolean = await Utils.checkForStash(lfFile.path);
         let overrideStash: boolean = false;
         if (stash) {
             overrideStash = await Utils.promptUser(Prompt.useStash);
@@ -46,13 +46,14 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         if (overrideStash || !stash) {
             mfFile.apiData, lfFile.apiData = await Download.dataSet(session, lfFile.fileName, {returnEtag: true, file: lfFile.path});
         }else{
-            // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = apiData.apiResponse.etag; 
-            mfFile.apiData, lfFile.apiData = await Download.dataSet(session, lfFile.fileName, {returnEtag: true, file: lfFile.path, overwrite: false});
+            // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = apiData.apiResponse.etag
+            mfFile.apiData, lfFile.apiData = await Download.dataSet(session, lfFile.fileName,
+                {returnEtag: true, file: lfFile.path, overwrite: false});
         }
-        
+
         // Edit local copy of mf file
         await Utils.makeEdits(session, commandParameters, lfFile);
-        
+
         // Once done editing, user will provide terminal input. Upload local file with saved etag
         let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile, mfFile);
         while (!uploaded) {

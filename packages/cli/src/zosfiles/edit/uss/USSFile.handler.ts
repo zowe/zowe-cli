@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { Get, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
@@ -33,7 +33,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         // 4a. if prexisting tmp_dir: override stash
         // 4b. if prexisting tmp_dir: use stash
         // 4ba. perform file comparison, show output in terminal
-        // 4bb. overwrite ETAG 
+        // 4bb. overwrite ETAG
         // 5a. check for default editor and headless environment
         // 5b. open lf in editor or tell user to open up on their own if headless or no set default
         // 6. wait for user input to continue
