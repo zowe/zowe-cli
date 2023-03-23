@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.40.15`
 
 - BugFix: Updated Imperative to fix an error on Windows preventing plug-ins from installing if a local file or directory contains a space.
 
