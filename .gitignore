@@ -102,3 +102,4 @@ imperative_debug.log
 
 # Licenses in package folders (managed with build scripts)
 packages/*/LICENSE
+zowex/
