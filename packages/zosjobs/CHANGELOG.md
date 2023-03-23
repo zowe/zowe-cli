@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes 
+## `7.11.3` 
 
 - BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL
 
