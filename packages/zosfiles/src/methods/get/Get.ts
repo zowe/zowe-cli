@@ -13,7 +13,7 @@ import { posix } from "path";
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, IHeaderContent } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IGetOptions } from "./doc/IGetOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
@@ -43,7 +43,7 @@ export class Get {
         const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
         if (options.range) {
-            reqHeaders.push({"X-IBM-Record-Range": options.range});
+            reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
         }
 
         if (options.volume) {
@@ -83,7 +83,7 @@ export class Get {
         const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
         if (options.range) {
-            reqHeaders.push({"X-IBM-Record-Range": options.range});
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
         }
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 

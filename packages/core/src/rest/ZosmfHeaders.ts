@@ -203,6 +203,20 @@ export class ZosmfHeaders {
     public static readonly X_IBM_RESPONSE_TIMEOUT: string = "X-IBM-Response-Timeout";
 
     /**
+     * Header to set record range
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RECORD_RANGE: string = "X-IBM-Record-Range";
+
+    /**
+     * Header to set byte range
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly RANGE: string = "Range";
+
+    /**
      * Header to force return of ETag in response regardless of file size
      * By default Etag is returned only for files smaller than a system determined value (which is at least 8mb)
      * @static

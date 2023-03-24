@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added missing headers to ZosmfHeaders
+
 ## `7.1.1`
 
 - BugFix: Moved `authConfig` object from the base profile definition into the CLI package because it made the handler path invalid.
