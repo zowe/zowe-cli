@@ -68,8 +68,9 @@ export class StartTso {
         let collectedResponses: ICollectedResponses;
         if (zosmfResponse.servletKey != null){
             collectedResponses = await SendTso.getAllResponses(session, zosmfResponse);
+            return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, collectedResponses);
         }
-        return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, collectedResponses);
+        return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse);
     }
 
     /**
