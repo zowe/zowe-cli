@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `7.12.0`
 
 - BugFix: Added missing headers to ZosmfHeaders
 

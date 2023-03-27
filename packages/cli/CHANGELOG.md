@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.12.0`
 
 - Enhancement: Added `range` option to `zos-files view uss-file` command
 - BugFix: Fixed `encoding` option for `zos-files view uss-file` command [#1495](https://github.com/zowe/zowe-cli/issues/1495)

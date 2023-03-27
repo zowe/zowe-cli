@@ -23026,22 +23026,22 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "@zowe/perf-timing": "1.0.7",
-        "@zowe/provisioning-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-console-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-files-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-logs-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-tso-for-zowe-sdk": "7.11.3",
+        "@zowe/provisioning-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-console-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-files-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-logs-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-tso-for-zowe-sdk": "7.12.0",
         "@zowe/zos-uss-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-workflows-for-zowe-sdk": "7.11.3",
-        "@zowe/zosmf-for-zowe-sdk": "7.11.3",
+        "@zowe/zos-workflows-for-zowe-sdk": "7.12.0",
+        "@zowe/zosmf-for-zowe-sdk": "7.12.0",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
         "lodash": "4.17.21",
@@ -23097,7 +23097,7 @@
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "dependencies": {
         "comment-json": "4.1.1",
@@ -23120,7 +23120,7 @@
     },
     "packages/provisioning": {
       "name": "@zowe/provisioning-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "dependencies": {
         "js-yaml": "4.1.0"
@@ -23129,7 +23129,7 @@
         "@types/js-yaml": "^4.0.5",
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -23144,15 +23144,15 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.11.3"
+        "@zowe/zos-files-for-zowe-sdk": "7.12.0"
       },
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -23167,12 +23167,12 @@
     },
     "packages/zosconsole": {
       "name": "@zowe/zos-console-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -23187,7 +23187,7 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "dependencies": {
         "minimatch": "5.0.1"
@@ -23195,7 +23195,7 @@
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "@zowe/zos-uss-for-zowe-sdk": "7.11.3",
         "eslint": "^8.22.0",
@@ -23230,15 +23230,15 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.11.3"
+        "@zowe/zos-files-for-zowe-sdk": "7.12.0"
       },
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -23253,12 +23253,12 @@
     },
     "packages/zoslogs": {
       "name": "@zowe/zos-logs-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -23273,12 +23273,12 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -23293,15 +23293,15 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "7.11.3",
+      "version": "7.12.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "7.11.3"
+        "@zowe/zosmf-for-zowe-sdk": "7.12.0"
       },
       "devDependencies": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -29812,18 +29812,18 @@
         "@types/tar": "^6.1.2",
         "@types/which": "^2.0.1",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "@zowe/perf-timing": "1.0.7",
-        "@zowe/provisioning-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-console-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-files-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-logs-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-tso-for-zowe-sdk": "7.11.3",
+        "@zowe/provisioning-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-console-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-files-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-logs-for-zowe-sdk": "7.12.0",
+        "@zowe/zos-tso-for-zowe-sdk": "7.12.0",
         "@zowe/zos-uss-for-zowe-sdk": "7.11.3",
-        "@zowe/zos-workflows-for-zowe-sdk": "7.11.3",
-        "@zowe/zosmf-for-zowe-sdk": "7.11.3",
+        "@zowe/zos-workflows-for-zowe-sdk": "7.12.0",
+        "@zowe/zosmf-for-zowe-sdk": "7.12.0",
         "comment-json": "^4.1.1",
         "eslint": "^8.22.0",
         "find-process": "1.4.7",
@@ -30164,7 +30164,7 @@
         "@types/js-yaml": "^4.0.5",
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "js-yaml": "4.1.0",
@@ -30179,7 +30179,7 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -30193,7 +30193,7 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "@zowe/zos-uss-for-zowe-sdk": "7.11.3",
         "eslint": "^8.22.0",
@@ -30227,9 +30227,9 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
-        "@zowe/zos-files-for-zowe-sdk": "7.11.3",
+        "@zowe/zos-files-for-zowe-sdk": "7.12.0",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -30242,7 +30242,7 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
@@ -30256,9 +30256,9 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
-        "@zowe/zosmf-for-zowe-sdk": "7.11.3",
+        "@zowe/zosmf-for-zowe-sdk": "7.12.0",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -30286,9 +30286,9 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
-        "@zowe/zos-files-for-zowe-sdk": "7.11.3",
+        "@zowe/zos-files-for-zowe-sdk": "7.12.0",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -30301,7 +30301,7 @@
       "requires": {
         "@types/node": "^14.18.28",
         "@zowe/cli-test-utils": "7.11.3",
-        "@zowe/core-for-zowe-sdk": "7.11.3",
+        "@zowe/core-for-zowe-sdk": "7.12.0",
         "@zowe/imperative": "5.9.3",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
