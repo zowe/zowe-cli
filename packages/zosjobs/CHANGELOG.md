@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## `7.11.3` 
 
-- BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL
+- BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL [#1596](https://github.com/zowe/zowe-cli/issues/1596)
 
 ## `7.11.0`
 

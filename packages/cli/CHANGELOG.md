@@ -2,10 +2,16 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `range` option to `zos-files view uss-file` command
+- BugFix: Fixed `encoding` option for `zos-files view uss-file` command [#1495](https://github.com/zowe/zowe-cli/issues/1495)
+- BugFix: Adds notification that `encoding`, `binary`, and `record` options conflict on the `zos-files view data-set` and `zos-files view uss-file` commands
+
 ## `7.11.3`
 
 - BugFix: Fixed URI encoding on `zos-jobs` commands [#1596](https://github.com/zowe/zowe-cli/issues/1596)
-- BugFix: Updated Imperative to fix an error on Windows preventing plug-ins from installing if a local file or directory contains a space.
+- BugFix: Updated Imperative to fix an error on Windows preventing plug-ins from installing if a local file or directory contains a space. [#959](https://github.com/zowe/imperative/issues/959)
 
 ## `7.11.2`
 
