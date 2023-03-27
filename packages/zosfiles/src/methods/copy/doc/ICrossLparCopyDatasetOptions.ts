@@ -64,10 +64,10 @@ export interface ICrossLparCopyDatasetOptions extends IZosFilesOptions {
     targetDataClass?: string;
 
     /**
-     * Replace option
+     * Overwrite option
      * @type {boolean}
      */
-    replace?: boolean;
+    overwrite?: boolean;
 
     /**
      * rejectUnauthorized option

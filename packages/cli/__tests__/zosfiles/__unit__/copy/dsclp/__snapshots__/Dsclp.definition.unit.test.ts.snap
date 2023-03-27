@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DsDefinition should use the correct object for strings 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "rep",
+    ],
+    "description": "Specify this option as true if you wish to replace the target dataset if it already exists",
+    "name": "replace",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "th",
+    ],
+    "description": "The target z/OSMF server host name.",
+    "name": "target-host",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "tmc",
+    ],
+    "description": "The SMS management class to use for the allocation of the target data set.",
+    "name": "target-management-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "tpw",
+    ],
+    "description": "The target (z/OSMF) password, which can be the same as your TSO password.",
+    "name": "target-password",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "tp",
+    ],
+    "description": "The target z/OSMF server port.",
+    "name": "target-port",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "tu",
+    ],
+    "description": "The target (z/OSMF) user name, which can be the same as your TSO login.",
+    "name": "target-user",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "tvs",
+      "target-volser",
+    ],
+    "description": "The volume serial (VOLSER) on which you want the target data set to be placed.",
+    "name": "target-volume-serial",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "t-zosmf-p",
+    ],
+    "description": "The name of a (z/OSMF) profile to load for the target host. ",
+    "name": "target-zosmf-profile",
+    "type": "string",
+  },
+]
+`;
+
+exports[`DsDefinition should use the correct object for strings 2`] = `
+Array [
+  Object {
+    "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
+    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\"",
+  },
+  Object {
+    "description": "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
+    "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET(mem2)\\"",
+  },
+  Object {
+    "description": "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
+    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET(mem2)\\"",
+  },
+  Object {
+    "description": "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
+    "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET\\"",
+  },
+  Object {
+    "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
+    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --replace",
+  },
+]
+`;

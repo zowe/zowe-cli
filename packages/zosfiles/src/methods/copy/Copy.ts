@@ -9,7 +9,8 @@
 *
 */
 
-import { Session, AbstractSession, ImperativeExpect, Logger, Headers, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { Session, AbstractSession, ImperativeError, ImperativeExpect,
+    Logger, Headers, ITaskWithStatus, TaskStage, IHandlerResponseConsoleApi } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -101,6 +102,7 @@ export class Copy {
      * @param {ICrossLparCopyDatasetOptions}    targetOptions  - Options for target file and connection
      * @param {IGetOptions}                     sourceOptions  - Options for source file
      * @param {IDataSetOptions}                 options        - Common options
+     * @param {IHandlerResponseConsoleApi}      console        - Command console object
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the status of the copying
      *
@@ -113,24 +115,20 @@ export class Copy {
         { dsn: toDataSetName, member: toMemberName }: IDataSet,
         targetOptions: ICrossLparCopyDatasetOptions,
         sourceOptions: IGetOptions,
-        options: ICopyDatasetOptions
+        options: ICopyDatasetOptions,
+        console: IHandlerResponseConsoleApi
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         try {
-            /*const task: ITaskWithStatus = {
-                percentComplete: 0,
-                statusMessage: "Retrieving data set info",
-                stageName: TaskStage.IN_PROGRESS
-            };*/
-
             const sourceDataset = options["from-dataset"].dsn;
             let   sourceDataSetObj: IZosmfListResponse;
             const targetDataset = toDataSetName;
             let targetDataSetObj: IZosmfListResponse;
             let targetFound: boolean = false;
             let targetSession;
+            let overwriteTarget: boolean = options.replace;
 
             if(targetOptions.targetHost != undefined){
                 targetSession = new Session({
@@ -166,7 +164,7 @@ export class Copy {
                     sourceDataSetObj = SourceDsList.apiResponse.items[dsnameIndex];
                 }
             }
-            // TODO: Add check for replace or check for the replace flag
+            // TODO: Add check for overwrite or check for the overwrite flag
 
             const task2: ITaskWithStatus = {
                 percentComplete: 0,
@@ -176,11 +174,12 @@ export class Copy {
 
             /**
              *  Get the dataset and store it in a buffer
+             *
+             *  We want to download and upload in binary, as this command is copying from z/OS to z/OS system.
+             *  We do not want to do any sort of data conversion.
              */
             const dsContentBuf = await Get.dataSet(sourceSession, sourceDataset,
-                {   binary: sourceOptions.binary,
-                    encoding: sourceOptions.encoding,
-                    record: sourceOptions.record,
+                {   binary: true,
                     volume: sourceOptions.volume,
                     responseTimeout: options.responseTimeout,
                     task: task2
@@ -221,13 +220,26 @@ export class Copy {
                 await Create.dataSet(targetSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, targetDataset, createOptions);
             }
             else{
-                // TODO: Check for replace flag, else prompt?
+                if(overwriteTarget == undefined){
+                    overwriteTarget = (await this.promptForOverwrite(targetDataset, console)).valueOf();
+                }
             }
 
-            /**
-             *  Upload the source data to the target dataset
-             */
-            await Upload.bufferToDataSet(targetSession, dsContentBuf, targetDataset);
+            /*
+            *  Don't overwrite an existing dataset if overwrite is false
+            */
+            if(overwriteTarget == undefined || overwriteTarget == true){
+                /**
+                 *  Upload the source data to the target dataset
+                 */
+                await Upload.bufferToDataSet(targetSession, dsContentBuf, targetDataset,
+                    {   binary: true
+                    });
+            }
+            else
+            {
+                throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
+            }
 
             return {
                 success: true,
@@ -265,7 +277,7 @@ export class Copy {
     private static convertAlcTozOSMF( zosmfValue: string): string {
 
         if(zosmfValue == "BLOCKS")
-            return "BLKS";
+            return "BLK";
         if(zosmfValue == "CYLINDERS")
             return "CYL";
         if(zosmfValue == "TRACKS")
@@ -278,5 +290,14 @@ export class Copy {
             return "BYTE";
 
         return zosmfValue;
+    }
+
+    /**
+     *  Private function to prompt user if they wish to overwrite an existing dataset.
+     */
+    private static async promptForOverwrite(targetDSN: string, console: IHandlerResponseConsoleApi): Promise<boolean> {
+        const answer: string = await console.prompt(
+            `The dataset '${targetDSN}' already exists on the target system. Do you wish to overwrite it? [y/N]: `);
+        return (answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes"));
     }
 }

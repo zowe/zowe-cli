@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, IHandlerResponseConsoleApi} from "@zowe/imperative";
 import { Copy, IZosFilesResponse, IGetOptions, IDataSet, ICopyDatasetOptions, ICrossLparCopyDatasetOptions} from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { getDataSet } from "../../ZosFiles.utils";
@@ -24,6 +24,8 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
         const sourceDataset: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
         const targetDataset: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
         let rejectUnauthorizedFlag = true;
+        //let overwriteTarget = undefined;
+        const console:IHandlerResponseConsoleApi  = commandParameters.response.console;
 
         if(commandParameters.arguments.rejectUnauthorized == false){
             rejectUnauthorizedFlag = false;
@@ -59,7 +61,8 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             targetDataset,
             targetOptions,
             sourceOptions,
-            options
+            options,
+            console
         );
     }
 }
