@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
 import { PathLike } from "fs";
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
@@ -18,11 +18,13 @@ import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { lowerCase } from "lodash";
 import { unlink, existsSync } from "fs";
+import { IPromptOptions } from "@zowe/imperative/lib/cmd/src/doc/response/api/handler/IPromptOptions";
 
 export enum Prompt {
     useStash,
     doneEditing,
-    continueEditing
+    continueEditing,
+    success
 }
 
 export class File {
@@ -32,7 +34,7 @@ export class File {
 }
 
 export class EditUtilities {
-    // Build tmp_dir
+    // Build tmp dir
     public static async buildTempDir(fileName: PathLike, isUssFile?: boolean): Promise<string>{
         if (isUssFile){
             // Hash in a repeatable way if uss fileName
@@ -63,7 +65,7 @@ export class EditUtilities {
         let input;
         switch (prompt){
             case Prompt.useStash:
-                input = await CliUtils.readPrompt("Keep and continue editing found stash? Y/n");
+                input = await CliUtils.readPrompt("Keep and continue editing found stash? Y/n", {color: "green"});
                 if (input === null) {
                     // abort the command ... maybe do something with esc
                 }
@@ -75,7 +77,7 @@ export class EditUtilities {
                     return false;
                 }
             case Prompt.doneEditing:
-                input = await CliUtils.readPrompt("Enter any value in terminal once finished editing temporary file");
+                input = await CliUtils.readPrompt("Enter any value in terminal once finished editing temporary file", {color: "green"});
                 if (input === null) {
                     // abort the command
                 }else{
@@ -84,7 +86,7 @@ export class EditUtilities {
                 break;
             case Prompt.continueEditing:
                 input = await CliUtils.readPrompt("The version of the document you were editing has changed." +
-                    "Continue to make changes? Y/n\n" + fileInfo);
+                    "Continue to make changes? Y/n\n" + fileInfo, {color: "green"});
                 if (input === null) {
                     // abort the command
                 }
@@ -95,6 +97,9 @@ export class EditUtilities {
                     // override stash
                     return false;
                 }
+            case Prompt.success:
+                CliUtils.readPrompt("Successfully uploaded edited file to mainframe.", {color: "green"});
+                break;
         }
     }
 
@@ -113,6 +118,9 @@ export class EditUtilities {
     public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File): Promise<void>{
         // Perform file comparison: show diff in terminal, open lf in editor
         await this.fileComparison(session, commandParameters, lfFile);
+        if (commandParameters.arguments.editor){
+            await ProcessUtils.openInEditor(lfFile.path, commandParameters.arguments.editor);
+        }
         await this.promptUser(Prompt.doneEditing);
     }
 
