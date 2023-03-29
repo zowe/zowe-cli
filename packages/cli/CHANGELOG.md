@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to fix the `zowe auth li` and `zowe auth lo` aliases [#964](https://github.com/zowe/imperative/issues/964)
+
 ## `6.40.15`
 
 - BugFix: Updated Imperative to fix an error on Windows preventing plug-ins from installing if a local file or directory contains a space.
