@@ -37,11 +37,11 @@ export class EditUtilities {
         if (isUssFile){
             // Hash in a repeatable way if uss fileName
             const crypto = require("crypto");
-            return tmpdir() +"/" + crypto.createHash("shake256", { outputLength: 8 })
+            return tmpdir() +"\\" + crypto.createHash("shake256", { outputLength: 8 })
                 .update(fileName)
                 .digest("hex");
         }else{
-            return tmpdir() + "/" + fileName;
+            return tmpdir() + "\\" + fileName + ".txt";
         }
     }
 
@@ -55,6 +55,7 @@ export class EditUtilities {
             }
         } catch(err) {
             //imperative error probably?
+            return false;
         }
     }
 
@@ -64,7 +65,7 @@ export class EditUtilities {
             case Prompt.useStash:
                 input = await CliUtils.readPrompt("Keep and continue editing found stash? Y/n");
                 if (input === null) {
-                    // abort the command ... maybe do something w esc
+                    // abort the command ... maybe do something with esc
                 }
                 if (input == lowerCase("y")){
                     // keep stash
@@ -100,8 +101,9 @@ export class EditUtilities {
     public static async fileComparison(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File): Promise<IZosFilesResponse>{
         const handler = new LocalfileDatasetHandler;
         const helper = new CompareBaseHelper(commandParameters);
+        helper.browserView = true;
 
-        commandParameters.arguments.localFilePath = lfFile.path;
+        commandParameters.arguments.localFilePath = lfFile.path; //why do i do this? idr
         const lf = await handler.getFile1(session, commandParameters.arguments, helper);
         const mfds = await handler.getFile2(session, commandParameters.arguments, helper);
         // Editor will open with local file if default editor was set
@@ -130,7 +132,7 @@ export class EditUtilities {
             if (response.errorMessage){
                 if (response.errorMessage.includes("etag")){ //or error 412
                     //alert user that the version of document they've been editing has changed
-                    //ask if they want to continue working w their stash (local file)
+                    //ask if they want to continue working with their stash (local file)
                     const continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfFile.path);
                     if (continueToEdit){
                         // Download dataset again, refresh the etag of lfFile

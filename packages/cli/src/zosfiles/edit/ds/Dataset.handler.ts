@@ -31,7 +31,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         const Utils = EditUtilities;
         const mfFile = new File;
         const lfFile = new File;
-        mfFile.fileName, lfFile.fileName = commandParameters.arguments.file;
+        mfFile.fileName =  lfFile.fileName = commandParameters.arguments.dataSetName;
 
 
         // Build tmp_dir
@@ -44,12 +44,14 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             overrideStash = await Utils.promptUser(Prompt.useStash);
         }
         if (overrideStash || !stash) {
-            mfFile.apiData, lfFile.apiData = await Download.dataSet(session, lfFile.fileName, {returnEtag: true, file: lfFile.path});
+            mfFile.zosFilesResp = lfFile.zosFilesResp = await Download.dataSet(session, lfFile.fileName,
+                {returnEtag: true, file: lfFile.path});
         }else{
-            // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = apiData.apiResponse.etag
-            mfFile.apiData, lfFile.apiData = await Download.dataSet(session, lfFile.fileName,
+            // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = with.apiResponse.etag
+            mfFile.zosFilesResp = lfFile.zosFilesResp = await Download.dataSet(session, lfFile.fileName,
                 {returnEtag: true, file: lfFile.path, overwrite: false});
         }
+        //need to catch errors here for filenames that dont exist
 
         // Edit local copy of mf file
         await Utils.makeEdits(session, commandParameters, lfFile);
@@ -62,7 +64,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
 
         return {
             success: true,
-            commandResponse: "",//write something here about the successful editing/uploading
+            commandResponse: "Successfully uploaded edited file to mainframe",//write something here about the successful editing/uploading
             apiResponse: {}//return IZosFilesResponse here and pertinent file deets
         };
     }

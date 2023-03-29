@@ -29,6 +29,7 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "editor",
         aliases: ["e"],
         description: strings.EDITOR,
-        type: "string"
+        type: "string",
+        required: false
     }
 };

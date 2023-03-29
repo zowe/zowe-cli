@@ -44,11 +44,11 @@ export const DatasetDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `"notepad"`
+            options: `"ibmuser.cntl(iefbr14)" "--editor" "notepad"`
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `"C:\\Windows\\System32\\Notepad.exe"`
+            options: `"ibmuser.cntl(iefbr14)" "--editor" "C:\\Windows\\System32\\Notepad.exe"`
         }
     ]
 };
