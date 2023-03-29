@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to fix the `zowe auth li` and `zowe auth lo` aliases [#964](https://github.com/zowe/imperative/issues/964)
+
 ## `7.12.0`
 
 - Enhancement: Added `range` option to `zos-files view uss-file` command
