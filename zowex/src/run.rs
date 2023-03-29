@@ -21,8 +21,8 @@ use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
-use atty::Stream;
 use base64::encode;
+use is_terminal::IsTerminal;
 
 #[cfg(target_family = "windows")]
 extern crate fslock;
@@ -258,7 +258,7 @@ pub fn run_daemon_command(
     };
 
     let mut stdin = Vec::new();
-    if !atty::is(Stream::Stdin) {
+    if !std::io::stdin().is_terminal() {
         if let Err(err_val) = io::stdin().read_to_end(&mut stdin) {
             println!("Failed reading stdin\nDetails = {}", err_val);
             return Err(EXIT_CODE_COMM_IO_ERROR);

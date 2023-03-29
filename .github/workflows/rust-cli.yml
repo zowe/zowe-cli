@@ -15,41 +15,40 @@ jobs:
   build-linux:
     name: Build Linux
     runs-on: ubuntu-latest
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy
+    
+    - name: Prepare Cross
+      run: cargo install cross@0.2.5
 
     # Need to build in container with old version of GLIBC to support RHEL 7
     # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
-    container: quay.io/pypa/manylinux2014_x86_64
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-        components: clippy
-
     - name: Build
-      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+      working-directory: zowex 
+      run: cross build --verbose
 
     - name: Create Archive
       run: |
-        cd zowex/target/debug
+        cd zowex/target/x86_64-unknown-linux-gnu/debug
         tar -cvzf zowe.tgz zowe
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-linux.tgz
-        path: zowex/target/debug/zowe.tgz
+        path: zowex/target/x86_64-unknown-linux-gnu/debug/zowe.tgz
 
     - name: Run linter
-      uses: actions-rs/clippy-check@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        args: --manifest-path=zowex/Cargo.toml
+      run: |
+        cargo clippy --manifest-path=zowex/Cargo.toml
 
     - name: Run tests
       run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture
@@ -57,15 +56,13 @@ jobs:
   build-macos:
     name: Build MacOS
     runs-on: macos-latest
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
+
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
@@ -77,7 +74,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-macos.tgz
         path: zowex/target/debug/zowe.tgz
@@ -88,15 +85,13 @@ jobs:
   build-windows:
     name: Build Windows
     runs-on: windows-latest
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
+    
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Build
       run: cargo build --verbose --manifest-path=zowex/Cargo.toml
@@ -110,7 +105,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-windows.tgz
         path: zowex/target/debug/zowe.tgz

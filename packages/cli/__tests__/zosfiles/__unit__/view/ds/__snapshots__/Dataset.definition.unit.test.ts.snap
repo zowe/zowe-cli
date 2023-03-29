@@ -14,6 +14,10 @@ Array [
     "aliases": Array [
       "ec",
     ],
+    "conflictsWith": Array [
+      "binary",
+      "record",
+    ],
     "description": "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
     "name": "encoding",
     "type": "string",

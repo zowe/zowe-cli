@@ -95,6 +95,28 @@ describe("USS Utilities", () => {
         IO.deleteFile(posix.basename(newName));
     });
 
+    it("should rename USS file - encoded", async () => {
+        const defaultSystem = testEnvironment.systemTestProperties;
+
+        let createdName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.ENCO#ED.CREATED`);
+        createdName = createdName.replace(/\./g, "");
+        createdName = `${defaultSystem.unix.testdir}/${createdName}`;
+
+        let newName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.ENCO#ED.RENAMED`);
+        newName = newName.replace(/\./g, "");
+        newName = `${defaultSystem.unix.testdir}/${newName}`;
+
+        Imperative.console.info("Uploading file with name: " + createdName);
+        await Create.uss(REAL_SESSION, createdName, "file");
+        Imperative.console.info("Should rename to: " + newName);
+        await Utilities.renameUSSFile(REAL_SESSION, createdName, newName);
+        const result = await Download.ussFile(REAL_SESSION, newName);
+        expect(result.success).toBe(true);
+
+        // Delete created local file
+        IO.deleteFile(posix.basename(newName));
+    });
+
     describe("applyTaggedEncoding", () => {
         beforeAll(async () => {
             await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);

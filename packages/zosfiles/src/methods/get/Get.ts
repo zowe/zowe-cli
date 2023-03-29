@@ -13,7 +13,7 @@ import { posix } from "path";
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IGetOptions } from "./doc/IGetOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
@@ -38,16 +38,20 @@ export class Get {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
+        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, encodeURIComponent(dataSetName));
 
         const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
         if (options.range) {
-            reqHeaders.push({"X-IBM-Record-Range": options.range});
+            reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
         }
 
         if (options.volume) {
-            endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
+            endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                `-(${encodeURIComponent(options.volume)})`,
+                encodeURIComponent(dataSetName)
+            );
         }
 
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
@@ -69,21 +73,17 @@ export class Get {
     public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
-        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message); // This should never exist for USS files
         USSFileName = posix.normalize(USSFileName);
         // Get a proper destination for the file to be downloaded
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
-        if (USSFileName.substr(0, 1) === "/") {
-            USSFileName = USSFileName.substr(1);
-        }
-
-        const encodedFileName = encodeURIComponent(USSFileName);
+        const encodedFileName = ZosFilesUtils.sanitizeUssPathForRestCall(USSFileName);
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
-        if (options.binary === true) {
-            reqHeaders.unshift(ZosmfHeaders.X_IBM_BINARY);
+        if (options.range) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
         }
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 

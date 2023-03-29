@@ -89,7 +89,7 @@ export class Rename {
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
-            afterDataSetName
+            encodeURIComponent(afterDataSetName)
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

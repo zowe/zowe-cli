@@ -49,10 +49,14 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName, ZosFilesConstants.RES_DS_MEMBERS);
+            let endpoint = posix.join(
+                ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                encodeURIComponent(dataSetName),
+                ZosFilesConstants.RES_DS_MEMBERS);
 
             if (options.pattern) {
-                endpoint += `?pattern=${options.pattern}`;
+                endpoint += `?pattern=${encodeURIComponent(options.pattern)}`;
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -102,12 +106,12 @@ export class List {
 
         try {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${encodeURIComponent(dataSetName)}`);
             if (options.volume) {
-                endpoint = `${endpoint}&volser=${options.volume}`;
+                endpoint = `${endpoint}&volser=${encodeURIComponent(options.volume)}`;
             }
             if (options.start) {
-                endpoint = `${endpoint}&start=${options.start}`;
+                endpoint = `${endpoint}&start=${encodeURIComponent(options.start)}`;
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];

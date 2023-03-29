@@ -52,9 +52,8 @@ describe("Delete a z/OS File System", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.zfs(REAL_SESSION, fsname, createOptions);
+                await Create.zfs(REAL_SESSION, fsname, createOptions);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
