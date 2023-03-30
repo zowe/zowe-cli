@@ -13,8 +13,8 @@ use std::env;
 use std::io;
 
 // other source modules that constitute this executable
-mod defs;
 mod comm;
+mod defs;
 mod proc;
 mod run;
 mod util;
@@ -49,7 +49,7 @@ fn main() -> io::Result<()> {
      */
     let exit_code: i32 = match run_zowe_command(&mut cmd_line_args) {
         Ok(ok_val) => ok_val,
-        Err(err_val) => err_val
+        Err(err_val) => err_val,
     };
 
     /* Rust does not enable main() to return an exit code.

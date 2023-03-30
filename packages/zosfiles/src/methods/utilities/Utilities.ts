@@ -17,6 +17,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 export class Utilities {
     /**
@@ -40,9 +41,7 @@ export class Utilities {
         USSFileName = path.posix.normalize(USSFileName);
         // Get a proper destination for the file to be downloaded
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
-        if (USSFileName.substr(0, 1) === "/") {
-            USSFileName = USSFileName.substr(1);
-        }
+        USSFileName = ZosFilesUtils.formatUnixFilepath(USSFileName);
         USSFileName = encodeURIComponent(USSFileName);
 
         const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);

@@ -107,8 +107,8 @@ export class DownloadJobs {
         IO.createDirsSyncFromFilePath(file);
         IO.createFileSync(file);
 
-        let parameters: string = "/" + parms.jobFile.jobname + "/" + parms.jobFile.jobid +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + parms.jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = "/" + encodeURIComponent(parms.jobFile.jobname) + "/" + encodeURIComponent(parms.jobFile.jobid) +
+            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(parms.jobFile.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
 
         if (parms.binary) {
             parameters += "?mode=binary";

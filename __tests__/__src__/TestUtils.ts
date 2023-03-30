@@ -32,25 +32,40 @@ export function stripNewLines(str: string): string {
  * @param {string} hlq User specified high level qualify
  * @returns {string} A generated data set name
  */
-export function getUniqueDatasetName(hlq: string): string {
+export function getUniqueDatasetName(hlq: string, encoded = false): string {
     let generatedName: string = "";
     const randomNumber = Math.random();
     const timestampInMsNum = Date.now();
     let timestampInMs = Math.floor(randomNumber * timestampInMsNum).toString();
     let tempStr: string;
     const MAX_NODE_LENGTH = 7;
+    let MAX_NODES = 2;
+    let currNodes = 0;
+
+    if (encoded) {MAX_NODES = 1;}
 
     while (timestampInMs.length > 0) {
+        let anotherNode = false;
+        currNodes++;
         tempStr = timestampInMs.substring(0, MAX_NODE_LENGTH);
         generatedName += `A${tempStr}`;
         timestampInMs = timestampInMs.slice(tempStr.length, timestampInMs.length);
 
         if (timestampInMs.length > 0) {
+            anotherNode = true;
             generatedName += ".";
+        }
+
+        if (currNodes == MAX_NODES && anotherNode) {
+            currNodes--;
+            const generatedNameArray = generatedName.split(".");
+            generatedNameArray.shift();
+            generatedName = generatedNameArray.join(".");
         }
     }
 
-    const newDatasetName: string = `${hlq.trim()}.${generatedName}`;
+    let newDatasetName: string = `${hlq.trim()}.${generatedName}`;
+    if (encoded) {newDatasetName = newDatasetName + ".ENCO#ED";}
     return newDatasetName.toUpperCase();
 }
 

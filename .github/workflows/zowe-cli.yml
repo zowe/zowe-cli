@@ -83,11 +83,7 @@ jobs:
     - name: Install Rust toolchain
       id: install-rust
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Checkout Imperative
       id: checkout-imperative

@@ -119,7 +119,7 @@ export class Create {
                 }
             }
 
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
             const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options && options.responseTimeout != null) {
                 headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
@@ -144,7 +144,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
-        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
         const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
         if (options && options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
@@ -451,14 +451,14 @@ export class Create {
         // Removes undefined properties
         const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
 
-        let endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
+        let endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
 
         this.zfsValidateOptions(tempOptions);
         tempOptions.JSONversion = 1;
         const headers = [];
 
         if (!isNullOrUndefined(tempOptions.timeout)) {
-            endpoint += `?timeout=${tempOptions.timeout}`;
+            endpoint += `?timeout=${encodeURIComponent(tempOptions.timeout)}`;
             delete tempOptions.timeout;
         }
         if (options && options.responseTimeout != null) {
