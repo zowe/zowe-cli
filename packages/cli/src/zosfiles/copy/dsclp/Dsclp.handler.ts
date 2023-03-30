@@ -24,7 +24,6 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
         const sourceDataset: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
         const targetDataset: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
         let rejectUnauthorizedFlag = true;
-        //let overwriteTarget = undefined;
         const console:IHandlerResponseConsoleApi  = commandParameters.response.console;
 
         if(commandParameters.arguments.rejectUnauthorized == false){

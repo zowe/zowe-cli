@@ -9,6 +9,7 @@
 *
 */
 
+import { AbstractSession, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
 import { Copy, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsclpHandler from "../../../../../src/zosfiles/copy/dsclp/Dsclp.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
@@ -19,7 +20,7 @@ describe("DsclpHandler", () => {
         commandResponse: "THIS IS A TEST"
     };
 
-    const copyDatasetSpy = jest.spyOn(Copy, "dataSet");
+    const copyDatasetSpy = jest.spyOn(Copy, "dataSetCrossLPAR");
 
     beforeEach(() => {
         copyDatasetSpy.mockClear();
@@ -33,17 +34,63 @@ describe("DsclpHandler", () => {
 
         const fromDataSetName = "ABCD";
         const toDataSetName = "EFGH";
+        const zosmfProfileString = "zosmf";
+        const zosmfProfile = {
+            host: "secure.host.com",
+            port: 443,
+            user: "user",
+            password: "password",
+            auth: Buffer.from("user:password").toString("base64"),
+            rejectUnauthorized: true
+        };
+
+        const sessionArgs: any = {
+            type: "basic",
+            hostname: zosmfProfile.host,
+            port: zosmfProfile.port,
+            user: zosmfProfile.user,
+            password: zosmfProfile.password,
+            rejectUnauthorized: zosmfProfile.rejectUnauthorized
+        };
+        const expectedSession = new Session(sessionArgs);
+        const args = {...sessionArgs, host: zosmfProfile.host, password: zosmfProfile.password};
 
         const commandParameters: any = {
+            profiles: {
+                get: (type: string) => {
+                    if (type === zosmfProfileString) {
+                        return zosmfProfile;
+                    } else {
+                        throw new Error("Invalid profile retrieved by command!");
+                    }
+                }
+            },
             arguments: {
                 fromDataSetName,
                 toDataSetName
+            },
+            response: {
+                console: {
+                    log: jest.fn()
+                },
+                data: {
+                    setObj: jest.fn()
+                },
+                progress: {
+                    startBar: jest.fn((parms) => {
+                        // do nothing
+                    }),
+                    endBar: jest.fn(() => {
+                        // do nothing
+                    })
+                },
+                arguments: args
             }
         };
 
         const dummySession = {};
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
+        const response = await handler.processWithSession(commandParameters, expectedSession);
 
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
@@ -68,10 +115,31 @@ describe("DsclpHandler", () => {
             arguments: {
                 fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
                 toDataSetName: `${toDataSetName}(${toMemberName})`
+            },
+            response: {
+                console: {
+                    log: jest.fn()
+                },
+                data: {
+                    setObj: jest.fn()
+                },
+                progress: {
+                    startBar: jest.fn((parms) => {
+                        // do nothing
+                    }),
+                    endBar: jest.fn(() => {
+                        // do nothing
+                    })
+                }
             }
         };
 
         const dummySession = {};
+
+        const apiResponse: IZosFilesResponse = {
+            success: true,
+            commandResponse: "Success"
+        };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
@@ -100,7 +168,23 @@ describe("DsclpHandler", () => {
                 toDataSetName,
                 enq,
                 replace
-            }
+            },
+            response: {
+                console: {
+                    log: jest.fn()
+                },
+                data: {
+                    setObj: jest.fn()
+                },
+                progress: {
+                    startBar: jest.fn((parms) => {
+                        // do nothing
+                    }),
+                    endBar: jest.fn(() => {
+                        // do nothing
+                    })
+                }
+            }            
         };
 
         const dummySession = {};
