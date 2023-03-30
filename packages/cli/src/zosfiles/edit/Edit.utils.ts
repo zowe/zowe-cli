@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, TextUtils } from "@zowe/imperative";
 import { PathLike } from "fs";
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
@@ -64,7 +64,7 @@ export class EditUtilities {
         let input;
         switch (prompt){
             case Prompt.useStash:
-                input = await CliUtils.readPrompt("Keep and continue editing found stash? Y/n", {color: "green"});
+                input = await CliUtils.readPrompt(TextUtils.chalk.green("Keep and continue editing found stash? Y/n"));
                 if (input === null) {
                     // abort the command ... maybe do something with esc
                 }
@@ -76,7 +76,7 @@ export class EditUtilities {
                     return false;
                 }
             case Prompt.doneEditing:
-                input = await CliUtils.readPrompt("Enter any value in terminal once finished editing temporary file", {color: "green"});
+                input = await CliUtils.readPrompt(TextUtils.chalk.green("Enter any value in terminal once finished editing temporary file"));
                 if (input === null) {
                     // abort the command
                 }else{
@@ -84,8 +84,8 @@ export class EditUtilities {
                 }
                 break;
             case Prompt.continueEditing:
-                input = await CliUtils.readPrompt("The version of the document you were editing has changed." +
-                    "Continue to make changes? Y/n\n" + fileInfo, {color: "green"});
+                input = await CliUtils.readPrompt(TextUtils.chalk.green("The version of the document you were editing has changed." +
+                    "Continue to make changes? Y/n\n" + fileInfo));
                 if (input === null) {
                     // abort the command
                 }
@@ -97,7 +97,7 @@ export class EditUtilities {
                     return false;
                 }
             case Prompt.success:
-                CliUtils.readPrompt("Successfully uploaded edited file to mainframe.", {color: "green"});
+                CliUtils.readPrompt(TextUtils.chalk.green("Successfully uploaded edited file to mainframe."));
                 break;
         }
     }
