@@ -751,8 +751,8 @@ export default {
             }
         },
         OPTIONS: {
-            EDITOR: "Set the default editor that you wish to use for editing. Set the option to the editor's executable file location" +
-            "or the program's name: ie `--editor notepad`"
+            EDITOR: `Set the default editor that you wish to use for editing. Set the option to the editor's executable file location` +
+            `or the program's name: ie "--editor notepad"`
         }
     },
     COMPARE: {

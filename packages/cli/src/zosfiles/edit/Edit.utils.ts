@@ -18,7 +18,6 @@ import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { lowerCase } from "lodash";
 import { unlink, existsSync } from "fs";
-import { IPromptOptions } from "@zowe/imperative/lib/cmd/src/doc/response/api/handler/IPromptOptions";
 
 export enum Prompt {
     useStash,
