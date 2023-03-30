@@ -132,10 +132,10 @@ function expectZosmfResponseFailed(response: IZosmfTsoResponse, error: Imperativ
     expect(error.details.msg).toContain(msg);
 }
 
-function expectStartResponseSucceeded(response: IStartStopResponse, error: ImperativeError) {
+function expectStartResponseSucceeded(response: IStartStopResponse, error: ImperativeError, expectedResponse?: any) {
     expect(error).not.toBeDefined();
     expect(response).toBeDefined();
-    expect(response).toEqual(PRETEND_START_RESPONSE);
+    expect(response).toEqual(expectedResponse ?? PRETEND_START_RESPONSE);
 }
 
 function expectStartResponseFailed(response: IStartStopResponse, error: ImperativeError, msg: string) {
@@ -266,7 +266,7 @@ describe("StartTso start", () => {
 
         expect((StartTso.startCommon as any)).toHaveBeenCalledTimes(1);
         expect((StartTso.startCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
-        expectStartResponseSucceeded(response, error);
+        expectStartResponseSucceeded(response, error, { ...response, collectedResponses: null, messages: "" });
     });
 
     it("should throw an error if session parameter is undefined", async () => {
@@ -341,7 +341,7 @@ describe("StartTso start", () => {
 
         expect((StartTso.startCommon as any)).toHaveBeenCalledTimes(1);
         expect((StartTso.startCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
-        expectStartResponseSucceeded(response, error);
+        expectStartResponseSucceeded(response, error, { ...response, collectedResponses: null, messages: "" });
     });
 
 });

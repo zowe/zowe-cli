@@ -60,8 +60,8 @@ export class TsoResponseService {
             success: false,
             zosmfTsoResponse: zosmfResponse,
             servletKey: zosmfResponse.servletKey,
-            collectedResponses: (collectedResponses == null) ? null : collectedResponses.tsos,
-            messages: (collectedResponses == null) ? "" : collectedResponses.messages
+            collectedResponses: collectedResponses?.tsos ?? null,
+            messages: collectedResponses?.messages ?? ""
         };
 
         if (zosmfResponse.servletKey != null) {

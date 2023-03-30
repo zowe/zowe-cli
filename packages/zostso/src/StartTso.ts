@@ -64,9 +64,8 @@ export class StartTso {
         }
 
         const zosmfResponse = await this.startCommon(session, customParms);
-        const collectedResponses: ICollectedResponses = zosmfResponse.servletKey != null ?
-            await SendTso.getAllResponses(session, zosmfResponse) : { tsos: null, messages: "" };
-        return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, collectedResponses);
+        return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, zosmfResponse.servletKey ?
+            await SendTso.getAllResponses(session, zosmfResponse) : null);
     }
 
     /**
