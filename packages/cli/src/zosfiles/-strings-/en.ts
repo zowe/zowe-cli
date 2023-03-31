@@ -737,6 +737,7 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Edit the contents of the data set member "ibmuser.cntl(iefbr14)"`,
+                    EX2: `Edit the contents of the USS file "ibmuser.jcl(iefbr14)" and set extension as "jcl"`,
                 }
             },
             USS_FILE: {
@@ -746,13 +747,16 @@ export default {
                     USSFILE: "The name of the USS file you want to edit."
                 },
                 EXAMPLES: {
-                    EX1: `Edit the contents of the USS file "/a/ibmuser/my_text.txt"`,
+                    EX1: `Edit the contents of the USS file "/a/ibmuser/my_text.txt" in notepad`,
+                    EX2: `Edit the contents of the USS file "/a/ibmuser/my_jcl.jcl" in notepad and set extension as "jcl"`,
                 }
             }
         },
         OPTIONS: {
             EDITOR: `Set the default editor that you wish to use for editing. Set the option to the editor's executable file location` +
-            `or the program's name: ie "--editor notepad"`
+            `or the program's name: ie "--editor notepad"`, 
+            EXTENSION: `Set the file extension of the file for editing to leverage an editor's file-type-specific formatting:` +
+            `ie "--extension jcl"`
         }
     },
     COMPARE: {

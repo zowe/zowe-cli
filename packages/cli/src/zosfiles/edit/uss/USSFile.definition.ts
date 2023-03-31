@@ -39,7 +39,8 @@ export const USSFileDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        EditOptions.editor
+        EditOptions.editor,
+        EditOptions.extension
     ],
     examples: [
         {
@@ -49,6 +50,10 @@ export const USSFileDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
             options: "C:\\Windows\\System32\\Notepad.exe"
+        },
+        {
+            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
+            options: `"C:\\Windows\\System32\\Notepad.exe" "jcl"`
         }
     ]
 };

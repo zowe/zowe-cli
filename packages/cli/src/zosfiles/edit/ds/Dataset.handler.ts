@@ -12,7 +12,7 @@
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { EditUtilities, Prompt, File } from "../Edit.utils";
+import { EditUtilities, Prompt } from "../Edit.utils";
 
 /**
  * Handler to edit a data set's content
@@ -22,15 +22,11 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
         const Utils = EditUtilities;
-        const mfFile = new File;
-        const lfFile = new File;
-        mfFile.fileName =  lfFile.fileName = commandParameters.arguments.dataSetName;
-
-        // Build tmp_dir
-        lfFile.path = await Utils.buildTempDir(mfFile.fileName, false);
+        let lfFileResp : IZosFilesResponse;
+        const lfDir = await Utils.buildTmpDir(commandParameters);
 
         // Use or override stash (either way need to retrieve etag)
-        const stash: boolean = await Utils.checkForStash(lfFile.path);
+        const stash: boolean = await Utils.checkForStash(lfDir);
         let overrideStash: boolean = false;
 
         if (stash) {
@@ -45,12 +41,12 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (overrideStash || !stash) {
-                mfFile.zosFilesResp = lfFile.zosFilesResp = await Download.dataSet(session, lfFile.fileName,
-                    {returnEtag: true, file: lfFile.path});
+                lfFileResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
+                    {returnEtag: true, file: lfDir});
             }else{
-                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = with.apiResponse.etag
-                mfFile.zosFilesResp = lfFile.zosFilesResp = await Download.dataSet(session, lfFile.fileName,
-                    {returnEtag: true, file: lfFile.path, overwrite: false});
+                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
+                lfFileResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
+                    {returnEtag: true, file: lfDir, overwrite: false});
             }
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
@@ -60,12 +56,12 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         }
 
         // Edit local copy of mf file
-        await Utils.makeEdits(session, commandParameters, lfFile);
+        await Utils.makeEdits(session, commandParameters, lfDir);
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
-        let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile, mfFile);
+        let uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFileResp);
         while (!uploaded) {
-            uploaded = await Utils.uploadEdits(session, commandParameters, lfFile, mfFile);
+            uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFileResp);
         }
 
         return {

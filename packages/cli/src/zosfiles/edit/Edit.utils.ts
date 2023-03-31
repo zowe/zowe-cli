@@ -9,8 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, TextUtils } from "@zowe/imperative";
-import { PathLike } from "fs";
+import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult, TextUtils } from "@zowe/imperative";
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
@@ -22,31 +21,26 @@ import { unlink, existsSync } from "fs";
 export enum Prompt {
     useStash,
     doneEditing,
-    continueEditing,
-    success
+    continueEditing
 }
-
-export class File {
-    path: string;
-    fileName: string;
-    zosFilesResp: IZosFilesResponse;
-}
-
 export class EditUtilities {
-    // Build tmp dir
-    public static async buildTempDir(fileName: PathLike, isUssFile?: boolean): Promise<string>{
-        if (isUssFile){
-            // Hash in a repeatable way if uss fileName
+    // Build tmp path
+    public static async buildTmpDir(commandParameters: IHandlerParameters): Promise<string>{
+        const fileName = commandParameters.arguments.dataSetName;
+        const ext = (commandParameters.arguments.extension ? commandParameters.arguments.extension : ".txt");
+        const hashLen = 8;
+        if (commandParameters.positionals.includes('uss')){
+            // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
             const crypto = require("crypto");
-            return tmpdir() +"\\" + crypto.createHash("shake256", { outputLength: 8 })
+            return tmpdir() +"\\" + crypto.createHash("shake256", { outputLength: hashLen })
                 .update(fileName)
                 .digest("hex");
         }else{
-            return tmpdir() + "\\" + fileName + ".txt";
+            return tmpdir() + "\\" + fileName + "." + ext;
         }
     }
 
-    // Check for tmp_dir's existance as stash
+    // Check for tmp path's existance as stash
     public static async checkForStash(tmpDir: string): Promise<boolean>{
         try {
             if (existsSync(tmpDir)) {
@@ -55,122 +49,137 @@ export class EditUtilities {
                 return false;
             }
         } catch(err) {
-            //imperative error probably?
-            return false;
+            throw new ImperativeError({
+                msg: `Failure when checking for stash. Command terminated.`,
+                causeErrors: err
+            });
         }
     }
 
-    public static async promptUser(prompt: Prompt, fileInfo?: string): Promise<boolean>{
+    // Prompt users at different points in editing process
+    public static async promptUser(prompt: Prompt, filePath?: string): Promise<boolean>{
         let input;
         switch (prompt){
             case Prompt.useStash:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green("Keep and continue editing found stash? Y/n"));
+                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found stash? Y/n`));
                 if (input === null) {
-                    // abort the command ... maybe do something with esc
+                    throw new ImperativeError({
+                        msg: `No input provided. Command terminated.`
+                    });
                 }
                 if (input == lowerCase("y")){
-                    // keep stash
                     return true;
                 } else {
-                    // override stash
                     return false;
                 }
             case Prompt.doneEditing:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green("Enter any value in terminal once finished editing temporary file"));
+                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished editing temporary file: ${filePath}`));
                 if (input === null) {
-                    // abort the command
+                    throw new ImperativeError({
+                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${filePath}`)
+                    });
                 }else{
                     return true;
                 }
-                break;
             case Prompt.continueEditing:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green("The version of the document you were editing has changed." +
-                    "Continue to make changes? Y/n\n" + fileInfo));
+                input = await CliUtils.readPrompt(TextUtils.chalk.green(`The version of the document you were editing has changed.` +
+                    `Continue with current edits? Y/n\n${filePath}\n`));
                 if (input === null) {
-                    // abort the command
+                    throw new ImperativeError({
+                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${filePath}`)
+                    });
                 }
                 if (input == lowerCase("y")){
-                    // keep stash
                     return true;
                 } else {
-                    // override stash
                     return false;
                 }
-            case Prompt.success:
-                CliUtils.readPrompt(TextUtils.chalk.green("Successfully uploaded edited file to mainframe."));
-                break;
         }
     }
 
-    public static async fileComparison(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File): Promise<IZosFilesResponse>{
+    public static async fileComparison(session: AbstractSession, commandParameters: IHandlerParameters): Promise<IZosFilesResponse>{
         const handler = new LocalfileDatasetHandler;
         const helper = new CompareBaseHelper(commandParameters);
-        helper.browserView = true;
+        const gui = ProcessUtils.isGuiAvailable();
 
-        commandParameters.arguments.localFilePath = lfFile.path; //why do i do this? idr
+        if(gui === GuiResult.GUI_AVAILABLE){
+            helper.browserView = true;
+        }
+
         const lf = await handler.getFile1(session, commandParameters.arguments, helper);
         const mfds = await handler.getFile2(session, commandParameters.arguments, helper);
         // Editor will open with local file if default editor was set
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds));
     }
 
-    public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File): Promise<void>{
+    public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, tmpDir: string): Promise<void>{
         // Perform file comparison: show diff in terminal, open lf in editor
-        await this.fileComparison(session, commandParameters, lfFile);
+        // try{
+        commandParameters.arguments.localFilePath = tmpDir;
+        await this.fileComparison(session, commandParameters);
         if (commandParameters.arguments.editor){
-            await ProcessUtils.openInEditor(lfFile.path, commandParameters.arguments.editor);
+            await ProcessUtils.openInEditor(tmpDir, commandParameters.arguments.editor);
         }
-        await this.promptUser(Prompt.doneEditing);
+        await this.promptUser(Prompt.doneEditing, tmpDir);
+        // }catch(err){
+        //     throw new ImperativeError({
+        //         msg: TextUtils.chalk.red(`Command terminated. Failure when editing. Check state of temporary file: ${tmpDir}`),
+        //         causeErrors: err
+        //     });
+        // }
     }
 
-    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: File, mfFile: File): Promise<boolean>{
-    // !! WIP !!
+    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfDir: string, lfFileResp: IZosFilesResponse): Promise<boolean>{
     // Once input recieved, upload tmp file with saved etag
     // if matching etag: sucessful upload, destroy tmp file -> END
     // if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
+        const fileName = commandParameters.arguments.dataSetName;
         let response: IZosFilesResponse;
         try{
-            response = await Upload.fileToDataset(session, lfFile.path, lfFile.fileName, {etag: lfFile.zosFilesResp.apiResponse.etag});
+            response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
             if (response.success){
                 // If matching etag & successful upload, destroy tmp file -> END
-                await this.destroyTempFile(lfFile.path);
+                await this.destroyTempFile(lfDir);
                 return true;
             }
             if (response.errorMessage){
                 if (response.errorMessage.includes("etag")){ //or error 412
                     //alert user that the version of document they've been editing has changed
                     //ask if they want to continue working with their stash (local file)
-                    const continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfFile.path);
+                    const continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfDir);
                     if (continueToEdit){
                         // Download dataset again, refresh the etag of lfFile
-                        mfFile.zosFilesResp, lfFile.zosFilesResp = await Download.dataSet(session, lfFile.fileName,
-                            {returnEtag: true, file: lfFile.path, overwrite: false});
+                        lfFileResp = await Download.dataSet(session, fileName,
+                            {returnEtag: true, file: lfDir, overwrite: false});
                         // Then perform file comparision with mfds and lf(file youve been editing) with updated etag
-                        await this.makeEdits(session, commandParameters, lfFile);
+                        await this.makeEdits(session, commandParameters, lfDir);
                         return false;
                     }else{
-                        // Renew stash based on updated file version
-                        mfFile.zosFilesResp, lfFile.zosFilesResp = await Download.dataSet(session, lfFile.fileName,
-                            {returnEtag: true, file: lfFile.path});
-                        await this.makeEdits(session, commandParameters, lfFile);
+                        // Renew stash based on updated file version (overwrite stash)
+                        lfFileResp = await Download.dataSet(session, fileName,
+                            {returnEtag: true, file: lfDir});
+                        await this.makeEdits(session, commandParameters, lfDir);
                         return false;
                     }
                 }
                 throw new ImperativeError({
-                    msg: `Failed to save edits because remote has changed since last downloading file.` +
-                    `Edits have been stored locally: ${lfFile.path}`
+                    msg: TextUtils.chalk.red(`Failed to save edits because remote has changed since last downloading file.` +
+                    `Edits have been stored locally: ${lfDir}`)
                 });
             }
         }catch(err){
-            // do some error handling here
-            return false;
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`Command terminated. Stashed file will persist: ${lfDir}`),
+                causeErrors: err
+            });
         }
     }
 
     public static async destroyTempFile(tmpDir:string): Promise<void>{
         unlink (tmpDir, (err) => {
             if (err) throw new ImperativeError({
-                msg: `Temporary file could not be deleted: ${tmpDir}`
+                msg: `Temporary file could not be deleted: ${tmpDir}`,
+                causeErrors: err
             });
         });
     }
