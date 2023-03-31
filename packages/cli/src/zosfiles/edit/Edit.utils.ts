@@ -107,7 +107,12 @@ export class EditUtilities {
         }
 
         const lf = await handler.getFile1(session, commandParameters.arguments, helper);
-        const mfds = await handler.getFile2(session, commandParameters.arguments, helper);
+        let mfds: Buffer;
+        if (commandParameters.positionals.includes('ds')){
+            mfds = await handler.getFile2(session, commandParameters.arguments, helper);
+        }else{
+            mfds = await handler.getFile3(session, commandParameters.arguments, helper);
+        }
         // Editor will open with local file if default editor was set
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds));
     }
@@ -136,7 +141,11 @@ export class EditUtilities {
         const fileName = commandParameters.arguments.dataSetName;
         let response: IZosFilesResponse;
         try{
-            response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
+            if (commandParameters.positionals.includes('uss')){
+                response = await Upload.fileToUssFile(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
+            }else{
+                response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
+            }
             if (response.success){
                 // If matching etag & successful upload, destroy tmp file -> END
                 await this.destroyTempFile(lfDir);

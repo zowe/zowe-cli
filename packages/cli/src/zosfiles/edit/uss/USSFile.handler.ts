@@ -9,9 +9,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
+import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { EditUtilities, Prompt } from "../Edit.utils";
 
 /**
  * Handler to view USS file content
@@ -19,33 +20,54 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class USSFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const task: ITaskWithStatus = {
-            percentComplete: 0,
-            statusMessage: "Retrieving USS file",
-            stageName: TaskStage.IN_PROGRESS
-        };
-        commandParameters.response.progress.startBar({task});
+        // Setup
+        const Utils = EditUtilities;
+        let lfFileResp : IZosFilesResponse;
+        const lfDir = await Utils.buildTmpDir(commandParameters);
 
-        // 1. get/set editor
-        // 2. build tmp_dir
-        // 2a. hash uss file name
-        // 3. check for tmp_dir's existance as stash
-        // 4a. if prexisting tmp_dir: override stash
-        // 4b. if prexisting tmp_dir: use stash
-        // 4ba. perform file comparison, show output in terminal
-        // 4bb. overwrite ETAG
-        // 5a. check for default editor and headless environment
-        // 5b. open lf in editor or tell user to open up on their own if headless or no set default
-        // 6. wait for user input to continue
-        // 7. once input recieved, upload tmp file with saved ETAG
-        // 7a. if matching ETAG: sucessful upload, destroy tmp file -> END
-        // 7a. if non-matching ETAG: unsucessful upload -> 4ba
+        // Use or override stash (either way need to retrieve etag)
+        const stash: boolean = await Utils.checkForStash(lfDir);
+        let overrideStash: boolean = false;
 
+        if (stash) {
+            overrideStash = await Utils.promptUser(Prompt.useStash);
+        }
+        try{
+            const task: ITaskWithStatus = {
+                percentComplete: 10,
+                statusMessage: "Retrieving USS file",
+                stageName: TaskStage.IN_PROGRESS
+            };
+            commandParameters.response.progress.startBar({task});
+
+            if (overrideStash || !stash) {
+                lfFileResp = await Download.ussFile(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfDir});
+            }else{
+                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
+                lfFileResp = await Download.ussFile(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfDir, overwrite: false});
+            }
+            task.percentComplete = 70;
+            task.stageName = TaskStage.COMPLETE;
+        }catch(error){
+            //need to catch errors here for filenames that dont exist
+            return error;
+        }
+
+        // Edit local copy of mf file
+        await Utils.makeEdits(session, commandParameters, lfDir);
+
+        // Once done editing, user will provide terminal input. Upload local file with saved etag
+        let uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFileResp);
+        while (!uploaded) {
+            uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFileResp);
+        }
 
         return {
             success: true,
-            commandResponse: "",
-            apiResponse: {}
+            commandResponse: TextUtils.chalk.green(
+                "Successfully uploaded edited file to mainframe"
+            ),
+            apiResponse: {}//return IZosFilesResponse here and pertinent file deets
         };
     }
 }

@@ -25,4 +25,7 @@ export default class LocalfileDatasetHandler extends CompareBaseHandler {
     public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<Buffer> {
         return await Get.dataSet(session, args.dataSetName, { ...helper.file2Options, task: helper.task });
     }
+    public async getFile3(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<Buffer> {
+        return await Get.USSFile(session, args.dataSetName, { ...helper.file2Options, task: helper.task });
+    }
 }

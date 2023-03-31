@@ -41,8 +41,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (overrideStash || !stash) {
-                lfFileResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
-                    {returnEtag: true, file: lfDir});
+                lfFileResp = await Download.dataSet(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfDir});
             }else{
                 // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
                 lfFileResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
