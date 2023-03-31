@@ -32,9 +32,8 @@ export class EditUtilities {
         if (commandParameters.positionals.includes('uss')){
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
             const crypto = require("crypto");
-            return tmpdir() +"\\" + crypto.createHash("shake256", { outputLength: hashLen })
-                .update(fileName)
-                .digest("hex");
+            const hash = crypto.createHash('sha256', fileName, { outputLength: 2 });
+            return tmpdir() +"\\" + `${(hash.digest('base64')).substring(0,8)}`
         }else{
             return tmpdir() + "\\" + fileName + "." + ext;
         }
