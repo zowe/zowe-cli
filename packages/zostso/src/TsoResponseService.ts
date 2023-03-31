@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { ImperativeError } from "@zowe/imperative";
 import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { IStartStopResponse } from "./doc/IStartStopResponse";
@@ -60,9 +59,9 @@ export class TsoResponseService {
         const startResponse: IStartStopResponses = {
             success: false,
             zosmfTsoResponse: zosmfResponse,
-            collectedResponses: (collectedResponses == null) ? null : collectedResponses.tsos,
             servletKey: zosmfResponse.servletKey,
-            messages: (collectedResponses == null) ? "" : collectedResponses.messages
+            collectedResponses: collectedResponses?.tsos ?? null,
+            messages: collectedResponses?.messages ?? ""
         };
 
         if (zosmfResponse.servletKey != null) {
@@ -89,7 +88,7 @@ export class TsoResponseService {
             servletKey: null
         };
 
-        if (!isNullOrUndefined(zosmfResponse.servletKey)) {
+        if (zosmfResponse.servletKey != null) {
             PingResponse.success = true;
             PingResponse.zosmfPingResponse = zosmfResponse;
             PingResponse.servletKey = zosmfResponse.servletKey;
