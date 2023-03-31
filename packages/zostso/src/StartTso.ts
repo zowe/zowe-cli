@@ -11,7 +11,6 @@
 
 import { AbstractSession, Headers } from "@zowe/imperative";
 
-import { isNullOrUndefined } from "util";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { SendTso } from "./SendTso";
 import { IStartStopResponses } from "./doc/IStartStopResponses";
@@ -20,7 +19,6 @@ import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { TsoResponseService } from "./TsoResponseService";
-import { ICollectedResponses } from "./doc/ICollectedResponses";
 
 /**
  * Start TSO address space and receive servlet key
@@ -65,11 +63,8 @@ export class StartTso {
         }
 
         const zosmfResponse = await this.startCommon(session, customParms);
-        let collectedResponses: ICollectedResponses;
-        if (zosmfResponse.servletKey != null){
-            collectedResponses = await SendTso.getAllResponses(session, zosmfResponse);
-        }
-        return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, collectedResponses);
+        return TsoResponseService.populateStartAndStopCollectAll(zosmfResponse, zosmfResponse.servletKey ?
+            await SendTso.getAllResponses(session, zosmfResponse) : null);
     }
 
     /**
@@ -82,23 +77,15 @@ export class StartTso {
      * @memberOf StartTso
      */
     public static setDefaultAddressSpaceParams(parms: IStartTsoParms, accountNumber: string): IStartTsoParms {
-        const proc = isNullOrUndefined(parms.logonProcedure) ? TsoConstants.DEFAULT_PROC : parms.logonProcedure;
-        const chset = isNullOrUndefined(parms.characterSet) ? TsoConstants.DEFAULT_CHSET : parms.characterSet;
-        const cpage = isNullOrUndefined(parms.codePage) ? TsoConstants.DEFAULT_CPAGE : parms.codePage;
-        const rowNum = isNullOrUndefined(parms.rows) ? TsoConstants.DEFAULT_ROWS : parms.rows;
-        const cols = isNullOrUndefined(parms.columns) ? TsoConstants.DEFAULT_COLS : parms.columns;
-        const rSize = isNullOrUndefined(parms.regionSize) ? TsoConstants.DEFAULT_RSIZE : parms.regionSize;
-
-        const parameters: IStartTsoParms = {
-            logonProcedure: proc,
-            characterSet: chset,
-            codePage: cpage,
-            rows: rowNum,
-            columns: cols,
-            regionSize: rSize,
+        return {
+            logonProcedure: parms.logonProcedure ?? TsoConstants.DEFAULT_PROC,
+            characterSet: parms.characterSet ?? TsoConstants.DEFAULT_CHSET,
+            codePage: parms.codePage ?? TsoConstants.DEFAULT_CPAGE,
+            rows: parms.rows ?? TsoConstants.DEFAULT_ROWS,
+            columns: parms.columns ?? TsoConstants.DEFAULT_COLS,
+            regionSize: parms.regionSize ?? TsoConstants.DEFAULT_RSIZE,
             account: accountNumber
         };
-        return parameters;
     }
 
     /**
