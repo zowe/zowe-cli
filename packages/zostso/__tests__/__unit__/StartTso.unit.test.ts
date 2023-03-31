@@ -22,9 +22,8 @@ import {
     TsoConstants,
     SendTso
 } from "../../src";
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../core/lib/rest/ZosmfRestClient";
-import { inspect } from "util";
 
 const START_HEADERS: any[] = [Headers.APPLICATION_JSON];
 
@@ -132,10 +131,10 @@ function expectZosmfResponseFailed(response: IZosmfTsoResponse, error: Imperativ
     expect(error.details.msg).toContain(msg);
 }
 
-function expectStartResponseSucceeded(response: IStartStopResponse, error: ImperativeError) {
+function expectStartResponseSucceeded(response: IStartStopResponse, error: ImperativeError, expectedResponse?: any) {
     expect(error).not.toBeDefined();
     expect(response).toBeDefined();
-    expect(response).toEqual(PRETEND_START_RESPONSE);
+    expect(response).toEqual(expectedResponse ?? PRETEND_START_RESPONSE);
 }
 
 function expectStartResponseFailed(response: IStartStopResponse, error: ImperativeError, msg: string) {
@@ -186,8 +185,6 @@ describe("StartTso setDefaultAddressSpaceParams", () => {
 describe("StartTso getResourcesQuery", () => {
     it("should return resources query from provided parameters", () => {
         const resourcesQuery = StartTso.getResourcesQuery(PRETEND_REQUIRED_PARMS);
-        Imperative.console.info(`RESULT IS ${resourcesQuery}`);
-        Imperative.console.info(`TEST IS ${RESOURCES_QUERY}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(RESOURCES_QUERY);
     });
@@ -207,10 +204,8 @@ describe("StartTso startCommon", () => {
         let response: IZosmfTsoResponse;
         try {
             response = await StartTso.startCommon(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, RESOURCES_QUERY,
@@ -223,10 +218,8 @@ describe("StartTso startCommon", () => {
         let response: IZosmfTsoResponse;
         try {
             response = await StartTso.startCommon(undefined, PRETEND_REQUIRED_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionTso.message);
     });
@@ -236,10 +229,8 @@ describe("StartTso startCommon", () => {
         let response: IZosmfTsoResponse;
         try {
             response = await StartTso.startCommon(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noTsoStartInput.message);
     });
@@ -268,15 +259,13 @@ describe("StartTso start", () => {
 
         try {
             response = await StartTso.start(PRETEND_SESSION, ACCOUNT_NUMBER, PRETEND_REQUIRED_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
 
         expect((StartTso.startCommon as any)).toHaveBeenCalledTimes(1);
         expect((StartTso.startCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
-        expectStartResponseSucceeded(response, error);
+        expectStartResponseSucceeded(response, error, { ...response, collectedResponses: null, messages: "" });
     });
 
     it("should throw an error if session parameter is undefined", async () => {
@@ -293,10 +282,8 @@ describe("StartTso start", () => {
 
         try {
             response = await StartTso.start(undefined, ACCOUNT_NUMBER, PRETEND_REQUIRED_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
 
         expectStartResponseFailed(response, error, noSessionTso.message);
@@ -308,10 +295,8 @@ describe("StartTso start", () => {
 
         try {
             response = await StartTso.start(PRETEND_SESSION, undefined, PRETEND_REQUIRED_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
 
         expectStartResponseFailed(response, error, noAccountNumber.message);
@@ -323,10 +308,8 @@ describe("StartTso start", () => {
 
         try {
             response = await StartTso.start(PRETEND_SESSION, "", PRETEND_REQUIRED_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
 
         expectStartResponseFailed(response, error, noAccountNumber.message);
@@ -351,15 +334,13 @@ describe("StartTso start", () => {
         });
         try {
             response = await StartTso.start(PRETEND_SESSION, ACCOUNT_NUMBER, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
         }
 
         expect((StartTso.startCommon as any)).toHaveBeenCalledTimes(1);
         expect((StartTso.startCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
-        expectStartResponseSucceeded(response, error);
+        expectStartResponseSucceeded(response, error, { ...response, collectedResponses: null, messages: "" });
     });
 
 });
