@@ -40,6 +40,18 @@ export interface ICrossLparCopyDatasetOptions extends IZosFilesOptions {
     targetPort?: number;
 
     /**
+     * Target token type
+     * @type {string}
+     */
+    targetTokenType?: string;
+
+    /**
+     * Target token value
+     * @type {string}
+     */
+    targetTokenValue?: string;
+
+    /**
      * Target volser
      * @type {string}
      */

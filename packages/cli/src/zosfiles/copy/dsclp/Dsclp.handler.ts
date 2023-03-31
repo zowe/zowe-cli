@@ -46,6 +46,8 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             targetManagementClass:  commandParameters.arguments.targetManagementClass,
             targetStorageClass:   commandParameters.arguments.targetStorageClass,
             targetDataClass: commandParameters.arguments.targetDataClass,
+            targetTokenType: commandParameters.arguments.targetTokenType,
+            targetTokenValue: commandParameters.arguments.targetTokenValue,
             rejectUnauthorized: rejectUnauthorizedFlag
         };
 

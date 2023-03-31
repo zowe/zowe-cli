@@ -105,7 +105,7 @@ export class Copy {
      * @param {IHandlerResponseConsoleApi}      console        - Command console object
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the status of the copying
-     *
+     *o
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      *
@@ -136,7 +136,8 @@ export class Copy {
                     password: targetOptions.targetPassword,
                     hostname: targetOptions.targetHost,
                     port: targetOptions.targetPort,
-                    type: "basic",
+                    tokenType: targetOptions.targetTokenType,
+                    tokenValue: targetOptions.targetTokenValue,
                     rejectUnauthorized: targetOptions.rejectUnauthorized
                 });
             }

@@ -94,6 +94,30 @@ export const DsclpDefinition: ICommandDefinition = {
             aliases: ["tmc"],
             description: strings.OPTIONS.TARGETMGTCLS,
             type: "string"
+        },
+        {
+            name: "target-data-class",
+            aliases: ["tdc"],
+            description: strings.OPTIONS.TARGETDATACLS,
+            type: "string"
+        },
+        {
+            name: "target-storage-class",
+            aliases: ["tsc"],
+            description: strings.OPTIONS.TARGETSTGCLS,
+            type: "string"
+        },
+        {
+            name: "target-token-type",
+            aliases: ["ttt"],
+            description: strings.OPTIONS.TARGETTOKENTYPE,
+            type: "string"
+        },
+        {
+            name: "target-token-value",
+            aliases: ["ttv"],
+            description: strings.OPTIONS.TARGETTOKENVAL,
+            type: "string"
         }
     ] as ICommandOptionDefinition[]).sort((a, b) =>
         a.name.localeCompare(b.name)

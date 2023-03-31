@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { Copy, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsclpHandler from "../../../../../src/zosfiles/copy/dsclp/Dsclp.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
@@ -184,7 +184,7 @@ describe("DsclpHandler", () => {
                         // do nothing
                     })
                 }
-            }            
+            }
         };
 
         const dummySession = {};
