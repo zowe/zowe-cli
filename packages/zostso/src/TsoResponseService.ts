@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { ImperativeError } from "@zowe/imperative";
 import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { IStartStopResponse } from "./doc/IStartStopResponse";
@@ -29,7 +28,7 @@ export class TsoResponseService {
      * Populates start and stop commands response with z/OSMF response details
      * @param {IZosmfTsoResponse} zosmfResponse -  z/OSMF response object, @see {IZosmfTsoResponse}
      * @returns {IStartStopResponse} populated object with type of IStartStopResponse, @see {IStartStopResponse}
-     * @memberOf TsoResponseService
+     * @memberof TsoResponseService
      */
     public static populateStartAndStop(zosmfResponse: IZosmfTsoResponse): IStartStopResponse {
         TsoValidator.validateStartZosmfResponse(zosmfResponse);
@@ -53,16 +52,16 @@ export class TsoResponseService {
      * @param {IZosmfTsoResponse} zosmfResponse -  z/OSMF response object, @see {IZosmfTsoResponse}
      * @param {ICollectedResponses} collectedResponses -  collected z/OSMF responses object, @see {ICollectedResponses}
      * @returns {IStartStopResponse} populated object with type of IStartStopResponse, @see {IStartStopResponse}
-     * @memberOf TsoResponseService
+     * @memberof TsoResponseService
      */
     public static populateStartAndStopCollectAll(zosmfResponse: IZosmfTsoResponse, collectedResponses?: ICollectedResponses): IStartStopResponses {
         TsoValidator.validateStartZosmfResponse(zosmfResponse);
         const startResponse: IStartStopResponses = {
             success: false,
             zosmfTsoResponse: zosmfResponse,
-            collectedResponses: (collectedResponses == null) ? null : collectedResponses.tsos,
             servletKey: zosmfResponse.servletKey,
-            messages: (collectedResponses == null) ? "" : collectedResponses.messages
+            collectedResponses: collectedResponses?.tsos ?? null,
+            messages: collectedResponses?.messages ?? ""
         };
 
         if (zosmfResponse.servletKey != null) {
@@ -79,7 +78,7 @@ export class TsoResponseService {
      * Populates ping command response with z/OSMF response details
      * @param {IZosmfPingResponse} zosmfResponse -  z/OSMF response object, @see {IZosmfPingResponse}
      * @returns {PingResponse} populated object with type of IPingResponse
-     * @memberOf TsoResponseService
+     * @memberof TsoResponseService
      */
     public static populatePing(zosmfResponse: IZosmfPingResponse): IPingResponse {
         TsoValidator.validatePingZosmfResponse(zosmfResponse);
@@ -89,7 +88,7 @@ export class TsoResponseService {
             servletKey: null
         };
 
-        if (!isNullOrUndefined(zosmfResponse.servletKey)) {
+        if (zosmfResponse.servletKey != null) {
             PingResponse.success = true;
             PingResponse.zosmfPingResponse = zosmfResponse;
             PingResponse.servletKey = zosmfResponse.servletKey;
