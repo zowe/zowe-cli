@@ -19,7 +19,6 @@ import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { TsoResponseService } from "./TsoResponseService";
-import { ICollectedResponses } from "./doc/ICollectedResponses";
 
 /**
  * Start TSO address space and receive servlet key
