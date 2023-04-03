@@ -137,14 +137,17 @@ export class EditUtilities {
     // Once input recieved, upload tmp file with saved etag
     // if matching etag: sucessful upload, destroy tmp file -> END
     // if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
-        const fileName = commandParameters.arguments.dataSetName;
         let response: IZosFilesResponse;
         try{
+            let fileName;
             if (commandParameters.positionals.includes('uss')){
-                response = await Upload.fileToUssFile(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
+                fileName = commandParameters.arguments.file;
+                response = await Upload.fileToUssFile(session, lfDir, '/z/at895452/hello.c', {etag: lfFileResp.apiResponse.etag});
             }else{
+                fileName =commandParameters.arguments.dataSetName;
                 response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
             }
+
             if (response.success){
                 // If matching etag & successful upload, destroy tmp file -> END
                 await this.destroyTempFile(lfDir);

@@ -13,6 +13,7 @@ import { AbstractSession, ICommandArguments } from "@zowe/imperative";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import {CompareBaseHelper} from '../CompareBaseHelper';
 import { CompareBaseHandler } from '../CompareBase.handler';
+import { lowerCase } from "lodash";
 
 /**
  * Handler to compare a localfile and a dataset content
@@ -26,6 +27,7 @@ export default class LocalfileDatasetHandler extends CompareBaseHandler {
         return await Get.dataSet(session, args.dataSetName, { ...helper.file2Options, task: helper.task });
     }
     public async getFile3(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<Buffer> {
-        return await Get.USSFile(session, args.dataSetName, { ...helper.file2Options, task: helper.task });
+        // args.file is good enough here but for testing i need to write it differently 
+        return await Get.USSFile(session, '/z/at895452/hello.c', { ...helper.file2Options, task: helper.task });
     }
 }
