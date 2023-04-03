@@ -33,7 +33,7 @@ export class EditUtilities {
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256', fileName, { outputLength: 2 });
-            return tmpdir() +"\\" + `${(hash.digest('base64')).substring(0,8)}`
+            return tmpdir() +"\\" + `${(hash.digest('base64')).substring(0,8)}` + "." + ext;
         }else{
             return tmpdir() + "\\" + fileName + "." + ext;
         }

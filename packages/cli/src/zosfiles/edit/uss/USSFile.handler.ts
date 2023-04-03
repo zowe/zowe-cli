@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { EditUtilities, Prompt } from "../Edit.utils";
@@ -41,16 +41,18 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (overrideStash || !stash) {
-                lfFileResp = await Download.ussFile(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfDir});
+                lfFileResp = await Download.ussFile(session, (commandParameters.arguments.file).split('/').pop(), {returnEtag: true, file: lfDir});
             }else{
                 // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
-                lfFileResp = await Download.ussFile(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfDir, overwrite: false});
+                lfFileResp = await Download.ussFile(session, (commandParameters.arguments.file).split('/').pop(), {returnEtag: true, file: lfDir, overwrite: false});
             }
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
         }catch(error){
-            //need to catch errors here for filenames that dont exist
-            return error;
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
+                causeErrors: error
+            });
         }
 
         // Edit local copy of mf file

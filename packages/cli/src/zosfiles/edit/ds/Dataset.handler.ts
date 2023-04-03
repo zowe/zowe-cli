@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { EditUtilities, Prompt } from "../Edit.utils";
@@ -50,8 +50,10 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
         }catch(error){
-            //need to catch errors here for filenames that dont exist
-            return error;
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`File not found on mainframe. Command terminate`),
+                causeErrors: error
+            });
         }
 
         // Edit local copy of mf file
