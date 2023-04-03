@@ -52,6 +52,12 @@ export interface ICrossLparCopyDatasetOptions extends IZosFilesOptions {
     targetTokenValue?: string;
 
     /**
+     * Target zosmf profile
+     * @type {string}
+     */
+    targetZosmfProfile?: string;
+
+    /**
      * Target volser
      * @type {string}
      */

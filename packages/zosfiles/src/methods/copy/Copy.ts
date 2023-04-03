@@ -10,7 +10,8 @@
 */
 
 import { Session, AbstractSession, ImperativeError, ImperativeExpect,
-    Logger, Headers, ITaskWithStatus, TaskStage, IHandlerResponseConsoleApi } from "@zowe/imperative";
+    Logger, Headers, ITaskWithStatus, ProfileInfo, TaskStage, IProfMergedArg,
+    IHandlerResponseConsoleApi } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -122,14 +123,20 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         try {
-            const sourceDataset = options["from-dataset"].dsn;
+            let sourceDataset = options["from-dataset"].dsn;
+            const sourceMember  = options["from-dataset"].member;
             let   sourceDataSetObj: IZosmfListResponse;
-            const targetDataset = toDataSetName;
+            let   targetDataset = toDataSetName;
+            const targetMember  = toMemberName;
             let targetDataSetObj: IZosmfListResponse;
             let targetFound: boolean = false;
             let targetSession;
             let overwriteTarget: boolean = options.replace;
 
+            /** 
+            *  If the target host information is passed in, build the session using the supplied arguments,
+            *   otherwise load the values from a profile.
+            **/
             if(targetOptions.targetHost != undefined){
                 targetSession = new Session({
                     user: targetOptions.targetUser,
@@ -141,7 +148,31 @@ export class Copy {
                     rejectUnauthorized: targetOptions.rejectUnauthorized
                 });
             }
-            // TODO: Add team config definition support
+            else{
+                if(targetOptions.targetZosmfProfile != undefined){            
+                    const profInfo:ProfileInfo = new ProfileInfo("zowe");
+                    await profInfo.readProfilesFromDisk();
+                    const zosmfProfiles = profInfo.getAllProfiles("zosmf");
+                
+                    if (zosmfProfiles.length != 0) {
+                        const prof = zosmfProfiles.find(prof => prof.profName === targetOptions.targetZosmfProfile);
+                        const profArgs:IProfMergedArg = profInfo.mergeArgsForProfile(prof);
+
+                        profArgs.knownArgs.forEach((arg) => { 
+                            if( arg.secure) { 
+                                arg.argValue = profInfo.loadSecureArg(arg);
+                            }
+                        }
+                        );
+                        if(prof.profName === targetOptions.targetZosmfProfile ){                            
+                            targetSession = ProfileInfo.createSession(profArgs.knownArgs);
+                        }
+                    }
+                } 
+                else {
+                    targetSession = sourceSession;
+                }
+            }
 
             /**
              *  Does the target dataset exist?
@@ -164,8 +195,7 @@ export class Copy {
                     // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                     sourceDataSetObj = SourceDsList.apiResponse.items[dsnameIndex];
                 }
-            }
-            // TODO: Add check for overwrite or check for the overwrite flag
+            }            
 
             const task2: ITaskWithStatus = {
                 percentComplete: 0,
@@ -179,6 +209,9 @@ export class Copy {
              *  We want to download and upload in binary, as this command is copying from z/OS to z/OS system.
              *  We do not want to do any sort of data conversion.
              */
+            if(sourceMember != undefined){
+                sourceDataset = sourceDataset +"(" + sourceMember + ")";
+            }        
             const dsContentBuf = await Get.dataSet(sourceSession, sourceDataset,
                 {   binary: true,
                     volume: sourceOptions.volume,
@@ -221,7 +254,7 @@ export class Copy {
                 await Create.dataSet(targetSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, targetDataset, createOptions);
             }
             else{
-                if(overwriteTarget == undefined){
+                if(overwriteTarget == undefined && targetMember == undefined){
                     overwriteTarget = (await this.promptForOverwrite(targetDataset, console)).valueOf();
                 }
             }
@@ -229,10 +262,13 @@ export class Copy {
             /*
             *  Don't overwrite an existing dataset if overwrite is false
             */
-            if(overwriteTarget == undefined || overwriteTarget == true){
+            if(overwriteTarget == undefined || overwriteTarget == true || targetFound == false){
                 /**
                  *  Upload the source data to the target dataset
                  */
+                if(targetMember != undefined){
+                    targetDataset = targetDataset +"(" + targetMember + ")";
+                }   
                 await Upload.bufferToDataSet(targetSession, dsContentBuf, targetDataset,
                     {   binary: true
                     });
