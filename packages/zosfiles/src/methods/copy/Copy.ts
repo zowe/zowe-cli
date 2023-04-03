@@ -117,7 +117,7 @@ export class Copy {
         targetOptions: ICrossLparCopyDatasetOptions,
         sourceOptions: IGetOptions,
         options: ICopyDatasetOptions,
-        console: IHandlerResponseConsoleApi
+        console?: IHandlerResponseConsoleApi
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
@@ -133,7 +133,14 @@ export class Copy {
             let targetSession;
             let overwriteTarget: boolean = options.replace;
 
-            /** 
+            /**
+             * If no console is passed and no overwrite is passed then set to owerwrite to false
+             */
+            if(console == undefined && overwriteTarget == undefined){
+                overwriteTarget = false;
+            }
+
+            /**
             *  If the target host information is passed in, build the session using the supplied arguments,
             *   otherwise load the values from a profile.
             **/
@@ -149,26 +156,26 @@ export class Copy {
                 });
             }
             else{
-                if(targetOptions.targetZosmfProfile != undefined){            
+                if(targetOptions.targetZosmfProfile != undefined){
                     const profInfo:ProfileInfo = new ProfileInfo("zowe");
                     await profInfo.readProfilesFromDisk();
                     const zosmfProfiles = profInfo.getAllProfiles("zosmf");
-                
+
                     if (zosmfProfiles.length != 0) {
                         const prof = zosmfProfiles.find(prof => prof.profName === targetOptions.targetZosmfProfile);
                         const profArgs:IProfMergedArg = profInfo.mergeArgsForProfile(prof);
 
-                        profArgs.knownArgs.forEach((arg) => { 
-                            if( arg.secure) { 
+                        profArgs.knownArgs.forEach((arg) => {
+                            if( arg.secure) {
                                 arg.argValue = profInfo.loadSecureArg(arg);
                             }
                         }
                         );
-                        if(prof.profName === targetOptions.targetZosmfProfile ){                            
+                        if(prof.profName === targetOptions.targetZosmfProfile ){
                             targetSession = ProfileInfo.createSession(profArgs.knownArgs);
                         }
                     }
-                } 
+                }
                 else {
                     targetSession = sourceSession;
                 }
@@ -195,7 +202,7 @@ export class Copy {
                     // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                     sourceDataSetObj = SourceDsList.apiResponse.items[dsnameIndex];
                 }
-            }            
+            }
 
             const task2: ITaskWithStatus = {
                 percentComplete: 0,
@@ -211,7 +218,7 @@ export class Copy {
              */
             if(sourceMember != undefined){
                 sourceDataset = sourceDataset +"(" + sourceMember + ")";
-            }        
+            }
             const dsContentBuf = await Get.dataSet(sourceSession, sourceDataset,
                 {   binary: true,
                     volume: sourceOptions.volume,
@@ -255,7 +262,9 @@ export class Copy {
             }
             else{
                 if(overwriteTarget == undefined && targetMember == undefined){
-                    overwriteTarget = (await this.promptForOverwrite(targetDataset, console)).valueOf();
+                    if(console != undefined){
+                        overwriteTarget = (await this.promptForOverwrite(targetDataset, console)).valueOf();
+                    }
                 }
             }
 
@@ -268,7 +277,7 @@ export class Copy {
                  */
                 if(targetMember != undefined){
                     targetDataset = targetDataset +"(" + targetMember + ")";
-                }   
+                }
                 await Upload.bufferToDataSet(targetSession, dsContentBuf, targetDataset,
                     {   binary: true
                     });
@@ -304,7 +313,7 @@ export class Copy {
             storclass: targetOptions.targetStorageClass,
             mgntclass: targetOptions.targetManagementClass,
             dataclass: targetOptions.targetDataClass,
-            dirblk: 0
+            dirblk: parseInt(((dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE" ) ? "10" : "0"))
         }));
     }
 
