@@ -11,10 +11,9 @@
 
 import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { lowerCase } from "lodash";
 import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { EditUtilities, Prompt } from "../Edit.utils";
+import { EditUtilities, Prompt, LocalFile } from "../Edit.utils";
 
 /**
  * Handler to view USS file content
@@ -24,15 +23,16 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
         const Utils = EditUtilities;
-        let lfFileResp : IZosFilesResponse;
+        let lfFile = new LocalFile;
         const lfDir = await Utils.buildTmpDir(commandParameters);
+        commandParameters.arguments.localFilePath = lfDir;
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfDir);
-        let overrideStash: boolean = false;
+        let keepStash: boolean = false;
 
         if (stash) {
-            overrideStash = await Utils.promptUser(Prompt.useStash);
+            keepStash = await Utils.promptUser(Prompt.useStash);
         }
         try{
             const task: ITaskWithStatus = {
@@ -42,14 +42,14 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            if (overrideStash || !stash) {
-                lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfDir});
-                //lfFileResp = await Download.ussFile(session, lowerCase(commandParameters.arguments.file), {returnEtag: true, file: lfDir});
+            if (!keepStash || !stash) {
+                lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfDir});
             }else{
-                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
-                lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: tmpdir()+'toDelete'});
+                // Show difference between your lf and mfFile
+                Utils.fileComparison(session, commandParameters);
+                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = zosResp.apiResponse.etag
+                lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: tmpdir()+'toDelete'});
                 Utils.destroyTempFile((tmpdir()+'toDelete'));
-                //lfFileResp = await Download.ussFile(session, lowerCase(commandParameters.arguments.file), {returnEtag: true, file: lfDir, overwrite: false});
             }
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
@@ -61,12 +61,12 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         }
 
         // Edit local copy of mf file
-        await Utils.makeEdits(session, commandParameters, lfDir);
+        await Utils.makeEdits(session, commandParameters);
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
-        let uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFileResp);
+        let uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFile);
         while (!uploaded) {
-            uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFileResp);
+            uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFile);
         }
 
         return {

@@ -15,13 +15,15 @@ import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sd
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
-import { lowerCase } from "lodash";
 import { unlink, existsSync } from "fs";
 
+export class LocalFile {
+    zosResp: IZosFilesResponse;
+}
 export enum Prompt {
     useStash,
     doneEditing,
-    continueEditing
+    continueToUpload
 }
 export class EditUtilities {
     // Build tmp path
@@ -66,12 +68,12 @@ export class EditUtilities {
                         msg: `No input provided. Command terminated.`
                     });
                 }
-                if (input == lowerCase("y")){
+                if (input.toLowerCase() == 'y'){
                     //keep stash
-                    return false;
-                } else {
-                    //override
                     return true;
+                } else {
+                    //override stash
+                    return false;
                 }
             case Prompt.doneEditing:
                 input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished editing temporary file: ${filePath}`));
@@ -82,17 +84,19 @@ export class EditUtilities {
                 }else{
                     return true;
                 }
-            case Prompt.continueEditing:
+            case Prompt.continueToUpload:
                 input = await CliUtils.readPrompt(TextUtils.chalk.green(`The version of the document you were editing has changed.` +
-                    `Continue with current edits? Y/n\n${filePath}\n`));
+                    `Continue uploading current edits? Y/n\n${filePath}\n`));
                 if (input === null) {
                     throw new ImperativeError({
                         msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${filePath}`)
                     });
                 }
-                if (input == lowerCase("y")){
+                if (input.toLowerCase() == 'y'){
+                    //upload
                     return true;
                 } else {
+                    //open diff, keep editing
                     return false;
                 }
         }
@@ -122,24 +126,17 @@ export class EditUtilities {
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
     }
 
-    public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, tmpDir: string): Promise<void>{
+    public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters): Promise<void>{
+        const tmpDir = commandParameters.arguments.localFilePath;
         // Perform file comparison: show diff in terminal, open lf in editor
-        // try{
-        commandParameters.arguments.localFilePath = tmpDir;
-        await this.fileComparison(session, commandParameters);
         if (commandParameters.arguments.editor){
             await ProcessUtils.openInEditor(tmpDir, commandParameters.arguments.editor);
         }
         await this.promptUser(Prompt.doneEditing, tmpDir);
-        // }catch(err){
-        //     throw new ImperativeError({
-        //         msg: TextUtils.chalk.red(`Command terminated. Failure when editing. Check state of temporary file: ${tmpDir}`),
-        //         causeErrors: err
-        //     });
-        // }
+
     }
 
-    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfDir: string, lfFileResp: IZosFilesResponse): Promise<boolean>{
+    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfDir: string, lfFile: LocalFile): Promise<boolean>{
     // Once input recieved, upload tmp file with saved etag
     // if matching etag: sucessful upload, destroy tmp file -> END
     // if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
@@ -148,10 +145,10 @@ export class EditUtilities {
         try{
             if (commandParameters.positionals.includes('uss')){
                 fileName = commandParameters.arguments.file;
-                response = await Upload.fileToUssFile(session, lfDir, '/z/at895452/hello.c', {etag: lfFileResp.apiResponse.etag});
+                response = await Upload.fileToUssFile(session, lfDir, '/z/at895452/hello.c', {etag: lfFile.zosResp.apiResponse.etag});
             }else{
                 fileName =commandParameters.arguments.dataSetName;
-                response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
+                response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFile.zosResp.apiResponse.etag});
             }
             if (response.success){
                 // If matching etag & successful upload, destroy tmp file -> END
@@ -160,35 +157,36 @@ export class EditUtilities {
             }
         }catch(err){
             if (err.errorCode && err.errorCode == 412){
+                // open a fileComparision
+                await this.fileComparison(session, commandParameters);
                 //alert user that the version of document they've been editing has changed
                 //ask if they want to continue working with their stash (local file)
-                const continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfDir);
-                if (continueToEdit){
-                    // Download dataset/uss again, refresh the etag of lfFile (keep stash)
+                const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfDir);
+                if (continueToUpload){
+                    // Refresh the etag of lfFile (keep stash)
                     if (commandParameters.positionals.includes('uss')){
-                        lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c',
+                        lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c',
                             {returnEtag: true, file: tmpdir()+'toDelete'});
-                            //overwrite: false}); //seems like overwrite false doesnt work
-                        this.destroyTempFile((tmpdir()+'toDelete'));
                     }
                     else{
-                        lfFileResp = await Download.dataSet(session, fileName,
-                        {returnEtag: true, file: lfDir, overwrite: false});
+                        lfFile.zosResp = await Download.dataSet(session, fileName,
+                            {returnEtag: true, file: tmpdir()+'toDelete'});
                     }
-                    // Then perform file comparision with mfds and lf(file youve been editing) with updated etag
-                    await this.fileComparison(session, commandParameters);
+                    this.destroyTempFile((tmpdir()+'toDelete'));
+                    // upload lf version to mf
                     return false;
                 }else{
-                    // Renew stash based on updated file version (overwrite stash)
+                    // keep editing lf
                     if (commandParameters.positionals.includes('uss')){
-                        lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c',
+                        lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c',
                             {returnEtag: true, file: lfDir});
                     }
                     else{
-                        lfFileResp = await Download.dataSet(session, fileName,
+                        lfFile.zosResp = await Download.dataSet(session, fileName,
                         {returnEtag: true, file: lfDir});
                     }
-                    await this.makeEdits(session, commandParameters, lfDir);
+                    // open lf in editor
+                    await this.makeEdits(session, commandParameters);
                     return false;
                 }
             }
