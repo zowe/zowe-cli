@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
+import { AbstractSession, GuiResult, IHandlerParameters, ImperativeError, ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -25,13 +25,14 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         const Utils = EditUtilities;
         let lfFile = new LocalFile;
         lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
+        const guiAvail = ProcessUtils.isGuiAvailable();
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfFile.dir);
-        let keepStash: boolean = false;
+        let overrideStash: boolean = false;
 
         if (stash) {
-            keepStash = await Utils.promptUser(Prompt.useStash);
+            overrideStash = await Utils.promptUser(Prompt.useStash);
         }else{
             Utils.promptUser(Prompt.doneEditing, lfFile.dir);
         }
@@ -43,11 +44,13 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            if (!keepStash || !stash) {
+            if (overrideStash || !stash) {
                 lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfFile.dir});
             }else{
-                // Show difference between your lf and mfFile
-                Utils.fileComparison(session, commandParameters);
+                if (guiAvail == GuiResult.GUI_AVAILABLE){
+                    // Show difference between your lf and mfFile
+                    Utils.fileComparison(session, commandParameters);
+                }
                 // Download just to get etag. Don't overwrite prexisting lf file (stash) during process // etag = lfFile.zosResp.apiResponse.etag
                 lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: tmpdir()+'toDelete'});
                 Utils.destroyTempFile((tmpdir()+'toDelete'));
@@ -62,8 +65,9 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         }
 
         // Edit local copy of mf file
-        await Utils.makeEdits(session, commandParameters);
-
+        if (guiAvail == GuiResult.GUI_AVAILABLE){
+            await Utils.makeEdits(session, commandParameters);
+        }
         // Once done editing, user will provide terminal input. Upload local file with saved etag
         let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         while (!uploaded) {

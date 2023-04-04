@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
+import { AbstractSession, GuiResult, IHandlerParameters, ImperativeError, ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -25,6 +25,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         const Utils = EditUtilities;
         let lfFile = new LocalFile;
         lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
+        const guiAvail = ProcessUtils.isGuiAvailable();
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfFile.dir);
@@ -46,10 +47,12 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             if (overrideStash || !stash) {
                 lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfFile.dir});
             }else{
-                // Show difference between your lf and mfFile
-                Utils.fileComparison(session, commandParameters);
+                if (guiAvail == GuiResult.GUI_AVAILABLE){
+                    // Show difference between your lf and mfFile
+                    Utils.fileComparison(session, commandParameters);
+                }
                 // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = zosResp.apiResponse.etag
-                lfFile.zosResp = await Download.dalfFile.apiResponsetaSet(session, commandParameters.arguments.dataSetName,
+                lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
                     {returnEtag: true, file: tmpdir()+'toDelete'});
                 Utils.destroyTempFile((tmpdir()+'toDelete'));
             }
@@ -61,10 +64,12 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                 causeErrors: error
             });
         }
-
+        
         // Edit local copy of mf file
-        await Utils.makeEdits(session, commandParameters);
-
+        if (guiAvail == GuiResult.GUI_AVAILABLE){
+            await Utils.makeEdits(session, commandParameters);
+        }
+        
         // Once done editing, user will provide terminal input. Upload local file with saved etag
         let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         while (!uploaded) {

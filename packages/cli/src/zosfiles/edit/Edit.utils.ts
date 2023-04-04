@@ -77,7 +77,7 @@ export class EditUtilities {
                     return false;
                 }
             case Prompt.doneEditing:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished editing temporary file: ${filePath}`));
+                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished editing and saving temporary file: ${filePath}`));
                 if (input === null) {
                     throw new ImperativeError({
                         msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${filePath}`)
