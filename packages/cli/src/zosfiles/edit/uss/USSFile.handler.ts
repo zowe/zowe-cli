@@ -24,15 +24,16 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         // Setup
         const Utils = EditUtilities;
         let lfFile = new LocalFile;
-        const lfDir = await Utils.buildTmpDir(commandParameters);
-        commandParameters.arguments.localFilePath = lfDir;
+        lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
 
         // Use or override stash (either way need to retrieve etag)
-        const stash: boolean = await Utils.checkForStash(lfDir);
+        const stash: boolean = await Utils.checkForStash(lfFile.dir);
         let keepStash: boolean = false;
 
         if (stash) {
             keepStash = await Utils.promptUser(Prompt.useStash);
+        }else{
+            Utils.promptUser(Prompt.doneEditing, lfFile.dir);
         }
         try{
             const task: ITaskWithStatus = {
@@ -43,11 +44,11 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (!keepStash || !stash) {
-                lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfDir});
+                lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfFile.dir});
             }else{
                 // Show difference between your lf and mfFile
                 Utils.fileComparison(session, commandParameters);
-                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = zosResp.apiResponse.etag
+                // Download just to get etag. Don't overwrite prexisting lf file (stash) during process // etag = lfFile.zosResp.apiResponse.etag
                 lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: tmpdir()+'toDelete'});
                 Utils.destroyTempFile((tmpdir()+'toDelete'));
             }
@@ -64,9 +65,9 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         await Utils.makeEdits(session, commandParameters);
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
-        let uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFile);
+        let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         while (!uploaded) {
-            uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFile);
+            uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         }
 
         return {

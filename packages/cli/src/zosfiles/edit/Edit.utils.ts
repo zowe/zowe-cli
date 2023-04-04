@@ -18,6 +18,7 @@ import { CliUtils } from "@zowe/imperative";
 import { unlink, existsSync } from "fs";
 
 export class LocalFile {
+    dir: string;
     zosResp: IZosFilesResponse;
 }
 export enum Prompt {
@@ -136,7 +137,7 @@ export class EditUtilities {
 
     }
 
-    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfDir: string, lfFile: LocalFile): Promise<boolean>{
+    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: LocalFile): Promise<boolean>{
     // Once input recieved, upload tmp file with saved etag
     // if matching etag: sucessful upload, destroy tmp file -> END
     // if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
@@ -145,14 +146,14 @@ export class EditUtilities {
         try{
             if (commandParameters.positionals.includes('uss')){
                 fileName = commandParameters.arguments.file;
-                response = await Upload.fileToUssFile(session, lfDir, '/z/at895452/hello.c', {etag: lfFile.zosResp.apiResponse.etag});
+                response = await Upload.fileToUssFile(session, lfFile.dir, '/z/at895452/hello.c', {etag: lfFile.zosResp.apiResponse.etag});
             }else{
                 fileName =commandParameters.arguments.dataSetName;
-                response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFile.zosResp.apiResponse.etag});
+                response = await Upload.fileToDataset(session, lfFile.dir, fileName, {etag: lfFile.zosResp.apiResponse.etag});
             }
             if (response.success){
                 // If matching etag & successful upload, destroy tmp file -> END
-                await this.destroyTempFile(lfDir);
+                await this.destroyTempFile(lfFile.dir);
                 return true;
             }
         }catch(err){
@@ -161,7 +162,7 @@ export class EditUtilities {
                 await this.fileComparison(session, commandParameters);
                 //alert user that the version of document they've been editing has changed
                 //ask if they want to continue working with their stash (local file)
-                const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfDir);
+                const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfFile.dir);
                 if (continueToUpload){
                     // Refresh the etag of lfFile (keep stash)
                     if (commandParameters.positionals.includes('uss')){
@@ -179,11 +180,11 @@ export class EditUtilities {
                     // keep editing lf
                     if (commandParameters.positionals.includes('uss')){
                         lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c',
-                            {returnEtag: true, file: lfDir});
+                            {returnEtag: true, file: lfFile.dir});
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,
-                        {returnEtag: true, file: lfDir});
+                        {returnEtag: true, file: lfFile.dir});
                     }
                     // open lf in editor
                     await this.makeEdits(session, commandParameters);
@@ -191,7 +192,7 @@ export class EditUtilities {
                 }
             }
             throw new ImperativeError({
-                msg: TextUtils.chalk.red(`Command terminated. Stashed file will persist: ${lfDir}`),
+                msg: TextUtils.chalk.red(`Command terminated. Stashed file will persist: ${lfFile.dir}`),
                 causeErrors: err
             });
         }

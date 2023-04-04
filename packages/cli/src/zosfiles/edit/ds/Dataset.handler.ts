@@ -24,15 +24,16 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         // Setup
         const Utils = EditUtilities;
         let lfFile = new LocalFile;
-        const lfDir = await Utils.buildTmpDir(commandParameters);
-        commandParameters.arguments.localFilePath = lfDir;
+        lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
 
         // Use or override stash (either way need to retrieve etag)
-        const stash: boolean = await Utils.checkForStash(lfDir);
+        const stash: boolean = await Utils.checkForStash(lfFile.dir);
         let overrideStash: boolean = false;
 
         if (stash) {
             overrideStash = await Utils.promptUser(Prompt.useStash);
+        }else{
+            Utils.promptUser(Prompt.doneEditing, lfFile.dir);
         }
         try{
             const task: ITaskWithStatus = {
@@ -43,7 +44,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (overrideStash || !stash) {
-                lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfDir});
+                lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfFile.dir});
             }else{
                 // Show difference between your lf and mfFile
                 Utils.fileComparison(session, commandParameters);
@@ -65,9 +66,9 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
         await Utils.makeEdits(session, commandParameters);
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
-        let uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFile);
+        let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         while (!uploaded) {
-            uploaded = await Utils.uploadEdits(session, commandParameters, lfDir, lfFile);
+            uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         }
 
         return {
