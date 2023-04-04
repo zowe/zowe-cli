@@ -23,18 +23,15 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
         const Utils = EditUtilities;
+        const guiAvail = ProcessUtils.isGuiAvailable();
         let lfFile = new LocalFile;
         lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
-        const guiAvail = ProcessUtils.isGuiAvailable();
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfFile.dir);
         let overrideStash: boolean = false;
-
         if (stash) {
             overrideStash = await Utils.promptUser(Prompt.useStash);
-        }else{
-            Utils.promptUser(Prompt.doneEditing, lfFile.dir);
         }
         try{
             const task: ITaskWithStatus = {
@@ -66,7 +63,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
 
         // Edit local copy of mf file
         if (guiAvail == GuiResult.GUI_AVAILABLE){
-            await Utils.makeEdits(session, commandParameters);
+            await Utils.makeEdits(commandParameters);
         }
         // Once done editing, user will provide terminal input. Upload local file with saved etag
         let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);

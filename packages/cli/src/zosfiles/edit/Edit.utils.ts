@@ -127,7 +127,7 @@ export class EditUtilities {
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
     }
 
-    public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters): Promise<void>{
+    public static async makeEdits(commandParameters: IHandlerParameters): Promise<void>{
         const tmpDir = commandParameters.arguments.localFilePath;
         // Perform file comparison: show diff in terminal, open lf in editor
         if (commandParameters.arguments.editor){
@@ -187,7 +187,7 @@ export class EditUtilities {
                         {returnEtag: true, file: lfFile.dir});
                     }
                     // open lf in editor
-                    await this.makeEdits(session, commandParameters);
+                    await this.makeEdits(commandParameters);
                     return false;
                 }
             }
