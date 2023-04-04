@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult, TextUtils, IDiffOptions } from "@zowe/imperative";
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
@@ -67,9 +67,11 @@ export class EditUtilities {
                     });
                 }
                 if (input == lowerCase("y")){
-                    return true;
-                } else {
+                    //keep stash
                     return false;
+                } else {
+                    //override
+                    return true;
                 }
             case Prompt.doneEditing:
                 input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished editing temporary file: ${filePath}`));
@@ -100,6 +102,10 @@ export class EditUtilities {
         const handler = new LocalfileDatasetHandler;
         const helper = new CompareBaseHelper(commandParameters);
         const gui = ProcessUtils.isGuiAvailable();
+        const options: IDiffOptions = {
+            name1: "local file",
+            name2: "mainframe file"
+        }
 
         if(gui === GuiResult.GUI_AVAILABLE){
             helper.browserView = true;
@@ -113,7 +119,7 @@ export class EditUtilities {
             mfds = await handler.getFile3(session, commandParameters.arguments, helper);
         }
         // Editor will open with local file if default editor was set
-        return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds));
+        return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
     }
 
     public static async makeEdits(session: AbstractSession, commandParameters: IHandlerParameters, tmpDir: string): Promise<void>{
@@ -138,8 +144,8 @@ export class EditUtilities {
     // if matching etag: sucessful upload, destroy tmp file -> END
     // if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
         let response: IZosFilesResponse;
+        let fileName;
         try{
-            let fileName;
             if (commandParameters.positionals.includes('uss')){
                 fileName = commandParameters.arguments.file;
                 response = await Upload.fileToUssFile(session, lfDir, '/z/at895452/hello.c', {etag: lfFileResp.apiResponse.etag});
@@ -147,38 +153,45 @@ export class EditUtilities {
                 fileName =commandParameters.arguments.dataSetName;
                 response = await Upload.fileToDataset(session, lfDir, fileName, {etag: lfFileResp.apiResponse.etag});
             }
-
             if (response.success){
                 // If matching etag & successful upload, destroy tmp file -> END
                 await this.destroyTempFile(lfDir);
                 return true;
             }
-            if (response.errorMessage){
-                if (response.errorMessage.includes("etag")){ //or error 412
-                    //alert user that the version of document they've been editing has changed
-                    //ask if they want to continue working with their stash (local file)
-                    const continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfDir);
-                    if (continueToEdit){
-                        // Download dataset again, refresh the etag of lfFile
-                        lfFileResp = await Download.dataSet(session, fileName,
-                            {returnEtag: true, file: lfDir, overwrite: false});
-                        // Then perform file comparision with mfds and lf(file youve been editing) with updated etag
-                        await this.makeEdits(session, commandParameters, lfDir);
-                        return false;
-                    }else{
-                        // Renew stash based on updated file version (overwrite stash)
-                        lfFileResp = await Download.dataSet(session, fileName,
-                            {returnEtag: true, file: lfDir});
-                        await this.makeEdits(session, commandParameters, lfDir);
-                        return false;
-                    }
-                }
-                throw new ImperativeError({
-                    msg: TextUtils.chalk.red(`Failed to save edits because remote has changed since last downloading file.` +
-                    `Edits have been stored locally: ${lfDir}`)
-                });
-            }
         }catch(err){
+            if (err.errorCode && err.errorCode == 412){
+                //alert user that the version of document they've been editing has changed
+                //ask if they want to continue working with their stash (local file)
+                const continueToEdit: boolean = await this.promptUser(Prompt.continueEditing, lfDir);
+                if (continueToEdit){
+                    // Download dataset/uss again, refresh the etag of lfFile (keep stash)
+                    if (commandParameters.positionals.includes('uss')){
+                        lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c',
+                            {returnEtag: true, file: tmpdir()+'toDelete'});
+                            //overwrite: false}); //seems like overwrite false doesnt work
+                        this.destroyTempFile((tmpdir()+'toDelete'));
+                    }
+                    else{
+                        lfFileResp = await Download.dataSet(session, fileName,
+                        {returnEtag: true, file: lfDir, overwrite: false});
+                    }
+                    // Then perform file comparision with mfds and lf(file youve been editing) with updated etag
+                    await this.fileComparison(session, commandParameters);
+                    return false;
+                }else{
+                    // Renew stash based on updated file version (overwrite stash)
+                    if (commandParameters.positionals.includes('uss')){
+                        lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c',
+                            {returnEtag: true, file: lfDir});
+                    }
+                    else{
+                        lfFileResp = await Download.dataSet(session, fileName,
+                        {returnEtag: true, file: lfDir});
+                    }
+                    await this.makeEdits(session, commandParameters, lfDir);
+                    return false;
+                }
+            }
             throw new ImperativeError({
                 msg: TextUtils.chalk.red(`Command terminated. Stashed file will persist: ${lfDir}`),
                 causeErrors: err

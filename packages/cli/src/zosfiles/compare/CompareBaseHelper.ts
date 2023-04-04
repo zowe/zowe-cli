@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
@@ -173,15 +173,16 @@ export class CompareBaseHelper {
     /**
      * To get the difference string in terminal or in browser
      * @param {string} string1 - string of file 1 content
-     * @param  {string} string2 - string of file 2 content
+     * @param {string} string2 - string of file 2 content
+     * @param {IDiffOptions} options
      * @returns {IZosFilesResponse}
      * @public
      * @memberof CompareBaseHelper
      */
-    public async getResponse(string1: string, string2: string): Promise<IZosFilesResponse>{
+    public async getResponse(string1: string, string2: string, options?: IDiffOptions): Promise<IZosFilesResponse>{
         //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (this.browserView) {
-            await DiffUtils.openDiffInbrowser(string1, string2);
+            await DiffUtils.openDiffInbrowser(string1, string2, options);
             return {
                 success: true,
                 commandResponse: "Launching data-sets diffs in browser...",
@@ -190,9 +191,12 @@ export class CompareBaseHelper {
         }
 
         const jsonDiff = await DiffUtils.getDiffString(string1, string2, {
-            outputFormat: 'terminal',
-            contextLinesArg: this.contextLines
-        });
+                outputFormat: 'terminal',
+                contextLinesArg: this.contextLines,
+                name1: options.name1,
+                name2: options.name2
+            });
+
         return {
             success: true,
             commandResponse: jsonDiff,

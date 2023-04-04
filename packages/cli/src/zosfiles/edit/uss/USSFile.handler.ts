@@ -12,6 +12,7 @@
 import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { lowerCase } from "lodash";
+import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { EditUtilities, Prompt } from "../Edit.utils";
 
@@ -46,7 +47,8 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
                 //lfFileResp = await Download.ussFile(session, lowerCase(commandParameters.arguments.file), {returnEtag: true, file: lfDir});
             }else{
                 // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
-                lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfDir, overwrite: false});
+                lfFileResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: tmpdir()+'toDelete'});
+                Utils.destroyTempFile((tmpdir()+'toDelete'));
                 //lfFileResp = await Download.ussFile(session, lowerCase(commandParameters.arguments.file), {returnEtag: true, file: lfDir, overwrite: false});
             }
             task.percentComplete = 70;

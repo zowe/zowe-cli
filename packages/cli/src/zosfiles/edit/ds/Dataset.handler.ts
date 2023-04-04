@@ -11,6 +11,7 @@
 
 import { AbstractSession, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { EditUtilities, Prompt } from "../Edit.utils";
 
@@ -45,7 +46,8 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             }else{
                 // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = lfFileResp.apiResponse.etag
                 lfFileResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
-                    {returnEtag: true, file: lfDir, overwrite: false});
+                    {returnEtag: true, file: tmpdir()+'toDelete'});
+                Utils.destroyTempFile((tmpdir()+'toDelete'));
             }
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
