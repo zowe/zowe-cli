@@ -754,7 +754,7 @@ export default {
         },
         OPTIONS: {
             EDITOR: `Set the default editor that you wish to use for editing. Set the option to the editor's executable file location` +
-            `or the program's name: ie "--editor notepad"`, 
+            `or the program's name: ie "--editor notepad"`,
             EXTENSION: `Set the file extension of the file for editing to leverage an editor's file-type-specific formatting:` +
             `ie "--extension jcl"`
         }

@@ -31,12 +31,12 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.EDITOR,
         type: "string",
         required: false
-    }, 
+    },
     extension: {
         name: "extension",
         aliases: ["e"],
         description: strings.EXTENSION,
         type: "string",
         required: false
-    }, 
+    },
 };

@@ -36,7 +36,7 @@ export class EditUtilities {
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256', fileName, { outputLength: 2 });
-            return tmpdir() +"\\" + `${(hash.digest('base64')).substring(0,8)}` + "." + ext;
+            return tmpdir() +"\\" + `${(hash.digest('base64')).substring(0,hashLen)}` + "." + ext;
         }else{
             return tmpdir() + "\\" + fileName + "." + ext;
         }
@@ -77,7 +77,8 @@ export class EditUtilities {
                     return false;
                 }
             case Prompt.doneEditing:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished editing and saving temporary file: ${filePath}`));
+                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished `+
+                    `editing and saving temporary file: ${filePath}`));
                 if (input === null) {
                     throw new ImperativeError({
                         msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${filePath}`)
@@ -110,7 +111,7 @@ export class EditUtilities {
         const options: IDiffOptions = {
             name1: "local file",
             name2: "mainframe file"
-        }
+        };
 
         if(gui === GuiResult.GUI_AVAILABLE){
             helper.browserView = true;
@@ -157,7 +158,8 @@ export class EditUtilities {
                 return true;
             }
         }catch(err){
-            if (err.errorCode && err.errorCode == 412){
+            const etagMismatchCode = 412;
+            if (err.errorCode && err.errorCode == etagMismatchCode){
                 // open a fileComparision
                 await this.fileComparison(session, commandParameters);
                 //alert user that the version of document they've been editing has changed
@@ -184,7 +186,7 @@ export class EditUtilities {
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,
-                        {returnEtag: true, file: lfFile.dir});
+                            {returnEtag: true, file: lfFile.dir});
                     }
                     // open lf in editor
                     await this.makeEdits(commandParameters);

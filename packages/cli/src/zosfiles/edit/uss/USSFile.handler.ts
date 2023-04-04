@@ -9,7 +9,8 @@
 *
 */
 
-import { AbstractSession, GuiResult, IHandlerParameters, ImperativeError, ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
+import { AbstractSession, GuiResult, IHandlerParameters, ImperativeError,
+    ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -24,7 +25,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         // Setup
         const Utils = EditUtilities;
         const guiAvail = ProcessUtils.isGuiAvailable();
-        let lfFile = new LocalFile;
+        const lfFile = new LocalFile;
         lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
 
         // Use or override stash (either way need to retrieve etag)
