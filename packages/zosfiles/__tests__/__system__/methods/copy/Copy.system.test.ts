@@ -416,7 +416,7 @@ describe("Copy", () => {
                     Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
-            it.only("should warn if there isn't enough information to create a target session", async () => {
+            it("should warn if there isn't enough information to create a target session", async () => {
                 let error: any;
                 let response: IZosFilesResponse | undefined = undefined;
                 const toDataset: IDataSet = { dsn: toDataSetName };
@@ -444,7 +444,7 @@ describe("Copy", () => {
                 expect(error.message).toContain("Must have user & password OR base64 encoded credentials");
             });
 
-            it.only("should warn if the source dataset does not exist", async() => {
+            it("should warn if the source dataset does not exist", async() => {
                 let error: any;
                 let response: IZosFilesResponse | undefined = undefined;
                 const toDataset: IDataSet = { dsn: toDataSetName };
@@ -473,7 +473,7 @@ describe("Copy", () => {
                 expect(error.message).toContain("Data set not found.");
             });
 
-            it.only("should warn and fail if the destination dataset exists (session explicit)", async() => {
+            it("should warn and fail if the destination dataset exists (session explicit)", async() => {
                 let error: any;
                 let response: IZosFilesResponse | undefined = undefined;
                 const toDataset: IDataSet = { dsn: fromDataSetName };
@@ -503,7 +503,7 @@ describe("Copy", () => {
                 expect(error.message).toContain("Data set copied aborted. The existing target dataset was not overwritten.");
             });
 
-            it.only("should warn and fail if the destination dataset exists (session implicit)", async() => {
+            it("should warn and fail if the destination dataset exists (session implicit)", async() => {
                 let error: any;
                 let response: IZosFilesResponse | undefined = undefined;
                 const toDataset: IDataSet = { dsn: fromDataSetName };
