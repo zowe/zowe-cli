@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, GuiResult, IHandlerParameters,
-    ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
+    ITaskWithStatus, ImperativeError, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -57,12 +57,14 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             task.stageName = TaskStage.COMPLETE;
         }catch(error){
             Utils.errorHandler(error);
+            return;
         }
 
         // Edit local copy of mf file
         if (guiAvail == GuiResult.GUI_AVAILABLE){
             await Utils.makeEdits(commandParameters);
         }
+
         // Once done editing, user will provide terminal input. Upload local file with saved etag
         let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
         while (!uploaded) {

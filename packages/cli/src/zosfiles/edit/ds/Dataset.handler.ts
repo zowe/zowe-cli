@@ -49,7 +49,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                     // Show difference between your lf and mfFile
                     Utils.fileComparison(session, commandParameters);
                 }
-                // Download just to get etag. Don't overwrite prexisting file (stash) during process // etag = zosResp.apiResponse.etag
+                // Download just to get etag. Don't overwrite prexisting lf file (stash) during process // etag = lfFile.zosResp.apiResponse.etag
                 lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
                     {returnEtag: true, file: tmpdir()+'toDelete'});
                 Utils.destroyTempFile((tmpdir()+'toDelete'));
@@ -58,6 +58,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             task.stageName = TaskStage.COMPLETE;
         }catch(error){
             Utils.errorHandler(error);
+            return;
         }
 
         // Edit local copy of mf file
