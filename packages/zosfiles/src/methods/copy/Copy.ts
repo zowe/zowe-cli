@@ -11,7 +11,7 @@
 
 import { Session, AbstractSession, ImperativeError, ImperativeExpect,
     Logger, Headers, ITaskWithStatus, ProfileInfo, TaskStage, IProfMergedArg,
-    IHandlerResponseConsoleApi } from "@zowe/imperative";
+    IHandlerResponseConsoleApi, ConnectionPropsForSessCfg, ISession} from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -145,7 +145,7 @@ export class Copy {
             *   otherwise load the values from a profile.
             **/
             if(targetOptions.targetHost != undefined){
-                targetSession = new Session({
+                const targetSessionCfg: ISession = {
                     user: targetOptions.targetUser,
                     password: targetOptions.targetPassword,
                     hostname: targetOptions.targetHost,
@@ -153,7 +153,9 @@ export class Copy {
                     tokenType: targetOptions.targetTokenType,
                     tokenValue: targetOptions.targetTokenValue,
                     rejectUnauthorized: targetOptions.rejectUnauthorized
-                });
+                };
+                ConnectionPropsForSessCfg.resolveSessCfgProps(targetSessionCfg);
+                targetSession = new Session(targetSessionCfg);
             }
             else{
                 if(targetOptions.targetZosmfProfile != undefined){
