@@ -30,9 +30,9 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfFile.dir);
-        let overrideStash: boolean = false;
+        let keepStash: boolean = false;
         if (stash) {
-            overrideStash = await Utils.promptUser(Prompt.useStash);
+            keepStash = await Utils.promptUser(Prompt.useStash);
         }
         try{
             const task: ITaskWithStatus = {
@@ -42,7 +42,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            if (overrideStash || !stash) {
+            if (!keepStash || !stash) {
                 lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName, {returnEtag: true, file: lfFile.dir});
             }else{
                 if (guiAvail == GuiResult.GUI_AVAILABLE){

@@ -171,7 +171,8 @@ export class EditUtilities {
                 if (continueToUpload){
                     // Refresh the etag of lfFile (keep stash)
                     if (commandParameters.positionals.includes('uss')){
-                        lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: tmpdir()+'toDelete'});
+                        lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
+                            {returnEtag: true, file: tmpdir()+'toDelete'});
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,
@@ -183,7 +184,8 @@ export class EditUtilities {
                 }else{
                     // keep editing lf
                     if (commandParameters.positionals.includes('uss')){
-                        lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: lfFile.dir});
+                        lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
+                            {returnEtag: true, file: lfFile.dir});
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,
