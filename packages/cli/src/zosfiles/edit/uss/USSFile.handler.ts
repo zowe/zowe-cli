@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, GuiResult, IHandlerParameters, ImperativeError,
+import { AbstractSession, GuiResult, IHandlerParameters,
     ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { tmpdir } from "os";
@@ -56,10 +56,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
         }catch(error){
-            throw new ImperativeError({
-                msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
-                causeErrors: error
-            });
+            Utils.errorHandler(error);
         }
 
         // Edit local copy of mf file

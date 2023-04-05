@@ -9,7 +9,8 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult, TextUtils, IDiffOptions } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
+    TextUtils, IDiffOptions, RestClientError } from "@zowe/imperative";
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
@@ -206,6 +207,19 @@ export class EditUtilities {
                 msg: `Temporary file could not be deleted: ${tmpDir}`,
                 causeErrors: err
             });
+        });
+    }
+
+    public static async errorHandler(error: RestClientError): Promise<void>{
+        if (error.causeErrors.code == 'ENOTFOUND'){
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`ENOTFOUND: Unable to connect to mainframe.`),
+                causeErrors: error
+            });
+        }
+        throw new ImperativeError({
+            msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
+            causeErrors: error
         });
     }
 }
