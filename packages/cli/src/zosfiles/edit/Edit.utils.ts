@@ -30,15 +30,17 @@ export enum Prompt {
 export class EditUtilities {
     // Build tmp path
     public static async buildTmpDir(commandParameters: IHandlerParameters): Promise<string>{
-        const fileName = commandParameters.arguments.dataSetName;
         const ext = (commandParameters.arguments.extension ? commandParameters.arguments.extension : ".txt");
         const hashLen = 8;
+        let fileName: string;
         if (commandParameters.positionals.includes('uss')){
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
+            fileName = commandParameters.arguments.file;
             const crypto = require("crypto");
-            const hash = crypto.createHash('sha256', fileName, { outputLength: 2 });
-            return tmpdir() +"\\" + `${(hash.digest('base64')).substring(0,hashLen)}` + "." + ext;
+            const hash = crypto.createHash('sha1').update(fileName).digest('hex').substring(0,hashLen);
+            return tmpdir() +"\\" + hash  + "." + ext;
         }else{
+            fileName = commandParameters.arguments.dataSetName;
             return tmpdir() + "\\" + fileName + "." + ext;
         }
     }
@@ -148,7 +150,7 @@ export class EditUtilities {
         try{
             if (commandParameters.positionals.includes('uss')){
                 fileName = commandParameters.arguments.file;
-                response = await Upload.fileToUssFile(session, lfFile.dir, '/z/at895452/hello.c', {etag: lfFile.zosResp.apiResponse.etag});
+                response = await Upload.fileToUssFile(session, lfFile.dir, commandParameters.arguments.file, {etag: lfFile.zosResp.apiResponse.etag});
             }else{
                 fileName =commandParameters.arguments.dataSetName;
                 response = await Upload.fileToDataset(session, lfFile.dir, fileName, {etag: lfFile.zosResp.apiResponse.etag});
@@ -169,8 +171,7 @@ export class EditUtilities {
                 if (continueToUpload){
                     // Refresh the etag of lfFile (keep stash)
                     if (commandParameters.positionals.includes('uss')){
-                        lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c',
-                            {returnEtag: true, file: tmpdir()+'toDelete'});
+                        lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: tmpdir()+'toDelete'});
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,
@@ -182,8 +183,7 @@ export class EditUtilities {
                 }else{
                     // keep editing lf
                     if (commandParameters.positionals.includes('uss')){
-                        lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c',
-                            {returnEtag: true, file: lfFile.dir});
+                        lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: lfFile.dir});
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,

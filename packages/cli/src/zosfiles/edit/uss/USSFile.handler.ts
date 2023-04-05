@@ -43,14 +43,14 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (overrideStash || !stash) {
-                lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: lfFile.dir});
+                lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: lfFile.dir});
             }else{
                 if (guiAvail == GuiResult.GUI_AVAILABLE){
                     // Show difference between your lf and mfFile
                     Utils.fileComparison(session, commandParameters);
                 }
                 // Download just to get etag. Don't overwrite prexisting lf file (stash) during process // etag = lfFile.zosResp.apiResponse.etag
-                lfFile.zosResp = await Download.ussFile(session, '/z/at895452/hello.c', {returnEtag: true, file: tmpdir()+'toDelete'});
+                lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: tmpdir()+'toDelete'});
                 Utils.destroyTempFile((tmpdir()+'toDelete'));
             }
             task.percentComplete = 70;

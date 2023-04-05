@@ -27,6 +27,6 @@ export default class LocalfileDatasetHandler extends CompareBaseHandler {
     }
     public async getFile3(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<Buffer> {
         // args.file is good enough here but for testing i need to write uss path explicitly
-        return await Get.USSFile(session, '/z/at895452/hello.c', { ...helper.file2Options, task: helper.task });
+        return await Get.USSFile(session, args.file, { ...helper.file2Options, task: helper.task });
     }
 }
