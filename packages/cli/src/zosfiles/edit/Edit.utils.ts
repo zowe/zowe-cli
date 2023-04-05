@@ -14,6 +14,7 @@ import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, Gui
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
+import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { unlink, existsSync } from "fs";
@@ -108,7 +109,8 @@ export class EditUtilities {
     }
 
     public static async fileComparison(session: AbstractSession, commandParameters: IHandlerParameters): Promise<IZosFilesResponse>{
-        const handler = new LocalfileDatasetHandler;
+        const handlerDs = new LocalfileDatasetHandler;
+        const handlerUss = new LocalfileUssHandler;
         const helper = new CompareBaseHelper(commandParameters);
         const gui = ProcessUtils.isGuiAvailable();
         const options: IDiffOptions = {
@@ -120,12 +122,12 @@ export class EditUtilities {
             helper.browserView = true;
         }
 
-        const lf = await handler.getFile1(session, commandParameters.arguments, helper);
-        let mfds: Buffer;
+        const lf = await handlerDs.getFile1(session, commandParameters.arguments, helper);
+        let mfds: string | Buffer;
         if (commandParameters.positionals.includes('ds')){
-            mfds = await handler.getFile2(session, commandParameters.arguments, helper);
+            mfds = await handlerDs.getFile2(session, commandParameters.arguments, helper);
         }else{
-            mfds = await handler.getFile3(session, commandParameters.arguments, helper);
+            mfds = await handlerUss.getFile2(session, commandParameters.arguments, helper);
         }
         // Editor will open with local file if default editor was set
         return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
