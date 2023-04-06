@@ -165,10 +165,13 @@ export class Copy {
 
                     if (zosmfProfiles.length != 0) {
                         const prof = zosmfProfiles.find(prof => prof.profName === targetOptions.targetZosmfProfile);
+                        if (prof == undefined) {
+                            throw new ImperativeError({msg: "The supplied z/OSMF profile could not be found."});
+                        }
                         const profArgs:IProfMergedArg = profInfo.mergeArgsForProfile(prof);
 
                         profArgs.knownArgs.forEach((arg) => {
-                            if( arg.secure) {
+                            if(arg.secure) {
                                 arg.argValue = profInfo.loadSecureArg(arg);
                             }
                         }
@@ -176,6 +179,8 @@ export class Copy {
                         if(prof.profName === targetOptions.targetZosmfProfile ){
                             targetSession = ProfileInfo.createSession(profArgs.knownArgs);
                         }
+                    } else {
+                        throw new ImperativeError({msg: "There are no known z/OSMF profiles."});
                     }
                 }
                 else {
