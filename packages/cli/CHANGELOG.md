@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
+
 ## `7.13.0`
 
 - Enhancement: Updated Imperative to add `--prune` option to `zowe config secure` command. [Imperative #547](https://github.com/zowe/imperative/issues/547)

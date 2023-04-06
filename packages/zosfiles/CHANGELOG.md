@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Created edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
+
 ## `7.12.0`
 
 - BugFix: Fixed encoding option for `Get.USSFile` SDK method [#1495](https://github.com/zowe/zowe-cli/issues/1495)
