@@ -17,7 +17,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { EditUtilities as Utils, Prompt, LocalFile } from "../Edit.utils";
 
 /**
- * Handler to view USS file content
+ * Handler to Edit USS file content locally
  * @export
  */
 export default class USSFileHandler extends ZosFilesBaseHandler {
@@ -25,10 +25,10 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         // Setup
         const guiAvail = ProcessUtils.isGuiAvailable();
         const lfFile = new LocalFile;
-        lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
+        lfFile.path = commandParameters.arguments.localFilePath = await Utils.buildTempPath(commandParameters);
 
         // Use or override stash (either way need to retrieve etag)
-        const stash: boolean = await Utils.checkForStash(lfFile.dir);
+        const stash: boolean = await Utils.checkForStash(lfFile.path);
         let keepStash: boolean = false;
         if (stash) {
             keepStash = await Utils.promptUser(Prompt.useStash);
@@ -42,7 +42,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             commandParameters.response.progress.startBar({task});
 
             if (!keepStash || !stash) {
-                lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: lfFile.dir});
+                lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file, {returnEtag: true, file: lfFile.path});
             }else{
                 if (guiAvail == GuiResult.GUI_AVAILABLE){
                     // Show difference between your lf and mfFile
@@ -69,7 +69,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
 
         // Edit local copy of mf file
         if (guiAvail == GuiResult.GUI_AVAILABLE){
-            await Utils.makeEdits(commandParameters);
+            await Utils.makeEdits(lfFile.path, commandParameters.arguments.editor);
         }
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag

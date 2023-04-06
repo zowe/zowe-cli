@@ -34,7 +34,7 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
     },
     extension: {
         name: "extension",
-        aliases: ["e"],
+        aliases: ["ext"],
         description: strings.EXTENSION,
         type: "string",
         required: false
