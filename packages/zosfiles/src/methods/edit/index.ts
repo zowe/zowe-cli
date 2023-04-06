@@ -10,5 +10,3 @@
 */
 
 export * from "./doc/IEditOptions";
-
-export * from "./Edit";

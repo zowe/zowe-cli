@@ -10,14 +10,14 @@
 */
 
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffOptions, RestClientError } from "@zowe/imperative";
+    TextUtils, IDiffOptions } from "@zowe/imperative";
 import { tmpdir } from "os";
 import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
-import { unlink, existsSync } from "fs";
+import { unlink, existsSync, unlinkSync } from "fs";
 
 export class LocalFile {
     dir: string;
@@ -38,11 +38,11 @@ export class EditUtilities {
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
             fileName = commandParameters.arguments.file;
             const crypto = require("crypto");
-            const hash = crypto.createHash('sha1').update(fileName).digest('hex').substring(0,hashLen);
+            const hash = crypto.createHash('sha256').update(fileName).digest('hex').substring(0,hashLen);
             return tmpdir() +"\\" + hash  + "." + ext;
         }else{
             fileName = commandParameters.arguments.dataSetName;
-            return tmpdir() + "\\zoweTemp" + fileName + "." + ext;
+            return tmpdir() + "\\" + fileName + "." + ext;
         }
     }
 
@@ -73,13 +73,7 @@ export class EditUtilities {
                         msg: `No input provided. Command terminated.`
                     });
                 }
-                if (input.toLowerCase() == 'y'){
-                    //keep stash
-                    return true;
-                } else {
-                    //override stash
-                    return false;
-                }
+                return input.toLowerCase() === 'y';
             case Prompt.doneEditing:
                 input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished `+
                     `editing and saving temporary file: ${filePath}`));
@@ -98,13 +92,7 @@ export class EditUtilities {
                         msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${filePath}`)
                     });
                 }
-                if (input.toLowerCase() == 'y'){
-                    //upload
-                    return true;
-                } else {
-                    //open diff, keep editing
-                    return false;
-                }
+                return input.toLowerCase() === 'y';
         }
     }
 
@@ -206,24 +194,13 @@ export class EditUtilities {
     }
 
     public static async destroyTempFile(tmpDir:string): Promise<void>{
-        unlink (tmpDir, (err) => {
-            if (err) throw new ImperativeError({
+        try {
+            unlinkSync(tmpDir);
+        } catch (err) {
+            throw new ImperativeError({
                 msg: `Temporary file could not be deleted: ${tmpDir}`,
                 causeErrors: err
             });
-        });
-    }
-
-    public static async errorHandler(error: RestClientError): Promise<void>{
-        if (error.causeErrors.code == 'ENOTFOUND'){
-            throw new ImperativeError({
-                msg: TextUtils.chalk.red(`ENOTFOUND: Unable to connect to mainframe.`),
-                causeErrors: error
-            });
         }
-        throw new ImperativeError({
-            msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
-            causeErrors: error
-        });
     }
 }

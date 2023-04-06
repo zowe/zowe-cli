@@ -10,11 +10,11 @@
 */
 
 import { AbstractSession, GuiResult, IHandlerParameters,
-    ITaskWithStatus, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
+    ITaskWithStatus, ImperativeError, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { tmpdir } from "os";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { EditUtilities, Prompt, LocalFile } from "../Edit.utils";
+import { EditUtilities as Utils, Prompt, LocalFile } from "../Edit.utils";
 
 /**
  * Handler to view USS file content
@@ -23,7 +23,6 @@ import { EditUtilities, Prompt, LocalFile } from "../Edit.utils";
 export default class USSFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
-        const Utils = EditUtilities;
         const guiAvail = ProcessUtils.isGuiAvailable();
         const lfFile = new LocalFile;
         lfFile.dir = commandParameters.arguments.localFilePath = await Utils.buildTmpDir(commandParameters);
@@ -56,8 +55,16 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
         }catch(error){
-            Utils.errorHandler(error);
-            return;
+            if (error.causeErrors && error.causeErrors.code == 'ENOTFOUND'){
+                throw new ImperativeError({
+                    msg: TextUtils.chalk.red(`ENOTFOUND: Unable to connect to mainframe.`),
+                    causeErrors: error
+                });
+            }
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
+                causeErrors: error
+            });
         }
 
         // Edit local copy of mf file
@@ -66,10 +73,10 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
         }
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
-        let uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
-        while (!uploaded) {
+        let uploaded = false;
+        do {
             uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
-        }
+        } while (!uploaded);
 
         return {
             success: true,
