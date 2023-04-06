@@ -42,7 +42,7 @@ export class EditUtilities {
             return tmpdir() +"\\" + hash  + "." + ext;
         }else{
             fileName = commandParameters.arguments.dataSetName;
-            return tmpdir() + "\\" + fileName + "." + ext;
+            return tmpdir() + "\\zoweTemp" + fileName + "." + ext;
         }
     }
 
