@@ -83,8 +83,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             success: true,
             commandResponse: TextUtils.chalk.green(
                 "Successfully uploaded edited file to mainframe"
-            ),
-            apiResponse: {}//return IZosFilesResponse here and pertinent file deets
+            )
         };
     }
 }

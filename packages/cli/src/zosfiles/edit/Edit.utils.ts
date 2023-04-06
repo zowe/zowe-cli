@@ -223,7 +223,7 @@ export class EditUtilities {
                             {returnEtag: true, file: lfFile.path});
                     }
                     // open lf in editor
-                    await this.makeEdits(commandParameters);
+                    await this.makeEdits(lfFile.path, commandParameters.arguments.editor);
                     return false;
                 }
             }
