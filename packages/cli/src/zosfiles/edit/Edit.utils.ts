@@ -44,7 +44,7 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async buildTempPath(commandParameters: IHandlerParameters): Promise<string>{
-        const ext = (commandParameters.arguments.extension ? commandParameters.arguments.extension : ".txt");
+        const ext = commandParameters.arguments.extension ?? ".txt";
         let fileName: string;
         if (commandParameters.positionals.includes('uss')){
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
@@ -52,10 +52,9 @@ export class EditUtilities {
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(fileName).digest('hex');
             return tmpdir() +"\\" + hash  + "." + ext;
-        }else{
-            fileName = commandParameters.arguments.dataSetName;
-            return tmpdir() + "\\" + fileName + "." + ext;
         }
+        fileName = commandParameters.arguments.dataSetName;
+        return tmpdir() + "\\" + fileName + "." + ext;
     }
 
     /**

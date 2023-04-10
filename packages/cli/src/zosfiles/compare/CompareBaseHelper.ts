@@ -190,20 +190,12 @@ export class CompareBaseHelper {
             };
         }
 
-        let jsonDiff;
-        if (options.name1 && options.name2){
-            jsonDiff = await DiffUtils.getDiffString(string1, string2, {
-                outputFormat: 'terminal',
-                contextLinesArg: this.contextLines,
-                name1: options.name1,
-                name2: options.name2
-            });
-        }else{
-            jsonDiff = await DiffUtils.getDiffString(string1, string2, {
-                outputFormat: 'terminal',
-                contextLinesArg: this.contextLines
-            });
-        }
+        const jsonDiff = await DiffUtils.getDiffString(string1, string2, {
+            outputFormat: 'terminal',
+            contextLinesArg: this.contextLines,
+            name1: options.name1,
+            name2: options.name2
+        });
 
         return {
             success: true,
