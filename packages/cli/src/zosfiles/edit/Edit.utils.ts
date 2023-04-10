@@ -19,10 +19,21 @@ import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
 
+/**
+ * A class to hold pertinent izosfile response data as well as its downloaded path
+ * @export
+ * @module
+ */
 export class LocalFile {
     path: string;
     zosResp: IZosFilesResponse;
 }
+
+/**
+ * enum of prompts to be used as input to {@link EditUtilities.promptUser} during the file editing process
+ * @export
+ * @requires EditUtilities.promptUser
+ */
 export enum Prompt {
     useStash,
     doneEditing,
@@ -30,7 +41,7 @@ export enum Prompt {
 }
 
 /**
- * A shared utility class that uss and ds handlers use for local file editing.
+ * A shared utility class that uss and ds handlers use for local file editing
  * @export
  * @class EditUtilities
  */
@@ -44,7 +55,7 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async buildTempPath(commandParameters: IHandlerParameters): Promise<string>{
-        const ext = commandParameters.arguments.extension ?? ".txt";
+        const ext = commandParameters.arguments.extension ?? "txt";
         let fileName: string;
         if (commandParameters.positionals.includes('uss')){
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
@@ -77,7 +88,7 @@ export class EditUtilities {
     /**
      * Collection of prompts to be used at different points in editing process
      * @param {Prompt} prompt - selected prompt from Prompt (enum object)
-     * @param {tempPath} string - unique file path for temp file
+     * @param {string} tempPath - unique file path for temp file
      * @returns {Promise<boolean>} - promise that resolves depending on prompt case and user input
      * @memberof EditUtilities
      */
@@ -93,13 +104,15 @@ export class EditUtilities {
                 }
                 return input.toLowerCase() === 'y';
             case Prompt.doneEditing:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter any value in terminal once finished `+
+                do{
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter "done" in terminal once finished `+
                     `editing and saving temporary file: ${tempPath}`));
-                if (input === null) {
-                    throw new ImperativeError({
-                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
+                }while(input.toLowerCase() !== 'done'){
+                    if (input === null) {
+                        throw new ImperativeError({
+                            msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
                     });
-                }else{
+                }
                     return true;
                 }
             case Prompt.continueToUpload:
@@ -155,7 +168,7 @@ export class EditUtilities {
      */
     public static async makeEdits(tempPath: string, editor?: string): Promise<void>{
         if (editor){
-            await ProcessUtils.openInEditor(tempPath, editor);
+            await ProcessUtils.openInEditor(tempPath, editor, true);
         }
         await this.promptUser(Prompt.doneEditing, tempPath);
 

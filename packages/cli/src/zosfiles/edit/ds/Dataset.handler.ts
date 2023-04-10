@@ -55,6 +55,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
             }
             task.percentComplete = 70;
             task.stageName = TaskStage.COMPLETE;
+            commandParameters.response.progress.endBar();
         }catch(error){
             if (error.causeErrors && error.causeErrors.code == 'ENOTFOUND'){
                 throw new ImperativeError({
