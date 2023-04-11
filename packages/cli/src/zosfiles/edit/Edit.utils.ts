@@ -18,6 +18,7 @@ import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
+import path = require("path");
 
 /**
  * A class to hold pertinent izosfile response data as well as its downloaded path
@@ -107,12 +108,12 @@ export class EditUtilities {
                 do{
                     input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter "done" in terminal once finished `+
                     `editing and saving temporary file: ${tempPath}`));
-                }while(input.toLowerCase() !== 'done'){
+                }while(input.toLowerCase() !== 'done');{
                     if (input === null) {
                         throw new ImperativeError({
                             msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
-                    });
-                }
+                        });
+                    }
                     return true;
                 }
             case Prompt.continueToUpload:
@@ -126,6 +127,37 @@ export class EditUtilities {
                 return input.toLowerCase() === 'y';
         }
     }
+
+    public static async localDownload(session: AbstractSession, commandParameters: IHandlerParameters,
+        lfFile: LocalFile, useStash: boolean, guiAvail: GuiResult): Promise<LocalFile>{
+        if (!useStash){
+            if(commandParameters.positionals.includes('uss')){
+                lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
+                    {returnEtag: true, file: lfFile.path});
+            }else{
+                lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
+                    {returnEtag: true, file: lfFile.path});
+            }
+            return lfFile;
+        }
+
+        // Else use stash but first show difference between lf and mfFile in gui
+        if (guiAvail == GuiResult.GUI_AVAILABLE){
+            this.fileComparison(session, commandParameters);
+        }
+        // Download file just to get etag. Don't overwrite prexisting lf file (stash) during process
+        // etag = lfFile.zosResp.apiResponse.etag
+        if(commandParameters.positionals.includes('uss')){
+            lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
+                {returnEtag: true, file: path.join(tmpdir(), "toDelete.txt")});
+        }else{
+            lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
+                {returnEtag: true, file: path.join(tmpdir(), "toDelete.txt")});
+        }
+        this.destroyTempFile(path.join(tmpdir(), "toDelete.txt"));
+        return lfFile;
+    }
+
 
     /**
      * Performs appropriate file comparision given comparison is between lf-USS or lf-DS.

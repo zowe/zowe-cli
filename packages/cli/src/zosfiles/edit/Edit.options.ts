@@ -29,6 +29,7 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "editor",
         aliases: ["ed"],
         description: strings.EDITOR,
+        defaultValue: "vim",
         type: "string",
         required: false
     },
