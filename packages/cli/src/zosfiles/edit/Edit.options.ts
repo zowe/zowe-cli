@@ -29,7 +29,7 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "editor",
         aliases: ["ed"],
         description: strings.EDITOR,
-        defaultValue: "vim",
+        defaultValue: process.env['ZOWE_EDITOR'] ?? "vim",
         type: "string",
         required: false
     },
