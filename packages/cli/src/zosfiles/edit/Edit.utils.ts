@@ -12,23 +12,13 @@
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
     TextUtils, IDiffOptions } from "@zowe/imperative";
 import { tmpdir } from "os";
-import { Download, Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, Upload, IZosFilesResponse, IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
 import path = require("path");
-
-/**
- * A class to hold pertinent izosfile response data as well as its downloaded path
- * @export
- * @module
- */
-export class LocalFile {
-    path: string;
-    zosResp: IZosFilesResponse;
-}
 
 /**
  * enum of prompts to be used as input to {@link EditUtilities.promptUser} during the file editing process
@@ -41,6 +31,24 @@ export enum Prompt {
     continueToUpload
 }
 
+export enum EditFileType {
+    uss = 'uss',
+    ds = 'ds'
+}
+
+/**
+ * A class to hold pertinent izosfile response data as well as its downloaded path
+ * @export
+ * @module
+ */
+export class LocalFile {
+    tempPath: string;
+    fileName: string;
+    fileType: EditFileType;
+    guiAvail: boolean;
+    zosResp: IZosFilesResponse;
+}
+
 /**
  * A shared utility class that uss and ds handlers use for local file editing
  * @export
@@ -51,22 +59,19 @@ export class EditUtilities {
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
-     * @param {IHandlerParameters} commandParameters - parameters supplied by args
+     * @param {LocalFile} lfFile - combined local file, command params, and izosresponse object
      * @returns {Promise<string>} - returns unique file path for temp file
      * @memberof EditUtilities
      */
-    public static async buildTempPath(commandParameters: IHandlerParameters): Promise<string>{
+    public static async buildTempPath(lfFile: LocalFile, commandParameters: IHandlerParameters): Promise<string>{
         const ext = commandParameters.arguments.extension ?? "txt";
-        let fileName: string;
-        if (commandParameters.positionals.includes('uss')){
+        if (lfFile.fileType == 'uss'){
             // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
-            fileName = commandParameters.arguments.file;
             const crypto = require("crypto");
-            const hash = crypto.createHash('sha256').update(fileName).digest('hex');
+            const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
             return tmpdir() +"\\" + hash  + "." + ext;
         }
-        fileName = commandParameters.arguments.dataSetName;
-        return tmpdir() + "\\" + fileName + "." + ext;
+        return tmpdir() + "\\" + lfFile.fileName + "." + ext;
     }
 
     /**
@@ -128,36 +133,45 @@ export class EditUtilities {
         }
     }
 
-    public static async localDownload(session: AbstractSession, commandParameters: IHandlerParameters,
-        lfFile: LocalFile, useStash: boolean, guiAvail: GuiResult): Promise<LocalFile>{
-        if (!useStash){
-            if(commandParameters.positionals.includes('uss')){
-                lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
-                    {returnEtag: true, file: lfFile.path});
-            }else{
-                lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
-                    {returnEtag: true, file: lfFile.path});
+    /**
+     * Download file, sometimes just to get etag; in this situation won't overwrite
+     * prexisting lf file (stash)
+     * 
+     * @param session AbstractSession
+     * @param commandParameters IHandlerParameters
+     * @param lfFile LocalFile
+     * @param useStash boolean
+     * @returns LocalFile
+     */
+    public static async localDownload(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: LocalFile, useStash: boolean): Promise<LocalFile>{
+        // determine if downloading just to get etag (useStash) or to save file locally & get etag (!useStash)
+        let tempPath = useStash ? path.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+        const args: [AbstractSession, string, IDownloadOptions] = [
+            session,
+            lfFile.fileName,
+            {
+                returnEtag: true,
+                file: tempPath
             }
-            return lfFile;
-        }
+        ];
 
-        // Else use stash but first show difference between lf and mfFile in gui
-        if (guiAvail == GuiResult.GUI_AVAILABLE){
+        // show a file comparision for the purpose of seeing the newer version of the remote mf file compared to your local edits
+        if (useStash && lfFile.guiAvail){
             this.fileComparison(session, commandParameters);
         }
-        // Download file just to get etag. Don't overwrite prexisting lf file (stash) during process
-        // etag = lfFile.zosResp.apiResponse.etag
-        if(commandParameters.positionals.includes('uss')){
-            lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
-                {returnEtag: true, file: path.join(tmpdir(), "toDelete.txt")});
-        }else{
-            lfFile.zosResp = await Download.dataSet(session, commandParameters.arguments.dataSetName,
-                {returnEtag: true, file: path.join(tmpdir(), "toDelete.txt")});
+
+        // proper download specifications accounting for both useStash|!useStash and uss|ds
+        if(lfFile.fileType === 'uss'){
+            lfFile.zosResp = await Download.ussFile(...args);
         }
-        this.destroyTempFile(path.join(tmpdir(), "toDelete.txt"));
+        lfFile.zosResp = await Download.dataSet(...args);
+    
+        //get rid of the fake temp file generated by the useStash case (wouldnt have to do this if the option {overwrite: false} worked)
+        if (useStash){
+            this.destroyTempFile(path.join(tmpdir(), "toDelete.txt"));
+        }
         return lfFile;
     }
-
 
     /**
      * Performs appropriate file comparision given comparison is between lf-USS or lf-DS.
@@ -217,22 +231,22 @@ export class EditUtilities {
      * false if user needs to take more action before completing the upload
      * @memberof EditUtilities
      */
-    public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters,
+     public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters,
         lfFile: LocalFile): Promise<boolean>{
         let response: IZosFilesResponse;
         let fileName;
         try{
             if (commandParameters.positionals.includes('uss')){
                 fileName = commandParameters.arguments.file;
-                response = await Upload.fileToUssFile(session, lfFile.path, commandParameters.arguments.file,
+                response = await Upload.fileToUssFile(session, lfFile.tempPath, commandParameters.arguments.file,
                     {etag: lfFile.zosResp.apiResponse.etag});
             }else{
                 fileName =commandParameters.arguments.dataSetName;
-                response = await Upload.fileToDataset(session, lfFile.path, fileName, {etag: lfFile.zosResp.apiResponse.etag});
+                response = await Upload.fileToDataset(session, lfFile.tempPath, fileName, {etag: lfFile.zosResp.apiResponse.etag});
             }
             if (response.success){
                 // If matching etag & successful upload, destroy temp file -> END
-                await this.destroyTempFile(lfFile.path);
+                await this.destroyTempFile(lfFile.tempPath);
                 return true;
             }
         }catch(err){
@@ -242,7 +256,7 @@ export class EditUtilities {
                 await this.fileComparison(session, commandParameters);
                 //alert user that the version of document they've been editing has changed
                 //ask if they want to continue working with their stash (local file)
-                const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfFile.path);
+                const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfFile.tempPath);
                 if (continueToUpload){
                     // Refresh the etag of lfFile (keep stash)
                     if (commandParameters.positionals.includes('uss')){
@@ -260,23 +274,24 @@ export class EditUtilities {
                     // keep editing lf
                     if (commandParameters.positionals.includes('uss')){
                         lfFile.zosResp = await Download.ussFile(session, commandParameters.arguments.file,
-                            {returnEtag: true, file: lfFile.path});
+                            {returnEtag: true, file: lfFile.tempPath});
                     }
                     else{
                         lfFile.zosResp = await Download.dataSet(session, fileName,
-                            {returnEtag: true, file: lfFile.path});
+                            {returnEtag: true, file: lfFile.tempPath});
                     }
                     // open lf in editor
-                    await this.makeEdits(lfFile.path, commandParameters.arguments.editor);
+                    await this.makeEdits(lfFile.tempPath, commandParameters.arguments.editor);
                     return false;
                 }
             }
             throw new ImperativeError({
-                msg: TextUtils.chalk.red(`Command terminated. Stashed file will persist: ${lfFile.path}`),
+                msg: TextUtils.chalk.red(`Command terminated. Stashed file will persist: ${lfFile.tempPath}`),
                 causeErrors: err
             });
         }
     }
+
 
     /**
      * Destroy temp file path to remove stash if edits have been successfully uploaded

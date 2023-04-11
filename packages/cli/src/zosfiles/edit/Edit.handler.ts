@@ -13,7 +13,7 @@ import { AbstractSession, GuiResult, IHandlerParameters,
     ITaskWithStatus, ImperativeError, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../ZosFilesBase.handler";
-import { EditUtilities as Utils, Prompt, LocalFile } from "../edit/Edit.utils";
+import { EditUtilities as Utils, Prompt, EditFileType, LocalFile } from "../edit/Edit.utils";
 
 /**
  * Handler to Edit USS or DS content locally
@@ -22,15 +22,17 @@ import { EditUtilities as Utils, Prompt, LocalFile } from "../edit/Edit.utils";
 export default class EditHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
-        const guiAvail = ProcessUtils.isGuiAvailable();
         let lfFile = new LocalFile;
-        lfFile.path = commandParameters.arguments.localFilePath = await Utils.buildTempPath(commandParameters);
+        lfFile.guiAvail = ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE;
+        lfFile.fileName = commandParameters.arguments.file ?? commandParameters.arguments.dataSetName;
+        lfFile.tempPath = await Utils.buildTempPath(lfFile, commandParameters);
+        lfFile.fileType = commandParameters.positionals.includes('ds') ? EditFileType.ds : EditFileType.uss;
 
         // Use or override stash (either way need to retrieve etag)
-        const stash: boolean = await Utils.checkForStash(lfFile.path);
-        let keepStash: boolean = false;
+        const stash: boolean = await Utils.checkForStash(lfFile.tempPath);
+        let useStash: boolean = false;
         if (stash) {
-            keepStash = await Utils.promptUser(Prompt.useStash);
+            useStash = await Utils.promptUser(Prompt.useStash);
         }
 
         // Download etag and possibly mf file to edit locally (if not using stash)
@@ -42,7 +44,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            lfFile = await Utils.localDownload(session, commandParameters, lfFile, keepStash, guiAvail);
+            lfFile = await Utils.localDownload(session, commandParameters, lfFile, useStash);
 
             task.percentComplete = 70;
             commandParameters.response.progress.endBar();
@@ -59,9 +61,9 @@ export default class EditHandler extends ZosFilesBaseHandler {
             });
         }
 
-        // Edit local copy of mf file
-        if (guiAvail == GuiResult.GUI_AVAILABLE){
-            await Utils.makeEdits(lfFile.path, commandParameters.arguments.editor);
+        // Edit local copy of mf file (automatically open an editor for user if not in headless linux)
+        if (lfFile.guiAvail){
+            await Utils.makeEdits(lfFile.tempPath, commandParameters.arguments.editor);
         }
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
