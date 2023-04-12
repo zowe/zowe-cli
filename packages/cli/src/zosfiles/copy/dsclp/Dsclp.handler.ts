@@ -9,8 +9,9 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, IHandlerResponseConsoleApi} from "@zowe/imperative";
-import { Copy, IZosFilesResponse, IGetOptions, IDataSet, ICopyDatasetOptions, ICrossLparCopyDatasetOptions} from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, CliUtils, ConnectionPropsForSessCfg, ICommandArguments, IHandlerParameters,
+    IHandlerResponseConsoleApi, ImperativeConfig, ISession, Session } from "@zowe/imperative";
+import { Copy, ICrossLparCopyDatasetOptions, IDataSet, IGetOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { getDataSet } from "../../ZosFiles.utils";
 
@@ -20,36 +21,19 @@ import { getDataSet } from "../../ZosFiles.utils";
 
 export default class DsclpHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-
         const sourceDataset: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
         const targetDataset: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
-        let rejectUnauthorizedFlag = true;
-        const console:IHandlerResponseConsoleApi  = commandParameters.response.console;
 
-        if(commandParameters.arguments.rejectUnauthorized == false){
-            rejectUnauthorizedFlag = false;
-        }
-
-        const options: ICopyDatasetOptions = {
+        const options: ICrossLparCopyDatasetOptions = {
             "from-dataset": sourceDataset,
             enq: commandParameters.arguments.enq,
             replace: commandParameters.arguments.replace,
-            responseTimeout: commandParameters.arguments.responseTimeout
-        };
-
-        const targetOptions: ICrossLparCopyDatasetOptions = {
-            targetUser: commandParameters.arguments.targetUser,
-            targetPassword: commandParameters.arguments.targetPassword,
-            targetHost: commandParameters.arguments.targetHost,
-            targetPort: commandParameters.arguments.targetPort,
-            targetVolser:  commandParameters.arguments.targetVolser,
-            targetManagementClass:  commandParameters.arguments.targetManagementClass,
-            targetStorageClass:   commandParameters.arguments.targetStorageClass,
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            targetVolser: commandParameters.arguments.targetVolser,
+            targetManagementClass: commandParameters.arguments.targetManagementClass,
+            targetStorageClass: commandParameters.arguments.targetStorageClass,
             targetDataClass: commandParameters.arguments.targetDataClass,
-            targetTokenType: commandParameters.arguments.targetTokenType,
-            targetTokenValue: commandParameters.arguments.targetTokenValue,
-            targetZosmfProfile:  commandParameters.arguments.targetZosmfProfile,
-            rejectUnauthorized: rejectUnauthorizedFlag
+            promptFn: this.promptForOverwrite(commandParameters.response.console)
         };
 
         const sourceOptions: IGetOptions = {
@@ -59,13 +43,55 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             volume: commandParameters.arguments.volume
         };
 
-        return Copy.dataSetCrossLPAR( session,
+        const targetSession = this.loadTargetProfile(commandParameters, session);
+
+        return Copy.dataSetCrossLPAR(session,
             targetDataset,
-            targetOptions,
-            sourceOptions,
             options,
-            console
+            sourceOptions,
+            targetSession
         );
     }
-}
 
+    private loadTargetProfile(params: IHandlerParameters, sourceSession: AbstractSession): AbstractSession {
+        // TODO Migrate this code to an Imperative utility method
+        const targetProfileName = params.arguments.targetZosmfProfile;
+        let profileProps: Record<string, any>;
+        if (targetProfileName != null) {
+            if (ImperativeConfig.instance.config.exists) {
+                profileProps = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
+            } else {
+                profileProps = params.profiles.get("zosmf", false, targetProfileName);
+            }
+        }
+        const targetSessCfg: ISession = {
+            ...sourceSession.ISession,
+            ...(profileProps || {}),
+            hostname: profileProps?.host ?? sourceSession.ISession.hostname
+        };
+        const targetCmdArgs: ICommandArguments = {
+            $0: params.arguments.$0,
+            _: params.arguments._
+        };
+        const targetPrefix = "target";
+        for (const [k, v] of Object.entries(params.arguments)) {
+            if (k.startsWith(targetPrefix)) {
+                const normalizedOptName = CliUtils.getOptionFormat(k.slice(targetPrefix.length)).camelCase;
+                targetCmdArgs[normalizedOptName] = v;
+            }
+        }
+        ConnectionPropsForSessCfg.resolveSessCfgProps(targetSessCfg, targetCmdArgs);
+        return new Session(targetSessCfg);
+    }
+
+    /**
+     * Private function to prompt user if they wish to overwrite an existing dataset.
+     */
+    private promptForOverwrite(console: IHandlerResponseConsoleApi) {
+        return async (targetDSN: string) => {
+            const answer: string = await console.prompt(
+                `The dataset '${targetDSN}' already exists on the target system. Do you wish to overwrite it? [y/N]: `);
+            return (answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes"));
+        };
+    }
+}
