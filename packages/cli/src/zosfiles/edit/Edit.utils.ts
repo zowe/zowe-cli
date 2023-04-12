@@ -11,7 +11,7 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffOptions } from "@zowe/imperative";
+    TextUtils, IDiffOptions, Logger } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
@@ -190,9 +190,7 @@ export class EditUtilities {
             name2: "mainframe file"
         };
 
-        if(gui === GuiResult.GUI_AVAILABLE){
-            helper.browserView = true;
-        }
+        helper.browserView = (gui === GuiResult.GUI_AVAILABLE);
 
         const lf = await handlerDs.getFile1(session, commandParameters.arguments, helper);
         let mfds: string | Buffer;
@@ -201,8 +199,13 @@ export class EditUtilities {
         }else{
             mfds = await handlerUss.getFile2(session, commandParameters.arguments, helper);
         }
-        // Editor will open with local file if default editor was set
-        return await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
+
+        //if browserview, open diff in browser, otherwise print diff in terminal
+        const response = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
+        if (!helper.browserView){
+            console.log('\n'+response.commandResponse);
+        }
+        return response;
     }
 
     /**
