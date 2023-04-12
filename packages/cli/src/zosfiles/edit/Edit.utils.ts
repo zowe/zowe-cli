@@ -11,7 +11,7 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffOptions, Logger } from "@zowe/imperative";
+    TextUtils, IDiffOptions } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
@@ -24,7 +24,7 @@ import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 /**
  * enum of prompts to be used as input to {@link EditUtilities.promptUser} during the file editing process
  * @export
- * @requires EditUtilities.promptUser
+ * @enum
  */
 export enum Prompt {
     useStash,
@@ -33,14 +33,20 @@ export enum Prompt {
     viewUpdatedRemote
 }
 
+/**
+ * An enum to supply more structure within {@link LocalFile}
+ * @export
+ * @enum
+ */
 export enum EditFileType {
     uss = 'uss',
     ds = 'ds'
 }
 
 /**
- * A class to hold pertinent izosfile response data as well as its downloaded path
+ * A class to hold pertinent information about the local file during the editing process
  * @export
+ * @class
  */
 export class LocalFile {
     tempPath: string;
@@ -53,21 +59,21 @@ export class LocalFile {
 /**
  * A shared utility class that uss and ds handlers use for local file editing
  * @export
- * @class EditUtilities
+ * @class
  */
 export class EditUtilities {
     /**
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
-     * @param {LocalFile} lfFile - combined local file, command params, and izosresponse object
+     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @returns {Promise<string>} - returns unique file path for temp file
      * @memberof EditUtilities
      */
     public static async buildTempPath(lfFile: LocalFile, commandParameters: IHandlerParameters): Promise<string>{
         const ext = commandParameters.arguments.extension ?? "txt";
         if (lfFile.fileType == 'uss'){
-            // Hash in a repeatable way if uss fileName (to get around any potential special characters in name)
+            // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
             return tmpdir() +"\\" + hash  + "." + ext;
@@ -76,8 +82,8 @@ export class EditUtilities {
     }
 
     /**
-     * Check for temp path's preexistance (check if previously `stashed` edits exist)
-     * @param {string} tempPath - unique file path for temp file
+     * Check for temp path's existance (check if previously `stashed` edits exist)
+     * @param {string} tempPath - unique file path for local file (stash/temp file)
      * @returns {Promise<boolean>} - promise that resolves to true if stash exists or false if doesn't
      * @memberof EditUtilities
      */
@@ -94,8 +100,8 @@ export class EditUtilities {
 
     /**
      * Collection of prompts to be used at different points in editing process
-     * @param {Prompt} prompt - selected prompt from Prompt (enum object)
-     * @param {string} tempPath - unique file path for temp file
+     * @param {Prompt} prompt - selected prompt from {@link Prompt} (enum object)
+     * @param {string} tempPath - unique file path for local file (stash/temp file)
      * @returns {Promise<boolean>} - promise that resolves depending on prompt case and user input
      * @memberof EditUtilities
      */
@@ -144,13 +150,13 @@ export class EditUtilities {
 
     /**
      * Download file and determine if downloading just to get etag (useStash) or to save file locally & get etag (!useStash)
-     * @param session AbstractSession
-     * @param commandParameters IHandlerParameters
-     * @param lfFile LocalFile
-     * @param useStash boolean
-     * @returns LocalFile
+     * @param {AbstractSession} session - the session object generated from the connected profile
+     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @param {boolean} useStash - should be true if don't want to overwrite local file when refreshing etag
+     * @returns {LocalFile}
      */
     public static async localDownload(session: AbstractSession, lfFile: LocalFile, useStash: boolean): Promise<LocalFile>{
+        // account for both useStash|!useStash and uss|ds when downloading
         const tempPath = useStash ? path.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
@@ -160,12 +166,11 @@ export class EditUtilities {
                 file: tempPath
             }
         ];
-        // download accounting for both useStash|!useStash and uss|ds
         if(lfFile.fileType === 'uss'){
             lfFile.zosResp = await Download.ussFile(...args);
         }
         lfFile.zosResp = await Download.dataSet(...args);
-        //get rid of the fake temp file generated by the useStash case (wouldnt have to do this if the option {overwrite: false} worked)
+        // TODO: get rid of the fake temp file generated by the useStash case (wouldnt have to do this if the option {overwrite: false} worked)
         if (useStash){
             this.destroyTempFile(path.join(tmpdir(), "toDelete.txt"));
         }
@@ -173,11 +178,11 @@ export class EditUtilities {
     }
 
     /**
-     * Performs appropriate file comparision given comparison is between lf-USS or lf-DS.
-     * Local file (lf) will then be opened in default editor if it was set.
+     * Performs appropriate file comparision (either in browser or as a terminal diff) between lf-USS or lf-DS.
+     * Local file (lf) will then be opened in default editor
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
-     * @returns {Promise<IZosFilesResponse>} - the response from the underlying zos-files api call
+     * @returns {Promise<IZosFilesResponse>} - the response generated by {@link CompareBaseHelper.getResponse}
      * @memberof EditUtilities
      */
     public static async fileComparison(session: AbstractSession, commandParameters: IHandlerParameters): Promise<IZosFilesResponse>{
@@ -209,9 +214,9 @@ export class EditUtilities {
     }
 
     /**
-     * Enable user to make their edits by pulling up file diff, opening up lf in editor, and waiting for user input to indicate editing is complete
+     * Enable user to make their edits and wait for user input to indicate editing is complete
      * @param {string} tempPath - parameters supplied by args
-     * @param {string} editor - OPTIONAL parameter originally supplied by args
+     * @param {string} editor - optional parameter originally supplied by args
      * @memberof EditUtilities
      */
     public static async makeEdits(tempPath: string, editor?: string): Promise<void>{
@@ -223,12 +228,12 @@ export class EditUtilities {
     }
 
     /**
-     * Upload edits once user input indicating completed edits. Upload temp file with saved etag.
-     *if matching etag: sucessful upload, destroy temp file -> END
-     * if non-matching etag: unsucessful upload -> perform file comparison/edit again with new etag
+     * Upload temp file with saved etag.
+     *  - if matching etag: sucessful upload, destroy stash/temp -> END
+     *  - if non-matching etag: unsucessful upload -> refresh etag -> perform file comparison/edit -> reattempt upload
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
-     * @param {LocalFile} lfFile - object containing lf temp path and zosmf response data
+     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @returns {Promise<boolean>} - promise that resolves to true if uploading was successful and
      * false if user needs to take more action before completing the upload
      * @memberof EditUtilities
@@ -274,15 +279,22 @@ export class EditUtilities {
         });
     }
 
+    /**
+     * When changes occur in the remote file, user will have to decide to overwrite or to account for the discrepancy
+     * @param {AbstractSession} session - the session object generated from the connected profile
+     * @param {IHandlerParameters} commandParameters - parameters supplied by args
+     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @memberof EditUtilities
+     */
     public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: LocalFile): Promise<void>{
         try{
             //alert user that the version of document they've been editing has changed
-            //ask if they want to see changes on the remote file they will be overwriting
+            //ask if they want to see changes on the remote file before continuing
             const viewUpdatedRemote: boolean = await this.promptUser(Prompt.viewUpdatedRemote);
             if (viewUpdatedRemote){
                 await this.fileComparison(session, commandParameters);
             }
-            //ask if they want to keep working with their stash (local file) or overwrite & continue to upload
+            //ask if they want to keep working with their stash (local file) or upload despite changes to remote
             const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfFile.tempPath);
             // refresh etag, keep stash
             lfFile = await this.localDownload(session, lfFile, true);
@@ -298,10 +310,9 @@ export class EditUtilities {
         }
     }
 
-
     /**
-     * Destroy temp file path to remove stash if edits have been successfully uploaded
-     * @param {string} tempPath - unique file path for temp file
+     * Destroy local file path (remove stash)
+     * @param {string} tempPath - unique file path for local file (stash)
      * @memberof EditUtilities
      */
     public static async destroyTempFile(tempPath:string): Promise<void>{
