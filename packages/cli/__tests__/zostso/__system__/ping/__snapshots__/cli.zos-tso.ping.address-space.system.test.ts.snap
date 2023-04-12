@@ -1,7 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso ping address-space should throw an error if provided address space is inactive 1`] = `
-"Command Error:
+"Unexpected Command Error:
+Please review the message and stack below.
+Contact the creator of handler:
+\\"C:\\\\Zowe\\\\git\\\\zowe-cli\\\\packages\\\\cli\\\\lib\\\\zostso\\\\ping\\\\address_space/PingAddressSpace.handler\\"
+Message:
 Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"BadKey\\" with an active z/OS application session.
+Stack:
+Error: Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"BadKey\\" with an active z/OS application session.
+    at Function.toBeEqual (C:\\\\zowe\\\\git\\\\zowe-cli\\\\node_modules\\\\@zowe\\\\imperative\\\\lib\\\\expect\\\\src\\\\ImperativeExpect.js:67:19)
+    at Function.validateErrorMessageFromZosmf (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\TsoValidator.js:111:43)
+    at Function.<anonymous> (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\PingTso.js:42:41)
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\PingTso.js:15:58)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
 "
 `;

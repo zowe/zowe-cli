@@ -34,69 +34,43 @@ describe("DsclpHandler", () => {
 
         const fromDataSetName = "ABCD";
         const toDataSetName = "EFGH";
-        const zosmfProfileString = "zosmf";
-        const zosmfProfile = {
-            host: "secure.host.com",
-            port: 443,
-            user: "user",
-            password: "password",
-            auth: Buffer.from("user:password").toString("base64"),
-            rejectUnauthorized: true
-        };
-
-        const sessionArgs: any = {
-            type: "basic",
-            hostname: zosmfProfile.host,
-            port: zosmfProfile.port,
-            user: zosmfProfile.user,
-            password: zosmfProfile.password,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized
-        };
-        const expectedSession = new Session(sessionArgs);
-        const args = {...sessionArgs, host: zosmfProfile.host, password: zosmfProfile.password};
+        const targetUser = "dummy";
+        const targetPassword = "dummy";
+        const targetHost = "secure.host.com";
 
         const commandParameters: any = {
-            profiles: {
-                get: (type: string) => {
-                    if (type === zosmfProfileString) {
-                        return zosmfProfile;
-                    } else {
-                        throw new Error("Invalid profile retrieved by command!");
-                    }
-                }
-            },
             arguments: {
-                fromDataSetName,
-                toDataSetName
+                fromDataSetName: fromDataSetName,
+                toDataSetName: toDataSetName,
+                targetUser,
+                targetPassword,
+                targetHost,
+                rejectUnauthorized: true,
             },
             response: {
                 console: {
-                    log: jest.fn()
-                },
-                data: {
-                    setObj: jest.fn()
-                },
-                progress: {
-                    startBar: jest.fn((parms) => {
-                        // do nothing
-                    }),
-                    endBar: jest.fn(() => {
-                        // do nothing
-                    })
-                },
-                arguments: args
+               }
             }
         };
 
         const dummySession = {};
 
-        const response = await handler.processWithSession(commandParameters, expectedSession);
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
-            { "from-dataset": { dsn: commandParameters.arguments.fromDataSetName } }
+            { targetUser: "dummy",
+              targetPassword : "dummy",
+              targetHost : "secure.host.com",
+              rejectUnauthorized: true,
+            },
+            { },
+            {
+                "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
+            },
+            { }
         );
         expect(response).toBe(defaultReturn);
     });
@@ -110,27 +84,21 @@ describe("DsclpHandler", () => {
         const fromMemberName = "mem1";
         const toDataSetName = "EFGH";
         const toMemberName = "mem2";
+        const targetUser = "dummy";        
+        const targetPassword = "dummy";
+        const targetHost = "secure.host.com";
 
         const commandParameters: any = {
             arguments: {
-                fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
-                toDataSetName: `${toDataSetName}(${toMemberName})`
+                fromDataSetName:`${fromDataSetName}(${fromMemberName})`,
+                toDataSetName: `${toDataSetName}(${toMemberName})`,
+                targetUser,
+                targetPassword,
+                targetHost
             },
             response: {
                 console: {
-                    log: jest.fn()
-                },
-                data: {
-                    setObj: jest.fn()
-                },
-                progress: {
-                    startBar: jest.fn((parms) => {
-                        // do nothing
-                    }),
-                    endBar: jest.fn(() => {
-                        // do nothing
-                    })
-                }
+               }
             }
         };
 
@@ -146,8 +114,19 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
-            { dsn: toDataSetName, member: toMemberName },
-            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
+            { dsn: toDataSetName, member: toMemberName},
+            { targetUser: "dummy",
+              targetPassword : "dummy",
+              targetHost : "secure.host.com",
+              rejectUnauthorized: true,
+            },
+            { },
+            {
+                "from-dataset": { dsn: fromDataSetName, member: fromMemberName },
+                replace: undefined,
+                responseTimeout: undefined
+            },
+            { }
         );
         expect(response).toBe(defaultReturn);
     });
@@ -159,31 +138,21 @@ describe("DsclpHandler", () => {
 
         const fromDataSetName = "ABCD";
         const toDataSetName = "EFGH";
-        const enq = "SHR";
-        const replace = true;
+        const targetUser = "dummy";
+        const targetPassword = "dummy";
+        const targetHost = "secure.host.com";
 
         const commandParameters: any = {
             arguments: {
                 fromDataSetName,
                 toDataSetName,
-                enq,
-                replace
+                targetUser,
+                targetPassword,
+                targetHost
             },
             response: {
                 console: {
-                    log: jest.fn()
-                },
-                data: {
-                    setObj: jest.fn()
-                },
-                progress: {
-                    startBar: jest.fn((parms) => {
-                        // do nothing
-                    }),
-                    endBar: jest.fn(() => {
-                        // do nothing
-                    })
-                }
+               },
             }
         };
 
@@ -195,11 +164,16 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
+            { targetUser: "dummy",
+              targetPassword : "dummy",
+              targetHost : "secure.host.com",
+              rejectUnauthorized: true,          
+            },
+            { },
             {
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
-                "enq": commandParameters.arguments.enq,
-                "replace": commandParameters.arguments.replace
-            }
+            },
+            { }
         );
         expect(response).toBe(defaultReturn);
     });

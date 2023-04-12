@@ -12,7 +12,18 @@ Array [
   },
   Object {
     "aliases": Array [
+      "tdc",
+    ],
+    "description": "The SMS data class to use for the allocation of the target data set.",
+    "name": "target-data-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "th",
+    ],
+    "conflictsWith": Array [
+      "target-zosmf-profile",
     ],
     "description": "The target z/OSMF server host name.",
     "name": "target-host",
@@ -30,7 +41,7 @@ Array [
     "aliases": Array [
       "tpw",
     ],
-    "description": "The target (z/OSMF) password, which can be the same as your TSO password.",
+    "description": "The target z/OSMF password, which can be the same as your TSO password.",
     "name": "target-password",
     "type": "string",
   },
@@ -44,9 +55,33 @@ Array [
   },
   Object {
     "aliases": Array [
+      "tsc",
+    ],
+    "description": "The SMS storage class to use for the allocation of the target data set.",
+    "name": "target-storage-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "ttt",
+    ],
+    "description": "The value of the token to pass to the API for the target system.",
+    "name": "target-token-type",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "ttv",
+    ],
+    "description": "The type of token to get and use for the API for the target system.",
+    "name": "target-token-value",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "tu",
     ],
-    "description": "The target (z/OSMF) user name, which can be the same as your TSO login.",
+    "description": "The target z/OSMF user name, which can be the same as your TSO login.",
     "name": "target-user",
     "type": "string",
   },
@@ -63,7 +98,10 @@ Array [
     "aliases": Array [
       "t-zosmf-p",
     ],
-    "description": "The name of a (z/OSMF) profile to load for the target host. ",
+    "conflictsWith": Array [
+      "target-host",
+    ],
+    "description": "The name of a z/OSMF profile to load for the target host. ",
     "name": "target-zosmf-profile",
     "type": "string",
   },

@@ -1,13 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso start address-space should throw an error if provided address space is inactive 1`] = `
-"Command Error:
+"Unexpected Command Error:
+Please review the message and stack below.
+Contact the creator of handler:
+\\"C:\\\\Zowe\\\\git\\\\zowe-cli\\\\packages\\\\cli\\\\lib\\\\zostso\\\\stop\\\\address-space/AddressSpace.handler\\"
+Message:
 Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"ZOSMFAD-55-aaakaaac\\" with an active z/OS application session.
+Stack:
+Error: Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"ZOSMFAD-55-aaakaaac\\" with an active z/OS application session.
+    at Function.toBeEqual (C:\\\\zowe\\\\git\\\\zowe-cli\\\\node_modules\\\\@zowe\\\\imperative\\\\lib\\\\expect\\\\src\\\\ImperativeExpect.js:67:19)
+    at Function.validateErrorMessageFromZosmf (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\TsoValidator.js:111:43)
+    at Function.<anonymous> (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\StopTso.js:63:41)
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\StopTso.js:15:58)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
 "
 `;
 
 exports[`zos-tso start address-space should throw an error if servlet key parameter is not provided 1`] = `
-"Command Error:
+"Unexpected Command Error:
+Please review the message and stack below.
+Contact the creator of handler:
+\\"C:\\\\Zowe\\\\git\\\\zowe-cli\\\\packages\\\\cli\\\\lib\\\\zostso\\\\stop\\\\address-space/AddressSpace.handler\\"
+Message:
 Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"ZOSMFAD-55-aaakaaac\\" with an active z/OS application session.
+Stack:
+Error: Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"ZOSMFAD-55-aaakaaac\\" with an active z/OS application session.
+    at Function.toBeEqual (C:\\\\zowe\\\\git\\\\zowe-cli\\\\node_modules\\\\@zowe\\\\imperative\\\\lib\\\\expect\\\\src\\\\ImperativeExpect.js:67:19)
+    at Function.validateErrorMessageFromZosmf (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\TsoValidator.js:111:43)
+    at Function.<anonymous> (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\StopTso.js:63:41)
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\\\\zowe\\\\git\\\\zowe-cli\\\\packages\\\\zostso\\\\lib\\\\StopTso.js:15:58)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
 "
 `;

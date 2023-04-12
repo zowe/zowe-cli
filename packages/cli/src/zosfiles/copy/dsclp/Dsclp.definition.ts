@@ -56,6 +56,7 @@ export const DsclpDefinition: ICommandDefinition = {
         {
             name: "target-host",
             aliases: ["th"],
+            conflictsWith: [ "target-zosmf-profile"],
             description: strings.OPTIONS.TARGETHOST,
             type: "string"
         },
@@ -80,6 +81,7 @@ export const DsclpDefinition: ICommandDefinition = {
         {
             name: "target-zosmf-profile",
             aliases: ["t-zosmf-p"],
+            conflictsWith: [ "target-host"],
             description: strings.OPTIONS.TARGETPROFILE,
             type: "string"
         },
