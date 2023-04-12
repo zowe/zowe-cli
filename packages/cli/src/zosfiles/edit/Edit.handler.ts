@@ -25,7 +25,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
         let lfFile = new LocalFile;
         lfFile.guiAvail = ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE;
         lfFile.fileName = commandParameters.arguments.file ?? commandParameters.arguments.dataSetName;
-        lfFile.tempPath = await Utils.buildTempPath(lfFile, commandParameters);
+        lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);
         lfFile.fileType = commandParameters.positionals.includes('ds') ? EditFileType.ds : EditFileType.uss;
 
         // Use or override stash (either way need to retrieve etag)
@@ -44,7 +44,11 @@ export default class EditHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            lfFile = await Utils.localDownload(session, commandParameters, lfFile, useStash);
+            // show a file comparision for the purpose of seeing the newer version of the remote mf file compared to your local edits
+            if (useStash && lfFile.guiAvail){
+                Utils.fileComparison(session, commandParameters);
+            }
+            lfFile = await Utils.localDownload(session, lfFile, useStash);
 
             task.percentComplete = 70;
             commandParameters.response.progress.endBar();

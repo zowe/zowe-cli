@@ -9,13 +9,13 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition, IO } from "@zowe/imperative";
 
 import i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).EDIT.OPTIONS;
-
+const defaultEditor = IO.getDefaultTextEditor();
 /**
  * Object containing all options to be used by the View API
  */
@@ -29,7 +29,7 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "editor",
         aliases: ["ed"],
         description: strings.EDITOR,
-        defaultValue: process.env['ZOWE_EDITOR'] ?? "vim",
+        defaultValue: process.env['ZOWE_EDITOR'] ?? defaultEditor,
         type: "string",
         required: false
     },
