@@ -9,9 +9,8 @@
 *
 */
 
-import { Session, AbstractSession, ImperativeError, ImperativeExpect,
-    Logger, Headers, ITaskWithStatus, ProfileInfo, TaskStage, IProfMergedArg,
-    IHandlerResponseConsoleApi } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
+    TaskStage } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -114,10 +113,9 @@ export class Copy {
     public static async dataSetCrossLPAR(
         sourceSession: AbstractSession,
         { dsn: toDataSetName, member: toMemberName }: IDataSet,
-        targetOptions: ICrossLparCopyDatasetOptions,
+        options: ICrossLparCopyDatasetOptions,
         sourceOptions: IGetOptions,
-        options: ICopyDatasetOptions,
-        console?: IHandlerResponseConsoleApi
+        targetSession: AbstractSession
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
@@ -130,7 +128,6 @@ export class Copy {
             const targetMember  = toMemberName;
             let targetDataSetObj: IZosmfListResponse;
             let targetFound: boolean = false;
-            let targetSession;
             let overwriteTarget: boolean = options.replace;
 
             /**
@@ -141,55 +138,13 @@ export class Copy {
             }
 
             /**
-            *  If the target host information is passed in, build the session using the supplied arguments,
-            *   otherwise load the values from a profile.
-            **/
-            if(targetOptions.targetHost != undefined){
-                targetSession = new Session({
-                    user: targetOptions.targetUser,
-                    password: targetOptions.targetPassword,
-                    hostname: targetOptions.targetHost,
-                    port: targetOptions.targetPort,
-                    tokenType: targetOptions.targetTokenType,
-                    tokenValue: targetOptions.targetTokenValue,
-                    rejectUnauthorized: targetOptions.rejectUnauthorized
-                });
-            }
-            else{
-                if(targetOptions.targetZosmfProfile != undefined){
-                    const profInfo:ProfileInfo = new ProfileInfo("zowe");
-                    await profInfo.readProfilesFromDisk();
-                    const zosmfProfiles = profInfo.getAllProfiles("zosmf");
-
-                    if (zosmfProfiles.length != 0) {
-                        const prof = zosmfProfiles.find(prof => prof.profName === targetOptions.targetZosmfProfile);
-                        const profArgs:IProfMergedArg = profInfo.mergeArgsForProfile(prof);
-
-                        profArgs.knownArgs.forEach((arg) => {
-                            if( arg.secure) {
-                                arg.argValue = profInfo.loadSecureArg(arg);
-                            }
-                        }
-                        );
-                        if(prof.profName === targetOptions.targetZosmfProfile ){
-                            targetSession = ProfileInfo.createSession(profArgs.knownArgs);
-                        }
-                    }
-                }
-                else {
-                    targetSession = sourceSession;
-                }
-            }
-
-            /**
-             *  Does the target dataset exist?
+             * Does the target dataset exist?
              */
-            const SourceDsList = await List.dataSet(sourceSession,
-                sourceDataset, {
-                    attributes: true, maxLength: 1,
-                    start: sourceDataset,
-                    recall: "wait"
-                });
+            const SourceDsList = await List.dataSet(sourceSession, sourceDataset, {
+                attributes: true, maxLength: 1,
+                start: sourceDataset,
+                recall: "wait"
+            });
 
             if (SourceDsList.apiResponse != null &&
                 SourceDsList.apiResponse.returnedRows != null
@@ -257,13 +212,13 @@ export class Copy {
                 /**
                  *  Create the target dataset if it does not exist based on the source dataset values
                  */
-                const createOptions = Copy.generateDatasetOptions(targetOptions, sourceDataSetObj);
+                const createOptions = Copy.generateDatasetOptions(options, sourceDataSetObj);
                 await Create.dataSet(targetSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, targetDataset, createOptions);
             }
             else{
                 if(overwriteTarget == undefined && targetMember == undefined){
-                    if(console != undefined){
-                        overwriteTarget = (await this.promptForOverwrite(targetDataset, console)).valueOf();
+                    if (options.promptFn != null) {
+                        overwriteTarget = await options.promptFn(targetDataset);
                     }
                 }
             }
@@ -336,14 +291,5 @@ export class Copy {
             return "BYTE";
 
         return zosmfValue;
-    }
-
-    /**
-     *  Private function to prompt user if they wish to overwrite an existing dataset.
-     */
-    private static async promptForOverwrite(targetDSN: string, console: IHandlerResponseConsoleApi): Promise<boolean> {
-        const answer: string = await console.prompt(
-            `The dataset '${targetDSN}' already exists on the target system. Do you wish to overwrite it? [y/N]: `);
-        return (answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes"));
     }
 }

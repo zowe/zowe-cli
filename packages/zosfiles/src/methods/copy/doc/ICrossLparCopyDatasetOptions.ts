@@ -1,4 +1,4 @@
-import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
+import { ICopyDatasetOptions } from "./ICopyDatasetOptions";
 
 /*
 * This program and the accompanying materials are made available under the terms of the
@@ -14,49 +14,7 @@ import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 /**
  * This interface defines the options that can be sent into the copy cross lpar data set function.
  */
-export interface ICrossLparCopyDatasetOptions extends IZosFilesOptions {
-    /**
-     * Target userid
-     * @type {string}
-     */
-    targetUser?: string;
-
-    /**
-     * Target password
-     * @type {string}
-     */
-    targetPassword?: string;
-
-    /**
-     * Target hostname
-     * @type {string}
-     */
-    targetHost?: string;
-
-    /**
-     * Target port
-     * @type {number}
-     */
-    targetPort?: number;
-
-    /**
-     * Target token type
-     * @type {string}
-     */
-    targetTokenType?: string;
-
-    /**
-     * Target token value
-     * @type {string}
-     */
-    targetTokenValue?: string;
-
-    /**
-     * Target zosmf profile
-     * @type {string}
-     */
-    targetZosmfProfile?: string;
-
+export interface ICrossLparCopyDatasetOptions extends ICopyDatasetOptions {
     /**
      * Target volser
      * @type {string}
@@ -88,9 +46,9 @@ export interface ICrossLparCopyDatasetOptions extends IZosFilesOptions {
     overwrite?: boolean;
 
     /**
-     * rejectUnauthorized option
-     * @type {boolean}
+     * Prompt callback that will be invoked before overwiting a data set.
+     * @param targetDSN Name of data set that already exists
+     * @returns True if target data set should be overwritten
      */
-    rejectUnauthorized?: boolean;
-
+    promptFn?: (targetDSN: string) => Promise<boolean>;
 }
