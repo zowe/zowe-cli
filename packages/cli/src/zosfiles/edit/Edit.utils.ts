@@ -73,9 +73,9 @@ export class EditUtilities {
             // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
-            return path.join(tmpdir(), hash, ext);
+            return path.join(tmpdir(), hash + ext);
         }
-        return path.join(tmpdir(), lfFile.fileName, ext);
+        return path.join(tmpdir(), lfFile.fileName + ext);
     }
 
     /**

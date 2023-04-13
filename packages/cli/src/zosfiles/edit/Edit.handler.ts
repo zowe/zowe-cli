@@ -22,11 +22,14 @@ import { EditUtilities as Utils, Prompt, ILocalFile } from "../edit/Edit.utils";
 export default class EditHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
-        let lfFile: ILocalFile;
-        lfFile.guiAvail = ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE;
-        lfFile.fileName = commandParameters.arguments.file ?? commandParameters.arguments.dataSetName;
+        let lfFile: ILocalFile = {
+            tempPath: null,
+            fileName: commandParameters.arguments.file ?? commandParameters.arguments.  dataSetName,
+            fileType: commandParameters.positionals.includes('ds') ? "ds" : "uss",
+            guiAvail: ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE,
+            zosResp: null
+        }
         lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);
-        lfFile.fileType = commandParameters.positionals.includes('ds') ? "ds" : "uss";
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfFile.tempPath);
@@ -44,7 +47,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            // show a file comparision for the purpose of seeing the newer version of the remote mf file compared to your local edits
+            // Show a file comparision for the purpose of seeing the newer version of the remote mf file compared to your local edits
             if (useStash && lfFile.guiAvail){
                 Utils.fileComparison(session, commandParameters);
             }
