@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, CliUtils, ConnectionPropsForSessCfg, ICommandArguments, IHandlerParameters,
+import { AbstractSession, ConfigUtils, ConnectionPropsForSessCfg, ICommandArguments, IHandlerParameters,
     IHandlerResponseConsoleApi, ImperativeConfig, ISession, Session } from "@zowe/imperative";
 import { Copy, ICrossLparCopyDatasetOptions, IDataSet, IGetOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -59,9 +59,15 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
         let profileProps: Record<string, any>;
         if (targetProfileName != null) {
             if (ImperativeConfig.instance.config.exists) {
-                profileProps = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
+                profileProps = {
+                    ...ImperativeConfig.instance.config.api.profiles.get(ConfigUtils.getActiveProfileName("base", params.arguments)),
+                    ...ImperativeConfig.instance.config.api.profiles.get(targetProfileName),
+                };
             } else {
-                profileProps = params.profiles.get("zosmf", false, targetProfileName);
+                profileProps = {
+                    ...params.profiles.get("base", false),
+                    ...params.profiles.get("zosmf", false, targetProfileName),
+                };
             }
         }
         const targetSessCfg: ISession = {
@@ -69,14 +75,11 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             ...(profileProps || {}),
             hostname: profileProps?.host ?? sourceSession.ISession.hostname
         };
-        const targetCmdArgs: ICommandArguments = {
-            $0: params.arguments.$0,
-            _: params.arguments._
-        };
+        const targetCmdArgs: ICommandArguments = { $0: params.arguments.$0, _: params.arguments._ };
         const targetPrefix = "target";
         for (const [k, v] of Object.entries(params.arguments)) {
             if (k.startsWith(targetPrefix)) {
-                const normalizedOptName = CliUtils.getOptionFormat(k.slice(targetPrefix.length)).camelCase;
+                const normalizedOptName = k.charAt(targetPrefix.length).toLowerCase() + k.slice(targetPrefix.length + 1);
                 targetCmdArgs[normalizedOptName] = v;
             }
         }
