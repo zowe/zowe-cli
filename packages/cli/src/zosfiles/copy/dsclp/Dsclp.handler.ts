@@ -84,6 +84,12 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             }
         }
         ConnectionPropsForSessCfg.resolveSessCfgProps(targetSessCfg, targetCmdArgs);
+        /**
+         * Remove existing base64EncodedAuth before creating a new session, otherwise the new id/password will not be
+         * picked in the target session
+        */
+        targetSessCfg.base64EncodedAuth = undefined;
+
         return new Session(targetSessCfg);
     }
 
