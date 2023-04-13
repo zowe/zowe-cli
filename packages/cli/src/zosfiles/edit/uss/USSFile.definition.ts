@@ -17,7 +17,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).EDIT;
 
 /**
- * View USS file content command definition containing its description, examples and/or options
+ * Edit USS file content command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
 export const USSFileDefinition: ICommandDefinition = {
@@ -45,15 +45,15 @@ export const USSFileDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
-            options: `"/a/ibmuser/my_text.txt" --editor "notepad"`
+            options: `/a/ibmuser/my_text.txt --editor notepad`
         },
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
-            options: `"/a/ibmuser/my_text.txt" --editor "C:\\Windows\\System32\\Notepad.exe"`
+            options: `/a/ibmuser/my_text.txt --editor C:\\Windows\\System32\\Notepad.exe`
         },
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
-            options: `"C:\\Windows\\System32\\Notepad.exe" "jcl" --editor "notepad" --extension "jcl"`
+            options: `C:\\Windows\\System32\\Notepad.exe --editor notepad --extension jcl`
         }
     ]
 };

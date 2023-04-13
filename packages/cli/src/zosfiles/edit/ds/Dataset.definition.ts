@@ -17,7 +17,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).EDIT;
 
 /**
- * View data set command definition containing its description, examples and/or options
+ * Edit data set command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
 export const DatasetDefinition: ICommandDefinition = {
@@ -45,15 +45,15 @@ export const DatasetDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `"ibmuser.cntl(iefbr14)" --editor "notepad"`
+            options: `ibmuser.cntl(iefbr14) --editor notepad`
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `"ibmuser.cntl(iefbr14)" --editor "C:\\Windows\\System32\\Notepad.exe"`
+            options: `ibmuser.cntl(iefbr14) --editor C:\\Windows\\System32\\Notepad.exe`
         },
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
-            options: `"ibmuser.jcl(iefbr14)" --editor "notepad" --extension "jcl"`
+            options: `ibmuser.jcl(iefbr14) --editor notepad --extension jcl`
         }
     ]
 };

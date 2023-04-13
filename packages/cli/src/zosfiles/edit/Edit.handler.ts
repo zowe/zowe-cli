@@ -10,10 +10,10 @@
 */
 
 import { AbstractSession, GuiResult, IHandlerParameters,
-    ITaskWithStatus, ImperativeError, ProcessUtils, TaskStage, TextUtils } from "@zowe/imperative";
+    ITaskWithStatus, ImperativeError, ProcessUtils, RestConstants, TaskStage, TextUtils } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../ZosFilesBase.handler";
-import { EditUtilities as Utils, Prompt, EditFileType, LocalFile } from "../edit/Edit.utils";
+import { EditUtilities as Utils, Prompt, ILocalFile } from "../edit/Edit.utils";
 
 /**
  * Handler to Edit USS or DS content locally
@@ -22,11 +22,11 @@ import { EditUtilities as Utils, Prompt, EditFileType, LocalFile } from "../edit
 export default class EditHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
-        let lfFile = new LocalFile;
+        let lfFile: ILocalFile;
         lfFile.guiAvail = ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE;
         lfFile.fileName = commandParameters.arguments.file ?? commandParameters.arguments.dataSetName;
         lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);
-        lfFile.fileType = commandParameters.positionals.includes('ds') ? EditFileType.ds : EditFileType.uss;
+        lfFile.fileType = commandParameters.positionals.includes('ds') ? "ds" : "uss";
 
         // Use or override stash (either way need to retrieve etag)
         const stash: boolean = await Utils.checkForStash(lfFile.tempPath);
@@ -53,16 +53,14 @@ export default class EditHandler extends ZosFilesBaseHandler {
             task.percentComplete = 70;
             commandParameters.response.progress.endBar();
         }catch(error){
-            if (error.causeErrors && error.causeErrors.code == 'ENOTFOUND'){
+            if (error instanceof ImperativeError && error.errorCode === String(RestConstants.HTTP_STATUS_404)) {
                 throw new ImperativeError({
-                    msg: TextUtils.chalk.red(`ENOTFOUND: Unable to connect to mainframe.`),
+                    msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
                     causeErrors: error
                 });
+            } else {
+                throw error;
             }
-            throw new ImperativeError({
-                msg: TextUtils.chalk.red(`File not found on mainframe. Command terminated.`),
-                causeErrors: error
-            });
         }
 
         // Edit local copy of mf file (automatically open an editor for user if not in headless linux)

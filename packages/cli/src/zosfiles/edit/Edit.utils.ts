@@ -34,21 +34,18 @@ export enum Prompt {
 }
 
 /**
- * An enum to supply more structure within {@link LocalFile}
+ * The possible types of file {@link ILocalFile}
  * @export
- * @enum
+ * @type
  */
-export enum EditFileType {
-    uss = 'uss',
-    ds = 'ds'
-}
+export type EditFileType = "uss" | "ds"
 
 /**
  * A class to hold pertinent information about the local file during the editing process
  * @export
- * @class
+ * @interface
  */
-export class LocalFile {
+export interface ILocalFile {
     tempPath: string;
     fileName: string;
     fileType: EditFileType;
@@ -66,19 +63,19 @@ export class EditUtilities {
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
-     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @returns {Promise<string>} - returns unique file path for temp file
      * @memberof EditUtilities
      */
-    public static async buildTempPath(lfFile: LocalFile, commandParameters: IHandlerParameters): Promise<string>{
-        const ext = commandParameters.arguments.extension ?? "txt";
+    public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string>{
+        const ext = "."  + (commandParameters.arguments.extension ?? "txt");
         if (lfFile.fileType == 'uss'){
             // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
-            return tmpdir() +"\\" + hash  + "." + ext;
+            return path.join(tmpdir(), hash, ext);
         }
-        return tmpdir() + "\\" + lfFile.fileName + "." + ext;
+        return path.join(tmpdir(), lfFile.fileName, ext);
     }
 
     /**
@@ -151,11 +148,11 @@ export class EditUtilities {
     /**
      * Download file and determine if downloading just to get etag (useStash) or to save file locally & get etag (!useStash)
      * @param {AbstractSession} session - the session object generated from the connected profile
-     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @param {boolean} useStash - should be true if don't want to overwrite local file when refreshing etag
-     * @returns {LocalFile}
+     * @returns {ILocalFile}
      */
-    public static async localDownload(session: AbstractSession, lfFile: LocalFile, useStash: boolean): Promise<LocalFile>{
+    public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
         // account for both useStash|!useStash and uss|ds when downloading
         const tempPath = useStash ? path.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
@@ -192,7 +189,7 @@ export class EditUtilities {
         const gui = ProcessUtils.isGuiAvailable();
         const options: IDiffOptions = {
             name1: "local file",
-            name2: "mainframe file"
+            name2: "remote file"
         };
 
         helper.browserView = (gui === GuiResult.GUI_AVAILABLE);
@@ -208,7 +205,7 @@ export class EditUtilities {
         //if browserview, open diff in browser, otherwise print diff in terminal
         const response = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
         if (!helper.browserView){
-            console.log('\n'+response.commandResponse);
+            commandParameters.response.console.log('\n'+response.commandResponse);
         }
         return response;
     }
@@ -233,13 +230,13 @@ export class EditUtilities {
      *  - if non-matching etag: unsucessful upload -> refresh etag -> perform file comparison/edit -> reattempt upload
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
-     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @returns {Promise<boolean>} - promise that resolves to true if uploading was successful and
      * false if user needs to take more action before completing the upload
      * @memberof EditUtilities
      */
     public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters,
-        lfFile: LocalFile): Promise<boolean>{
+        lfFile: ILocalFile): Promise<boolean>{
         const etagMismatchCode = 412;
         const args: [AbstractSession, string, string, IUploadOptions] = [
             session,
@@ -283,10 +280,10 @@ export class EditUtilities {
      * When changes occur in the remote file, user will have to decide to overwrite or to account for the discrepancy
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
-     * @param {LocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @memberof EditUtilities
      */
-    public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: LocalFile): Promise<void>{
+    public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: ILocalFile): Promise<void>{
         try{
             //alert user that the version of document they've been editing has changed
             //ask if they want to see changes on the remote file before continuing
