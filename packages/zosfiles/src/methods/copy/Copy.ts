@@ -276,20 +276,13 @@ export class Copy {
      *  Private function to convert the ALC value from the format returned by the Get() call in to the format used by the Create() call
      */
     private static convertAlcTozOSMF( zosmfValue: string): string {
-
-        if(zosmfValue == "BLOCKS")
-            return "BLK";
-        if(zosmfValue == "CYLINDERS")
-            return "CYL";
-        if(zosmfValue == "TRACKS")
-            return "TRK";
-        if(zosmfValue == "MEGABYTES")
-            return "MB";
-        if(zosmfValue == "KILOBYTES")
-            return "KB";
-        if(zosmfValue == "BYTES")
-            return "BYTE";
-
-        return zosmfValue;
+        /**
+         *  Create dataset only accepts tracks or cylinders as allocation units.
+         *  When the get() call retreives the dataset info, it will convert size
+         *  allocations of the other unit types in to tracks. So we will always
+         *  allocate the new target in tracks.
+        */
+        return "TRK";
     }
 }
+
