@@ -9,7 +9,6 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import { Copy, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsclpHandler from "../../../../../src/zosfiles/copy/dsclp/Dsclp.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
@@ -48,8 +47,7 @@ describe("DsclpHandler", () => {
                 rejectUnauthorized: true,
             },
             response: {
-                console: {
-               }
+                console: {}
             }
         };
 
@@ -61,10 +59,11 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
-            { targetUser: "dummy",
-              targetPassword : "dummy",
-              targetHost : "secure.host.com",
-              rejectUnauthorized: true,
+            {
+                targetUser: "dummy",
+                targetPassword : "dummy",
+                targetHost : "secure.host.com",
+                rejectUnauthorized: true,
             },
             { },
             {
@@ -84,7 +83,7 @@ describe("DsclpHandler", () => {
         const fromMemberName = "mem1";
         const toDataSetName = "EFGH";
         const toMemberName = "mem2";
-        const targetUser = "dummy";        
+        const targetUser = "dummy";
         const targetPassword = "dummy";
         const targetHost = "secure.host.com";
 
@@ -97,8 +96,7 @@ describe("DsclpHandler", () => {
                 targetHost
             },
             response: {
-                console: {
-               }
+                console: {}
             }
         };
 
@@ -115,10 +113,11 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: toDataSetName, member: toMemberName},
-            { targetUser: "dummy",
-              targetPassword : "dummy",
-              targetHost : "secure.host.com",
-              rejectUnauthorized: true,
+            {
+                targetUser: "dummy",
+                targetPassword : "dummy",
+                targetHost : "secure.host.com",
+                rejectUnauthorized: true,
             },
             { },
             {
@@ -151,8 +150,7 @@ describe("DsclpHandler", () => {
                 targetHost
             },
             response: {
-                console: {
-               },
+                console: {},
             }
         };
 
@@ -164,10 +162,11 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
-            { targetUser: "dummy",
-              targetPassword : "dummy",
-              targetHost : "secure.host.com",
-              rejectUnauthorized: true,          
+            {
+                targetUser: "dummy",
+                targetPassword : "dummy",
+                targetHost : "secure.host.com",
+                rejectUnauthorized: true,
             },
             { },
             {
