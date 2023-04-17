@@ -128,6 +128,7 @@ export class Copy {
             const targetMember  = toMemberName;
             let targetDataSetObj: IZosmfListResponse;
             let targetFound: boolean = false;
+            let targetMemberFound: boolean = false;
             let overwriteTarget: boolean = options.replace;
 
             /**
@@ -204,6 +205,18 @@ export class Copy {
                     }
                 }
             }
+                    
+            /**
+            * If this is a PDS and it exists, verify if the member also exists.
+            */
+            if(targetMember != undefined && targetFound == true){
+                const TargetMemberList = await List.allMembers(targetSession, targetDataset,
+                    {attributes: true, maxLength: 1, start: targetDataset, recall: "wait", pattern: targetMember});
+                if(TargetMemberList.apiResponse.returnedRows > 0){
+                    targetMemberFound = true;
+                }
+                
+            }
 
             /**
              *  Check to see if the target dataset exists and if the attributes match the source
@@ -220,6 +233,14 @@ export class Copy {
                     if (options.promptFn != null) {
                         overwriteTarget = await options.promptFn(targetDataset);
                     }
+                }
+                else{
+                    if(overwriteTarget == undefined && targetMemberFound == true)
+                    {
+                        if (options.promptFn != null) {
+                            overwriteTarget = await options.promptFn(targetDataset +"(" + targetMember + ")");
+                        }
+                    }                     
                 }
             }
 
