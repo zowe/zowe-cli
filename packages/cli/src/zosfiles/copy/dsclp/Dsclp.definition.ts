@@ -127,23 +127,19 @@ export const DsclpDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"USER.FROM.SET" "USER.TO.SET"`
+            options: `"USER.FROM.SET" "USER.TO.SET" --target-zosmf-p SYS1`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"USER.FROM.SET(mem1)" "USER.TO.SET(mem2)"`
+            options: `"USER.FROM.SET(mem1)" "USER.TO.SET(mem2)" --target-zosmf-p SYS1`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"USER.FROM.SET" "USER.TO.SET(mem2)"`
+            options: `"USER.FROM.SET" "USER.TO.SET(mem2)" --target-zosmf-p SYS1`
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"USER.FROM.SET(mem1)" "USER.TO.SET"`
-        },
-        {
-            description: strings.EXAMPLES.EX5,
-            options: `"USER.FROM.SET" "USER.TO.SET" --replace`
+            options: `"USER.FROM.SET(mem1)" "USER.TO.SET" --target-host sys1.com --target-user user1 --target-password pass1`
         }
     ]
 };

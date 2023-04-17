@@ -199,7 +199,8 @@ export default {
                 DESCRIPTION: "Copy a data set to another data set on a specified LPAR",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
-                    TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)"
+                    TODSNAME: "The name of the data set that you want to copy to. If the dataset does not " +
+                    "exist it will be allocated automatically"
                 },
                 OPTIONS: {
                     REPLACE:         "Specify this option as true if you wish to replace the target dataset if it already exists",
@@ -216,11 +217,12 @@ export default {
                     TARGETSTGCLS:    "The SMS storage class to use for the allocation of the target data set."
                 },
                 EXAMPLES: {
-                    EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
+                    EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' using the --target-zosmf-p" +
+                         " option to specify the target host using a zosmf profile",
                     EX2: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
                     EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
-                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
-                    EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members"
+                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET' using the " +
+                        "--target-host, --target-user, and --target-password options"
                 }
             }
         }
