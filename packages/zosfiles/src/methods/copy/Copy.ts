@@ -205,7 +205,7 @@ export class Copy {
                     }
                 }
             }
-                    
+
             /**
             * If this is a PDS and it exists, verify if the member also exists.
             */
@@ -215,7 +215,6 @@ export class Copy {
                 if(TargetMemberList.apiResponse.returnedRows > 0){
                     targetMemberFound = true;
                 }
-                
             }
 
             /**
@@ -226,6 +225,14 @@ export class Copy {
                  *  Create the target dataset if it does not exist based on the source dataset values
                  */
                 const createOptions = Copy.generateDatasetOptions(options, sourceDataSetObj);
+                /*
+                * If this is a PDS but the target is the sequential dataset and does not exist,
+                * create a new sequential dataset with the same parameters as the original PDS.
+                */
+                if((createOptions.dsorg == "PO" || createOptions.dsorg == "POE") && targetMember == undefined){
+                    createOptions.dsorg ="PS";
+                    createOptions.dirblk = 0;
+                }
                 await Create.dataSet(targetSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, targetDataset, createOptions);
             }
             else{
@@ -240,7 +247,7 @@ export class Copy {
                         if (options.promptFn != null) {
                             overwriteTarget = await options.promptFn(targetDataset +"(" + targetMember + ")");
                         }
-                    }                     
+                    }
                 }
             }
 
