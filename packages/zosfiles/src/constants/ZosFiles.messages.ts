@@ -649,6 +649,22 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedAbortedNoPDS: {
+        message: "Data set copied aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option."
+    },
+
+    /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedAbortedTargetNotPDSMember: {
+        message: "Data set copied aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option."
+    },
+
+    /**
      * Message indicating that the following members failed to properly download
      * @type {IMessageDefinition}
      */

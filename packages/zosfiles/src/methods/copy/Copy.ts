@@ -158,6 +158,13 @@ export class Copy {
                     // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                     sourceDataSetObj = SourceDsList.apiResponse.items[dsnameIndex];
                 }
+
+                /*
+                * If the source is a PDS and no member was specified then abort the copy.
+                */
+                if((sourceDataSetObj.dsorg == "PO" || sourceDataSetObj.dsorg == "POE") && sourceMember == undefined){
+                    throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
+                }
             }
 
             const task2: ITaskWithStatus = {
@@ -199,9 +206,9 @@ export class Copy {
                     targetDataSetObj = TargetDsList.apiResponse.items[dsnameIndex];
                     targetFound = true;
 
-                    if(targetDataSetObj.dsorg == "PO" || targetDataSetObj.dsorg == "POE")
+                    if((targetDataSetObj.dsorg == "PO" || targetDataSetObj.dsorg == "POE") && targetMember == undefined)
                     {
-                        //TODO: Check for invalid dataset type.
+                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedTargetNotPDSMember.message });
                     }
                 }
             }
@@ -252,7 +259,7 @@ export class Copy {
             }
 
             /*
-            *  Don't overwrite an existing dataset if overwrite is false
+            *  Don't overwrite an existing dataset or member if overwrite is false
             */
             if(overwriteTarget == undefined || overwriteTarget == true || targetFound == false){
                 /**
