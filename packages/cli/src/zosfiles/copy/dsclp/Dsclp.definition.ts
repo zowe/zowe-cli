@@ -9,13 +9,121 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { join } from "path";
+import { CliUtils, IChainedHandlerArgumentMapping, ICommandDefinition, ICommandOptionDefinition,
+    ICommandPositionalDefinition } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosFilesOptionDefinitions } from "../../ZosFiles.options";
 
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COPY.ACTIONS.DATA_SET_CROSS_LPAR;
+
+const TargetZosmfOptions: ICommandOptionDefinition[] = [
+    {
+        name: "target-host",
+        aliases: ["th"],
+        conflictsWith: [ "target-zosmf-profile"],
+        description: strings.OPTIONS.TARGETHOST,
+        type: "string"
+    },
+    {
+        name: "target-port",
+        aliases: ["tp"],
+        description: strings.OPTIONS.TARGETPORT,
+        type: "number"
+    },
+    {
+        name: "target-user",
+        aliases: ["tu"],
+        description: strings.OPTIONS.TARGETUSER,
+        type: "string"
+    },
+    {
+        name: "target-password",
+        aliases: ["tpw"],
+        description: strings.OPTIONS.TARGETPASS,
+        type: "string"
+    },
+    {
+        name: "target-token-type",
+        aliases: ["ttt"],
+        description: strings.OPTIONS.TARGETTOKENTYPE,
+        type: "string"
+    },
+    {
+        name: "target-token-value",
+        aliases: ["ttv"],
+        description: strings.OPTIONS.TARGETTOKENVAL,
+        type: "string"
+    },
+    {
+        name: "target-zosmf-profile",
+        aliases: ["t-zosmf-p", "target-zosmf-p"],
+        conflictsWith: ["target-host"],
+        description: strings.OPTIONS.TARGETPROFILE,
+        type: "string"
+    }
+];
+
+const GeneralOptions: ICommandOptionDefinition[] = [
+    {
+        name: "replace",
+        aliases: ["rep"],
+        description: strings.OPTIONS.REPLACE,
+        type: "boolean"
+    },
+    {
+        name: "target-volume-serial",
+        aliases: ["tvs", "target-volser"],
+        description: strings.OPTIONS.TARGETVOLSER,
+        type: "string"
+    },
+    {
+        name: "target-management-class",
+        aliases: ["tmc"],
+        description: strings.OPTIONS.TARGETMGTCLS,
+        type: "string"
+    },
+    {
+        name: "target-data-class",
+        aliases: ["tdc"],
+        description: strings.OPTIONS.TARGETDATACLS,
+        type: "string"
+    },
+    {
+        name: "target-storage-class",
+        aliases: ["tsc"],
+        description: strings.OPTIONS.TARGETSTGCLS,
+        type: "string"
+    }
+];
+
+const Positionals: ICommandPositionalDefinition[] = [
+    {
+        name: "fromDataSetName",
+        type: "string",
+        description: strings.POSITIONALS.FROMDSNAME,
+        required: true
+    },
+    {
+        name: "toDataSetName",
+        type: "string",
+        description: strings.POSITIONALS.TODSNAME,
+        required: true
+    }
+];
+
+function buildChainedHandlerArgumentMapping(optionDefs: (ICommandOptionDefinition | ICommandPositionalDefinition)[]): IChainedHandlerArgumentMapping[] {
+    return optionDefs.map((optionDef: ICommandOptionDefinition | ICommandPositionalDefinition) => ({
+        from: optionDef.name,
+        to: CliUtils.getOptionFormat(optionDef.name).camelCase,
+        mapFromArguments: true,
+        applyToHandlers: [0],
+        optional: !optionDef.required
+    }));
+}
 
 /**
  * This object defines the command for copy data-set within zosfiles. This is not
@@ -28,98 +136,41 @@ export const DsclpDefinition: ICommandDefinition = {
     aliases: ["dsclp"],
     description: strings.DESCRIPTION,
     type: "command",
-    handler: join(__dirname, "Dsclp.handler"),
+    chainedHandlers: [
+        {
+            handler: join(__dirname, "TargetProfile.handler"),
+            silent: true,
+            mapping: [
+                ...buildChainedHandlerArgumentMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+                ...buildChainedHandlerArgumentMapping(TargetZosmfOptions),
+                {
+                    from: "apiResponse.sessCfg",
+                    to: "targetZosmfSession"
+                }
+            ]
+        },
+        {
+            handler: join(__dirname, "Dsclp.handler"),
+            mapping: [
+                ...buildChainedHandlerArgumentMapping(Positionals),
+                ...buildChainedHandlerArgumentMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+                ...buildChainedHandlerArgumentMapping(ZosFilesOptionDefinitions),
+                ...buildChainedHandlerArgumentMapping(GeneralOptions)
+            ]
+        }
+    ],
     profile: {
         optional: ["zosmf"]
     },
-    positionals: [
-        {
-            name: "fromDataSetName",
-            type: "string",
-            description: strings.POSITIONALS.FROMDSNAME,
-            required: true
-        },
-        {
-            name: "toDataSetName",
-            type: "string",
-            description: strings.POSITIONALS.TODSNAME,
-            required: true
-        }
-    ],
+    positionals: Positionals,
     options: ([
+        ...TargetZosmfOptions,
+        ...GeneralOptions,
         {
-            name: "replace",
-            aliases: ["rep"],
-            description: strings.OPTIONS.REPLACE,
-            type: "boolean"
-        },
-        {
-            name: "target-host",
-            aliases: ["th"],
-            conflictsWith: [ "target-zosmf-profile"],
-            description: strings.OPTIONS.TARGETHOST,
-            type: "string"
-        },
-        {
-            name: "target-port",
-            aliases: ["tp"],
-            description: strings.OPTIONS.TARGETPORT,
-            type: "number"
-        },
-        {
-            name: "target-user",
-            aliases: ["tu"],
-            description: strings.OPTIONS.TARGETUSER,
-            type: "string"
-        },
-        {
-            name: "target-password",
-            aliases: ["tpw"],
-            description: strings.OPTIONS.TARGETPASS,
-            type: "string"
-        },
-        {
-            name: "target-zosmf-profile",
-            aliases: ["t-zosmf-p"],
-            conflictsWith: [ "target-host"],
-            description: strings.OPTIONS.TARGETPROFILE,
-            type: "string"
-        },
-        {
-            name: "target-volume-serial",
-            aliases: ["tvs", "target-volser"],
-            description: strings.OPTIONS.TARGETVOLSER,
-            type: "string"
-        },
-        {
-            name: "target-management-class",
-            aliases: ["tmc"],
-            description: strings.OPTIONS.TARGETMGTCLS,
-            type: "string"
-        },
-        {
-            name: "target-data-class",
-            aliases: ["tdc"],
-            description: strings.OPTIONS.TARGETDATACLS,
-            type: "string"
-        },
-        {
-            name: "target-storage-class",
-            aliases: ["tsc"],
-            description: strings.OPTIONS.TARGETSTGCLS,
-            type: "string"
-        },
-        {
-            name: "target-token-type",
-            aliases: ["ttt"],
-            description: strings.OPTIONS.TARGETTOKENTYPE,
-            type: "string"
-        },
-        {
-            name: "target-token-value",
-            aliases: ["ttv"],
-            description: strings.OPTIONS.TARGETTOKENVAL,
-            type: "string"
+            name: "target-zosmf-session",
+            description: "Session configuration for target z/OSMF profile",
+            type: "json",
+            hidden: true
         }
     ] as ICommandOptionDefinition[]).sort((a, b) =>
         a.name.localeCompare(b.name)

@@ -9,8 +9,7 @@
 *
 */
 
-import { AbstractSession, ConfigUtils, ConnectionPropsForSessCfg, ICommandArguments, IHandlerParameters,
-    IHandlerResponseConsoleApi, ImperativeConfig, ISession, Session } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, IHandlerResponseConsoleApi, Session } from "@zowe/imperative";
 import { Copy, ICrossLparCopyDatasetOptions, IDataSet, IGetOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { getDataSet } from "../../ZosFiles.utils";
@@ -43,7 +42,7 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             volume: commandParameters.arguments.volume
         };
 
-        const targetSession = this.loadTargetProfile(commandParameters, session);
+        const targetSession = new Session(commandParameters.arguments.targetZosmfSession);
 
         return Copy.dataSetCrossLPAR(session,
             targetDataset,
@@ -51,46 +50,6 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
             sourceOptions,
             targetSession
         );
-    }
-
-    private loadTargetProfile(params: IHandlerParameters, sourceSession: AbstractSession): AbstractSession {
-        // TODO Migrate this code to an Imperative utility method
-        const targetProfileName = params.arguments.targetZosmfProfile;
-        let profileProps: Record<string, any>;
-        if (targetProfileName != null) {
-            if (ImperativeConfig.instance.config.exists) {
-                profileProps = {
-                    ...ImperativeConfig.instance.config.api.profiles.get(ConfigUtils.getActiveProfileName("base", params.arguments)),
-                    ...ImperativeConfig.instance.config.api.profiles.get(targetProfileName),
-                };
-            } else {
-                profileProps = {
-                    ...params.profiles.get("base", false),
-                    ...params.profiles.get("zosmf", false, targetProfileName),
-                };
-            }
-        }
-        const targetSessCfg: ISession = {
-            ...sourceSession.ISession,
-            ...(profileProps || {}),
-            hostname: profileProps?.host ?? sourceSession.ISession.hostname
-        };
-        const targetCmdArgs: ICommandArguments = { $0: params.arguments.$0, _: params.arguments._ };
-        const targetPrefix = "target";
-        for (const [k, v] of Object.entries(params.arguments)) {
-            if (k.startsWith(targetPrefix)) {
-                const normalizedOptName = k.charAt(targetPrefix.length).toLowerCase() + k.slice(targetPrefix.length + 1);
-                targetCmdArgs[normalizedOptName] = v;
-            }
-        }
-        ConnectionPropsForSessCfg.resolveSessCfgProps(targetSessCfg, targetCmdArgs);
-        /**
-         * Remove existing base64EncodedAuth before creating a new session, otherwise the new id/password will not be
-         * picked up in the target session
-        */
-        targetSessCfg.base64EncodedAuth = undefined;
-
-        return new Session(targetSessCfg);
     }
 
     /**
