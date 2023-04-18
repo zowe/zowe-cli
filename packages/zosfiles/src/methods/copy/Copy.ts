@@ -240,6 +240,11 @@ export class Copy {
                     createOptions.dsorg ="PS";
                     createOptions.dirblk = 0;
                 }
+                else if(targetMember != undefined &&  (createOptions.dsorg != "PO" && createOptions.dsorg != "POE"))
+                {
+                    createOptions.dsorg ="PO";
+                    createOptions.dirblk = 1;
+                }
                 await Create.dataSet(targetSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, targetDataset, createOptions);
             }
             else{

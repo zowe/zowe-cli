@@ -9,6 +9,7 @@
 *
 */
 
+import { Session } from "@zowe/imperative";
 import { Copy, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsclpHandler from "../../../../../src/zosfiles/copy/dsclp/Dsclp.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
@@ -37,6 +38,7 @@ describe("DsclpHandler", () => {
         const targetPassword = "dummy";
         const targetHost = "secure.host.com";
 
+
         const commandParameters: any = {
             arguments: {
                 fromDataSetName: fromDataSetName,
@@ -51,7 +53,7 @@ describe("DsclpHandler", () => {
             }
         };
 
-        const dummySession = {};
+        const dummySession = new Session({hostname:"dummy.host.com"});
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
