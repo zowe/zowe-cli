@@ -97,6 +97,7 @@ Array [
   Object {
     "aliases": Array [
       "t-zosmf-p",
+      "target-zosmf-p",
     ],
     "conflictsWith": Array [
       "target-host",
@@ -104,6 +105,12 @@ Array [
     "description": "The name of a z/OSMF profile to load for the target host. ",
     "name": "target-zosmf-profile",
     "type": "string",
+  },
+  Object {
+    "description": "Session configuration for target z/OSMF profile",
+    "hidden": true,
+    "name": "target-zosmf-session",
+    "type": "json",
   },
 ]
 `;

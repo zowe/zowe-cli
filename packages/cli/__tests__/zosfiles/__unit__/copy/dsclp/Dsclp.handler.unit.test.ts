@@ -38,18 +38,19 @@ describe("DsclpHandler", () => {
         const targetPassword = "dummy";
         const targetHost = "secure.host.com";
 
-
         const commandParameters: any = {
             arguments: {
                 fromDataSetName: fromDataSetName,
                 toDataSetName: toDataSetName,
-                targetUser,
-                targetPassword,
-                targetHost,
-                rejectUnauthorized: true,
+                targetZosmfSession: {
+                    user: targetUser,
+                    password: targetPassword,
+                    hostname: targetHost,
+                    rejectUnauthorized: true
+                }
             },
             response: {
-                console: {}
+                console: { prompt: jest.fn() }
             }
         };
 
@@ -61,17 +62,18 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
-            {
-                targetUser: "dummy",
-                targetPassword : "dummy",
-                targetHost : "secure.host.com",
-                rejectUnauthorized: true,
-            },
+            expect.objectContaining({
+                "from-dataset": { dsn: commandParameters.arguments.fromDataSetName }
+            }),
             { },
-            {
-                "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
-            },
-            { }
+            expect.objectContaining({
+                mISession: expect.objectContaining({
+                    user: targetUser,
+                    password: targetPassword,
+                    hostname: targetHost,
+                    rejectUnauthorized: true
+                })
+            })
         );
         expect(response).toBe(defaultReturn);
     });
@@ -93,12 +95,14 @@ describe("DsclpHandler", () => {
             arguments: {
                 fromDataSetName:`${fromDataSetName}(${fromMemberName})`,
                 toDataSetName: `${toDataSetName}(${toMemberName})`,
-                targetUser,
-                targetPassword,
-                targetHost
+                targetZosmfSession: {
+                    user: targetUser,
+                    password: targetPassword,
+                    hostname: targetHost
+                }
             },
             response: {
-                console: {}
+                console: { prompt: jest.fn() }
             }
         };
 
@@ -115,19 +119,17 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: toDataSetName, member: toMemberName},
-            {
-                targetUser: "dummy",
-                targetPassword : "dummy",
-                targetHost : "secure.host.com",
-                rejectUnauthorized: true,
-            },
+            expect.objectContaining({
+                "from-dataset": { dsn: fromDataSetName, member: fromMemberName }
+            }),
             { },
-            {
-                "from-dataset": { dsn: fromDataSetName, member: fromMemberName },
-                replace: undefined,
-                responseTimeout: undefined
-            },
-            { }
+            expect.objectContaining({
+                mISession: expect.objectContaining({
+                    user: targetUser,
+                    password: targetPassword,
+                    hostname: targetHost
+                })
+            })
         );
         expect(response).toBe(defaultReturn);
     });
@@ -147,12 +149,14 @@ describe("DsclpHandler", () => {
             arguments: {
                 fromDataSetName,
                 toDataSetName,
-                targetUser,
-                targetPassword,
-                targetHost
+                targetZosmfSession: {
+                    user: targetUser,
+                    password: targetPassword,
+                    hostname: targetHost
+                }
             },
             response: {
-                console: {},
+                console: { prompt: jest.fn() }
             }
         };
 
@@ -164,17 +168,17 @@ describe("DsclpHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
-            {
-                targetUser: "dummy",
-                targetPassword : "dummy",
-                targetHost : "secure.host.com",
-                rejectUnauthorized: true,
-            },
-            { },
-            {
+            expect.objectContaining({
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
-            },
-            { }
+            }),
+            { },
+            expect.objectContaining({
+                mISession: expect.objectContaining({
+                    user: targetUser,
+                    password: targetPassword,
+                    hostname: targetHost
+                })
+            })
         );
         expect(response).toBe(defaultReturn);
     });
