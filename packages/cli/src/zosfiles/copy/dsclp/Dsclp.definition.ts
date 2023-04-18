@@ -115,7 +115,7 @@ const Positionals: ICommandPositionalDefinition[] = [
     }
 ];
 
-function buildChainedHandlerArgumentMapping(optionDefs: (ICommandOptionDefinition | ICommandPositionalDefinition)[]): IChainedHandlerArgumentMapping[] {
+function buildChainedHandlerArgMapping(optionDefs: (ICommandOptionDefinition | ICommandPositionalDefinition)[]): IChainedHandlerArgumentMapping[] {
     return optionDefs.map((optionDef: ICommandOptionDefinition | ICommandPositionalDefinition) => ({
         from: optionDef.name,
         to: CliUtils.getOptionFormat(optionDef.name).camelCase,
@@ -139,10 +139,9 @@ export const DsclpDefinition: ICommandDefinition = {
     chainedHandlers: [
         {
             handler: join(__dirname, "TargetProfile.handler"),
-            silent: true,
             mapping: [
-                ...buildChainedHandlerArgumentMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
-                ...buildChainedHandlerArgumentMapping(TargetZosmfOptions),
+                ...buildChainedHandlerArgMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+                ...buildChainedHandlerArgMapping(TargetZosmfOptions),
                 {
                     from: "apiResponse.sessCfg",
                     to: "targetZosmfSession"
@@ -152,10 +151,10 @@ export const DsclpDefinition: ICommandDefinition = {
         {
             handler: join(__dirname, "Dsclp.handler"),
             mapping: [
-                ...buildChainedHandlerArgumentMapping(Positionals),
-                ...buildChainedHandlerArgumentMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
-                ...buildChainedHandlerArgumentMapping(ZosFilesOptionDefinitions),
-                ...buildChainedHandlerArgumentMapping(GeneralOptions)
+                ...buildChainedHandlerArgMapping(Positionals),
+                ...buildChainedHandlerArgMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+                ...buildChainedHandlerArgMapping(ZosFilesOptionDefinitions),
+                ...buildChainedHandlerArgMapping(GeneralOptions)
             ]
         }
     ],

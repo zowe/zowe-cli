@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ImperativeConfig } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ImperativeConfig, ImperativeError } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
@@ -19,29 +19,45 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * TODO Consider migrating code for loading target profiles to Imperative
  */
 export default class TargetProfileHandler extends ZosFilesBaseHandler {
+    /**
+     * Build target z/OSMF session from profiles and command arguments.
+     */
     public async process(params: IHandlerParameters): Promise<void> {
         const targetProfileName = params.arguments.targetZosmfProfile;
         let targetCmdArgs: Record<string, any> = {};
-        if (targetProfileName != null) {
-            if (ImperativeConfig.instance.config.exists) {
-                targetCmdArgs = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
-            } else {
-                targetCmdArgs = params.profiles.get("zosmf", false, targetProfileName);
+
+        try {
+            if (targetProfileName != null) {
+                if (ImperativeConfig.instance.config?.exists) {
+                    targetCmdArgs = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
+                } else {
+                    targetCmdArgs = params.profiles.get("zosmf", false, targetProfileName);
+                }
             }
-        }
-        const targetPrefix = "target";
-        for (const [k, v] of Object.entries(params.arguments)) {
-            if (k.startsWith(targetPrefix) && v != null) {
-                const normalizedOptName = k.charAt(targetPrefix.length).toLowerCase() + k.slice(targetPrefix.length + 1);
-                targetCmdArgs[normalizedOptName] = v;
+
+            const targetPrefix = "target";
+            for (const [k, v] of Object.entries(params.arguments)) {
+                if (k.startsWith(targetPrefix) && v != null) {
+                    const normalizedOptName = k.charAt(targetPrefix.length).toLowerCase() + k.slice(targetPrefix.length + 1);
+                    targetCmdArgs[normalizedOptName] = v;
+                }
             }
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `Failed to load target z/OSMF profile: ${err.message}`,
+                causeErrors: err
+            });
         }
+
         await super.process({
             ...params,
             arguments: { ...params.arguments, ...targetCmdArgs }
         });
     }
 
+    /**
+     * Return session config for target profile to pass on to the next handler.
+     */
     public async processWithSession(_params: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         return {
             success: true,
