@@ -28,7 +28,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
             fileType: commandParameters.positionals.includes('ds') ? "ds" : "uss",
             guiAvail: ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE,
             zosResp: null
-        }
+        };
         lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);
 
         // Use or override stash (either way need to retrieve etag)

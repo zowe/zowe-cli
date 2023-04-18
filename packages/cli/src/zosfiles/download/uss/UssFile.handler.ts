@@ -30,7 +30,8 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             encoding: commandParameters.arguments.encoding,
             file: commandParameters.arguments.file,
             task,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            overwrite: commandParameters.arguments.overwrite
         });
     }
 }

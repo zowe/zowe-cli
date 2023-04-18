@@ -159,6 +159,7 @@ export class EditUtilities {
             session,
             lfFile.fileName,
             {
+                overwrite: useStash? false : true,
                 returnEtag: true,
                 file: tempPath
             }
@@ -277,7 +278,7 @@ export class EditUtilities {
     }
 
     /**
-     * When changes occur in the remote file, user will have to decide to overwrite or to account for the discrepancy
+     * When changes occur in the remote file, user will have to decide to overwrite stash or to account for the discrepancy between files
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
      * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
