@@ -242,9 +242,9 @@ describe("DownloadJobs", () => {
 
             it("should allow users to call downloadSpoolContentCommon with correct parameters (streamed in binary mode)", async () => {
                 let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[], responseStream?: Writable): Promise<any> => {
+                ZosmfRestClient.getStreamed = jest.fn(async (s: AbstractSession, resource: string, r?: any[], stream?: Writable): Promise<any> => {
                     uri = resource;
-                    responseStream?._write("test", "utf-8", jest.fn());
+                    stream?._write("test", "utf-8", jest.fn());
                 });
                 const chunks: any[] = [];
                 const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
@@ -253,7 +253,9 @@ describe("DownloadJobs", () => {
                     jobid: fakeJobID,
                     jobname: fakeJobName,
                     binary: true,
-                    stream: new Writable({write: (chunk) => {chunks.push(chunk)}})
+                    stream: new Writable({write: (chunk) => {
+                        chunks.push(chunk);
+                    }})
                 };
 
                 await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);

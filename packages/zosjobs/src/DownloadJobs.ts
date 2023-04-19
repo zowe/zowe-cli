@@ -101,11 +101,12 @@ export class DownloadJobs {
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
 
+        this.log.debug(`Downloading spool file %s for job %s(%s)`,
+            parms.jobFile.ddname, parms.jobFile.jobname, parms.jobFile.jobid);
+
         let file: string;
         if (parms.stream == null) {
             file = DownloadJobs.getSpoolDownloadFilePath(parms);
-            this.log.debug(`Downloading spool file %s for job %s(%s) to file %s`,
-                parms.jobFile.ddname, parms.jobFile.jobname, parms.jobFile.jobid, file);
             IO.createDirsSyncFromFilePath(file);
             IO.createFileSync(file);
         }
