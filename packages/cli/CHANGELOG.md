@@ -2,6 +2,35 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `zowe files copy dsclp` command to copy a dataset from one LPAR to another.  [#1098](https://github.com/zowe/zowe-cli/issues/1098)
+
+## `7.13.0`
+
+- Enhancement: Updated Imperative to add `--prune` option to `zowe config secure` command. [Imperative #547](https://github.com/zowe/imperative/issues/547)
+
+## `7.12.0`
+
+- Enhancement: Added `range` option to `zos-files view uss-file` command
+- BugFix: Fixed `encoding` option for `zos-files view uss-file` command [#1495](https://github.com/zowe/zowe-cli/issues/1495)
+- BugFix: Adds notification that `encoding`, `binary`, and `record` options conflict on the `zos-files view data-set` and `zos-files view uss-file` commands
+- BugFix: Updated Imperative to fix the `zowe auth li` and `zowe auth lo` aliases [Imperative #964](https://github.com/zowe/imperative/issues/964)
+
+## `7.11.3`
+
+- BugFix: Fixed URI encoding on `zos-jobs` commands [#1596](https://github.com/zowe/zowe-cli/issues/1596)
+- BugFix: Updated Imperative to fix an error on Windows preventing plug-ins from installing if a local file or directory contains a space. [Imperative #959](https://github.com/zowe/imperative/issues/959)
+
+## `7.11.2`
+
+- BugFix: Updated daemon executable to resolve technical debt
+- BugFix: Fixed URI encoding on `zos-files` commands [#1073](https://github.com/zowe/zowe-cli/issues/1073)
+
+## `7.11.1`
+
+- BugFix: Solved daemon issue where Windows usernames were treated as case-sensitive when checking the daemon process owner during Zowe commands.
+
 ## `7.11.0`
 - Enhancement: Added support for a CLI specific environment variable file. [#1484](https://github.com/zowe/zowe-cli/issues/1484)
 - BugFix: Enabled option to download output from a submitted job with the -d flag. The -e flag now enables changes to file extension as originally intended. [#729](https://github.com/zowe/zowe-cli/issues/729)
@@ -167,7 +196,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `7.0.1`
 
-- BugFix: Fixed ProfileInfo API targeting default base profile instead of the operating layer's base profile. [Imperative#791](https://github.com/zowe/imperative/issues/791)
+- BugFix: Fixed ProfileInfo API targeting default base profile instead of the operating layer's base profile. [Imperative #791](https://github.com/zowe/imperative/issues/791)
 
 ## `7.0.0`
 
@@ -198,7 +227,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `7.0.0-next.202203311904`
 
 - BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
-- BugFix: Updated Imperative to avoid loading the credential manager if the given config file is not secure. [zowe/imperative#762](https://github.com/zowe/imperative/issues/762)
+- BugFix: Updated Imperative to avoid loading the credential manager if the given config file is not secure. [Imperative #762](https://github.com/zowe/imperative/issues/762)
 
 ## `7.0.0-next.202203282106`
 
@@ -350,7 +379,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Update Imperative dependency for the following new features:
   - **LTS Breaking**: Make `fail-on-error` option true by default on `zowe plugins validate` command.
   - Enhancement: Improved command suggestions
-  - Performance: Improved the way that HTTP response chunks are saved, reducing time complexity from O(n<sup>2</sup>) to O(n). This dramatically improves performance for larger requests. [#618](https://github.com/zowe/imperative/pull/618)
+  - Performance: Improved the way that HTTP response chunks are saved, reducing time complexity from O(n<sup>2</sup>) to O(n). This dramatically improves performance for larger requests. [Imperative #618](https://github.com/zowe/imperative/pull/618)
 
 ## `7.0.0-next.202108121907`
 
@@ -464,8 +493,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Exposed new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
 - Enhancement: Updated Imperative to add the following features:
   - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions.
-  - Enhancement: The `plugins validate` command will return an error code when plugins have errors if the new `--fail-on-error` option is specified. Also adds `--fail-on-warning` option to return with an error code when plugins have warnings. [#463](https://github.com/zowe/imperative/issues/463)
-  - BugFix: Fixed regression where characters are not correctly escaped in web help causing extra slashes ("\") to appear. [#644](https://github.com/zowe/imperative/issues/644)
+  - Enhancement: The `plugins validate` command will return an error code when plugins have errors if the new `--fail-on-error` option is specified. Also adds `--fail-on-warning` option to return with an error code when plugins have warnings. [Imperative #463](https://github.com/zowe/imperative/issues/463)
+  - BugFix: Fixed regression where characters are not correctly escaped in web help causing extra slashes ("\") to appear. [Imperative #644](https://github.com/zowe/imperative/issues/644)
 - Renamed the zos-files `--responseTimeout` option to `--response-timeout` in help docs for consistency. [#803](https://github.com/zowe/zowe-cli/issues/803)
 
 ## `6.32.2`
