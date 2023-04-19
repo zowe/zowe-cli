@@ -958,5 +958,54 @@ describe("Copy", () => {
                 });
             });
         });
+
+        describe("Data Set Partitioned with no member to Sequential", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            describe("Failure cases", () => {
+                it("should fail in all cases, as copying a whole PDS is not supported", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: undefined },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Copying from a PDS to PDS is not supported when using the 'dsclp' option.");
+                });
+            });
+        });
     });
 });
