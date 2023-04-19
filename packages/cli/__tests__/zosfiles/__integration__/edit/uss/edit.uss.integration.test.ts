@@ -20,7 +20,7 @@ describe("View USS file", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "view_uss_file_integration",
+            testName: "zos_edit_ussFile-integration",
             skipProperties: true
         });
     });
@@ -30,19 +30,43 @@ describe("View USS file", () => {
     });
 
     it("should display the help", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command_view_uss_help.sh");
+        const shellScript = path.join(__dirname, "__scripts__", "edit_uss_help.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT);
         expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
+    it("should display the help in json format", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/edit_uss_help_rfj.sh",
+            TEST_ENVIRONMENT);
+        expect(response.status).toBe(0);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.stdout.toString()).toMatchSnapshot();
+    });
+
+    it("should display an error when command includes an undefined option", () => {
+        const response = runCliScript(__dirname + "/__scripts__/bogus_flag.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stdout.toString()).toBe("");
+        expect(response.stderr.toString()).toContain(
+            "Command failed due to improper syntax"
+        );
+    });
+
     it("should fail due to missing uss filename", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss.sh");
+        const shellScript = path.join(__dirname, "__scripts__", "command", "missing_filename.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
         expect(response.stderr.toString()).toContain("file");
+    });
+
+    it("should fail due to conflicting positionals (uss and ds)", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "conflicting_positionals.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Command failed due to improper syntax");
     });
 
 });

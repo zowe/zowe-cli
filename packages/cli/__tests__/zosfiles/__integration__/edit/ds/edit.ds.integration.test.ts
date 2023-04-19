@@ -15,10 +15,10 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
-describe("Copy Data Set", () => {
+describe("Edit Data Set", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_copy_data_set",
+            testName: "zos_edit_data_set-integration",
             skipProperties: true
         });
     });
@@ -28,7 +28,7 @@ describe("Copy Data Set", () => {
     });
 
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/copy_data_set_help.sh",
+        const response = runCliScript(__dirname + "/__scripts__/edit_ds_help.sh",
             TEST_ENVIRONMENT);
         expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
@@ -36,7 +36,7 @@ describe("Copy Data Set", () => {
     });
 
     it("should display the help in json format", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/copy_data_set_help_rfj.sh",
+        const response = runCliScript(__dirname + "/__scripts__/edit_ds_help_rfj.sh",
             TEST_ENVIRONMENT);
         expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
