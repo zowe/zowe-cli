@@ -26,6 +26,15 @@ describe("Copy", () => {
         type: "basic"
     });
 
+    const targetSession = new Session({
+        user: "dummy",
+        password: "dummy",
+        hostname: "machine",
+        port: 443,
+        protocol: "https",
+        type: "basic"
+    });
+
     beforeEach(() => {
         copyExpectStringSpy.mockClear();
         copyExpectStringSpy.mockImplementation(async () => {
@@ -508,6 +517,45 @@ describe("Copy", () => {
                 }
 
                 expect(error.message).toContain("Required object must be defined");
+            });
+        });
+    });
+    describe("Data Set Cross LPAR", () => {
+        const fromDataSetName = "USER.DATA.FROM";
+        const fromMemberName = "mem1";
+        const toDataSetName = "USER.DATA.TO";
+        const toMemberName = "mem2";
+        describe("Success Scenarios", () => {
+            describe("Sequential > Sequential", () => {
+                it("should send a request", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "from-dataset": {
+                            dsn: fromDataSetName
+                        }
+                    };
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }},
+                        { },
+                        targetSession
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }},
+                        { },
+                        targetSession
+                    );
+                });
             });
         });
     });
