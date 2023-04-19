@@ -12,6 +12,7 @@
 import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { Writable } from "stream";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/GetJobs");
@@ -237,6 +238,29 @@ describe("DownloadJobs", () => {
 
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
                 expect(uri).toContain("?mode=binary");
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (streamed in binary mode)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[], responseStream?: Writable): Promise<any> => {
+                    uri = resource;
+                    responseStream?._write("test", "utf-8", jest.fn());
+                });
+                const chunks: any[] = [];
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    binary: true,
+                    stream: new Writable({write: (chunk) => {chunks.push(chunk)}})
+                };
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).not.toHaveBeenCalled();
+                expect(uri).toContain("?mode=binary");
+                expect(chunks).toEqual(["test"]);
             });
 
             it("should allow users to call downloadSpoolContentCommon with correct parameters (default outDir and record mode)", async () => {

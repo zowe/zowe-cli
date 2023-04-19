@@ -101,11 +101,14 @@ export class DownloadJobs {
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
 
-        const file = DownloadJobs.getSpoolDownloadFilePath(parms);
-        this.log.debug("Downloading spool file %s for job %s(%s) to file %s",
-            parms.jobFile.ddname, parms.jobFile.jobname, parms.jobFile.jobid, file);
-        IO.createDirsSyncFromFilePath(file);
-        IO.createFileSync(file);
+        let file: string;
+        if (parms.stream == null) {
+            file = DownloadJobs.getSpoolDownloadFilePath(parms);
+            this.log.debug(`Downloading spool file %s for job %s(%s) to file %s`,
+                parms.jobFile.ddname, parms.jobFile.jobname, parms.jobFile.jobid, file);
+            IO.createDirsSyncFromFilePath(file);
+            IO.createFileSync(file);
+        }
 
         let parameters: string = "/" + encodeURIComponent(parms.jobFile.jobname) + "/" + encodeURIComponent(parms.jobFile.jobid) +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(parms.jobFile.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
@@ -116,7 +119,7 @@ export class DownloadJobs {
             parameters += "?mode=record";
         }
 
-        const writeStream = IO.createWriteStream(file);
+        const writeStream = parms.stream ?? IO.createWriteStream(file);
         await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, undefined, writeStream,
             true);
     }
