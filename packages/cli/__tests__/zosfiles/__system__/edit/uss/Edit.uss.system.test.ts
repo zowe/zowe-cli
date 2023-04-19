@@ -12,7 +12,6 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
-import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders } from "@zowe/cli";
 import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
 import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -24,11 +23,10 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 
-describe("View uss file", () => {
+describe("Edit uss file", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            installPlugin: true,
-            testName: "view_uss_file",
+            testName: "edit_uss_file",
             tempProfileTypes: ["zosmf"]
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -54,66 +52,15 @@ describe("View uss file", () => {
     });
 
     describe("Success scenarios", () => {
-        beforeEach(async () => {
-            let response;
-            let error;
-            const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            try {
-                response = await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
-            } catch (err) {
-                error = err;
-            }
-        });
-
-        afterEach(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-            try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-            } catch (err) {
-                error = err;
-            }
-        });
-
-        it("should view uss file", async () => {
-            const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
-
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length)]);
-
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString().trim()).toEqual(data);
-        });
-        it("should view uss file in binary", async () => {
-            const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
-
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--binary"]);
-
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString().trim()).toEqual(data);
-        });
-        it("should view uss file with range", async () => {
-            const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
-
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--range", "0,1"]);
-
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString().trim()).toEqual("abcdefghijklmnopqrstuvwxyz\n");
+        //this test hangs because requires user input mocking - deciding to put this in unit test
+        //it("should edit uss file (should upload edited local file with the correct/expected etag)", async () => {})
+    });
+    describe("Expected failures", () => {
+        it("should fail if specified uss file doesn't exist", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistant_uss.sh");
+            const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("Data set not found.");
         });
     });
 });

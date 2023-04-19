@@ -10,7 +10,6 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { Create, Delete, CreateDataSetTypeEnum } from "@zowe/cli";
 import * as path from "path";
 import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
 import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -21,13 +20,11 @@ let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
-const TIMEOUT = 20000;
 
-
-describe("View Data Set", () => {
+describe("Edit data set", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "view_data_set",
+            testName: "edit_data_set",
             tempProfileTypes: ["zosmf"]
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -49,42 +46,12 @@ describe("View Data Set", () => {
     });
 
     describe("Success scenarios", () => {
-        beforeEach(async () => {
-            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-        });
-
-        afterEach(async () => {
-            await Delete.dataSet(REAL_SESSION, dsname);
-        });
-
-        it("should view data set", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
-            const response = runCliScript(shellScript, testEnvironment, [dsname]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        }, TIMEOUT);
-
-        it("should view first two lines of a data set", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
-            const response = runCliScript(shellScript, testEnvironment, [`SYS1.MACLIB(ABEND)`, `--range 0-2`]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        }, TIMEOUT);
-
-        it("should view only one line of a data set", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
-            const response = runCliScript(shellScript, testEnvironment, [`SYS1.MACLIB(ABEND)`, `--range 0,1`]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        }, TIMEOUT);
-
+        //this test hangs because requires user input mocking - deciding to put this in unit test
+        //it("should edit data set (should upload edited local file with the correct/expected etag)", async () => {})
     });
     describe("Expected failures", () => {
-        it("should fail due to specified data set name does not existed", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_data_set.sh");
+        it("should fail if specified data set doesn't exist", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistant_ds.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");
