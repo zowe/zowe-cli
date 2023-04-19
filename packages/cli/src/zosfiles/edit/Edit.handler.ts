@@ -47,7 +47,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            // Show a file comparision for the purpose of seeing the newer version of the remote mf file compared to your local edits
+            // Show a file comparison for the purpose of seeing the newer version of the remote mf file compared to your local edits
             if (useStash && lfFile.guiAvail){
                 Utils.fileComparison(session, commandParameters);
             }

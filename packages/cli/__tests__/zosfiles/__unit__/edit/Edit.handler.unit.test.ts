@@ -9,27 +9,59 @@
 *
 */
 
-import { Get } from "@zowe/zos-files-for-zowe-sdk";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { Get, Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { GuiResult } from "@zowe/imperative";
+import {ILocalFile,
+EditUtilities} from "../../../../src/zosfiles/edit/Edit.utils"
 
-describe("Compare data set handler", () => {
+describe("Files Edit Group Handler", () => {
     describe("process method", () => {
-        // // Require the handler and create a new instance
-        // const handlerReq = require("../../../../../src/zosfiles/compare/ds/Dataset.handler");
-        // const handler = new handlerReq.default();
-        // const dataSetName1 = "testing1";
-        // const dataSetName2 = "testing2";
-        // // Vars populated by the mocked function
-        // let error;
-        // let apiMessage = "";
-        // let jsonObj: object;
-        // let logMessage = "";
-        // let fakeSession: object;
-        // // Mocks
+        // Require the handler and create a new instance
+        const handlerDsReq = require("../../../../../src/zosfiles/edit/ds/Dataset.handler");
+        const handlerUssReq = require("../../../../../src/zosfiles/edit/ds/Dataset.handler");
+        const handlerDs = new handlerDsReq.default();
+        const handlerUss = new handlerUssReq.default();
+        const dataSetName = "testingDataset";
+        const ussFileName = "testingUssFile";
+
+        //create lfFile objects
+        let dslf: ILocalFile = {
+            tempPath: null,
+            fileName: dataSetName,
+            fileType: "ds",
+            guiAvail: true,
+            zosResp: null
+        };
+
+        let usslf: ILocalFile = {
+            tempPath: null,
+            fileName: ussFileName,
+            fileType: "uss",
+            guiAvail: true,
+            zosResp: null
+        };
+
+        // Vars populated by the mocked function
+        let error;
+        let apiMessage = "";
+        let jsonObj: object;
+        let logMessage = "";
+        let fakeSession: object;
+        const zosErrorResp_etagMismatch = {
+            apiResponse:[],
+            success: false,
+            commandResponse: 'z/OSMF REST API Error:\nRest API failure with HTTP(S) status 412\n',
+        }
+
+        // Mocks
         // const getDataSetSpy = jest.spyOn(Get, "dataSet");
         // const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
         // const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
+        const checkForStash = jest.spyOn(EditUtilities, "checkForStash");
+        const localDownload = jest.spyOn(EditUtilities, "localDownload");
+        const promptResp = jest.spyOn(EditUtilities, "promptUser");
+        const uploadUssFile = jest.spyOn(Upload, "fileToUssFile");
+        const uploadDsFile = jest.spyOn(Upload, "fileToDataset");
         // const profFunc = jest.fn((args) => {
         //     return {
         //         host: "fake",
@@ -188,31 +220,44 @@ describe("Compare data set handler", () => {
         //     expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);
         // });
 
-        it("should use default editor and extension when not provided as arguments")
-        it("should be able to build the correct temp path for uss file")
-        it("should be able to build the correct temp path for ds")
-        it("should be able to create an accurate lfFile object for uss")
-        it("should be able to create an accurate lfFile object for ds")
-        it("should use appropriate download method for uss vs ds files")
-        it("should check for the presence of a stash")
-        it("should acurately detect environment state (headless or gui avail)")
-        it("should be able to do a terminal file compare if in headless environment")
-        it("should be able to do a gui file compare if gui avail")
-        it("should not have a sucessful upload if two different etags")
-        it("should successfully upload when etags are matching")
-        it("should open local file in correct editor")
-        it("should be able to successfully detect changes in remote")
+        describe("Success scenarios", () => {
+            describe("successful situations regardless of file type", () => {
+                it("should accurately detect the presence of a stash"), () => {}
+                it("should accurately detect environment state (headless or gui avail)"), () => {}
+                it("should be able to do a terminal file compare if in headless environment"), () => {}
+                it("should be able to do a gui file compare if gui avail"), () => {}
+                it("should successfully upload when etags are matching"), () => {}
+                it("should open local file in correct editor"), () => {}
+                it("should be able to successfully detect changes in remote (changed etag)"), () => {}
+                it("should truly destroy temp file once edits are successfully uploaded to remote"), () => {}
+                it("should refresh etag without overwriting stashed file when this situation is requested"), () => {
+                    //SETUP lfFile to have different etag than returned zos response for remote file
 
-        it("should truly destroy temp file once edits are sucessfully upoloaded to remote")
-        it("should refresh etag without overwriting stashed file when user is told that remote has changed from what they've last seen")
+                    //TRIGGER a failed upload (because remote changed)
 
-        //errors
-        it("should terminate command if file is not found on mainframe")
+                    //TEST that etag is refreshed without overwriting lf
+                }
+            });
+            describe("edit uss successfully", () => {
+                it("should be able to build the correct temp path - uss"), () => {
 
-        it("should catch a mismatched etag error when trying to upload a local file who's etag is outdated")
+                }
+                it("should be able to create an accurate lfFile object - uss"), () => {
 
-        it("should time out and save stash if user doesn't answer a Y/n prompt within the timeout period (10 mins)")
-
+                }
+                it("should use appropriate download method - uss"), () => {}
+            })
+            describe("edit ds successfully", () => {
+                it("should be able to build the correct temp path - ds"), () => {}
+                it("should be able to create an accurate lfFile object - ds"), () => {}
+                it("should use appropriate download method - ds"), () => {}
+            })
+        });
+        describe("Expected failures", () => {
+            it("should terminate command if file is not found on mainframe"), () => {}
+            it("shouldn't successfully upload if two different etags (lf and remote etags are mismatched"), () => {}
+            it("should quit & stash if user doesn't answer a Y/n prompt within timeout period"), () => {}
+        });
     });
 });
 

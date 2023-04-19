@@ -55,7 +55,7 @@ describe("View USS file", () => {
     });
 
     it("should fail due to missing uss filename", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command", "missing_filename.sh");
+        const shellScript = path.join(__dirname, "__scripts__/missing_filename.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
@@ -63,10 +63,16 @@ describe("View USS file", () => {
     });
 
     it("should fail due to conflicting positionals (uss and ds)", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command", "conflicting_positionals.sh");
+        const shellScript = path.join(__dirname, "__scripts__/conflicting_positionals.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Command failed due to improper syntax");
     });
 
+    // it("should use default editor and extension when not provided as arguments", async () => {
+    //     const shellScript = path.join(__dirname, "__scripts__/edit_uss_default.sh");
+    //     const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+    //     console.log(response)
+    // });
+    //^^unsure of how to check for this??
 });

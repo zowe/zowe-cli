@@ -44,7 +44,7 @@ describe("Edit uss file", () => {
         // using unique DS function to generate unique USS file name
         ussname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        Imperative.console.info("Using uss:" + ussname);
     });
 
     afterAll(async () => {
@@ -57,7 +57,7 @@ describe("Edit uss file", () => {
     });
     describe("Expected failures", () => {
         it("should fail if specified uss file doesn't exist", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistant_uss.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_uss.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");

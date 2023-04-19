@@ -51,7 +51,7 @@ describe("Edit data set", () => {
     });
     describe("Expected failures", () => {
         it("should fail if specified data set doesn't exist", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistant_ds.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_ds.sh");
             const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");

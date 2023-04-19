@@ -46,11 +46,11 @@ export type EditFileType = "uss" | "ds"
  * @interface
  */
 export interface ILocalFile {
-    tempPath: string;
+    tempPath: string | null;
     fileName: string;
     fileType: EditFileType;
     guiAvail: boolean;
-    zosResp: IZosFilesResponse;
+    zosResp: IZosFilesResponse | null;
 }
 
 /**
@@ -79,7 +79,7 @@ export class EditUtilities {
     }
 
     /**
-     * Check for temp path's existance (check if previously `stashed` edits exist)
+     * Check for temp path's existence (check if previously `stashed` edits exist)
      * @param {string} tempPath - unique file path for local file (stash/temp file)
      * @returns {Promise<boolean>} - promise that resolves to true if stash exists or false if doesn't
      * @memberof EditUtilities
@@ -116,7 +116,7 @@ export class EditUtilities {
             case Prompt.doneEditing:
                 do{
                     input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter "done" in terminal once finished `+
-                    `editing and saving temporary file: ${tempPath}`));
+                    `editing and saving temporary file: ${tempPath}`), {secToWait: 3600});
                 }while(input.toLowerCase() !== 'done');{
                     if (input === null) {
                         throw new ImperativeError({
@@ -174,7 +174,7 @@ export class EditUtilities {
     }
 
     /**
-     * Performs appropriate file comparision (either in browser or as a terminal diff) between lf-USS or lf-DS.
+     * Performs appropriate file comparison (either in browser or as a terminal diff) between lf-USS or lf-DS.
      * Local file (lf) will then be opened in default editor
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
@@ -225,8 +225,8 @@ export class EditUtilities {
 
     /**
      * Upload temp file with saved etag.
-     *  - if matching etag: sucessful upload, destroy stash/temp -> END
-     *  - if non-matching etag: unsucessful upload -> refresh etag -> perform file comparison/edit -> reattempt upload
+     *  - if matching etag: successful upload, destroy stash/temp -> END
+     *  - if non-matching etag: unsuccessful upload -> refresh etag -> perform file comparison/edit -> reattempt upload
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
      * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
