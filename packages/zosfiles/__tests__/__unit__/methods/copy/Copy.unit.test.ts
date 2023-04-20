@@ -32,8 +32,6 @@ describe("Copy", () => {
         commandResponse: "Data set copied successfully."
     };
 
-
-
     beforeEach(() => {
         copyExpectStringSpy.mockClear();
         copyExpectStringSpy.mockImplementation(async () => {
@@ -552,6 +550,83 @@ describe("Copy", () => {
                         { },
                         dummySession
                     );
+                });
+                describe("Member > Member", () => {
+                    it("should send a request", async () => {
+
+                        const response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: toDataSetName, member: toMemberName },
+                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
+                            { },
+                            dummySession
+                        );
+
+                        expect(response).toEqual({
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        });
+
+                        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+                            dummySession,
+                            { dsn: toDataSetName, member: toMemberName },
+                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
+                            { },
+                            dummySession
+                        );
+                    });
+                });
+                describe("Sequential > Member", () => {
+                    it("should send a request", async () => {
+
+                        const response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: toDataSetName, member: toMemberName },
+                            { "from-dataset": { dsn: fromDataSetName }},
+                            { },
+                            dummySession
+                        );
+
+                        expect(response).toEqual({
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        });
+
+                        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+                            dummySession,
+                            { dsn: toDataSetName, member: toMemberName },
+                            { "from-dataset": { dsn: fromDataSetName }},
+                            { },
+                            dummySession
+                        );
+                    });
+                });
+                describe("Member > Sequential", () => {
+                    it("should send a request", async () => {
+                        const response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: toDataSetName },
+                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
+                            { },
+                            dummySession
+                        );
+
+                        expect(response).toEqual({
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        });
+
+                        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+                            dummySession,
+                            { dsn: toDataSetName },
+                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
+                            { },
+                            dummySession
+                        );
+                    });
                 });
             });
         });
