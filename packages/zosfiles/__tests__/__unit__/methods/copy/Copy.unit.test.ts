@@ -12,34 +12,36 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 
-import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
+import { Copy, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Copy", () => {
     const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+    const copyDatasetSpy = jest.spyOn(Copy, "dataSetCrossLPAR");
     const dummySession = new Session({
         user: "dummy",
         password: "dummy",
-        hostname: "machine",
+        hostname: "localhost",
         port: 443,
         protocol: "https",
         type: "basic"
     });
+    const targetSession = new Session({hostname: "localhost"});
+    const defaultReturn: IZosFilesResponse = {
+        success        : true,
+        commandResponse: "Data set copied successfully."
+    };
 
-    const targetSession = new Session({
-        user: "dummy",
-        password: "dummy",
-        hostname: "machine",
-        port: 443,
-        protocol: "https",
-        type: "basic"
-    });
+
 
     beforeEach(() => {
         copyExpectStringSpy.mockClear();
         copyExpectStringSpy.mockImplementation(async () => {
             return "";
         });
+
+        copyDatasetSpy.mockClear();
+        copyDatasetSpy.mockImplementation(async () => defaultReturn);
     });
 
     describe("Data Set", () => {
@@ -528,32 +530,27 @@ describe("Copy", () => {
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
-                    const expectedPayload = {
-                        "request": "copy",
-                        "from-dataset": {
-                            dsn: fromDataSetName
-                        }
-                    };
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
                         { dsn: toDataSetName },
                         { "from-dataset": { dsn: fromDataSetName }},
                         { },
-                        targetSession
+                        dummySession
                     );
 
                     expect(response).toEqual({
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
-                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
-                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+
+                    expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(copyDatasetSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         { dsn: toDataSetName },
                         { "from-dataset": { dsn: fromDataSetName }},
                         { },
-                        targetSession
+                        dummySession
                     );
                 });
             });
