@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `7.14.0`
 
 - Enhancement: Added streaming capabilities to the `DownloadJobs.downloadSpoolContentCommon` method. [Zowe Explorer #2060](https://github.com/zowe/vscode-extension-for-zowe/issues/2060)
 
