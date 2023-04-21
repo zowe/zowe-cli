@@ -157,13 +157,13 @@ export class Copy {
                     // If dsnameIndex === -1, it means we could not find the given data set.
                     // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                     sourceDataSetObj = SourceDsList.apiResponse.items[dsnameIndex];
-                }
 
-                /*
-                * If the source is a PDS and no member was specified then abort the copy.
-                */
-                if((sourceDataSetObj.dsorg == "PO" || sourceDataSetObj.dsorg == "POE") && sourceMember == undefined){
-                    throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
+                    /*
+                    * If the source is a PDS and no member was specified then abort the copy.
+                    */
+                    if((sourceDataSetObj.dsorg == "PO" || sourceDataSetObj.dsorg == "POE") && sourceMember == undefined){
+                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
+                    }
                 }
             }
 
