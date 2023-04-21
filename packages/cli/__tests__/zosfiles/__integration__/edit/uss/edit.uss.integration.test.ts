@@ -68,11 +68,4 @@ describe("View USS file", () => {
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Command failed due to improper syntax");
     });
-
-    // it("should use default editor and extension when not provided as arguments", async () => {
-    //     const shellScript = path.join(__dirname, "__scripts__/edit_uss_default.sh");
-    //     const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
-    //     console.log(response)
-    // });
-    //^^unsure of how to check for this??
 });

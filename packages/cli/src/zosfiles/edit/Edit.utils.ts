@@ -201,7 +201,7 @@ export class EditUtilities {
             mfds = await handlerUss.getFile2(session, commandParameters.arguments, helper);
         }
 
-        //if browserview, open diff in browser, otherwise print diff in terminal
+        //if browser view, open diff in browser, otherwise print diff in terminal
         const response = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
         if (!helper.browserView){
             commandParameters.response.console.log('\n'+response.commandResponse);

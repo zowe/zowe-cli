@@ -10,6 +10,7 @@
 */
 
 import { Get, Upload } from "@zowe/zos-files-for-zowe-sdk";
+import * as fs from "fs";
 import { GuiResult } from "@zowe/imperative";
 import {ILocalFile,
 EditUtilities} from "../../../../src/zosfiles/edit/Edit.utils"
@@ -28,15 +29,14 @@ describe("Files Edit Group Handler", () => {
         let dslf: ILocalFile = {
             tempPath: null,
             fileName: dataSetName,
-            fileType: "ds",
+            fileType: 'ds',
             guiAvail: true,
             zosResp: null
         };
-
         let usslf: ILocalFile = {
             tempPath: null,
             fileName: ussFileName,
-            fileType: "uss",
+            fileType: 'uss',
             guiAvail: true,
             zosResp: null
         };
@@ -47,6 +47,7 @@ describe("Files Edit Group Handler", () => {
         let jsonObj: object;
         let logMessage = "";
         let fakeSession: object;
+        const mfZosRespSuccess = {};
         const zosErrorResp_etagMismatch = {
             apiResponse:[],
             success: false,
@@ -57,11 +58,11 @@ describe("Files Edit Group Handler", () => {
         // const getDataSetSpy = jest.spyOn(Get, "dataSet");
         // const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
         // const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
-        const checkForStash = jest.spyOn(EditUtilities, "checkForStash");
-        const localDownload = jest.spyOn(EditUtilities, "localDownload");
-        const promptResp = jest.spyOn(EditUtilities, "promptUser");
-        const uploadUssFile = jest.spyOn(Upload, "fileToUssFile");
-        const uploadDsFile = jest.spyOn(Upload, "fileToDataset");
+        const existsSyncSpy = jest.spyOn(fs, "existsSync");
+        const localDownloadSpy = jest.spyOn(EditUtilities, "localDownload");
+        const promptRespSpy = jest.spyOn(EditUtilities, "promptUser");
+        const uploadUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
+        const uploadDsFileSpy = jest.spyOn(Upload, "fileToDataset");
         // const profFunc = jest.fn((args) => {
         //     return {
         //         host: "fake",
@@ -222,40 +223,78 @@ describe("Files Edit Group Handler", () => {
 
         describe("Success scenarios", () => {
             describe("successful situations regardless of file type", () => {
-                it("should accurately detect the presence of a stash"), () => {}
+                describe("promptUser() successes", () => {
+                    it("for `case Prompt.useStash` should detect the presence of a stash"), () => {}
+                    it("should detect the presence of a stash"), () => {}
+                    it("should detect the presence of a stash"), () => {}
+                    it("should detect the presence of a stash"), () => {}
+                })
+                it("should detect the presence of a stash"), () => {
+                    //TEST SETUP
+                    // existsSync(tempPath) returns true
+                    //TEST CONFIRMATION
+                    // that existsSync(tempPath) returns true
+                }
                 it("should accurately detect environment state (headless or gui avail)"), () => {}
                 it("should be able to do a terminal file compare if in headless environment"), () => {}
                 it("should be able to do a gui file compare if gui avail"), () => {}
                 it("should successfully upload when etags are matching"), () => {}
                 it("should open local file in correct editor"), () => {}
-                it("should be able to successfully detect changes in remote (changed etag)"), () => {}
-                it("should truly destroy temp file once edits are successfully uploaded to remote"), () => {}
-                it("should refresh etag without overwriting stashed file when this situation is requested"), () => {
-                    //(aka download and not overwrite)
-                    //SETUP lfFile to have different etag than returned zos response for remote file(stash is present)
-                    //do a download that doesn't override but just gets etag
-                    //check that mf file contents are not lf file contents
-
-
-
-
-
-                    //TRIGGER a failed upload (by having the remote change)
-
-                    //TEST that etag is refreshed without overwriting lf
+                it("should apply etag to ILocalFile without overwriting file"), () => {
+                    //TEST SETUP
+                    //download (to temp) and grab etag
+                    //apply etag to lfFile
+                    //TEST CONFIRMATION
+                    //test that lfFile etag is the same as remote
+                    //test that lfFile contents is not the same as remote
                 }
+                it("should destroy temp file once edits are successfully uploaded to remote"), () => {}
+                it("should destroy temp file after etag download"), () => {}
             });
             describe("edit uss successfully", () => {
-                it("should be able to create an accurate lfFile object - uss"), () => {}
+                it("should be able to build the correct temp path - uss"), () => {
+                    // pass in uss lfFile (file name with underscores) to buildTempPath()
+                    // check that the returned string (string.split('.')[0]) contains only numbers and letters
+
+                }
+                it("should be able to create an accurate lfFile object - uss"), () => {
+
+                }
+                it("should use appropriate download method - uss"), () => {}
             })
             describe("edit ds successfully", () => {
-                it("should be able to create an accurate lfFile object - ds"), () => {}
+                it("should be able to build the correct temp path - ds"), () => {
+                    //buildTempPath() check that the returned string contains the ext that was passed in
+                }
+                it("should use appropriate download method - ds"), () => {}
             })
         });
         describe("Expected failures", () => {
+            it("should catch an error when searching for stash"), () => {
+                //TEST SETUP
+                // existsSync(tempPath) throws err
+                //TEST CONFIRMATION
+                // that existsSync(tempPath) returns thrown err
+            }
             it("should terminate command if file is not found on mainframe"), () => {}
-            it("shouldn't successfully upload if two different etags (lf and remote etags are mismatched"), () => {}
+            it("should catch an etagMismatch on file upload"), () => {
+                //TEST SETUP
+                //mimic a change in remote by changing its etag
+                //attempt upload with mismatched etag lfFile
+                //TEST CONFIRMATION
+                //test that lfFile different from remote
+                //test that 412 error is returned from uploadEdits()
+            }
+            it("should catch an issue uploading stash that isn't etagMismatch"), () => {
+                //TEST SETUP
+                //call uploadEdits()
+                //mock Upload.file to return an error with its IZosFilesResponse that isn't a 412 error
+                //TEST CONFIRMATION
+                //test that uploadEdits() throws an error
+                //test that msg.causeErrors == response.errorMessage
+            }
             it("should quit & stash if user doesn't answer a Y/n prompt within timeout period"), () => {}
+            describe("promptUser() failures", () => {})
         });
     });
 });
