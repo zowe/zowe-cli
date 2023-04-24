@@ -202,11 +202,11 @@ export class EditUtilities {
         }
 
         //if browser view, open diff in browser, otherwise print diff in terminal
-        const response = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
+        const diffResponse = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
         if (!helper.browserView){
-            commandParameters.response.console.log('\n'+response.commandResponse);
+            commandParameters.response.console.log('\n'+diffResponse.commandResponse);
         }
-        return response;
+        return diffResponse;
     }
 
     /**
@@ -220,7 +220,6 @@ export class EditUtilities {
             await ProcessUtils.openInEditor(tempPath, editor, true);
         }
         await this.promptUser(Prompt.doneEditing, tempPath);
-
     }
 
     /**
