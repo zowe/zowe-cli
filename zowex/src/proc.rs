@@ -11,7 +11,6 @@
 
 // Functions related to the manipulation of processes.
 
-use std::env;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -277,14 +276,6 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
 pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
-    if env::consts::OS == "windows" {
-        /* Windows CMD and Powershell terminal windows show escape characters
-         * instead of colors in daemon-mode. A more elegant solution may exist,
-         * but for now we just turn off color in daemon mode on Windows.
-         */
-        env::set_var("FORCE_COLOR", "0");
-    }
-
     let daemon_arg = LAUNCH_DAEMON_OPTION;
     match Command::new(njs_zowe_path)
         .arg(daemon_arg)
@@ -314,20 +305,14 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
 pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
-    if env::consts::OS == "windows" {
-        /* Windows CMD and Powershell terminal windows show escape characters
-         * instead of colors in daemon-mode. A more elegant solution may exist,
-         * but for now we just turn off color in daemon mode on Windows.
-         */
-        env::set_var("FORCE_COLOR", "0");
-    }
-
     let daemon_arg = LAUNCH_DAEMON_OPTION;
+    // Uses creation flags from https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
+    // Flags are CREATE_NO_WINDOW, CREATE_NEW_PROCESS_GROUP, and CREATE_UNICODE_ENVIRONMENT
     match Command::new(njs_zowe_path)
         .arg(daemon_arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
-        .creation_flags(0x08000410)
+        .creation_flags(0x08000600)
         .spawn()
     {
         Ok(_unused) => { /* nothing to do */ }
