@@ -798,9 +798,10 @@ describe("Copy", () => {
                         responseTimeout: 5,
                         replace: false
                     };
+                    const toDataSetString = `${toDataset.dsn}(${toDataset.member})`;
                     try {
                         response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
-                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetName);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetString);
                     } catch (err) {
                         error = err;
                     }
