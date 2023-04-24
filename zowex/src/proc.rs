@@ -17,6 +17,9 @@ use std::io::BufReader;
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
+#[cfg(target_family = "windows")]
+use std::os::windows::process::CommandExt;
+
 extern crate sysinfo;
 use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
 
@@ -269,6 +272,8 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
  * On Linux:
  *      If you use Stdio::inherit(), you get double output. If use use Stdio::null(), you get no color.
  */
+
+#[cfg(not(target_family = "windows"))]
 pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
@@ -285,6 +290,44 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
         .arg(daemon_arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
+        .spawn()
+    {
+        Ok(_unused) => { /* nothing to do */ }
+        Err(error) => {
+            println!(
+                "Failed to start the following process:\n    {} {}",
+                njs_zowe_path, daemon_arg
+            );
+            println!("Due to this error:\n    {}", error);
+            std::process::exit(EXIT_CODE_CANNOT_START_DAEMON);
+        }
+    };
+
+    // return the command that we run (for display purposes)
+    let mut cmd_to_show: String = njs_zowe_path.to_owned();
+    cmd_to_show.push(' ');
+    cmd_to_show.push_str(daemon_arg);
+    cmd_to_show
+}
+
+#[cfg(target_family = "windows")]
+pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
+    println!("Starting a background process to increase performance ...");
+
+    if env::consts::OS == "windows" {
+        /* Windows CMD and Powershell terminal windows show escape characters
+         * instead of colors in daemon-mode. A more elegant solution may exist,
+         * but for now we just turn off color in daemon mode on Windows.
+         */
+        env::set_var("FORCE_COLOR", "0");
+    }
+
+    let daemon_arg = LAUNCH_DAEMON_OPTION;
+    match Command::new(njs_zowe_path)
+        .arg(daemon_arg)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .creation_flags(0x08000410)
         .spawn()
     {
         Ok(_unused) => { /* nothing to do */ }
