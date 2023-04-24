@@ -12,12 +12,12 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 
-import { Copy, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse } from "../../../../src";
+import { error } from "console";
+
+import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Copy", () => {
-    const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
-    const copyDatasetSpy = jest.spyOn(Copy, "dataSetCrossLPAR");
     const dummySession = new Session({
         user: "dummy",
         password: "dummy",
@@ -26,27 +26,21 @@ describe("Copy", () => {
         protocol: "https",
         type: "basic"
     });
-    const targetSession = new Session({hostname: "localhost"});
-    const defaultReturn: IZosFilesResponse = {
-        success        : true,
-        commandResponse: "Data set copied successfully."
-    };
-
-    beforeEach(() => {
-        copyExpectStringSpy.mockClear();
-        copyExpectStringSpy.mockImplementation(async () => {
-            return "";
-        });
-
-        copyDatasetSpy.mockClear();
-        copyDatasetSpy.mockImplementation(async () => defaultReturn);
-    });
 
     describe("Data Set", () => {
+        const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
         const fromDataSetName = "USER.DATA.FROM";
         const fromMemberName = "mem1";
         const toDataSetName = "USER.DATA.TO";
         const toMemberName = "mem2";
+
+        beforeEach(() => {
+            copyExpectStringSpy.mockClear();
+            copyExpectStringSpy.mockImplementation(async () => {
+                return "";
+            });
+        });
+
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
@@ -520,112 +514,363 @@ describe("Copy", () => {
             });
         });
     });
+
     describe("Data Set Cross LPAR", () => {
-        const fromDataSetName = "USER.DATA.FROM";
-        const fromMemberName = "mem1";
-        const toDataSetName = "USER.DATA.TO";
-        const toMemberName = "mem2";
+        const getDatasetSpy    = jest.spyOn(Get, "dataSet");
+        const listDatasetSpy   = jest.spyOn(List, "dataSet");
+        const listAllMembersSpy   = jest.spyOn(List, "allMembers");
+        const createDatasetSpy = jest.spyOn(Create, "dataSet");
+        const uploadDatasetSpy = jest.spyOn(Upload, "bufferToDataSet");
+        const psDataSetName = "TEST.PS.DATA.SET";
+        const memberName    = "mem1";
+        const poDataSetName = "TEST.PO.DATA.SET";
+        const defaultReturn: IZosFilesResponse = {
+            success        : true,
+            commandResponse: "Data set copied successfully."
+        };
+        const dataSetPS = {
+            dsname: psDataSetName,
+            dsorg: "PS",
+            spacu: "TRK"
+        };
+
+        const dataSetPO = {
+            dsname: poDataSetName,
+            dsorg: "PO",
+            spacu: "TRK"
+        };
+
+        beforeEach(() => {
+            getDatasetSpy.mockClear();
+            listDatasetSpy.mockClear();
+            createDatasetSpy.mockClear();
+            uploadDatasetSpy.mockClear();
+            listAllMembersSpy.mockClear();
+            getDatasetSpy.mockImplementation(async (): Promise<any>  => defaultReturn);
+            listDatasetSpy.mockResolvedValue({} as any);
+            listAllMembersSpy.mockImplementation(async (): Promise<any>  => defaultReturn);
+            createDatasetSpy.mockImplementation(async (): Promise<any>  => defaultReturn);
+            uploadDatasetSpy.mockImplementation(async (): Promise<any>  => defaultReturn);
+        });
+
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
+                    let response;
+                    let caughtError;
 
-                    const response = await Copy.dataSetCrossLPAR(
-                        dummySession,
-                        { dsn: toDataSetName },
-                        { "from-dataset": { dsn: fromDataSetName }},
-                        { },
-                        dummySession
-                    );
+                    listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPS]
+                            }
+                        };
+                    });
+                    getDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                        return Buffer.from("123456789abcd");
+                    });
+
+                    try {
+                        response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: psDataSetName },
+                            { "from-dataset": { dsn: dataSetPS.dsname }, overwrite: true},
+                            { },
+                            dummySession
+                        );
+                    } catch (e) {
+                        caughtError = e;
+                    }
 
                     expect(response).toEqual({
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
 
-                    expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-                    expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-                        dummySession,
-                        { dsn: toDataSetName },
-                        { "from-dataset": { dsn: fromDataSetName }},
-                        { },
-                        dummySession
-                    );
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
                 });
-                describe("Member > Member", () => {
-                    it("should send a request", async () => {
+            });
 
-                        const response = await Copy.dataSetCrossLPAR(
-                            dummySession,
-                            { dsn: toDataSetName, member: toMemberName },
-                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
-                            { },
-                            dummySession
-                        );
+            describe("Sequential > Sequential - no replace", () => {
+                it("should send a request", async () => {
+                    let response;
+                    let caughtError;
 
-                        expect(response).toEqual({
-                            success: true,
-                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
-                        });
-
-                        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-                        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-                            dummySession,
-                            { dsn: toDataSetName, member: toMemberName },
-                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
-                            { },
-                            dummySession
-                        );
+                    listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPS]
+                            }
+                        };
                     });
+                    getDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                        return Buffer.from("123456789abcd");
+                    });
+
+                    try {
+                        response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: psDataSetName },
+                            { "from-dataset": { dsn: dataSetPS.dsname }, replace: false},
+                            { },
+                            dummySession
+                        );
+                    } catch (e) {
+                        caughtError = e;
+                    }
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(0);
                 });
+            });
+
+            describe("Member > Member", () => {
+                it("should send a request", async () => {
+                    let response;
+                    let caughtError;
+
+                    listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPO]
+                            }
+                        };
+                    });
+                    listAllMembersSpy.mockImplementation(async (): Promise<any>  => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1
+                            }
+                        };
+                    });
+                    try {
+                        response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: poDataSetName, member: memberName },
+                            { "from-dataset": { dsn: poDataSetName, member: memberName }},
+                            { },
+                            dummySession
+                        );
+                    } catch (e) {
+                        caughtError = e;
+                    }
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                });
+
                 describe("Sequential > Member", () => {
                     it("should send a request", async () => {
+                        let response;
+                        let caughtError;
 
-                        const response = await Copy.dataSetCrossLPAR(
-                            dummySession,
-                            { dsn: toDataSetName, member: toMemberName },
-                            { "from-dataset": { dsn: fromDataSetName }},
-                            { },
-                            dummySession
-                        );
+                        listDatasetSpy.mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPS]
+                            }
+                        } as any).mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPO]
+                            }
+                        } as any);
+                        listAllMembersSpy.mockImplementation(async (): Promise<any>  => {
+                            return {
+                                apiResponse: {
+                                    returnedRows: 1
+                                }
+                            };
+                        });
+
+                        try {
+                            response = await Copy.dataSetCrossLPAR(
+                                dummySession,
+                                { dsn: poDataSetName, member: memberName },
+                                { "from-dataset": { dsn: psDataSetName }},
+                                { },
+                                dummySession
+                            );
+                        } catch (e) {
+                            caughtError = e;
+                        }
 
                         expect(response).toEqual({
                             success: true,
                             commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                         });
 
-                        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-                        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-                            dummySession,
-                            { dsn: toDataSetName, member: toMemberName },
-                            { "from-dataset": { dsn: fromDataSetName }},
-                            { },
-                            dummySession
-                        );
+                        expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                        expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                        expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
                     });
                 });
                 describe("Member > Sequential", () => {
                     it("should send a request", async () => {
-                        const response = await Copy.dataSetCrossLPAR(
-                            dummySession,
-                            { dsn: toDataSetName },
-                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
-                            { },
-                            dummySession
-                        );
+                        let response;
+                        let caughtError;
+
+                        listDatasetSpy.mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPO]
+                            }
+                        } as any).mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPS]
+                            }
+                        } as any);
+
+                        try {
+                            response = await Copy.dataSetCrossLPAR(
+                                dummySession,
+                                { dsn: psDataSetName },
+                                { "from-dataset": { dsn: poDataSetName, member: memberName}},
+                                { },
+                                dummySession
+                            );
+                        } catch (e) {
+                            caughtError = e;
+                        }
 
                         expect(response).toEqual({
                             success: true,
                             commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                         });
 
-                        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-                        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-                            dummySession,
-                            { dsn: toDataSetName },
-                            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }},
-                            { },
-                            dummySession
-                        );
+                        expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                        expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                    });
+                });
+
+                describe("Sequential > Sequential - create target", () => {
+                    it("should send a request", async () => {
+                        let response;
+                        let caughtError;
+
+                        listDatasetSpy.mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPS]
+                            }
+                        } as any).mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 0,
+                            }
+                        } as any);
+                        try {
+                            response = await Copy.dataSetCrossLPAR(
+                                dummySession,
+                                { dsn: psDataSetName },
+                                { "from-dataset": { dsn: psDataSetName }},
+                                { },
+                                dummySession
+                            );
+                        } catch (e) {
+                            caughtError = e;
+                            error("caughtError = " + caughtError.message);
+                        }
+
+                        expect(response).toEqual({
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        });
+
+                        expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                        expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(createDatasetSpy).toHaveBeenCalledTimes(1);
+                    });
+                });
+
+                describe("Sequential > Member - create target", () => {
+                    it("should send a request", async () => {
+                        let response;
+                        let caughtError;
+
+                        listDatasetSpy.mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPS]
+                            }
+                        } as any).mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 0,
+                            }
+                        } as any);
+
+                        try {
+                            response = await Copy.dataSetCrossLPAR(
+                                dummySession,
+                                { dsn: psDataSetName, member: memberName },
+                                { "from-dataset": { dsn: psDataSetName }},
+                                { },
+                                dummySession
+                            );
+                        } catch (e) {
+                            caughtError = e;
+                        }
+
+                        expect(response).toEqual({
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        });
+
+                        expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                        expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(createDatasetSpy).toHaveBeenCalledTimes(1);
+                    });
+                });
+                describe("Member > Sequential - create target", () => {
+                    it("should send a request", async () => {
+                        let response;
+                        let caughtError;
+
+                        listDatasetSpy.mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPO]
+                            }
+                        } as any).mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 0
+                            }
+                        } as any);
+                        try {
+                            response = await Copy.dataSetCrossLPAR(
+                                dummySession,
+                                { dsn: psDataSetName },
+                                { "from-dataset": { dsn: poDataSetName, member: memberName}},
+                                { },
+                                dummySession
+                            );
+                        } catch (e) {
+                            caughtError = e;
+                        }
+
+                        expect(response).toEqual({
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        });
+
+                        expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                        expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                        expect(createDatasetSpy).toHaveBeenCalledTimes(1);
                     });
                 });
             });

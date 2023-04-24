@@ -636,6 +636,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * Message indicating that the data set was copied was aborted
      * @type {IMessageDefinition}
      */
+    datasetCopiedAbortedNoTargetDS: {
+        message: "Data set copied aborted. The source dataset was not found."
+    },
+
+    /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
     datasetCopiedAborted: {
         message: "Data set copied aborted. The existing target dataset was not overwritten."
     },

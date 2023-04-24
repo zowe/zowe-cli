@@ -120,6 +120,7 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
+
         try {
             let sourceDataset = options["from-dataset"].dsn;
             const sourceMember  = options["from-dataset"].member;
@@ -139,7 +140,7 @@ export class Copy {
             }
 
             /**
-             * Does the target dataset exist?
+             * Does the source dataset exist?
              */
             const SourceDsList = await List.dataSet(sourceSession, sourceDataset, {
                 attributes: true, maxLength: 1,
@@ -157,8 +158,9 @@ export class Copy {
                     // If dsnameIndex === -1, it means we could not find the given data set.
                     // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                     sourceDataSetObj = SourceDsList.apiResponse.items[dsnameIndex];
+                } else {
+                    throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoTargetDS.message });
                 }
-
                 /*
                 * If the source is a PDS and no member was specified then abort the copy.
                 */
