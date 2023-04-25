@@ -146,21 +146,15 @@ pub fn util_get_zowe_env() -> HashMap<String, String> {
 
     match env::var("FORCE_COLOR") {
         Ok(val) => {environment.insert(String::from("FORCE_COLOR"), val);},
-        Err(_val) => {environment.extend(util_get_color_env());}
+        Err(_val) => {environment.insert(String::from("FORCE_COLOR"), String::from(util_terminal_supports_color().to_string()));}
     }
 
     // Make sure ansi is enabled for the response
-    if !util_enable_ansi() {
+    if !Paint::enable_windows_ascii() {
         environment.insert(String::from("FORCE_COLOR"), String::from("0"));
     }
 
     environment
-}
-
-pub fn util_get_color_env() -> HashMap<String, String> {
-    let mut temp_map = HashMap::new();
-    temp_map.insert(String::from("FORCE_COLOR"), String::from(util_terminal_supports_color().to_string()));
-    temp_map
 }
 
 #[cfg(target_family = "windows")]
@@ -185,8 +179,4 @@ pub fn util_terminal_supports_color() -> i32 {
         return 0;
     }
     return 0;
-}
-
-pub fn util_enable_ansi() -> bool {
-    Paint::enable_windows_ascii()
 }
