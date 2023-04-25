@@ -146,7 +146,7 @@ pub fn util_get_zowe_env() -> HashMap<String, String> {
 
     match env::var("FORCE_COLOR") {
         Ok(val) => {environment.insert(String::from("FORCE_COLOR"), val);},
-        Err(_val) => {environment.insert(String::from("FORCE_COLOR"), String::from(util_terminal_supports_color().to_string()));}
+        Err(_val) => {environment.insert(String::from("FORCE_COLOR"), util_terminal_supports_color().to_string());}
     }
 
     // Make sure ansi is enabled for the response
