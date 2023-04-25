@@ -20,8 +20,8 @@ simple-error = "0.2.3"
 supports-color = "2.0.0"
 sysinfo = "0.28.2"
 whoami = "1.4.0"
+yansi = "0.5.1"
 
 [target.'cfg(windows)'.dependencies]
 fslock = "0.2.1"
 named_pipe = "0.4.1"
-ansi_term = "0.12.1"

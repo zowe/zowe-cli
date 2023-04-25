@@ -24,8 +24,8 @@ use pathsearch::PathSearcher;
 extern crate supports_color;
 use supports_color::Stream;
 
-#[cfg(target_family = "windows")]
-extern crate ansi_term;
+extern crate yansi;
+use yansi::Paint;
 
 extern crate whoami;
 use whoami::username;
@@ -150,7 +150,6 @@ pub fn util_get_zowe_env() -> HashMap<String, String> {
     }
 
     // Make sure ansi is enabled for the response
-    #[cfg(target_family = "windows")]
     if !util_enable_ansi() {
         environment.insert(String::from("FORCE_COLOR"), String::from("0"));
     }
@@ -188,7 +187,6 @@ pub fn util_terminal_supports_color() -> i32 {
     return 0;
 }
 
-#[cfg(target_family = "windows")]
 pub fn util_enable_ansi() -> bool {
-    ansi_term::enable_ansi_support().is_ok()
+    Paint::enable_windows_ascii()
 }
