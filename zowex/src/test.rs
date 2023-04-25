@@ -25,9 +25,6 @@ use crate::proc::*;
 use crate::run::*;
 use crate::util::*;
 
-extern crate yansi;
-use yansi::Paint;
-
 pub const START_STOP_DELAY: u64 = 5; // 5 seconds
 
 #[test]
@@ -133,27 +130,20 @@ fn unit_test_get_zowe_env() {
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"0".to_owned()));
     env::remove_var("FORCE_COLOR");
 
-    if !Paint::enable_windows_ascii() {
-        env::set_var("FORCE_COLOR", "1");
-        let environment = util_get_zowe_env();
-        assert_eq!(environment.get("FORCE_COLOR"), Some(&"0".to_owned()));
-        env::remove_var("FORCE_COLOR");
-    } else {
-        env::set_var("FORCE_COLOR", "1");
-        let environment = util_get_zowe_env();
-        assert_eq!(environment.get("FORCE_COLOR"), Some(&"1".to_owned()));
-        env::remove_var("FORCE_COLOR");
+    env::set_var("FORCE_COLOR", "1");
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("FORCE_COLOR"), Some(&"1".to_owned()));
+    env::remove_var("FORCE_COLOR");
 
-        env::set_var("FORCE_COLOR", "2");
-        let environment = util_get_zowe_env();
-        assert_eq!(environment.get("FORCE_COLOR"), Some(&"2".to_owned()));
-        env::remove_var("FORCE_COLOR");
+    env::set_var("FORCE_COLOR", "2");
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("FORCE_COLOR"), Some(&"2".to_owned()));
+    env::remove_var("FORCE_COLOR");
 
-        env::set_var("FORCE_COLOR", "3");
-        let env = util_get_zowe_env();
-        assert_eq!(env.get("FORCE_COLOR"), Some(&"3".to_owned()));
-        env::remove_var("FORCE_COLOR");
-    }
+    env::set_var("FORCE_COLOR", "3");
+    let env = util_get_zowe_env();
+    assert_eq!(env.get("FORCE_COLOR"), Some(&"3".to_owned()));
+    env::remove_var("FORCE_COLOR");
 }
 
 #[test]

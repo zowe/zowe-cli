@@ -151,6 +151,7 @@ pub fn util_get_zowe_env() -> HashMap<String, String> {
 
     // Make sure ansi is enabled for the response
     if !Paint::enable_windows_ascii() {
+        #[cfg(not(test))] // Because this is a problem during GitHub Actions CI builds
         environment.insert(String::from("FORCE_COLOR"), String::from("0"));
     }
 
