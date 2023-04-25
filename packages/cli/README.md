@@ -22,7 +22,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 <br/>
 
 ## **Documentation**
-For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/getting-started/cli-getting-started/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
+For information about how to install, configure, and use Zowe CLI, see [Zowe CLI Quick Start Documentation](https://docs.zowe.org/stable/getting-started/cli-getting-started/). For more detailed instructions, see [Zowe CLI Documentation](https://docs.zowe.org/stable/user-guide/cli-using-usingcli/), which also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
 Engineering design documentation is contained in the 'docs' directory in this repository. To view the Web Help for all Zowe CLI commands and contributed plug-ins, see the [Zowe CLI Web Help](https://docs.zowe.org/stable/web_help/index.html). To view all locally accessible commands, run `zowe --help-web`. For more use cases and tutorials visit [Medium.com/zowe](https://medium.com/zowe).
 
