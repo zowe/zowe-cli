@@ -18,8 +18,6 @@ use std::time::Duration;
 
 #[cfg(target_family = "unix")]
 use home::home_dir;
-#[cfg(target_family = "windows")]
-use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
