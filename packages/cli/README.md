@@ -1,5 +1,6 @@
 # **Zowe CLI**  <!-- omit in toc -->
 [![codecov](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli)
+[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7204/badge)](https://bestpractices.coreinfrastructure.org/projects/7204)
 
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
@@ -21,7 +22,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 <br/>
 
 ## **Documentation**
-For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/getting-started/cli-getting-started/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
+For information about how to install, configure, and use Zowe CLI, see [Zowe CLI Quick Start Documentation](https://docs.zowe.org/stable/getting-started/cli-getting-started/). For more detailed instructions, see [Zowe CLI Documentation](https://docs.zowe.org/stable/user-guide/cli-using-usingcli/), which also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
 Engineering design documentation is contained in the 'docs' directory in this repository. To view the Web Help for all Zowe CLI commands and contributed plug-ins, see the [Zowe CLI Web Help](https://docs.zowe.org/stable/web_help/index.html). To view all locally accessible commands, run `zowe --help-web`. For more use cases and tutorials visit [Medium.com/zowe](https://medium.com/zowe).
 
