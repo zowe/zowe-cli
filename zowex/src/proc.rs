@@ -272,11 +272,11 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
  *      If you use Stdio::inherit(), you get double output. If use use Stdio::null(), you get no color.
  */
 
-#[cfg(not(target_family = "windows"))]
 pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
     let daemon_arg = LAUNCH_DAEMON_OPTION;
+    #[cfg(not(target_family = "windows"))]
     match Command::new(njs_zowe_path)
         .arg(daemon_arg)
         .stdout(Stdio::null())
@@ -294,20 +294,9 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
         }
     };
 
-    // return the command that we run (for display purposes)
-    let mut cmd_to_show: String = njs_zowe_path.to_owned();
-    cmd_to_show.push(' ');
-    cmd_to_show.push_str(daemon_arg);
-    cmd_to_show
-}
-
-#[cfg(target_family = "windows")]
-pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
-    println!("Starting a background process to increase performance ...");
-
-    let daemon_arg = LAUNCH_DAEMON_OPTION;
     // Uses creation flags from https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
     // Flags are CREATE_NO_WINDOW, CREATE_NEW_PROCESS_GROUP, and CREATE_UNICODE_ENVIRONMENT
+    #[cfg(target_family = "windows")]
     match Command::new(njs_zowe_path)
         .arg(daemon_arg)
         .stdout(Stdio::null())

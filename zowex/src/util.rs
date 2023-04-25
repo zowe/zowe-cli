@@ -21,6 +21,12 @@ use home::home_dir;
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
+extern crate supports_color;
+use supports_color::Stream;
+
+#[cfg(target_family = "windows")]
+extern crate ansi_term;
+
 extern crate whoami;
 use whoami::username;
 
@@ -134,9 +140,28 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 }
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {
-    env::vars()
+    let mut environment: HashMap<String, String> = env::vars()
         .filter(|(k, _)| k.starts_with("ZOWE_"))
-        .collect()
+        .collect();
+
+    match env::var("FORCE_COLOR") {
+        Ok(val) => {environment.insert(String::from("FORCE_COLOR"), val);},
+        Err(_val) => {environment.extend(util_get_color_env());}
+    }
+
+    // Make sure ansi is enabled for the response
+    #[cfg(target_family = "windows")]
+    if !util_enable_ansi() {
+        environment.insert(String::from("FORCE_COLOR"), String::from("0"));
+    }
+
+    environment
+}
+
+pub fn util_get_color_env() -> HashMap<String, String> {
+    let mut temp_map = HashMap::new();
+    temp_map.insert(String::from("FORCE_COLOR"), String::from(util_terminal_supports_color().to_string()));
+    temp_map
 }
 
 #[cfg(target_family = "windows")]
@@ -147,4 +172,23 @@ pub fn util_get_username() -> String {
 #[cfg(not(target_family = "windows"))]
 pub fn util_get_username() -> String {
     username()
+}
+
+pub fn util_terminal_supports_color() -> i32 {
+    if let Some(support) = supports_color::on(Stream::Stdout) {
+        if support.has_16m {
+            return 3;
+        } else if support.has_256 {
+            return 2;
+        } else if support.has_basic {
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+#[cfg(target_family = "windows")]
+pub fn util_enable_ansi() -> bool {
+    ansi_term::enable_ansi_support().is_ok()
 }

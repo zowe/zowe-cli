@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes:
+
+- Enhancement: Re-enabled color in the daemon client [#1379](https://github.com/zowe/zowe-cli/issues/1379)
+- BugFix: Changed daemon to spawn as its own process [#1241](https://github.com/zowe/zowe-cli/issues/1241) [#1277](https://github.com/zowe/zowe-cli/issues/1277) [#1309](https://github.com/zowe/zowe-cli/issues/1309)
+
 ## `7.13.0`
 
 - Enhancement: Updated Imperative to add `--prune` option to `zowe config secure` command. [Imperative #547](https://github.com/zowe/imperative/issues/547)
