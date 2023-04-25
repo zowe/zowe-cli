@@ -106,7 +106,7 @@ export class EditUtilities {
         let input;
         switch (prompt){
             case Prompt.useStash:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found stash? Y/n`));
+                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found local copy? Y/n`));
                 if (input === null) {
                     throw new ImperativeError({
                         msg: `No input provided. Command terminated.`
@@ -163,10 +163,13 @@ export class EditUtilities {
                 file: tempPath
             }
         ];
+
         if(lfFile.fileType === 'uss'){
             lfFile.zosResp = await Download.ussFile(...args);
+        }else{
+            lfFile.zosResp = await Download.dataSet(...args);
         }
-        lfFile.zosResp = await Download.dataSet(...args);
+
         if (useStash){
             this.destroyTempFile(path.join(tmpdir(), "toDelete.txt"));
         }
