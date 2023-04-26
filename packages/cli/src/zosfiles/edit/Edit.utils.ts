@@ -198,7 +198,7 @@ export class EditUtilities {
 
         const lf = await handlerDs.getFile1(session, commandParameters.arguments, helper);
         let mfds: string | Buffer;
-        if (commandParameters.positionals.includes('ds')){
+        if (commandParameters.positionals[2].includes('d')){
             mfds = await handlerDs.getFile2(session, commandParameters.arguments, helper);
         }else{
             mfds = await handlerUss.getFile2(session, commandParameters.arguments, helper);
