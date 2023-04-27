@@ -276,33 +276,18 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
     let daemon_arg = LAUNCH_DAEMON_OPTION;
-    #[cfg(not(target_family = "windows"))]
-    match Command::new(njs_zowe_path)
-        .arg(daemon_arg)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()
-    {
-        Ok(_unused) => { /* nothing to do */ }
-        Err(error) => {
-            println!(
-                "Failed to start the following process:\n    {} {}",
-                njs_zowe_path, daemon_arg
-            );
-            println!("Due to this error:\n    {}", error);
-            std::process::exit(EXIT_CODE_CANNOT_START_DAEMON);
-        }
-    };
-
+    let mut cmd = Command::new(njs_zowe_path);
+    
     // Uses creation flags from https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
     // Flags are CREATE_NO_WINDOW, CREATE_NEW_PROCESS_GROUP, and CREATE_UNICODE_ENVIRONMENT
     #[cfg(target_family = "windows")]
-    match Command::new(njs_zowe_path)
-        .arg(daemon_arg)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .creation_flags(0x08000600)
-        .spawn()
+    cmd.creation_flags(0x08000600);
+
+    cmd.arg(daemon_arg)
+       .stdout(Stdio::null())
+       .stderr(Stdio::null());
+
+    match cmd.spawn()
     {
         Ok(_unused) => { /* nothing to do */ }
         Err(error) => {
