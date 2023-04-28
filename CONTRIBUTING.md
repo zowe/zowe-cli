@@ -187,7 +187,7 @@ Open an issue in the [docs-site repository](https://github.com/zowe/docs-site) i
 
 - For **all contributions**, we recommend that you provide the following:
 
-  - Ensure that the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html) lists any third-party software used in your code.
+  - Ensure that the TPSRs section of documentation lists any third-party software used in your code. See the [TPSRs for each Zowe release](https://github.com/zowe/docs-site/tree/master/tpsr) on the docs-site repository.
 
    - A Release Notes entry in Zowe Docs site to announce your change to end users.
 
