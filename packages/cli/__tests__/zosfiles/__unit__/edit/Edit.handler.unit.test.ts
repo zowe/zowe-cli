@@ -51,7 +51,8 @@ describe("Files Edit Group Handler", () => {
         const uploadEditsSpy = jest.spyOn(EditUtilities, "uploadEdits");
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         jest.spyOn(EditUtilities, "fileComparison").mockImplementation(jest.fn());
-        jest.spyOn(EditUtilities, "makeEdits").mockImplementation(jest.fn());        guiAvailSpy.mockImplementation(jest.fn(() => {
+        jest.spyOn(EditUtilities, "makeEdits").mockImplementation(jest.fn());
+        guiAvailSpy.mockImplementation(jest.fn(() => {
             return GuiResult.GUI_AVAILABLE;
         }));
         buildTempPathSpy.mockImplementation(jest.fn(async () => {

@@ -68,8 +68,9 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string>{
-        const ext = "."  + (commandParameters.arguments.extension ?? "txt");
-        if (lfFile.fileType == 'uss'){
+        // find the appropriate extension for either uss or ds in one long operation
+        const ext = '.'  + (lfFile.fileType === 'uss'? lfFile.fileName.split(".").pop() : (commandParameters.arguments.extension ?? "txt"));
+        if (lfFile.fileType === 'uss'){
             // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
@@ -117,7 +118,7 @@ export class EditUtilities {
                 do{
                     input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter "done" in terminal once finished `+
                     `editing and saving temporary file: ${tempPath}`), {secToWait: 3600});
-                }while(input.toLowerCase() !== 'done');{
+                }while(input && input.toLowerCase() !== 'done');{
                     if (input === null) {
                         throw new ImperativeError({
                             msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
