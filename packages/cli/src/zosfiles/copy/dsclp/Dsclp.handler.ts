@@ -58,7 +58,7 @@ export default class DsclpHandler extends ZosFilesBaseHandler {
     private promptForOverwrite(console: IHandlerResponseConsoleApi) {
         return async (targetDSN: string) => {
             const answer: string = await console.prompt(
-                `The dataset '${targetDSN}' already exists on the target system. Do you wish to overwrite it? [y/N]: `);
+                `The dataset '${targetDSN}' already exists on the target system. Do you want to overwrite it? [y/N]: `);
             return (answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes"));
         };
     }
