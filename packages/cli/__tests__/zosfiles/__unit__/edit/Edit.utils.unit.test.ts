@@ -254,9 +254,6 @@ describe("Files Edit Utilities", () => {
         const getFile2UssSpy = jest.spyOn(LocalfileUssHandler.prototype, "getFile2");
         const getResponseSpy = jest.spyOn(CompareBaseHelper.prototype, "getResponse");
         const prepareContentSpy = jest.spyOn(CompareBaseHelper.prototype, "prepareContent");
-        let commandParameters =  cloneDeep(commandParametersDs);
-        commandParameters.response.console.log = jest.fn();
-
         getFile1Spy.mockImplementation(jest.fn(async() => {
             return Buffer.from('bufferedString');
         }));
@@ -273,34 +270,49 @@ describe("Files Edit Utilities", () => {
             return 'unbufferedString';
         }));
 
-        it("should accurately detect environment state (headless or gui avail). when headless, open diff in terminal - ds", () => {
+        it("should accurately detect environment state (headless or gui avail). when headless, open diff in terminal - ds", async () => {
             //TEST SETUP
             //ProcessUtils.isGuiAvailable() = NO_GUI_SSH = 1
+            let commandParameters =  cloneDeep(commandParametersDs);
+            commandParameters.response.console.log = jest.fn();
             guiAvailSpy.mockImplementation(jest.fn(() => {
                 return GuiResult.NO_GUI_SSH;
             }));
 
-            //TEST CONFIRMATION
-            //check that commandParameters.response.console.log contains diff.response
-            expect(commandParameters.response.console.log).toContain(expect.anything());
+            //TEST CONFIRMATION (testing for error only because hard to mock out diffResponse)
+            try {
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError.message).toContain('Diff');
         })
-        it("when guiAvail, open diff in browser - ds", () => {
+        it("when guiAvail, open diff in browser - ds", async () => {
             //TEST SETUP
             //ProcessUtils.isGuiAvailable() = GUI_AVAILABLE = 0
+            let commandParameters =  cloneDeep(commandParametersDs);
             guiAvailSpy.mockImplementation(jest.fn(() => {
                 return GuiResult.GUI_AVAILABLE;
             }));
 
             //TEST CONFIRMATION
-            //check that getFile2 was called with helper.browserview = true
+            await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
+            expect(getFile2DsSpy).toBeCalledWith(undefined, expect.anything(), expect.objectContaining({
+                "browserView": true
+            }));
         })
-        it("should call the uss handler when calling fileComparison() for uss remote", () => {
+        it("should call the uss handler when calling fileComparison() for uss remote", async () => {
             //TEST SETUP
-            //helper.browserView = true
-            //commandParameters.positionals.includes('uss')
-            //handlerUss.getFile2 returns "this is a uss file"
-            //TEST CONFIRMATION
-            //check that mfds = "this is a uss file"
+            let commandParameters =  cloneDeep(commandParametersUss);
+            commandParameters.response.console.log = jest.fn();
+
+            //TEST CONFIRMATION - (testing for error only because hard to mock out diffResponse)
+            try {
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError.message).toContain('Diff');
         })
     })
     describe("makeEdits()", () => {

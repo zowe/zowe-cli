@@ -197,18 +197,24 @@ export class EditUtilities {
 
         helper.browserView = (gui === GuiResult.GUI_AVAILABLE);
 
-        const lf = await handlerDs.getFile1(session, commandParameters.arguments, helper);
-        let mfds: string | Buffer;
+        const lf: Buffer = await handlerDs.getFile1(session, commandParameters.arguments, helper);
+        let mf: string | Buffer;
         if (commandParameters.positionals[2].includes('d')){
-            mfds = await handlerDs.getFile2(session, commandParameters.arguments, helper);
+            mf = await handlerDs.getFile2(session, commandParameters.arguments, helper);
         }else{
-            mfds = await handlerUss.getFile2(session, commandParameters.arguments, helper);
+            mf = await handlerUss.getFile2(session, commandParameters.arguments, helper);
         }
 
         //if browser view, open diff in browser, otherwise print diff in terminal
-        const diffResponse = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mfds), options);
+        const diffResponse = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mf), options);
         if (!helper.browserView){
-            commandParameters.response.console.log('\n'+diffResponse.commandResponse);
+            if (diffResponse){
+                commandParameters.response.console.log('\n'+diffResponse.commandResponse);
+            }else{
+                throw new ImperativeError({
+                    msg: TextUtils.chalk.red(`Diff was unable to be generated`)
+                });
+            }
         }
         return diffResponse;
     }
