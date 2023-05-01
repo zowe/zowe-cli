@@ -280,7 +280,7 @@ export class EditUtilities {
         }
         throw new ImperativeError({
             msg: TextUtils.chalk.red(`Command terminated. Issue uploading stash. Stashed file will persist: ${lfFile.tempPath}`),
-            causeErrors: response.errorMessage
+            causeErrors: response?.errorMessage
         });
     }
 
@@ -292,6 +292,7 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: ILocalFile): Promise<void>{
+        const tempPath = lfFile.tempPath;
         try{
             //alert user that the version of document they've been editing has changed
             //ask if they want to see changes on the remote file before continuing
@@ -300,16 +301,19 @@ export class EditUtilities {
                 await this.fileComparison(session, commandParameters);
             }
             //ask if they want to keep working with their stash (local file) or upload despite changes to remote
-            const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfFile.tempPath);
+            const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, tempPath);
             // refresh etag, keep stash
             lfFile = await this.localDownload(session, lfFile, true);
+            console.dir('L306 ' + lfFile)
             if (!continueToUpload){
                 // create more edits & open stash/lf in editor
-                await this.makeEdits(lfFile.tempPath, commandParameters.arguments.editor);
+                await this.makeEdits(tempPath, commandParameters.arguments.editor);
             }
+            console.dir('L311 ' + tempPath)
         }catch(err){
+            console.dir('L313 ' + tempPath)
             throw new ImperativeError({
-                msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Stashed file will persist: ${lfFile.tempPath}`),
+                msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Stashed file will persist: ${tempPath}`),
                 causeErrors: err
             });
         }

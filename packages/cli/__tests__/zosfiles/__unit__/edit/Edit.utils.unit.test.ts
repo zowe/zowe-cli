@@ -10,13 +10,13 @@
 */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { AbstractSession, CliUtils, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
+import { AbstractSession, CliUtils, ConfigAutoStore, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
 import * as fs from "fs";
-import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
@@ -36,8 +36,8 @@ describe("Files Edit Utilities", () => {
         profiles: UNIT_TEST_PROFILES_ZOSMF
     });
 
-    const localFileDs: ILocalFile = {
-        tempPath: null,
+    let localFileDS: ILocalFile = {
+        tempPath: 'temp',
         fileName: "TEST(DS)",
         fileType: "ds",
         guiAvail: true,
@@ -45,7 +45,7 @@ describe("Files Edit Utilities", () => {
     };
 
     const localFileUSS: ILocalFile = {
-        tempPath: null,
+        tempPath: 'temp',
         fileName: "test_uss.jcl",
         fileType: "uss",
         guiAvail: true,
@@ -58,11 +58,17 @@ describe("Files Edit Utilities", () => {
         success: true
     }
 
+    let zosRespMisMatch: IZosFilesResponse = {
+        apiResponse: {etag: 'remote etag'},
+        commandResponse:'412 Failed download.',
+        success: false
+    }
+
     let caughtError: ImperativeError;
     let REAL_SESSION: AbstractSession;
 
     beforeEach(async () => {
-        jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
@@ -80,7 +86,7 @@ describe("Files Edit Utilities", () => {
             //TEST SETUP
             //create and modify deep copies of base objects
             let commandParameters = cloneDeep(commandParametersDs);
-            let localFile = cloneDeep(localFileDs);
+            let localFile = cloneDeep(localFileDS);
             commandParameters.arguments.extension = "jcl";
 
             //TEST CONFIRMATION
@@ -90,7 +96,7 @@ describe("Files Edit Utilities", () => {
         it("should be able to build the correct temp path with default ext (.txt) - ds", async () => {
             //TEST SETUP
             //create deep copy of base object
-            let localFile = cloneDeep(localFileDs);
+            let localFile = cloneDeep(localFileDS);
 
             //TEST CONFIRMATION
             const response = await EditUtilities.buildTempPath(localFile, commandParametersDs);
@@ -233,7 +239,7 @@ describe("Files Edit Utilities", () => {
         it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {
             //TEST SETUP
             //download (to temp) AND grab etag
-            let localFile = cloneDeep(localFileDs);
+            let localFile = cloneDeep(localFileDS);
             localFile.tempPath = "temp";
             downloadDataSetSpy.mockImplementation(jest.fn(async () => {
                 return zosResp;
@@ -257,6 +263,10 @@ describe("Files Edit Utilities", () => {
         getFile1Spy.mockImplementation(jest.fn(async() => {
             return Buffer.from('bufferedString');
         }));
+
+        // jest.spyOn(fs, "unlinkSync").mockImplementation(() => {
+        //     throw Error("ahh!");
+        //  });
         getFile2DsSpy.mockImplementation(jest.fn(async() => {
             return Buffer.from('bufferedString');
         }));
@@ -316,72 +326,141 @@ describe("Files Edit Utilities", () => {
         })
     })
     describe("makeEdits()", () => {
-        it("should open in editor if one specified, otherwise skip to prompting", () => {})
-        it("should open local file in correct editor", () => {
-        //TEST SETUP
-        // editor = true
-        // ProcessUtils.openInEditor mock return nothing
-        // this.promptUser(Prompt.doneEditing, tempPath) returns true
-        //TEST CONFIRMATION
-        // makeEdits returns true
+        const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor");
+        const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
+        it("should open in editor if one specified, otherwise skip to prompting", async () => {
+            await EditUtilities.makeEdits('randomTempPath', 'editorPath');
+            expect(openInEditorSpy).toBeCalledTimes(1);
+
+        })
+        it("should skip to prompting if no editor", async () => {
+            await EditUtilities.makeEdits('randomTempPath');
+            expect(promptUserSpy).toBeCalledTimes(1);
         })
     })
     describe("uploadEdits()", () => {
-        it("should successfully upload when etags are matching, then destroy temp - uss", () => {
-        //TEST SETUP
-        // lfFile.fileType == 'uss'
-        // await Upload.fileToUssFile returns successful response
-        //TEST CONFIRMATION
-        // check that this.destroyTempFile is called and uploadEdits() returns true
-        })
-        it("should return false when etag mismatch - ds", () => {
+        const etagMismatchCode = 412;
+
+        it("should successfully upload when etags are matching, then destroy temp - uss", async () => {
             //TEST SETUP
-            // lfFile.fileType == 'ds'
-            // await Upload.fileToDataset returns unsuccessful mock of etag mismatch error
+            let localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
+            jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+                return zosResp;
+            });
+
             //TEST CONFIRMATION
-            // check that etagMismatch is called and uploadEdits() returns false
+            const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(response).toBeTruthy;
         })
-        it("should return false when catching Upload.fileToDataset() thrown etag mismatch error- ds", () => {
+        it("should return false when etag mismatch - ds - response.commandResponse", async () => {
             //TEST SETUP
-            // lfFile.fileType == 'ds'
-            // await Upload.fileToDataset throws etag mismatch error
+            let localFile = cloneDeep(localFileDS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            jest.spyOn(Upload, "fileToDataset").mockImplementation(async() => {
+                return zosRespMisMatch;
+            });
+            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation();
+
             //TEST CONFIRMATION
-            // check that etagMismatch is called and uploadEdits() returns false
+            const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
+            expect(response).toBeFalsy;;
         })
-        it("should throw an imperative error given unexpected command termination", () => {
+        it("should return false when catching Upload.fileToDataset() thrown etag mismatch error - uss", async () => {
             //TEST SETUP
-            // throw an error
+            let localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+                throw new ImperativeError({
+                    msg: `Failed uss download because of mismatched etag`,
+                    additionalDetails: '',
+                    errorCode: String(etagMismatchCode)
+                });
+            });
+            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation();
+
             //TEST CONFIRMATION
-            // check that error was thrown and error messages match
+            const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
+            expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
+            expect(response).toBeFalsy;;
+        })
+        it("should throw an imperative error given unexpected command termination - uss", async () => {
+            //TEST SETUP
+            let localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+                throw Error("ahh!");
+            });
+
+            //TEST CONFIRMATION
+            try {
+                await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toContain("Command terminated");
         })
     })
     describe("etagMismatch()", () => {
-        it("should not open comparison if user answers no to prompt", () => {})
-        it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", () => {
+        fit("should not open comparison if user answers no to prompt - ds", async() => {
             //TEST SETUP
-            // viewUpdatedRemote = true
-            // mock this.fileComparison
-            // continueToUpload = false
-            // mock this.makeEdits
-            // throw error
+            jest.spyOn(EditUtilities, "fileComparison").mockImplementation();
+            jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "localDownload").mockImplementation(jest.fn(async () => {
+                return localFileDS;
+            }));
+
             //TEST CONFIRMATION
-            // check that imperative error is thrown
+            await EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFileDS);
+            expect(EditUtilities.etagMismatch).not.toThrow(ImperativeError);
+        })
+        it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", async() => {
+            //TEST SETUP
+            jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
+                return false;
+            });
+            jest.spyOn(EditUtilities, "localDownload").mockImplementation(async() => {
+                localFileDS.zosResp = zosResp;
+                return localFileDS;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(() => {
+                throw Error("ahh!");
+            });
+
+            //TEST CONFIRMATION
+            try {
+                await EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFileDS);
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         })
     })
     describe("destroyTempFile()", () => {
-        it("should successfully destroy temp file once edits are successfully uploaded to remote", () => {
-            //TEST SETUP
-            // create temp file
-            // unlinkSync(tempPath)
-            // success
-            //TEST CONFIRMATION
-            // confirm mock file no longer exists
+        it("should successfully destroy temp file", async () => {
+            jest.spyOn(fs, "unlinkSync").mockImplementation();
+            await EditUtilities.destroyTempFile('tempPath');
+            expect(EditUtilities.destroyTempFile).not.toThrow(ImperativeError)
         })
-        it("should catch any error when destroying temp file", () => {
-            //TEST SETUP
-            // unlinkSync throws error
-            //TEST CONFIRMATION
-            // check that imperative error is thrown
+        it("should catch any error when destroying temp file", async () => {
+            jest.spyOn(fs, "unlinkSync").mockImplementation(() => {
+                throw Error("ahh!");
+            });
+            try {
+                await EditUtilities.destroyTempFile('tempPath');
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         })
     })
 })
