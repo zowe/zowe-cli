@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes:
+## `7.14.1`:
 
 - Enhancement: Re-enabled color in the daemon client [#1379](https://github.com/zowe/zowe-cli/issues/1379)
 - BugFix: Enabled ANSI in Windows based terminals [#1701](https://github.com/zowe/zowe-cli/issues/1701)
