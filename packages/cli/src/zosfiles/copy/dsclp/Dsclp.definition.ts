@@ -24,7 +24,6 @@ const TargetZosmfOptions: ICommandOptionDefinition[] = [
     {
         name: "target-host",
         aliases: ["th"],
-        conflictsWith: [ "target-zosmf-profile"],
         description: strings.OPTIONS.TARGETHOST,
         type: "string"
     },
@@ -61,7 +60,6 @@ const TargetZosmfOptions: ICommandOptionDefinition[] = [
     {
         name: "target-zosmf-profile",
         aliases: ["t-zosmf-p", "target-zosmf-p"],
-        conflictsWith: ["target-host"],
         description: strings.OPTIONS.TARGETPROFILE,
         type: "string"
     }

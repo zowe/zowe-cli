@@ -133,13 +133,6 @@ export class Copy {
             let overwriteTarget: boolean = options.replace;
 
             /**
-             * If no console is passed and no overwrite is passed then set to owerwrite to false
-             */
-            if(console == undefined && overwriteTarget == undefined){
-                overwriteTarget = false;
-            }
-
-            /**
              * Does the source dataset exist?
              */
             const SourceDsList = await List.dataSet(sourceSession, sourceDataset, {

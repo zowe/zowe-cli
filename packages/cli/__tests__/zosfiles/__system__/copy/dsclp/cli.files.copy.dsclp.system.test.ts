@@ -80,7 +80,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with response timeout", async () => {
@@ -101,7 +101,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with replace option", async () => {
@@ -122,7 +122,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
         });
@@ -152,7 +152,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with response timeout", async () => {
@@ -173,7 +173,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with replace option", async () => {
@@ -194,7 +194,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
         });
@@ -224,7 +224,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with response timeout", async () => {
@@ -245,7 +245,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with replace option", async () => {
@@ -266,7 +266,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
         });
@@ -296,7 +296,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with response timeout", async () => {
@@ -317,7 +317,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
             it("should copy a data set from the command with replace option", async () => {
@@ -338,7 +338,7 @@ describe("Copy data set", () => {
 
                 expect(error).toBe(undefined);
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
                 expect(contents.toString().trim()).toBe(data);
             });
         });

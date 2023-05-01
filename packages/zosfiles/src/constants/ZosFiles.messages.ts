@@ -637,7 +637,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetCopiedAbortedNoTargetDS: {
-        message: "Data set copied aborted. The source dataset was not found."
+        message: "Data set copied aborted. The source data set was not found."
     },
 
     /**
@@ -645,7 +645,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetCopiedAborted: {
-        message: "Data set copied aborted. The existing target dataset was not overwritten."
+        message: "Data set copied aborted. The existing target data set was not overwritten."
     },
 
     /**
@@ -653,7 +653,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetMemberCopiedAborted: {
-        message: "Data set copied aborted. The existing target dataset member was not overwritten."
+        message: "Data set copied aborted. The existing target data set member was not overwritten."
     },
 
     /**
@@ -697,7 +697,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating the attributes are used during dataset creation
+     * Message indicating the attributes are used during data set creation
      * @type {IMessageDefinition}
      */
     attributeTitle: {
@@ -705,7 +705,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message to be used when throwing an imperative error during dataset creation
+     * Message to be used when throwing an imperative error during data set creation
      * @type {IMessageDefinition}
      */
     commonFor: {
@@ -713,7 +713,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message to be used when throwing an imperative error during dataset creation
+     * Message to be used when throwing an imperative error during data set creation
      * @type {IMessageDefinition}
      */
     commonWithValue: {
