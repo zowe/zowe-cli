@@ -261,7 +261,7 @@ export class Copy {
             /*
             *  Don't overwrite an existing dataset or member if overwrite is false
             */
-            if(overwriteTarget == undefined || overwriteTarget == true || targetFound == false){
+            if(overwriteTarget == true || targetFound == false){
                 /**
                  *  Upload the source data to the target dataset
                  */
