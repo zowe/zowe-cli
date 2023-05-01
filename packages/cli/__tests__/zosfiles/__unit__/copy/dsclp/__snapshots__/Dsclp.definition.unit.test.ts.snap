@@ -22,9 +22,6 @@ Array [
     "aliases": Array [
       "th",
     ],
-    "conflictsWith": Array [
-      "target-zosmf-profile",
-    ],
     "description": "The target z/OSMF server host name.",
     "name": "target-host",
     "type": "string",
@@ -98,9 +95,6 @@ Array [
     "aliases": Array [
       "t-zosmf-p",
       "target-zosmf-p",
-    ],
-    "conflictsWith": Array [
-      "target-host",
     ],
     "description": "The name of a z/OSMF profile to load for the target host. ",
     "name": "target-zosmf-profile",
