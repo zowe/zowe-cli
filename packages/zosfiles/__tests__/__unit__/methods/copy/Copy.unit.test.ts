@@ -575,7 +575,7 @@ describe("Copy", () => {
                         response = await Copy.dataSetCrossLPAR(
                             dummySession,
                             { dsn: psDataSetName },
-                            { "from-dataset": { dsn: dataSetPS.dsname }, overwrite: true},
+                            { "from-dataset": { dsn: dataSetPS.dsname }, replace: true},
                             { },
                             dummySession
                         );
@@ -653,7 +653,7 @@ describe("Copy", () => {
                         response = await Copy.dataSetCrossLPAR(
                             dummySession,
                             { dsn: poDataSetName, member: memberName },
-                            { "from-dataset": { dsn: poDataSetName, member: memberName }},
+                            { "from-dataset": { dsn: poDataSetName, member: memberName}, replace: true},
                             { },
                             dummySession
                         );
@@ -700,7 +700,7 @@ describe("Copy", () => {
                             response = await Copy.dataSetCrossLPAR(
                                 dummySession,
                                 { dsn: poDataSetName, member: memberName },
-                                { "from-dataset": { dsn: psDataSetName }},
+                                { "from-dataset": { dsn: psDataSetName }, replace: true},
                                 { },
                                 dummySession
                             );
@@ -740,7 +740,7 @@ describe("Copy", () => {
                             response = await Copy.dataSetCrossLPAR(
                                 dummySession,
                                 { dsn: psDataSetName },
-                                { "from-dataset": { dsn: poDataSetName, member: memberName}},
+                                { "from-dataset": { dsn: poDataSetName, member: memberName}, replace: true},
                                 { },
                                 dummySession
                             );
