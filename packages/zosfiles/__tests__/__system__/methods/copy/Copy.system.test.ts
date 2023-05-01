@@ -408,7 +408,7 @@ describe("Copy", () => {
 
     describe("Data Set Cross LPAR", () => {
         describe("Common Failures", () => {
-            it("should fail if no fromDataSet dataset name is supplied", async () => {
+            it("should fail if no fromDataSet data set name is supplied", async () => {
                 let error: any;
                 let response: IZosFilesResponse | undefined = undefined;
                 const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -433,7 +433,7 @@ describe("Copy", () => {
                 expect(error.message).toContain("Required object must be defined");
             });
 
-            it("should fail if no toDataSet dataset name is supplied", async () => {
+            it("should fail if no toDataSet data set name is supplied", async () => {
                 let error: any;
                 let response: IZosFilesResponse | undefined = undefined;
                 const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -477,7 +477,7 @@ describe("Copy", () => {
             });
 
             describe("Failure cases", () => {
-                it("should warn and fail if the source dataset does not exist", async() => {
+                it("should warn and fail if the source data set does not exist", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -500,10 +500,10 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set not found.");
+                    expect(error.message).toContain("Data set copied aborted. The source data set was not found.");
                 });
 
-                it("should warn and fail if the destination dataset exists", async() => {
+                it("should warn and fail if the destination data set exists", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -526,12 +526,12 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target dataset was not overwritten.");
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
                 });
             });
 
             describe("Success cases", () => {
-                it("should copy the source to the destination dataset and allocate the dataset", async() => {
+                it("should copy the source to the destination data set and allocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -560,7 +560,7 @@ describe("Copy", () => {
                     expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
                 });
 
-                it("should overwrite the destination dataset and reallocate the dataset", async() => {
+                it("should overwrite the destination data set and reallocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -614,7 +614,7 @@ describe("Copy", () => {
             });
 
             describe("Failure cases", () => {
-                it("should warn and fail if the source dataset member does not exist", async() => {
+                it("should warn and fail if the source data set member does not exist", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -640,7 +640,7 @@ describe("Copy", () => {
                     expect(error.message).toContain("Member not found");
                 });
 
-                it("should warn and fail if the destination dataset exists", async() => {
+                it("should warn and fail if the destination data set exists", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -666,12 +666,12 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target dataset was not overwritten.");
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
                 });
             });
 
             describe("Success cases", () => {
-                it("should copy the source to the destination dataset member and allocate the dataset", async() => {
+                it("should copy the source to the destination data set member and allocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -700,7 +700,7 @@ describe("Copy", () => {
                     expect(response?.commandResponse).toContain("Data set copied successfully");
                     expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
                 });
-                it("should overwrite the source to the destination dataset member and reallocate the dataset", async() => {
+                it("should overwrite the source to the destination data set member and reallocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -754,7 +754,7 @@ describe("Copy", () => {
             });
 
             describe("Failure cases", () => {
-                it("should warn and fail if the destination dataset exists", async() => {
+                it("should warn and fail if the destination data set exists", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -777,12 +777,12 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target dataset was not overwritten.");
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
                 });
             });
 
             describe("Success cases", () => {
-                it("should copy the source to the destination dataset and allocate the dataset", async() => {
+                it("should copy the source to the destination data set and allocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -812,7 +812,7 @@ describe("Copy", () => {
                     expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
                 });
 
-                it("should overwrite the destination dataset member", async() => {
+                it("should overwrite the destination data set member", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -867,7 +867,7 @@ describe("Copy", () => {
             });
 
             describe("Failure cases", () => {
-                it("should warn and fail if the destination dataset exists", async() => {
+                it("should warn and fail if the destination data set exists", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
@@ -892,12 +892,12 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target dataset was not overwritten.");
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
                 });
             });
 
             describe("Success cases", () => {
-                it("should copy the source to the destination dataset and allocate the dataset", async() => {
+                it("should copy the source to the destination data set and allocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
@@ -925,7 +925,7 @@ describe("Copy", () => {
                     expect(response?.commandResponse).toContain("Data set copied successfully");
                     expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
                 });
-                it("should overwrite the source to the destination dataset and reallocate the dataset", async() => {
+                it("should overwrite the source to the destination data set and reallocate the dataset", async() => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
