@@ -2,15 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## `7.12.0`
-
-- BugFix: Fixed encoding option for `Get.USSFile` SDK method [#1495](https://github.com/zowe/zowe-cli/issues/1495)
-
-## `7.11.2`
-
-- BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL
-
-## `7.11.1`
+## Recent Changes
 
 - Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  
 
