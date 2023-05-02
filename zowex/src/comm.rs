@@ -13,10 +13,11 @@
 
 use std::io;
 use std::io::prelude::*;
-use std::io::BufReader;
 use std::str;
 use std::thread;
 use std::time::Duration;
+use tokio::io::AsyncBufReadExt;
+use tokio::io::BufReader;
 
 #[cfg(target_family = "unix")]
 use {std::net::Shutdown, std::os::unix::net::UnixStream};
@@ -27,11 +28,6 @@ use base64::encode;
 extern crate is_terminal;
 use is_terminal::IsTerminal;
 
-#[cfg(target_family = "windows")]
-extern crate named_pipe;
-#[cfg(target_family = "windows")]
-use named_pipe::PipeClient;
-
 extern crate rpassword;
 use rpassword::read_password;
 
@@ -41,10 +37,14 @@ use crate::proc::*;
 use crate::util::util_get_username;
 
 #[cfg(target_family = "unix")]
-type DaemonClient = UnixStream;
+type DaemonClient = tokio::net::UnixStream;
 
 #[cfg(target_family = "windows")]
-type DaemonClient = PipeClient;
+use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
+type DaemonClient = NamedPipeClient;
+pub const ERROR_PIPE_BUSY: u32 = 231u32;
+// ^ Needed to determine whether the pipe is busy on Windows.
+// https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-client
 
 /**
  * Attempt to make a TCP connection to the daemon.
@@ -71,10 +71,17 @@ pub fn comm_establish_connection(
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        let conn_result = DaemonClient::connect(daemon_socket);
-        if let Ok(good_stream) = conn_result {
+        #[cfg(target_family = "unix")]
+        if let Ok(good_stream) = DaemonClient::connect(daemon_socket) {
             // We made our connection. Break with the actual stream value
             break good_stream;
+        }
+
+        #[cfg(target_family = "windows")]
+        match ClientOptions::new().open(daemon_socket) {
+            Ok(stream) => break stream,
+            Err(e) if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32) => (),
+            Err(e) => return Err(e),
         }
 
         // determine if daemon is running
@@ -155,15 +162,26 @@ pub fn comm_establish_connection(
  *      run by the daemon.
  *      On failure, an error result.
  */
-pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
+pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
-    // write request to daemon
-    stream.write_all(message)?;
+    stream.writable().await?;
 
-    #[cfg(target_family = "unix")]
-    let mut writer = stream.try_clone().expect("clone failed");
+    // write request to daemon
+    loop {
+        match stream.try_write(message) {
+            Ok(_n) => break,
+            // If the write operation would need to block, try again as we do not want to discard any messages
+            Err(e) if e.kind() == io::ErrorKind::WouldBlock => continue,
+            Err(e) => {
+                return Err(e.into());
+            }
+        }
+    }
+
+    stream.readable().await?;
+
     #[cfg(target_family = "unix")]
     let mut reader = BufReader::new(&*stream);
     #[cfg(target_family = "windows")]
@@ -174,17 +192,17 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
 
     loop {
         let mut reply: Option<String> = None;
+
         let mut u_payload: Vec<u8> = Vec::new();
         let payload: String;
 
         // read until form feed (\f)
-        match reader.read_until(0xC, &mut u_payload) {
+        match reader.read_until(0xC, &mut u_payload).await {
             Ok(size) => {
                 if size > 0 {
                     // remove form feed and convert to a string
                     u_payload.pop(); // remove the 0xC
                     payload = str::from_utf8(&u_payload).unwrap().to_string();
-
                     let p: DaemonRequest;
                     match serde_json::from_str(&payload) {
                         Err(_e) if _progress => {
@@ -200,7 +218,10 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                             }
                             Err(err_val) => {
                                 eprintln!("You may be running mismatched versions of Zowe executable and Zowe daemon.");
-                                return Err(std::io::Error::new(std::io::ErrorKind::Other, err_val));
+                                return Err(std::io::Error::new(
+                                    std::io::ErrorKind::Other,
+                                    err_val,
+                                ));
                             }
                         },
                     };
@@ -241,10 +262,7 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                             user: Some(encode(executor)),
                         };
                         let v = serde_json::to_string(&response)?;
-                        #[cfg(target_family = "unix")]
-                        writer.write_all(v.as_bytes())?;
-                        #[cfg(target_family = "windows")]
-                        reader.get_mut().write_all(v.as_bytes())?;
+                        reader.get_mut().try_write(v.as_bytes())?;
                     }
 
                     exit_code = p.exitCode.unwrap_or(EXIT_CODE_SUCCESS);
@@ -260,6 +278,10 @@ pub fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                     // end of reading
                     break;
                 }
+            }
+            Err(e) if e.kind() == io::ErrorKind::WouldBlock => {
+                // The daemon should try to read again, as we cannot block here
+                continue;
             }
             Err(err_val) => return Err(err_val),
         } // end match on read

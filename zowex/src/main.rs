@@ -25,6 +25,8 @@ mod test;
 // Modules that we actually reference
 use run::*;
 
+extern crate tokio;
+
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
 
@@ -35,7 +37,8 @@ use run::*;
 //     >> } | Measure-Object -Property TotalSeconds -Average
 // 3.6393932 and 0.76156812 zowe average over 10 run sample = 2.87782508 sec faster on windows
 
-fn main() -> io::Result<()> {
+#[tokio::main]
+async fn main() -> io::Result<()> {
     // turn args into vector
     let mut cmd_line_args: Vec<String> = env::args().collect();
 
@@ -47,7 +50,7 @@ fn main() -> io::Result<()> {
      * failure exit code. Alternatively, our Err branch represents when we
      * fail to run the command.
      */
-    let exit_code: i32 = match run_zowe_command(&mut cmd_line_args) {
+    let exit_code: i32 = match run_zowe_command(&mut cmd_line_args).await {
         Ok(ok_val) => ok_val,
         Err(err_val) => err_val,
     };
