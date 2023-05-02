@@ -6,6 +6,13 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added the `zowe files copy dsclp` command to copy a dataset from one LPAR to another.  [#1098](https://github.com/zowe/zowe-cli/issues/1098)
 
+## `7.14.1`:
+
+- Enhancement: Re-enabled color in the daemon client [#1379](https://github.com/zowe/zowe-cli/issues/1379)
+- BugFix: Enabled ANSI in Windows based terminals [#1701](https://github.com/zowe/zowe-cli/issues/1701)
+- BugFix: Changed daemon to spawn as its own process [#1241](https://github.com/zowe/zowe-cli/issues/1241) [#1277](https://github.com/zowe/zowe-cli/issues/1277) [#1309](https://github.com/zowe/zowe-cli/issues/1309)
+- BugFix: Updated Imperative to allow for special handling of chalk and coloring in daemon client
+
 ## `7.13.0`
 
 - Enhancement: Updated Imperative to add `--prune` option to `zowe config secure` command. [Imperative #547](https://github.com/zowe/imperative/issues/547)

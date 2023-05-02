@@ -146,14 +146,14 @@ export class GetJobs {
 
         if (params) {
             if (params.owner) {
-                query += (JobsConstants.QUERY_OWNER + params.owner);
+                query += (JobsConstants.QUERY_OWNER + encodeURIComponent(params.owner));
             }
             if (params.prefix) {
                 if (params.prefix !== JobsConstants.DEFAULT_PREFIX) {
                     if (RestClient.hasQueryString(query)) {
                         query += JobsConstants.COMBO_ID;
                     }
-                    query += JobsConstants.QUERY_PREFIX + params.prefix;
+                    query += JobsConstants.QUERY_PREFIX + encodeURIComponent(params.prefix);
                 }
             }
             if (params.maxJobs) {
@@ -161,14 +161,14 @@ export class GetJobs {
                     if (RestClient.hasQueryString(query)) {
                         query += JobsConstants.COMBO_ID;
                     }
-                    query += (JobsConstants.QUERY_MAX_JOBS + params.maxJobs);
+                    query += (JobsConstants.QUERY_MAX_JOBS + encodeURIComponent(params.maxJobs));
                 }
             }
             if (params.jobid) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
-                query += (JobsConstants.QUERY_JOBID + params.jobid);
+                query += (JobsConstants.QUERY_JOBID + encodeURIComponent(params.jobid));
             }
             if (params.execData) {
                 if (RestClient.hasQueryString(query)) {
@@ -180,7 +180,7 @@ export class GetJobs {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
-                query += (JobsConstants.QUERY_STATUS + params.status);
+                query += (JobsConstants.QUERY_STATUS + encodeURIComponent(params.status));
             }
         }
 
@@ -235,7 +235,8 @@ export class GetJobs {
     public static async getStatusCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getStatusCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + parms.jobname + "/" + parms.jobid; // + Jobs.QUERY_ID + Jobs.STEP_DATA;
+        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
+        // + Jobs.QUERY_ID + Jobs.STEP_DATA;
         Logger.getAppLogger().info("GetJobs.getStatusCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectJSON<IJob>(session, JobsConstants.RESOURCE + parameters);
     }
@@ -280,7 +281,8 @@ export class GetJobs {
     public static async getSpoolFilesCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getSpoolFilesCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + parms.jobname + "/" + parms.jobid + JobsConstants.RESOURCE_SPOOL_FILES;
+        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
+            JobsConstants.RESOURCE_SPOOL_FILES;
         Logger.getAppLogger().info("GetJobs.getSpoolFilesCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectJSON<IJobFile[]>(session, JobsConstants.RESOURCE + parameters);
     }
@@ -325,8 +327,8 @@ export class GetJobs {
     public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + parms.jobname + "/" + parms.jobid + JobsConstants.RESOURCE_SPOOL_FILES +
-            JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
+            JobsConstants.RESOURCE_SPOOL_FILES + JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT;
         Logger.getAppLogger().info("GetJobs.getJclCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters);
     }
@@ -359,8 +361,8 @@ export class GetJobs {
         ImperativeExpect.toNotBeNullOrUndefined(jobname, "Required parameter jobname must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(jobid, "Required parameter jobid must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(spoolId, "Required parameter spoolId must be defined");
-        const parameters: string = "/" + jobname + "/" + jobid +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + spoolId + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        const parameters: string = "/" + encodeURIComponent(jobname) + "/" + encodeURIComponent(jobid) +
+            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(spoolId) + JobsConstants.RESOURCE_SPOOL_CONTENT;
         Logger.getAppLogger().info("GetJobs.getSpoolContentById() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
     }
@@ -376,8 +378,8 @@ export class GetJobs {
     public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContentCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(jobFile, "Required job file object must be defined");
-        const parameters: string = "/" + jobFile.jobname + "/" + jobFile.jobid +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        const parameters: string = "/" + encodeURIComponent(jobFile.jobname) + "/" + encodeURIComponent(jobFile.jobid) +
+            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(jobFile.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
     }

@@ -65,7 +65,7 @@ export class ModifyJobs {
             "You must specify both the jobname and jobid for the job you want to modify.");
 
         const headers: any = [Headers.APPLICATION_JSON];
-        const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
+        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
         let response: IJobFeedback;
         let request: IModifyJob;
         let mergedMessage: string = "";

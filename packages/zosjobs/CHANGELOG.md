@@ -2,10 +2,20 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `7.14.0`
+
+- Enhancement: Added streaming capabilities to the `DownloadJobs.downloadSpoolContentCommon` method. [Zowe Explorer #2060](https://github.com/zowe/vscode-extension-for-zowe/issues/2060)
+
+## `7.11.3`
+
+- BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL [#1596](https://github.com/zowe/zowe-cli/issues/1596)
+
 ## `7.11.0`
+
 -BugFix: Enabled option to download output from a submitted job with the "directory" option. The `IDownloadSpoolContentParms` interface now supports an "extension" flag which enables changes to file extension as originally intended. [#729](https://github.com/zowe/zowe-cli/issues/729)
 
 ## `7.10.4`
+
 - BugFix: Changed default value for modify-jobs option in the CancelJobs and DeleteJobs classes to 2.0. This change results in calls to z/OSMF becoming synchronous, and a successful response from the modify, cancel, and delete commands indicates the requested action was completed successfully. [#1459](https://github.com/zowe/zowe-cli/issues/1459)
 ## `7.10.0`
 

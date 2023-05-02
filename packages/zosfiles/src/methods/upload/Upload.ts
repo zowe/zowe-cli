@@ -160,9 +160,9 @@ export class Upload {
         // Construct zOSMF REST endpoint.
         let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+            endpoint = path.posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
         }
-        endpoint = path.posix.join(endpoint, dataSetName);
+        endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -220,9 +220,9 @@ export class Upload {
         // Construct zOSMF REST endpoint.
         let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+            endpoint = path.posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
         }
-        endpoint = path.posix.join(endpoint, dataSetName);
+        endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -481,9 +481,7 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         const origUssname = ussname;
-        ussname = path.posix.normalize(ussname);
-        ussname = ZosFilesUtils.formatUnixFilepath(ussname);
-        ussname = encodeURIComponent(ussname);
+        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "stream");
 
@@ -686,8 +684,7 @@ export class Upload {
      * @return {Promise<boolean>}
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        ussname = path.posix.normalize(ussname);
-        ussname = encodeURIComponent(ussname);
+        ussname = encodeURIComponent("/") + ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,

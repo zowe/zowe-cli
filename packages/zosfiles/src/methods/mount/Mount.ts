@@ -54,7 +54,7 @@ export class Mount {
         tempOptions.action = "mount";
         tempOptions["mount-point"] = mountPoint;
 
-        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + encodeURIComponent(fileSystemName);
 
         const jsonContent = JSON.stringify(tempOptions);
         const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];

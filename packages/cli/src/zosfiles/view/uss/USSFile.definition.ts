@@ -40,7 +40,8 @@ export const USSFileDefinition: ICommandDefinition = {
     ],
     options: [
         ViewOptions.binary,
-        ViewOptions.encoding
+        ViewOptions.encoding,
+        ViewOptions.range
     ],
     examples: [
         {

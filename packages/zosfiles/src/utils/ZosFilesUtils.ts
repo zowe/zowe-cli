@@ -205,10 +205,7 @@ export class ZosFilesUtils {
      */
     public static sanitizeUssPathForRestCall(ussPath: string): string {
         let sanitizedPath = path.posix.normalize(ussPath);
-        if (sanitizedPath.charAt(0) === "/") {
-            // trim leading slash from unix files - API doesn't like it
-            sanitizedPath = sanitizedPath.substring(1);
-        }
+        sanitizedPath = this.formatUnixFilepath(sanitizedPath);
         return encodeURIComponent(sanitizedPath);
     }
 
@@ -243,7 +240,7 @@ export class ZosFilesUtils {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, encodeURIComponent(dataSetName));
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
