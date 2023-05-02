@@ -4,6 +4,18 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  
+
+## `7.12.0`
+
+- BugFix: Fixed encoding option for `Get.USSFile` SDK method [#1495](https://github.com/zowe/zowe-cli/issues/1495)
+
+## `7.11.2`
+
+- BugFix: Added URI encoding to user input that is sent to z/OSMF in the URL
+
+## `7.11.1`
+
 - BugFix: Added missing RECFM values documented by IBM as valid RECFM values so that an end user does not received invalid RECFM error message while trying to create a dataset. [#1639](https://github.com/zowe/zowe-cli/issues/1639)
 
 ## `7.7.0`
