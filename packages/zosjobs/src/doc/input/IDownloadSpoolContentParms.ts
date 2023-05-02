@@ -9,6 +9,7 @@
 *
 */
 
+import { Writable } from "stream";
 import { IJobFile } from "../response/IJobFile";
 import { IDownloadAllSpoolContentParms } from "./IDownloadAllSpoolContentParms";
 
@@ -42,4 +43,10 @@ export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolConten
      */
     jobid?: string;
 
+    /**
+     * Optional stream to read the spool contents
+     * @type {Writable}
+     * @memberof IDownloadAllSpoolContentParms
+     */
+    stream?: Writable;
 }

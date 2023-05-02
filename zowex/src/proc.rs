@@ -11,20 +11,19 @@
 
 // Functions related to the manipulation of processes.
 
-use std::env;
 use std::fs::File;
 use std::io::BufReader;
-use std::process::{Command, Stdio};
 use std::path::PathBuf;
+use std::process::{Command, Stdio};
+
+#[cfg(target_family = "windows")]
+use std::os::windows::process::CommandExt;
 
 extern crate sysinfo;
 use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
 
 extern crate simple_error;
 use simple_error::SimpleError;
-
-extern crate whoami;
-use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
@@ -56,7 +55,9 @@ pub fn proc_get_cmd_shell() -> Result<(CmdShell, String), SimpleError> {
             let my_parent_pid: Pid = match process.parent() {
                 Some(parent_id) => parent_id,
                 None => {
-                    return Err(SimpleError::new("Got invalid parent process ID from the process list."));
+                    return Err(SimpleError::new(
+                        "Got invalid parent process ID from the process list.",
+                    ));
                 }
             };
 
@@ -70,53 +71,46 @@ pub fn proc_get_cmd_shell() -> Result<(CmdShell, String), SimpleError> {
                     // Set any known command shell name
                     if cmd_shell_nm.to_lowercase().starts_with("bash") {
                         cmd_shell_type = CmdShell::Bash;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("sh") {
-                            cmd_shell_type = CmdShell::Sh;
-
+                        cmd_shell_type = CmdShell::Sh;
                     } else if cmd_shell_nm.to_lowercase().starts_with("ksh") {
                         cmd_shell_type = CmdShell::Korn;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("zsh") {
                         cmd_shell_type = CmdShell::Zshell;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("csh") {
                         cmd_shell_type = CmdShell::Cshell;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("tcsh") {
                         cmd_shell_type = CmdShell::Tenex;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("pwsh") {
                         cmd_shell_type = CmdShell::PowerShellDotNet;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("powershell") {
                         cmd_shell_type = CmdShell::PowerShellExe;
-
                     } else if cmd_shell_nm.to_lowercase().starts_with("cmd") {
                         cmd_shell_type = CmdShell::WindowsCmd;
-
                     } else {
                         cmd_shell_type = CmdShell::Unknown;
                     }
 
                     // after we find our parent pid, stop seaching process list
                     break;
-
                 } // end found our parent process ID
             } // end iteration of process list to find our parent
 
             if !found_parent_pid {
-                return Err(SimpleError::new("Unable to find our parent process in the process list."));
+                return Err(SimpleError::new(
+                    "Unable to find our parent process in the process list.",
+                ));
             }
 
             // after we find my_pid, stop seaching process list
             break;
-
         } // end found our own process ID
-    }  // end iteration of process list to find our own process
+    } // end iteration of process list to find our own process
 
     if !found_my_pid {
-        return Err(SimpleError::new("Unable to find our current process in the process list."));
+        return Err(SimpleError::new(
+            "Unable to find our current process in the process list.",
+        ));
     }
 
     Ok((cmd_shell_type, cmd_shell_nm))
@@ -142,10 +136,10 @@ pub fn proc_get_daemon_info() -> DaemonProcInfo {
     sys.refresh_all();
     for (next_pid, next_process) in sys.processes() {
         // is this a zowe daemon process?
-        if next_process.name().to_lowercase().contains("node") &&
-           next_process.cmd().len() > 2 &&
-           next_process.cmd()[1].to_lowercase().contains("zowe") &&
-           next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION
+        if next_process.name().to_lowercase().contains("node")
+            && next_process.cmd().len() > 2
+            && next_process.cmd()[1].to_lowercase().contains("zowe")
+            && next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION
         {
             // ensure we have found the daemon for the current user
             if my_daemon_pid_opt.is_some() && &my_daemon_pid_opt.unwrap() == next_pid {
@@ -186,7 +180,9 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
     let mut pid_file_path: PathBuf;
     match util_get_daemon_dir() {
         Ok(ok_val) => pid_file_path = ok_val,
-        Err(_err_val) => { return None; }
+        Err(_err_val) => {
+            return None;
+        }
     }
     pid_file_path.push("daemon_pid.json");
 
@@ -200,8 +196,10 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
             // we should not continue if we cannot open an existing pid file
-            println!("Unable to open file = {}\nDetails = {}",
-                pid_file_path.display(), err_val
+            println!(
+                "Unable to open file = {}\nDetails = {}",
+                pid_file_path.display(),
+                err_val
             );
             std::process::exit(EXIT_CODE_FILE_IO_ERROR);
         }
@@ -211,17 +209,24 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
             // we should not continue if we cannot read an existing pid file
-            println!("Unable to read file = {}\nDetails = {}",
-                pid_file_path.display(), err_val
+            println!(
+                "Unable to read file = {}\nDetails = {}",
+                pid_file_path.display(),
+                err_val
             );
             std::process::exit(EXIT_CODE_FILE_IO_ERROR);
         }
     };
 
-    if daemon_pid_for_user.user != username() {
+    let executor = util_get_username();
+
+    if daemon_pid_for_user.user != executor {
         // our pid file should only contain our own user name
-        println!("User name of '{}' in file '{}' does not match current user = '{}'.",
-            daemon_pid_for_user.user, pid_file_path.display(), username()
+        println!(
+            "User name of '{}' in file '{}' does not match current user = '{}'.",
+            daemon_pid_for_user.user,
+            pid_file_path.display(),
+            executor
         );
         std::process::exit(EXIT_CODE_CANT_CONVERT_JSON);
     }
@@ -266,23 +271,23 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
  * On Linux:
  *      If you use Stdio::inherit(), you get double output. If use use Stdio::null(), you get no color.
  */
+
 pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
-    if env::consts::OS == "windows" {
-        /* Windows CMD and Powershell terminal windows show escape characters
-         * instead of colors in daemon-mode. A more elegant solution may exist,
-         * but for now we just turn off color in daemon mode on Windows.
-         */
-        env::set_var("FORCE_COLOR", "0");
-    }
-
     let daemon_arg = LAUNCH_DAEMON_OPTION;
-    match Command::new(njs_zowe_path)
-        .arg(daemon_arg)
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()
+    let mut cmd = Command::new(njs_zowe_path);
+    
+    // Uses creation flags from https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
+    // Flags are CREATE_NO_WINDOW, CREATE_NEW_PROCESS_GROUP, and CREATE_UNICODE_ENVIRONMENT
+    #[cfg(target_family = "windows")]
+    cmd.creation_flags(0x08000600);
+
+    cmd.arg(daemon_arg)
+       .stdout(Stdio::null())
+       .stderr(Stdio::null());
+
+    match cmd.spawn()
     {
         Ok(_unused) => { /* nothing to do */ }
         Err(error) => {

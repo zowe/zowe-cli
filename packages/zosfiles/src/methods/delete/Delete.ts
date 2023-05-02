@@ -56,7 +56,7 @@ export class Delete {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
 
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${options.volume})`);
+                endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -64,7 +64,7 @@ export class Delete {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
-            endpoint = posix.join(endpoint, dataSetName);
+            endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -149,9 +149,7 @@ export class Delete {
         // Format the endpoint to send the request to
         let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES);
 
-        fileName = posix.normalize(fileName);
-        fileName = ZosFilesUtils.formatUnixFilepath(fileName);
-        fileName = encodeURIComponent(fileName);
+        fileName = ZosFilesUtils.sanitizeUssPathForRestCall(fileName);
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -193,7 +191,7 @@ export class Delete {
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
 
         // Format the endpoint to send the request to
-        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
+        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
         const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
         if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});

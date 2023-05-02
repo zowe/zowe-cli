@@ -250,6 +250,24 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.subarray(0, data.length)).toEqual(data);
             });
+
+            it("should get uss file content range", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname, {range: "0,1"});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual("abcdefghijklmnopqrstuvwxyz\n");
+            });
         });
     });
 
@@ -337,6 +355,113 @@ describe("Get", () => {
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("Unsupported data type 'record' specified for USS file operation.");
             });
+        });
+    });
+});
+
+
+describe("Get - encoded", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_file_view"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`, true);
+        Imperative.console.info("Using dsname:" + dsname);
+
+        // using unique DS function to generate unique USS file name
+        ussname = dsname.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${ussname + "Encod#d"}`;
+        Imperative.console.info("Using ussfile:" + ussname);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("Success Scenarios", () => {
+
+        describe("Physical sequential data set", () => {
+
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                } catch (err) {
+                    // Do nothing
+                }
+            });
+
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, dsname);
+                } catch (err) {
+                    // Do nothing
+                }
+            });
+
+            it("should get data set content", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.dataSet(REAL_SESSION, dsname);
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual(data);
+            });
+        });
+
+        describe("USS File", () => {
+            beforeEach(async () => {
+                const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+
+                try {
+                    await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
+                } catch (err) {
+                    // Do nothing
+                }
+            });
+
+            afterEach(async () => {
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+
+                try {
+                    await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
+                } catch (err) {
+                    // Do nothing
+                }
+            });
+
+            it("should get uss file content", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname);
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual(data);
+            });
+
         });
     });
 });

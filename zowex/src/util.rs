@@ -21,14 +21,17 @@ use home::home_dir;
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
-#[cfg(target_family = "windows")]
-    extern crate whoami;
-#[cfg(target_family = "windows")]
-    use whoami::username;
+extern crate supports_color;
+use supports_color::Stream;
+
+extern crate yansi;
+use yansi::Paint;
+
+extern crate whoami;
+use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
-
 
 /**
  * Get the file path to the command that runs the NodeJS version of Zowe.
@@ -58,11 +61,7 @@ pub fn util_get_nodejs_zowe_path() -> String {
     let mut njs_zowe_path: String = NOT_FOUND.to_string();
     let path = env::var_os("PATH");
     let path_ext = env::var_os("PATHEXT");
-    for njs_zowe_path_buf in PathSearcher::new(
-        zowe_cmd,
-        path.as_deref(),
-        path_ext.as_deref(),
-    ) {
+    for njs_zowe_path_buf in PathSearcher::new(zowe_cmd, path.as_deref(), path_ext.as_deref()) {
         njs_zowe_path = njs_zowe_path_buf.to_string_lossy().to_string();
         if njs_zowe_path.to_lowercase().eq(&my_exe_path.to_lowercase()) {
             // We do not want our own rust executable. Keep searching.
@@ -107,7 +106,10 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
 
     if !daemon_dir.exists() {
         if let Err(err_val) = std::fs::create_dir_all(&daemon_dir) {
-            println!("Unable to create zowe daemon directory = {}.", &daemon_dir.display());
+            println!(
+                "Unable to create zowe daemon directory = {}.",
+                &daemon_dir.display()
+            );
             println!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
@@ -121,7 +123,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
     let mut socket_path: PathBuf;
     match util_get_daemon_dir() {
         Ok(ok_val) => socket_path = ok_val,
-        Err(err_val) => return Err(err_val)
+        Err(err_val) => return Err(err_val),
     }
     socket_path.push("daemon.sock");
     Ok(socket_path.into_os_string().into_string().unwrap())
@@ -129,7 +131,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 
 #[cfg(target_family = "windows")]
 pub fn util_get_socket_string() -> Result<String, i32> {
-    let mut _socket = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
+    let mut _socket = format!("\\\\.\\pipe\\{}\\{}", util_get_username(), "ZoweDaemon");
 
     if let Ok(pipe_name) = env::var("ZOWE_DAEMON_PIPE") {
         _socket = format!("\\\\.\\pipe\\{}", pipe_name);
@@ -138,7 +140,43 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 }
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {
-    env::vars().filter(|&(ref k, _)|
-        k.starts_with("ZOWE_")
-    ).collect()
+    let mut environment: HashMap<String, String> = env::vars()
+        .filter(|(k, _)| k.starts_with("ZOWE_"))
+        .collect();
+
+    match env::var("FORCE_COLOR") {
+        Ok(val) => {environment.insert(String::from("FORCE_COLOR"), val);},
+        Err(_val) => {environment.insert(String::from("FORCE_COLOR"), util_terminal_supports_color().to_string());}
+    }
+
+    // Make sure ansi is enabled for the response
+    if !Paint::enable_windows_ascii() {
+        #[cfg(not(test))] // Because this is a problem during GitHub Actions CI builds
+        environment.insert(String::from("FORCE_COLOR"), String::from("0"));
+    }
+
+    environment
+}
+
+#[cfg(target_family = "windows")]
+pub fn util_get_username() -> String {
+    username().to_lowercase()
+}
+
+#[cfg(not(target_family = "windows"))]
+pub fn util_get_username() -> String {
+    username()
+}
+
+pub fn util_terminal_supports_color() -> i32 {
+    if let Some(support) = supports_color::on(Stream::Stdout) {
+        if support.has_16m {
+            return 3;
+        } else if support.has_256 {
+            return 2;
+        } else if support.has_basic {
+            return 1;
+        }
+    }
+    return 0;
 }
