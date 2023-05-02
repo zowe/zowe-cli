@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  
+
 ## `7.12.0`
 
 - BugFix: Fixed encoding option for `Get.USSFile` SDK method [#1495](https://github.com/zowe/zowe-cli/issues/1495)
