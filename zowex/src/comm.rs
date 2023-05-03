@@ -95,6 +95,40 @@ pub async fn comm_establish_connection(
             }
         }
 
+        let retry_msg = if we_started_daemon && !daemon_proc_info.is_running {
+            "Waiting for the Zowe daemon to start"
+        } else {
+            "Attempting to connect to the Zowe daemon"
+        };
+
+        if conn_retries > 0 {
+            println!(
+                "{} ({} of {})",
+                retry_msg, conn_retries, THREE_MIN_OF_RETRIES
+            );
+        }
+
+        #[cfg(target_family = "unix")]
+        if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
+            // We made our connection. Break with the actual stream value
+            break good_stream;
+        }
+
+        #[cfg(target_family = "windows")]
+        match ClientOptions::new().open(daemon_socket) {
+            Ok(stream) => break stream,
+            // Try to connect to daemon again if we encounter OS error 2 (cannot find the "file" [pipe] specified)
+            Err(e)
+                if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32)
+                    || e.raw_os_error() == Some(2) =>
+            {
+                ()
+            }
+            Err(e) => return Err(e),
+        }
+
+        conn_retries += 1;
+
         if conn_retries > THREE_MIN_OF_RETRIES {
             println!(
                 "Terminating after {} connection retries.",
@@ -118,38 +152,6 @@ pub async fn comm_establish_connection(
                 "Process name = {}  pid = {}  socket = {}\n",
                 daemon_proc_info.name, daemon_proc_info.pid, daemon_socket
             );
-        }
-
-        let retry_msg = if we_started_daemon && !daemon_proc_info.is_running {
-            "Waiting for the Zowe daemon to start"
-        } else {
-            "Attempting to connect to the Zowe daemon"
-        };
-        if conn_retries > 0 {
-            println!(
-                "{} ({} of {})",
-                retry_msg, conn_retries, THREE_MIN_OF_RETRIES
-            );
-        }
-        conn_retries += 1;
-
-        #[cfg(target_family = "unix")]
-        if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
-            // We made our connection. Break with the actual stream value
-            break good_stream;
-        }
-
-        #[cfg(target_family = "windows")]
-        match ClientOptions::new().open(daemon_socket) {
-            Ok(stream) => break stream,
-            // Try to connect to daemon again if we encounter OS error 2 (cannot find the "file" [pipe] specified)
-            Err(e)
-                if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32)
-                    || e.raw_os_error() == Some(2) =>
-            {
-                ()
-            }
-            Err(e) => return Err(e),
         }
     };
 
