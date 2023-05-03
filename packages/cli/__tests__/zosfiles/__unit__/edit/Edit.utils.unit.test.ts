@@ -84,7 +84,6 @@ describe("Files Edit Utilities", () => {
         })
         it("should be able to build the correct temp path with ext argument - ds", async () => {
             //TEST SETUP
-            //create and modify deep copies of base objects
             let commandParameters = cloneDeep(commandParametersDs);
             let localFile = cloneDeep(localFileDS);
             commandParameters.arguments.extension = "jcl";
@@ -95,7 +94,6 @@ describe("Files Edit Utilities", () => {
         })
         it("should be able to build the correct temp path with default ext (.txt) - ds", async () => {
             //TEST SETUP
-            //create deep copy of base object
             let localFile = cloneDeep(localFileDS);
 
             //TEST CONFIRMATION
@@ -230,8 +228,8 @@ describe("Files Edit Utilities", () => {
             }));
 
             //TEST CONFIRMATION
-            //test that lfFile etag is the same as remote and that
-            //test that lfFile contents are different from remote (wrote to temp location)
+            //test that lfFile etag is the same as remote
+            //test that lfFile contents are different from remote (wrote to temp location & called destroyTemp)
             const response = await EditUtilities.localDownload(REAL_SESSION, localFile, true);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
@@ -278,14 +276,13 @@ describe("Files Edit Utilities", () => {
 
         it("should accurately detect environment state (headless or gui avail). when headless, open diff in terminal - ds", async () => {
             //TEST SETUP
-            //ProcessUtils.isGuiAvailable() = NO_GUI_SSH = 1
             let commandParameters =  cloneDeep(commandParametersDs);
             commandParameters.response.console.log = jest.fn();
             guiAvailSpy.mockImplementation(jest.fn(() => {
                 return GuiResult.NO_GUI_SSH;
             }));
 
-            //TEST CONFIRMATION (testing for error only because hard to mock out diffResponse)
+            //TEST CONFIRMATION
             try {
                 await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
             } catch(e) {
@@ -295,7 +292,6 @@ describe("Files Edit Utilities", () => {
         })
         it("when guiAvail, open diff in browser - ds", async () => {
             //TEST SETUP
-            //ProcessUtils.isGuiAvailable() = GUI_AVAILABLE = 0
             let commandParameters =  cloneDeep(commandParametersDs);
             guiAvailSpy.mockImplementation(jest.fn(() => {
                 return GuiResult.GUI_AVAILABLE;
@@ -312,7 +308,7 @@ describe("Files Edit Utilities", () => {
             let commandParameters =  cloneDeep(commandParametersUss);
             commandParameters.response.console.log = jest.fn();
 
-            //TEST CONFIRMATION - (testing for error only because hard to mock out diffResponse)
+            //TEST CONFIRMATION
             try {
                 await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
             } catch(e) {
