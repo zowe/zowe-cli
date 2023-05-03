@@ -2,9 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.15.0`
 
 - Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  
+- BugFix: Correct improper overwrite error with PDS member to PDS member copy.
 
 ## `7.12.0`
 
