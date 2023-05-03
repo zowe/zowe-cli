@@ -199,10 +199,17 @@ export class EditUtilities {
 
         const lf: Buffer = await handlerDs.getFile1(session, commandParameters.arguments, helper);
         let mf: string | Buffer;
-        if (commandParameters.positionals[2].includes('d')){
-            mf = await handlerDs.getFile2(session, commandParameters.arguments, helper);
-        }else{
-            mf = await handlerUss.getFile2(session, commandParameters.arguments, helper);
+        try{
+            if (commandParameters.positionals[2].includes('d')){
+                mf = await handlerDs.getFile2(session, commandParameters.arguments, helper);
+            }else{
+                mf = await handlerUss.getFile2(session, commandParameters.arguments, helper);
+            }
+        }catch(err){
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`Command terminated. Issue retrieving files for comparison.`),
+                causeErrors: err
+            });
         }
 
         //if browser view, open diff in browser, otherwise print diff in terminal
@@ -304,14 +311,11 @@ export class EditUtilities {
             const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, tempPath);
             // refresh etag, keep stash
             lfFile = await this.localDownload(session, lfFile, true);
-            console.dir('L306 ' + lfFile)
             if (!continueToUpload){
                 // create more edits & open stash/lf in editor
                 await this.makeEdits(tempPath, commandParameters.arguments.editor);
             }
-            console.dir('L311 ' + tempPath)
         }catch(err){
-            console.dir('L313 ' + tempPath)
             throw new ImperativeError({
                 msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Stashed file will persist: ${tempPath}`),
                 causeErrors: err

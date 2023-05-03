@@ -10,7 +10,7 @@
 */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { AbstractSession, CliUtils, ConfigAutoStore, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
+import { AbstractSession, CliUtils, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
@@ -22,22 +22,23 @@ import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseH
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
 
 describe("Files Edit Utilities", () => {
-    const commandParametersDs: IHandlerParameters = mockHandlerParameters({
+    let commandParametersDs: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "ds"],
         definition: EditDefinition,
         profiles: UNIT_TEST_PROFILES_ZOSMF
     });
 
-    const commandParametersUss: IHandlerParameters = mockHandlerParameters({
+    let commandParametersUss: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "uss"],
         definition: EditDefinition,
         profiles: UNIT_TEST_PROFILES_ZOSMF
     });
+    commandParametersDs.arguments["dataSetName"] =  commandParametersUss.arguments["file"] = 'fake';
 
-    let localFileDS: ILocalFile = {
-        tempPath: 'temp',
+    const localFileDS: ILocalFile = {
+        tempPath: null,
         fileName: "TEST(DS)",
         fileType: "ds",
         guiAvail: true,
@@ -45,20 +46,20 @@ describe("Files Edit Utilities", () => {
     };
 
     const localFileUSS: ILocalFile = {
-        tempPath: 'temp',
+        tempPath: null,
         fileName: "test_uss.jcl",
         fileType: "uss",
         guiAvail: true,
         zosResp: null
     };
 
-    let zosResp: IZosFilesResponse = {
+    const zosResp: IZosFilesResponse = {
         apiResponse: {etag: 'remote etag'},
         commandResponse:'Successful download.',
         success: true
     }
 
-    let zosRespMisMatch: IZosFilesResponse = {
+    const zosRespMisMatch: IZosFilesResponse = {
         apiResponse: {etag: 'remote etag'},
         commandResponse:'412 Failed download.',
         success: false
@@ -66,9 +67,8 @@ describe("Files Edit Utilities", () => {
 
     let caughtError: ImperativeError;
     let REAL_SESSION: AbstractSession;
-
     beforeEach(async () => {
-        jest.restoreAllMocks();
+        jest.resetAllMocks();
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
@@ -263,10 +263,6 @@ describe("Files Edit Utilities", () => {
         getFile1Spy.mockImplementation(jest.fn(async() => {
             return Buffer.from('bufferedString');
         }));
-
-        // jest.spyOn(fs, "unlinkSync").mockImplementation(() => {
-        //     throw Error("ahh!");
-        //  });
         getFile2DsSpy.mockImplementation(jest.fn(async() => {
             return Buffer.from('bufferedString');
         }));
@@ -409,28 +405,35 @@ describe("Files Edit Utilities", () => {
         })
     })
     describe("etagMismatch()", () => {
-        fit("should not open comparison if user answers no to prompt - ds", async() => {
+        beforeEach(()=>{
+            jest.restoreAllMocks();
+        })
+        it("should not open comparison if user answers no to prompt - ds", async() => {
             //TEST SETUP
+            let localFile = cloneDeep(localFileDS);
+            localFile.tempPath = 'fakePath';
             jest.spyOn(EditUtilities, "fileComparison").mockImplementation();
             jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
                 return true;
             });
             jest.spyOn(EditUtilities, "localDownload").mockImplementation(jest.fn(async () => {
-                return localFileDS;
+                localFile.zosResp = zosResp;
+                return localFile;
             }));
 
             //TEST CONFIRMATION
-            await EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFileDS);
-            expect(EditUtilities.etagMismatch).not.toThrow(ImperativeError);
+            expect(EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFile)).resolves.toBeUndefined();
         })
         it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", async() => {
+            let localFile = cloneDeep(localFileDS);
+            localFile.tempPath = 'fakePath';
             //TEST SETUP
             jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
                 return false;
             });
             jest.spyOn(EditUtilities, "localDownload").mockImplementation(async() => {
-                localFileDS.zosResp = zosResp;
-                return localFileDS;
+                localFile.zosResp = zosResp;
+                return localFile;
             });
             jest.spyOn(EditUtilities, "makeEdits").mockImplementation(() => {
                 throw Error("ahh!");
@@ -438,7 +441,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             try {
-                await EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFileDS);
+                await EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFile);
             } catch(e) {
                 caughtError = e;
             }
