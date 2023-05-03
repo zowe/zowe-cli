@@ -73,19 +73,6 @@ pub async fn comm_establish_connection(
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        #[cfg(target_family = "unix")]
-        if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
-            // We made our connection. Break with the actual stream value
-            break good_stream;
-        }
-
-        #[cfg(target_family = "windows")]
-        match ClientOptions::new().open(daemon_socket) {
-            Ok(stream) => break stream,
-            Err(e) if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32) => (),
-            Err(e) => return Err(e),
-        }
-
         // determine if daemon is running
         let daemon_proc_info = proc_get_daemon_info();
 
@@ -145,6 +132,25 @@ pub async fn comm_establish_connection(
             );
         }
         conn_retries += 1;
+
+        #[cfg(target_family = "unix")]
+        if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
+            // We made our connection. Break with the actual stream value
+            break good_stream;
+        }
+
+        #[cfg(target_family = "windows")]
+        match ClientOptions::new().open(daemon_socket) {
+            Ok(stream) => break stream,
+            // Try to connect to daemon again if we encounter OS error 2 (cannot find the "file" [pipe] specified)
+            Err(e)
+                if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32)
+                    || e.raw_os_error() == Some(2) =>
+            {
+                ()
+            }
+            Err(e) => return Err(e),
+        }
     };
 
     Ok(stream)
