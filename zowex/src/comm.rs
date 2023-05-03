@@ -17,7 +17,6 @@ use std::str;
 use std::thread;
 use std::time::Duration;
 use tokio::io::AsyncBufReadExt;
-use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
 extern crate base64;
@@ -36,6 +35,8 @@ use crate::util::util_get_username;
 
 #[cfg(target_family = "unix")]
 type DaemonClient = tokio::net::UnixStream;
+#[cfg(target_family = "unix")]
+use tokio::io::AsyncWriteExt;
 
 #[cfg(target_family = "windows")]
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
@@ -183,9 +184,6 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
 
     stream.readable().await?;
 
-    #[cfg(target_family = "unix")]
-    let mut reader = BufReader::new(stream);
-    #[cfg(target_family = "windows")]
     let mut reader = BufReader::new(stream);
 
     let mut exit_code = EXIT_CODE_SUCCESS;
