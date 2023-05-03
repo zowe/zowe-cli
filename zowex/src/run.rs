@@ -351,7 +351,7 @@ pub async fn run_daemon_command(
         }
 
         let mut stream;
-        match comm_establish_connection(njs_zowe_path, &socket_string) {
+        match comm_establish_connection(njs_zowe_path, &socket_string).await {
             Ok(ok_val) => stream = ok_val,
             Err(err_val) => {
                 println!(

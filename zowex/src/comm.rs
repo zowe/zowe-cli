@@ -17,10 +17,8 @@ use std::str;
 use std::thread;
 use std::time::Duration;
 use tokio::io::AsyncBufReadExt;
+use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
-
-#[cfg(target_family = "unix")]
-use {std::net::Shutdown, std::os::unix::net::UnixStream};
 
 extern crate base64;
 use base64::encode;
@@ -41,8 +39,11 @@ type DaemonClient = tokio::net::UnixStream;
 
 #[cfg(target_family = "windows")]
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
+#[cfg(target_family = "windows")]
 type DaemonClient = NamedPipeClient;
+#[cfg(target_family = "windows")]
 pub const ERROR_PIPE_BUSY: u32 = 231u32;
+
 // ^ Needed to determine whether the pipe is busy on Windows.
 // https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-client
 
@@ -60,7 +61,7 @@ pub const ERROR_PIPE_BUSY: u32 = 231u32;
  *      A Result containing a stream upon success.
  *      This function exits the process upon error.
  */
-pub fn comm_establish_connection(
+pub async fn comm_establish_connection(
     njs_zowe_path: &str,
     daemon_socket: &str,
 ) -> io::Result<DaemonClient> {
@@ -72,7 +73,7 @@ pub fn comm_establish_connection(
 
     let stream = loop {
         #[cfg(target_family = "unix")]
-        if let Ok(good_stream) = DaemonClient::connect(daemon_socket) {
+        if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
             // We made our connection. Break with the actual stream value
             break good_stream;
         }
@@ -183,7 +184,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
     stream.readable().await?;
 
     #[cfg(target_family = "unix")]
-    let mut reader = BufReader::new(&*stream);
+    let mut reader = BufReader::new(stream);
     #[cfg(target_family = "windows")]
     let mut reader = BufReader::new(stream);
 
@@ -290,16 +291,10 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
     // Terminate connection. Ignore NotConnected errors returned on macOS.
     // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
     #[cfg(target_family = "unix")]
-    match stream.shutdown(Shutdown::Read) {
+    match reader.shutdown().await {
         Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
     }
-    #[cfg(target_family = "unix")]
-    match stream.shutdown(Shutdown::Write) {
-        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
-        result => result?,
-    }
-
     // return the exit code of the command exucuted by the daemon
     Ok(exit_code)
 }

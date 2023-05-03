@@ -26,4 +26,3 @@ yansi = "0.5.1"
 
 [target.'cfg(windows)'.dependencies]
 fslock = "0.2.1"
-named_pipe = "0.4.1"
