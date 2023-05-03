@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../-strings-/en";
 import { DsDefinition } from "./ds/Ds.definition";
+import { DsclpDefinition } from "./dsclp/Dsclp.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).COPY;
@@ -28,6 +29,7 @@ export const CopyDefinition: ICommandDefinition = {
     type: "group",
     description: strings.DESCRIPTION,
     children: [
-        DsDefinition
+        DsDefinition,
+        DsclpDefinition
     ]
 };

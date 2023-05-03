@@ -21,6 +21,12 @@ use home::home_dir;
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
+extern crate supports_color;
+use supports_color::Stream;
+
+extern crate yansi;
+use yansi::Paint;
+
 extern crate whoami;
 use whoami::username;
 
@@ -134,9 +140,22 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 }
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {
-    env::vars()
+    let mut environment: HashMap<String, String> = env::vars()
         .filter(|(k, _)| k.starts_with("ZOWE_"))
-        .collect()
+        .collect();
+
+    match env::var("FORCE_COLOR") {
+        Ok(val) => {environment.insert(String::from("FORCE_COLOR"), val);},
+        Err(_val) => {environment.insert(String::from("FORCE_COLOR"), util_terminal_supports_color().to_string());}
+    }
+
+    // Make sure ansi is enabled for the response
+    if !Paint::enable_windows_ascii() {
+        #[cfg(not(test))] // Because this is a problem during GitHub Actions CI builds
+        environment.insert(String::from("FORCE_COLOR"), String::from("0"));
+    }
+
+    environment
 }
 
 #[cfg(target_family = "windows")]
@@ -147,4 +166,17 @@ pub fn util_get_username() -> String {
 #[cfg(not(target_family = "windows"))]
 pub fn util_get_username() -> String {
     username()
+}
+
+pub fn util_terminal_supports_color() -> i32 {
+    if let Some(support) = supports_color::on(Stream::Stdout) {
+        if support.has_16m {
+            return 3;
+        } else if support.has_256 {
+            return 2;
+        } else if support.has_basic {
+            return 1;
+        }
+    }
+    return 0;
 }

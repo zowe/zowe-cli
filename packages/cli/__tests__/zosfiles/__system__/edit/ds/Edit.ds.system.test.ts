@@ -45,10 +45,10 @@ describe("Edit data set", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    describe("Success scenarios", () => {
-        //this test hangs because requires user input mocking - deciding to put this in unit test
-        //it("should edit data set (should upload edited local file with the correct/expected etag)", async () => {})
-    });
+    // describe("Success scenarios", () => {
+    //     //this test hangs because requires user input mocking - deciding to put this in unit test
+    //     //it("should edit data set (should upload edited local file with the correct/expected etag)", async () => {})
+    // });
     describe("Expected failures", () => {
         it("should fail if specified data set doesn't exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_ds.sh");

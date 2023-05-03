@@ -15,7 +15,7 @@ import { SshSession } from "@zowe/zos-uss-for-zowe-sdk";
 
 export const definition: ICommandDefinition = {
     name: "zos-ssh",
-    aliases: ["ssh", "zos-uss", "uss"],
+    aliases: ["ssh", "zos-uss", "uss", "uf"],
     type: "group",
     summary: "Issue z/OS USS commands and receive responses",
     description: "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",

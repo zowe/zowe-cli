@@ -633,6 +633,46 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedAbortedNoTargetDS: {
+        message: "Data set copied aborted. The source data set was not found."
+    },
+
+    /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedAborted: {
+        message: "Data set copied aborted. The existing target data set was not overwritten."
+    },
+
+    /**
+     * Message indicating that the data set member was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetMemberCopiedAborted: {
+        message: "Data set copied aborted. The existing target data set member was not overwritten."
+    },
+
+    /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedAbortedNoPDS: {
+        message: "Data set copied aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option."
+    },
+
+    /**
+     * Message indicating that the data set was copied was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedAbortedTargetNotPDSMember: {
+        message: "Data set copied aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option."
+    },
+
+    /**
      * Message indicating that the following members failed to properly download
      * @type {IMessageDefinition}
      */
@@ -657,7 +697,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating the attributes are used during dataset creation
+     * Message indicating the attributes are used during data set creation
      * @type {IMessageDefinition}
      */
     attributeTitle: {
@@ -665,7 +705,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message to be used when throwing an imperative error during dataset creation
+     * Message to be used when throwing an imperative error during data set creation
      * @type {IMessageDefinition}
      */
     commonFor: {
@@ -673,7 +713,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message to be used when throwing an imperative error during dataset creation
+     * Message to be used when throwing an imperative error during data set creation
      * @type {IMessageDefinition}
      */
     commonWithValue: {

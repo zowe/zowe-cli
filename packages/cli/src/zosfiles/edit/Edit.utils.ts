@@ -38,7 +38,7 @@ export enum Prompt {
  * @export
  * @type
  */
-export type EditFileType = "uss" | "ds"
+export type EditFileType = "uss" | "ds";
 
 /**
  * A class to hold pertinent information about the local file during the editing process

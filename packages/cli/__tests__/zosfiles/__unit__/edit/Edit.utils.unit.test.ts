@@ -22,19 +22,20 @@ import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseH
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
 
 describe("Files Edit Utilities", () => {
-    let commandParametersDs: IHandlerParameters = mockHandlerParameters({
+    const commandParametersDs: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "ds"],
         definition: EditDefinition,
         profiles: UNIT_TEST_PROFILES_ZOSMF
     });
 
-    let commandParametersUss: IHandlerParameters = mockHandlerParameters({
+    const commandParametersUss: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "uss"],
         definition: EditDefinition,
         profiles: UNIT_TEST_PROFILES_ZOSMF
     });
+
     commandParametersDs.arguments["dataSetName"] =  commandParametersUss.arguments["file"] = 'fake';
 
     const localFileDS: ILocalFile = {
@@ -57,50 +58,41 @@ describe("Files Edit Utilities", () => {
         apiResponse: {etag: 'remote etag'},
         commandResponse:'Successful download.',
         success: true
-    }
+    };
 
     const zosRespMisMatch: IZosFilesResponse = {
         apiResponse: {etag: 'remote etag'},
         commandResponse:'412 Failed download.',
         success: false
-    }
+    };
 
     let caughtError: ImperativeError;
     let REAL_SESSION: AbstractSession;
+
     beforeEach(async () => {
         jest.resetAllMocks();
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
-            //TEST SETUP
-            //create deep copy of base object, pass in uss lfFile (file name with underscores) to buildTempPath
-            let localFile = cloneDeep(localFileUSS);
-
-            //TEST CONFIRMATION
             // check that the returned string (string.split('.')[0]) contains only numbers and letters
-            const response = await EditUtilities.buildTempPath(localFile, commandParametersUss);
+            const response = await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
             expect(response).toContain(".jcl");
             expect(response.split('\\').pop()?.split('.')[0]).toMatch(/^[A-Za-z0-9]*$/);
-        })
+        });
         it("should be able to build the correct temp path with ext argument - ds", async () => {
             //TEST SETUP
-            let commandParameters = cloneDeep(commandParametersDs);
-            let localFile = cloneDeep(localFileDS);
+            const commandParameters = cloneDeep(commandParametersDs);
             commandParameters.arguments.extension = "jcl";
 
             //TEST CONFIRMATION
-            const response = await EditUtilities.buildTempPath(localFile, commandParameters);
+            const response = await EditUtilities.buildTempPath(localFileDS, commandParameters);
             expect(response).toContain(".jcl");
-        })
+        });
         it("should be able to build the correct temp path with default ext (.txt) - ds", async () => {
-            //TEST SETUP
-            let localFile = cloneDeep(localFileDS);
-
-            //TEST CONFIRMATION
-            const response = await EditUtilities.buildTempPath(localFile, commandParametersDs);
+            const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
             expect(response).toContain(".txt");
-        })
-    })
+        });
+    });
     describe("checkForStash()", () => {
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
         it("should detect the presence of a stash", async () => {
@@ -111,8 +103,8 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             const response = await EditUtilities.checkForStash("validPath");
-            expect(response).toBeTruthy;
-        })
+            expect(response).toBe(true);
+        });
         it("should catch an error when searching for stash", async () => {
             //TEST SETUP
             existsSyncSpy.mockImplementation(jest.fn(() => {
@@ -125,9 +117,10 @@ describe("Files Edit Utilities", () => {
             } catch(e) {
                 caughtError = e;
             }
-            expect(caughtError).toBeInstanceOf(ImperativeError)
-        })
-    })
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+
+        });
+    });
     describe("promptUser()", () => {
         const readPromptSpy = jest.spyOn(CliUtils, "readPrompt");
         describe("truthy prompt responses", () => {
@@ -138,22 +131,22 @@ describe("Files Edit Utilities", () => {
             });
             it("should understand that user wants to use their stash - case Prompt.useStash", async() => {
                 const response = await EditUtilities.promptUser(Prompt.useStash);
-                expect(response).toBeTruthy;
+                expect(response).toBe(true);
             });
             it("should understand that user wants to upload edits despite remote changes - case Prompt.continueToUpload", async() => {
                 const response = await EditUtilities.promptUser(Prompt.continueToUpload);
-                expect(response).toBeTruthy;
+                expect(response).toBe(true);
             });
             it("should understand that user wants to view diff between mf and lf files - case Prompt.viewUpdatedRemote", async() => {
                 const response = await EditUtilities.promptUser(Prompt.viewUpdatedRemote);
-                expect(response).toBeTruthy;
+                expect(response).toBe(true);
             });
             it("should understand that user is done editing - case Prompt.doneEditing", async() => {
                 readPromptSpy.mockImplementation(jest.fn(async () => {
                     return "done";
                 }));
                 const response = await EditUtilities.promptUser(Prompt.doneEditing);
-                expect(response).toBeTruthy;
+                expect(response).toBe(true);
             });
         });
         describe("falsy prompt responses", () => {
@@ -164,15 +157,15 @@ describe("Files Edit Utilities", () => {
             });
             it("should understand that user does NOT want to use their stash - case Prompt.useStash", async() => {
                 const response = await EditUtilities.promptUser(Prompt.useStash);
-                expect(response).toBeFalsy;
+                expect(response).toBe(false);
             });
             it("should understand that user does NOT want to upload edits despite remote changes - case Prompt.continueToUpload", async() => {
                 const response = await EditUtilities.promptUser(Prompt.continueToUpload);
-                expect(response).toBeFalsy;
+                expect(response).toBe(false);
             });
             it("should understand that user does NOT want to view diff between mf and lf files - case Prompt.viewUpdatedRemote", async() => {
                 const response = await EditUtilities.promptUser(Prompt.viewUpdatedRemote);
-                expect(response).toBeFalsy;
+                expect(response).toBe(false);
             });
         });
         describe("null prompt responses", () => {
@@ -214,7 +207,7 @@ describe("Files Edit Utilities", () => {
                 expect(caughtError).toBeInstanceOf(ImperativeError);
             });
         });
-    })
+    });
     describe("localDownload()", () => {
         jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation(jest.fn());
         const downloadDataSetSpy = jest.spyOn(Download, "dataSet");
@@ -222,7 +215,6 @@ describe("Files Edit Utilities", () => {
 
         it("should apply etag from remote to ILocalFile without overwriting stash - [fileType = 'uss', useStash = true]", async () => {
             //TEST SETUP
-            let localFile = cloneDeep(localFileUSS);
             downloadUssFileSpy.mockImplementation(jest.fn(async () => {
                 return zosResp;
             }));
@@ -230,14 +222,14 @@ describe("Files Edit Utilities", () => {
             //TEST CONFIRMATION
             //test that lfFile etag is the same as remote
             //test that lfFile contents are different from remote (wrote to temp location & called destroyTemp)
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, true);
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFileUSS, true);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
-        })
+        });
         it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {
             //TEST SETUP
             //download (to temp) AND grab etag
-            let localFile = cloneDeep(localFileDS);
+            const localFile = cloneDeep(localFileDS);
             localFile.tempPath = "temp";
             downloadDataSetSpy.mockImplementation(jest.fn(async () => {
                 return zosResp;
@@ -249,8 +241,8 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
-        })
-    })
+        });
+    });
     describe("fileComparison()", () => {
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         const getFile1Spy = jest.spyOn(LocalfileDatasetHandler.prototype, "getFile1");
@@ -276,7 +268,7 @@ describe("Files Edit Utilities", () => {
 
         it("should accurately detect environment state (headless or gui avail). when headless, open diff in terminal - ds", async () => {
             //TEST SETUP
-            let commandParameters =  cloneDeep(commandParametersDs);
+            const commandParameters =  cloneDeep(commandParametersDs);
             commandParameters.response.console.log = jest.fn();
             guiAvailSpy.mockImplementation(jest.fn(() => {
                 return GuiResult.NO_GUI_SSH;
@@ -289,23 +281,22 @@ describe("Files Edit Utilities", () => {
                 caughtError = e;
             }
             expect(caughtError.message).toContain('Diff');
-        })
+        });
         it("when guiAvail, open diff in browser - ds", async () => {
             //TEST SETUP
-            let commandParameters =  cloneDeep(commandParametersDs);
             guiAvailSpy.mockImplementation(jest.fn(() => {
                 return GuiResult.GUI_AVAILABLE;
             }));
 
             //TEST CONFIRMATION
-            await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
+            await EditUtilities.fileComparison(REAL_SESSION, commandParametersDs);
             expect(getFile2DsSpy).toBeCalledWith(undefined, expect.anything(), expect.objectContaining({
                 "browserView": true
             }));
-        })
+        });
         it("should call the uss handler when calling fileComparison() for uss remote", async () => {
             //TEST SETUP
-            let commandParameters =  cloneDeep(commandParametersUss);
+            const commandParameters =  cloneDeep(commandParametersUss);
             commandParameters.response.console.log = jest.fn();
 
             //TEST CONFIRMATION
@@ -315,27 +306,25 @@ describe("Files Edit Utilities", () => {
                 caughtError = e;
             }
             expect(caughtError.message).toContain('Diff');
-        })
-    })
+        });
+    });
     describe("makeEdits()", () => {
         const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor");
         const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
         it("should open in editor if one specified, otherwise skip to prompting", async () => {
             await EditUtilities.makeEdits('randomTempPath', 'editorPath');
             expect(openInEditorSpy).toBeCalledTimes(1);
-
-        })
+        });
         it("should skip to prompting if no editor", async () => {
             await EditUtilities.makeEdits('randomTempPath');
             expect(promptUserSpy).toBeCalledTimes(1);
-        })
-    })
+        });
+    });
     describe("uploadEdits()", () => {
         const etagMismatchCode = 412;
-
         it("should successfully upload when etags are matching, then destroy temp - uss", async () => {
             //TEST SETUP
-            let localFile = cloneDeep(localFileUSS);
+            const localFile = cloneDeep(localFileUSS);
             localFile.zosResp = zosResp;
             localFile.zosResp.apiResponse.etag = 'etag';
             jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
@@ -345,11 +334,11 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
-            expect(response).toBeTruthy;
-        })
+            expect(response).toBe(true);
+        });
         it("should return false when etag mismatch - ds - response.commandResponse", async () => {
             //TEST SETUP
-            let localFile = cloneDeep(localFileDS);
+            const localFile = cloneDeep(localFileDS);
             localFile.zosResp = zosResp;
             localFile.zosResp.apiResponse.etag = 'etag';
             jest.spyOn(Upload, "fileToDataset").mockImplementation(async() => {
@@ -360,11 +349,11 @@ describe("Files Edit Utilities", () => {
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
             expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
-            expect(response).toBeFalsy;;
-        })
+            expect(response).toBe(false);
+        });
         it("should return false when catching Upload.fileToDataset() thrown etag mismatch error - uss", async () => {
             //TEST SETUP
-            let localFile = cloneDeep(localFileUSS);
+            const localFile = cloneDeep(localFileUSS);
             localFile.zosResp = zosResp;
             localFile.zosResp.apiResponse.etag = 'etag';
             jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
@@ -379,11 +368,11 @@ describe("Files Edit Utilities", () => {
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
             expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
-            expect(response).toBeFalsy;;
-        })
+            expect(response).toBe(false);
+        });
         it("should throw an imperative error given unexpected command termination - uss", async () => {
             //TEST SETUP
-            let localFile = cloneDeep(localFileUSS);
+            const localFile = cloneDeep(localFileUSS);
             localFile.zosResp = zosResp;
             localFile.zosResp.apiResponse.etag = 'etag';
             jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
@@ -398,15 +387,15 @@ describe("Files Edit Utilities", () => {
             }
             expect(caughtError).toBeInstanceOf(ImperativeError);
             expect(caughtError.message).toContain("Command terminated");
-        })
-    })
+        });
+    });
     describe("etagMismatch()", () => {
         beforeEach(()=>{
             jest.restoreAllMocks();
-        })
+        });
         it("should not open comparison if user answers no to prompt - ds", async() => {
             //TEST SETUP
-            let localFile = cloneDeep(localFileDS);
+            const localFile = cloneDeep(localFileDS);
             localFile.tempPath = 'fakePath';
             jest.spyOn(EditUtilities, "fileComparison").mockImplementation();
             jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
@@ -419,9 +408,9 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             expect(EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFile)).resolves.toBeUndefined();
-        })
+        });
         it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", async() => {
-            let localFile = cloneDeep(localFileDS);
+            const localFile = cloneDeep(localFileDS);
             localFile.tempPath = 'fakePath';
             //TEST SETUP
             jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
@@ -442,14 +431,14 @@ describe("Files Edit Utilities", () => {
                 caughtError = e;
             }
             expect(caughtError).toBeInstanceOf(ImperativeError);
-        })
-    })
+        });
+    });
     describe("destroyTempFile()", () => {
         it("should successfully destroy temp file", async () => {
             jest.spyOn(fs, "unlinkSync").mockImplementation();
             await EditUtilities.destroyTempFile('tempPath');
-            expect(EditUtilities.destroyTempFile).not.toThrow(ImperativeError)
-        })
+            expect(EditUtilities.destroyTempFile).not.toThrow(ImperativeError);
+        });
         it("should catch any error when destroying temp file", async () => {
             jest.spyOn(fs, "unlinkSync").mockImplementation(() => {
                 throw Error("ahh!");
@@ -460,6 +449,6 @@ describe("Files Edit Utilities", () => {
                 caughtError = e;
             }
             expect(caughtError).toBeInstanceOf(ImperativeError);
-        })
-    })
-})
+        });
+    });
+});

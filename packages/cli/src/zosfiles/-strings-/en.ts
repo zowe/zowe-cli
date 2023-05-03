@@ -194,6 +194,36 @@ export default {
                     EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
                     EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members"
                 }
+            },
+            DATA_SET_CROSS_LPAR: {
+                DESCRIPTION: "Copy a data set to another data set on a specified LPAR",
+                POSITIONALS: {
+                    FROMDSNAME: "The name of the data set that you want to copy from",
+                    TODSNAME: "The name of the data set that you want to copy to. If the dataset does not " +
+                    "exist it will be allocated automatically"
+                },
+                OPTIONS: {
+                    REPLACE:         "Specify this option as true if you wish to replace the target dataset if it already exists",
+                    TARGETHOST:      "The target z/OSMF server host name.",
+                    TARGETPORT:      "The target z/OSMF server port.",
+                    TARGETUSER:      "The target z/OSMF user name, which can be the same as your TSO login.",
+                    TARGETPASS:      "The target z/OSMF password, which can be the same as your TSO password.",
+                    TARGETTOKENVAL:  "The type of token to get and use for the API for the target system.",
+                    TARGETTOKENTYPE: "The value of the token to pass to the API for the target system.",
+                    TARGETPROFILE:   "The name of a z/OSMF profile to load for the target host. ",
+                    TARGETVOLSER:    "The volume serial (VOLSER) on which you want the target data set to be placed.",
+                    TARGETMGTCLS:    "The SMS management class to use for the allocation of the target data set.",
+                    TARGETDATACLS:   "The SMS data class to use for the allocation of the target data set.",
+                    TARGETSTGCLS:    "The SMS storage class to use for the allocation of the target data set."
+                },
+                EXAMPLES: {
+                    EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' using the --target-zosmf-p" +
+                         " option to specify the target host using a zosmf profile",
+                    EX2: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
+                    EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
+                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET' using the " +
+                        "--target-host, --target-user, and --target-password options"
+                }
             }
         }
     },

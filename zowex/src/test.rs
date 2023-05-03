@@ -18,8 +18,6 @@ use std::time::Duration;
 
 #[cfg(target_family = "unix")]
 use home::home_dir;
-#[cfg(target_family = "windows")]
-use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
@@ -114,14 +112,38 @@ fn unit_test_util_get_socket_string() {
 
 #[test]
 fn unit_test_get_zowe_env() {
-    let env = util_get_zowe_env();
-    assert_eq!(env.get("ZOWE_EDITOR"), None);
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("ZOWE_EDITOR"), None);
 
     env::set_var("ZOWE_EDITOR", "nano");
-    let env = util_get_zowe_env();
-    assert_eq!(env.get("ZOWE_EDITOR"), Some(&"nano".to_owned()));
-
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("ZOWE_EDITOR"), Some(&"nano".to_owned()));
     env::remove_var("ZOWE_EDITOR");
+
+    env::remove_var("FORCE_COLOR");
+    let environment = util_get_zowe_env();
+    let color = util_terminal_supports_color();
+    assert_eq!(environment.get("FORCE_COLOR"), Some(&color.to_string()));
+
+    env::set_var("FORCE_COLOR", "0");
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("FORCE_COLOR"), Some(&"0".to_owned()));
+    env::remove_var("FORCE_COLOR");
+
+    env::set_var("FORCE_COLOR", "1");
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("FORCE_COLOR"), Some(&"1".to_owned()));
+    env::remove_var("FORCE_COLOR");
+
+    env::set_var("FORCE_COLOR", "2");
+    let environment = util_get_zowe_env();
+    assert_eq!(environment.get("FORCE_COLOR"), Some(&"2".to_owned()));
+    env::remove_var("FORCE_COLOR");
+
+    env::set_var("FORCE_COLOR", "3");
+    let env = util_get_zowe_env();
+    assert_eq!(env.get("FORCE_COLOR"), Some(&"3".to_owned()));
+    env::remove_var("FORCE_COLOR");
 }
 
 #[test]

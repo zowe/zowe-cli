@@ -51,10 +51,10 @@ describe("Edit uss file", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    describe("Success scenarios", () => {
-        //this test hangs because requires user input mocking - deciding to put this in unit test
-        //it("should edit uss file (should upload edited local file with the correct/expected etag)", async () => {})
-    });
+    // describe("Success scenarios", () => {
+    //     //this test hangs because requires user input mocking - deciding to put this in unit test
+    //     //it("should edit uss file (should upload edited local file with the correct/expected etag)", async () => {})
+    // });
     describe("Expected failures", () => {
         it("should fail if specified uss file doesn't exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_uss.sh");

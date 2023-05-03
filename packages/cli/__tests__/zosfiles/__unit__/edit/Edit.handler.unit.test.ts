@@ -11,7 +11,7 @@
 
 import { GuiResult, IHandlerParameters, ImperativeError, ProcessUtils, RestConstants, TextUtils } from "@zowe/imperative";
 import {ILocalFile,
-EditUtilities} from "../../../../src/zosfiles/edit/Edit.utils"
+    EditUtilities} from "../../../../src/zosfiles/edit/Edit.utils";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import EditHandler from "../../../../src/zosfiles/edit/Edit.handler";
@@ -22,16 +22,16 @@ describe("Files Edit Group Handler", () => {
     describe("process method", () => {
         //Variable instantiation
         const dataSetName = "dataset";
-        const dataSetPath = path.join(process.cwd(), "packages\\cli\\src\\zosfiles\\edit\\Edit.handler.ts")
+        const dataSetPath = path.join(process.cwd(), "packages\\cli\\src\\zosfiles\\edit\\Edit.handler.ts");
 
-        let commandParameters: IHandlerParameters = mockHandlerParameters({
+        const commandParameters: IHandlerParameters = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-files", "edit", "ds"],
             definition: EditDefinition,
             profiles: UNIT_TEST_PROFILES_ZOSMF
         });
 
-        let localFile: ILocalFile = {
+        const localFile: ILocalFile = {
             tempPath: dataSetPath,
             fileName: dataSetName,
             fileType: "ds",
@@ -95,11 +95,11 @@ describe("Files Edit Group Handler", () => {
 
             let caughtError;
             try {
-                await handler.process(params)
+                await handler.process(params);
             } catch(e) {
                 caughtError = e;
             }
-            expect(caughtError).toBeInstanceOf(ImperativeError)
-        })
-    })
-})
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+        });
+    });
+});

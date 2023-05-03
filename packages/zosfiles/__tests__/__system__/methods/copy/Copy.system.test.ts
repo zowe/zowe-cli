@@ -9,17 +9,21 @@
 *
 */
 
-import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get } from "../../../../src";
+import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
+    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
+import { readFileSync } from "fs";
 
 let REAL_SESSION: Session;
+let REAL_TARGET_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
+let defaultTargetSystem: ITestPropertiesSchema;
 let fromDataSetName: string;
 let toDataSetName: string;
 
@@ -31,8 +35,10 @@ describe("Copy", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({ testName: "zos_file_copy" });
         defaultSystem = testEnvironment.systemTestProperties;
+        defaultTargetSystem = defaultSystem;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        REAL_TARGET_SESSION = REAL_SESSION;
         fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ORIGINAL`;
         toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.COPY`;
     });
@@ -396,6 +402,610 @@ describe("Copy", () => {
                 expect(contents1).toBeTruthy();
                 expect(contents2).toBeTruthy();
                 expect(contents1.toString()).toEqual(contents2.toString());
+            });
+        });
+    });
+
+    describe("Data Set Cross LPAR", () => {
+        describe("Common Failures", () => {
+            it("should fail if no fromDataSet data set name is supplied", async () => {
+                let error: any;
+                let response: IZosFilesResponse | undefined = undefined;
+                const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                const toDataset: IDataSet = { dsn: toDataSetName };
+                const fromOptions: IGetOptions = {
+                    binary: false,
+                    encoding: undefined,
+                    record: false
+                };
+                const options: ICrossLparCopyDatasetOptions = {
+                    "from-dataset": { dsn: undefined as any },
+                    responseTimeout: 5,
+                    replace: false
+                };
+                try {
+                    response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                } catch (err) {
+                    error = err;
+                }
+                expect(response?.success).toBeFalsy();
+                expect(error).toBeDefined();
+                expect(error.message).toContain("Required object must be defined");
+            });
+
+            it("should fail if no toDataSet data set name is supplied", async () => {
+                let error: any;
+                let response: IZosFilesResponse | undefined = undefined;
+                const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                const toDataset: IDataSet = { dsn: undefined as any };
+                const fromOptions: IGetOptions = {
+                    binary: false,
+                    encoding: undefined,
+                    record: false
+                };
+                const options: ICrossLparCopyDatasetOptions = {
+                    "from-dataset": { dsn: fromDataSetName },
+                    responseTimeout: 5,
+                    replace: false
+                };
+                try {
+                    response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                } catch (err) {
+                    error = err;
+                }
+                expect(response?.success).toBeFalsy();
+                expect(error).toBeDefined();
+                expect(error.message).toContain("Required object must be defined");
+            });
+        });
+        describe("Data Set Sequential", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            describe("Failure cases", () => {
+                it("should warn and fail if the source data set does not exist", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ORIGINAL.BAD.DS` },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Data set copied aborted. The source data set was not found.");
+                });
+
+                it("should warn and fail if the destination data set exists", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                });
+            });
+
+            describe("Success cases", () => {
+                it("should copy the source to the destination data set and allocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetName);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+
+                it("should overwrite the destination data set and reallocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName },
+                        responseTimeout: 5,
+                        replace: true
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetName);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).not.toContain("Member contents for test");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+            });
+        });
+
+        describe("Data Set Partitioned", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, fromDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            describe("Failure cases", () => {
+                it("should warn and fail if the source data set member does not exist", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file2 },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Member not found");
+                });
+
+                it("should warn and fail if the destination data set exists", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file1 },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    const toDatasetString = `${toDataSetName}(${file1})`;
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDatasetString);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                });
+            });
+
+            describe("Success cases", () => {
+                it("should copy the source to the destination data set member and allocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const toDatasetString = `${toDataSetName}(${file1})`;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file1 },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDatasetString);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+                it("should overwrite the source to the destination data set member and reallocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    const toDatasetString = `${toDataSetName}(${file1})`;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file1 },
+                        responseTimeout: 5,
+                        replace: true
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDatasetString);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDatasetString);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).not.toContain("Member contents for test");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+            });
+        });
+        describe("Data Set Sequential to Partitioned", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            describe("Failure cases", () => {
+                it("should warn and fail if the destination data set exists", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                });
+            });
+
+            describe("Success cases", () => {
+                it("should copy the source to the destination data set and allocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    const toDataSetString = `${toDataset.dsn}(${toDataset.member})`;
+                    try {
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetString);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+
+                it("should overwrite the destination data set member", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const toDatasetString = `${toDataSetName}(${file1})`;
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName },
+                        responseTimeout: 5,
+                        replace: true
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDatasetString);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDatasetString);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).not.toContain("Member contents for test");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+            });
+        });
+
+        describe("Data Set Partitioned to Sequential", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            describe("Failure cases", () => {
+                it("should warn and fail if the destination data set exists", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file1 },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                });
+            });
+
+            describe("Success cases", () => {
+                it("should copy the source to the destination data set and allocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file1 },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetName);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+                it("should overwrite the source to the destination data set and reallocate the dataset", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: file1 },
+                        responseTimeout: 5,
+                        replace: true
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetName);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).not.toContain("Member contents for test");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+            });
+        });
+
+        describe("Data Set Partitioned with no member to Sequential", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            describe("Failure cases", () => {
+                it("should fail in all cases, as copying a whole PDS is not supported", async() => {
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetName };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetName, member: undefined },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDataSetName);
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                    } catch (err) {
+                        error = err;
+                    }
+                    expect(response?.success).toBeFalsy();
+                    expect(error).toBeDefined();
+                    expect(error.message).toContain("Copying from a PDS to PDS is not supported when using the 'dsclp' option.");
+                });
             });
         });
     });
