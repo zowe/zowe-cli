@@ -859,5 +859,6 @@ dependencies = [
  "tokio",
  "tokio-test",
  "whoami",
+ "windows-sys 0.48.0",
  "yansi",
 ]

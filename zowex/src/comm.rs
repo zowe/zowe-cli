@@ -43,10 +43,7 @@ use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
 type DaemonClient = NamedPipeClient;
 #[cfg(target_family = "windows")]
-pub const ERROR_PIPE_BUSY: u32 = 231u32;
-
-// ^ Needed to determine whether the pipe is busy on Windows.
-// https://learn.microsoft.com/en-us/windows/win32/ipc/named-pipe-client
+use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
 
 /**
  * Attempt to make a TCP connection to the daemon.
@@ -117,10 +114,11 @@ pub async fn comm_establish_connection(
         #[cfg(target_family = "windows")]
         match ClientOptions::new().open(daemon_socket) {
             Ok(stream) => break stream,
-            // Try to connect to daemon again if we encounter OS error 2 (cannot find the "file" [pipe] specified)
+            // Two possible errors when calling ClientOptions::open:
+            // https://docs.rs/tokio/latest/tokio/net/windows/named_pipe/struct.ClientOptions.html#method.open
             Err(e)
                 if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32)
-                    || e.raw_os_error() == Some(2) =>
+                    || e.kind() == io::ErrorKind::NotFound =>
             {
                 ()
             }
