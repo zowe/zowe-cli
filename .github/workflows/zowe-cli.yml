@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x]
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
@@ -46,7 +46,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -86,14 +86,14 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
         path: __tests__/__results__/
 
     - name: Upload Results to Codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: codecov/codecov-action@v1.0.7
+      uses: codecov/codecov-action@v3
       with:
         env_vars: OS,NODE
 
@@ -104,14 +104,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         persist-credentials: false
         ref: ${{ github.ref }}
 
     - name: Use Node.js LTS
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 'lts/*'
 
