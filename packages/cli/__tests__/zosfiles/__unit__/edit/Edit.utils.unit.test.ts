@@ -309,13 +309,13 @@ describe("Files Edit Utilities", () => {
         });
     });
     describe("makeEdits()", () => {
-        const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor");
-        const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
         it("should open in editor if one specified, otherwise skip to prompting", async () => {
+            const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor");
             await EditUtilities.makeEdits('randomTempPath', 'editorPath');
             expect(openInEditorSpy).toBeCalledTimes(1);
         });
         it("should skip to prompting if no editor", async () => {
+            const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
             await EditUtilities.makeEdits('randomTempPath');
             expect(promptUserSpy).toBeCalledTimes(1);
         });
@@ -407,7 +407,7 @@ describe("Files Edit Utilities", () => {
             }));
 
             //TEST CONFIRMATION
-            expect(EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFile)).resolves.toBeUndefined();
+            await expect(EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFile)).resolves.toBeUndefined();
         });
         it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", async() => {
             const localFile = cloneDeep(localFileDS);
