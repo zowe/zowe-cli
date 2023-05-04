@@ -19,6 +19,13 @@ use std::time::Duration;
 use tokio::io::AsyncBufReadExt;
 use tokio::io::BufReader;
 
+#[cfg(target_family = "unix")]
+use tokio::io::AsyncWriteExt;
+#[cfg(target_family = "windows")]
+use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
+
 extern crate base64;
 use base64::encode;
 
@@ -35,15 +42,8 @@ use crate::util::util_get_username;
 
 #[cfg(target_family = "unix")]
 type DaemonClient = tokio::net::UnixStream;
-#[cfg(target_family = "unix")]
-use tokio::io::AsyncWriteExt;
-
-#[cfg(target_family = "windows")]
-use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
 type DaemonClient = NamedPipeClient;
-#[cfg(target_family = "windows")]
-use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
 
 /**
  * Attempt to make a TCP connection to the daemon.
