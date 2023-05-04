@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
+
 ## `7.15.0`
 
 - Enhancement: Added the `zowe files copy dsclp` command to copy a dataset from one LPAR to another.  [#1098](https://github.com/zowe/zowe-cli/issues/1098)
@@ -12,9 +15,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Enabled ANSI in Windows based terminals [#1701](https://github.com/zowe/zowe-cli/issues/1701)
 - BugFix: Changed daemon to spawn as its own process [#1241](https://github.com/zowe/zowe-cli/issues/1241) [#1277](https://github.com/zowe/zowe-cli/issues/1277) [#1309](https://github.com/zowe/zowe-cli/issues/1309)
 - BugFix: Updated Imperative to allow for special handling of chalk and coloring in daemon client
-
-## Recent Changes
-- Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
 
 ## `7.13.0`
 
