@@ -17,10 +17,9 @@ use std::str;
 use std::thread;
 use std::time::Duration;
 use tokio::io::AsyncBufReadExt;
+use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
-#[cfg(target_family = "unix")]
-use tokio::io::AsyncWriteExt;
 #[cfg(target_family = "windows")]
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
@@ -177,16 +176,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
     stream.writable().await?;
 
     // write request to daemon
-    loop {
-        match stream.try_write(message) {
-            Ok(_n) => break,
-            // If the write operation would need to block, try again as we do not want to discard any messages
-            Err(e) if e.kind() == io::ErrorKind::WouldBlock => continue,
-            Err(e) => {
-                return Err(e.into());
-            }
-        }
-    }
+    stream.write_all(message).await?;
 
     stream.readable().await?;
 
