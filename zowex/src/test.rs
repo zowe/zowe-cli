@@ -146,16 +146,16 @@ fn unit_test_get_zowe_env() {
     env::remove_var("FORCE_COLOR");
 }
 
-#[test]
+#[tokio::test]
 // test daemon restart
-fn integration_test_restart() {
+async fn integration_test_restart() {
     let njs_zowe_path = util_get_nodejs_zowe_path();
 
     let mut daemon_proc_info = proc_get_daemon_info();
     if daemon_proc_info.is_running {
         println!("--- test_restart: To initializes test, stop a running daemon.");
         let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
-        if let Err(err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
+        if let Err(err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args).await {
             assert_eq!(
                 "Shutdown should have worked", "Shutdown failed",
                 "exit code = {}",
@@ -173,7 +173,7 @@ fn integration_test_restart() {
 
     // now try the restart
     println!("--- test_restart: Run a restart when no daemon is running.");
-    let result = run_restart_command(&njs_zowe_path);
+    let result = run_restart_command(&njs_zowe_path).await;
     assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
     // confirm that the daemon is running
@@ -186,7 +186,7 @@ fn integration_test_restart() {
     let first_daemon_pid = daemon_proc_info.pid;
 
     println!("--- test_restart: Run a restart with a daemon already running.");
-    let result = run_restart_command(&njs_zowe_path);
+    let result = run_restart_command(&njs_zowe_path).await;
     assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
     // confirm that a new and different daemon is running
@@ -205,7 +205,7 @@ fn integration_test_restart() {
     // As a cleanup step, stop the daemon
     println!("--- test_restart: To cleanup, stop the running daemon.");
     let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
-    if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
+    if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args).await {
         assert_eq!("Shutdown should have worked", "Shutdown failed");
     }
 
