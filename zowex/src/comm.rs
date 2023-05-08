@@ -257,7 +257,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                             user: Some(encode(executor)),
                         };
                         let v = serde_json::to_string(&response)?;
-                        reader.get_mut().try_write(v.as_bytes())?;
+                        reader.get_mut().write_all(v.as_bytes()).await?;
                     }
 
                     exit_code = p.exitCode.unwrap_or(EXIT_CODE_SUCCESS);
