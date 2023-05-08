@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.16.0`
 
 - Enhancement: Updated daemon to use `tokio` library instead of unmaintained `named_pipe` library.
 
