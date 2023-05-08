@@ -69,7 +69,7 @@ describe("Copy data set", () => {
 
                 try {
                     response = runCliScript(
-                        join(__dirname, "__scripts__", "command", " command_copy_data_set_cross_lpar.sh"),
+                        join(__dirname, "__scripts__", "command", "command_copy_data_set_cross_lpar.sh"),
                         TEST_ENVIRONMENT,
                         [fromDataSetName, toDataSetName]
                     );

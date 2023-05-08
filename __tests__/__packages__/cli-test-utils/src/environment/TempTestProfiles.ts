@@ -151,11 +151,13 @@ export class TempTestProfiles {
 
     /**
      * Helper to create a temporary team config profile from test properties
+     * @internal
      * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
      * @returns {Promise<string>} promise that resolves to the name of the created profile on success
      * @throws errors if the profile creation fails
      */
-    private static async createV2Profile(testEnvironment: ITestEnvironment<any>, profileType: string): Promise<string> {
+    public static async createV2Profile(testEnvironment: ITestEnvironment<any>, profileType: string,
+        profileProperties?: Record<string, any>): Promise<string> {
         // Load global config layer
         const config = await Config.load(this.BINARY_NAME, { homeDir: testEnvironment.workingDir });
         config.api.layers.activate(false, true);
@@ -163,7 +165,7 @@ export class TempTestProfiles {
         // Add profile to config JSON
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_" + profileType;
         config.api.profiles.set(profileName, {
-            properties: testEnvironment.systemTestProperties[profileType]
+            properties: profileProperties ?? testEnvironment.systemTestProperties[profileType]
         });
         if (config.api.profiles.defaultGet(profileType) == null) {
             config.api.profiles.defaultSet(profileType, profileName);
@@ -201,13 +203,14 @@ export class TempTestProfiles {
 
     /**
      * Helper to delete a temporary team config profile
+     * @internal
      * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
      * @param {string} profileType - the type of profile e.g. zosmf to delete
      * @param {string} profileName - the name of the profile to delete
      * @returns {Promise<string>} promise that resolves to the name of the created profile on success
      * @throws errors if the profile delete fails
      */
-    private static async deleteV2Profile(testEnvironment: ITestEnvironment<any>, profileType: string, profileName: string): Promise<string> {
+    public static async deleteV2Profile(testEnvironment: ITestEnvironment<any>, profileType: string, profileName: string): Promise<string> {
         // Load global config layer
         const config = await Config.load(this.BINARY_NAME, { homeDir: testEnvironment.workingDir });
         config.api.layers.activate(false, true);
