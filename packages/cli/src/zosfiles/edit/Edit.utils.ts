@@ -199,10 +199,10 @@ export class EditUtilities {
         const handlerUss = new LocalfileUssHandler;
         const helper = new CompareBaseHelper(commandParameters);
         const gui = ProcessUtils.isGuiAvailable();
-        const options: IDiffOptions = {
-            name1: "local file",
-            name2: "remote file"
-        };
+        // const options: IDiffOptions = {
+        //     name1: "local file",
+        //     name2: "remote file"
+        // };
 
         helper.browserView = (gui === GuiResult.GUI_AVAILABLE);
 
@@ -222,7 +222,7 @@ export class EditUtilities {
         }
 
         //if browser view, open diff in browser, otherwise print diff in terminal
-        const diffResponse = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mf), options);
+        const diffResponse = await helper.getResponse(helper.prepareContent(lf), helper.prepareContent(mf));
         if (!helper.browserView){
             if (diffResponse){
                 commandParameters.response.console.log('\n'+diffResponse.commandResponse);
