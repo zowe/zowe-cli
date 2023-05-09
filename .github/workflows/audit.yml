@@ -16,10 +16,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Use Node.js 16.x
+    - name: Use Node.js LTS
       uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: lts/*
 
     - name: Check Vulnerabilities
       run: npm audit --production --audit-level=moderate
