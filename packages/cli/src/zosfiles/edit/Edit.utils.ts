@@ -107,7 +107,10 @@ export class EditUtilities {
         let input;
         switch (prompt){
             case Prompt.useStash:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found local copy? Y/n`));
+                do {
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found local copy? Y/n`));
+                }
+                while (input === '');
                 if (input === null) {
                     throw new ImperativeError({
                         msg: `No input provided. Command terminated.`
@@ -127,7 +130,10 @@ export class EditUtilities {
                     return true;
                 }
             case Prompt.continueToUpload:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`Continue uploading edits despite changes on remote? Y/n`));
+                do {
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Continue uploading edits despite changes on remote? Y/n`));
+                }
+                while (input === '');
                 if (input === null) {
                     throw new ImperativeError({
                         msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
@@ -135,8 +141,11 @@ export class EditUtilities {
                 }
                 return input.toLowerCase() === 'y';
             case Prompt.viewUpdatedRemote:
-                input = await CliUtils.readPrompt(TextUtils.chalk.green(`The remote version of the document you were editing has changed. `+
-                `View the updated version of the mainframe file before proceeding with edits? Y/n`));
+                do {
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`The remote version of the document you were editing has changed. `+
+                    `View the updated version of the mainframe file before proceeding with edits? Y/n`));
+                }
+                while (input === '');
                 if (input === null) {
                     throw new ImperativeError({
                         msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
