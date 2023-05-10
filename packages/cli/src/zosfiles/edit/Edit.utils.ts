@@ -164,7 +164,7 @@ export class EditUtilities {
      */
     public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
         // account for both useStash|!useStash and uss|ds when downloading
-        const tempPath = useStash ? path.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+        const tempPath = useStash ? path.posix.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
             lfFile.fileName,
@@ -181,7 +181,7 @@ export class EditUtilities {
         }
 
         if (useStash){
-            this.destroyTempFile(path.join(tmpdir(), "toDelete.txt"));
+            this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
         }
         return lfFile;
     }
