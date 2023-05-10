@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions } from "@zowe/imperative";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IO } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
@@ -113,8 +113,8 @@ export class CompareBaseHelper {
      * @returns Object containing the name, job id, and spool id
      */
     public prepareSpoolDescriptor(spoolDescription: string): {jobName: string, jobId: string, spoolId: number} {
-        const descriptionSeperator: string = ":";
-        const spoolDescArr = spoolDescription.split(descriptionSeperator);
+        const descriptionSeparator: string = ":";
+        const spoolDescArr = spoolDescription.split(descriptionSeparator);
         const jobName: string = spoolDescArr[0];
         const jobId: string = spoolDescArr[1];
         const spoolId: number = Number(spoolDescArr[2]);
@@ -146,7 +146,7 @@ export class CompareBaseHelper {
                 });
             }
             // reading local file as buffer
-            lfContentBuf = fs.readFileSync(localFileHandle);
+            lfContentBuf = IO.readFileSync(localFile, true);
         } finally {
             if (localFileHandle != null) fs.closeSync(localFileHandle);
         }
