@@ -178,5 +178,6 @@ pub fn util_terminal_supports_color() -> i32 {
             return 1;
         }
     }
-    return 0;
+    
+    0
 }

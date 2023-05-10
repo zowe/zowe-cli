@@ -4,6 +4,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 - Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
+## `7.16.0`
+
+- Enhancement: Updated daemon to use `tokio` library instead of unmaintained `named_pipe` library.
 
 ## `7.15.0`
 
