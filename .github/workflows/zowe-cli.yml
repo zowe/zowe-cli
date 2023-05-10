@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x]
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
@@ -46,7 +46,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -61,7 +61,7 @@ jobs:
 
     - name: Get NPM Version
       id: npm-version
-      run: echo "::set-output name=number::$(npm --version)"
+      run: echo "number=$(npm --version)" >> $GITHUB_OUTPUT
 
     - name: Use NPM v8
       id: npm8
@@ -72,7 +72,7 @@ jobs:
 
     - name: Update Dependencies
       id: npm-update
-      uses: zowe-actions/octorelease-script@master
+      uses: zowe-actions/octorelease/script@v1
       with:
         script: npmUpdate
 
@@ -116,7 +116,7 @@ jobs:
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: upload-binary
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zowe-${{ matrix.os }}.tgz
         path: zowe.tgz
@@ -158,7 +158,7 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
         path: __tests__/__results__/
@@ -176,7 +176,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -184,7 +184,7 @@ jobs:
 
     # Use Node 16 until npm@9 bundled with Node 18 becomes more stable
     - name: Use Node.js 16
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '16'
 
@@ -192,7 +192,7 @@ jobs:
       run: npm ci
 
     - name: Update Dependencies
-      uses: zowe-actions/octorelease-script@master
+      uses: zowe-actions/octorelease/script@v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
@@ -203,7 +203,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@master
+    - uses: zowe-actions/octorelease@v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}

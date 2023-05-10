@@ -82,10 +82,7 @@ pub async fn comm_establish_connection(
             // https://docs.rs/tokio/latest/tokio/net/windows/named_pipe/struct.ClientOptions.html#method.open
             Err(e)
                 if e.raw_os_error() == Some(ERROR_PIPE_BUSY as i32)
-                    || e.kind() == io::ErrorKind::NotFound =>
-            {
-                ()
-            }
+                    || e.kind() == io::ErrorKind::NotFound => {}
             Err(e) => return Err(e),
         }
 
