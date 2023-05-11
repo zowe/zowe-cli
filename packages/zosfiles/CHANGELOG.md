@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `binary` option ignored by `Download.ussDir` and `Upload.dirToUSSDir` when ".zosattributes" file is used.
+- BugFix: Fixed `includeHidden` option ignored by `Upload.dirToUSSDir`.
+
 ## `7.15.0`
 
 - Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  

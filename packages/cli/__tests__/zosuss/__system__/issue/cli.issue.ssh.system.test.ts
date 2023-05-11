@@ -255,7 +255,8 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
             { host, port, user, password });
         // now check the command can run
         const command = "uname";
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command, "--ssh-p", onlyPassword]);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
+            [command, "--ssh-p", onlyPassword]);
         checkResponse(response, 0);
         expect(response.stdout.toString()).toMatch("OS/390");
     });
@@ -267,7 +268,8 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
             { host, port, user, password, privateKey: bogusPrivateKey, keyPassphrase });
         // now check the command can run
         const command = "uname";
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command, "--ssh-p", invalidPrivateKey]);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
+            [command, "--ssh-p", invalidPrivateKey]);
         expect(response.stderr.toString()).toMatch("no such file or directory, open 'bogusKey'");
     });
 });

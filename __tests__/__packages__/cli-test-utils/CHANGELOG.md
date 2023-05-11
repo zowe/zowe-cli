@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Don't assume that root directory is folder containing `lerna.json` unless it also contains a `__tests__` directory.
+
 ## `7.10.1`
 
 - BugFix: Fixed team config being created instead of v1 profiles when `createOldProfiles` was true.

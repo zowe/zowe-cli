@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `--range` option ignored on `zowe files view uss-file` command.
+- BugFix: Fixed `--binary` option ignored by commands that upload and download USS directories when ".zosattributes" file is used.
+- BugFix: Fixed `--include-hidden` option ignored by `zowe files upload dir-to-uss` without the `--recursive` option.
+
 ## `7.16.0`
 
 - Enhancement: Updated daemon to use `tokio` library instead of unmaintained `named_pipe` library.
