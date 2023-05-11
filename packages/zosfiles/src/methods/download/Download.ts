@@ -30,7 +30,7 @@ import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
-import { TransferMode, ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
+import { TransferMode } from "../../utils/ZosFilesAttributes";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
