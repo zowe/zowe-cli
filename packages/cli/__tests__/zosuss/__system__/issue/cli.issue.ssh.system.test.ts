@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, IO, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
 import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";

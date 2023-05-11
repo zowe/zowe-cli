@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI test utils package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Don't assume that root directory is folder containing `lerna.json` unless it also contains a `__tests__` directory.
+- BugFix: Don't assume that folder containing `lerna.json` is root directory unless it also contains a `__tests__` subfolder.
 
 ## `7.10.1`
 
