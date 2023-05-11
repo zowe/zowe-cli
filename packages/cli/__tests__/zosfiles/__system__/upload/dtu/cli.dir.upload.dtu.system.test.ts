@@ -505,6 +505,6 @@ function testSuccessfulUpload(localDirName: string, additionalParameters?: strin
     }
 
     const response = runCliScript(shellScript, TEST_ENVIRONMENT, parms);
-    const stdoutText = response.stdout.toString();
-    expect(stdoutText).toContain("Directory uploaded successfully.");
+    expect(response.stderr.toString()).toBe("");
+    expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
 }
