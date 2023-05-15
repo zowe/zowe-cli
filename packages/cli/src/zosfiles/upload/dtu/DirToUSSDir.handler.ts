@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, TextUtils, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { IZosFilesResponse, ZosFilesAttributes, Upload, IUploadMap } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse, ZosFilesAttributes, Upload, IUploadMap, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import * as path from "path";
 
@@ -38,75 +38,28 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             inputDir = path.resolve(commandParameters.arguments.inputDir);
         }
 
-        let response;
+        const uploadOptions: IUploadOptions = {
+            binary: commandParameters.arguments.binary,
+            maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+            task: status,
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            includeHidden: commandParameters.arguments.includeHidden
+        };
+
         const attributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes, inputDir);
-
         if (attributes != null) {
-            response = await this.uploadWithAttributesFile(attributes, response, session, inputDir,
-                commandParameters, status);
+            uploadOptions.attributes = attributes;
         } else {
-            const filesMap: IUploadMap = this.buildFilesMap(commandParameters);
-
-            if(commandParameters.arguments.recursive) {
-                response = await Upload.dirToUSSDirRecursive(session,
-                    inputDir,
-                    commandParameters.arguments.USSDir, {
-                        binary: commandParameters.arguments.binary,
-                        filesMap,
-                        maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                        task: status,
-                        responseTimeout: commandParameters.arguments.responseTimeout,
-                        includeHidden: commandParameters.arguments.includeHidden
-                    });
-            } else {
-                response = await Upload.dirToUSSDir(session,
-                    inputDir,
-                    commandParameters.arguments.USSDir, {
-                        binary: commandParameters.arguments.binary,
-                        filesMap,
-                        maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                        task: status,
-                        responseTimeout: commandParameters.arguments.responseTimeout,
-                        includeHidden: commandParameters.arguments.includeHidden
-                    });
-            }
+            uploadOptions.filesMap = this.buildFilesMap(commandParameters);
         }
+
+        const uploadApi = commandParameters.arguments.recursive ? Upload.dirToUSSDirRecursive : Upload.dirToUSSDir;
+        const response = await uploadApi.bind(Upload)(session, inputDir, commandParameters.arguments.USSDir, uploadOptions);
 
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;
     }
-
-    private async uploadWithAttributesFile(attributes: ZosFilesAttributes,
-        response: any,
-        session: AbstractSession,
-        inputDir: string,
-        commandParameters: IHandlerParameters,
-        status: ITaskWithStatus) {
-
-        if(commandParameters.arguments.recursive) {
-            response = await Upload.dirToUSSDirRecursive(session,
-                inputDir,
-                commandParameters.arguments.USSDir, {
-                    attributes,
-                    maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                    task: status,
-                    responseTimeout: commandParameters.arguments.responseTimeout
-                });
-        } else {
-            response = await Upload.dirToUSSDir(session,
-                inputDir,
-                commandParameters.arguments.USSDir, {
-                    attributes,
-                    maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                    task: status,
-                    responseTimeout: commandParameters.arguments.responseTimeout
-                });
-        }
-
-        return response;
-    }
-
 
     private buildFilesMap(commandParameters: IHandlerParameters) {
         let filesMap: IUploadMap = null;

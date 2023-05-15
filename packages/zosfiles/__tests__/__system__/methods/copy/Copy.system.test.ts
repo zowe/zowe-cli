@@ -769,8 +769,11 @@ describe("Copy", () => {
                         responseTimeout: 5,
                         replace: false
                     };
+                    const contentBuffer = Buffer.from("Member contents for test");
+                    const toDatasetString = `${toDataSetName}(${file1})`;
                     try {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, contentBuffer, toDatasetString);
                         response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
                     } catch (err) {
                         error = err;

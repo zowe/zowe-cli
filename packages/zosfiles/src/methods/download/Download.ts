@@ -30,7 +30,7 @@ import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
-import { TransferMode, ZosFilesAttributes } from "../../utils/ZosFilesAttributes";
+import { TransferMode } from "../../utils/ZosFilesAttributes";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -662,7 +662,7 @@ export class Download {
                         file: item.name,
                         options: {
                             ...mutableOptions,
-                            ...this.parseAttributeOptions(item.name, fileOptions.attributes)
+                            ...this.parseAttributeOptions(item.name, fileOptions)
                         },
                     });
                     downloadsTotal++;
@@ -824,15 +824,15 @@ export class Download {
         return reqHeaders;
     }
 
-    private static parseAttributeOptions(filename: string, attributes?: ZosFilesAttributes): Partial<IDownloadOptions> {
-        const downloadOptions: Partial<IDownloadOptions> = {};
-        if (attributes != null) {
-            downloadOptions.binary = attributes.getFileTransferMode(filename) === TransferMode.BINARY;
-            if (!downloadOptions.binary) {
-                downloadOptions.encoding = attributes.getRemoteEncoding(filename);
-                downloadOptions.localEncoding = attributes.getLocalEncoding(filename);
+    private static parseAttributeOptions(filename: string, options: IDownloadOptions): Partial<IDownloadOptions> {
+        const newOptions: Partial<IDownloadOptions> = {};
+        if (options.attributes != null) {
+            newOptions.binary = options.attributes.getFileTransferMode(filename, options.binary) === TransferMode.BINARY;
+            if (!newOptions.binary) {
+                newOptions.encoding = options.attributes.getRemoteEncoding(filename);
+                newOptions.localEncoding = options.attributes.getLocalEncoding(filename);
             }
         }
-        return downloadOptions;
+        return newOptions;
     }
 }

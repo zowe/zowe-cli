@@ -104,17 +104,12 @@ describe("zosmf check status", () => {
     describe("Expected failures", () => {
 
         it("should fail due to invalid port", async () => {
-            // create a temporary zowe profile with an invalid port
+            // update temporary zowe profile with an invalid port
             const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
             const bogusPort = 12345;
-            const command = "zowe profiles create zosmf " + host + "temp --host " + host + " --port " + bogusPort
-                + " --user " + user + " --password " + pass + " --ru false";
+            const command = `zowe config set profiles.${testEnvironment.tempProfiles?.zosmf[0]}.properties.port ${bogusPort} --gc`;
             await IO.writeFileAsync(scriptPath, command);
             let response = runCliScript(scriptPath, testEnvironment);
-            expect(response.status).toBe(0);
-            // default to the temporary profile
-            await IO.writeFileAsync(scriptPath, "zowe profiles set  zosmf " + host + "temp");
-            response = runCliScript(scriptPath, testEnvironment);
             expect(response.status).toBe(0);
             // now check the status
             response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment);
