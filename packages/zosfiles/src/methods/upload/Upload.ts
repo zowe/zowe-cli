@@ -651,7 +651,7 @@ export class Upload {
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
                 return this.uploadFile(fileName, ussFilePath, session,
-                    { ...options, binary: file.binary ?? options.binary });
+                    { ...options, binary: file.binary });
             };
 
             if (maxConcurrentRequests === 0) {
@@ -804,7 +804,7 @@ export class Upload {
                 const filePath = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
                 return this.uploadFile(filePath, ussFilePath, session,
-                    { ...options, binary: file.binary ?? options.binary });
+                    { ...options, binary: file.binary });
             };
             if (maxConcurrentRequests === 0) {
                 await Promise.all(filesArray.map(createUploadPromise));
