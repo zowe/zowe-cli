@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.16.1`
 
 - BugFix: Fixed `binary` option ignored by `Download.ussDir` and `Upload.dirToUSSDir` when ".zosattributes" file is used.
 - BugFix: Fixed `includeHidden` option ignored by `Upload.dirToUSSDir`.

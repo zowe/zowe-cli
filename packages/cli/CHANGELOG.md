@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.16.1`
 
 - BugFix: Fixed `--range` option ignored on `zowe files view uss-file` command.
 - BugFix: Fixed `--binary` option ignored by commands that upload and download USS directories when ".zosattributes" file is used.
