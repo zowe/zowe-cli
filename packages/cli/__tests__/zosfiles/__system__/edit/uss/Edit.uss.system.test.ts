@@ -10,57 +10,61 @@
 */
 
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import * as path from "path";
 import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
 import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName} from "../../../../../../../__tests__/__src__/TestUtils";
+import { Create, Delete } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let dsname: string;
 let ussname: string;
 
 describe("Edit uss file", () => {
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "edit_uss_file",
-            tempProfileTypes: ["zosmf"]
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.password,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "edit_uss_file"
         });
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        // using unique DS function to generate unique USS file name
-        ussname = dsname.replace(/\./g, "");
-        ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using uss:" + ussname);
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
     afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    // describe("Success scenarios", () => {
-    //     //this test hangs because requires user input mocking - deciding to put this in unit test
-    //     //it("should edit uss file (should upload edited local file with the correct/expected etag)", async () => {})
-    // });
+    describe("Success scenarios", () => {
+        beforeAll(async () => {
+            ussname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            ussname = ussname.replace(/\./g, "");
+            ussname = `${defaultSystem.unix.testdir}/${ussname}.txt`;
+            Create.uss(REAL_SESSION, ussname, 'file');
+        });
+
+        afterAll(async () => {
+            await Delete.ussFile(REAL_SESSION, ussname);
+        });
+
+        it("should download data set", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "uss_edit_success.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("uploaded");
+        });
+    });
+
     describe("Expected failures", () => {
         it("should fail if specified uss file doesn't exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_uss.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname + ".dummy"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("not found.");
+            expect(response.stderr.toString()).toContain("not found");
         });
     });
 });

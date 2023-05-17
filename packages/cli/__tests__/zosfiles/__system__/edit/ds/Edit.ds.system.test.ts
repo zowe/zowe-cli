@@ -37,15 +37,14 @@ describe("Edit Data Set", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        await Delete.dataSet(REAL_SESSION, dsname);
     });
 
     describe("Success scenarios", () => {
         beforeAll(async () => {
-            user = defaultSystem.zosmf.user.trim().toUpperCase();
-            dsname = `${user}.EDIT.DS`;
+            // user = defaultSystem.zosmf.user.trim().toUpperCase();
+            // dsname = `${user}.EDIT.DS`;
             const data = "1234";
-            // dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), `${dsname}(member1)`);
         });
@@ -55,8 +54,8 @@ describe("Edit Data Set", () => {
         });
 
         it("should download data set", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_successful_single_prompt.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            const shellScript = path.join(__dirname, "__scripts__", "command", "ds_edit_success.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [`${dsname}(member1)`]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("uploaded");
