@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `tar` dependency.
+
 ## `7.16.1`
 
 - BugFix: Fixed `--range` option ignored on `zowe files view uss-file` command.
