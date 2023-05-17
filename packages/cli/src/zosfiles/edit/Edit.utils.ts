@@ -318,7 +318,7 @@ export class EditUtilities {
             //ask if they want to keep working with their stash (local file) or upload despite changes to remote
             const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, tempPath);
             // refresh etag, keep stash
-            lfFile = await this.localDownload(session, lfFile, true);
+            await this.localDownload(session, lfFile, true);
             if (!continueToUpload){
                 // create more edits & open stash/lf in editor
                 await this.makeEdits(tempPath, commandParameters.arguments.editor);

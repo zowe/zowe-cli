@@ -14,7 +14,7 @@ import { USSFileDefinition } from "../../../../../src/zosfiles/edit/uss/USSFile.
 
 describe("DatasetDefinition", () => {
     it("should use the correct object for strings", () => {
-        const strings = i18nEnglish.COPY.ACTIONS.DATA_SET;
+        const strings = i18nEnglish.EDIT.ACTIONS.DATA_SET;
 
         expect(USSFileDefinition.description).toBe(strings.DESCRIPTION);
         expect(USSFileDefinition.children).toBeUndefined();

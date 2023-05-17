@@ -14,7 +14,7 @@ import { DatasetDefinition } from "../../../../../src/zosfiles/edit/ds/Dataset.d
 
 describe("DatasetDefinition", () => {
     it("should use the correct object for strings", () => {
-        const strings = i18nEnglish.COPY.ACTIONS.DATA_SET;
+        const strings = i18nEnglish.EDIT.ACTIONS.DATA_SET;
 
         expect(DatasetDefinition.description).toBe(strings.DESCRIPTION);
         expect(DatasetDefinition.children).toBeUndefined();

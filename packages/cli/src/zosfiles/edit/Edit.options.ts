@@ -15,7 +15,7 @@ import i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).EDIT.OPTIONS;
-const defaultEditor = IO.getDefaultTextEditor();
+
 /**
  * Object containing all options to be used by the Edit API
  */
@@ -29,7 +29,7 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "editor",
         aliases: ["ed"],
         description: strings.EDITOR,
-        defaultValue: process.env['ZOWE_OPT_EDITOR'] ?? defaultEditor,
+        defaultValue: IO.getDefaultTextEditor(),
         type: "string",
         required: false
     },
