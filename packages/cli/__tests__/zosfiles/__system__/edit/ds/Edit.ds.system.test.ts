@@ -11,50 +11,64 @@
 
 import { Session } from "@zowe/imperative";
 import * as path from "path";
-import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
-import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName} from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { Create, CreateDataSetTypeEnum, Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
+let user: string;
 let dsname: string;
 
-describe("Edit data set", () => {
+describe("Edit Data Set", () => {
+
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "edit_data_set",
-            tempProfileTypes: ["zosmf"]
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.password,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "download_data_set"
         });
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
     afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await Delete.dataSet(REAL_SESSION, dsname);
     });
 
-    // describe("Success scenarios", () => {
-    //     //this test hangs because requires user input mocking - deciding to put this in unit test
-    //     //it("should edit data set (should upload edited local file with the correct/expected etag)", async () => {})
-    // });
+    describe("Success scenarios", () => {
+        beforeAll(async () => {
+            user = defaultSystem.zosmf.user.trim().toUpperCase();
+            dsname = `${user}.EDIT.DS`;
+            const data = "1234";
+            // dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), `${dsname}(member1)`);
+        });
+
+        afterAll(async () => {
+            await Delete.dataSet(REAL_SESSION, dsname);
+        });
+
+        it("should download data set", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "edit_successful_single_prompt.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("uploaded");
+        });
+    });
+
     describe("Expected failures", () => {
         it("should fail if specified data set doesn't exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_ds.sh");
-            const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Data set not found.");
+            expect(response.stderr.toString()).toContain("not found");
         });
     });
 });

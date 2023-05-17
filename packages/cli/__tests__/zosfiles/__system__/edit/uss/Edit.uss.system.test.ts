@@ -58,9 +58,9 @@ describe("Edit uss file", () => {
     describe("Expected failures", () => {
         it("should fail if specified uss file doesn't exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_uss.sh");
-            const response = runCliScript(shellScript, testEnvironment, [dsname + ".dummy"]);
+            const response = runCliScript(shellScript, testEnvironment, [ussname + ".dummy"]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Data set not found.");
+            expect(response.stderr.toString()).toContain("not found.");
         });
     });
 });
