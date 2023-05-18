@@ -32,6 +32,10 @@ describe("Edit uss file", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+
+        ussname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        ussname = ussname.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${ussname}.txt`;
     });
 
     afterAll(async () => {
@@ -40,10 +44,7 @@ describe("Edit uss file", () => {
 
     describe("Success scenarios", () => {
         beforeAll(async () => {
-            ussname = getUniqueDatasetName(defaultSystem.zosmf.user);
-            ussname = ussname.replace(/\./g, "");
-            ussname = `${defaultSystem.unix.testdir}/${ussname}.txt`;
-            Create.uss(REAL_SESSION, ussname, 'file');
+            await Create.uss(REAL_SESSION, ussname, 'file');
         });
 
         afterAll(async () => {
@@ -64,7 +65,7 @@ describe("Edit uss file", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "edit_nonexistent_uss.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("not found");
+            expect(response.stderr.toString()).toContain("No such file or directory");
         });
     });
 });

@@ -20,7 +20,6 @@ import { Create, CreateDataSetTypeEnum, Delete, Upload } from "@zowe/zos-files-f
 let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let user: string;
 let dsname: string;
 
 describe("Edit Data Set", () => {
