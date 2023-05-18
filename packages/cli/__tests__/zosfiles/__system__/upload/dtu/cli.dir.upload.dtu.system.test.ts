@@ -54,7 +54,6 @@ describe("Upload directory to USS", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 
     describe("without profiles", () => {
@@ -82,6 +81,10 @@ describe("Upload directory to USS", () => {
             } catch (err) {
                 error = err;
             }
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
         it("should upload local directory to USS directory", async () => {
@@ -345,11 +348,10 @@ describe("Upload directory to USS", () => {
             expect(tag).toMatch("b binary");
         });
 
-        // eslint-disable-next-line jest/no-disabled-tests
-        it.skip("should tag uploaded hidden files according to remote encoding", async () => {
+        it("should tag uploaded hidden files according to remote encoding", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_hidden_files");
 
-            testSuccessfulUpload(localDirName);
+            testSuccessfulUpload(localDirName, ["--include-hidden"]);
 
             let tag = await getTag(REAL_SESSION,ussname + "/.project");
             expect(tag).toMatch("t IBM-1047");
@@ -358,12 +360,11 @@ describe("Upload directory to USS", () => {
             expect(tag).toMatch("b binary");
         });
 
-
         it("should accept zosattributes path as an argument", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
 
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/external.attributes");
-            testSuccessfulUpload(localDirName, ["--attributes", attributesPath]);
+            testSuccessfulUpload(localDirName, ["--attributes", path.relative(TEST_ENVIRONMENT.workingDir, attributesPath)]);
 
             let error: Error;
             try {
@@ -408,7 +409,7 @@ describe("Upload directory to USS", () => {
             expect(tag).toMatch("b binary");
 
             tag = await getTag(REAL_SESSION,ussname + "/picCopy.png");
-            expect(tag).toMatch("t ISO8859-1");
+            expect(tag).toMatch("b binary");
 
             tag = await getTag(REAL_SESSION,ussname + "/picCopyNoTagPlease.png");
             expect(tag).toMatch("b binary");
@@ -423,7 +424,7 @@ describe("Upload directory to USS", () => {
             expect(tag).toMatch("t IBM-1140");
 
             tag = await getTag(REAL_SESSION,ussname + "/copyButDontTagMe.text");
-            expect(tag).toMatch("t ISO8859-1");
+            expect(tag).toMatch("b binary");
 
             let error: Error;
             try {
@@ -465,7 +466,7 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile");
             const attributesPath = path.join(__dirname, "__data__",
                 "command_upload_dtu_dir/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
-            testSuccessfulUpload(localDirName, ["--r --attributes", attributesPath]);
+            testSuccessfulUpload(localDirName, ["--r --attributes", path.relative(TEST_ENVIRONMENT.workingDir, attributesPath)]);
 
             let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
@@ -504,6 +505,6 @@ function testSuccessfulUpload(localDirName: string, additionalParameters?: strin
     }
 
     const response = runCliScript(shellScript, TEST_ENVIRONMENT, parms);
-    const stdoutText = response.stdout.toString();
-    expect(stdoutText).toContain("Directory uploaded successfully.");
+    expect(response.stderr.toString()).toBe("");
+    expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
 }
