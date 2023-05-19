@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.16.2`
 
 - BugFix: Updated `tar` dependency.
 
