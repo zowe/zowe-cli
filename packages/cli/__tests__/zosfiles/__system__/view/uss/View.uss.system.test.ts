@@ -27,7 +27,6 @@ let ussname: string;
 describe("View uss file", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            installPlugin: true,
             testName: "view_uss_file",
             tempProfileTypes: ["zosmf"]
         });
@@ -82,7 +81,7 @@ describe("View uss file", () => {
         it("should view uss file", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz";
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+            await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
             const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length)]);
@@ -94,7 +93,7 @@ describe("View uss file", () => {
         it("should view uss file in binary", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz";
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+            await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
             const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--binary"]);
@@ -106,14 +105,14 @@ describe("View uss file", () => {
         it("should view uss file with range", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+            await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
             const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--range", "0,1"]);
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString().trim()).toEqual("abcdefghijklmnopqrstuvwxyz\n");
+            expect(response.stdout.toString().trim()).toEqual("abcdefghijklmnopqrstuvwxyz");
         });
     });
 });

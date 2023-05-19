@@ -2,4 +2,4 @@
 
 command_name=$1
 
-zowe uss issue ssh "$command_name"
+zowe uss issue ssh "$command_name" ${@:2}

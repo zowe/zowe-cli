@@ -9,14 +9,18 @@
 *
 */
 
+import * as fs from "fs";
 import * as nodePath from "path";
 import * as findUp from "find-up";
 
 function projectRootDir() {
-    // First look for lerna.json in case we're in a monorepo
+    // First look for lerna.json to handle monorepos with tests at top level
     const lernaJson = findUp.sync("lerna.json");
     if (lernaJson != null) {
-        return nodePath.dirname(lernaJson);
+        const lernaRootDir = nodePath.dirname(lernaJson);
+        if (fs.existsSync(nodePath.join(lernaRootDir, "__tests__"))) {
+            return lernaRootDir;
+        }
     }
     // Next look for package.json in single-package repo
     const packageJson = findUp.sync("package.json");

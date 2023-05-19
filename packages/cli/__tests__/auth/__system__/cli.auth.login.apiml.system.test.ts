@@ -9,7 +9,7 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestBaseSchema } from "../../../../../__tests__/__src__/properties/ITestBaseSchema";
@@ -20,8 +20,13 @@ describe("auth login/logout apiml with profile", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "auth_login_logout_apiml",
-            tempProfileTypes: ["base"]
+            testName: "auth_login_logout_apiml"
+        });
+        // Create base profile without user and password
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "base", {
+            host: TEST_ENVIRONMENT.systemTestProperties.base.host,
+            port: TEST_ENVIRONMENT.systemTestProperties.base.port,
+            rejectUnauthorized: TEST_ENVIRONMENT.systemTestProperties.base.rejectUnauthorized
         });
     });
 
@@ -30,7 +35,8 @@ describe("auth login/logout apiml with profile", () => {
     });
 
     it("should successfully issue the login command", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT,
+            [TEST_ENVIRONMENT.systemTestProperties.base.user, TEST_ENVIRONMENT.systemTestProperties.base.password]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");

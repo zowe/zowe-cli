@@ -9,9 +9,9 @@
 *
 */
 
-import { Imperative, IO, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
@@ -233,10 +233,8 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "issue_ssh",
-            tempProfileTypes: ["ssh"],
-            createOldProfiles: true
+            tempProfileTypes: ["ssh"]
         });
-
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         host = defaultSystem.ssh.host;
@@ -252,49 +250,26 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
     });
 
     it("uses only user and password", async () => {
-
         // create a temporary zowe profile with an invalid port
-        let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_withoutprivateKey";
-        let command = "zowe profiles create ssh-profile " + host + "onlypassword --host " + host + " --port " + port
-            + " --user " + user + " --password " + password;
-        await IO.writeFileAsync(scriptPath, command);
-        let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
-        expect(resp.status).toBe(0);
-        // default to the temporary profile
-        command = "zowe profiles set  ssh " + host + "onlypassword";
-        scriptPath = TEST_ENVIRONMENT.workingDir + "_set_profile_withoutprivateKey";
-        await IO.writeFileAsync(scriptPath, command);
-        resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
-        expect(resp.status).toBe(0);
+        const onlyPassword = await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "ssh",
+            { host, port, user, password });
         // now check the command can run
-        command = "uname";
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
+        const command = "uname";
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
+            [command, "--ssh-p", onlyPassword]);
         checkResponse(response, 0);
         expect(response.stdout.toString()).toMatch("OS/390");
-
-
     });
 
     it("use invalid privateKey", async () => {
         // create a temporary zowe profile with an invalid passkey
         const bogusPrivateKey = "bogusKey";
-        let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_invalid_privatekey";
-        let command = "zowe profiles create ssh-profile " + host + "invalidprivatekey --host " + host + " --port " + port
-            + " --user " + user + " --password " + password + " --privateKey " + bogusPrivateKey
-            + " --keyPassphrase " + keyPassphrase;
-
-        await IO.writeFileAsync(scriptPath, command);
-        let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
-        expect(resp.status).toBe(0);
-        // default to the temporary profile
-        command = "zowe profiles set  ssh " + host + "invalidprivatekey";
-        scriptPath = TEST_ENVIRONMENT.workingDir + "_set_profile_with_invalid_privateKey";
-        await IO.writeFileAsync(scriptPath, command);
-        resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
-        expect(resp.status).toBe(0);
+        const invalidPrivateKey = await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "ssh",
+            { host, port, user, password, privateKey: bogusPrivateKey, keyPassphrase });
         // now check the command can run
-        command = "uname";
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
+        const command = "uname";
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
+            [command, "--ssh-p", invalidPrivateKey]);
         expect(response.stderr.toString()).toMatch("no such file or directory, open 'bogusKey'");
     });
 });

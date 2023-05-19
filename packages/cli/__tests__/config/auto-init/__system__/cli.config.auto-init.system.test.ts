@@ -301,8 +301,7 @@ describe("config auto-init with profile", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "config_auto_init_apiml_with_profile",
-            tempProfileTypes: ["base"],
-            createOldProfiles: true
+            tempProfileTypes: ["base"]
         });
 
         base = TEST_ENVIRONMENT.systemTestProperties.base;
@@ -312,7 +311,7 @@ describe("config auto-init with profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should successfully issue the auto-init command, using an old school profile", () => {
+    it("should successfully issue the auto-init command", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
@@ -355,8 +354,7 @@ describe("config auto-init with profile and certificates", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "config_auto_init_apiml_with_profile",
-            tempProfileTypes: ["base"],
-            createOldProfiles: true
+            tempProfileTypes: ["base"]
         });
 
         base = {
@@ -372,7 +370,7 @@ describe("config auto-init with profile and certificates", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should successfully issue the auto-init command, using an old school profile", () => {
+    it("should successfully issue the auto-init command", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();

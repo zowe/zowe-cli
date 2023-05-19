@@ -189,7 +189,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.getWorkflows(REAL_SESSION, null);
+                response = await ListWorkflows.getWorkflows(REAL_SESSION, { zOSMFVersion: null as any });
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

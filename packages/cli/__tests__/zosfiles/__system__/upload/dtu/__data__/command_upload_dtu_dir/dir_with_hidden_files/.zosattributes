@@ -1,6 +1,6 @@
 *.binary binary binary
 *.rft ISO8859-1 IBM-1047
 *.asciitext ISO8859-1 ISO8859-1
-*.project binary binary
+*.project ISO8859-1 IBM-1047
 *.nodejsapp binary binary
 *.hidden binary binary
