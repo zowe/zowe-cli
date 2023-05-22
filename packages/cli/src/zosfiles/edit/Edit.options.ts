@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition, IO } from "@zowe/imperative";
+import { ICommandOptionDefinition } from "@zowe/imperative";
 
 import i18nTypings from "../-strings-/en";
 
@@ -29,7 +29,6 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "editor",
         aliases: ["ed"],
         description: strings.EDITOR,
-        defaultValue: IO.getDefaultTextEditor(),
         type: "string",
         required: false
     },

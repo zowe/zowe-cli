@@ -51,6 +51,7 @@ export interface ILocalFile {
     fileType: EditFileType;
     guiAvail: boolean;
     zosResp: IZosFilesResponse | null;
+    encoding: string;
 }
 
 /**
@@ -170,12 +171,15 @@ export class EditUtilities {
             lfFile.fileName,
             {
                 returnEtag: true,
+                binary: null,
+                encoding: null,
                 file: tempPath
             }
         ];
 
         if(lfFile.fileType === 'uss'){
             lfFile.zosResp = await Download.ussFile(...args);
+            lfFile.encoding = args[2].encoding;
         }else{
             lfFile.zosResp = await Download.dataSet(...args);
         }
@@ -266,6 +270,7 @@ export class EditUtilities {
             lfFile.tempPath,
             lfFile.fileName,
             {
+                encoding: lfFile.encoding,
                 etag: lfFile.zosResp.apiResponse.etag
             }
         ];

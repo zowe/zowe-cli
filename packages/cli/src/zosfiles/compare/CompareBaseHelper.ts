@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IO } from "@zowe/imperative";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IO, IDiffNameOptions } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
@@ -179,7 +179,7 @@ export class CompareBaseHelper {
      * @public
      * @memberof CompareBaseHelper
      */
-    public async getResponse(string1: string, string2: string, options?: IDiffOptions): Promise<IZosFilesResponse>{
+    public async getResponse(string1: string, string2: string, options?: IDiffOptions|IDiffNameOptions): Promise<IZosFilesResponse>{
         //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (this.browserView) {
             await DiffUtils.openDiffInbrowser(string1, string2, options);
