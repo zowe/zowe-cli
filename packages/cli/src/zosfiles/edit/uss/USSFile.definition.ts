@@ -26,7 +26,7 @@ export const USSFileDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.USS_FILE.SUMMARY,
     description: strings.ACTIONS.USS_FILE.DESCRIPTION,
     type: "command",
-    handler: __dirname.substring(0, __dirname.length-("uss").length) + "Edit.handler",
+    handler: __dirname + "/../Edit.handler",
     profile: {
         optional: ["zosmf"],
     },

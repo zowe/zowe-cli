@@ -26,7 +26,7 @@ export const DatasetDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.DATA_SET.SUMMARY,
     description: strings.ACTIONS.DATA_SET.DESCRIPTION,
     type: "command",
-    handler: __dirname.substring(0, __dirname.length-("ds").length) + "Edit.handler",
+    handler: __dirname + "/../Edit.handler",
     profile: {
         optional: ["zosmf"],
     },

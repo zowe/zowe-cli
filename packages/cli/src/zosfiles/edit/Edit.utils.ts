@@ -11,7 +11,7 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffOptions } from "@zowe/imperative";
+    TextUtils, IDiffNameOptions } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
@@ -119,8 +119,8 @@ export class EditUtilities {
                 return input.toLowerCase() === 'y';
             case Prompt.doneEditing:
                 do{
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Enter "done" in terminal once finished `+
-                    `editing and saving temporary file: ${tempPath}`), {secToWait: 3600});
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Downloaded to temporary file: ${tempPath}\n`+
+                    `Enter "done" in terminal once finished editing and saving:`), {secToWait: 3600});
                 }while(input && input.toLowerCase() !== 'done');{
                     if (input === null) {
                         throw new ImperativeError({
@@ -199,7 +199,7 @@ export class EditUtilities {
         const handlerUss = new LocalfileUssHandler;
         const helper = new CompareBaseHelper(commandParameters);
         const gui = ProcessUtils.isGuiAvailable();
-        const options: IDiffOptions = {
+        const options: IDiffNameOptions = {
             name1: "local file",
             name2: "remote file"
         };
