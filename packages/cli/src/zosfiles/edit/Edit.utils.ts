@@ -51,7 +51,7 @@ export interface ILocalFile {
     fileType: EditFileType;
     guiAvail: boolean;
     zosResp: IZosFilesResponse | null;
-    encoding: string;
+    encoding?: string | null;
 }
 
 /**

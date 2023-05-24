@@ -43,7 +43,8 @@ describe("Files Edit Utilities", () => {
         fileName: "TEST(DS)",
         fileType: "ds",
         guiAvail: true,
-        zosResp: null
+        zosResp: null,
+        encoding: null
     };
 
     const localFileUSS: ILocalFile = {
@@ -51,7 +52,8 @@ describe("Files Edit Utilities", () => {
         fileName: "test_uss.jcl",
         fileType: "uss",
         guiAvail: true,
-        zosResp: null
+        zosResp: null,
+        encoding: null
     };
 
     const zosResp: IZosFilesResponse = {
@@ -322,6 +324,21 @@ describe("Files Edit Utilities", () => {
     });
     describe("uploadEdits()", () => {
         const etagMismatchCode = 412;
+        it("should successfully upload an encoded file - uss", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            localFile.encoding = "IBM938"
+            // jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
+            // jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+            //     return zosResp;
+            // });
+
+            // //TEST CONFIRMATION
+            // const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            // expect(response).toBe(true);
+        });
         it("should successfully upload when etags are matching, then destroy temp - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
