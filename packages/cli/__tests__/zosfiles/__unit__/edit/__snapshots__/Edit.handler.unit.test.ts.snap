@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Files Edit Group Handler process method should make and upload edits successfully 1`] = `"[32mSuccessfully uploaded edited file to mainframe[39m"`;
+
+exports[`Files Edit Group Handler process method should make and upload edits successfully 2`] = `
+Object {
+  "commandResponse": "[32mSuccessfully uploaded edited file to mainframe[39m",
+  "success": true,
+}
+`;
