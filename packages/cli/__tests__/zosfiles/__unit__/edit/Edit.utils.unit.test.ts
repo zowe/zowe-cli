@@ -79,7 +79,11 @@ describe("Files Edit Utilities", () => {
             // check that the returned string (string.split('.')[0]) contains only numbers and letters
             const response = await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
             expect(response).toContain(".jcl");
-            expect(response.split('\\').pop()?.split('.')[0]).toMatch(/^[A-Za-z0-9]*$/);
+            if (response.includes('/')){
+                expect(response.split('/').pop()?.split('.')[0]).toMatch(/^[A-Za-z0-9]*$/);
+            }else{
+                expect(response.split('\\').pop()?.split('.')[0]).toMatch(/^[A-Za-z0-9]*$/);
+            }
         });
         it("should be able to build the correct temp path with ext argument - ds", async () => {
             //TEST SETUP
@@ -324,21 +328,7 @@ describe("Files Edit Utilities", () => {
     });
     describe("uploadEdits()", () => {
         const etagMismatchCode = 412;
-        it("should successfully upload an encoded file - uss", async () => {
-            //TEST SETUP
-            const localFile = cloneDeep(localFileUSS);
-            localFile.zosResp = zosResp;
-            localFile.zosResp.apiResponse.etag = 'etag';
-            localFile.encoding = "IBM938"
-            // jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
-            // jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
-            //     return zosResp;
-            // });
 
-            // //TEST CONFIRMATION
-            // const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
-            // expect(response).toBe(true);
-        });
         it("should successfully upload when etags are matching, then destroy temp - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
