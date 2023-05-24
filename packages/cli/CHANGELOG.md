@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `imperative` to fix undesired behavior in the `zowe config list` command in certain situations.
+
 ## `7.16.2`
 
 - BugFix: Updated `tar` dependency.
