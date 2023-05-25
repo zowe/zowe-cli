@@ -99,7 +99,9 @@ export class Create {
                 }
             } else {
                 if (isNullOrUndefined(tempOptions.secondary)) {
-                    if (dataSetType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
+                    if (dataSetType === CreateDataSetTypeEnum.DATA_SET_BLANK) {
+                        // do nothing
+                    } else if (dataSetType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
                         tempOptions.secondary = 1;
                     } else {
                         tempOptions.secondary = 10;
