@@ -122,7 +122,7 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
-            expect(error).toBeUndefined();
+            expect(error).toBeNull();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -150,7 +150,7 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
-            expect(error).toBeUndefined();
+            expect(error).toBeNull();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -187,7 +187,7 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
-            expect(error).toBeUndefined();
+            expect(error).toBeNull();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
