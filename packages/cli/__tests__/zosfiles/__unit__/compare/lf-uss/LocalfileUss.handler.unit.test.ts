@@ -13,7 +13,7 @@ jest.mock("fs");
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 
 describe("Compare local-file and uss-file handler", () => {
@@ -23,7 +23,7 @@ describe("Compare local-file and uss-file handler", () => {
         const handler = new handlerReq.default();
         const ussFilePath = "./testing2";
         // Vars populated by the mocked function
-        let error;
+        let error: null | ImperativeError | Error;
         let apiMessage = "";
         let jsonObj:object;
         let logMessage = "";
@@ -111,6 +111,7 @@ describe("Compare local-file and uss-file handler", () => {
                 return "compared string";
             }));
             logMessage = "";
+            error = null;
         });
 
         it("should compare local-file and uss-file in terminal", async () => {
@@ -121,6 +122,7 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -148,6 +150,7 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -184,6 +187,7 @@ describe("Compare local-file and uss-file handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);

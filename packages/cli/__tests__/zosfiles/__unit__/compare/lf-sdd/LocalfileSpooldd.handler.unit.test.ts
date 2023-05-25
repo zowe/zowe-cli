@@ -13,7 +13,7 @@ jest.mock("fs");
 
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 
 describe("Compare localfile-spooldd handler", () => {
@@ -23,7 +23,7 @@ describe("Compare localfile-spooldd handler", () => {
         const handler = new handlerReq.default();
         const spoolDescription = "jobName:jobId:3";
         // Vars populated by the mocked function
-        let error;
+        let error: undefined | ImperativeError | Error;
         let apiMessage = "";
         let jsonObj: object;
         let logMessage = "";
@@ -110,6 +110,7 @@ describe("Compare localfile-spooldd handler", () => {
                 return "compared string";
             }));
             logMessage = "";
+            error = undefined;
         });
 
         it("should compare a local-file and a spool-dd in terminal", async () => {
@@ -120,6 +121,7 @@ describe("Compare localfile-spooldd handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getSpoolSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -147,6 +149,7 @@ describe("Compare localfile-spooldd handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getSpoolSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -183,6 +186,7 @@ describe("Compare localfile-spooldd handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getSpoolSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
