@@ -186,11 +186,7 @@ export class EditUtilities {
         }
 
         if (useStash){
-            try{
-                await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
-            }catch(error){
-                throw error;
-            }
+            await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
         }
         return lfFile;
     }
