@@ -13,7 +13,7 @@ jest.mock("fs");
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions, IO, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 
 describe("Compare local-file and uss-file handler", () => {
@@ -30,7 +30,7 @@ describe("Compare local-file and uss-file handler", () => {
         let fakeSession: object;
         // Mocks
         const fstatSyncSpy = jest.spyOn(fs, "fstatSync");
-        const readFileSyncSpy = jest.spyOn(fs, "readFileSync");
+        const readFileSyncSpy = jest.spyOn(IO, "readFileSync");
         const getUSSFileSpy = jest.spyOn(Get, "USSFile");
         const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
         const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
@@ -80,8 +80,12 @@ describe("Compare local-file and uss-file handler", () => {
                 get: profFunc
             }
         };
-        const options: IDiffOptions = {
-            outputFormat: "terminal"
+        const diffOptions: IDiffOptions = {
+            outputFormat: "terminal",
+        };
+        const diffContextOptions: IDiffOptions = {
+            outputFormat: "terminal",
+            contextLinesArg: 2
         };
         const ussTask = {
             percentComplete: 0,
@@ -97,7 +101,7 @@ describe("Compare local-file and uss-file handler", () => {
             }));
             readFileSyncSpy.mockReset();
             readFileSyncSpy.mockImplementation(jest.fn(() => {
-                return "compared";
+                return Buffer.from("compared");
             }));
             // mock reading from uss file (string 2)
             getUSSFileSpy.mockReset();
@@ -128,37 +132,34 @@ describe("Compare local-file and uss-file handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath, { task: ussTask });
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, undefined, { task: ussTask });
             expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
-            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared string", options);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared string", {...diffOptions});
         });
 
         it("should compare local-file and uss-file in terminal with --context-lines option", async () => {
-            const contextLinesArg: number = 2;
             const processArgCopy: any = {
                 ...processArguments,
                 arguments:{
                     ...processArguments.arguments,
-                    contextLines: contextLinesArg
+                    contextLines: 2,
                 }
             };
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
             } catch (e) {
                 error = e;
             }
-
             expect(error).toBeNull();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getUSSFileSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath, { task: ussTask });
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, undefined, { task: ussTask });
             expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
-            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared string",  {...options, contextLinesArg: contextLinesArg});
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared string", {...diffContextOptions});
         });
 
         it("should compare local-file and uss-file in terminal with --seqnum specified", async () => {
@@ -172,7 +173,7 @@ describe("Compare local-file and uss-file handler", () => {
 
             //overwrite lf(string1) to include seqnums to chop off in LocalFileDatasetHandler
             readFileSyncSpy.mockImplementation(jest.fn(() => {
-                return "compared12345678";
+                return Buffer.from("compared12345678");
             }));
             //overwrite uss(string2) to include seqnums to chop off in LocalFileDatasetHandler
             getUSSFileSpy.mockImplementation(jest.fn(async (session) => {
@@ -193,9 +194,9 @@ describe("Compare local-file and uss-file handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
             expect(logMessage).toEqual("compared string");
-            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, ussFilePath, { task: ussTask });
+            expect(getUSSFileSpy).toHaveBeenCalledWith(fakeSession as any, undefined, { task: ussTask });
             expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
-            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared string", options);
+            expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared string", {...diffOptions});
         });
 
         it("should compare local-file and uss-file in browser", async () => {
