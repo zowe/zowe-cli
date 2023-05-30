@@ -70,7 +70,8 @@ export class EditUtilities {
     public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string>{
         // find the appropriate extension for either uss or ds in two (long) operations
         const ussExt = (lfFile.fileType === 'uss' && lfFile.fileName.includes(".")) ? lfFile.fileName.split(".").pop() : "";
-        const ext = "."  + (lfFile.fileType === 'uss' ? ussExt : (commandParameters.arguments.extension ?? "txt"));
+        let ext = "."  + (lfFile.fileType === 'uss' ? ussExt : (commandParameters.arguments.extension ?? "txt"));
+        ext = (ext === "." ? "" : ext);
         if (lfFile.fileType === 'uss'){
             // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
