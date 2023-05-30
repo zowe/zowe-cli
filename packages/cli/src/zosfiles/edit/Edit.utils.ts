@@ -11,9 +11,8 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffNameOptions } from "@zowe/imperative";
+    TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
-import { CliUtils } from "@zowe/imperative";
 import { existsSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import path = require("path");
