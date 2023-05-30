@@ -49,7 +49,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
 
             // Show a file comparison for the purpose of seeing the newer version of the remote mf file compared to your local edits
             if (useStash && lfFile.guiAvail){
-                await Utils.fileComparison(session, commandParameters);
+                await Utils.fileComparison(session, commandParameters, true);
             }
             lfFile = await Utils.localDownload(session, lfFile, useStash);
 
