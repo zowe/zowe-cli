@@ -76,9 +76,9 @@ export class EditUtilities {
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
 
-            return path.join(tmpdir(), hash + ext);
+            return path.join(tmpdir(), hash + (ext === "." ? "" : ext));
         }
-        return path.join(tmpdir(), lfFile.fileName + ext);
+        return path.join(tmpdir(), lfFile.fileName + (ext === "." ? "" : ext));
     }
 
     /**
