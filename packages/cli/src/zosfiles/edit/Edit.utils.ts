@@ -76,6 +76,7 @@ export class EditUtilities {
             // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
             const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
+
             return path.join(tmpdir(), hash + ext);
         }
         return path.join(tmpdir(), lfFile.fileName + ext);
@@ -246,10 +247,7 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async makeEdits(tempPath: string, editor?: string): Promise<void>{
-        if (editor){
-            await ProcessUtils.openInEditor(tempPath, editor, true);
-        }
-        await this.promptUser(Prompt.doneEditing, tempPath);
+        await ProcessUtils.openInEditor(tempPath, editor, true);
     }
 
     /**
