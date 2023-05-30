@@ -48,7 +48,6 @@ describe("Files Edit Group Handler", () => {
         const checkForStashSpy = jest.spyOn(EditUtilities, "checkForStash");
         const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
         const localDownloadSpy = jest.spyOn(EditUtilities, "localDownload");
-        const uploadEditsSpy = jest.spyOn(EditUtilities, "uploadEdits");
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         jest.spyOn(EditUtilities, "fileComparison").mockImplementation(jest.fn());
         jest.spyOn(EditUtilities, "makeEdits").mockImplementation(jest.fn());
@@ -67,9 +66,6 @@ describe("Files Edit Group Handler", () => {
         localDownloadSpy.mockImplementation(jest.fn(async () => {
             return localFile;
         }));
-        uploadEditsSpy.mockImplementation(jest.fn(async () => {
-            return true;
-        }));
 
         //Handler Setup
         const handler = new EditHandler;
@@ -78,11 +74,17 @@ describe("Files Edit Group Handler", () => {
         params.arguments = Object.assign({}, ...[commandParameters.arguments]);
 
         it("should make and upload edits successfully", async () => {
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "uploadEdits").mockImplementation(async () => {
+                return [true, false]; //[uploaded, canceled]
+            });
             await handler.process(params);
             expect(params.response.data.setObj).toHaveBeenCalledWith({
                 success: true,
                 commandResponse: TextUtils.chalk.green(
-                    "Successfully uploaded edited file to mainframe"
+                    "Successfully uploaded edits to mainframe."
                 )});
         });
         it("should catch remote 404 error", async () => {

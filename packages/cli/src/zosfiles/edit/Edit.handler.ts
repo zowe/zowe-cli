@@ -22,23 +22,24 @@ import { EditUtilities as Utils, Prompt, ILocalFile } from "../edit/Edit.utils";
 export default class EditHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // Setup
+        // build temp and check for stash
         let lfFile: ILocalFile = {
             tempPath: null,
-            fileName: commandParameters.arguments.file ?? commandParameters.arguments.dataSetName,
+            fileName: commandParameters.arguments.ussFilePath ?? commandParameters.arguments.dataSetName,
             fileType: commandParameters.positionals[2].includes('d') ? "ds" : "uss",
             guiAvail: ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE,
             zosResp: null
         };
         lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);
 
-        // Use or override stash (either way need to retrieve etag)
+        // Use or override stash if exists
         const stash: boolean = await Utils.checkForStash(lfFile.tempPath);
         let useStash: boolean = false;
         if (stash) {
             useStash = await Utils.promptUser(Prompt.useStash);
         }
 
-        // Download etag and possibly mf file to edit locally (if not using stash)
+        // Retrieve etag and download mf file to edit locally (if not using stash)
         try{
             const task: ITaskWithStatus = {
                 percentComplete: 10,
@@ -47,14 +48,15 @@ export default class EditHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
+            //retrieve etag AND file contents if not using stash
+            lfFile = await Utils.localDownload(session, lfFile, useStash);
+            commandParameters.response.progress.endBar();
+
             // Show a file comparison for the purpose of seeing the newer version of the remote mf file compared to your local edits
             if (useStash && lfFile.guiAvail){
                 await Utils.fileComparison(session, commandParameters, true);
             }
-            lfFile = await Utils.localDownload(session, lfFile, useStash);
 
-            task.percentComplete = 70;
-            commandParameters.response.progress.endBar();
         }catch(error){
             if (error instanceof ImperativeError && error.errorCode === String(RestConstants.HTTP_STATUS_404)) {
                 throw new ImperativeError({
@@ -67,20 +69,41 @@ export default class EditHandler extends ZosFilesBaseHandler {
         }
 
         // Edit local copy of mf file (automatically open an editor for user if not in headless linux)
-        if (lfFile.guiAvail){
-            await Utils.makeEdits(lfFile.tempPath, commandParameters.arguments.editor);
+        commandParameters.response.console.log(TextUtils.chalk.green(`Remote downloaded to temp for editing: `) +
+        TextUtils.chalk.blue(lfFile.tempPath));
+
+        const overwrite = await Utils.makeEdits(lfFile, commandParameters.arguments.editor);
+
+        if (!overwrite){
+            return {
+                success: true,
+                commandResponse: TextUtils.chalk.green(
+                    "Exiting now. Temp file persists for editing."
+                )
+            };
         }
 
         // Once done editing, user will provide terminal input. Upload local file with saved etag
         let uploaded = false;
+        let canceled = false;
         do {
-            uploaded = await Utils.uploadEdits(session, commandParameters, lfFile);
-        } while (!uploaded);
-        return {
-            success: true,
-            commandResponse: TextUtils.chalk.green(
-                "Successfully uploaded edited file to mainframe"
-            )
-        };
+            [uploaded, canceled] = await Utils.uploadEdits(session, commandParameters, lfFile);
+        } while (!uploaded && !canceled);
+        if (canceled === false){
+            return {
+                success: true,
+                commandResponse: TextUtils.chalk.green(
+                    "Successfully uploaded edits to mainframe."
+                )
+            };
+        } else {
+            return {
+                success: true,
+                commandResponse: TextUtils.chalk.green(
+                    "Exiting now. Temp file persists for editing."
+                )
+            };
+        }
+
     }
 }

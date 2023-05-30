@@ -27,9 +27,9 @@ import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
  */
 export enum Prompt {
     useStash,
-    doneEditing,
     continueToUpload,
-    viewUpdatedRemote
+    viewUpdatedRemote,
+    overwriteRemote
 }
 
 /**
@@ -75,15 +75,17 @@ export class EditUtilities {
         if (lfFile.fileType === 'uss'){
             // Hash in a repeatable way if uss fileName (incase there are special characters in name)
             const crypto = require("crypto");
-            const hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
-
-            return path.join(tmpdir(), hash + ext);
+            let hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
+            // shorten hash
+            const hashLen = 10;
+            hash = hash.slice(0, hashLen);
+            return path.join(tmpdir(), path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
         return path.join(tmpdir(), lfFile.fileName + ext);
     }
 
     /**
-     * Check for temp path's existence (check if previously `stashed` edits exist)
+     * Check for temp path's existence (check if previously `stashed`/temp edits exist)
      * @param {string} tempPath - unique file path for local file (stash/temp file)
      * @returns {Promise<boolean>} - promise that resolves to true if stash exists or false if doesn't
      * @memberof EditUtilities
@@ -102,16 +104,15 @@ export class EditUtilities {
     /**
      * Collection of prompts to be used at different points in editing process
      * @param {Prompt} prompt - selected prompt from {@link Prompt} (enum object)
-     * @param {string} tempPath - unique file path for local file (stash/temp file)
      * @returns {Promise<boolean>} - promise that resolves depending on prompt case and user input
      * @memberof EditUtilities
      */
-    public static async promptUser(prompt: Prompt, tempPath?: string): Promise<boolean>{
+    public static async promptUser(prompt: Prompt): Promise<boolean>{
         let input;
         switch (prompt){
             case Prompt.useStash:
                 do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found local copy? y/n`));
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found temp file? y/n`));
                 }
                 while (input === '');
                 if (input === null) {
@@ -120,38 +121,37 @@ export class EditUtilities {
                     });
                 }
                 return input.toLowerCase() === 'y';
-            case Prompt.doneEditing:
-                do{
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Downloaded to temporary file: ${tempPath}\n`+
-                    `Enter "done" in terminal once finished editing and saving:`), {secToWait: 3600});
-                }while(input && input.toLowerCase() !== 'done');{
-                    if (input === null) {
-                        throw new ImperativeError({
-                            msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
-                        });
-                    }
-                    return true;
-                }
             case Prompt.continueToUpload:
                 do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Continue uploading edits despite changes on remote? y/n`));
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`CONFLICT: Ignore conflicts and overwrite remote? y/n`));
                 }
                 while (input === '');
                 if (input === null) {
                     throw new ImperativeError({
-                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
+                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
                     });
                 }
                 return input.toLowerCase() === 'y';
             case Prompt.viewUpdatedRemote:
                 do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`The remote version of the document you were editing has changed. `+
-                    `View the updated version of the mainframe file before proceeding with edits? y/n`));
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`CONFLICT: Remote has changed. `+
+                    `View updated mainframe file? y/n`));
                 }
                 while (input === '');
                 if (input === null) {
                     throw new ImperativeError({
-                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Stashed file will persist: ${tempPath}`)
+                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
+                    });
+                }
+                return input.toLowerCase() === 'y';
+            case Prompt.overwriteRemote:
+                do {
+                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Overwrite remote with local edits? (Answer after editing) y/n`));
+                }
+                while (input === '');
+                if (input === null) {
+                    throw new ImperativeError({
+                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
                     });
                 }
                 return input.toLowerCase() === 'y';
@@ -233,7 +233,6 @@ export class EditUtilities {
         const remoteContent = helper.prepareContent(mf);
         let viewUpdatedRemote = !promptUser;
         if (promptUser && localContent !== remoteContent) {
-            commandParameters.response.progress.endBar();
             viewUpdatedRemote = await this.promptUser(Prompt.viewUpdatedRemote);
         }
         if (!viewUpdatedRemote) {
@@ -258,9 +257,11 @@ export class EditUtilities {
      * @param {string} editor - optional parameter originally supplied by args
      * @memberof EditUtilities
      */
-    public static async makeEdits(tempPath: string, editor?: string): Promise<void>{
-        ProcessUtils.openInEditor(tempPath, editor, true);
-        await this.promptUser(Prompt.doneEditing, tempPath);
+    public static async makeEdits(lfFile: ILocalFile, editor?: string): Promise<boolean>{
+        if (lfFile.guiAvail){
+            ProcessUtils.openInEditor(lfFile.tempPath, editor, true);
+        }
+        return await this.promptUser(Prompt.overwriteRemote);
     }
 
     /**
@@ -270,12 +271,12 @@ export class EditUtilities {
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
      * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
-     * @returns {Promise<boolean>} - promise that resolves to true if uploading was successful and
+     * @returns {Promise<[boolean, boolean]>} - [resolves to true if uploading was successful and
      * false if user needs to take more action before completing the upload
      * @memberof EditUtilities
      */
     public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters,
-        lfFile: ILocalFile): Promise<boolean>{
+        lfFile: ILocalFile): Promise<[boolean, boolean]>{
         const etagMismatchCode = 412;
         const args: [AbstractSession, string, string, IUploadOptions] = [
             session,
@@ -284,7 +285,7 @@ export class EditUtilities {
             {
                 encoding: lfFile.encoding,
                 etag: lfFile.zosResp.apiResponse.etag
-            }
+            },
         ];
         let response: IZosFilesResponse;
 
@@ -297,21 +298,21 @@ export class EditUtilities {
             if (response.success){
                 // If matching etag & successful upload, destroy temp file -> END
                 await this.destroyTempFile(lfFile.tempPath);
-                return true;
+                return [true, false];
             } else {
                 if (response.commandResponse.includes('412')){
-                    await this.etagMismatch(session, commandParameters, lfFile);
-                    return false;
+                    const cancelCmd = await this.etagMismatch(session, commandParameters, lfFile);
+                    return [false, cancelCmd];
                 }
             }
         }catch(err){
             if (err.errorCode && err.errorCode == etagMismatchCode){
-                await this.etagMismatch(session, commandParameters, lfFile);
-                return false;
+                const cancelCmd = await this.etagMismatch(session, commandParameters, lfFile);
+                return [false, cancelCmd];
             }
         }
         throw new ImperativeError({
-            msg: TextUtils.chalk.red(`Command terminated. Issue uploading stash. Stashed file will persist: ${lfFile.tempPath}`),
+            msg: TextUtils.chalk.red(`Command terminated. Issue uploading stash. Temp file will persist`),
             causeErrors: response?.errorMessage
         });
     }
@@ -321,10 +322,10 @@ export class EditUtilities {
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
      * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
+     * @returns {Promise<boolean>} - returns a boolean where true means command is canceled and false means continue
      * @memberof EditUtilities
      */
-    public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: ILocalFile): Promise<void>{
-        const tempPath = lfFile.tempPath;
+    public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: ILocalFile): Promise<boolean>{
         try{
             //alert user that the version of document they've been editing has changed
             //ask if they want to see changes on the remote file before continuing
@@ -333,16 +334,18 @@ export class EditUtilities {
                 await this.fileComparison(session, commandParameters);
             }
             //ask if they want to keep working with their stash (local file) or upload despite changes to remote
-            const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, tempPath);
+            const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload);
             // refresh etag, keep stash
             await this.localDownload(session, lfFile, true);
+            // create more edits & open stash/lf in editor
             if (!continueToUpload){
-                // create more edits & open stash/lf in editor
-                await this.makeEdits(tempPath, commandParameters.arguments.editor);
+                return await this.makeEdits(lfFile, commandParameters.arguments.editor);
+                // choice overwrite will return false (true exits command)
             }
+            return false; //choice continue with upload/overwrite
         }catch(err){
             throw new ImperativeError({
-                msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Stashed file will persist: ${tempPath}`),
+                msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Temp file will persist.`),
                 causeErrors: err
             });
         }

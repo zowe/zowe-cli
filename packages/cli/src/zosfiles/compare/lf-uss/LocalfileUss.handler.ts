@@ -23,6 +23,6 @@ export default class LocalfileUssHandler extends CompareBaseHandler {
         return helper.prepareLocalFile(args.localFilePath);
     }
     public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
-        return await Get.USSFile(session, args.file, { ...helper.file2Options, task: helper.task });
+        return await Get.USSFile(session, args.ussFilePath, { ...helper.file2Options, task: helper.task });
     }
 }

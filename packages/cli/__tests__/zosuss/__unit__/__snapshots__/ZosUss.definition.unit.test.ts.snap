@@ -6,7 +6,6 @@ Object {
     "ssh",
     "zos-uss",
     "uss",
-    "uf",
   ],
   "description": "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",
   "name": "zos-ssh",

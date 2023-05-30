@@ -763,7 +763,7 @@ export default {
                 SUMMARY: "Edit content from a z/OS data set",
                 DESCRIPTION: "Edit content from a z/OS data set with your terminal and default editor.",
                 POSITIONALS: {
-                    DATASETNAME: "The name of the data set you want to display."
+                    DATASETNAME: "The name of the data set you want to edit."
                 },
                 EXAMPLES: {
                     EX1: `Edit the contents of the data set member "ibmuser.cntl(iefbr14)"`,
@@ -774,7 +774,7 @@ export default {
                 SUMMARY: "Edit content from a USS file",
                 DESCRIPTION: "Edit content from a Unix System Services (USS) file with your terminal and default editor.",
                 POSITIONALS: {
-                    USSFILE: "The name of the USS file you want to edit."
+                    USSFILEPATH: "The path of the USS file you want to edit."
                 },
                 EXAMPLES: {
                     EX1: `Edit the contents of the USS file "/a/ibmuser/my_text.txt" in notepad`,

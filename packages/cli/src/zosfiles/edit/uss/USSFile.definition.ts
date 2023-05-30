@@ -32,8 +32,8 @@ export const USSFileDefinition: ICommandDefinition = {
     },
     positionals: [
         {
-            name: "file",
-            description: strings.ACTIONS.USS_FILE.POSITIONALS.USSFILE,
+            name: "ussFilePath",
+            description: strings.ACTIONS.USS_FILE.POSITIONALS.USSFILEPATH,
             type: "string",
             required: true
         },
