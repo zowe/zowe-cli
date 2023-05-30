@@ -5,6 +5,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## Recent Changes
 - Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
 
+## `7.16.4`
+
+- BugFix: Fixed `secondary` option being specified on `BLANK` type datasets [#1595](https://github.com/zowe/zowe-cli/issues/1595)
+
 ## `7.16.1`
 
 - BugFix: Fixed `binary` option ignored by `Download.ussDir` and `Upload.dirToUSSDir` when ".zosattributes" file is used.
