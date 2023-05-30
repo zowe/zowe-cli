@@ -247,6 +247,7 @@ export class EditUtilities {
      */
     public static async makeEdits(tempPath: string, editor?: string): Promise<void>{
         await ProcessUtils.openInEditor(tempPath, editor, true);
+        await this.promptUser(Prompt.doneEditing, tempPath);
     }
 
     /**
