@@ -20,6 +20,7 @@ import { Download, IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sd
 import LocalfileDatasetHandler from "../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
+import * as path from "path";
 
 describe("Files Edit Utilities", () => {
     const commandParametersDs: IHandlerParameters = mockHandlerParameters({
@@ -44,7 +45,7 @@ describe("Files Edit Utilities", () => {
         fileType: "ds",
         guiAvail: true,
         zosResp: null,
-        encoding: null
+        encoding: null,
     };
 
     const localFileUSS: ILocalFile = {
@@ -76,14 +77,10 @@ describe("Files Edit Utilities", () => {
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
-            // check that the returned string (string.split('.')[0]) contains only numbers and letters
+            // check that the returned path includes uss filename
             const response = await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
             expect(response).toContain(".jcl");
-            if (response.includes('/')){
-                expect(response.split('/').pop()?.split('.')[0]).toMatch(/^[A-Za-z0-9]*$/);
-            }else{
-                expect(response.split('\\').pop()?.split('.')[0]).toMatch(/^[A-Za-z0-9]*$/);
-            }
+            expect(path.parse(response).name).toContain(path.parse(localFileUSS.fileName).name);
         });
         it("should be able to build the correct temp path with ext argument - ds", async () => {
             //TEST SETUP
@@ -147,11 +144,8 @@ describe("Files Edit Utilities", () => {
                 const response = await EditUtilities.promptUser(Prompt.viewUpdatedRemote);
                 expect(response).toBe(true);
             });
-            it("should understand that user is done editing - case Prompt.doneEditing", async() => {
-                readPromptSpy.mockImplementation(jest.fn(async () => {
-                    return "done";
-                }));
-                const response = await EditUtilities.promptUser(Prompt.doneEditing);
+            it("should understand that user wants to overwrite remote - case Prompt.overwriteRemote", async() => {
+                const response = await EditUtilities.promptUser(Prompt.overwriteRemote);
                 expect(response).toBe(true);
             });
         });
@@ -173,6 +167,10 @@ describe("Files Edit Utilities", () => {
                 const response = await EditUtilities.promptUser(Prompt.viewUpdatedRemote);
                 expect(response).toBe(false);
             });
+            it("should understand that user does NOT want to overwrite remote - case Prompt.overwriteRemote", async() => {
+                const response = await EditUtilities.promptUser(Prompt.overwriteRemote);
+                expect(response).toBe(false);
+            });
         });
         describe("null prompt responses", () => {
             beforeEach(async () => {
@@ -187,14 +185,6 @@ describe("Files Edit Utilities", () => {
                     caughtError = e;
                 }
                 expect(caughtError).toBeInstanceOf(ImperativeError);
-            });
-            it("should timeout of the entire command because no user input - case Prompt.doneEditing", async() => {
-                try {
-                    await EditUtilities.promptUser(Prompt.doneEditing);
-                } catch(e) {
-                    caughtError = e;
-                }
-                expect(caughtError.message).toContain("Command terminated");
             });
             it("should timeout of the entire command because no user input - case Prompt.continueToUpload", async() => {
                 try {
@@ -313,22 +303,55 @@ describe("Files Edit Utilities", () => {
             }
             expect(caughtError.message).toContain('Diff');
         });
+        it("should prompt the user when local and remote are different", async () => {
+            //TEST SETUP
+            const commandParameters =  cloneDeep(commandParametersDs);
+            commandParameters.response.console.log = jest.fn();
+            const promptUserSpy = jest.spyOn(EditUtilities, "promptUser").mockResolvedValueOnce(false);
+            prepareContentSpy.mockImplementationOnce(jest.fn(() => {
+                return 'anotherUnbufferedString';
+            }));
+
+            //TEST CONFIRMATION
+            try {
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, true);
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError.message).toContain('Diff');
+            expect(promptUserSpy).toHaveBeenCalledTimes(1);
+        });
+        it("should not prompt the user when local and remote are identical", async () => {
+            //TEST SETUP
+            const commandParameters =  cloneDeep(commandParametersDs);
+            commandParameters.response.console.log = jest.fn();
+            const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
+
+            //TEST CONFIRMATION
+            try {
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, true);
+            } catch(e) {
+                caughtError = e;
+            }
+            expect(caughtError.message).toContain('Diff');
+            expect(promptUserSpy).toHaveBeenCalledTimes(0);
+        });
     });
     describe("makeEdits()", () => {
+        const localFile = cloneDeep(localFileUSS);
+        localFile.tempPath = 'randomTempPath';
         it("should open in editor if one specified, otherwise skip to prompting", async () => {
             const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor");
-            await EditUtilities.makeEdits('randomTempPath', 'editorPath');
+            await EditUtilities.makeEdits(localFile, 'editorPath');
             expect(openInEditorSpy).toBeCalledTimes(1);
         });
-        it("should skip to prompting if no editor", async () => {
+        it("should skip to prompting if no supplied editor", async () => {
             const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
-            await EditUtilities.makeEdits('randomTempPath');
+            await EditUtilities.makeEdits(localFile, 'editorPath');
             expect(promptUserSpy).toBeCalledTimes(1);
         });
     });
     describe("uploadEdits()", () => {
-        const etagMismatchCode = 412;
-
         it("should successfully upload when etags are matching, then destroy temp - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
@@ -338,12 +361,15 @@ describe("Files Edit Utilities", () => {
             jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
                 return zosResp;
             });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
 
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
-            expect(response).toBe(true);
+            expect(response).toStrictEqual([true, false]);  //[uploaded, canceled]
         });
-        it("should return false when etag mismatch - ds - response.commandResponse", async () => {
+        it("should catch an etag mismatch (with intent to continue editing) and be unsuccessful with upload - ds", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileDS);
             localFile.zosResp = zosResp;
@@ -351,31 +377,29 @@ describe("Files Edit Utilities", () => {
             jest.spyOn(Upload, "fileToDataset").mockImplementation(async() => {
                 return zosRespMisMatch;
             });
-            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation();
-
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation(async () => {
+                return false;
+            });
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
             expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
-            expect(response).toBe(false);
+            expect(response).toStrictEqual([false, false]);  //[uploaded, canceled]
         });
-        it("should return false when catching Upload.fileToDataset() thrown etag mismatch error - uss", async () => {
+        it("should catch thrown etag mismatch error and be unsuccessful with upload - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
             localFile.zosResp = zosResp;
             localFile.zosResp.apiResponse.etag = 'etag';
             jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
-                throw new ImperativeError({
-                    msg: `Failed uss download because of mismatched etag`,
-                    additionalDetails: '',
-                    errorCode: String(etagMismatchCode)
-                });
+                return zosRespMisMatch;
             });
-            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation();
 
             //TEST CONFIRMATION
-            const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
+            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
             expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
-            expect(response).toBe(false);
         });
         it("should throw an imperative error given unexpected command termination - uss", async () => {
             //TEST SETUP
@@ -400,22 +424,38 @@ describe("Files Edit Utilities", () => {
         beforeEach(()=>{
             jest.restoreAllMocks();
         });
-        it("should not open comparison if user answers no to prompt - ds", async() => {
+        it("should not open comparison if user answers no to prompt after found etag mismatch- ds", async() => {
             //TEST SETUP
+            // no stash in this scenario
             const localFile = cloneDeep(localFileDS);
             localFile.tempPath = 'fakePath';
-            jest.spyOn(EditUtilities, "fileComparison").mockImplementation();
-            jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
+            localFile.zosResp = zosRespMisMatch;
+            localFile.zosResp.apiResponse.etag = 'etag';
+
+            const fileComparisonSpy = jest.spyOn(EditUtilities, "fileComparison");
+
+            jest.spyOn(Upload, "fileToDataset").mockImplementation(async() => {
+                return zosRespMisMatch;
+            });
+            jest.spyOn(EditUtilities, "localDownload").mockImplementation(async () => {
+                return localFile;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
                 return true;
             });
-            jest.spyOn(EditUtilities, "localDownload").mockImplementation(jest.fn(async () => {
-                localFile.zosResp = zosResp;
-                return localFile;
-            }));
+            jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
+                return false;
+            });
+            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation(async () => {
+                return false;
+            });
 
             //TEST CONFIRMATION
-            await expect(EditUtilities.etagMismatch(REAL_SESSION, commandParametersDs, localFile)).resolves.toBeUndefined();
+            const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(fileComparisonSpy).toHaveBeenCalledTimes(0);
+            expect(response).toStrictEqual([false, false]);  //[uploaded, canceled]
         });
+
         it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", async() => {
             const localFile = cloneDeep(localFileDS);
             localFile.tempPath = 'fakePath';

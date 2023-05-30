@@ -1,10 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Files Edit Group Handler process method should make and upload edits successfully 1`] = `"[32mSuccessfully uploaded edited file to mainframe[39m"`;
+exports[`Files Edit Group Handler process method should make and upload edits successfully 1`] = `"[32mRemote downloaded to temp for editing: [39m[34mC:\\\\Users\\\\at895452\\\\Desktop\\\\zowe-cli\\\\packages\\\\cli\\\\src\\\\zosfiles\\\\edit\\\\Edit.handler.ts[39m"`;
 
-exports[`Files Edit Group Handler process method should make and upload edits successfully 2`] = `
+exports[`Files Edit Group Handler process method should make and upload edits successfully 2`] = `"[32mSuccessfully uploaded edits to mainframe.[39m"`;
+
+exports[`Files Edit Group Handler process method should make and upload edits successfully 3`] = `
 Object {
-  "commandResponse": "[32mSuccessfully uploaded edited file to mainframe[39m",
+  "commandResponse": "[32mSuccessfully uploaded edits to mainframe.[39m",
   "success": true,
 }
 `;

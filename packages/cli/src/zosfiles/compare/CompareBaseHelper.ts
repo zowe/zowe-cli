@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IO, IDiffNameOptions } from "@zowe/imperative";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IDiffNameOptions } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
@@ -128,7 +128,7 @@ export class CompareBaseHelper {
      */
     public prepareLocalFile(filePath: string): Buffer {
         const localFile = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-        let lfContentBuf: Buffer;
+        let lfContentStr: string;
         let localFileHandle: number;
         try {
             try {
@@ -146,11 +146,11 @@ export class CompareBaseHelper {
                 });
             }
             // reading local file as buffer
-            lfContentBuf = IO.readFileSync(localFile, true);
+            lfContentStr = fs.readFileSync(localFileHandle, "utf-8");
         } finally {
             if (localFileHandle != null) fs.closeSync(localFileHandle);
         }
-        return lfContentBuf;
+        return Buffer.from(lfContentStr);
     }
 
     /**
