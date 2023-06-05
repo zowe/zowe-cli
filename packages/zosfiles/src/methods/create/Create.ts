@@ -197,9 +197,26 @@ export class Create {
                         break;
 
                     case "blksize":
-                    // zOSMF defaults to TRK if missing so mimic it's behavior
+                    /* 
+                    *  This is a fix for issue https://github.com/zowe/zowe-cli/issues/1439. 
+                    *
+                    */
                         if (isNullOrUndefined(tempOptions.blksize)) {
                             tempOptions.blksize = tempOptions.lrecl;
+                        }
+
+                        if(tempOptions.blksize  <= tempOptions.lrecl ){
+                            tempOptions.blksize = tempOptions.lrecl;
+                            switch (tempOptions.recfm.toUpperCase()) {
+                                case "V":
+                                case "VB":
+                                case "VBS":
+                                case "VS":
+                                    tempOptions.blksize += 4;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                         break;
 
