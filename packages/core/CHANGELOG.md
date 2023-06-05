@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+```
+## Recent Changes
+
+- BugFix: Prevent invalid block size when creating a sequential dataset. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
+
 ## `7.12.0`
 
 - BugFix: Added missing headers to ZosmfHeaders
