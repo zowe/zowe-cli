@@ -307,7 +307,7 @@ describe("Create data set", () => {
                 size: "3TRK",
                 secondary: 2,
                 recfm: "VB",
-                blksize: 4096,
+                blksize: 4100,
                 lrecl: 4096,
                 dirblk: 5
             };
@@ -419,7 +419,7 @@ describe("Create data set", () => {
                 size: "TRK",
                 secondary: 2,
                 recfm: "VB",
-                blksize: 4096,
+                blksize: 4100,
                 lrecl: 4096,
                 dirblk: 5
             };

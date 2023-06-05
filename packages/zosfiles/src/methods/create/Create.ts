@@ -197,8 +197,8 @@ export class Create {
                         break;
 
                     case "blksize":
-                    /* 
-                    *  This is a fix for issue https://github.com/zowe/zowe-cli/issues/1439. 
+                    /*
+                    *  This is a fix for issue https://github.com/zowe/zowe-cli/issues/1439.
                     *
                     */
                         if (isNullOrUndefined(tempOptions.blksize)) {
@@ -207,6 +207,9 @@ export class Create {
 
                         if(tempOptions.blksize  <= tempOptions.lrecl ){
                             tempOptions.blksize = tempOptions.lrecl;
+                            if(isNullOrUndefined(tempOptions.recfm)){
+                                tempOptions.recfm = "FB";
+                            }
                             switch (tempOptions.recfm.toUpperCase()) {
                                 case "V":
                                 case "VB":
