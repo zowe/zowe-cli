@@ -251,6 +251,38 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a sequential data set using the a block size that is too small", async () => {
+            const custOptions = {
+                dsorg: "PS",
+                alcunit: "CYL",
+                primary: 20,
+                secondary: 1,
+                recfm: "VB",
+                blksize: 100,
+                lrecl: 1000
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...{
+                        alcunit: "CYL",
+                        dsorg: "PS",
+                        primary: 20,
+                        recfm: "VB",
+                        blksize: 1004,
+                        lrecl: 1000,
+                        secondary: 1
+                    }
+                })
+            );
+        });
+
         it("should be able to create a sequential data set using the primary allocation and default the secondary allocation", async () => {
             const custOptions = {
                 dsorg: "PS",
