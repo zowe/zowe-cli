@@ -13,3 +13,4 @@ export * from "./doc/ICopyDatasetOptions";
 
 export * from "./Copy";
 export * from "./doc/ICopyDatasetOptions";
+export * from "./doc/ICrossLparCopyDatasetOptions";

@@ -621,7 +621,7 @@ export class Upload {
             const filesArray: IUploadFile[] = [];
 
             // getting list of files from directory
-            const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+            const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false, !options.includeHidden);
             // building list of files with full path and transfer mode
             files.forEach((file) => {
                 let tempBinary = options.binary;
@@ -636,8 +636,7 @@ export class Upload {
                 filesArray.push({
                     binary: tempBinary,
                     fileName: file
-                }
-                );
+                });
             });
 
             let uploadsInitiated = 0;
@@ -651,7 +650,8 @@ export class Upload {
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(fileName, ussFilePath, session, options);
+                return this.uploadFile(fileName, ussFilePath, session,
+                    { ...options, binary: file.binary });
             };
 
             if (maxConcurrentRequests === 0) {
@@ -763,8 +763,7 @@ export class Upload {
             filesArray.push({
                 binary: tempBinary,
                 fileName: file
-            }
-            );
+            });
         });
 
         // create the directories
@@ -804,7 +803,8 @@ export class Upload {
                 }
                 const filePath = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(filePath, ussFilePath, session, options);
+                return this.uploadFile(filePath, ussFilePath, session,
+                    { ...options, binary: file.binary });
             };
             if (maxConcurrentRequests === 0) {
                 await Promise.all(filesArray.map(createUploadPromise));
@@ -834,7 +834,7 @@ export class Upload {
             if (!options.attributes.fileShouldBeUploaded(localPath)) {
                 return;
             }
-            tempOptions.binary = options.attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
+            tempOptions.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
             if (remoteEncoding != null && remoteEncoding !== Tag.BINARY) {
                 tempOptions.encoding = remoteEncoding;

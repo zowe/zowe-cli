@@ -12,14 +12,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ${{ github.event.workflow_run.head_repository.full_name }}
         ref: ${{ github.event.workflow_run.head_branch }}
         fetch-depth: 0
 
     - name: Configure Sonar Scan
-      uses: zowe-actions/octorelease-script@master
+      uses: zowe-actions/octorelease/script@v1
       env:
         COVERAGE_ARTIFACT: "ubuntu-latest-18.x-results:__tests__/__results__"
       with:

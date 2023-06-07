@@ -98,10 +98,10 @@ export class ZosFilesAttributes {
         return !this.fileShouldBeUploaded(path);
     }
 
-    public getFileTransferMode(path: string): TransferMode {
+    public getFileTransferMode(path: string, preferBinary?: boolean): TransferMode {
         const attributes = this.findLastMatchingAttributes(path);
         if (attributes === null) {
-            return TransferMode.TEXT;
+            return preferBinary ? TransferMode.BINARY : TransferMode.TEXT;
         }
 
         if (attributes.localEncoding === Tag.BINARY || attributes.localEncoding === attributes.remoteEncoding) {

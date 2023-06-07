@@ -224,7 +224,7 @@ describe("Download USS File", () => {
                 ussname + ".dummy"
             ]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("File not found.");
+            expect(response.stderr.toString()).toContain("No such file or directory.");
         });
     });
 });

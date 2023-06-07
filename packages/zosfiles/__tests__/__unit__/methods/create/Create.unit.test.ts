@@ -794,10 +794,7 @@ describe("Create data set", () => {
         expect(response.commandResponse).toContain("created successfully");
         expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify({
             ...CreateDefaults.DATA_SET.BLANK,
-            ...dsBlankOptions,
-            ...{
-                secondary: 1
-            }
+            ...dsBlankOptions
         }));
     });
 

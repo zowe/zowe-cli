@@ -2,6 +2,20 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.16.4`
+
+- BugFix: Fixed `secondary` option being specified on `BLANK` type datasets [#1595](https://github.com/zowe/zowe-cli/issues/1595)
+
+## `7.16.1`
+
+- BugFix: Fixed `binary` option ignored by `Download.ussDir` and `Upload.dirToUSSDir` when ".zosattributes" file is used.
+- BugFix: Fixed `includeHidden` option ignored by `Upload.dirToUSSDir`.
+
+## `7.15.0`
+
+- Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  
+- BugFix: Correct improper overwrite error with PDS member to PDS member copy.
+
 ## `7.12.0`
 
 - BugFix: Fixed encoding option for `Get.USSFile` SDK method [#1495](https://github.com/zowe/zowe-cli/issues/1495)

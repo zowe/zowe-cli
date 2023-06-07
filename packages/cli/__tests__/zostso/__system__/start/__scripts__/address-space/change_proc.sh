@@ -1,4 +1,5 @@
 #!/bin/bash
 set -e
-zowe profiles create tso changed_proc_tso -a $1 --logon-procedure $2
+zowe config set profiles.changed_proc_tso.properties.account $1 --gc
+zowe config set profiles.changed_proc_tso.properties.logonProcedure $2 --gc
 zowe tso start as --tso-p "changed_proc_tso"

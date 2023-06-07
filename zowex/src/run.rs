@@ -50,7 +50,7 @@ use crate::util::*;
  *      A successful exit code in Result's Ok option.
  *      A failure exit code in the Result's Err option.
  */
-pub fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
+pub async fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
     // we want to display our executable version
     if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == "--version-exe" {
         println!("{}", env!("CARGO_PKG_VERSION"));
@@ -62,7 +62,7 @@ pub fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
 
     // we want to restart the daemon
     if zowe_cmd_args.len() >= 2 && zowe_cmd_args[0] == "daemon" && zowe_cmd_args[1] == "restart" {
-        return run_restart_command(&njs_zowe_path);
+        return run_restart_command(&njs_zowe_path).await;
     }
 
     // These commands must be run by a background script.
@@ -75,7 +75,7 @@ pub fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
 
     let run_result: Result<i32, i32> = if user_wants_daemon() {
         // send command to the daemon
-        run_daemon_command(&njs_zowe_path, zowe_cmd_args)
+        run_daemon_command(&njs_zowe_path, zowe_cmd_args).await
     } else {
         // user wants to run classic NodeJS zowe
         run_nodejs_command(&njs_zowe_path, zowe_cmd_args)
@@ -94,11 +94,11 @@ pub fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
  *      Our error code when we fail to the NodeJS zowe.
  *      Otherwise, the exit code of the NodeJs zowe command.
  */
-pub fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
+pub async fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
     if proc_get_daemon_info().is_running {
         println!("Shutting down the running daemon ...");
         let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
-        if let Err(err_val) = run_daemon_command(njs_zowe_path, &mut restart_cmd_args) {
+        if let Err(err_val) = run_daemon_command(njs_zowe_path, &mut restart_cmd_args).await {
             println!("Unable to communicate a command to the Zowe daemon.");
             return Err(err_val);
         }
@@ -245,7 +245,7 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
  * @returns
  *      An empty Result upon success. Otherwise an error Result.
  */
-pub fn run_daemon_command(
+pub async fn run_daemon_command(
     njs_zowe_path: &str,
     zowe_cmd_args: &mut Vec<String>,
 ) -> Result<i32, i32> {
@@ -351,7 +351,7 @@ pub fn run_daemon_command(
         }
 
         let mut stream;
-        match comm_establish_connection(njs_zowe_path, &socket_string) {
+        match comm_establish_connection(njs_zowe_path, &socket_string).await {
             Ok(ok_val) => stream = ok_val,
             Err(err_val) => {
                 println!(
@@ -362,7 +362,7 @@ pub fn run_daemon_command(
             }
         }
 
-        match comm_talk(&_resp, &mut stream) {
+        match comm_talk(&_resp, &mut stream).await {
             Ok(ok_val) => {
                 return Ok(ok_val);
             }
