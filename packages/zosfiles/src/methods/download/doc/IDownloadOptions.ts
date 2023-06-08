@@ -9,6 +9,7 @@
 *
 */
 
+import { Writable } from "stream";
 import { IOptions } from "../../../doc/IOptions";
 import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 
@@ -102,4 +103,9 @@ export interface IDownloadOptions extends IOptions {
      * Specifies whether local files should be overwritten when downloaded.
      */
     overwrite?: boolean;
+
+    /**
+     * Optional stream to read the file contents
+     */
+    stream?: Writable;
 }

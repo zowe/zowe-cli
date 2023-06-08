@@ -104,27 +104,29 @@ export class Download {
                 extension = options.extension;
             }
 
-            // Get a proper destination for the file to be downloaded
-            // If the "file" is not provided, we create a folder structure similar to the data set name
-            // Note that the "extension" options do not affect the destination if the "file" options were provided
-            destination = (() => {
-                if (options.file) {
-                    return options.file;
-                }
+            if (options.stream == null) {
+                // Get a proper destination for the file to be downloaded
+                // If the "file" is not provided, we create a folder structure similar to the data set name
+                // Note that the "extension" options do not affect the destination if the "file" options were provided
+                destination = (() => {
+                    if (options.file) {
+                        return options.file;
+                    }
 
-                let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
-                // Method above lowercased characters.
-                // In case of preserving original letter case, uppercase all characters.
-                if (options.preserveOriginalLetterCase) {
-                    generatedFilePath = generatedFilePath.toUpperCase();
-                }
+                    let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
+                    // Method above lowercased characters.
+                    // In case of preserving original letter case, uppercase all characters.
+                    if (options.preserveOriginalLetterCase) {
+                        generatedFilePath = generatedFilePath.toUpperCase();
+                    }
 
-                return generatedFilePath + IO.normalizeExtension(extension);
-            })();
+                    return generatedFilePath + IO.normalizeExtension(extension);
+                })();
 
-            IO.createDirsSyncFromFilePath(destination);
+                IO.createDirsSyncFromFilePath(destination);
+            }
 
-            const writeStream = IO.createWriteStream(destination);
+            const writeStream = options.stream ?? IO.createWriteStream(destination);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -134,6 +136,10 @@ export class Download {
                 normalizeResponseNewLines: !(options.binary || options.record),
                 task: options.task
             };
+
+            if (options.range) {
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
+            }
 
             // If requestor needs etag, add header + get "response" back
             if (options.returnEtag) {
@@ -153,7 +159,8 @@ export class Download {
 
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                commandResponse: destination != null ? util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination) :
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message,
                 apiResponse
             };
         } catch (error) {
@@ -289,7 +296,7 @@ export class Download {
 
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, baseDir),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, baseDir),
                 apiResponse: response.apiResponse
             };
 
@@ -503,11 +510,14 @@ export class Download {
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
+            let destination: string;
 
-            const destination = options.file || posix.normalize(posix.basename(ussFileName));
-            IO.createDirsSyncFromFilePath(destination);
+            if (options.stream == null) {
+                destination = options.file || posix.normalize(posix.basename(ussFileName));
+                IO.createDirsSyncFromFilePath(destination);
+            }
 
-            const writeStream = IO.createWriteStream(destination);
+            const writeStream = options.stream ?? IO.createWriteStream(destination);
 
             // If data type is not defined by user, check for USS tags
             if (options.binary == null && options.encoding == null) {
@@ -530,6 +540,10 @@ export class Download {
                 task: options.task
             };
 
+            if (options.range) {
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
+            }
+
             // If requestor needs etag, add header + get "response" back
             if (options.returnEtag) {
                 requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
@@ -547,7 +561,8 @@ export class Download {
             }
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                commandResponse: destination != null ? util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination) :
+                    ZosFilesMessages.ussFileDownloadedSuccessfully.message,
                 apiResponse
             };
         } catch (error) {

@@ -23197,6 +23197,7 @@
       "version": "7.16.4",
       "license": "EPL-2.0",
       "dependencies": {
+        "get-stream": "6.0.1",
         "minimatch": "5.0.1"
       },
       "devDependencies": {
@@ -30203,6 +30204,7 @@
         "@zowe/imperative": "5.14.1",
         "@zowe/zos-uss-for-zowe-sdk": "7.16.3",
         "eslint": "^8.22.0",
+        "get-stream": "6.0.1",
         "madge": "^4.0.1",
         "minimatch": "5.0.1",
         "rimraf": "^2.6.3",
