@@ -10,7 +10,6 @@
 */
 
 import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
-import { isNullOrUndefined } from "util";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -46,7 +45,7 @@ export class Create {
         let validCmdType = true;
 
         // Removes undefined properties
-        let tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
+        let tempOptions = !(options === null || options === undefined) ? JSON.parse(JSON.stringify(options)) : {};
 
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetType, ZosFilesMessages.missingDatasetType.message);
@@ -82,23 +81,23 @@ export class Create {
             throw new ImperativeError({ msg: ZosFilesMessages.unsupportedDatasetType.message });
         } else {
             // Handle the size option
-            if (!isNullOrUndefined(tempOptions.size)) {
+            if (!(tempOptions.size === null || tempOptions.size === undefined)) {
                 const tAlcunit = tempOptions.size.toString().match(/[a-zA-Z]+/g);
-                if (!isNullOrUndefined(tAlcunit)) {
+                if (!(tAlcunit === null || tAlcunit === undefined)) {
                     tempOptions.alcunit = tAlcunit.join("").toUpperCase();
                 }
 
                 const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
-                if (!isNullOrUndefined(tPrimary)) {
+                if (!(tPrimary === null || tPrimary === undefined)) {
                     tempOptions.primary = +(tPrimary.join(""));
 
-                    if (isNullOrUndefined(tempOptions.secondary)) {
+                    if (tempOptions.secondary === null || tempOptions.secondary === undefined) {
                         const TEN_PERCENT = 0.10;
                         tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
                     }
                 }
             } else {
-                if (isNullOrUndefined(tempOptions.secondary)) {
+                if (tempOptions.secondary === null || tempOptions.secondary === undefined) {
                     if (dataSetType === CreateDataSetTypeEnum.DATA_SET_BLANK) {
                         // do nothing
                     } else if (dataSetType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
@@ -112,7 +111,7 @@ export class Create {
 
             let response = "";
             // Handle the print attributes option
-            if (!isNullOrUndefined(tempOptions.showAttributes)) {
+            if (!(tempOptions.showAttributes === null || tempOptions.showAttributes === undefined)) {
                 if (tempOptions.showAttributes) {
                     delete tempOptions.showAttributes;
                     response = TextUtils.prettyJson(tempOptions);
@@ -177,7 +176,7 @@ export class Create {
 
                     case "alcunit":
                     // zOSMF defaults to TRK if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.alcunit)) {
+                        if (tempOptions.alcunit === null || tempOptions.alcunit === undefined) {
                             tempOptions.alcunit = "TRK";
                         }
 
@@ -197,9 +196,29 @@ export class Create {
                         break;
 
                     case "blksize":
-                    // zOSMF defaults to TRK if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.blksize)) {
+                    /*
+                    *  This is a fix for issue https://github.com/zowe/zowe-cli/issues/1439.
+                    *
+                    */
+                        if (tempOptions.blksize === null || tempOptions.blksize === undefined) {
                             tempOptions.blksize = tempOptions.lrecl;
+                        }
+
+                        if(tempOptions.blksize  <= tempOptions.lrecl ){
+                            tempOptions.blksize = tempOptions.lrecl;
+                            if(tempOptions.recfm === null || tempOptions.recfm === undefined){
+                                tempOptions.recfm = "FB";
+                            }
+                            switch (tempOptions.recfm.toUpperCase()) {
+                                case "V":
+                                case "VB":
+                                case "VBS":
+                                case "VS":
+                                    tempOptions.blksize += 4;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                         break;
 
@@ -255,7 +274,7 @@ export class Create {
 
                     case "secondary":
                     // zOSMF defaults to 0 if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.secondary)) {
+                        if (tempOptions.secondary === null || tempOptions.secondary === undefined) {
                             tempOptions.secondary = 0;
                         }
 
@@ -267,7 +286,7 @@ export class Create {
 
                     case "recfm":
                     // zOSMF defaults to F if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.recfm)) {
+                        if (tempOptions.recfm === null || tempOptions.recfm === undefined) {
                             tempOptions.recfm = "F";
                         }
 
@@ -367,7 +386,7 @@ export class Create {
 
         // format the attributes to show, and remove the option
         let attribText = "";
-        if (!isNullOrUndefined(idcamsOptions.showAttributes)) {
+        if (!(idcamsOptions.showAttributes === null || idcamsOptions.showAttributes === undefined)) {
             if (idcamsOptions.showAttributes) {
                 delete idcamsOptions.showAttributes;
                 attribText = ZosFilesMessages.attributeTitle.message + TextUtils.prettyJson(idcamsOptions);
@@ -451,7 +470,8 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
 
         // Removes undefined properties
-        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
+        const tempOptions = !(options === null || options === undefined) ? JSON.parse(JSON.stringify(options)) : {};
+
 
         let endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
 
@@ -459,7 +479,7 @@ export class Create {
         tempOptions.JSONversion = 1;
         const headers = [];
 
-        if (!isNullOrUndefined(tempOptions.timeout)) {
+        if (!(tempOptions.timeout === null || tempOptions.timeout === undefined)) {
             endpoint += `?timeout=${encodeURIComponent(tempOptions.timeout)}`;
             delete tempOptions.timeout;
         }
@@ -487,7 +507,7 @@ export class Create {
      */
     private static vsamConvertToIdcamsOptions(cliOptions: ICreateVsamOptions): ICreateVsamOptions {
         // Removes undefined properties
-        let idcamsOptions = isNullOrUndefined(cliOptions) ? {} : JSON.parse(JSON.stringify(cliOptions));
+        let idcamsOptions = !(cliOptions === null || cliOptions === undefined) ? JSON.parse(JSON.stringify(cliOptions)) : {};
 
         // convert the zowe size into IDCAMS allocationUnit and primarySpace
         let matchArray;
@@ -512,7 +532,7 @@ export class Create {
         idcamsOptions = { ...CreateDefaults.VSAM, ...idcamsOptions };
 
         // when secondary is not specified, use 10% of primary
-        if (isNullOrUndefined(idcamsOptions.secondary)) {
+        if (idcamsOptions.secondary  === null || idcamsOptions.secondary  === undefined) {
             const tenPercent = 0.10;
             idcamsOptions.secondary = Math.round(idcamsOptions.primary * tenPercent);
         }
