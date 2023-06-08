@@ -17,6 +17,7 @@ import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import EditHandler from "../../../../src/zosfiles/edit/Edit.handler";
 import { UNIT_TEST_PROFILES_ZOSMF, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as path from 'path';
+import * as os from 'os';
 
 describe("Files Edit Group Handler", () => {
     describe("process method", () => {
@@ -51,6 +52,8 @@ describe("Files Edit Group Handler", () => {
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         jest.spyOn(EditUtilities, "fileComparison").mockImplementation(jest.fn());
         jest.spyOn(EditUtilities, "makeEdits").mockImplementation(jest.fn());
+        jest.spyOn(os,"tmpdir").mockReturnValue("/tmp");
+
         guiAvailSpy.mockImplementation(jest.fn(() => {
             return GuiResult.GUI_AVAILABLE;
         }));
