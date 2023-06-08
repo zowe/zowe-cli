@@ -10,13 +10,13 @@
 */
 
 import { Writable } from "stream";
-import { IOptions } from "../../../doc/IOptions";
+import { IGetOptions } from "../../get/doc/IGetOptions";
 import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 
 /**
  * This interface defines the options that can be sent into the download data set function
  */
-export interface IDownloadOptions extends IOptions {
+export interface IDownloadOptions extends IGetOptions {
 
     /**
      * The local file to download the data set to
@@ -83,11 +83,6 @@ export interface IDownloadOptions extends IOptions {
      * The default value is true for backward compatibility.
      */
     failFast?: boolean;
-
-    /**
-     * The local file encoding to pass as a "Content-Type" header
-     */
-    localEncoding?: string;
 
     /**
      * The path to a .zosattributes file used to control file conversion and tagging.

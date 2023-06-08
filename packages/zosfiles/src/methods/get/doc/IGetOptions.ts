@@ -17,6 +17,10 @@ import { IOptions } from "../../../doc/IOptions";
  * @interface IGetOptions
  */
 export interface IGetOptions extends IOptions {
+    /**
+     * The local file encoding to pass as a "Content-Type" header
+     */
+    localEncoding?: string;
 
     /**
      * Range of records to return
@@ -25,4 +29,3 @@ export interface IGetOptions extends IOptions {
      */
     range?: string;
 }
-
