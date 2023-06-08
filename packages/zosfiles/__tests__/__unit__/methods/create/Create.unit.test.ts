@@ -339,8 +339,8 @@ describe("Create data set", () => {
                         dsorg: "PS",
                         primary: 20,
                         recfm: "V",
-                        blksize: 1000,
-                        lrecl: 1004,
+                        blksize: 1004,
+                        lrecl: 1000,
                         secondary: 1
                     }
                 })
