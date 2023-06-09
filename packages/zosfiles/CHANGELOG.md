@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Add check for invalid block size when creating a sequential dataset using the `Create.dataset` SDK method. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
+
+
 ## `7.16.4`
 
 - BugFix: Fixed `secondary` option being specified on `BLANK` type datasets [#1595](https://github.com/zowe/zowe-cli/issues/1595)
