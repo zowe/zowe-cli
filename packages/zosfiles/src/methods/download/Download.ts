@@ -21,7 +21,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
-import { IDownloadOptions } from "./doc/IDownloadOptions";
+import { IDownloadOptions, IDownloadSingleOptions } from "./doc/IDownloadOptions";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
@@ -35,16 +35,16 @@ import { TransferMode } from "../../utils/ZosFilesAttributes";
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
 interface IDownloadDsmTask {
-    handler: (session: AbstractSession, dsname: string, options: IDownloadOptions) => Promise<IZosFilesResponse>;
+    handler: (session: AbstractSession, dsname: string, options: IDownloadSingleOptions) => Promise<IZosFilesResponse>;
     dsname: string;
-    options: IDownloadOptions;
-    onSuccess: (response: IZosFilesResponse, options: IDownloadOptions) => void;
+    options: IDownloadSingleOptions;
+    onSuccess: (response: IZosFilesResponse, options: IDownloadSingleOptions) => void;
 }
 
 interface IDownloadUssTask {
     dirName?: string;
     file?: string;
-    options?: IDownloadOptions;
+    options?: IDownloadSingleOptions;
 }
 
 /**
@@ -56,7 +56,7 @@ export class Download {
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           dataSetName  - contains the data set name
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {IDownloadSingleOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
@@ -78,7 +78,7 @@ export class Download {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_GetReadDataSet.htm
      */
-    public static async dataSet(session: AbstractSession, dataSetName: string, options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+    public static async dataSet(session: AbstractSession, dataSetName: string, options: IDownloadSingleOptions = {}): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -497,14 +497,14 @@ export class Download {
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           ussFileName  - contains the USS file name
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {IDownloadSingleOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
      * @throws {ImperativeError} USS file name must be set
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
-    public static async ussFile(session: AbstractSession, ussFileName: string, options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+    public static async ussFile(session: AbstractSession, ussFileName: string, options: IDownloadSingleOptions = {}): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
