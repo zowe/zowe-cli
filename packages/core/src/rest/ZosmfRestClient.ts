@@ -104,9 +104,28 @@ export class ZosmfRestClient extends RestClient {
         if (this.response && this.response.statusCode === RestConstants.HTTP_STATUS_401) {
             // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
             if (EnvironmentalVariableSettings.useV3ErrFormat()) {
-                // For 401, the original msg belongs in the 'response from service' part of our error.
-                original.causeErrors = `{"Error": "${origMsgFor401}"}`;
+                if (!original.causeErrors || Object.keys(original.causeErrors ).length === 0) {
+                    /* We have no causeErrors, so place the original msg we got for a 401
+                     * into the 'response from service' part of our error.
+                     */
+                    original.causeErrors = `{"Error": "${origMsgFor401}"}`;
+                }
                 original.msg  += "\nThis operation requires authentication.";
+
+                if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
+                    original.msg += "\nUsername or password are not valid or expired.";
+                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
+                    if (this.session.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML && !this.session.ISession.basePath) {
+                        original.msg += `\nToken type "${SessConstants.TOKEN_TYPE_APIML}" requires base path to be defined.\n` +
+                            "You must either connect with username and password or provide a base path.";
+                    } else {
+                        original.msg += "\nToken is not valid or expired.\n" +
+                            "For CLI usage, see `zowe auth login apiml --help`";
+                    }
+                // TODO: Add PFX support in the future
+                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
+                    original.msg += "\nCertificate is not valid or expired.";
+                }
             } else { // TODO:V3_ERR_FORMAT - Remove in V3
                 original.additionalDetails = "This operation requires authentication.\n\n" + original.msg +
                     "\nHost:      " + this.session.ISession.hostname +
@@ -118,32 +137,18 @@ export class ZosmfRestClient extends RestClient {
                     "\nPayload:   " + this.mRequest +
                     "\n"
                 ;
-            }
-
-            if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (EnvironmentalVariableSettings.useV3ErrFormat()) {
-                    original.msg += "\nUsername or password are not valid or expired.";
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
+                if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                     original.additionalDetails = "Username or password are not valid or expired.\n\n";
-                }
-            }
-            if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (EnvironmentalVariableSettings.useV3ErrFormat()) {
-                    original.msg += "\nToken is not valid or expired." +
-                    "For CLI usage, see `zowe auth login apiml --help`";
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                    original.additionalDetails = "Token is not valid or expired.\n\n" +
-                    "For CLI usage, see `zowe auth login apiml --help`";
-                }
-            }
-            // TODO: Add PFX support in the future
-            if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (EnvironmentalVariableSettings.useV3ErrFormat()) {
-                    original.msg += "\nCertificate is not valid or expired.";
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
+                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
+                    if (this.session.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML && !this.session.ISession.basePath) {
+                        original.additionalDetails = `Token type "${SessConstants.TOKEN_TYPE_APIML}" requires base path to be defined.\n\n` +
+                            "You must either connect with username and password or provide a base path.";
+                    } else {
+                        original.additionalDetails = "Token is not valid or expired.\n\n" +
+                            "For CLI usage, see `zowe auth login apiml --help`";
+                    }
+                // TODO: Add PFX support in the future
+                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
                     original.additionalDetails = "Certificate is not valid or expired.\n\n";
                 }
             }
