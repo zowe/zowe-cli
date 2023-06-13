@@ -46,6 +46,10 @@ describe("z/OS Files - List", () => {
         type: "basic"
     });
 
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
+
     describe("allMembers", () => {
         beforeEach(() => {
             expectStringSpy.mockClear();
