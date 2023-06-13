@@ -10,7 +10,7 @@
 */
 
 import {
-    EnvironmentalVariableSettings, IImperativeError, Logger, RestClient, TextUtils,
+    IImperativeError, Logger, NextVerFeatures, RestClient, TextUtils,
     RestConstants, SessConstants
 } from "@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
@@ -55,7 +55,7 @@ export class ZosmfRestClient extends RestClient {
      */
     protected processError(original: IImperativeError): IImperativeError {
         // TODO:V3_ERR_FORMAT - Remove block in V3
-        if (!EnvironmentalVariableSettings.useV3ErrFormat()) {
+        if (!NextVerFeatures.useV3ErrFormat()) {
             original.msg = "z/OSMF REST API Error:\n" + original.msg;
         }
 
@@ -84,7 +84,7 @@ export class ZosmfRestClient extends RestClient {
 
         const origMsgFor401 = original.msg;
         // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-        if (EnvironmentalVariableSettings.useV3ErrFormat()) {
+        if (NextVerFeatures.useV3ErrFormat()) {
             // extract properties from causeErrors and place them into 'msg' as user-focused messages
             if (causeErrorsJson?.details?.length > 0) {
                 for (const detail of causeErrorsJson.details) {
@@ -103,7 +103,7 @@ export class ZosmfRestClient extends RestClient {
         // add further clarification on authentication errors
         if (this.response && this.response.statusCode === RestConstants.HTTP_STATUS_401) {
             // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (EnvironmentalVariableSettings.useV3ErrFormat()) {
+            if (NextVerFeatures.useV3ErrFormat()) {
                 if (!original.causeErrors || Object.keys(original.causeErrors ).length === 0) {
                     /* We have no causeErrors, so place the original msg we got for a 401
                      * into the 'response from service' part of our error.
