@@ -77,19 +77,20 @@ export class List {
             let data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
             // Match each member name returned by list members endpoint
             for (const match of data.matchAll(/"member":\s*"/g)) {
+                const unicodeCharacterLength = 5;
                 const memberMaxLength = 8;
+                const firstNonControlChcaracter = 32;
+                const quoteCharCode = 34;
+                const backslashCharCode = 92;
                 let memberStartIdx = match.index + match[0].length;
                 // Loop through up to 8 characters that follow the opening quote
-                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 for (let i = 1; i <= memberMaxLength; i++) {
                     const memberChar = data.charCodeAt(memberStartIdx + i);
-                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                    if (memberChar < 32) {
+                    if (memberChar < firstNonControlChcaracter) {
                         // Replace control characters with Unicode <?> symbol
                         data = data.substring(0, memberStartIdx + i) + "\\ufffd" + data.substring(memberStartIdx + i + 1);
-                        memberStartIdx += 5;  // eslint-disable-line @typescript-eslint/no-magic-numbers
-                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                    } else if (memberChar === 34 && data.charCodeAt(memberStartIdx + i - 1) !== 92) {
+                        memberStartIdx += unicodeCharacterLength;
+                    } else if (memberChar === quoteCharCode && data.charCodeAt(memberStartIdx + i - 1) !== backslashCharCode) {
                         // Exit the loop if we find closing quote (quote not preceded by backslash)
                         break;
                     }
