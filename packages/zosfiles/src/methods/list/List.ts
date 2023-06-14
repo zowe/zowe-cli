@@ -79,14 +79,14 @@ export class List {
             for (const match of data.matchAll(/"member":\s*"/g)) {
                 const unicodeCharacterLength = 5;
                 const memberMaxLength = 8;
-                const firstNonControlChcaracter = 32;
+                const firstNonControlCharCode = 32;
                 const quoteCharCode = 34;
                 const backslashCharCode = 92;
                 let memberStartIdx = match.index + match[0].length;
                 // Loop through up to 8 characters that follow the opening quote
                 for (let i = 1; i <= memberMaxLength; i++) {
                     const memberChar = data.charCodeAt(memberStartIdx + i);
-                    if (memberChar < firstNonControlChcaracter) {
+                    if (memberChar < firstNonControlCharCode) {
                         // Replace control characters with Unicode <?> symbol
                         data = data.substring(0, memberStartIdx + i) + "\\ufffd" + data.substring(memberStartIdx + i + 1);
                         memberStartIdx += unicodeCharacterLength;
