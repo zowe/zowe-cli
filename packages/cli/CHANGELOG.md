@@ -4,7 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Add check for invalid block size when creating a sequential dataset. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
+- BugFix: Added the ability to list all dataset members when some members have invalid names
+- BugFix: Added check for invalid block size when creating a sequential dataset. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
 
 ## `7.16.4`
 
