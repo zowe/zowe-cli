@@ -75,28 +75,32 @@ export class List {
             this.log.debug(`Endpoint: ${endpoint}`);
 
             let data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
-            // Match each member name returned by list members endpoint
-            for (const match of data.matchAll(/"member":\s*"/g)) {
-                const unicodeCharacterLength = 5;
-                const memberMaxLength = 8;
+            let response: any;
+            try {
+                response = JSONUtils.parse(data);
+            } catch {
+                // Fix invalid member names in JSON response
                 const firstNonControlCharCode = 32;
-                const quoteCharCode = 34;
-                const backslashCharCode = 92;
-                let memberStartIdx = match.index + match[0].length;
-                // Loop through up to 8 characters that follow the opening quote
-                for (let i = 1; i <= memberMaxLength; i++) {
-                    const memberChar = data.charCodeAt(memberStartIdx + i);
-                    if (memberChar < firstNonControlCharCode) {
-                        // Replace control characters with Unicode <?> symbol
-                        data = data.substring(0, memberStartIdx + i) + "\\ufffd" + data.substring(memberStartIdx + i + 1);
-                        memberStartIdx += unicodeCharacterLength;
-                    } else if (memberChar === quoteCharCode && data.charCodeAt(memberStartIdx + i - 1) !== backslashCharCode) {
-                        // Exit the loop if we find closing quote (quote not preceded by backslash)
-                        break;
-                    }
+                const quoteCharCode = "\"".charCodeAt(0);
+                for (const match of Array.from(data.matchAll(/"member":\s*"(?![A-Za-z@#$][A-Za-z0-9@#$]{0,7}")/g)).reverse()) {
+                    const memberStartIdx = match.index + match[0].length;
+                    const memberMaxLength = 8;
+                    const memberName = Array.from(data.substring(memberStartIdx, memberStartIdx + memberMaxLength)).reduce((string, char) => {
+                        const charCode = char.charCodeAt(0);
+                        if (charCode < firstNonControlCharCode) {
+                            // Replace control characters with Unicode <?> symbol
+                            return string + `\\ufffd`;
+                        } else if (charCode === quoteCharCode) {
+                            // Escape double quote characters
+                            return string + `\\"`;
+                        } else {
+                            return string + char;
+                        }
+                    }, "");
+                    data = data.substring(0, memberStartIdx) + memberName + data.substring(memberStartIdx + memberMaxLength);
                 }
+                response = JSONUtils.parse(data);
             }
-            const response: any = JSONUtils.parse(data);
 
             return {
                 success: true,
