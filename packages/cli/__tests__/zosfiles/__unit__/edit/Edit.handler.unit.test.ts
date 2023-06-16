@@ -16,7 +16,7 @@ import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import EditHandler from "../../../../src/zosfiles/edit/Edit.handler";
 import { UNIT_TEST_PROFILES_ZOSMF, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import * as path from 'path';
+import stripAnsi = require("strip-ansi");
 
 describe("Files Edit Group Handler", () => {
     describe("process method", () => {
@@ -73,6 +73,9 @@ describe("Files Edit Group Handler", () => {
         commandParameters.arguments.dataSetName = dataSetName;
         const params = Object.assign({}, ...[commandParameters]);
         params.arguments = Object.assign({}, ...[commandParameters.arguments]);
+        params.response.console.log = jest.fn((logs) => {
+            expect(stripAnsi(logs.toString())).toMatchSnapshot();
+        }) as any;
 
         it("should make and upload edits successfully", async () => {
             jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
