@@ -17,13 +17,12 @@ import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import EditHandler from "../../../../src/zosfiles/edit/Edit.handler";
 import { UNIT_TEST_PROFILES_ZOSMF, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as path from 'path';
-import * as os from 'os';
 
 describe("Files Edit Group Handler", () => {
     describe("process method", () => {
         //Variable instantiation
         const dataSetName = "dataset";
-        const dataSetPath = path.join(process.cwd(), "packages\\cli\\src\\zosfiles\\edit\\Edit.handler.ts");
+        const dataSetPath = "/tmp/dataset.txt";
 
         const commandParameters: IHandlerParameters = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
@@ -52,7 +51,6 @@ describe("Files Edit Group Handler", () => {
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         jest.spyOn(EditUtilities, "fileComparison").mockImplementation(jest.fn());
         jest.spyOn(EditUtilities, "makeEdits").mockImplementation(jest.fn());
-        jest.spyOn(os,"tmpdir").mockReturnValue("/tmp");
 
         guiAvailSpy.mockImplementation(jest.fn(() => {
             return GuiResult.GUI_AVAILABLE;

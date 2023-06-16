@@ -10,7 +10,7 @@
 */
 
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
-import { DiffUtils, IO, ImperativeError } from "@zowe/imperative";
+import { DiffUtils, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 
 describe("Compare Base Helper", () => {
@@ -66,7 +66,7 @@ describe("Compare Base Helper", () => {
         it("should get the buffer of a local file", () => {
             jest.spyOn(fs, "openSync").mockReturnValue(0);
             jest.spyOn(fs, "fstatSync").mockReturnValue({isFile: () => true} as any);
-            jest.spyOn(IO, "readFileSync").mockReturnValue(Buffer.from("test"));
+            jest.spyOn(fs, "readFileSync").mockReturnValue("test");
             jest.spyOn(fs, "closeSync").mockImplementation();
 
             const response = helper.prepareLocalFile("/absolute/path/to/real/file");
