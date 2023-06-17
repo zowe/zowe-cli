@@ -79,25 +79,14 @@ export class List {
             try {
                 response = JSONUtils.parse(data);
             } catch {
-                // Fix invalid member names in JSON response
-                const firstNonControlCharCode = 32;
-                const quoteCharCode = "\"".charCodeAt(0);
+                // Escape invalid JSON characters in encrypted member names
                 for (const match of Array.from(data.matchAll(/"member":\s*"(?![A-Za-z@#$][A-Za-z0-9@#$]{0,7}")/g)).reverse()) {
                     const memberStartIdx = match.index + match[0].length;
-                    const memberMaxLength = 8;
-                    const memberName = Array.from(data.substring(memberStartIdx, memberStartIdx + memberMaxLength)).reduce((string, char) => {
-                        const charCode = char.charCodeAt(0);
-                        if (charCode < firstNonControlCharCode) {
-                            // Replace control characters with Unicode <?> symbol
-                            return string + `\\ufffd`;
-                        } else if (charCode === quoteCharCode) {
-                            // Escape double quote characters
-                            return string + `\\"`;
-                        } else {
-                            return string + char;
-                        }
-                    }, "");
-                    data = data.substring(0, memberStartIdx) + memberName + data.substring(memberStartIdx + memberMaxLength);
+                    const memberNameLength = 8;
+                    const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
+                    // eslint-disable-next-line no-control-regex
+                    const escapedMemberName = memberName.replace(/[\x00-\x1f]/g, "\\ufffd").replace(/"/g, `\\"`);
+                    data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberStartIdx + memberNameLength);
                 }
                 response = JSONUtils.parse(data);
             }

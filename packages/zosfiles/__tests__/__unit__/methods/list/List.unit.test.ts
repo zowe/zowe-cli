@@ -175,10 +175,8 @@ describe("z/OS Files - List", () => {
     "items": [
         {"member": "m1"},
         {"member": "m2"},
-        {"member": "ÚÓ	@Ý
-¢☻"},
-        {"member": "☻¢
-Ý@	ÓÚ"}
+        {"member": "ÚÓ\t@Ý\n¢\x02"},
+        {"member": "Ú"¢\nÝ@\tÓ"}
     ]
 }`);
 
@@ -186,8 +184,8 @@ describe("z/OS Files - List", () => {
                 items: [
                     {member: "m1"},
                     {member: "m2"},
-                    {member: "ÚÓ�@Ý�¢☻"},
-                    {member: "☻¢�Ý@�ÓÚ"}
+                    {member: "ÚÓ�@Ý�¢�"},
+                    {member: "Ú\"¢�Ý@�Ó"}
                 ]
             };
             try {
