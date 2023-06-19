@@ -33,13 +33,16 @@ import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines, delay } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 import { posix } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
+import { PassThrough } from "stream";
+import getStream = require("get-stream");
 
 const rimraf = require("rimraf").sync;
 const delayTime = 2000;
+const testData = "abcdefghijklmnopqrstuvwxyz";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -102,20 +105,19 @@ describe("Download Data Set", () => {
 
                 // delete the top-level folder and the folders and file below
                 // variable 'file' should be set in the test
-                const folders = file.split("/");
-                let rc = rimraf(folders[0]);
-                rc = rimraf(file);
+                if (file != null) {
+                    const folders = file.split("/");
+                    let rc = rimraf(folders[0]);
+                    rc = rimraf(file);
+                }
             });
 
             it("should download a data set", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await delay(delayTime);
 
                 try {
@@ -137,16 +139,14 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set with response timeout", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await delay(delayTime);
 
                 try {
@@ -168,18 +168,15 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set and create folders and file in original letter case", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await delay(delayTime);
 
                 try {
@@ -208,7 +205,7 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set in binary mode", async () => {
@@ -268,9 +265,7 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await delay(delayTime);
 
                 const options: IDownloadOptions = {
@@ -298,7 +293,7 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set that has been populated by upload and use file extension specified", async () => {
@@ -309,11 +304,8 @@ describe("Download Data Set", () => {
                     extension: "dat"
                 };
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await delay(delayTime);
 
                 try {
@@ -335,7 +327,34 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
+            });
+
+            it("should download a data set to a stream", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const responseStream = new PassThrough();
+
+                // upload data to the newly created data set
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                await delay(delayTime);
+
+                try {
+                    response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(await getStream(responseStream));
+                expect(fileContents).toEqual(testData);
             });
         });
 
@@ -373,11 +392,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 try {
@@ -399,18 +415,15 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set member with response timeout", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 try {
@@ -432,18 +445,15 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set and create folders and file in original letter case", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 try {
@@ -472,18 +482,15 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(file).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set in binary mode", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 const options: IDownloadOptions = {
@@ -512,11 +519,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 const options: IDownloadOptions = {
@@ -545,11 +549,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 const options: IDownloadOptions = {
@@ -613,11 +614,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
@@ -636,18 +634,15 @@ describe("Download Data Set", () => {
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set in binary mode", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
 
                 const options: IDownloadOptions = {
                     binary: true,
@@ -676,11 +671,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
 
                 const options: IDownloadOptions = {
                     record: true,
@@ -709,11 +701,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
@@ -732,18 +721,15 @@ describe("Download Data Set", () => {
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.jcl`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set with an extension map", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 const ending = dsname.split(".").pop().toLowerCase();
                 const extMap: any = {};
                 extMap[ending] = "jcl";
@@ -765,7 +751,7 @@ describe("Download Data Set", () => {
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.jcl`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
         });
 
@@ -804,11 +790,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
@@ -827,18 +810,15 @@ describe("Download Data Set", () => {
                 file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set in binary mode", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
 
                 const options: IDownloadOptions = {
                     binary: true,
@@ -865,11 +845,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
 
                 const options: IDownloadOptions = {
                     record: true,
@@ -896,11 +873,8 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
@@ -917,18 +891,15 @@ describe("Download Data Set", () => {
                 file = dsname.toLowerCase() + ".jcl";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download a data set with an extension map", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 const ending = dsname.split(".").pop().toLowerCase();
                 const extMap: any = {};
                 extMap[ending] = "jcl";
@@ -948,7 +919,7 @@ describe("Download Data Set", () => {
                 file = dsname.toLowerCase() + ".jcl";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
         });
     });
@@ -1047,9 +1018,7 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
                 await delay(delayTime);
 
                 try {
@@ -1062,7 +1031,7 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
 
             });
 
@@ -1070,9 +1039,7 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
                 await delay(delayTime);
 
                 try {
@@ -1085,7 +1052,7 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
 
             });
 
@@ -1093,10 +1060,7 @@ describe("Download Data Set", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
                 await delay(delayTime);
 
                 const options: IDownloadOptions = {
@@ -1113,7 +1077,7 @@ describe("Download Data Set", () => {
                 expect(response.apiResponse.etag).toBeDefined();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
 
             });
 
@@ -1154,9 +1118,7 @@ describe("Download Data Set", () => {
                     binary: true
                 };
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData), { binary: true });
                 await delay(delayTime);
 
                 try {
@@ -1170,7 +1132,7 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download ISO8859-1 uss file in binary mode", async () => {
@@ -1178,9 +1140,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
                 const options: IDownloadOptions = {};
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData), { binary: true });
                 await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
                 await delay(delayTime);
 
@@ -1195,7 +1155,7 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
             it("should download IBM-1147 uss file with encoding mode", async () => {
@@ -1204,8 +1164,7 @@ describe("Download Data Set", () => {
                 const options: IDownloadOptions = {};
 
                 const data: string = "Hello, world¤";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_TEXT], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
                 await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1147");
                 await delay(delayTime);
 
@@ -1230,9 +1189,7 @@ describe("Download Data Set", () => {
 
                 const options: IDownloadOptions = {file: `test1.txt`};
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
                 await delay(delayTime);
 
                 try {
@@ -1245,12 +1202,33 @@ describe("Download Data Set", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`test1.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
 
                 // Delete created local file
                 IO.deleteFile("test1.txt");
             });
 
+            it("should download uss file to a stream", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const responseStream = new PassThrough();
+
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
+                await delay(delayTime);
+
+                try {
+                    response = await Download.ussFile(REAL_SESSION, ussname, { stream: responseStream });
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(await getStream(responseStream));
+                expect(fileContents).toEqual(testData);
+            });
         });
 
         describe("Failure scenarios", () => {
@@ -1588,11 +1566,8 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await delay(delayTime);
 
                 try {
@@ -1614,7 +1589,7 @@ describe("Download Data Set - encoded", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
         });
 
@@ -1646,11 +1621,8 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname) + "(member)";
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await delay(delayTime);
 
                 try {
@@ -1672,7 +1644,7 @@ describe("Download Data Set - encoded", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
         });
@@ -1709,11 +1681,8 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname) + "(member)";
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
@@ -1732,7 +1701,7 @@ describe("Download Data Set - encoded", () => {
                 file = dsname.toLowerCase().replace(regex, "/");
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
         });
@@ -1766,11 +1735,8 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                // TODO - convert to UPLOAD APIs when available
                 // upload data to the newly created data set
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
@@ -1787,7 +1753,7 @@ describe("Download Data Set - encoded", () => {
                 file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
             });
 
         });
@@ -1814,9 +1780,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 let response: IZosFilesResponse;
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
                 await delay(delayTime);
 
                 try {
@@ -1829,7 +1793,7 @@ describe("Download Data Set - encoded", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
 
             });
 
@@ -1840,9 +1804,7 @@ describe("Download Data Set - encoded", () => {
 
                 const options: IDownloadOptions = {file: `test1.txt`};
 
-                const data: string = "abcdefghijklmnopqrstuvwxyz";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
                 await delay(delayTime);
 
                 try {
@@ -1855,7 +1817,7 @@ describe("Download Data Set - encoded", () => {
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`test1.txt`).toString());
-                expect(fileContents).toEqual(data);
+                expect(fileContents).toEqual(testData);
 
                 // Delete created local file
                 IO.deleteFile("test1.txt");
