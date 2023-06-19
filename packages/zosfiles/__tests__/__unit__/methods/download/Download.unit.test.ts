@@ -21,6 +21,7 @@ import * as util from "util";
 import { IUSSListOptions, List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
+import { PassThrough } from "stream";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -540,6 +541,37 @@ describe("z/OS Files - Download", () => {
                 normalizeResponseNewLines: true,
                 task: undefined /*no progress task*/});
 
+        });
+
+        it("should download a data set to a stream", async () => {
+            let response;
+            let caughtError;
+            const responseStream = new PassThrough();
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { stream: responseStream });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetDownloadedSuccessfully.message,
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream,
+                normalizeResponseNewLines: true,
+                task: undefined /*no progress task*/});
+
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -2021,6 +2053,37 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
         });
+
+        it("should download uss file to a stream", async () => {
+            let response;
+            let caughtError;
+            const responseStream = new PassThrough();
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, { stream: responseStream });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.ussFileDownloadedSuccessfully.message,
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream,
+                normalizeResponseNewLines: true,
+                task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
     });
 
     describe("USS Directory", () => {
@@ -2398,6 +2461,8 @@ describe("z/OS Files - Download", () => {
             });
             expect(Download.ussFile).toHaveBeenCalledTimes(2);
         });
+
+        // TODO should download a uss file to a stream
     });
 
     describe("buildDownloadDsmResponse", () => {
