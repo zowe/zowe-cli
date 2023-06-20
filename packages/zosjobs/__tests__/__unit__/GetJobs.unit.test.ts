@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, ImperativeError, ProcessUtils, Session } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, NextVerFeatures, ProcessUtils, Session } from "@zowe/imperative";
 import { GetJobs } from "../../src";
 import { GetJobsData } from "../__resources__/api/GetJobsData";
 
@@ -60,6 +60,13 @@ function mockGetJobsServerError(errorCode: string, causeErrors: string) {
 }
 
 describe("GetJobs tests", () => {
+
+    beforeEach(() => {
+        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+         * Unless overridden, tests will use our legacy format for errors.
+         */
+        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
+    });
 
     describe("getStatus APIs", () => {
 
