@@ -11,7 +11,7 @@
 
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ImperativeError, RestConstants } from "@zowe/imperative";
+import { ImperativeError, NextVerFeatures, RestConstants } from "@zowe/imperative";
 
 const goodResponse: any = {
     statusCode: RestConstants.HTTP_STATUS_204
@@ -46,6 +46,14 @@ const fakeSession: any = {
 };
 
 describe("Auth Logout APIML unit tests", () => {
+
+    beforeEach(() => {
+        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+         * Unless overridden, tests will use our legacy format for errors.
+         */
+        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
+    });
+
     describe("Positive tests", () => {
         it("should allow users to call apimlLogout with correct parameters", async () => {
             ZosmfRestClient.prototype.request = jest.fn();
@@ -72,7 +80,13 @@ describe("Auth Logout APIML unit tests", () => {
             }
             expect(caughtError).toBeDefined();
             expect(caughtError instanceof ImperativeError).toEqual(true);
-            expect(caughtError.mDetails).toMatchSnapshot();
+            expect(caughtError.mDetails.message).toContain("z/OSMF REST API Error:");
+            expect(caughtError.mDetails.message).toContain("REST API Failure with HTTP(S) status 401");
+            expect(caughtError.mDetails.additionalDetails).toContain("This operation requires authentication.");
+            expect(caughtError.mDetails.additionalDetails).toContain("z/OSMF REST API Error:");
+            expect(caughtError.mDetails.additionalDetails).toContain("REST API Failure with HTTP(S) status 401");
+            expect(caughtError.mDetails.additionalDetails).toContain("Host:      undefined");
+            expect(caughtError.mDetails.additionalDetails).toContain("Port:      undefined");
         });
     });
 
