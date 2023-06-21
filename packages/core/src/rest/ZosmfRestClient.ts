@@ -127,7 +127,7 @@ export class ZosmfRestClient extends RestClient {
                     original.msg += "\nCertificate is not valid or expired.";
                 }
             } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                original.additionalDetails = "This operation requires authentication.\n\n" + original.msg +
+                original.msg = "This operation requires authentication.\n\n" + original.msg +
                     "\nHost:      " + this.session.ISession.hostname +
                     "\nPort:      " + this.session.ISession.port +
                     "\nBase Path: " + this.session.ISession.basePath +
