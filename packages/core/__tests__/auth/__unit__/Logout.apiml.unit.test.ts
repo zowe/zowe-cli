@@ -80,11 +80,15 @@ describe("Auth Logout APIML unit tests", () => {
             }
             expect(caughtError).toBeDefined();
             expect(caughtError instanceof ImperativeError).toEqual(true);
+            expect(caughtError.mDetails.message).toContain("This operation requires authentication.");
             expect(caughtError.mDetails.message).toContain("z/OSMF REST API Error:");
             expect(caughtError.mDetails.message).toContain("REST API Failure with HTTP(S) status 401");
-            expect(caughtError.mDetails.additionalDetails).toContain("This operation requires authentication.");
-            expect(caughtError.mDetails.additionalDetails).toContain("z/OSMF REST API Error:");
-            expect(caughtError.mDetails.additionalDetails).toContain("REST API Failure with HTTP(S) status 401");
+            expect(caughtError.mDetails.message).toContain("Host:      undefined");
+            expect(caughtError.mDetails.message).toContain("Port:      undefined");
+            expect(caughtError.mDetails.additionalDetails).toContain("HTTP(S) error status \"401\" received.");
+            expect(caughtError.mDetails.additionalDetails).toContain(
+                "Review request details (resource, base path, credentials, payload) and ensure correctness."
+            );
             expect(caughtError.mDetails.additionalDetails).toContain("Host:      undefined");
             expect(caughtError.mDetails.additionalDetails).toContain("Port:      undefined");
         });
