@@ -10,7 +10,7 @@
         "packages/*"
       ],
       "dependencies": {
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/perf-timing": "1.0.7"
       },
       "devDependencies": {
@@ -7549,9 +7549,9 @@
       "link": true
     },
     "node_modules/@zowe/imperative": {
-      "version": "4.18.15",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.15.tgz",
-      "integrity": "sha512-N+5hJTRoVNhSqD0jSiZA7EX1OMBi5iK7yPFZ8WuqCMlGFc59yH0K15WU4kvhyStV4u288TMMXuhXrPwgS30Bsg==",
+      "version": "4.18.16",
+      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.16.tgz",
+      "integrity": "sha512-IvL0T2rlGpPZ0K51QO5HOuL6OHgcLWwoyX0VwJrphE89k2pZeY6Bp/pXXsjjKKJat8KOReSqM2Ip8/WZhNrxow==",
       "dependencies": {
         "@types/yargs": "13.0.4",
         "@zowe/perf-timing": "1.0.7",
@@ -27411,7 +27411,7 @@
       "license": "EPL-2.0",
       "dependencies": {
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "6.40.16",
         "@zowe/zos-console-for-zowe-sdk": "6.40.16",
@@ -27459,7 +27459,7 @@
       },
       "devDependencies": {
         "@types/node": "^12.12.24",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "chalk": "^4.1.0",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -27508,7 +27508,7 @@
         "@types/js-yaml": "^3.12.5",
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27530,7 +27530,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27549,7 +27549,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27571,7 +27571,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/zos-uss-for-zowe-sdk": "6.40.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -27594,7 +27594,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27613,7 +27613,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27632,7 +27632,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27654,7 +27654,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -27676,7 +27676,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@types/ssh2": "^0.5.44",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -33749,7 +33749,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "6.40.16",
         "@zowe/zos-console-for-zowe-sdk": "6.40.16",
@@ -33781,7 +33781,7 @@
       "version": "file:packages/core",
       "requires": {
         "@types/node": "^12.12.24",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "chalk": "^4.1.0",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -33814,9 +33814,9 @@
       }
     },
     "@zowe/imperative": {
-      "version": "4.18.15",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.15.tgz",
-      "integrity": "sha512-N+5hJTRoVNhSqD0jSiZA7EX1OMBi5iK7yPFZ8WuqCMlGFc59yH0K15WU4kvhyStV4u288TMMXuhXrPwgS30Bsg==",
+      "version": "4.18.16",
+      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.16.tgz",
+      "integrity": "sha512-IvL0T2rlGpPZ0K51QO5HOuL6OHgcLWwoyX0VwJrphE89k2pZeY6Bp/pXXsjjKKJat8KOReSqM2Ip8/WZhNrxow==",
       "requires": {
         "@types/yargs": "13.0.4",
         "@zowe/perf-timing": "1.0.7",
@@ -34023,7 +34023,7 @@
         "@types/js-yaml": "^3.12.5",
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "js-yaml": "3.14.1",
         "madge": "^4.0.1",
@@ -34037,7 +34037,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -34050,7 +34050,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/zos-uss-for-zowe-sdk": "6.40.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -34065,7 +34065,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/zos-files-for-zowe-sdk": "6.40.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -34079,7 +34079,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -34092,7 +34092,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/zosmf-for-zowe-sdk": "6.40.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -34106,7 +34106,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@types/ssh2": "^0.5.44",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -34120,7 +34120,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "@zowe/zos-files-for-zowe-sdk": "6.40.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -34134,7 +34134,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/core-for-zowe-sdk": "6.40.16",
-        "@zowe/imperative": "4.18.15",
+        "@zowe/imperative": "4.18.16",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
