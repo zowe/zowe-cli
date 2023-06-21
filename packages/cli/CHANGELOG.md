@@ -2,9 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to handle if a null command handler is provided. [#991](https://github.com/zowe/imperative/pull/991)
+
 ## `6.40.16`
 
-- BugFix: Updated Imperative to fix the `zowe auth li` and `zowe auth lo` aliases [#964](https://github.com/zowe/imperative/issues/964)
+- BugFix: Updated Imperative to fix the `zowe auth li` and `zowe auth lo` aliases. [#964](https://github.com/zowe/imperative/issues/964)
 
 ## `6.40.15`
 
@@ -12,7 +16,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.40.14`
 
-- BugFix: Updated `http-cache-semantics`dependency for technical currency. 
+- BugFix: Updated `http-cache-semantics` dependency for technical currency.
 
 ## `6.40.13`
 
