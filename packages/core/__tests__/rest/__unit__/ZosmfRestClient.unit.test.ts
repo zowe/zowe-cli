@@ -11,9 +11,17 @@
 
 import { ZosmfHeaders } from "../../../src/rest/ZosmfHeaders";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
+import { IImperativeError, NextVerFeatures, RestConstants, SessConstants, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
+
+    beforeEach(() => {
+        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+         * Unless the choice below is overridden, tests will use our legacy format for errors.
+         */
+        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
+    });
+
     it("should append the csrf header to all requests", () => {
         const zosmfRestClient = new ZosmfRestClient(new Session({ hostname: "dummy" }));
         expect((zosmfRestClient as any).appendHeaders([])).toMatchObject([
