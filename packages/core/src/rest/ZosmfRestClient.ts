@@ -87,13 +87,16 @@ export class ZosmfRestClient extends RestClient {
 
             if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                 original.additionalDetails = "Username or password are not valid or expired.\n\n";
-            }
-            if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
-                original.additionalDetails = "Token is not valid or expired.\n\n" +
-                    "For CLI usage, see `zowe auth login apiml --help`";
-            }
+            } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
+                if (this.session.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML && !this.session.ISession.basePath) {
+                    original.additionalDetails = `Token type "${SessConstants.TOKEN_TYPE_APIML}" requires base path to be defined.\n\n` +
+                        "You must either connect with username and password or provide a base path.";
+                } else {
+                    original.additionalDetails = "Token is not valid or expired.\n\n" +
+                        "For CLI usage, see `zowe auth login apiml --help`";
+                }
             // TODO: Add PFX support in the future
-            if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
+            } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
                 original.additionalDetails = "Certificate is not valid or expired.\n\n";
             }
         }

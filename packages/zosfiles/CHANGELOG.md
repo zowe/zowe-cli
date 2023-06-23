@@ -6,6 +6,8 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 - Enhancement: Added streaming capabilities to the `Download.dataSet` and `Download.ussFile` methods.
 - BugFix: Fixed `Get.USSFile` API not respecting USS file tags.
+- BugFix: Add check for invalid block size when creating a sequential dataset using the `Create.dataset` SDK method. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
+
 
 ## `7.16.4`
 
