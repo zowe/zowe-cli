@@ -21,8 +21,7 @@ import { EditUtilities as Utils, Prompt, ILocalFile } from "../edit/Edit.utils";
  */
 export default class EditHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        // Setup
-        // build temp and check for stash
+        // Setup - build temp and check for stash
         let lfFile: ILocalFile = {
             tempPath: null,
             fileName: commandParameters.arguments.ussFilePath ?? commandParameters.arguments.dataSetName,
@@ -34,12 +33,12 @@ export default class EditHandler extends ZosFilesBaseHandler {
 
         // Use or override stash if exists
         const stash: boolean = await Utils.checkForStash(lfFile.tempPath);
-        let useStash: boolean = false;
+        let useStash, viewDiff: boolean = false;
         if (stash) {
             useStash = await Utils.promptUser(Prompt.useStash);
         }
 
-        // Retrieve etag and download mf file to edit locally (if not using stash)
+        // Retrieve etag & download mf file to edit locally if not using stash
         try{
             const task: ITaskWithStatus = {
                 percentComplete: 10,
@@ -48,13 +47,16 @@ export default class EditHandler extends ZosFilesBaseHandler {
             };
             commandParameters.response.progress.startBar({task});
 
-            //retrieve etag AND file contents if not using stash
+            // Retrieve etag AND file contents if not using stash
             lfFile = await Utils.localDownload(session, lfFile, useStash);
             commandParameters.response.progress.endBar();
 
-            // Show a file comparison for the purpose of seeing the newer version of the remote mf file compared to your local edits
-            if (useStash && lfFile.guiAvail){
-                await Utils.fileComparison(session, commandParameters, true);
+            // Show a file comparison for the purpose of seeing the current version of remote compared to past edits
+            if (useStash){
+                viewDiff = await Utils.promptUser(Prompt.viewDiff);
+                if (viewDiff){
+                    await Utils.fileComparison(session, commandParameters);
+                }
             }
 
         }catch(error){
@@ -69,7 +71,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
         }
 
         // Edit local copy of mf file (automatically open an editor for user if not in headless linux)
-        commandParameters.response.console.log(TextUtils.chalk.green(`Remote downloaded to temp for editing: `) +
+        commandParameters.response.console.log(TextUtils.chalk.green(`Temp file location: `) +
         TextUtils.chalk.blue(lfFile.tempPath));
 
         const overwrite = await Utils.makeEdits(lfFile, commandParameters.arguments.editor);
@@ -89,7 +91,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
         do {
             [uploaded, canceled] = await Utils.uploadEdits(session, commandParameters, lfFile);
         } while (!uploaded && !canceled);
-        if (canceled === false){
+        if (!canceled){
             return {
                 success: true,
                 commandResponse: TextUtils.chalk.green(

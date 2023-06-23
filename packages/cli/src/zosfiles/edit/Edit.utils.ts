@@ -15,7 +15,7 @@ import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, Gui
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { existsSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
-import path = require("path");
+import * as path from "path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 
@@ -27,13 +27,14 @@ import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
  */
 export enum Prompt {
     useStash,
-    continueToUpload,
+    viewDiff,
+    overwriteRemote,
     viewUpdatedRemote,
-    overwriteRemote
+    continueToUpload
 }
 
 /**
- * The possible types of file {@link ILocalFile}
+ * Type indicates which file system is being used for storage on mainframe {@link ILocalFile}
  * @export
  * @type
  */
@@ -68,12 +69,12 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string>{
-        // find the appropriate extension for either uss or ds in two (long) operations
+        // find the appropriate extension for either uss or ds
         const ussExt = (lfFile.fileType === 'uss' && lfFile.fileName.includes(".")) ? lfFile.fileName.split(".").pop() : "";
         let ext = "."  + (lfFile.fileType === 'uss' ? ussExt : (commandParameters.arguments.extension ?? "txt"));
         ext = (ext === "." ? "" : ext);
         if (lfFile.fileType === 'uss'){
-            // Hash in a repeatable way if uss fileName (incase there are special characters in name)
+            // Hash in a repeatable way if uss fileName (in case presence of special chars)
             const crypto = require("crypto");
             let hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
             // shorten hash
@@ -104,58 +105,39 @@ export class EditUtilities {
     /**
      * Collection of prompts to be used at different points in editing process
      * @param {Prompt} prompt - selected prompt from {@link Prompt} (enum object)
-     * @returns {Promise<boolean>} - promise that resolves depending on prompt case and user input
+     * @returns {Promise<boolean>} - promise whose resolution depends on user input
      * @memberof EditUtilities
      */
     public static async promptUser(prompt: Prompt): Promise<boolean>{
         let input;
+        let promptText;
         switch (prompt){
             case Prompt.useStash:
-                do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Keep and continue editing found temp file? y/n`));
-                }
-                while (input === '');
-                if (input === null) {
-                    throw new ImperativeError({
-                        msg: `No input provided. Command terminated.`
-                    });
-                }
-                return input.toLowerCase() === 'y';
-            case Prompt.continueToUpload:
-                do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`CONFLICT: Ignore conflicts and overwrite remote? y/n`));
-                }
-                while (input === '');
-                if (input === null) {
-                    throw new ImperativeError({
-                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
-                    });
-                }
-                return input.toLowerCase() === 'y';
-            case Prompt.viewUpdatedRemote:
-                do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`CONFLICT: Remote has changed. `+
-                    `View updated mainframe file? y/n`));
-                }
-                while (input === '');
-                if (input === null) {
-                    throw new ImperativeError({
-                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
-                    });
-                }
-                return input.toLowerCase() === 'y';
+                promptText = `Keep and continue editing found temp file? y/n`;
+                break;
+            case Prompt.viewDiff:
+                promptText = `View diff between temp and mainframe file? y/n`;
+                break;
             case Prompt.overwriteRemote:
-                do {
-                    input = await CliUtils.readPrompt(TextUtils.chalk.green(`Overwrite remote with local edits? (Answer after editing) y/n`));
-                }
-                while (input === '');
-                if (input === null) {
-                    throw new ImperativeError({
-                        msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
-                    });
-                }
-                return input.toLowerCase() === 'y';
+                promptText = `Overwrite remote with local edits? (Answer after editing) y/n`;
+                break;
+            case Prompt.viewUpdatedRemote:
+                promptText = `CONFLICT: Remote has changed. View updated mainframe file? y/n`;
+                break;
+            case Prompt.continueToUpload:
+                promptText = `CONFLICT: Ignore conflicts and overwrite remote? y/n`;
+                break;
         }
+        do {
+            input = await CliUtils.readPrompt(TextUtils.chalk.green(promptText));
+        }
+        while (input.toLowerCase() != 'y' &&  input.toLowerCase() != 'n');
+        if (input === null) {
+            throw new ImperativeError({
+                msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
+            });
+        }
+        return input.toLowerCase() === 'y';
     }
 
     /**
@@ -193,7 +175,7 @@ export class EditUtilities {
     }
 
     /**
-     * Performs appropriate file comparison (either in browser or as a terminal diff) between lf-USS or lf-DS.
+     * Performs appropriate file comparison (either in browser or as a terminal diff) between local file and remote
      * Local file (lf) will then be opened in default editor
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
@@ -253,7 +235,7 @@ export class EditUtilities {
 
     /**
      * Enable user to make their edits and wait for user input to indicate editing is complete
-     * @param {string} tempPath - parameters supplied by args
+     * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @param {string} editor - optional parameter originally supplied by args
      * @memberof EditUtilities
      */
@@ -265,14 +247,14 @@ export class EditUtilities {
     }
 
     /**
-     * Upload temp file with saved etag.
+     * Upload temp file with saved etag
      *  - if matching etag: successful upload, destroy stash/temp -> END
-     *  - if non-matching etag: unsuccessful upload -> refresh etag -> perform file comparison/edit -> reattempt upload
+     *  - if non-matching etag: unsuccessful upload -> refresh etag -> perform file comparison/edit -> re-attempt upload
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
      * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
      * @returns {Promise<[boolean, boolean]>} - [resolves to true if uploading was successful and
-     * false if user needs to take more action before completing the upload
+     * false if not, resolves to true if user wishes to cancel command and false if not]
      * @memberof EditUtilities
      */
     public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters,
@@ -284,7 +266,8 @@ export class EditUtilities {
             lfFile.fileName,
             {
                 encoding: lfFile.encoding,
-                etag: lfFile.zosResp.apiResponse.etag
+                etag: lfFile.zosResp.apiResponse.etag,
+                returnEtag: true
             },
         ];
         let response: IZosFilesResponse;
@@ -318,7 +301,7 @@ export class EditUtilities {
     }
 
     /**
-     * When changes occur in the remote file, user will have to decide to overwrite stash or to account for the discrepancy between files
+     * When changes occur in the remote file, user will have to overwrite remote or account for the discrepancy between files
      * @param {AbstractSession} session - the session object generated from the connected profile
      * @param {IHandlerParameters} commandParameters - parameters supplied by args
      * @param {ILocalFile} lfFile - object containing pertinent information about the local file during the editing process
@@ -331,18 +314,17 @@ export class EditUtilities {
             //ask if they want to see changes on the remote file before continuing
             const viewUpdatedRemote: boolean = await this.promptUser(Prompt.viewUpdatedRemote);
             if (viewUpdatedRemote){
-                await this.fileComparison(session, commandParameters);
+                await this.fileComparison(session, commandParameters, true);
             }
-            //ask if they want to keep working with their stash (local file) or upload despite changes to remote
+            //ask if they want to keep editing or upload despite changes to remote
             const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload);
             // refresh etag, keep stash
             await this.localDownload(session, lfFile, true);
-            // create more edits & open stash/lf in editor
             if (!continueToUpload){
+                // create more edits & open stash/lf in editor
                 return await this.makeEdits(lfFile, commandParameters.arguments.editor);
-                // choice overwrite will return false (true exits command)
             }
-            return false; //choice continue with upload/overwrite
+            return false;
         }catch(err){
             throw new ImperativeError({
                 msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Temp file will persist.`),
@@ -352,7 +334,7 @@ export class EditUtilities {
     }
 
     /**
-     * Destroy local file path (remove stash)
+     * Destroy path of temporary local file (remove stash)
      * @param {string} tempPath - unique file path for local file (stash)
      * @memberof EditUtilities
      */
