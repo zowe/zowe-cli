@@ -311,7 +311,10 @@ export class ProfileConstants {
      */
     public static readonly APIML_LOGOUT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
         ...ProfileConstants.BASE_OPTION_TOKEN_TYPE,
-        allowableValues: { values: SessConstants.ALL_TOKEN_TYPES }
+        allowableValues: {
+            values: SessConstants.ALL_TOKEN_TYPES
+                .map(tk => tk.indexOf(SessConstants.TOKEN_TYPE_APIML) >= 0 ? `^${SessConstants.TOKEN_TYPE_APIML}.*` : tk)
+        }
     };
 
     /**

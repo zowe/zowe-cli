@@ -30,8 +30,8 @@ export class Logout {
     public static async apimlLogout(session: AbstractSession) {
         Logger.getAppLogger().trace("Logout.logout()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        ImperativeExpect.toBeEqual(session.ISession.tokenType, "apimlAuthenticationToken",
-            "Token type for API ML logout must be apimlAuthenticationToken.");
+        ImperativeExpect.toMatchRegExp(session.ISession.tokenType, "^apimlAuthenticationToken.*",
+            `Token type (${session.ISession.tokenType}) for API ML logout must start with 'apimlAuthenticationToken'.`);
         ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Session token not populated. Unable to log out.");
 
         const client = new ZosmfRestClient(session);
