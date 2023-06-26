@@ -107,8 +107,8 @@ describe("Download Data Set", () => {
                 // variable 'file' should be set in the test
                 if (file != null) {
                     const folders = file.split("/");
-                    let rc = rimraf(folders[0]);
-                    rc = rimraf(file);
+                    rimraf(folders[0]);
+                    rimraf(file);
                 }
             });
 
@@ -385,7 +385,7 @@ describe("Download Data Set", () => {
 
                 // delete the top-level folder and the folders and file below
                 const folders = file.split("/");
-                const rc = rimraf(folders[0]);
+                rimraf(folders[0]);
             });
 
             it("should download a data set member", async () => {
@@ -604,7 +604,7 @@ describe("Download Data Set", () => {
                 // delete the top-level folder and the folders and file below
                 try {
                     const folders = file.split("/");
-                    const rc = rimraf(folders[0]);
+                    rimraf(folders[0]);
                 } catch {
                     // Do nothing, sometimes the files are not created.
                 }
@@ -782,8 +782,8 @@ describe("Download Data Set", () => {
 
                 // delete the top-level folder and the folders and file below
                 const folders = file.split("/");
-                let rc = rimraf(folders[0]);
-                rc = rimraf(file);
+                rimraf(folders[0]);
+                rimraf(file);
             });
 
             it("should download a data set", async () => {
