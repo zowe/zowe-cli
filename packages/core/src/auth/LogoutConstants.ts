@@ -34,4 +34,12 @@ export class LogoutConstants {
      */
     public static readonly APIML_V1_TOKEN_EXP_ERR: string = "TokenExpireException";
 
+    /**
+     * Zowe Token Expired Error Code
+     * @static
+     * @type {string}
+     * @memberof LogoutConstants
+     */
+    public static readonly APIML_V2_TOKEN_EXP_ERR: string = "org.zowe.apiml.security.query.";
+
 }

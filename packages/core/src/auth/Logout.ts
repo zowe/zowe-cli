@@ -25,7 +25,7 @@ export class Logout {
      * @static
      * @param {AbstractSession} session
      * @returns
-     * @memberof Login
+     * @memberof Logout
      */
     public static async apimlLogout(session: AbstractSession) {
         Logger.getAppLogger().trace("Logout.logout()");
@@ -41,12 +41,12 @@ export class Logout {
                 resource: LogoutConstants.APIML_V1_RESOURCE
             });
         } catch (err) {
-            if (!err.message.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR)) {
+            if (!err.message.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR) && !err.message.includes(LogoutConstants.APIML_V2_TOKEN_EXP_ERR)) {
                 throw err;
             }
         }
 
-        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
+        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204 && client.response.statusCode !== RestConstants.HTTP_STATUS_401) {
             if (!(client.response.statusCode === RestConstants.HTTP_STATUS_500 &&
                   client.dataString.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR))) {
                 throw new ImperativeError((client as any).populateError({
