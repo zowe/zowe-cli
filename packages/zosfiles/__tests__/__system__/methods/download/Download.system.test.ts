@@ -599,14 +599,17 @@ describe("Download Data Set", () => {
                     await delay(delayTime);
                 } catch (err) {
                     error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
 
                 // delete the top-level folder and the folders and file below
                 try {
                     const folders = file.split("/");
                     rimraf(folders[0]);
-                } catch {
+                } catch (err) {
                     // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
@@ -1537,22 +1540,27 @@ describe("Download Data Set - encoded", () => {
     describe("Success Scenarios", () => {
 
         describe("Physical sequential data set", () => {
-
             beforeEach(async () => {
+                let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
             afterEach(async () => {
+                let error;
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
 
                 // delete the top-level folder and the folders and file below
@@ -1594,22 +1602,27 @@ describe("Download Data Set - encoded", () => {
         });
 
         describe("Partitioned data set - all members", () => {
-
             beforeEach(async () => {
+                let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
             afterEach(async () => {
+                let error;
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
 
                 // delete the top-level folder and the folders and file below
@@ -1652,28 +1665,37 @@ describe("Download Data Set - encoded", () => {
         describe("Data sets matching - all data sets - PO", () => {
 
             beforeEach(async () => {
+                let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
             afterEach(async () => {
+                let error;
+
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
 
                 // delete the top-level folder and the folders and file below
                 try {
                     const folders = file.split("/");
                     rimraf(folders[0]);
-                } catch {
+                } catch (err) {
                     // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
@@ -1709,20 +1731,26 @@ describe("Download Data Set - encoded", () => {
         describe("Data sets matching - all data sets - PS", () => {
 
             beforeEach(async () => {
+                let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
             afterEach(async () => {
+                let error;
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
                     await delay(delayTime);
                 } catch (err) {
-                    // Do nothing
+                    // Do nothing, sometimes the files are not created.
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
                 }
 
                 // delete the top-level folder and the folders and file below
