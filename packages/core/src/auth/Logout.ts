@@ -41,7 +41,13 @@ export class Logout {
                 resource: LogoutConstants.APIML_V1_RESOURCE
             });
         } catch (err) {
-            if (!err.message.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR) && !err.message.includes(LogoutConstants.APIML_V2_TOKEN_EXP_ERR)) {
+            let shouldThrow = true;
+            LogoutConstants.APIML_V2_LOGOUT_ERR_LIST.forEach((errorKey: string) => {
+                if (err.message.includes(errorKey)) {
+                    shouldThrow = false;
+                }
+            });
+            if (shouldThrow) {
                 throw err;
             }
         }
