@@ -93,10 +93,10 @@
     "typescript": "^4.0.0",
     "which": "^2.0.2"
   },
-  "optionalDependencies": {
-    "keytar": "7.9.0"
-  },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "optionalDependencies": {
+    "@traeok/keytar-rs": "github:traeok/keytar-rs"
   }
 }
