@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Files Edit Group Handler process method should make and upload edits successfully 1`] = `"Remote downloaded to temp for editing: /tmp/dataset.txt"`;
+exports[`Files Edit Group Handler process method should make and upload edits successfully 1`] = `"Temp file location: /tmp/dataset.txt"`;
 
 exports[`Files Edit Group Handler process method should make and upload edits successfully 2`] = `"Successfully uploaded edits to mainframe."`;
 

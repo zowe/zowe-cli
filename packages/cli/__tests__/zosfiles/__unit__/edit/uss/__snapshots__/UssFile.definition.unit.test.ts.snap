@@ -11,15 +11,6 @@ Array [
     "required": false,
     "type": "string",
   },
-  Object {
-    "aliases": Array [
-      "ext",
-    ],
-    "description": "Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ie \\"--extension jcl\\"",
-    "name": "extension",
-    "required": false,
-    "type": "string",
-  },
 ]
 `;
 
@@ -32,10 +23,6 @@ Array [
   Object {
     "description": "Edit the contents of the USS file \\"/a/ibmuser/my_text.txt\\" in notepad",
     "options": "/a/ibmuser/my_text.txt --editor C:\\\\Windows\\\\System32\\\\Notepad.exe",
-  },
-  Object {
-    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_jcl.jcl\\" in notepad and set extension as \\"jcl\\"",
-    "options": "C:\\\\Windows\\\\System32\\\\Notepad.exe --editor notepad --extension jcl",
   },
 ]
 `;

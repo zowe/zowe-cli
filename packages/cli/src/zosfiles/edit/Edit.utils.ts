@@ -131,7 +131,7 @@ export class EditUtilities {
         do {
             input = await CliUtils.readPrompt(TextUtils.chalk.green(promptText));
         }
-        while (input.toLowerCase() != 'y' &&  input.toLowerCase() != 'n');
+        while (input != null && input.toLowerCase() != 'y' &&  input.toLowerCase() != 'n');
         if (input === null) {
             throw new ImperativeError({
                 msg: TextUtils.chalk.red(`No input provided. Command terminated. Temp file will persist.`)
