@@ -34,6 +34,9 @@ export class Login {
             `Token type (${session.ISession.tokenType}) for API ML token login must start with 'apimlAuthenticationToken'.`);
 
         const client = new ZosmfRestClient(session);
+        if(!session.ISession.basePath) {
+            session.ISession.basePath = "/"; // prevent basepath requirement error on invalid credentials
+        }
         await client.request({
             request: "POST",
             resource: LoginConstants.APIML_V1_RESOURCE
