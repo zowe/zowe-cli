@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Fixed `Create.dataset` failing when `CreateDataSetTypeEnum.DATA_SET_BLANK` is passed but no other options are specified. 
 - BugFix: Add check for invalid block size when creating a sequential dataset using the `Create.dataset` SDK method. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
 
 
