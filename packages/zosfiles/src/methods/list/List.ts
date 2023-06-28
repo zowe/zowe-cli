@@ -82,7 +82,8 @@ export class List {
                 // Escape invalid JSON characters in encrypted member names
                 for (const match of Array.from(data.matchAll(/"member":\s*"(?![A-Za-z@#$][A-Za-z0-9@#$]{0,7}")/g)).reverse()) {
                     const memberStartIdx = match.index + match[0].length;
-                    const memberNameLength = 8;
+                    const memberNameLength = data.substring(memberStartIdx,
+                        memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
                     const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
                     // eslint-disable-next-line no-control-regex
                     const escapedMemberName = memberName.replace(/[\x00-\x1f]/g, "\\ufffd").replace(/"/g, `\\"`);
