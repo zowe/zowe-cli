@@ -43,6 +43,9 @@ export class Login {
         });
 
         if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
+            if (session.ISession.basePath === "/") {
+                session.ISession.basePath = undefined;
+            }
             throw new ImperativeError((client as any).populateError({
                 msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
                 causeErrors: client.dataString,

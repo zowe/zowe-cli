@@ -78,7 +78,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             session.ISession.tokenValue = await Login.apimlLogin(session);
             session.ISession.storeCookie = false;
             session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
-            session.ISession.user = session.ISession.password = session.ISession.cert = session.ISession.certKey = undefined;
+            session.ISession.base64EncodedAuth = session.ISession.user = session.ISession.password = session.ISession.cert = session.ISession.certKey = undefined;
         }
 
         const restErrUnauthorized = 403;
