@@ -177,7 +177,7 @@ describe("z/OS Files - List", () => {
         {"member": "m2"},
         {"member": "ÚÓ\t@Ý\n¢\x02"},
         {"member": "Ú"¢\n"}
-    ]
+    ], "returnedRows": 4
 }`);
 
             const expectedListApiResponse = {
@@ -186,7 +186,8 @@ describe("z/OS Files - List", () => {
                     {member: "m2"},
                     {member: "ÚÓ�@Ý�¢�"},
                     {member: "Ú\"¢�"}
-                ]
+                ],
+                returnedRows: 4
             };
             try {
                 response = await List.allMembers(dummySession, dsname);
