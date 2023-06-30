@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent changes
+
+- Enhancement: Updated the Imperative Framework to add support for unique cookie identifiers from API ML. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+- Enhancement: Added support for mutliple `zowe auth login apiml` operations on a single `zowe config secure` call. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+- BugFix: Allowed `logout` operations with invalid and/or expired tokens. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+- BugFix: Prevented misleading `basePath error` when credentials are invalid. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+- BugFix: Add check for invalid block size when creating a sequential dataset. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
+
 ## `7.16.5`
 
 - BugFix: Fixed `zowe files create data-set` failing when no additional options are specified.
