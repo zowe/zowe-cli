@@ -69,7 +69,20 @@ describe("Auth Logout APIML unit tests", () => {
     });
 
     describe("Error handling tests - HTTP 401", () => {
-        it("should be able to raise an error with HTTP 401", async () => {
+        // it("should be able to raise an error with HTTP 401", async () => {
+        //     ZosmfRestClient.prototype.request = jest.fn();
+        //     (ZosmfRestClient.prototype as any).mResponse = badResponse401;
+        //     let caughtError;
+        //     try{
+        //         await Logout.apimlLogout(fakeSession);
+        //     } catch (error) {
+        //         caughtError = error;
+        //     }
+        //     expect(caughtError).toBeDefined();
+        //     expect(caughtError instanceof ImperativeError).toEqual(true);
+        //     expect(caughtError.mDetails).toMatchSnapshot();
+        // });
+        it("should not throw an error with HTTP 401", async () => {
             ZosmfRestClient.prototype.request = jest.fn();
             (ZosmfRestClient.prototype as any).mResponse = badResponse401;
             let caughtError;
@@ -78,19 +91,7 @@ describe("Auth Logout APIML unit tests", () => {
             } catch (error) {
                 caughtError = error;
             }
-            expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
-            expect(caughtError.mDetails.message).toContain("This operation requires authentication.");
-            expect(caughtError.mDetails.message).toContain("z/OSMF REST API Error:");
-            expect(caughtError.mDetails.message).toContain("REST API Failure with HTTP(S) status 401");
-            expect(caughtError.mDetails.message).toContain("Host:      undefined");
-            expect(caughtError.mDetails.message).toContain("Port:      undefined");
-            expect(caughtError.mDetails.additionalDetails).toContain("HTTP(S) error status \"401\" received.");
-            expect(caughtError.mDetails.additionalDetails).toContain(
-                "Review request details (resource, base path, credentials, payload) and ensure correctness."
-            );
-            expect(caughtError.mDetails.additionalDetails).toContain("Host:      undefined");
-            expect(caughtError.mDetails.additionalDetails).toContain("Port:      undefined");
+            expect(caughtError).toBeUndefined();
         });
     });
 
