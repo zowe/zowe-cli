@@ -69,19 +69,6 @@ describe("Auth Logout APIML unit tests", () => {
     });
 
     describe("Error handling tests - HTTP 401", () => {
-        // it("should be able to raise an error with HTTP 401", async () => {
-        //     ZosmfRestClient.prototype.request = jest.fn();
-        //     (ZosmfRestClient.prototype as any).mResponse = badResponse401;
-        //     let caughtError;
-        //     try{
-        //         await Logout.apimlLogout(fakeSession);
-        //     } catch (error) {
-        //         caughtError = error;
-        //     }
-        //     expect(caughtError).toBeDefined();
-        //     expect(caughtError instanceof ImperativeError).toEqual(true);
-        //     expect(caughtError.mDetails).toMatchSnapshot();
-        // });
         it("should not throw an error with HTTP 401", async () => {
             ZosmfRestClient.prototype.request = jest.fn();
             (ZosmfRestClient.prototype as any).mResponse = badResponse401;
