@@ -90,7 +90,9 @@ export const CreateDefaults = {
          * Specifies the defaults used by the Zos Files API to create a blank data set
          * @type {ICreateDataSetOptions}
          */
-        BLANK: {}
+        BLANK: {
+            primary: 1
+        }
     },
     /**
      * Specifies the defaults used by the Zos Files API to create a VSAM cluster
