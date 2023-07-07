@@ -7299,7 +7299,8 @@
     },
     "node_modules/@traeok/keytar-rs": {
       "version": "0.0.0",
-      "resolved": "git+ssh://git@github.com/traeok/keytar-rs.git#0b00af3fb1ae1b70ef68b049071d5c392218dbc5",
+      "resolved": "git+ssh://git@github.com/traeok/keytar-rs.git#4d4f1aa222b85357242fa1df85089e467c2e1d6b",
+      "hasInstallScript": true,
       "license": "MIT",
       "optional": true,
       "engines": {
@@ -22730,7 +22731,6 @@
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@traeok/keytar-rs": "https://github.com/traeok/keytar-rs.git",
         "@zowe/core-for-zowe-sdk": "7.16.4",
         "@zowe/imperative": "5.14.2",
         "@zowe/perf-timing": "1.0.7",
@@ -28820,7 +28820,7 @@
       "integrity": "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="
     },
     "@traeok/keytar-rs": {
-      "version": "git+ssh://git@github.com/traeok/keytar-rs.git#0b00af3fb1ae1b70ef68b049071d5c392218dbc5",
+      "version": "git+ssh://git@github.com/traeok/keytar-rs.git#4d4f1aa222b85357242fa1df85089e467c2e1d6b",
       "from": "@traeok/keytar-rs@github:traeok/keytar-rs",
       "optional": true
     },
