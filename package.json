@@ -132,7 +132,7 @@
     ]
   },
   "jest-junit": {
-    "output": "__tests__/__results__/junit.xml",
+    "outputDirectory": "__tests__/__results__",
     "reportTestSuiteErrors": true
   }
 }
