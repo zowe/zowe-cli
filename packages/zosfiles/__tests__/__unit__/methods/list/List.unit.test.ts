@@ -20,6 +20,7 @@ import * as util from "util";
 
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
+    const expectStringSpy = jest.spyOn(ZosmfRestClient, "getExpectString");
     const dsname = "USER.DATA.SET";
     const path = "/u/myuser";
     const listApiResponse = {
@@ -28,6 +29,12 @@ describe("z/OS Files - List", () => {
             {member: "m2"}
         ]
     };
+    const listApiResponseString = `{
+    "items": [
+        {"member": "m1"},
+        {"member": "m2"}
+    ]
+}`;
     const fsname = "USER.DATA.SET";
 
     const dummySession = new Session({
@@ -39,10 +46,14 @@ describe("z/OS Files - List", () => {
         type: "basic"
     });
 
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
+
     describe("allMembers", () => {
         beforeEach(() => {
-            expectJsonSpy.mockClear();
-            expectJsonSpy.mockImplementation(async () => listApiResponse);
+            expectStringSpy.mockClear();
+            expectStringSpy.mockImplementation(async () => listApiResponseString);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -89,7 +100,7 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            expectJsonSpy.mockResolvedValueOnce({items: []});
+            expectStringSpy.mockResolvedValueOnce(`{"items": []}`);
 
             try {
                 response = await List.allMembers(dummySession, dsname);
@@ -105,8 +116,8 @@ describe("z/OS Files - List", () => {
                 commandResponse: null,
                 apiResponse: {items: []}
             });
-            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set", async () => {
@@ -127,8 +138,8 @@ describe("z/OS Files - List", () => {
                 commandResponse: null,
                 apiResponse: listApiResponse
             });
-            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with responseTimeout", async () => {
@@ -150,9 +161,50 @@ describe("z/OS Files - List", () => {
                 commandResponse: null,
                 apiResponse: listApiResponse
             });
-            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
+        });
+
+        it("should list members from given data set that contains a member with an invalid name", async () => {
+            let response;
+            let caughtError;
+
+            // I hate the indentation too.
+            expectStringSpy.mockResolvedValueOnce(`{
+    "items": [
+        {"member": "m1"},
+        {"member": "m2"},
+        {"member": "ÚÓ\t@Ý\n¢\x02"},
+        {"member": "Ú"¢\n"}
+    ], "returnedRows": 4
+}`);
+
+            const expectedListApiResponse = {
+                items: [
+                    {member: "m1"},
+                    {member: "m2"},
+                    {member: "ÚÓ�@Ý�¢�"},
+                    {member: "Ú\"¢�"}
+                ],
+                returnedRows: 4
+            };
+            try {
+                response = await List.allMembers(dummySession, dsname);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: null,
+                apiResponse: expectedListApiResponse
+            });
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with a matching pattern", async () => {
@@ -178,8 +230,8 @@ describe("z/OS Files - List", () => {
                 commandResponse: null,
                 apiResponse: listApiResponse
             });
-            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with additional attributes", async () => {
@@ -202,8 +254,8 @@ describe("z/OS Files - List", () => {
                 commandResponse: null,
                 apiResponse: listApiResponse
             });
-            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
@@ -212,7 +264,7 @@ describe("z/OS Files - List", () => {
             let caughtError;
 
             const dummyError = new Error("test");
-            expectJsonSpy.mockImplementationOnce(() => {
+            expectStringSpy.mockImplementationOnce(() => {
                 throw dummyError;
             });
 

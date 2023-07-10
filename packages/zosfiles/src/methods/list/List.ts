@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, JSONUtils, Logger, TaskProgress } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -74,7 +74,23 @@ export class List {
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
-            const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);
+            let data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            let response: any;
+            try {
+                response = JSONUtils.parse(data);
+            } catch {
+                // Escape invalid JSON characters in encrypted member names
+                for (const match of Array.from(data.matchAll(/"member":\s*"(?![A-Za-z@#$][A-Za-z0-9@#$]{0,7}")/g)).reverse()) {
+                    const memberStartIdx = match.index + match[0].length;
+                    const memberNameLength = data.substring(memberStartIdx,
+                        memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
+                    const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
+                    // eslint-disable-next-line no-control-regex
+                    const escapedMemberName = memberName.replace(/[\x00-\x1f\x7f\x80-\x9f]/g, "\\ufffd").replace(/"/g, `\\"`);
+                    data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberStartIdx + memberNameLength);
+                }
+                response = JSONUtils.parse(data);
+            }
 
             return {
                 success: true,
