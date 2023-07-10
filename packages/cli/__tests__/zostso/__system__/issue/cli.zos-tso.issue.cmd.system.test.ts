@@ -20,7 +20,7 @@ const yaml = require("js-yaml");
 const propfilename: string = process.env.propfile || "custom_properties.yaml";
 const propfiledir: string = process.env.propdirectory || nodePath.resolve(__dirname + "/../../../../../../__tests__/__resources__/properties/") + "/";
 const propfile: string = propfiledir + propfilename;
-const jsonObject = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
+const jsonObject = yaml.load(fs.readFileSync(propfile, "utf8"));
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
