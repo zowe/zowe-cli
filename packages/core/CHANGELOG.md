@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `7.16.5`
 
 - BugFix: Fixed confusing error message "Token is not valid or expired" when APIML token is used to connect direct-to-service with `ZosmfRestClient`. [Imperative #978](https://github.com/zowe/imperative/issues/978)
 
