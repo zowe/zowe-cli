@@ -368,6 +368,9 @@ export class List {
             try {
                 response = await List.dataSet(session, pattern, { attributes: true });
             } catch (err) {
+                if (!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
+                    throw err;
+                }
                 // Listing data sets with attributes may fail sometimes, for
                 // example if a TSO prompt is triggered. If that happens, we
                 // try first to list them all without attributes, and then fetch

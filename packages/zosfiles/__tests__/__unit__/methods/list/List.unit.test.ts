@@ -1447,7 +1447,29 @@ describe("z/OS Files - List", () => {
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
 
-            expect(listDataSetSpy).toHaveBeenCalledTimes(2);
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
+        });
+
+        it("should handle an error from the List.dataSet API 2", async () => {
+            const dummyError = new ImperativeError({msg: "test", errorCode: "400"});
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
         });
 
@@ -1456,7 +1478,7 @@ describe("z/OS Files - List", () => {
             let caughtError;
 
             listDataSetSpy.mockImplementationOnce(async () => {
-                throw new Error("test2");
+                throw new ImperativeError({msg: "test2", errorCode: "500"});
             }).mockImplementation(async (): Promise<any> => {
                 return {
                     apiResponse: {

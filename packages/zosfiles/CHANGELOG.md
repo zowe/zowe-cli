@@ -4,9 +4,11 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Fixed `Create.dataset` failing when `CreateDataSetTypeEnum.DATA_SET_BLANK` is passed but no other options are specified. 
+- BugFix: Fixed `Create.dataset` failing when `CreateDataSetTypeEnum.DATA_SET_BLANK` is passed but no other options are specified.
 - BugFix: Added check for invalid block size when creating a sequential data set using the `Create.dataset` SDK method. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
 - BugFix: Added the ability to list all data set members when some members have invalid names.
+- BugFix: Removed extra calls to list datasets matching patterns if authentication to z/OSMF fails.
+
 
 ## `7.16.4`
 
@@ -19,7 +21,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## `7.15.0`
 
-- Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.  
+- Enhancement: Added `Copy.dataSetCrossLPAR` method to support copying a dataset or members from one LPAR to another.
 - BugFix: Correct improper overwrite error with PDS member to PDS member copy.
 
 ## `7.12.0`
