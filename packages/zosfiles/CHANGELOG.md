@@ -2,13 +2,16 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error when listing data set members that include backslash in the name.
+
 ## `7.16.5`
 
 - BugFix: Fixed `Create.dataset` failing when `CreateDataSetTypeEnum.DATA_SET_BLANK` is passed but no other options are specified.
 - BugFix: Added check for invalid block size when creating a sequential data set using the `Create.dataset` SDK method. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
 - BugFix: Added the ability to list all data set members when some members have invalid names.
 - BugFix: Removed extra calls to list datasets matching patterns if authentication to z/OSMF fails.
-
 
 ## `7.16.4`
 
