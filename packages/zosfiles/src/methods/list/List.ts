@@ -88,7 +88,7 @@ export class List {
                     const memberNameLength = data.substring(memberStartIdx,
                         memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
                     const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
-                    const escapedMemberName = memberName.replace(/("|\\)/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
+                    const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
                     data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberStartIdx + memberNameLength);
                 }
                 response = JSONUtils.parse(data);
