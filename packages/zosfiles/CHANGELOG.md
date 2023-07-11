@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.16.6`
 
 - BugFix: Fixed error when listing data set members that include backslash in the name.
 

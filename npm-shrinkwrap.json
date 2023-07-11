@@ -22604,7 +22604,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "7.16.5",
+      "version": "7.16.6",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -22613,12 +22613,12 @@
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.16.5",
         "@zowe/zos-console-for-zowe-sdk": "7.16.5",
-        "@zowe/zos-files-for-zowe-sdk": "7.16.5",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.16.5",
+        "@zowe/zos-files-for-zowe-sdk": "7.16.6",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.16.6",
         "@zowe/zos-logs-for-zowe-sdk": "7.16.5",
         "@zowe/zos-tso-for-zowe-sdk": "7.16.5",
         "@zowe/zos-uss-for-zowe-sdk": "7.16.5",
-        "@zowe/zos-workflows-for-zowe-sdk": "7.16.5",
+        "@zowe/zos-workflows-for-zowe-sdk": "7.16.6",
         "@zowe/zosmf-for-zowe-sdk": "7.16.5",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
@@ -22722,10 +22722,10 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "7.16.5",
+      "version": "7.16.6",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.16.5"
+        "@zowe/zos-files-for-zowe-sdk": "7.16.6"
       },
       "devDependencies": {
         "@types/node": "^14.18.28",
@@ -22765,7 +22765,7 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "7.16.5",
+      "version": "7.16.6",
       "license": "EPL-2.0",
       "dependencies": {
         "minimatch": "5.0.1"
@@ -22808,10 +22808,10 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "7.16.5",
+      "version": "7.16.6",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.16.5"
+        "@zowe/zos-files-for-zowe-sdk": "7.16.6"
       },
       "devDependencies": {
         "@types/node": "^14.18.28",
@@ -29178,12 +29178,12 @@
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.16.5",
         "@zowe/zos-console-for-zowe-sdk": "7.16.5",
-        "@zowe/zos-files-for-zowe-sdk": "7.16.5",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.16.5",
+        "@zowe/zos-files-for-zowe-sdk": "7.16.6",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.16.6",
         "@zowe/zos-logs-for-zowe-sdk": "7.16.5",
         "@zowe/zos-tso-for-zowe-sdk": "7.16.5",
         "@zowe/zos-uss-for-zowe-sdk": "7.16.5",
-        "@zowe/zos-workflows-for-zowe-sdk": "7.16.5",
+        "@zowe/zos-workflows-for-zowe-sdk": "7.16.6",
         "@zowe/zosmf-for-zowe-sdk": "7.16.5",
         "comment-json": "^4.1.1",
         "eslint": "^8.22.0",
@@ -29543,7 +29543,7 @@
         "@zowe/cli-test-utils": "7.16.5",
         "@zowe/core-for-zowe-sdk": "7.16.5",
         "@zowe/imperative": "5.15.1",
-        "@zowe/zos-files-for-zowe-sdk": "7.16.5",
+        "@zowe/zos-files-for-zowe-sdk": "7.16.6",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -29602,7 +29602,7 @@
         "@zowe/cli-test-utils": "7.16.5",
         "@zowe/core-for-zowe-sdk": "7.16.5",
         "@zowe/imperative": "5.15.1",
-        "@zowe/zos-files-for-zowe-sdk": "7.16.5",
+        "@zowe/zos-files-for-zowe-sdk": "7.16.6",
         "eslint": "^8.22.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
