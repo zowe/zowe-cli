@@ -28,6 +28,9 @@ import { IDsmListOptions } from "./doc/IDsmListOptions";
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
  */
 export class List {
+    // eslint-disable-next-line no-control-regex
+    private static CONTROL_CHAR_REGEX = new RegExp(/[\x00-\x1f\x7f\x80-\x9f]/g);
+
     /**
      * Retrieve all members from a PDS
      *
@@ -85,8 +88,7 @@ export class List {
                     const memberNameLength = data.substring(memberStartIdx,
                         memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
                     const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
-                    // eslint-disable-next-line no-control-regex
-                    const escapedMemberName = memberName.replace(/[\x00-\x1f\x7f\x80-\x9f]/g, "\\ufffd").replace(/"/g, `\\"`);
+                    const escapedMemberName = memberName.replace(/("|\\)/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
                     data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberStartIdx + memberNameLength);
                 }
                 response = JSONUtils.parse(data);
