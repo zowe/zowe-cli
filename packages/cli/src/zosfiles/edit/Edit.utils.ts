@@ -284,14 +284,13 @@ export class EditUtilities {
                 return [true, false];
             } else {
                 if (response.commandResponse.includes('412')){
-                    const cancelCmd = await this.etagMismatch(session, commandParameters, lfFile);
-                    return [false, cancelCmd];
+                    return await this.etagMismatch(session, commandParameters, lfFile);
+                    //returns [uploaded, canceled]
                 }
             }
         }catch(err){
             if (err.errorCode && err.errorCode == etagMismatchCode){
-                const cancelCmd = await this.etagMismatch(session, commandParameters, lfFile);
-                return [false, cancelCmd];
+                return await this.etagMismatch(session, commandParameters, lfFile);
             }
         }
         throw new ImperativeError({
@@ -308,13 +307,14 @@ export class EditUtilities {
      * @returns {Promise<boolean>} - returns a boolean where true means command is canceled and false means continue
      * @memberof EditUtilities
      */
-    public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: ILocalFile): Promise<boolean>{
+    public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters,
+        lfFile: ILocalFile): Promise<[boolean, boolean]>{
         try{
             //alert user that the version of document they've been editing has changed
             //ask if they want to see changes on the remote file before continuing
             const viewUpdatedRemote: boolean = await this.promptUser(Prompt.viewUpdatedRemote);
             if (viewUpdatedRemote){
-                await this.fileComparison(session, commandParameters, true);
+                await this.fileComparison(session, commandParameters);
             }
             //ask if they want to keep editing or upload despite changes to remote
             const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload);
@@ -322,9 +322,14 @@ export class EditUtilities {
             await this.localDownload(session, lfFile, true);
             if (!continueToUpload){
                 // create more edits & open stash/lf in editor
-                return await this.makeEdits(lfFile, commandParameters.arguments.editor);
+                const readyToUpload = await this.makeEdits(lfFile, commandParameters.arguments.editor);
+                if (readyToUpload){
+                    return await EditUtilities.uploadEdits(session, commandParameters, lfFile);
+                }else{
+                    return [false, true];
+                }
             }
-            return false;
+            return [false, false];
         }catch(err){
             throw new ImperativeError({
                 msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Temp file will persist.`),
