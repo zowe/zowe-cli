@@ -59,11 +59,14 @@ export class ZosmfRestClient extends RestClient {
             original.msg = "z/OSMF REST API Error:\n" + original.msg;
         }
 
-        let causeErrorsString = original.causeErrors; // TODO:V3_ERR_FORMAT - Remove in V3
         let causeErrorsJson;
+        let causeErrorsString = "";
+        if (original.causeErrors) {
+            causeErrorsString = original.causeErrors;
+        }
         try {
             // don't try to parse an empty string
-            if (original.causeErrors !== "") {
+            if (causeErrorsString !== "") {
                 causeErrorsJson = JSON.parse(causeErrorsString);
                 // if we didn't get an error trying to parse causeErrorsString, check if there is a stack
                 // on the JSON error and delete it
