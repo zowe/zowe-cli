@@ -170,24 +170,19 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            // I hate the indentation too.
-            expectStringSpy.mockResolvedValueOnce(`{
-    "items": [
-        {"member": "m1"},
-        {"member": "m2"},
-        {"member": "ÚÓ\t@Ý\n¢\x02"},
-        {"member": "Ú"¢\n"}
-    ], "returnedRows": 4
-}`);
+            const memberNames = ["m1", "m2"];
+            const shuffledAsciiChars = String.fromCharCode(...Array.from(Array(256).keys()).sort(() => Math.random() - 0.5));
+            for (let i = 0; i < 32; i++) {
+                memberNames.push(shuffledAsciiChars.slice(i * 8, (i + 1) * 8));
+            }
+            expectStringSpy.mockResolvedValueOnce(`{"items":[\n` +
+                memberNames.map((memName) => `  {"member":"${memName}"}`).join(",\n") + `\n` +
+                `],"returnedRows":${memberNames.length},"JSONversion":1}`);
 
             const expectedListApiResponse = {
-                items: [
-                    {member: "m1"},
-                    {member: "m2"},
-                    {member: "ÚÓ�@Ý�¢�"},
-                    {member: "Ú\"¢�"}
-                ],
-                returnedRows: 4
+                items: memberNames.map((memName) => ({ member: memName.replace((List as any).CONTROL_CHAR_REGEX, "\ufffd") })),
+                returnedRows: 34,
+                JSONversion: 1
             };
             try {
                 response = await List.allMembers(dummySession, dsname);
