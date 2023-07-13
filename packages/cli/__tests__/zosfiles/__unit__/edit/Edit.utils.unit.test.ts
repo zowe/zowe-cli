@@ -381,12 +381,12 @@ describe("Files Edit Utilities", () => {
                 return true;
             });
             jest.spyOn(EditUtilities, "etagMismatch").mockImplementation(async () => {
-                return false;
+                return [false, true]; //[uploaded, canceled]
             });
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
             expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
-            expect(response).toStrictEqual([false, false]);  //[uploaded, canceled]
+            expect(response).toStrictEqual([false, true]);  //[uploaded, canceled]
         });
         it("should catch thrown etag mismatch error and be unsuccessful with upload - uss", async () => {
             //TEST SETUP
@@ -447,13 +447,13 @@ describe("Files Edit Utilities", () => {
                 return false;
             });
             jest.spyOn(EditUtilities, "etagMismatch").mockImplementation(async () => {
-                return false;
+                return [true, false]; //[uploaded, canceled]
             });
 
             //TEST CONFIRMATION
             const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
             expect(fileComparisonSpy).toHaveBeenCalledTimes(0);
-            expect(response).toStrictEqual([false, false]);  //[uploaded, canceled]
+            expect(response).toStrictEqual([true, false]);  //[uploaded, canceled]
         });
 
         it("should catch any thrown errors when user views remote's changes and decides not to continue uploading", async() => {

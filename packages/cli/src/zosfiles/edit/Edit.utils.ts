@@ -326,10 +326,10 @@ export class EditUtilities {
                 if (readyToUpload){
                     return await EditUtilities.uploadEdits(session, commandParameters, lfFile);
                 }else{
-                    return [false, true];
+                    return [false, true]; //[uploaded, canceled]
                 }
             }
-            return [false, false];
+            return [false, false]; //[uploaded, canceled]
         }catch(err){
             throw new ImperativeError({
                 msg: TextUtils.chalk.red(`Command terminated. Issue with etag. Temp file will persist.`),
