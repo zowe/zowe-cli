@@ -10,3 +10,14 @@ Object {
   "success": true,
 }
 `;
+
+exports[`Files Edit Group Handler process method should upload edits unsuccessfully 1`] = `"Temp file location: /tmp/dataset.txt"`;
+
+exports[`Files Edit Group Handler process method should upload edits unsuccessfully 2`] = `"Exiting now. Temp file persists for editing."`;
+
+exports[`Files Edit Group Handler process method should upload edits unsuccessfully 3`] = `
+Object {
+  "commandResponse": "[32mExiting now. Temp file persists for editing.[39m",
+  "success": true,
+}
+`;

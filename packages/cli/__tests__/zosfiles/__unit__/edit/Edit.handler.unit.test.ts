@@ -92,6 +92,20 @@ describe("Files Edit Group Handler", () => {
                     "Successfully uploaded edits to mainframe."
                 )});
         });
+        it("should upload edits unsuccessfully", async () => {
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return false;
+            });
+            jest.spyOn(EditUtilities, "uploadEdits").mockImplementation(async () => {
+                return [false, true]; //[uploaded, canceled]
+            });
+            await handler.process(params);
+            expect(params.response.data.setObj).toHaveBeenCalledWith({
+                success: true,
+                commandResponse: TextUtils.chalk.green(
+                    "Exiting now. Temp file persists for editing."
+                )});
+        });
         it("should catch remote 404 error", async () => {
             localDownloadSpy.mockImplementation(jest.fn(async () => {
                 throw new ImperativeError({

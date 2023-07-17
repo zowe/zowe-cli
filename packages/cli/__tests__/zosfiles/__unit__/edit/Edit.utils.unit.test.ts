@@ -390,6 +390,25 @@ describe("Files Edit Utilities", () => {
             expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
             expect(response).toStrictEqual([false, true]);  //[uploaded, canceled]
         });
+        it("should catch an etag mismatch, continue editing, and then CANCEL upload - ds", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            jest.spyOn(EditUtilities, "promptUser").mockImplementation(async() => {
+                return false;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "uploadEdits").mockImplementation(async () => {
+                return [false, true];
+            });
+            //TEST CONFIRMATION
+            const response = await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(EditUtilities.uploadEdits).toHaveBeenCalledTimes(1);
+            expect(response).toStrictEqual([false, true]);  //[uploaded, canceled]
+        });
         it("should catch thrown etag mismatch error and be unsuccessful with upload - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
