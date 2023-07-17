@@ -40,7 +40,8 @@ describe("Files Edit Group Handler", () => {
                 apiResponse:{etag: 'remote etag'},
                 success: true,
                 commandResponse: ``
-            }
+            },
+            conflict: false
         };
 
         //Mocks Setup

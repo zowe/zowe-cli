@@ -46,6 +46,7 @@ describe("Files Edit Utilities", () => {
         guiAvail: true,
         zosResp: null,
         encoding: null,
+        conflict: false
     };
 
     const localFileUSS: ILocalFile = {
@@ -54,7 +55,8 @@ describe("Files Edit Utilities", () => {
         fileType: "uss",
         guiAvail: true,
         zosResp: null,
-        encoding: null
+        encoding: null,
+        conflict: false
     };
 
     const zosResp: IZosFilesResponse = {
@@ -272,7 +274,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             try {
-                await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, localFileDS);
             } catch(e) {
                 caughtError = e;
             }
@@ -285,7 +287,7 @@ describe("Files Edit Utilities", () => {
             }));
 
             //TEST CONFIRMATION
-            await EditUtilities.fileComparison(REAL_SESSION, commandParametersDs);
+            await EditUtilities.fileComparison(REAL_SESSION, commandParametersDs, localFileDS);
             expect(getFile2DsSpy).toBeCalledWith(undefined, expect.anything(), expect.objectContaining({
                 "browserView": true
             }));
@@ -297,7 +299,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             try {
-                await EditUtilities.fileComparison(REAL_SESSION, commandParameters);
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, localFileUSS);
             } catch(e) {
                 caughtError = e;
             }
@@ -314,7 +316,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             try {
-                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, true);
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, localFileDS, true);
             } catch(e) {
                 caughtError = e;
             }
@@ -329,7 +331,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             try {
-                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, true);
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, localFileDS, true);
             } catch(e) {
                 caughtError = e;
             }
