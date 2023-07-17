@@ -71,7 +71,7 @@ describe("Compare Base Helper", () => {
 
             const response = helper.prepareLocalFile("/absolute/path/to/real/file");
 
-            expect(response).toEqual(Buffer.from("test"));
+            expect(response).toEqual("test");
         });
 
         it("should fail if the given path is not a file", () => {

@@ -38,7 +38,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/cli": "^7.16.6",
     "@zowe/imperative": "5.15.1",
     "@zowe/perf-timing": "1.0.7"
   },
