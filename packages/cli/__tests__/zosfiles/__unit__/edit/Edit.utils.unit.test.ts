@@ -331,7 +331,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             try {
-                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, localFileDS, true);
+                await EditUtilities.fileComparison(REAL_SESSION, commandParameters, localFileDS);
             } catch(e) {
                 caughtError = e;
             }
