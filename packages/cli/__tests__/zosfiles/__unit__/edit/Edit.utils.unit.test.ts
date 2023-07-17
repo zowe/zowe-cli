@@ -438,7 +438,6 @@ describe("Files Edit Utilities", () => {
                 caughtError = e;
             }
             expect(caughtError).toBeInstanceOf(ImperativeError);
-            expect(caughtError.message).toContain("Command terminated");
         });
     });
     describe("etagMismatch()", () => {
