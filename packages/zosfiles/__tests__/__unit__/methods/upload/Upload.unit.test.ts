@@ -14,7 +14,7 @@ jest.mock("fs");
 import * as path from "path";
 import * as fs from "fs";
 
-import { ImperativeError, IO, Session, IHeaderContent } from "@zowe/imperative";
+import { ImperativeError, IO, NextVerFeatures, Session, IHeaderContent } from "@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "../../../../src/doc/IZosFilesResponse";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
@@ -45,6 +45,13 @@ describe("z/OS Files - Upload", () => {
 
     let response: IZosFilesResponse;
     let error: any;
+
+    beforeEach(() => {
+        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+         * Unless the choice below is overridden, tests will use our legacy format for errors.
+         */
+        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
+    });
 
     describe("fileToDataset", () => {
         const dataSetSpy = jest.spyOn(Upload as any, "pathToDataSet");
