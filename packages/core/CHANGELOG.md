@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Set properties for z/OSMF REST errors for use in a more user-friendly format with the ZOWE_V3_ERR_FORMAT environment variable. [zowe-cli#935](https://github.com/zowe/zowe-cli/issues/935)
+-
 ## `7.16.5`
 
 - BugFix: Fixed confusing error message "Token is not valid or expired" when APIML token is used to connect direct-to-service with `ZosmfRestClient`. [Imperative #978](https://github.com/zowe/imperative/issues/978)
