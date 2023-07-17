@@ -40,8 +40,7 @@
   "dependencies": {
     "@zowe/cli": "^7.16.6",
     "@zowe/imperative": "5.15.1",
-    "@zowe/perf-timing": "1.0.7",
-    "cd": "^0.3.3"
+    "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
     "@types/jest": "^28.0.0",

@@ -128,7 +128,7 @@ export class CompareBaseHelper {
      */
     public prepareLocalFile(filePath: string): Buffer {
         const localFile = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-        let lfContentStr: string;
+        let lfContentBuf: Buffer;
         let localFileHandle: number;
         try {
             try {
@@ -146,11 +146,11 @@ export class CompareBaseHelper {
                 });
             }
             // reading local file as buffer
-            lfContentStr = fs.readFileSync(localFileHandle, "utf-8");
+            lfContentBuf = fs.readFileSync(localFileHandle);
         } finally {
             if (localFileHandle != null) fs.closeSync(localFileHandle);
         }
-        return Buffer.from(lfContentStr);
+        return lfContentBuf;
     }
 
     /**

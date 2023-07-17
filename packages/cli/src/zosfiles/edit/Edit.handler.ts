@@ -27,6 +27,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
             fileName: commandParameters.arguments.ussFilePath ?? commandParameters.arguments.dataSetName,
             fileType: commandParameters.positionals[2].includes('d') ? "ds" : "uss",
             guiAvail: ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE,
+            conflict: false,
             zosResp: null
         };
         lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);
@@ -55,7 +56,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
             if (useStash){
                 viewDiff = await Utils.promptUser(Prompt.viewDiff);
                 if (viewDiff){
-                    await Utils.fileComparison(session, commandParameters);
+                    await Utils.fileComparison(session, commandParameters, lfFile);
                 }
             }
 
