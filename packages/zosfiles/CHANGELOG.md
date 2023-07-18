@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.17.0`
 - Enhancement: Added streaming capabilities to the Download.dataSet and Download.ussFile methods.
 - BugFix: Fixed Get.USSFile API not respecting USS file tags.
 
