@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Files Edit Group Handler process method should correctly determine fileType upon initial creation of lfFile 1`] = `"Temp file location: /tmp/dataset.txt"`;
+
+exports[`Files Edit Group Handler process method should correctly determine fileType upon initial creation of lfFile 2`] = `"Successfully uploaded edits to mainframe."`;
+
+exports[`Files Edit Group Handler process method should correctly determine fileType upon initial creation of lfFile 3`] = `
+Object {
+  "commandResponse": "[32mSuccessfully uploaded edits to mainframe.[39m",
+  "success": true,
+}
+`;
+
 exports[`Files Edit Group Handler process method should make and upload edits successfully 1`] = `"Temp file location: /tmp/dataset.txt"`;
 
 exports[`Files Edit Group Handler process method should make and upload edits successfully 2`] = `"Successfully uploaded edits to mainframe."`;

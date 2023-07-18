@@ -78,6 +78,18 @@ describe("Files Edit Group Handler", () => {
             expect(stripAnsi(logs.toString())).toMatchSnapshot();
         }) as any;
 
+        it("should correctly determine fileType upon initial creation of lfFile", async () => {
+            let lfFile: ILocalFile;
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                lfFile = localFile;
+                return true;
+            });
+            jest.spyOn(EditUtilities, "uploadEdits").mockImplementation(async () => {
+                return [true, false]; //[uploaded, canceled]
+            });
+            await handler.process(params);
+            expect(lfFile.fileType).toContain('ds');
+        });
         it("should make and upload edits successfully", async () => {
             jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
                 return true;

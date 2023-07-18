@@ -11,10 +11,8 @@
         "__tests__/__packages__/*"
       ],
       "dependencies": {
-        "@zowe/cli": "^7.16.6",
         "@zowe/imperative": "5.15.1",
-        "@zowe/perf-timing": "1.0.7",
-        "cd": "^0.3.3"
+        "@zowe/perf-timing": "1.0.7"
       },
       "devDependencies": {
         "@types/jest": "^28.0.0",
@@ -9192,14 +9190,6 @@
       "funding": {
         "type": "opencollective",
         "url": "https://opencollective.com/browserslist"
-      }
-    },
-    "node_modules/cd": {
-      "version": "0.3.3",
-      "resolved": "https://registry.npmjs.org/cd/-/cd-0.3.3.tgz",
-      "integrity": "sha512-X2y0Ssu48ucdkrNgCdg6k3EZWjWVy/dsEywUUTeZEIW31f3bQfq65Svm+TzU1Hz+qqhdmyCdjGhUvRsSKHl/mw==",
-      "engines": {
-        "node": "*"
       }
     },
     "node_modules/chalk": {
@@ -30322,11 +30312,6 @@
       "resolved": "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001302.tgz",
       "integrity": "sha512-YYTMO+tfwvgUN+1ZnRViE53Ma1S/oETg+J2lISsqi/ZTNThj3ZYBOKP2rHwJc37oCsPqAzJ3w2puZHn0xlLPPw==",
       "dev": true
-    },
-    "cd": {
-      "version": "0.3.3",
-      "resolved": "https://registry.npmjs.org/cd/-/cd-0.3.3.tgz",
-      "integrity": "sha512-X2y0Ssu48ucdkrNgCdg6k3EZWjWVy/dsEywUUTeZEIW31f3bQfq65Svm+TzU1Hz+qqhdmyCdjGhUvRsSKHl/mw=="
     },
     "chalk": {
       "version": "4.1.2",

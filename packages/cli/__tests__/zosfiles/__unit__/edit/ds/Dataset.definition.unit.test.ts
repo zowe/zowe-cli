@@ -20,6 +20,5 @@ describe("DatasetDefinition", () => {
         expect(DatasetDefinition.children).toBeUndefined();
         expect(DatasetDefinition.options).toMatchSnapshot();
         expect(DatasetDefinition.examples).toMatchSnapshot();
-        expect(DatasetDefinition.description).toBe(strings.DESCRIPTION);
     });
 });

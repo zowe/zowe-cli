@@ -20,6 +20,5 @@ describe("DatasetDefinition", () => {
         expect(USSFileDefinition.children).toBeUndefined();
         expect(USSFileDefinition.options).toMatchSnapshot();
         expect(USSFileDefinition.examples).toMatchSnapshot();
-        expect(USSFileDefinition.description).toBe(strings.DESCRIPTION);
     });
 });

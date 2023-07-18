@@ -409,19 +409,6 @@ describe("Files Edit Utilities", () => {
             expect(EditUtilities.uploadEdits).toHaveBeenCalledTimes(1);
             expect(response).toStrictEqual([false, true]);  //[uploaded, canceled]
         });
-        it("should catch thrown etag mismatch error and be unsuccessful with upload - uss", async () => {
-            //TEST SETUP
-            const localFile = cloneDeep(localFileUSS);
-            localFile.zosResp = zosResp;
-            localFile.zosResp.apiResponse.etag = 'etag';
-            jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
-                return zosRespMisMatch;
-            });
-
-            //TEST CONFIRMATION
-            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
-            expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
-        });
         it("should throw an imperative error given unexpected command termination - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
@@ -498,6 +485,22 @@ describe("Files Edit Utilities", () => {
                 caughtError = e;
             }
             expect(caughtError).toBeInstanceOf(ImperativeError);
+        });
+        it("should catch thrown etag mismatch error and be unsuccessful with upload - uss", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = 'etag';
+            jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+                return zosRespMisMatch;
+            });
+            jest.spyOn(EditUtilities, "etagMismatch").mockImplementation(async () => {
+                return [false, true];
+            });
+
+            //TEST CONFIRMATION
+            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersUss, localFile);
+            expect(EditUtilities.etagMismatch).toHaveBeenCalledTimes(1);
         });
     });
     describe("destroyTempFile()", () => {
