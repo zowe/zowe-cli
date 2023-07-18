@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent changes
+## Recent Changes
 
 - Enhancement: Updated the Imperative Framework to add support for unique cookie identifiers from API ML. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
 - Enhancement: Added support for mutliple `zowe auth login apiml` operations on a single `zowe config secure` call. [#1734](https://github.com/zowe/zowe-cli/pull/1734)

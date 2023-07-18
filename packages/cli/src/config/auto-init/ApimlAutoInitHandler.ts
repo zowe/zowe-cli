@@ -73,7 +73,9 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         if ((session.ISession.user && session.ISession.password) || (session.ISession.cert && session.ISession.certKey)) {
             // If it is basic authentication, we need to set the auth type.
             if (session.ISession.password) { session.ISession.type = SessConstants.AUTH_TYPE_TOKEN; }
-            session.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
+            if (session.ISession.tokenType == null) {
+                session.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
+            }
             session.ISession.storeCookie = true;
             session.ISession.tokenValue = await Login.apimlLogin(session);
             session.ISession.storeCookie = false;
