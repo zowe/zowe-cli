@@ -89,7 +89,7 @@ describe("Archive workflow cli system tests", () => {
                         error = err;
                     }
                 }
-            };
+            }
         });
         describe("Success Scenarios", () => {
             beforeEach(async () => {
@@ -109,7 +109,7 @@ describe("Archive workflow cli system tests", () => {
                             error = err;
                         }
                     }
-                };
+                }
             });
             it("Should return wf key if wf was archived using wf key.", async () => {
                 let thisWorkflowKey;
@@ -119,7 +119,7 @@ describe("Archive workflow cli system tests", () => {
                     if (element.workflowName === wfName) {
                         thisWorkflowKey = element.workflowKey;
                     }
-                };
+                }
                 const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_key.sh",
                     testEnvironment, [thisWorkflowKey]);
                 expect(response.stderr.toString()).toBe("");
@@ -134,7 +134,7 @@ describe("Archive workflow cli system tests", () => {
                     if (element.workflowName === wfName) {
                         thisWorkflowKey = element.workflowKey;
                     }
-                };
+                }
                 const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
                     testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
