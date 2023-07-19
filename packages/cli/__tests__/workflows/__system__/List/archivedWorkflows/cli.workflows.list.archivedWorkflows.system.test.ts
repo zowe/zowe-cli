@@ -15,7 +15,7 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
-import { ArchivedDeleteWorkflow, CreateWorkflow, ArchiveWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ArchivedDeleteWorkflow, CreateWorkflow, ArchiveWorkflow, ListArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
@@ -58,18 +58,10 @@ describe("List archived workflow cli system tests", () => {
         } catch (err) {
             error = err;
         }
-        const URI = "/zosmf/workflow/rest/1.0/archivedworkflows?workflowName=" + wfName;
-        response =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION, URI);
-        response.workflows.forEach(async (element: any) => {
-            if(element.workflowName===wfName){
-                wfKey = element.workflowKey;
-                try {
-                    await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey);
-                } catch (err) {
-                    error = err;
-                }
-            }
-        });
+        response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION);
+        for (const w of response.archivedWorkflows) {
+            await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, w.workflowKey);
+        }
     });
     describe("Success Scenarios", () => {
         beforeAll(async () => {

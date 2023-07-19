@@ -15,7 +15,14 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
-import { IWorkflows, DeleteWorkflow, CreateWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import {
+    CreateWorkflow,
+    DeleteWorkflow,
+    IWorkflows,
+    ListWorkflows,
+    ListArchivedWorkflows,
+    ArchivedDeleteWorkflow
+} from "@zowe/zos-workflows-for-zowe-sdk";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
@@ -44,7 +51,14 @@ describe("List workflow cli system tests", () => {
     });
 
     afterAll(async () => {
-        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+        let res: any = await ListWorkflows.getWorkflows(REAL_SESSION, { owner });
+        for (const w of res.workflows) {
+            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, w.workflowKey);
+        }
+        res = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION);
+        for (const w of res.archivedWorkflows) {
+            await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, w.workflowKey);
+        }
         await TestEnvironment.cleanUp(testEnvironment);
     });
     describe("List all workflows", () => {
