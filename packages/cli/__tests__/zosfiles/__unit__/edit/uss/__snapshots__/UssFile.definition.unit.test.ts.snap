@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatasetDefinition should use the correct object for strings 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "ed",
+    ],
+    "description": "Set the default editor that you wish to use for editing. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
+    "name": "editor",
+    "required": false,
+    "type": "string",
+  },
+]
+`;
+
+exports[`DatasetDefinition should use the correct object for strings 2`] = `
+Array [
+  Object {
+    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_text.txt\\" in notepad",
+    "options": "/a/ibmuser/my_text.txt --editor notepad",
+  },
+  Object {
+    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_text.txt\\" in notepad",
+    "options": "/a/ibmuser/my_text.txt --editor C:\\\\Windows\\\\System32\\\\Notepad.exe",
+  },
+]
+`;

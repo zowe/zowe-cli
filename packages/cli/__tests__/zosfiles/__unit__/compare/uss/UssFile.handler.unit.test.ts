@@ -11,7 +11,7 @@
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
 
 describe("Compare data set handler", () => {
     describe("process method", () => {
@@ -21,7 +21,7 @@ describe("Compare data set handler", () => {
         const ussFilePath1 = "/u/testing1";
         const ussFilePath2 = "/u/testing2";
         // Vars populated by the mocked function
-        let error;
+        let error: undefined | ImperativeError | Error;
         let apiMessage = "";
         let jsonObj: object;
         let logMessage = "";
@@ -98,6 +98,7 @@ describe("Compare data set handler", () => {
                 return "compared string";
             }));
             logMessage = "";
+            error = undefined;
         });
 
         it("should compare two uss-files in terminal", async () => {
@@ -108,6 +109,7 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
@@ -134,6 +136,7 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");
@@ -165,6 +168,7 @@ describe("Compare data set handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(getUSSFileSpy).toHaveBeenCalledTimes(2);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
             expect(apiMessage).toEqual("");

@@ -156,6 +156,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetDownloadedSuccessfully: {
+        message: "Data set downloaded successfully."
+    },
+
+    /**
+     * Message indicating that the data set was downloaded successfully
+     * @type {IMessageDefinition}
+     */
+    datasetDownloadedWithDestination: {
         message: "Data set downloaded successfully.\nDestination: %s"
     },
 
@@ -164,6 +172,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     ussFileDownloadedSuccessfully: {
+        message: "USS file downloaded successfully."
+    },
+
+    /**
+     * Message indicating that the uss file was downloaded successfully
+     * @type {IMessageDefinition}
+     */
+    ussFileDownloadedWithDestination: {
         message: "USS file downloaded successfully.\nDestination: %s"
     },
 

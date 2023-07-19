@@ -11,20 +11,21 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { CompareDefinition } from "./compare/Compare.definition";
+import { CopyDefinition } from "./copy/Copy.definition";
 import { CreateDefinition } from "./create/Create.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
-import { InvokeDefinition } from "./invoke/Invoke.definition";
 import { DownloadDefinition } from "./download/Download.definition";
-import { ListDefinition } from "./list/List.definition";
-import { UploadDefinition } from "./upload/Upload.definition";
-import { MountDefinition } from "./mount/Mount.definition";
-import { UnmountDefinition } from "./unmount/Unmount.definition";
+import { EditDefinition } from "./edit/Edit.definition";
 import { HMigrateDefinition } from "./hMigrate/HMigrate.definition";
 import { HRecallDefinition } from "./hRecall/HRecall.definition";
-import { CopyDefinition } from "./copy/Copy.definition";
+import { InvokeDefinition } from "./invoke/Invoke.definition";
+import { ListDefinition } from "./list/List.definition";
+import { MountDefinition } from "./mount/Mount.definition";
 import { RenameDefinition } from "./rename/Rename.definition";
+import { UnmountDefinition } from "./unmount/Unmount.definition";
+import { UploadDefinition } from "./upload/Upload.definition";
 import { ViewDefinition } from "./view/View.definition";
-import { CompareDefinition } from "./compare/Compare.definition";
 import { ZosFilesOptionDefinitions } from "./ZosFiles.options";
 
 /**
@@ -40,20 +41,21 @@ const definition: ICommandDefinition = {
     summary: "Manage z/OS data sets",
     description: "Manage z/OS data sets, create data sets, and more.",
     children: [
+        CompareDefinition,
+        CopyDefinition,
         CreateDefinition,
+        DownloadDefinition,
         DeleteDefinition,
-        InvokeDefinition,
+        EditDefinition,
         HMigrateDefinition,
         HRecallDefinition,
-        DownloadDefinition,
+        InvokeDefinition,
         ListDefinition,
-        UploadDefinition,
         MountDefinition,
-        UnmountDefinition,
-        CopyDefinition,
         RenameDefinition,
-        ViewDefinition,
-        CompareDefinition
+        UnmountDefinition,
+        UploadDefinition,
+        ViewDefinition
     ],
     passOn: [
         {

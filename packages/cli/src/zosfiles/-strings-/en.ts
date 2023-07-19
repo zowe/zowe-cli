@@ -755,6 +755,40 @@ export default {
             "or SSS,NNN where is is the start and NNN is the number of records retrieved."
         }
     },
+    EDIT: {
+        SUMMARY: "Edit the contents of a data set or USS file",
+        DESCRIPTION: "Edit the contents of a data set or USS file with your terminal and default editor.",
+        ACTIONS: {
+            DATA_SET: {
+                SUMMARY: "Edit content from a z/OS data set",
+                DESCRIPTION: "Edit content from a z/OS data set with your terminal and default editor.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to edit."
+                },
+                EXAMPLES: {
+                    EX1: `Edit the contents of the data set member "ibmuser.cntl(iefbr14)"`,
+                    EX2: `Edit the contents of the USS file "ibmuser.jcl(iefbr14)" and set extension as "jcl"`,
+                }
+            },
+            USS_FILE: {
+                SUMMARY: "Edit content from a USS file",
+                DESCRIPTION: "Edit content from a Unix System Services (USS) file with your terminal and default editor.",
+                POSITIONALS: {
+                    USSFILEPATH: "The path of the USS file you want to edit."
+                },
+                EXAMPLES: {
+                    EX1: `Edit the contents of the USS file "/a/ibmuser/my_text.txt" in notepad`,
+                    EX2: `Edit the contents of the USS file "/a/ibmuser/my_jcl.jcl" in notepad and set extension as "jcl"`,
+                }
+            }
+        },
+        OPTIONS: {
+            EDITOR: `Set the default editor that you wish to use for editing. Set the option to the editor's executable file location ` +
+            `or the program's name: ie "--editor notepad"`,
+            EXTENSION: `Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ` +
+            `ie "--extension jcl"`
+        }
+    },
     COMPARE: {
         SUMMARY: "Compare the contents of a two data set members",
         DESCRIPTION: "Compare the contents of a two data set members on your terminal (stdout).",

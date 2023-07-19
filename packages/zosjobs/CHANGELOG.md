@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `7.17.0`
+
+- Enhancement: Set properties for GetJobs errors for use in a more user-friendly format with the ZOWE_V3_ERR_FORMAT environment variable. [zowe-cli#935](https://github.com/zowe/zowe-cli/issues/935)
+
 ## `7.14.0`
 
 - Enhancement: Added streaming capabilities to the `DownloadJobs.downloadSpoolContentCommon` method. [Zowe Explorer #2060](https://github.com/zowe/vscode-extension-for-zowe/issues/2060)
