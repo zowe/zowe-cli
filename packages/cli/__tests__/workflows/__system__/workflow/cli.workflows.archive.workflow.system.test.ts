@@ -15,7 +15,14 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
-import { CreateWorkflow, DeleteWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import {
+    CreateWorkflow,
+    DeleteWorkflow,
+    IWorkflows,
+    ListWorkflows,
+    ListArchivedWorkflows,
+    ArchivedDeleteWorkflow
+} from "@zowe/zos-workflows-for-zowe-sdk";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
@@ -44,7 +51,14 @@ describe("Archive workflow cli system tests", () => {
     });
 
     afterAll(async () => {
-        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+        let res: any = await ListWorkflows.getWorkflows(REAL_SESSION, { owner });
+        for (const w of res.workflows) {
+            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, w.workflowKey);
+        }
+        res = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION);
+        for (const w of res.archivedWorkflows) {
+            await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, w.workflowKey);
+        }
         await TestEnvironment.cleanUp(testEnvironment);
     });
     describe("Archive workflows", () => {
@@ -66,7 +80,7 @@ describe("Archive workflow cli system tests", () => {
             }
 
             response = await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
-            response.workflows.forEach(async (element: any) => {
+            for (const element of response.workflows) {
                 if (element.workflowName === wfName) {
                     wfKey = element.workflowKey;
                     try {
@@ -75,7 +89,7 @@ describe("Archive workflow cli system tests", () => {
                         error = err;
                     }
                 }
-            });
+            };
         });
         describe("Success Scenarios", () => {
             beforeEach(async () => {
@@ -86,7 +100,7 @@ describe("Archive workflow cli system tests", () => {
                 let error;
                 const archiveCleanUp = await ZosmfRestClient.getExpectJSON<any>(REAL_SESSION,
                     "/zosmf/workflow/rest/1.0/archivedworkflows");
-                archiveCleanUp.archivedWorkflows.forEach(async (element: any) => {
+                for (const element of archiveCleanUp.archivedWorkflows) {
                     if (element.workflowName === wfName || element.workflowName === `${wfName}2`) {
                         wfKey = element.workflowKey;
                         try {
@@ -95,17 +109,17 @@ describe("Archive workflow cli system tests", () => {
                             error = err;
                         }
                     }
-                });
+                };
             });
             it("Should return wf key if wf was archived using wf key.", async () => {
                 let thisWorkflowKey;
                 const actualWfKey = await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION,
                     "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
-                actualWfKey.workflows.forEach(async (element: any) => {
+                for (const element of actualWfKey.workflows) {
                     if (element.workflowName === wfName) {
                         thisWorkflowKey = element.workflowKey;
                     }
-                });
+                };
                 const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_key.sh",
                     testEnvironment, [thisWorkflowKey]);
                 expect(response.stderr.toString()).toBe("");
@@ -116,11 +130,11 @@ describe("Archive workflow cli system tests", () => {
                 let thisWorkflowKey;
                 const actualWfKey = await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION,
                     "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
-                actualWfKey.workflows.forEach(async (element: any) => {
+                for (const element of actualWfKey.workflows) {
                     if (element.workflowName === wfName) {
                         thisWorkflowKey = element.workflowKey;
                     }
-                });
+                };
                 const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
                     testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
