@@ -83,7 +83,7 @@ export class List {
                 response = JSONUtils.parse(data);
             } catch {
                 // Escape invalid JSON characters in encrypted member names
-                for (const match of Array.from(data.matchAll(/"member":\s*"(?![A-Za-z@#$][A-Za-z0-9@#$]{0,7}")/g)).reverse()) {
+                for (const match of Array.from(data.matchAll(/"member":\s*"/g)).reverse()) {
                     const memberStartIdx = match.index + match[0].length;
                     const memberNameLength = data.substring(memberStartIdx,
                         memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
