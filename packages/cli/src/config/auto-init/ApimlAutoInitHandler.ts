@@ -105,7 +105,12 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
 
         // Check to see if there is an active base profile to avoid creating a new one named "base"
-        const activeBaseProfile = ConfigUtils.getActiveProfileName("base", params.arguments);
+        let activeBaseProfile: string;
+        try {
+            activeBaseProfile = ConfigUtils.getActiveProfileName("base", params.arguments);
+        } catch (err) {
+            // do nothing
+        }
 
         // Populate the config with base profile information
         if (profileConfig.defaults.base == null && profileConfig.profiles.base == null && activeBaseProfile == null) {
