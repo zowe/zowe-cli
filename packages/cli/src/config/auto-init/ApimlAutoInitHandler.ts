@@ -15,7 +15,7 @@ import * as lodash from "lodash";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
-    ImperativeError, RestClientError, TextUtils
+    ImperativeError, RestClientError, TextUtils, ConfigUtils
 } from "@zowe/imperative";
 import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
@@ -104,8 +104,11 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         }
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
 
+        // Check to see if there is an active base profile to avoid creating a new one named "base"
+        const activeBaseProfile = ConfigUtils.getActiveProfileName("base", params.arguments);
+
         // Populate the config with base profile information
-        if (profileConfig.defaults.base == null && profileConfig.profiles.base == null) {
+        if (profileConfig.defaults.base == null && profileConfig.profiles.base == null && activeBaseProfile == null) {
             profileConfig.profiles.base = {
                 type: "base",
                 properties: {
