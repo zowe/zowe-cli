@@ -41,18 +41,17 @@ export class Login {
             request: "POST",
             resource: LoginConstants.APIML_V1_RESOURCE
         });
-
+        if (session.ISession.basePath === "/") {
+            session.ISession.basePath = AbstractSession.DEFAULT_BASE_PATH;
+        }
         if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
-            if (session.ISession.basePath === "/") {
-                session.ISession.basePath = undefined;
-            }
             throw new ImperativeError((client as any).populateError({
                 msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
                 causeErrors: client.dataString,
                 source: SessConstants.HTTP_PROTOCOL
             }));
         }
-
+        session.ISession.user = session.ISession.password = session.ISession.base64EncodedAuth = undefined;
         // return token to the caller
         return session.ISession.tokenValue;
     }
