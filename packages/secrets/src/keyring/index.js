@@ -6,15 +6,12 @@ function getTargetName() {
             return `win32-${process.arch}-msvc`;
         case "linux":
             const isMusl = process.report.getReport().header.glibcVersionRuntime == null;
+            const abi = isMusl ? "musl" : "gnu";
             switch (process.arch) {
                 case "arm":
-                    return "linux-arm-gnueabihf";
-                case "arm64":
-                    return `linux-arm64-${isMusl ? "musl" : "gnu"}`;
-                case "ia32":
-                    return "linux-ia32-gnu";
-                case "x64":
-                    return `linux-x64-${isMusl ? "musl" : "gnu"}`;
+                    return `linux-arm-${abi}eabihf`;
+                default:
+                    return `linux-${process.arch}-${abi}`;
             }
         case "darwin":
         default:
