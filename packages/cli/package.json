@@ -97,6 +97,6 @@
     "node": ">=14.0.0"
   },
   "optionalDependencies": {
-    "@traeok/keytar-rs": "github:traeok/keytar-rs"
+    "@zowe/secrets-for-zowe-sdk": "7.17.0"
   }
 }

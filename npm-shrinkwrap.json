@@ -21519,6 +21519,7 @@
         "@zowe/imperative": "5.15.1",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.17.0",
+        "@zowe/secrets-for-zowe-sdk": "7.17.0",
         "@zowe/zos-console-for-zowe-sdk": "7.17.0",
         "@zowe/zos-files-for-zowe-sdk": "7.17.0",
         "@zowe/zos-jobs-for-zowe-sdk": "7.17.0",
@@ -21627,7 +21628,7 @@
     },
     "packages/secrets": {
       "name": "@zowe/secrets-for-zowe-sdk",
-      "version": "0.0.0",
+      "version": "7.17.0",
       "hasInstallScript": true,
       "license": "MIT",
       "devDependencies": {
