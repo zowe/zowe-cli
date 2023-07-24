@@ -35,24 +35,46 @@ export class Logout {
         ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Session token not populated. Unable to log out.");
 
         const client = new ZosmfRestClient(session);
+        if(!session.ISession.basePath) {
+            session.ISession.basePath = "/"; // prevent basepath requirement error on invalid credentials
+        }
         try{
             await client.request({
                 request: "POST",
                 resource: LogoutConstants.APIML_V1_RESOURCE
             });
         } catch (err) {
-            let shouldThrow = true;
-            LogoutConstants.APIML_V2_LOGOUT_ERR_LIST.forEach((errorKey: string) => {
-                if (err.message.includes(errorKey)) {
-                    shouldThrow = false;
+            let errorToThrow = err;
+            for (const errorKey in LogoutConstants.APIML_V2_LOGOUT_ERR_LIST) {
+                if (err.message.includes(LogoutConstants.APIML_V2_LOGOUT_ERR_LIST[errorKey])) {
+                    switch (errorKey) {
+                        case "V2_TOKEN_INVALID": // Token is invalid (logged out)
+                        case "V2_TOKEN_EXPIRED": // Token expired (trully expired)
+                        case "V2_TOKEN_MISSING": // Token type is not ^apimlAuthenticationToken.*
+                            errorToThrow = new ImperativeError({
+                                msg: "Token is not valid or expired.\n" +
+                                    "For CLI usage, see `zowe auth logout apiml --help`",
+                                errorCode: client.response.statusCode.toString()
+                            });
+                            break;
+                        case "V1_TOKEN_EXPIRED":
+                        default:
+                            errorToThrow = null;
+                            break;
+                    }
                 }
-            });
-            if (shouldThrow) {
-                throw err;
+            }
+
+            if (errorToThrow) {
+                throw errorToThrow;
+            }
+        } finally {
+            if (session.ISession.basePath === "/") {
+                session.ISession.basePath = AbstractSession.DEFAULT_BASE_PATH;
             }
         }
 
-        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204 && client.response.statusCode !== RestConstants.HTTP_STATUS_401) {
+        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
             if (!(client.response.statusCode === RestConstants.HTTP_STATUS_500 &&
                   client.dataString.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR))) {
                 throw new ImperativeError((client as any).populateError({
