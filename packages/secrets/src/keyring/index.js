@@ -20,7 +20,7 @@ function getTargetName() {
     }
 }
 
-const binaryPath = require.resolve(`keyring.${getTargetName()}.node`, {
+const binaryPath = require.resolve(`./keyring.${getTargetName()}.node`, {
     paths: [__dirname, path.join(__dirname, "prebuilds")],
 });
 
