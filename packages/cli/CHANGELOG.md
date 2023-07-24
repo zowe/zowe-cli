@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to include bugfixes in version `4.18.17`.
+
 ## `6.40.17`
 
 - BugFix: Updated Imperative to handle if a null command handler is provided. [#991](https://github.com/zowe/imperative/pull/991)

@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/imperative": "4.18.16",
+    "@zowe/imperative": "4.18.17",
     "chalk": "^4.1.0",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
