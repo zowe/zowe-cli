@@ -6677,16 +6677,6 @@
         "node": ">= 6"
       }
     },
-    "node_modules/@traeok/keytar-rs": {
-      "version": "0.0.0",
-      "resolved": "git+ssh://git@github.com/traeok/keytar-rs.git#adaf8cea0aa5b447f6aa0eee6232763a7b3cbbbb",
-      "hasInstallScript": true,
-      "license": "MIT",
-      "optional": true,
-      "engines": {
-        "node": ">= 10"
-      }
-    },
     "node_modules/@tsconfig/node10": {
       "version": "1.0.9",
       "dev": true,
@@ -21519,7 +21509,6 @@
         "@zowe/imperative": "5.15.1",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.17.0",
-        "@zowe/secrets-for-zowe-sdk": "7.17.0",
         "@zowe/zos-console-for-zowe-sdk": "7.17.0",
         "@zowe/zos-files-for-zowe-sdk": "7.17.0",
         "@zowe/zos-jobs-for-zowe-sdk": "7.17.0",
@@ -21559,7 +21548,7 @@
         "node": ">=14.0.0"
       },
       "optionalDependencies": {
-        "@traeok/keytar-rs": "github:traeok/keytar-rs"
+        "@zowe/secrets-for-zowe-sdk": "7.17.0"
       }
     },
     "packages/cli/node_modules/brace-expansion": {
