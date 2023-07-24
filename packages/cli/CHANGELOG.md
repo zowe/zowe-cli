@@ -2,7 +2,8 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `7.17.0`
+## Recent Changes
+
 - Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
 
 ## `7.16.5`
