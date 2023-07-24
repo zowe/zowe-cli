@@ -5,7 +5,8 @@ function getTargetName() {
         case "win32":
             return `win32-${process.arch}-msvc`;
         case "linux":
-            const isMusl = process.report.getReport().header.glibcVersionRuntime == null;
+            const isMusl =
+                process.report.getReport().header.glibcVersionRuntime == null;
             const abi = isMusl ? "musl" : "gnu";
             switch (process.arch) {
                 case "arm":
@@ -20,9 +21,19 @@ function getTargetName() {
 }
 
 const binaryPath = require.resolve(`keyring.${getTargetName()}.node`, {
-    paths: [
-        __dirname,
-        path.join(__dirname, "prebuilds")
-    ]
+    paths: [__dirname, path.join(__dirname, "prebuilds")],
 });
-module.exports = require(binaryPath);
+
+const {
+    deletePassword,
+    findCredentials,
+    findPassword,
+    getPassword,
+    setPassword,
+} = require(binaryPath);
+
+module.exports.deletePassword = deletePassword;
+module.exports.findCredentials = findCredentials;
+module.exports.findPassword = findPassword;
+module.exports.getPassword = getPassword;
+module.exports.setPassword = setPassword;
