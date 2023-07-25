@@ -113,7 +113,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         }
 
         // Populate the config with base profile information
-        if (profileConfig.defaults.base == null && profileConfig.profiles.base == null && activeBaseProfile == null) {
+        if (activeBaseProfile == null) {
             profileConfig.profiles.base = {
                 type: "base",
                 properties: {

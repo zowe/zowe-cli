@@ -10,7 +10,7 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig } from "@zowe/imperative";
+import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig, ConfigUtils } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 import * as lodash from "lodash";
@@ -194,6 +194,7 @@ describe("ApimlAutoInitHandler", () => {
         const mockCreateZosmfSession = jest.fn();
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
+        jest.spyOn(ConfigUtils, "getActiveProfileName").mockReturnValueOnce("base");
         const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
             defaults: { base: "base"},
             profiles: {
