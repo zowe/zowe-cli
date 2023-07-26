@@ -31,12 +31,14 @@ const badDataExpired = {
                 "Token is expired. caused by: TokenExpireException: Token is expired.",
             messageKey: "org.zowe.apiml.common.internalRequestError"
         }
-    ]};
+    ]
+};
 
 
+const realErrorText = "Token is not valid or expired";
 const mockErrorText = "Fake error for Auth Logout APIML unit tests";
 const throwImperativeError = async () => {
-    throw new ImperativeError({msg: mockErrorText});
+    throw new ImperativeError({ msg: mockErrorText });
 };
 const fakeSession: any = {
     ISession: {
@@ -73,12 +75,54 @@ describe("Auth Logout APIML unit tests", () => {
             ZosmfRestClient.prototype.request = jest.fn();
             (ZosmfRestClient.prototype as any).mResponse = badResponse401;
             let caughtError;
-            try{
+            try {
                 await Logout.apimlLogout(fakeSession);
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
+        });
+
+        it("should be able to catch 401 errors from apimlLogout", async () => {
+            const runTest = async (errorString: string): Promise<ImperativeError> => {
+                ZosmfRestClient.prototype.request = jest.fn(async () => { throw new Error(errorString) });
+                let caughtError;
+                try {
+                    await Logout.apimlLogout(fakeSession);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain(realErrorText);
+                expect(caughtError instanceof ImperativeError).toEqual(true);
+                return caughtError;
+            }
+            // Token is invalid (logged out bu tnot expired)
+            let caughtError = await runTest("org.zowe.apiml.security.query.invalidToken");
+            // Token is expored (old token)
+            caughtError = await runTest("org.zowe.apiml.security.expiredToken");
+            // Token is not APIML token
+            caughtError = await runTest("org.zowe.apiml.security.query.tokenNotProvided");
+
+            expect(caughtError).toBeDefined();
+        });
+    });
+
+    describe("Error handling tests - Token Expired - HTTP 500 - Zowe V1 APIML", () => {
+        it("should not throw and be able to catch 500 errors when a expired token was provided", async () => {
+            ZosmfRestClient.prototype.request = jest.fn(async function() {
+                this.mData = Buffer.from(JSON.stringify(badDataExpired));
+                throw new Error("TokenExpireException");
+            });
+            (ZosmfRestClient.prototype as any).mResponse = badResponse500;
+
+            let caughtError: ImperativeError = undefined as any;
+            try {
+                await Logout.apimlLogout(fakeSession);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
     });
 
