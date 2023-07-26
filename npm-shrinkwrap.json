@@ -23391,6 +23391,7 @@
       }
     },
     "packages/secrets": {
+      "name": "@zowe/secrets-for-zowe-sdk",
       "version": "7.17.0",
       "hasInstallScript": true,
       "license": "EPL-2.0",
