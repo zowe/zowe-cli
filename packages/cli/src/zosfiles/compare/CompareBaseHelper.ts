@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IDiffNameOptions } from "@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 
@@ -113,8 +113,8 @@ export class CompareBaseHelper {
      * @returns Object containing the name, job id, and spool id
      */
     public prepareSpoolDescriptor(spoolDescription: string): {jobName: string, jobId: string, spoolId: number} {
-        const descriptionSeperator: string = ":";
-        const spoolDescArr = spoolDescription.split(descriptionSeperator);
+        const descriptionSeparator: string = ":";
+        const spoolDescArr = spoolDescription.split(descriptionSeparator);
         const jobName: string = spoolDescArr[0];
         const jobId: string = spoolDescArr[1];
         const spoolId: number = Number(spoolDescArr[2]);
@@ -123,7 +123,7 @@ export class CompareBaseHelper {
 
     /**
      * Helper function that compare-related handlers will use to get the contents of a local file
-     * @param filePath Path to the file to compate against
+     * @param filePath Path to the file to compare against
      * @returns Buffer with the contents of the file
      */
     public prepareLocalFile(filePath: string): Buffer {
@@ -171,17 +171,18 @@ export class CompareBaseHelper {
     }
 
     /**
-     * To get the difference string in ternninal or in browser
-     * @param {string} string1 - string of file 1 comtent
-     * @param  {string} string2 - string of file 2 comtent
+     * To get the difference string in terminal or in browser
+     * @param {string} string1 - string of file 1 content
+     * @param {string} string2 - string of file 2 content
+     * @param {IDiffOptions} options
      * @returns {IZosFilesResponse}
      * @public
      * @memberof CompareBaseHelper
      */
-    public async getResponse(string1: string, string2: string): Promise<IZosFilesResponse>{
-        //  CHECHKING IIF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
+    public async getResponse(string1: string, string2: string, options?: IDiffOptions|IDiffNameOptions): Promise<IZosFilesResponse>{
+        //  CHECKING IF THE BROWSER VIEW IS TRUE, OPEN UP THE DIFFS IN BROWSER
         if (this.browserView) {
-            await DiffUtils.openDiffInbrowser(string1, string2);
+            await DiffUtils.openDiffInbrowser(string1, string2, options);
             return {
                 success: true,
                 commandResponse: "Launching data-sets diffs in browser...",
@@ -191,8 +192,11 @@ export class CompareBaseHelper {
 
         const jsonDiff = await DiffUtils.getDiffString(string1, string2, {
             outputFormat: 'terminal',
-            contextLinesArg: this.contextLines
+            contextLinesArg: this.contextLines,
+            name1: options?.name1,
+            name2: options?.name2
         });
+
         return {
             success: true,
             commandResponse: jsonDiff,

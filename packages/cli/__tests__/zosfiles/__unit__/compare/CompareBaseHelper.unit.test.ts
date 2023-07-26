@@ -13,7 +13,7 @@ import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseH
 import { DiffUtils, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 
-describe("Comapare Base Helper", () => {
+describe("Compare Base Helper", () => {
 
     const fakeCommandParam = {
         arguments: {
@@ -30,7 +30,7 @@ describe("Comapare Base Helper", () => {
     helper.prepareContent = jest.fn((string: string | Buffer)=> {
         return "prepared string 1";
     });
-    describe("it should prepare the comtent strings for comparison", () => {
+    describe("it should prepare the content strings for comparison", () => {
         it("should return the prepared strings", async ()=>{
             const returnedStrings = await helper.prepareContent(string1);
             expect(returnedStrings).toContain("prepared");
@@ -38,7 +38,7 @@ describe("Comapare Base Helper", () => {
 
     });
 
-    describe("it should return the response as per the options passed either in termianl or in browser", () => {
+    describe("it should return the response as per the options passed either in terminal or in browser", () => {
         it("should give response in terminal", ()=>{
             DiffUtils.getDiffString = jest.fn( async () => {
                 return "compared string";
@@ -53,7 +53,7 @@ describe("Comapare Base Helper", () => {
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
             helper.getResponse(string1, string2);
             expect(DiffUtils.openDiffInbrowser).toBeCalled();
-            expect(DiffUtils.openDiffInbrowser).toBeCalledWith(string1, string2);
+            expect(DiffUtils.openDiffInbrowser).toBeCalledWith(string1, string2, undefined);
 
         });
     });
@@ -63,7 +63,7 @@ describe("Comapare Base Helper", () => {
             jest.restoreAllMocks();
         });
 
-        it("should get the contents of a local file", () => {
+        it("should get the buffer of a local file", () => {
             jest.spyOn(fs, "openSync").mockReturnValue(0);
             jest.spyOn(fs, "fstatSync").mockReturnValue({isFile: () => true} as any);
             jest.spyOn(fs, "readFileSync").mockReturnValue("test");

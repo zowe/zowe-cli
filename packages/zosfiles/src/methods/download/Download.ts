@@ -21,7 +21,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
-import { IDownloadOptions } from "./doc/IDownloadOptions";
+import { IDownloadOptions, IDownloadSingleOptions } from "./doc/IDownloadOptions";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
@@ -35,16 +35,16 @@ import { TransferMode } from "../../utils/ZosFilesAttributes";
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
 interface IDownloadDsmTask {
-    handler: (session: AbstractSession, dsname: string, options: IDownloadOptions) => Promise<IZosFilesResponse>;
+    handler: (session: AbstractSession, dsname: string, options: IDownloadSingleOptions) => Promise<IZosFilesResponse>;
     dsname: string;
-    options: IDownloadOptions;
-    onSuccess: (response: IZosFilesResponse, options: IDownloadOptions) => void;
+    options: IDownloadSingleOptions;
+    onSuccess: (response: IZosFilesResponse, options: IDownloadSingleOptions) => void;
 }
 
 interface IDownloadUssTask {
     dirName?: string;
     file?: string;
-    options?: IDownloadOptions;
+    options?: IDownloadSingleOptions;
 }
 
 /**
@@ -56,7 +56,7 @@ export class Download {
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           dataSetName  - contains the data set name
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {IDownloadSingleOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
@@ -78,7 +78,7 @@ export class Download {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_GetReadDataSet.htm
      */
-    public static async dataSet(session: AbstractSession, dataSetName: string, options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+    public static async dataSet(session: AbstractSession, dataSetName: string, options: IDownloadSingleOptions = {}): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -104,27 +104,29 @@ export class Download {
                 extension = options.extension;
             }
 
-            // Get a proper destination for the file to be downloaded
-            // If the "file" is not provided, we create a folder structure similar to the data set name
-            // Note that the "extension" options do not affect the destination if the "file" options were provided
-            destination = (() => {
-                if (options.file) {
-                    return options.file;
-                }
+            if (options.stream == null) {
+                // Get a proper destination for the file to be downloaded
+                // If the "file" is not provided, we create a folder structure similar to the data set name
+                // Note that the "extension" options do not affect the destination if the "file" options were provided
+                destination = (() => {
+                    if (options.file) {
+                        return options.file;
+                    }
 
-                let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
-                // Method above lowercased characters.
-                // In case of preserving original letter case, uppercase all characters.
-                if (options.preserveOriginalLetterCase) {
-                    generatedFilePath = generatedFilePath.toUpperCase();
-                }
+                    let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
+                    // Method above lowercased characters.
+                    // In case of preserving original letter case, uppercase all characters.
+                    if (options.preserveOriginalLetterCase) {
+                        generatedFilePath = generatedFilePath.toUpperCase();
+                    }
 
-                return generatedFilePath + IO.normalizeExtension(extension);
-            })();
+                    return generatedFilePath + IO.normalizeExtension(extension);
+                })();
 
-            IO.createDirsSyncFromFilePath(destination);
+                IO.createDirsSyncFromFilePath(destination);
+            }
 
-            const writeStream = IO.createWriteStream(destination);
+            const writeStream = options.stream ?? IO.createWriteStream(destination);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -134,6 +136,10 @@ export class Download {
                 normalizeResponseNewLines: !(options.binary || options.record),
                 task: options.task
             };
+
+            if (options.range) {
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
+            }
 
             // If requestor needs etag, add header + get "response" back
             if (options.returnEtag) {
@@ -153,7 +159,8 @@ export class Download {
 
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                commandResponse: destination != null ? util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination) :
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message,
                 apiResponse
             };
         } catch (error) {
@@ -289,7 +296,7 @@ export class Download {
 
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, baseDir),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, baseDir),
                 apiResponse: response.apiResponse
             };
 
@@ -490,24 +497,27 @@ export class Download {
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           ussFileName  - contains the USS file name
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {IDownloadSingleOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
      * @throws {ImperativeError} USS file name must be set
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
-    public static async ussFile(session: AbstractSession, ussFileName: string, options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+    public static async ussFile(session: AbstractSession, ussFileName: string, options: IDownloadSingleOptions = {}): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
+            let destination: string;
 
-            const destination = options.file || posix.normalize(posix.basename(ussFileName));
-            IO.createDirsSyncFromFilePath(destination);
+            if (options.stream == null) {
+                destination = options.file || posix.normalize(posix.basename(ussFileName));
+                IO.createDirsSyncFromFilePath(destination);
+            }
 
-            const writeStream = IO.createWriteStream(destination);
+            const writeStream = options.stream ?? IO.createWriteStream(destination);
 
             // If data type is not defined by user, check for USS tags
             if (options.binary == null && options.encoding == null) {
@@ -530,6 +540,10 @@ export class Download {
                 task: options.task
             };
 
+            if (options.range) {
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
+            }
+
             // If requestor needs etag, add header + get "response" back
             if (options.returnEtag) {
                 requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
@@ -547,7 +561,8 @@ export class Download {
             }
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                commandResponse: destination != null ? util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination) :
+                    ZosFilesMessages.ussFileDownloadedSuccessfully.message,
                 apiResponse
             };
         } catch (error) {

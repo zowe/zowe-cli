@@ -10,6 +10,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Prevented misleading `basePath error` when credentials are invalid. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
 - BugFix: Add check for invalid block size when creating a sequential dataset. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
 
+## `7.17.0`
+
+- Enhancement: Created zos-files edit commands to edit a dataset or uss file locally [PR #1672](https://github.com/zowe/zowe-cli/pull/1672)
+
 ## `7.16.5`
 
 - BugFix: Fixed `zowe files create data-set` failing when no additional options are specified.
@@ -20,6 +24,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `7.16.4`
 
 BugFix: Fixed `secondary` option being specified as `1` on `BLANK` type datasets with the `zowe files create data-set` command [#1595](https://github.com/zowe/zowe-cli/issues/1595)
+
 
 ## `7.16.3`
 

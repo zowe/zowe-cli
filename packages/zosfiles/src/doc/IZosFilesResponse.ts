@@ -15,19 +15,19 @@
  */
 export interface IZosFilesResponse {
     /**
-     * indicates if the command ran successfully.
+     * Indicates the success of retrieving specified file information.
      * @type {boolean}
      */
     success: boolean;
 
     /**
-     * The command response text.
+     * Relevant information about the performed file operation.
      * @type {string}
      */
     commandResponse: string;
 
     /**
-     * The api response object.
+     * The api response object, housing any returned header information.
      * @type {*}
      */
     apiResponse?: any;
