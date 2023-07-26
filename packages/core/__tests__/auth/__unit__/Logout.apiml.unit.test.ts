@@ -85,7 +85,7 @@ describe("Auth Logout APIML unit tests", () => {
 
         it("should be able to catch 401 errors from apimlLogout", async () => {
             const runTest = async (errorString: string): Promise<ImperativeError> => {
-                ZosmfRestClient.prototype.request = jest.fn(async () => { throw new Error(errorString) });
+                ZosmfRestClient.prototype.request = jest.fn(async () => { throw new Error(errorString); });
                 let caughtError;
                 try {
                     await Logout.apimlLogout(fakeSession);
@@ -96,15 +96,13 @@ describe("Auth Logout APIML unit tests", () => {
                 expect(caughtError.message).toContain(realErrorText);
                 expect(caughtError instanceof ImperativeError).toEqual(true);
                 return caughtError;
-            }
+            };
             // Token is invalid (logged out bu tnot expired)
-            let caughtError = await runTest("org.zowe.apiml.security.query.invalidToken");
+            expect(await runTest("org.zowe.apiml.security.query.invalidToken")).toBeDefined();
             // Token is expored (old token)
-            caughtError = await runTest("org.zowe.apiml.security.expiredToken");
+            expect(await runTest("org.zowe.apiml.security.expiredToken")).toBeDefined();
             // Token is not APIML token
-            caughtError = await runTest("org.zowe.apiml.security.query.tokenNotProvided");
-
-            expect(caughtError).toBeDefined();
+            expect(await runTest("org.zowe.apiml.security.query.tokenNotProvided")).toBeDefined();
         });
     });
 
