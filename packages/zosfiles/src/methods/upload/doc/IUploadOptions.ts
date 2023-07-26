@@ -65,11 +65,6 @@ export interface IUploadOptions extends IOptions {
     etag?: string;
 
     /**
-     * The local file encoding to pass as a "Content-Type" header
-     */
-    localEncoding?: string;
-
-    /**
      * The indicator to force return of ETag.
      * If set to 'true' it forces the response to include an "ETag" header, regardless of the size of the response data.
      * If it is not present, the the default is to only send an Etag for data sets smaller than a system determined length,

@@ -13,7 +13,7 @@ jest.mock("fs");
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 describe("Compare local-file and data-set handler", () => {
     describe("process method", () => {
@@ -22,7 +22,7 @@ describe("Compare local-file and data-set handler", () => {
         const handler = new handlerReq.default();
         const dataSetName = "testing";
         // Vars populated by the mocked function
-        let error;
+        let error: undefined | ImperativeError | Error;
         let apiMessage = "";
         let jsonObj:object;
         let logMessage = "";
@@ -110,6 +110,7 @@ describe("Compare local-file and data-set handler", () => {
                 return Promise.resolve("compared string");
             }));
             logMessage = "";
+            error = undefined;
         });
 
         it("should compare local-file and data-set in terminal", async () => {
@@ -120,6 +121,7 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getDataSetSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -147,6 +149,7 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getDataSetSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
@@ -183,6 +186,7 @@ describe("Compare local-file and data-set handler", () => {
                 error = e;
             }
 
+            expect(error).toBeUndefined();
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
             expect(getDataSetSpy).toHaveBeenCalledTimes(1);
             expect(getDiffStringSpy).toHaveBeenCalledTimes(1);

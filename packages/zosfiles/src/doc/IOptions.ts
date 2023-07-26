@@ -41,6 +41,11 @@ export interface IOptions extends IZosFilesOptions {
     encoding?: string;
 
     /**
+     * The local file encoding to pass as a "Content-Type" header
+     */
+    localEncoding?: string;
+
+    /**
      * The volume on which the data set is stored
      * @type {string}
      */

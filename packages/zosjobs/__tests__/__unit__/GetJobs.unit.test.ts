@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, ImperativeError, ProcessUtils, Session } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, NextVerFeatures, ProcessUtils, Session } from "@zowe/imperative";
 import { GetJobs } from "../../src";
 import { GetJobsData } from "../__resources__/api/GetJobsData";
 
@@ -60,6 +60,13 @@ function mockGetJobsServerError(errorCode: string, causeErrors: string) {
 }
 
 describe("GetJobs tests", () => {
+
+    beforeEach(() => {
+        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+         * Unless overridden, tests will use our legacy format for errors.
+         */
+        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
+    });
 
     describe("getStatus APIs", () => {
 
@@ -216,6 +223,24 @@ describe("GetJobs tests", () => {
             expect(err.message).toMatchSnapshot();
         });
 
+        it("should throw an error if more than one job is returned for a job id using V3_ERR_FORMAT", async () => {
+            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+            let err: Error | ImperativeError;
+            try {
+                await GetJobs.getJob(pretendSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobid);
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain("Cannot obtain job info for job id = TSUxxx");
+            expect((err as any).mDetails.causeErrors).toContain("2 jobs were returned. Only expected 1.");
+            expect((err as any).mDetails.additionalDetails).toContain("Protocol:          https");
+            expect((err as any).mDetails.additionalDetails).toContain("Host:              Test");
+            expect((err as any).mDetails.additionalDetails).toContain("Port:              443");
+        });
+
         it("should throw an error if zero jobs are returned when getting jobs by ID", async () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([]);
             let err: Error | ImperativeError;
@@ -227,6 +252,24 @@ describe("GetJobs tests", () => {
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toMatchSnapshot();
+        });
+
+        it("should throw an error if zero jobs are returned when getting jobs by ID using V3_ERR_FORMAT", async () => {
+            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([]);
+            let err: Error | ImperativeError;
+            try {
+                await GetJobs.getJob(pretendSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobid);
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain("Cannot obtain job info for job id = TSUxxx");
+            expect((err as any).mDetails.causeErrors).toContain("Zero jobs were returned.");
+            expect((err as any).mDetails.additionalDetails).toContain("Protocol:          https");
+            expect((err as any).mDetails.additionalDetails).toContain("Host:              Test");
+            expect((err as any).mDetails.additionalDetails).toContain("Port:              443");
         });
 
         it("should get jobs by owner", async () => {

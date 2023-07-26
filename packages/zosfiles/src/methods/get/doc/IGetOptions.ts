@@ -17,7 +17,6 @@ import { IOptions } from "../../../doc/IOptions";
  * @interface IGetOptions
  */
 export interface IGetOptions extends IOptions {
-
     /**
      * Range of records to return
      * @type {string}
@@ -25,4 +24,3 @@ export interface IGetOptions extends IOptions {
      */
     range?: string;
 }
-

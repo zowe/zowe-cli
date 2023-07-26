@@ -29,15 +29,17 @@ describe("z/OS Files - View", () => {
         protocol: "https",
         type: "basic"
     });
+    const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
+
+    beforeEach(() => {
+        zosmfExpectSpy.mockClear();
+        zosmfExpectSpy.mockImplementation(async (_session, options) => {
+            options.responseStream?.end(content);
+            return {};
+        });
+    });
 
     describe("dataset", () => {
-        const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
-
-        beforeEach(() => {
-            zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(async () => content);
-        });
-
         it("should throw an error if the data set name is null", async () => {
             let response;
             let caughtError;
@@ -101,7 +103,10 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
         });
 
         it("should get data set content in binary mode", async () => {
@@ -123,7 +128,10 @@ describe("z/OS Files - View", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             // TODO:gzip
             // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                resource: endpoint
+            }));
         });
 
         it("should get data set content in binary mode if record is specified", async () => {
@@ -146,7 +154,10 @@ describe("z/OS Files - View", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             // TODO:gzip
             // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                resource: endpoint
+            }));
         });
 
         it("should get data set content in record mode", async () => {
@@ -166,7 +177,10 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_RECORD]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.X_IBM_RECORD],
+                resource: endpoint
+            }));
         });
 
         it("should get data set content with encoding", async () => {
@@ -186,8 +200,10 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
         });
 
         it("should send range header when range option is specified", async () => {
@@ -206,8 +222,10 @@ describe("z/OS Files - View", () => {
             expect(caughtError).toBeUndefined();
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN, { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }],
+                resource: endpoint
+            }));
         });
 
         it("should get data set content with responseTimeout", async () => {
@@ -227,14 +245,17 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
         });
 
         it("should get data set content with volume option", async () => {
             let response;
             let caughtError;
             const options: IGetOptions = {};
-            options.volume = "IBMBOL";
+            options.volume = "IBMVOL";
 
             try {
                 response = await Get.dataSet(dummySession, dsname, options);
@@ -249,16 +270,19 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
         });
     });
 
     describe("uss file", () => {
-        const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+        const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer");
 
         beforeEach(() => {
             zosmfExpectSecondSpy.mockClear();
-            zosmfExpectSecondSpy.mockImplementation(async () => content);
+            zosmfExpectSecondSpy.mockResolvedValue(Buffer.from("{}"));
         });
 
         it("should throw an error if the uss file name is null", async () => {
@@ -338,8 +362,11 @@ describe("z/OS Files - View", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
 
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
         });
 
         it("should get uss file content in binary mode", async () => {
@@ -358,8 +385,11 @@ describe("z/OS Files - View", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
 
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                resource: endpoint
+            }));
         });
 
         it("should get uss file content with a specific encoding", async () => {
@@ -380,11 +410,11 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [
-                header,
-                ZosmfHeaders.ACCEPT_ENCODING
-            ]);
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [header, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
         });
 
         it("should get uss file content with a set range", async () => {
@@ -402,11 +432,11 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [
-                ZosmfHeaders.ACCEPT_ENCODING,
-                {[ZosmfHeaders.X_IBM_RECORD_RANGE]: range}
-            ]);
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN, { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }],
+                resource: endpoint
+            }));
         });
     });
 });
