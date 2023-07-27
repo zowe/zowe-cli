@@ -135,7 +135,7 @@ export class DaemonDecider {
      */
     private recordDaemonPid() {
         const pidForUser: IDaemonPidForUser = {
-            user: os.userInfo().username,
+            user: this.mUser,
             pid: process.pid
         };
 
