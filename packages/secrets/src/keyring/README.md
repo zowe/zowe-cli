@@ -66,6 +66,14 @@ keyring is a native Node.js module for accessing and managing OS credential stor
     </tr>
     <tr>
         <td></td>
+        <td>x86</td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+    </tr>
+    <tr>
+        <td></td>
         <td>aarch64</td>
         <td>✓</td>
         <td>✓</td>
@@ -83,14 +91,6 @@ keyring is a native Node.js module for accessing and managing OS credential stor
     <tr>
         <td></td>
         <td>aarch64</td>
-        <td>✓</td>
-        <td>✓</td>
-        <td>✓</td>
-        <td>✓</td>
-    </tr>
-    <tr>
-        <td><b>zLinux</b></td>
-        <td>s390x</td>
         <td>✓</td>
         <td>✓</td>
         <td>✓</td>
