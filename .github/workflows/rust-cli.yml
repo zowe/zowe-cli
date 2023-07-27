@@ -24,14 +24,14 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
       with:
         components: clippy
-    
+
     - name: Prepare Cross
       run: cargo install cross@0.2.5
 
     # Need to build in container with old version of GLIBC to support RHEL 7
     # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
     - name: Build
-      working-directory: zowex 
+      working-directory: zowex
       run: cross build --verbose
 
     - name: Create Archive
@@ -93,7 +93,7 @@ jobs:
     name: Build Windows
     runs-on: windows-latest
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
-    
+
     steps:
     - uses: actions/checkout@v3
 
