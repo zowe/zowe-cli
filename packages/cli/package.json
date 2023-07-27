@@ -97,6 +97,6 @@
     "node": ">=14.0.0"
   },
   "optionalDependencies": {
-    "@zowe/secrets-for-zowe-sdk": "7.17.0"
+    "@zowe/secrets-for-zowe-sdk": "7.18.0-next.1"
   }
 }
