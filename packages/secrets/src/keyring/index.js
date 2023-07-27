@@ -1,4 +1,15 @@
-const path = require("path");
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
+const { join } = require("path");
 
 function getTargetName() {
     switch (process.platform) {
@@ -20,17 +31,17 @@ function getTargetName() {
     }
 }
 
-const binaryPath = require.resolve(`./keyring.${getTargetName()}.node`, {
-    paths: [__dirname, path.join(__dirname, "..", "..", "prebuilds")],
+const requireFn = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
+const binaryPath = requireFn.resolve(`./keyring.${getTargetName()}.node`, {
+    paths: [__dirname, join(__dirname, "..", "..", "prebuilds")],
 });
-
 const {
     deletePassword,
     findCredentials,
     findPassword,
     getPassword,
     setPassword,
-} = require(binaryPath);
+} = requireFn(binaryPath);
 
 module.exports.deletePassword = deletePassword;
 module.exports.findCredentials = findCredentials;
