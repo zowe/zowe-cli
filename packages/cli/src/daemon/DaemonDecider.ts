@@ -86,10 +86,6 @@ export class DaemonDecider {
 
         this.initialParse();
         if (this.startServer) {
-            this.mUser = os.userInfo().username;
-            if (process.platform === "win32") {
-                this.mUser = this.mUser.toLowerCase();
-            }
             this.mServer = net.createServer((c) => {
                 new DaemonClient(c, this.mServer, this.mUser).run();
             });
@@ -194,15 +190,17 @@ export class DaemonDecider {
 
             if (daemonOffset > -1) {
                 this.startServer = true;
+                this.mUser = os.userInfo().username;
 
                 if (process.platform === "win32") {
+                    this.mUser = this.mUser.toLowerCase();
                     // On windows we use a pipe instead of a socket
                     if (process.env?.ZOWE_DAEMON_PIPE?.length > 0) {
                         // user can choose some pipe path
                         this.mSocket = "\\\\.\\pipe\\" + process.env.ZOWE_DAEMON_PIPE;
                     } else {
                         // use default pipe path name
-                        this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
+                        this.mSocket = `\\\\.\\pipe\\${this.mUser}\\ZoweDaemon`;
                     }
                 } else {
                     // Linux-like systems use domain sockets
