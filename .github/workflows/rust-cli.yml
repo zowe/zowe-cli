@@ -63,9 +63,16 @@ jobs:
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: aarch64-apple-darwin
 
     - name: Build
-      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+      run: |
+        cargo build --verbose --target aarch64-apple-darwin --manifest-path=zowex/Cargo.toml
+        cargo build --verbose --target x86_64-apple-darwin --manifest-path=zowex/Cargo.toml
+        mkdir -p zowex/target/debug && cd zowex/target/debug
+        mv ../aarch64-apple-darwin/debug/zowe zowe.aarch64 && mv ../x86_64-apple-darwin/debug/zowe zowe.x86_64
+        lipo -create -output zowe zowe.aarch64 zowe.x86_64
 
     - name: Create Archive
       run: |
