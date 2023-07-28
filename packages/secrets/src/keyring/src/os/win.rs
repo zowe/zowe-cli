@@ -147,13 +147,14 @@ pub fn get_password(service: &String, account: &String) -> Result<Option<String>
         let bytes =
             std::slice::from_raw_parts((*cred).CredentialBlob, (*cred).CredentialBlobSize as usize);
 
-        CredFree(cred as *const c_void);
-        return match String::from_utf8(bytes.to_vec()) {
-            Ok(str) => Ok(Some(str)),
+        let result = match String::from_utf8(bytes.to_vec()) {
+            Ok(string) => Ok(Some(string)),
             Err(err) => Err(KeyringError::Utf8(
                 format!("Failed to convert credential to UTF-8: {}", err).to_owned(),
             )),
         };
+        CredFree(cred as *const c_void);
+        result
     }
 }
 
