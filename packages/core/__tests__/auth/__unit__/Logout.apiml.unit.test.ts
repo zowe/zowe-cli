@@ -97,9 +97,9 @@ describe("Auth Logout APIML unit tests", () => {
                 expect(caughtError instanceof ImperativeError).toEqual(true);
                 return caughtError;
             };
-            // Token is invalid (logged out bu tnot expired)
+            // Token is invalid (logged out but not expired)
             expect(await runTest("org.zowe.apiml.security.query.invalidToken")).toBeDefined();
-            // Token is expored (old token)
+            // Token is expired (old token)
             expect(await runTest("org.zowe.apiml.security.expiredToken")).toBeDefined();
             // Token is not APIML token
             expect(await runTest("org.zowe.apiml.security.query.tokenNotProvided")).toBeDefined();

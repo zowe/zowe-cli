@@ -37,12 +37,15 @@ export class Login {
         if(!session.ISession.basePath) {
             session.ISession.basePath = "/"; // prevent basepath requirement error on invalid credentials
         }
-        await client.request({
-            request: "POST",
-            resource: LoginConstants.APIML_V1_RESOURCE
-        });
-        if (session.ISession.basePath === "/") {
-            session.ISession.basePath = AbstractSession.DEFAULT_BASE_PATH;
+        try {
+            await client.request({
+                request: "POST",
+                resource: LoginConstants.APIML_V1_RESOURCE
+            });
+        } finally {
+            if (session.ISession.basePath === "/") {
+                session.ISession.basePath = undefined;
+            }
         }
         if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
             throw new ImperativeError((client as any).populateError({

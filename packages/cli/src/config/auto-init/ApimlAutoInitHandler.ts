@@ -151,7 +151,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             pluginNms: [],
             altProfiles: [],
             baseOverrides: []
-        })
+        });
         return profileConfig;
     }
 

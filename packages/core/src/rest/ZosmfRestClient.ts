@@ -148,7 +148,7 @@ export class ZosmfRestClient extends RestClient {
                         original.additionalDetails = `Token type "${SessConstants.TOKEN_TYPE_APIML}" requires base path to be defined.\n\n` +
                             "You must either connect with username and password or provide a base path.";
                     } else {
-                        original.additionalDetails = "Token is not valid or expired.\n"
+                        original.additionalDetails = "Token is not valid or expired.\n" +
                         "To obtain a new valid token, use the following command: `zowe config secure`\n" +
                         "For CLI usage, see `zowe config secure --help`";
                     }
