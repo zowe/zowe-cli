@@ -98,16 +98,10 @@ pub fn set_password(
     };
 
     // Save credential to user's credential set
-    let write_result: i32;
-    unsafe {
-        write_result = CredWriteW(&cred, 0);
-    }
+    let write_result = unsafe { CredWriteW(&cred, 0) };
 
-    let error_code: WIN32_ERROR;
     if write_result != TRUE {
-        unsafe {
-            error_code = GetLastError();
-        }
+        let error_code = unsafe { GetLastError() };
         return Err(KeyringError::from(error_code));
     }
 
@@ -119,27 +113,26 @@ pub fn get_password(service: &String, account: &String) -> Result<Option<String>
     let target_name = encode_utf16(format!("{}/{}", service, account).as_str());
 
     // Attempt to read credential from user's credential set
-    let read_result: i32;
-    unsafe {
-        read_result = CredReadW(
+    let read_result = unsafe {
+        CredReadW(
             target_name.as_ptr() as PCWSTR,
             CRED_TYPE_GENERIC,
             0,
             &mut cred,
-        );
-    }
+        )
+    };
 
     if read_result != TRUE {
-        let error_code: WIN32_ERROR;
-        unsafe {
-            error_code = GetLastError();
+        let error_code = unsafe { GetLastError() };
+        if cred != std::ptr::null_mut() {
+            unsafe {
+                CredFree(cred as *const c_void);
+            }
         }
-
-        if error_code == ERROR_NOT_FOUND {
-            return Ok(None);
-        }
-
-        return Err(KeyringError::from(error_code));
+        return match error_code {
+            ERROR_NOT_FOUND => Ok(None),
+            _ => Err(KeyringError::from(error_code)),
+        };
     }
 
     // Build buffer for credential secret and return as UTF-8 string
@@ -162,24 +155,18 @@ pub fn delete_password(service: &String, account: &String) -> Result<bool, Keyri
     let target_name = encode_utf16(format!("{}/{}", service, account).as_str());
 
     // Attempt to delete credential from user's credential set
-    let delete_result: i32;
-    unsafe {
-        delete_result = CredDeleteW(target_name.as_ptr() as PCWSTR, CRED_TYPE_GENERIC, 0);
-    }
+    let delete_result =
+        unsafe { CredDeleteW(target_name.as_ptr() as PCWSTR, CRED_TYPE_GENERIC, 0) };
 
     if delete_result != TRUE {
-        let error_code: WIN32_ERROR;
-        unsafe {
-            error_code = GetLastError();
-        }
+        let error_code = unsafe { GetLastError() };
 
-        if error_code == ERROR_NOT_FOUND {
+        return match error_code {
             // If we are trying to delete a credential that doesn't exist,
             // we didn't actually delete the password
-            return Ok(false);
-        }
-
-        return Err(KeyringError::from(error_code));
+            ERROR_NOT_FOUND => Ok(false),
+            _ => Err(KeyringError::from(error_code)),
+        };
     }
 
     Ok(true)
@@ -192,39 +179,39 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
     let mut creds: *mut *mut CREDENTIALW = std::ptr::null_mut::<*mut CREDENTIALW>();
 
     // Attempt to find matching credential from user's credential set
-    let find_result: i32;
-    unsafe {
-        find_result = CredEnumerateW(
+    let find_result = unsafe {
+        CredEnumerateW(
             filter.as_ptr() as PCWSTR,
             0u32,
             &mut count,
             &mut creds as *mut *mut *mut CREDENTIALW,
-        );
-    }
+        )
+    };
 
     if find_result != TRUE {
-        let error_code: WIN32_ERROR;
-        unsafe {
-            error_code = GetLastError();
+        let error_code = unsafe { GetLastError() };
+        if creds != std::ptr::null_mut() {
+            unsafe {
+                CredFree(creds as *const c_void);
+            }
         }
-        if error_code == ERROR_NOT_FOUND {
-            return Ok(None);
-        }
-
-        return Err(KeyringError::from(error_code));
+        return match error_code {
+            ERROR_NOT_FOUND => Ok(None),
+            _ => Err(KeyringError::from(error_code)),
+        };
     }
 
-    let cred: *const CREDENTIALW;
     unsafe {
-        cred = *creds.offset(0);
-        let size = (*cred).CredentialBlobSize as usize;
-        let pw = String::from(std::str::from_utf8(std::slice::from_raw_parts(
-            (*cred).CredentialBlob,
-            size,
-        ))?);
-        CredFree(creds as *const c_void);
+        let cred = *creds.offset(0);
+        let bytes =
+            std::slice::from_raw_parts((*cred).CredentialBlob, (*cred).CredentialBlobSize as usize);
 
-        Ok(Some(pw))
+        let result = match String::from_utf8(bytes.to_vec()) {
+            Ok(string) => Ok(Some(string)),
+            Err(err) => Err(KeyringError::from(err)),
+        };
+        CredFree(creds as *const c_void);
+        result
     }
 }
 
@@ -239,45 +226,48 @@ pub fn find_credentials(
     let mut creds: *mut *mut CREDENTIALW = std::ptr::null_mut::<*mut CREDENTIALW>();
 
     // Attempt to fetch user's credential set
-    let find_result: i32;
-    unsafe {
-        find_result = CredEnumerateW(
+    let find_result = unsafe {
+        CredEnumerateW(
             filter,
             0u32,
             &mut count,
             &mut creds as *mut *mut *mut CREDENTIALW,
-        );
-    }
+        )
+    };
 
     if find_result != TRUE {
-        let error_code: WIN32_ERROR;
-        unsafe {
-            error_code = GetLastError();
+        let error_code = unsafe { GetLastError() };
+        if creds != std::ptr::null_mut() {
+            unsafe {
+                CredFree(creds as *const c_void);
+            }
         }
-        if error_code == ERROR_NOT_FOUND {
-            return Ok(false);
-        }
-
-        return Err(KeyringError::from(error_code));
+        return match error_code {
+            ERROR_NOT_FOUND => Ok(false),
+            _ => Err(KeyringError::from(error_code)),
+        };
     }
 
     // Find and build matching credential list from user's credential set
     for i in 0..count {
-        let cred: &CREDENTIALW;
-        unsafe {
-            cred = &**creds.offset(i as isize);
-        }
+        let cred: &CREDENTIALW = unsafe { &**creds.offset(i as isize) };
 
         if cred.UserName.is_null() || cred.CredentialBlobSize == 0 {
             continue;
         }
 
-        let password: String;
-        unsafe {
-            password = String::from(std::str::from_utf8(std::slice::from_raw_parts(
-                cred.CredentialBlob,
-                cred.CredentialBlobSize as usize,
-            ))?);
+        let pw_bytes = unsafe {
+            std::slice::from_raw_parts((*cred).CredentialBlob, (*cred).CredentialBlobSize as usize)
+        };
+        let password_result = match String::from_utf8(pw_bytes.to_vec()) {
+            Ok(string) => Ok(string),
+            Err(err) => Err(KeyringError::from(err)),
+        };
+        if password_result.is_err() {
+            unsafe {
+                CredFree(creds as *const c_void);
+            }
+            return Err(password_result.unwrap_err());
         }
 
         let username: String;
@@ -285,7 +275,7 @@ pub fn find_credentials(
             let size = (0..).take_while(|&i| *cred.UserName.offset(i) != 0).count();
             username = String::from_utf16(std::slice::from_raw_parts(cred.UserName, size))?;
         }
-        credentials.push((username, password));
+        credentials.push((username, password_result.unwrap()));
     }
 
     unsafe {
