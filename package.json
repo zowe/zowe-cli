@@ -106,6 +106,7 @@
     "testEnvironment": "node",
     "collectCoverageFrom": [
       "packages/**/*.ts",
+      "!packages/*/index.ts",
       "!**/__tests__/**",
       "!packages/**/doc/I*.ts",
       "!**/main.ts"
