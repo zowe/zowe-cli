@@ -334,7 +334,7 @@ describe("Get", () => {
                 }
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
-                expect(stripNewLines(error.message)).toContain("File not found.");
+                expect(stripNewLines(error.message)).toContain("No such file or directory.");
             });
 
             it("should display a proper message when getting the content of a file with record option", async () => {
