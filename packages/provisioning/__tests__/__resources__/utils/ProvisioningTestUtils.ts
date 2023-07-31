@@ -133,7 +133,7 @@ export class ProvisioningTestUtils {
 
             // Delete deprovisioned instance
             await DeleteInstance.deleteDeprovisionedInstance(session, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-            Imperative.console.info(`Instance ${instance["external-name"]} was removed`);
+            Imperative.console.info(`Instance ${instanceState === this.STATE_DEPROV ? instanceID : instance["external-name"]} was removed`);
 
         } catch (thrownError) {
             Imperative.console.info(`Error ${thrownError}`);

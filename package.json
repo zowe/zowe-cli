@@ -60,7 +60,7 @@
     "jest-cli": "^29.0.0",
     "jest-environment-node": "^28.0.0",
     "jest-environment-node-debug": "^2.0.0",
-    "jest-junit": "^6.3.0",
+    "jest-junit": "^12.0.0",
     "jest-sonar-reporter": "^2.0.0",
     "jest-stare": "^2.2.0",
     "js-yaml": "^4.1.0",
@@ -132,6 +132,7 @@
     ]
   },
   "jest-junit": {
-    "output": "__tests__/__results__/junit.xml"
+    "outputDirectory": "__tests__/__results__",
+    "reportTestSuiteErrors": true
   }
 }
