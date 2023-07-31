@@ -33,6 +33,10 @@ jobs:
       run: npm audit --production --audit-level=moderate
 
     # TODO Consider using actions-rs/audit-check after https://github.com/actions-rs/audit-check/issues/116 is fixed
-    - name: Check Rust Vulnerabilities
+    - name: Check Daemon Vulnerabilities
       working-directory: zowex
+      run: cargo audit --deny warnings
+      
+    - name: Check Secrets SDK Vulnerabilities
+      working-directory: packages/secrets/src/keyring
       run: cargo audit --deny warnings
