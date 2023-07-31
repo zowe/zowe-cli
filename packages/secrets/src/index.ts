@@ -9,4 +9,4 @@
 *
 */
 
-export * as keyring from "./src/keyring";
+export * as keyring from "../src/keyring";
