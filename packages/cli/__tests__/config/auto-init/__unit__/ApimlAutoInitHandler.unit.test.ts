@@ -27,7 +27,8 @@ function mockConfigApi(properties: IConfig | undefined): any {
                 })
             },
             profiles: {
-                getProfilePathFromName: (name: string) => `profiles.${name}`
+                getProfilePathFromName: (name: string) => `profiles.${name}`,
+                get: jest.fn()
             }
         },
         exists: true,
@@ -196,7 +197,7 @@ describe("ApimlAutoInitHandler", () => {
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
         jest.spyOn(ConfigUtils, "getActiveProfileName").mockReturnValueOnce("base");
-        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
+        const mockConfigValue: any = {
             defaults: { base: "base"},
             profiles: {
                 "base": {
@@ -209,9 +210,10 @@ describe("ApimlAutoInitHandler", () => {
                 }
             },
             plugins: []
-        });
+        };
+        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue(mockConfigValue);
         const mockLogin = jest.fn().mockResolvedValue("fakeToken");
-        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(mockConfigValue));
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;

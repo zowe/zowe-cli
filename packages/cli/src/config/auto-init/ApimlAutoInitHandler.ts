@@ -106,7 +106,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         const config = ImperativeConfig.instance.config;
         // Check to see if there is an active base profile to avoid creating a new one named "base"
         let activeBaseProfile = params.arguments[`${this.mProfileType}-profile`] || config?.properties?.defaults?.[this.mProfileType];
-
+        let baseProfileCreated = false;
         // Populate the config with base profile information
         if (activeBaseProfile == null) {
             profileConfig.profiles[this.mProfileType] = {
@@ -120,14 +120,15 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             };
             profileConfig.defaults[this.mProfileType] = this.mProfileType;
             activeBaseProfile = this.mProfileType;
+            baseProfileCreated = true;
         } else {
             lodash.set(profileConfig, config.api.profiles.getProfilePathFromName(activeBaseProfile), {
                 type: this.mProfileType,
                 properties: {
                     ...config.api.profiles.get(activeBaseProfile),
-                    host: session.ISession.hostname ?? params.arguments.host,
-                    port: session.ISession.port ?? params.arguments.port,
-                    rejectUnauthorized: session.ISession.rejectUnauthorized ?? params.arguments.rejectUnauthorized
+                    host: session.ISession.hostname,
+                    port: session.ISession.port,
+                    rejectUnauthorized: session.ISession.rejectUnauthorized,
                 },
                 secure: []
             });
@@ -146,7 +147,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         this.mAutoInitReport.profileRpts.push({
             profName: this.mProfileType,
             profType: this.mProfileType,
-            changeForProf: activeBaseProfile == null ? "created" : "modified",
+            changeForProf: baseProfileCreated ? "created" : "modified",
             basePath: null,
             pluginNms: [],
             altProfiles: [],
