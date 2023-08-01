@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Updated daemon on MacOS to use universal binary which adds support for Apple Silicon.
+- BugFix: Fixed an issue in the Daemon server which prevents users on Windows with uppercase letters in their username from using the Daemon
 
 ## `7.17.0`
 
@@ -19,7 +20,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `7.16.4`
 
-BugFix: Fixed `secondary` option being specified as `1` on `BLANK` type datasets with the `zowe files create data-set` command [#1595](https://github.com/zowe/zowe-cli/issues/1595)
+- BugFix: Fixed `secondary` option being specified as `1` on `BLANK` type datasets with the `zowe files create data-set` command [#1595](https://github.com/zowe/zowe-cli/issues/1595)
 
 
 ## `7.16.3`
