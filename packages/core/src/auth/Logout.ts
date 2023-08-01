@@ -65,6 +65,17 @@ export class Logout {
                 }
             }
 
+            /**
+             * NOTE: We will continue to check for `V2_TOKEN_...` keys until we know for sure that
+             *      invalid credentials do not return a 403 on certain APIML configurations with ACF2
+             */
+            // if (client.response.statusCode.toString() === "401") {
+            //     errorToThrow = new ImperativeError({
+            //         msg: "Token is not valid or expired.\n" +
+            //             "For CLI usage, see `zowe auth logout apiml --help`",
+            //         errorCode: client.response.statusCode.toString()
+            //     });
+            // }
             if (errorToThrow) {
                 throw errorToThrow;
             }
