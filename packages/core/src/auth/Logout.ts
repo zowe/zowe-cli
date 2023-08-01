@@ -35,9 +35,6 @@ export class Logout {
         ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Session token not populated. Unable to log out.");
 
         const client = new ZosmfRestClient(session);
-        if(!session.ISession.basePath) {
-            session.ISession.basePath = "/"; // prevent basepath requirement error on invalid credentials
-        }
         try{
             await client.request({
                 request: "POST",
@@ -78,10 +75,6 @@ export class Logout {
             // }
             if (errorToThrow) {
                 throw errorToThrow;
-            }
-        } finally {
-            if (session.ISession.basePath === "/") {
-                session.ISession.basePath = AbstractSession.DEFAULT_BASE_PATH;
             }
         }
 

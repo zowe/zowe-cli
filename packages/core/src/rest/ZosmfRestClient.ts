@@ -143,7 +143,7 @@ export class ZosmfRestClient extends RestClient {
                 ;
                 if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                     original.additionalDetails = "Username or password are not valid or expired.\n\n";
-                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
+                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN && this.session.ISession.tokenValue != null) {
                     if (this.session.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML && !this.session.ISession.basePath) {
                         original.additionalDetails = `Token type "${SessConstants.TOKEN_TYPE_APIML}" requires base path to be defined.\n\n` +
                             "You must either connect with username and password or provide a base path.";
