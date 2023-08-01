@@ -44,7 +44,7 @@ export class Login {
             });
         } finally {
             if (session.ISession.basePath === "/") {
-                session.ISession.basePath = undefined;
+                session.ISession.basePath = AbstractSession.DEFAULT_BASE_PATH;
             }
         }
         if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
