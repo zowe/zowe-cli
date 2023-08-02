@@ -751,8 +751,8 @@ export default {
                 " Conflicts with binary.",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
             "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
-            RANGE: "The range of records to return in either of SSS-EEE where SSS is the start and EEE is the end of records " +
-            "or SSS,NNN where is is the start and NNN is the number of records retrieved."
+            RANGE: "The range of records to return in either `SSS-EEE` or `SSS,NNN` format. SSS identifies the start record, EEE " +
+            "identifies the end record to be retrieved, and NNN identifies the number of records to be retrieved."
         }
     },
     EDIT: {
