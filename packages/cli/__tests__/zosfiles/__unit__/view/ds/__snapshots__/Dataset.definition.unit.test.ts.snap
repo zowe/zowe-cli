@@ -45,7 +45,7 @@ Array [
     "aliases": Array [
       "R",
     ],
-    "description": "The range of records to return in either \`SSS-EEE\` or \`SSS,NNN\` format. SSS identifies the start record, EEE identifies the end record to be retrieved, and NNN identifies the number of records to be retrieved.",
+    "description": "The range of records to return in either \`SSS-EEE\` or \`SSS,NNN\` format. SSS identifies the start record, EEE identifies the end record, and NNN identifies the number of retrieved records.",
     "name": "range",
     "type": "string",
   },
