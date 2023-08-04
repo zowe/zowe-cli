@@ -160,7 +160,8 @@ describe("ZosmfRestClient tests", () => {
             expect(processedError.msg).toContain("Fake token error");
             expect(processedError.msg).toContain("This operation requires authentication.");
             expect(processedError.msg).toContain("Token is not valid or expired");
-            expect(processedError.msg).toContain("For CLI usage, see `zowe auth login apiml --help`");
+            expect(processedError.msg).toContain("To obtain a new valid token, use the following command: `zowe config secure`");
+            expect(processedError.msg).toContain("For CLI usage, see `zowe config secure --help`");
             expect(processedError.causeErrors).toEqual('{"Error": "Fake token error"}');
             expect(processedError.additionalDetails).not.toBeDefined();
         });

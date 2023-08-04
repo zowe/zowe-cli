@@ -2,11 +2,16 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.18.0`
 
 - Enhancement: Updated daemon on MacOS to use universal binary which adds support for Apple Silicon.
-- BugFix: Fixed an issue in the Daemon server which prevents users on Windows with uppercase letters in their username from using the Daemon
+- Enhancement: Added support for mutliple `zowe auth login apiml` operations on a single `zowe config secure` call. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
 - Enhancement: Replaced use of `node-keytar` with the `keyring` module from `@zowe/secrets-for-zowe-sdk`.
+- Enhancement: Updated the Imperative Framework to add support for unique cookie identifiers from API ML. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+- BugFix: Fixed an issue in the Daemon server which prevents users on Windows with uppercase letters in their username from using the Daemon
+- BugFix: Add check for invalid block size when creating a sequential dataset. [#1439](https://github.com/zowe/zowe-cli/issues/1439)
+- BugFix: Allowed `logout` operations with invalid and/or expired tokens. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+- BugFix: Prevented misleading `basePath error` when credentials are invalid. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
 
 ## `7.17.0`
 

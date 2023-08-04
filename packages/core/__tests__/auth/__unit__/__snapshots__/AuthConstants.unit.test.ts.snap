@@ -2,4 +2,4 @@
 
 exports[`LoginConstants Unit Test Should not have changed 1`] = `"{\\"APIML_V1_RESOURCE\\":\\"/gateway/api/v1/auth/login\\"}"`;
 
-exports[`LogoutConstants Unit Test Should not have changed 1`] = `"{\\"APIML_V1_RESOURCE\\":\\"/gateway/api/v1/auth/logout\\",\\"APIML_V1_TOKEN_EXP_ERR\\":\\"TokenExpireException\\"}"`;
+exports[`LogoutConstants Unit Test Should not have changed 1`] = `"{\\"APIML_V1_RESOURCE\\":\\"/gateway/api/v1/auth/logout\\",\\"APIML_V1_TOKEN_EXP_ERR\\":\\"TokenExpireException\\",\\"APIML_V2_LOGOUT_ERR_LIST\\":{\\"V1_TOKEN_EXPIRED\\":\\"TokenExpireException\\",\\"V2_TOKEN_EXPIRED\\":\\"org.zowe.apiml.security.expiredToken\\",\\"V2_TOKEN_INVALID\\":\\"org.zowe.apiml.security.query.invalidToken\\",\\"V2_TOKEN_MISSING\\":\\"org.zowe.apiml.security.query.tokenNotProvided\\"}}"`;

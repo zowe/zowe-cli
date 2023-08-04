@@ -163,7 +163,7 @@ describe("APIML Services unit tests", () => {
             }
 
             expect(caughtError).toBeDefined();
-            expect(caughtError.message).toContain("Token type for API ML token login must be apimlAuthenticationToken.");
+            expect(caughtError.message).toContain("Token type (fakeToken) for API ML token login must start with 'apimlAuthenticationToken'.");
         });
 
         it("should require token value for token sessions", async () => {

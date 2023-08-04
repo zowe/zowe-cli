@@ -82,8 +82,8 @@ export class Services {
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession.user, "User name for API ML basic login must be defined.");
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession.password, "Password for API ML basic login must be defined.");
         } else {
-            ImperativeExpect.toBeEqual(session.ISession.tokenType, "apimlAuthenticationToken",
-                "Token type for API ML token login must be apimlAuthenticationToken.");
+            ImperativeExpect.toMatchRegExp(session.ISession.tokenType, "^apimlAuthenticationToken.*",
+                `Token type (${session.ISession.tokenType}) for API ML token login must start with 'apimlAuthenticationToken'.`);
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Token value for API ML token login must be defined.");
         }
 

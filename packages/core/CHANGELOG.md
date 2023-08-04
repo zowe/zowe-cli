@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `7.18.0`
+
+- Enhancement: Added support for dynamic APIML tokens. [#1734](https://github.com/zowe/zowe-cli/pull/1734)
+
 ## `7.17.0`
 
 - Enhancement: Set properties for z/OSMF REST errors for use in a more user-friendly format with the ZOWE_V3_ERR_FORMAT environment variable. [zowe-cli#935](https://github.com/zowe/zowe-cli/issues/935)
