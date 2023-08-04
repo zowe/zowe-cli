@@ -51,7 +51,7 @@
     "@types/node": "^14.18.28",
     "@types/ssh2": "^1.11.0",
     "@zowe/cli-test-utils": "7.16.5",
-    "@zowe/imperative": "5.16.0",
+    "@zowe/imperative": "5.18.0",
     "eslint": "^8.22.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",

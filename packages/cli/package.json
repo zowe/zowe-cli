@@ -42,7 +42,6 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "preinstall": "node ./scripts/preinstall",
     "postinstall": "node ./scripts/validatePlugins && node ./scripts/printSuccessMessage",
     "build": "tsc --pretty",
     "watch": "tsc --pretty --watch",
@@ -54,12 +53,12 @@
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "prepack": "node ../../scripts/prepareLicenses.js",
-    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh && bash ../../scripts/bundleKeytar.sh",
+    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh",
     "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.17.0",
-    "@zowe/imperative": "5.16.0",
+    "@zowe/imperative": "5.18.0",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "7.17.0",
     "@zowe/zos-console-for-zowe-sdk": "7.17.0",
@@ -94,7 +93,7 @@
     "which": "^2.0.2"
   },
   "optionalDependencies": {
-    "keytar": "7.9.0"
+    "@zowe/secrets-for-zowe-sdk": "7.18.0"
   },
   "engines": {
     "node": ">=14.0.0"
