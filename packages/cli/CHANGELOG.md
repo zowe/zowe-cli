@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Updated daemon on MacOS to use universal binary which adds support for Apple Silicon.
 - BugFix: Fixed an issue in the Daemon server which prevents users on Windows with uppercase letters in their username from using the Daemon
+- Enhancement: Replaced use of `node-keytar` with the `keyring` module from `@zowe/secrets-for-zowe-sdk`.
 
 ## `7.17.0`
 
