@@ -72,13 +72,17 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         // Login with token authentication first, so we can support certificates
         if ((session.ISession.user && session.ISession.password) || (session.ISession.cert && session.ISession.certKey)) {
             // If it is basic authentication, we need to set the auth type.
-            if (session.ISession.password) { session.ISession.type = SessConstants.AUTH_TYPE_TOKEN; }
-            session.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
+            if (session.ISession.tokenType == null) {
+                session.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
+            }
             session.ISession.storeCookie = true;
             session.ISession.tokenValue = await Login.apimlLogin(session);
             session.ISession.storeCookie = false;
             session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
-            session.ISession.user = session.ISession.password = session.ISession.cert = session.ISession.certKey = undefined;
+
+            session.ISession.base64EncodedAuth =
+            session.ISession.user = session.ISession.password =
+            session.ISession.cert = session.ISession.certKey = undefined;
         }
 
         const restErrUnauthorized = 403;
@@ -99,10 +103,14 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         }
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
 
+        const config = ImperativeConfig.instance.config;
+        // Check to see if there is an active base profile to avoid creating a new one named "base"
+        let activeBaseProfile = params.arguments[`${this.mProfileType}-profile`] || config?.properties?.defaults?.[this.mProfileType];
+        let baseProfileCreated = false;
         // Populate the config with base profile information
-        if (profileConfig.defaults.base == null && profileConfig.profiles.base == null) {
-            profileConfig.profiles.base = {
-                type: "base",
+        if (activeBaseProfile == null) {
+            profileConfig.profiles[this.mProfileType] = {
+                type: this.mProfileType,
                 properties: {
                     host: session.ISession.hostname,
                     port: session.ISession.port,
@@ -110,16 +118,41 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 },
                 secure: []
             };
-            profileConfig.defaults.base = "base";
+            profileConfig.defaults[this.mProfileType] = this.mProfileType;
+            activeBaseProfile = this.mProfileType;
+            baseProfileCreated = true;
+        } else {
+            lodash.set(profileConfig, config.api.profiles.getProfilePathFromName(activeBaseProfile), {
+                type: this.mProfileType,
+                properties: {
+                    ...config.api.profiles.get(activeBaseProfile),
+                    host: session.ISession.hostname,
+                    port: session.ISession.port,
+                    rejectUnauthorized: session.ISession.rejectUnauthorized,
+                },
+                secure: []
+            });
+        }
 
-            if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
-                profileConfig.profiles.base.properties.tokenType = session.ISession.tokenType;
-                profileConfig.profiles.base.properties.tokenValue = session.ISession.tokenValue;
-                profileConfig.profiles.base.secure.push("tokenValue");
-            }
+        if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
+            const expandedBaseProfilePath = config.api.profiles.getProfilePathFromName(activeBaseProfile);
+            lodash.get(profileConfig, expandedBaseProfilePath).properties.tokenType = session.ISession.tokenType;
+            lodash.get(profileConfig, expandedBaseProfilePath).properties.tokenValue = session.ISession.tokenValue;
+            lodash.get(profileConfig, expandedBaseProfilePath).secure.push("tokenValue");
         }
 
         this.recordProfilesFound(profileInfos);
+
+        // Report whether or not we created a base profile in this auto-init execution
+        this.mAutoInitReport.profileRpts.push({
+            profName: this.mProfileType,
+            profType: this.mProfileType,
+            changeForProf: baseProfileCreated ? "created" : "modified",
+            basePath: null,
+            pluginNms: [],
+            altProfiles: [],
+            baseOverrides: []
+        });
         return profileConfig;
     }
 
@@ -173,7 +206,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             // report plugins using this profile (except for base profiles)
             let loopCount: number;
             if (nextProfRpt.pluginNms.length > 0) {
-                if (nextProfRpt.profType !== "base") {
+                if (nextProfRpt.profType !== this.mProfileType) {
                     loopCount = 1;
                     for (const pluginNm of nextProfRpt.pluginNms) {
                         if (loopCount == 1) {
@@ -456,14 +489,14 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             return;  // default base profile is undefined
         }
 
-        const baseProfile = lodash.get(configJson, configApi.profiles.expandPath(baseProfileName)) as IConfigProfile;
+        const baseProfile = lodash.get(configJson, configApi.profiles.getProfilePathFromName(baseProfileName)) as IConfigProfile;
         if (baseProfile == null) {
             return;  // default base profile is invalid
         }
 
         for (const profileRpt of this.mAutoInitReport.profileRpts) {
             if (profileRpt.changeForProf === this.MODIFIED_MSG && profileRpt.profType !== "base") {
-                const serviceProfile = lodash.get(configJson, configApi.profiles.expandPath(profileRpt.profName)) as IConfigProfile;
+                const serviceProfile = lodash.get(configJson, configApi.profiles.getProfilePathFromName(profileRpt.profName)) as IConfigProfile;
                 for (const [name, value] of Object.entries(baseProfile.properties)) {
                     if (serviceProfile.properties[name] != null && serviceProfile.properties[name] !== baseProfile.properties[name]) {
                         profileRpt.baseOverrides.push({

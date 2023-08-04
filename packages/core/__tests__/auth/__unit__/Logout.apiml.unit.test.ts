@@ -31,12 +31,14 @@ const badDataExpired = {
                 "Token is expired. caused by: TokenExpireException: Token is expired.",
             messageKey: "org.zowe.apiml.common.internalRequestError"
         }
-    ]};
+    ]
+};
 
 
+const realErrorText = "Token is not valid or expired";
 const mockErrorText = "Fake error for Auth Logout APIML unit tests";
 const throwImperativeError = async () => {
-    throw new ImperativeError({msg: mockErrorText});
+    throw new ImperativeError({ msg: mockErrorText });
 };
 const fakeSession: any = {
     ISession: {
@@ -69,28 +71,56 @@ describe("Auth Logout APIML unit tests", () => {
     });
 
     describe("Error handling tests - HTTP 401", () => {
-        it("should be able to raise an error with HTTP 401", async () => {
+        it("should throw an error with HTTP 401", async () => {
             ZosmfRestClient.prototype.request = jest.fn();
             (ZosmfRestClient.prototype as any).mResponse = badResponse401;
             let caughtError;
-            try{
+            try {
                 await Logout.apimlLogout(fakeSession);
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
-            expect(caughtError.mDetails.message).toContain("This operation requires authentication.");
-            expect(caughtError.mDetails.message).toContain("z/OSMF REST API Error:");
-            expect(caughtError.mDetails.message).toContain("REST API Failure with HTTP(S) status 401");
-            expect(caughtError.mDetails.message).toContain("Host:      undefined");
-            expect(caughtError.mDetails.message).toContain("Port:      undefined");
-            expect(caughtError.mDetails.additionalDetails).toContain("HTTP(S) error status \"401\" received.");
-            expect(caughtError.mDetails.additionalDetails).toContain(
-                "Review request details (resource, base path, credentials, payload) and ensure correctness."
-            );
-            expect(caughtError.mDetails.additionalDetails).toContain("Host:      undefined");
-            expect(caughtError.mDetails.additionalDetails).toContain("Port:      undefined");
+        });
+
+        it("should be able to catch 401 errors from apimlLogout", async () => {
+            const runTest = async (errorString: string): Promise<ImperativeError> => {
+                ZosmfRestClient.prototype.request = jest.fn(async () => { throw new Error(errorString); });
+                let caughtError;
+                try {
+                    await Logout.apimlLogout(fakeSession);
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain(realErrorText);
+                expect(caughtError instanceof ImperativeError).toEqual(true);
+                return caughtError;
+            };
+            // Token is invalid (logged out but not expired)
+            expect(await runTest("org.zowe.apiml.security.query.invalidToken")).toBeDefined();
+            // Token is expired (old token)
+            expect(await runTest("org.zowe.apiml.security.expiredToken")).toBeDefined();
+            // Token is not APIML token
+            expect(await runTest("org.zowe.apiml.security.query.tokenNotProvided")).toBeDefined();
+        });
+    });
+
+    describe("Error handling tests - Token Expired - HTTP 500 - Zowe V1 APIML", () => {
+        it("should not throw and be able to catch 500 errors when a expired token was provided", async () => {
+            ZosmfRestClient.prototype.request = jest.fn(async function() {
+                this.mData = Buffer.from(JSON.stringify(badDataExpired));
+                throw new Error("TokenExpireException");
+            });
+            (ZosmfRestClient.prototype as any).mResponse = badResponse500;
+
+            let caughtError: ImperativeError = undefined as any;
+            try {
+                await Logout.apimlLogout(fakeSession);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
     });
 

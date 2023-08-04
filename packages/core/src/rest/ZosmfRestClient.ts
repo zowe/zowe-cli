@@ -123,7 +123,8 @@ export class ZosmfRestClient extends RestClient {
                             "You must either connect with username and password or provide a base path.";
                     } else {
                         original.msg += "\nToken is not valid or expired.\n" +
-                            "For CLI usage, see `zowe auth login apiml --help`";
+                            "To obtain a new valid token, use the following command: `zowe config secure`\n" +
+                            "For CLI usage, see `zowe config secure --help`";
                     }
                 // TODO: Add PFX support in the future
                 } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
@@ -142,13 +143,14 @@ export class ZosmfRestClient extends RestClient {
                 ;
                 if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                     original.additionalDetails = "Username or password are not valid or expired.\n\n";
-                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
+                } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN && this.session.ISession.tokenValue != null) {
                     if (this.session.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML && !this.session.ISession.basePath) {
                         original.additionalDetails = `Token type "${SessConstants.TOKEN_TYPE_APIML}" requires base path to be defined.\n\n` +
                             "You must either connect with username and password or provide a base path.";
                     } else {
-                        original.additionalDetails = "Token is not valid or expired.\n\n" +
-                            "For CLI usage, see `zowe auth login apiml --help`";
+                        original.additionalDetails = "Token is not valid or expired.\n" +
+                        "To obtain a new valid token, use the following command: `zowe config secure`\n" +
+                        "For CLI usage, see `zowe config secure --help`";
                     }
                 // TODO: Add PFX support in the future
                 } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
