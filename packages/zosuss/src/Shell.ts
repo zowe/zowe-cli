@@ -94,8 +94,10 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             } else if (isUserCommand) {
-                                // print out the user command result
-                                stdoutHandler(dataToPrint);
+                                // don't print out command, just print result
+                                if (!dataToPrint.match(new RegExp("\\$"))){
+                                    stdoutHandler(dataToPrint);
+                                }
                                 dataToPrint = "";
                             }
                         }
