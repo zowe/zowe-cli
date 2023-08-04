@@ -94,8 +94,8 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             } else if (isUserCommand) {
-                                // don't print out command, just print result
-                                if (!dataToPrint.match(new RegExp("\\$"))){
+                                // don't print out command (starts with `$`) just print result
+                                if (!dataToPrint.match(/\$/)){
                                     if (dataToPrint.startsWith("\r\n")){
                                         stdoutHandler(dataToPrint.split("\r\n")[1]);
                                     }else{
