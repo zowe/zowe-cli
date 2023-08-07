@@ -163,7 +163,7 @@ describe("auth login/logout apiml create profile", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
-        expect(response.stdout.toString()).toContain("Token was removed from your"); // ${name} base profile
+        expect(response.stdout.toString()).toContain("and removed from your 'default' base profile"); // V1 message
     });
 });
 
