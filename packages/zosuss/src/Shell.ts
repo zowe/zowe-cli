@@ -94,8 +94,9 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             } else if (isUserCommand) {
+                                const pattern = new RegExp(command);
                                 // don't print out command just print result
-                                if (!dataToPrint.includes(command)){
+                                if (!pattern.exec(dataToPrint)){
                                     if (dataToPrint.startsWith("\r\n")){
                                         stdoutHandler(dataToPrint.split("\r\n")[1]);
                                     }else{
