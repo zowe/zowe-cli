@@ -44,6 +44,8 @@ export class Shell {
                     let dataToPrint = "";
                     let isUserCommand = false;
                     let rc: number;
+                    const pattern = new RegExp(command);
+                    let patternFound = false;
 
                     stream.on("exit", (exitcode: number) => {
                         Logger.getAppLogger().debug(`Return Code: ${exitcode}`);
@@ -94,14 +96,12 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             } else if (isUserCommand) {
-                                const pattern = new RegExp(command);
                                 // don't print out command just print result
-                                if (!pattern.exec(dataToPrint)){
-                                    if (dataToPrint.startsWith("\r\n")){
-                                        stdoutHandler(dataToPrint.split("\r\n")[1]);
-                                    }else{
-                                        stdoutHandler(dataToPrint);
-                                    }
+                                if (pattern.exec(dataToPrint)){
+                                    patternFound = true;
+                                }
+                                else if (patternFound){
+                                    stdoutHandler(dataToPrint);
                                 }
                                 dataToPrint = "";
                             }
