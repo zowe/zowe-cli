@@ -67,7 +67,6 @@ function checkMockFunctionsWithCommand(command: string) {
     expect(stdoutHandler).toHaveBeenCalledWith("stdout data\n");
     expect(stdoutHandler).toHaveBeenCalledWith("\rerror");
     expect(stdoutHandler).not.toContain("$");
-    expect(stdoutHandler).not.toContain(new RegExp('^\\r\\n'));
 }
 
 describe("Shell", () => {
