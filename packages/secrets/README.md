@@ -22,15 +22,15 @@ const password = await keyring.getPassword("ServiceName", "AccountName");
 
 ```js
 const { keyring } = require("@zowe/secrets-for-zowe-sdk");
-const password = keyring.findPassword("ServiceName", "AccountName");
+const password = await keyring.findPassword("ServiceName", "AccountName");
 // password should equal "SomePassword"
 ```
 
-### Finding all credentials matching attribute
+### Finding all credentials matching service
 
 ```js
 const { keyring } = require("@zowe/secrets-for-zowe-sdk");
-const matchingCredentials = keyring.findCredentials("ServiceName");
+const matchingCredentials = await keyring.findCredentials("ServiceName");
 // returns: 
 // [
 //    { account: "AccountName", password: "SomePassword" },
@@ -42,6 +42,6 @@ const matchingCredentials = keyring.findCredentials("ServiceName");
 
 ```js
 const { keyring } = require("@zowe/secrets-for-zowe-sdk");
-const wasDeleted = keyring.deletePassword("ServiceName", "AccountName");
+const wasDeleted = await keyring.deletePassword("ServiceName", "AccountName");
 // wasDeleted should be true; ServiceName/AccountName removed from credential vault
 ```
