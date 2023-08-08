@@ -2,11 +2,11 @@
 
 ## What is `keyring`?
 
-`keyring` is a cross-platform module meant to interact with OS (operating system) credential storage. `keyring` is written in Rust, and uses other Rust libraries to interface with credential storage APIs (application programming interfaces). It was designed to be a drop-in replacement for `node-keytar`, a Microsoft (formerly GitHub under "Atom") project that was archived on December 15th, 2022. For context, `node-keytar` has widespread use in multiple projects with over 500k weekly downloads - this library was created to avoid long-term conflicts/vulnerabilities that may arise with `node-keytar` now that it is no longer maintained.
+`keyring` is a cross-platform module meant to interact with OS (operating system) credential storage. `keyring` is written in Rust, and uses other Rust libraries to interface with credential storage APIs (application programming interfaces).
 
 ## Why switch to `keyring`?
 
-By continuing to use `node-keytar`, it opens up the user to future problems with the library itself or its dependencies. Until Microsoft provides an update to the status of `keytar` on NPM, it is unknown whether the package will continue to be supported. As a result, there was a demand for a replacement that can function identically to the original module.
+As `node-keytar` is now unmaintained, there was a demand for a replacement that can function identically to the original module.
 
 As `keyring` was modeled after `node-keytar`, the same operations can be performed in credential storage:
 
@@ -16,7 +16,7 @@ As `keyring` was modeled after `node-keytar`, the same operations can be perform
 - Searching for matching credentials based on a prefix/query
 - Deleting credentials
 
-**Currently, there are no breaking changes** between the use of `node-keytar` and `keyring`. This is intended by design, and the library will be maintained with that principle in mind. As a result, `keyring` is a substitute for the original `node-keytar` module.
+**Currently, there are no breaking changes** between the use of `node-keytar` and `keyring`. This is intended by design.
 
 From a developer's perspective, one can simply update existing extenders or plug-ins to import the keyring module from `@zowe/secrets-for-zowe-sdk` instead of `node-keytar`, allowing for a straightforward transition. All functions previously exported in `node-keytar` will be available in `keyring`. Simply add `@zowe/secrets-for-zowe-sdk` to your project using `npm` or `yarn`.
 
