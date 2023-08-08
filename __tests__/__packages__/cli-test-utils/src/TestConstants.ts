@@ -32,14 +32,14 @@ function projectRootDir() {
                     stackTrace = e.stack;
                 }
                 const filePaths = [];
-                for (let line of stackTrace.split('\n')) {
+                for (const line of stackTrace.split('\n')) {
                     const match = line.match(/\((.*?):\d+:\d+\)$/);
                     if (match) {
                         filePaths.push(match[1]);
                     }
                 }
                 return filePaths.filter((p: string) => !p.replace(/\\/g, "/").includes("node_modules/jest-") && !p.includes("cli-test-utils"))[0];
-            }
+            };
             const testFilePath = getTestFilePath();
             return testFilePath.split("/__tests__")[0];
         } else {
