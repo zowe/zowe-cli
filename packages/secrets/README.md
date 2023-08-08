@@ -22,7 +22,7 @@ const password = await keyring.getPassword("ServiceName", "AccountName");
 
 ```js
 const { keyring } = require("@zowe/secrets-for-zowe-sdk");
-const password = await keyring.findPassword("ServiceName", "AccountName");
+const password = await keyring.findPassword("ServiceName/AccountName");
 // password should equal "SomePassword"
 ```
 
@@ -45,3 +45,5 @@ const { keyring } = require("@zowe/secrets-for-zowe-sdk");
 const wasDeleted = await keyring.deletePassword("ServiceName", "AccountName");
 // wasDeleted should be true; ServiceName/AccountName removed from credential vault
 ```
+
+For more detailed information, see [src/keyring/EXTENDERS.md](src/keyring/EXTENDERS.md).
