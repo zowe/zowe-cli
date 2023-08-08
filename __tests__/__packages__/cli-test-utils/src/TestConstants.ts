@@ -13,19 +13,46 @@ import * as fs from "fs";
 import * as nodePath from "path";
 import * as findUp from "find-up";
 
+export let TEST_USING_WORKSPACE = false;
+
 function projectRootDir() {
     // First look for lerna.json to handle monorepos with tests at top level
-    const lernaJson = findUp.sync("lerna.json");
-    if (lernaJson != null) {
-        const lernaRootDir = nodePath.dirname(lernaJson);
-        if (fs.existsSync(nodePath.join(lernaRootDir, "__tests__"))) {
-            return lernaRootDir;
+    const lernaJsonPath = findUp.sync("lerna.json");
+    if (lernaJsonPath != null) {
+        const lernaJson = require(lernaJsonPath);
+        if (lernaJson.command.version.private) {
+            TEST_USING_WORKSPACE = true;
+            // Root project not intended for publishing
+            // Look for the workspace that is running the current test
+            const getTestFilePath = () => {
+                let stackTrace: string;
+                try {
+                    throw new Error('Debugging error');
+                } catch (e: any) {
+                    stackTrace = e.stack;
+                }
+                const filePaths = [];
+                for (let line of stackTrace.split('\n')) {
+                    const match = line.match(/\((.*?):\d+:\d+\)$/);
+                    if (match) {
+                        filePaths.push(match[1]);
+                    }
+                }
+                return filePaths.filter((p: string) => !p.replace(/\\/g, "/").includes("node_modules/jest-") && !p.includes("cli-test-utils"))[0];
+            }
+            const testFilePath = getTestFilePath();
+            return testFilePath.split("/__tests__")[0];
+        } else {
+            const lernaRootDir = nodePath.dirname(lernaJsonPath);
+            if (fs.existsSync(nodePath.join(lernaRootDir, "__tests__"))) {
+                return lernaRootDir;
+            }
         }
     }
     // Next look for package.json in single-package repo
-    const packageJson = findUp.sync("package.json");
-    if (packageJson != null) {
-        return nodePath.dirname(packageJson);
+    const packageJsonPath = findUp.sync("package.json");
+    if (packageJsonPath != null) {
+        return nodePath.dirname(packageJsonPath);
     }
     // Finally fallback to using working directory
     return process.cwd();
