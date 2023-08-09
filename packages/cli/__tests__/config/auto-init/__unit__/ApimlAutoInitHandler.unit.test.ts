@@ -10,7 +10,7 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig } from "@zowe/imperative";
+import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig, ConfigUtils } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 import * as lodash from "lodash";
@@ -27,7 +27,8 @@ function mockConfigApi(properties: IConfig | undefined): any {
                 })
             },
             profiles: {
-                expandPath: (name: string) => `profiles.${name}`
+                getProfilePathFromName: (name: string) => `profiles.${name}`,
+                get: jest.fn()
             }
         },
         exists: true,
@@ -191,10 +192,12 @@ describe("ApimlAutoInitHandler", () => {
     });
 
     it("should not have changed - user & password with existing base profile", async () => {
+        // NOTE: Token type and token value will be stored, but user and password will still be present in the base profile
         const mockCreateZosmfSession = jest.fn();
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
-        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
+        jest.spyOn(ConfigUtils, "getActiveProfileName").mockReturnValueOnce("base");
+        const mockConfigValue: any = {
             defaults: { base: "base"},
             profiles: {
                 "base": {
@@ -207,9 +210,10 @@ describe("ApimlAutoInitHandler", () => {
                 }
             },
             plugins: []
-        });
+        };
+        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue(mockConfigValue);
         const mockLogin = jest.fn().mockResolvedValue("fakeToken");
-        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(mockConfigValue));
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
@@ -243,9 +247,9 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(1);
-        expect(response.profiles.base.secure).not.toContain("tokenValue");
-        expect(response.profiles.base.properties.tokenType).not.toBeDefined();
-        expect(response.profiles.base.properties.tokenValue).not.toBeDefined();
+        expect(response.profiles.base.secure).toContain("tokenValue");
+        expect(response.profiles.base.properties.tokenType).toBeDefined();
+        expect(response.profiles.base.properties.tokenValue).toBeDefined();
     });
 
     it("should not have changed - rejectUnauthorized flag true", async () => {

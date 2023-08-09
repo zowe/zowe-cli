@@ -62,7 +62,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: repo
-    
+
     - name: Prepare Cross
       run: cargo install cross@0.2.5
 
@@ -103,13 +103,20 @@ jobs:
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: aarch64-apple-darwin
 
     - uses: actions/download-artifact@v3
       with:
         name: repo
 
     - name: Build
-      run: cargo build --verbose --release
+      run: |
+        cargo build --verbose --release --target aarch64-apple-darwin
+        cargo build --verbose --release --target x86_64-apple-darwin
+        mkdir -p target/release && cd target/release
+        mv ../aarch64-apple-darwin/release/zowe zowe.aarch64 && mv ../x86_64-apple-darwin/release/zowe zowe.x86_64
+        lipo -create -output zowe zowe.aarch64 zowe.x86_64
 
     - name: Create Archive
       run: |

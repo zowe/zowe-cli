@@ -49,7 +49,8 @@ describe("auth login/logout apiml with profile", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful.");
-        expect(response.stdout.toString()).toContain("The authentication token has been revoked and removed");
+        expect(response.stdout.toString()).toContain("The authentication token has been revoked");
+        expect(response.stdout.toString()).toContain("Token was removed from your"); // ${name} base profile
     });
 });
 
@@ -153,7 +154,7 @@ describe("auth login/logout apiml create profile", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
-        expect(response.stdout.toString()).toContain("The authentication token is stored in the 'default' base profile");
+        expect(response.stdout.toString()).toContain("The authentication token is stored in the"); // ${name} base profile
     });
 
     it("should successfully issue the logout command with a created profile", () => {
@@ -161,7 +162,8 @@ describe("auth login/logout apiml create profile", () => {
             TEST_ENVIRONMENT_CREATE_PROF);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked and removed");
+        expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
+        expect(response.stdout.toString()).toContain("and removed from your 'default' base profile"); // V1 message
     });
 });
 

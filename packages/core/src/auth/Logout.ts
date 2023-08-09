@@ -25,13 +25,13 @@ export class Logout {
      * @static
      * @param {AbstractSession} session
      * @returns
-     * @memberof Login
+     * @memberof Logout
      */
     public static async apimlLogout(session: AbstractSession) {
         Logger.getAppLogger().trace("Logout.logout()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        ImperativeExpect.toBeEqual(session.ISession.tokenType, "apimlAuthenticationToken",
-            "Token type for API ML logout must be apimlAuthenticationToken.");
+        ImperativeExpect.toMatchRegExp(session.ISession.tokenType, "^apimlAuthenticationToken.*",
+            `Token type (${session.ISession.tokenType}) for API ML logout must start with 'apimlAuthenticationToken'.`);
         ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Session token not populated. Unable to log out.");
 
         const client = new ZosmfRestClient(session);
@@ -41,8 +41,40 @@ export class Logout {
                 resource: LogoutConstants.APIML_V1_RESOURCE
             });
         } catch (err) {
-            if (!err.message.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR)) {
-                throw err;
+            let errorToThrow = err;
+            for (const errorKey in LogoutConstants.APIML_V2_LOGOUT_ERR_LIST) {
+                if (err.message.includes(LogoutConstants.APIML_V2_LOGOUT_ERR_LIST[errorKey])) {
+                    switch (errorKey) {
+                        case "V2_TOKEN_INVALID": // Token is invalid (logged out)
+                        case "V2_TOKEN_EXPIRED": // Token expired (trully expired)
+                        case "V2_TOKEN_MISSING": // Token type is not ^apimlAuthenticationToken.*
+                            errorToThrow = new ImperativeError({
+                                msg: "Token is not valid or expired.\n" +
+                                    "For CLI usage, see `zowe auth logout apiml --help`",
+                                errorCode: client.response.statusCode.toString()
+                            });
+                            break;
+                        case "V1_TOKEN_EXPIRED":
+                        default:
+                            errorToThrow = null;
+                            break;
+                    }
+                }
+            }
+
+            /**
+             * NOTE: We will continue to check for `V2_TOKEN_...` keys until we know for sure that
+             *      invalid credentials do not return a 403 on certain APIML configurations with ACF2
+             */
+            // if (client.response.statusCode.toString() === "401") {
+            //     errorToThrow = new ImperativeError({
+            //         msg: "Token is not valid or expired.\n" +
+            //             "For CLI usage, see `zowe auth logout apiml --help`",
+            //         errorCode: client.response.statusCode.toString()
+            //     });
+            // }
+            if (errorToThrow) {
+                throw errorToThrow;
             }
         }
 
