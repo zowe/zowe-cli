@@ -60,3 +60,61 @@ await keyring.findPassword("TestService/AccountA");
 // Delete a credential w/ the provided service and account name
 await keyring.deletePassword("TestService", "AccountA");
 ```
+
+## Webpacking/bundling alongside your project
+
+Some projects leverage a JavaScript bundler, such as Webpack or Vite, to minify and compress their Node.js packages.
+While the Secrets SDK does support Webpack, developers who want to bundle the Secrets SDK alongside their package should set up
+a `prebuilds` folder in the same directory as their extension's build output.
+
+This can be accomplished by executing a Node.js script that creates a symbolic link between the Secrets SDK and the aforementioned `prebuilds` folder. Run this script in the same directory as your extension's build folder, or update the script according to your extension path:
+
+```js
+// Install the dependencies for your package using `npm install` or `yarn`. Then:
+const { symlink } = require("fs");
+const { join } = require("path");
+// The last argument for this function provides support for Windows symlinks.
+symlink("/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds", join(process.cwd(), "prebuilds"), "dir");
+```
+**Note** that the target path for your environment may vary depending on where your *node_modules* folder is located. 
+
+Developers only need to run this script if the symbolic link does not already exist. This will allow the `prebuilds` folder to be populated
+with the latest platform binaries for the Secrets SDK.
+
+If you are bundling a VSCode extension, and are using a `.vscodeignore` file, you should allow the prebuilds folder before packaging as a VSIX:
+
+```
+!prebuilds/**
+```
+
+### Updating imports
+
+Some extenders might import `keytar` directly as a dependency. In these cases, extenders should import the `keyring` module from this package instead.
+
+**Take caution when importing** as the import process is slightly different than `node-keytar`:
+
+Before:  
+```js
+const keytar = require("node-keytar");
+// ES6 import:
+import * as keytar from "node-keytar";
+```
+
+After:  
+```js
+const { keyring } = require("@zowe/secrets-for-zowe-sdk");
+// ES6 import:
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
+```
+
+Notice that the keyring module must be accessed from the dependency imports before use.
+To reduce the amount of code that needs updated, users can use an import alias to the phrase "keytar":
+
+```js
+const { keyring: keytar } = require("@zowe/secrets-for-zowe-sdk");
+// ES6 import:
+import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
+
+// Existing code, such as the example below, can remain unchanged with this import alias:
+keytar.setPassword("Hello", "World", "ExamplePassword");
+```
