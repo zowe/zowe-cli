@@ -19,7 +19,7 @@ import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextU
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
-import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR, TEST_USING_WORKSPACE } from "../TestConstants";
+import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { runCliScript } from "../TestUtils";
 
 /**
@@ -168,14 +168,39 @@ export class TestEnvironment {
      * @returns {Promise<void>} - promise that resolves on completion of the install
      */
     protected static async installPlugin(testEnvironment: ITestEnvironment<any>) {
-        const pluginRelPath = nodePath.relative(testEnvironment.workingDir, PROJECT_ROOT_DIR).replace(/\\/g, "/");
-        const packageJson = require(nodePath.join(PROJECT_ROOT_DIR, "package.json"));
-        const pluginConfig = require(nodePath.join(PROJECT_ROOT_DIR, packageJson.imperative.configurationModule));
+        // Look for the workspace that is running the current test
+        const getTestRootDir = () => {
+            let stackTrace: string;
+            try {
+                throw new Error('Debugging error');
+            } catch (e: any) {
+                stackTrace = e.stack;
+            }
+            const filePaths = [];
+            for (const line of stackTrace.split('\n')) {
+                const match = line.match(/\((.*?):\d+:\d+\)$/);
+                if (match) {
+                    filePaths.push(match[1]);
+                }
+            }
+            const filtered = filePaths.filter((stackFilePath: string) => {
+                const filePath = stackFilePath.replace(/\\/g, "/");
+                return !filePath.includes("node_modules/jest-") && !filePath.includes("cli-test-utils");
+            });
+            return filtered[0].split("/__tests__")[0];
+        };
+        const testRootDir = getTestRootDir();
+        const testUsingWorkspace = PROJECT_ROOT_DIR != testRootDir;
+        const projectRootDir = testUsingWorkspace ? testRootDir : PROJECT_ROOT_DIR;
+
+        const pluginRelPath = nodePath.relative(testEnvironment.workingDir, projectRootDir).replace(/\\/g, "/");
+        const packageJson = require(nodePath.join(projectRootDir, "package.json"));
+        const pluginConfig = require(nodePath.join(projectRootDir, packageJson.imperative.configurationModule));
 
         let installScript: string = TempTestProfiles.SHEBANG;
         // install plugin from root of project
-        // Note: the TEST_USING_WORKSPACE is just a hack to work around this bug: https://github.com/npm/cli/issues/6099
-        installScript += `zowe plugins install ${pluginRelPath}${TEST_USING_WORKSPACE ? " --registry=https://registry.npmjs.org/": ""}\n`;
+        // Note: the testUsingWorkspace is just a hack to work around this bug: https://github.com/npm/cli/issues/6099
+        installScript += `zowe plugins install ${pluginRelPath}${testUsingWorkspace ? " --registry=https://registry.npmjs.org/": ""}\n`;
 
         installScript += `zowe plugins validate ${packageJson.name}\n`;
         if (pluginConfig.definitions != null && pluginConfig.definitions.length > 0) {
