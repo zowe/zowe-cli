@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 const { join } = require("path");
 const { sync: pkgDirSync } = require("pkg-dir");
 
@@ -33,7 +34,7 @@ function getTargetName() {
 
 const requireFn = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
 const binaryPath = requireFn.resolve(`./keyring.${getTargetName()}.node`, {
-    paths: [__dirname, join(pkgDirSync(), "prebuilds")],
+    paths: [__dirname, join(pkgDirSync(__dirname), "prebuilds")],
 });
 const {
     deletePassword,

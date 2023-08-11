@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## `7.19.0`
+
+- Added `pkg-dir` as a dependency: allows the `keyring` module to locate the current package directory for the `prebuilds/` folder.
+
 ## `7.18.1`
 
 - Added README to package w/ description, instructions and examples of using the `keyring` module. 
