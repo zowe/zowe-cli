@@ -64,12 +64,13 @@ await keyring.deletePassword("TestService", "AccountA");
 ## Webpacking/bundling alongside your project
 
 Some projects leverage a JavaScript bundler, such as Webpack or Vite, to minify and compress their Node.js packages.
-While the Secrets SDK does support Webpack, developers who want to bundle the Secrets SDK alongside their package should set up a `prebuilds` folder alongside the same directory as their extension's build folder.
+While the Secrets SDK does support Webpack, developers who want to bundle the Secrets SDK alongside their package should set up a `prebuilds` folder alongside their package root.
 
 For example, if your extension build output is placed in the `out` folder, your directory structure should look like this:
 
 ```
 your-extension/
+├── package.json
 ├── src/
 ├── out/
 │   └── bundledExtension.js
@@ -77,7 +78,11 @@ your-extension/
     └── (node binaries for Secrets SDK)
 ```
 
-This can be accomplished by executing the Node.js script below (**requires Node 16.7.0 and above**). It creates a copy of the `prebuilds` folder containing the required Secrets SDK binaries. Run this script in the same directory as your extension's `package.json`:
+If you are using ESbuild or Webpack, consider using a copy plugin to copy the `prebuilds` folder from the Secrets SDK *node_modules* folder:
+- ESbuild: [esbuild-copy-static-files](https://www.npmjs.com/package/esbuild-copy-static-files)
+- Webpack: [copy-webpack-plugin](https://www.npmjs.com/package/copy-webpack-plugin)
+
+Otherwise, use the Node.js script below (**requires Node 16.7.0 and above**). It creates a copy of the `prebuilds` folder containing the required Secrets SDK binaries. Run this script in the same directory as your extension's `package.json`:
 
 ```js
 const { cpSync } = require("fs");
