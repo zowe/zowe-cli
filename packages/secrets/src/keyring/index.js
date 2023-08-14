@@ -10,20 +10,16 @@
  */
 
 const { existsSync } = require("fs");
-const { join, normalize } = require("path");
+const { join, normalize, parse } = require("path");
 
-function findPkgRoot(dir) {
-    if (dir == null) {
-        return ".";
-    }
-
-    if (existsSync(join(dir, "package.json"))) {
-        return dir;
+function findPrebuildsDir(dir) {
+    if (!dir || existsSync(join(dir, "package.json"))) {
+        return join(dir, "prebuilds");
     }
 
     const dirUp = normalize(join(dir, ".."));
-    if (dirUp !== dir) {
-        return findPkgRoot(dirUp);
+    if (parse(dirUp).base.length > 0) {
+        return findPrebuildsDir(dirUp);
     }
 }
 
@@ -51,8 +47,9 @@ const requireFn =
     typeof __webpack_require__ === "function"
         ? __non_webpack_require__
         : require;
+
 const binaryPath = requireFn.resolve(`./keyring.${getTargetName()}.node`, {
-    paths: [__dirname, join(findPkgRoot(__dirname), "prebuilds")],
+    paths: [__dirname, findPrebuildsDir(__dirname)].filter(Boolean),
 });
 const {
     deletePassword,
