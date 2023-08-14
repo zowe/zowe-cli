@@ -66,33 +66,39 @@ await keyring.deletePassword("TestService", "AccountA");
 Some projects leverage a JavaScript bundler, such as Webpack or Vite, to minify and compress their Node.js packages.
 While the Secrets SDK does support Webpack, developers who want to bundle the Secrets SDK alongside their package should set up a `prebuilds` folder alongside the same directory as their extension's build folder.
 
-For example, if your extension build output is placed in the "out" folder, your directory structure should look like this:
+For example, if your extension build output is placed in the `out` folder, your directory structure should look like this:
 
 ```
 your-extension/
-├── src
-├── out
+├── src/
+├── out/
 │   └── bundledExtension.js
-└── prebuilds
+└── prebuilds/
     └── (node binaries for Secrets SDK)
 ```
 
-This can be accomplished by executing a Node.js script that creates a symbolic link between the Secrets SDK and the aforementioned `prebuilds` folder. Run this script in the same directory as your extension's build folder, or update the script according to your extension path:
+This can be accomplished by executing the Node.js script below (**requires Node 16.7.0 and above**). It creates a copy of the `prebuilds` folder containing the required Secrets SDK binaries. Run this script in the same directory as your extension's `package.json`:
 
 ```js
-// Install the dependencies for your package using `npm install` or `yarn`. Then:
-const { symlink } = require("fs");
+const { cpSync } = require("fs");
 const { join } = require("path");
-// The last argument for this function provides support for Windows symlinks.
-symlink("/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds", join(process.cwd(), "prebuilds"), "dir");
+cpSync("/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds", join(process.cwd(), "prebuilds"), {force: true, recursive: true});
 ```
-**Note** that the target path for your environment may vary depending on where your *node_modules* folder is located. 
+**Note:** The first argument for `cpSync` will vary, depending on where the *node_modules* folder is located in your environment.
 
-Developers only need to run this script if the symbolic link does not already exist. This will allow the `prebuilds` folder to be populated
-with the latest platform binaries for the Secrets SDK.
+We recommend that developers add this logic to a `prepare` script in their `package.json` to guarantee the binaries are up-to-date after installing dependencies.
+Save the above script as a JavaScript file (e.g., `scripts/copyKeyringBinaries.js`), and execute the script:
 
-If you are bundling a VSCode extension, and are using a `.vscodeignore` file, you should allow the prebuilds folder before packaging as a VSIX:
+```js
+{
+    "scripts": {
+        "prepare": "node scripts/copyKeyringBinaries.js"
+    }
+}
+```
 
+If you are bundling a VSCode extension, and are using a `.vscodeignore` file, you must allow the prebuilds folder to be packaged in the VSIX.  
+Add the following line to your `.vscodeignore` file:  
 ```
 !prebuilds/**
 ```
