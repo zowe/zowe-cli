@@ -23,7 +23,7 @@ function findPkgRoot(dir) {
 
     const dirUp = normalize(join(dir, ".."));
     if (dirUp !== dir) {
-        return pkgDirSync(dirUp);
+        return findPkgRoot(dirUp);
     }
 }
 
