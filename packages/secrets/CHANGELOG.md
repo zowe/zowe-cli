@@ -4,7 +4,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## `7.18.2`
 
-- BugFix: Added `pkg-dir` as a dependency: allows the `keyring` module to locate the current package directory for the `prebuilds/` folder.
+- BugFix: Adds logic to allow the `keyring` module to locate the current package directory for the `prebuilds/` folder.
 
 ## `7.18.1`
 
