@@ -66,14 +66,14 @@ await keyring.deletePassword("TestService", "AccountA");
 Some projects leverage a JavaScript bundler, such as Webpack or Vite, to minify and compress their Node.js packages.
 While the Secrets SDK does support Webpack, developers who want to bundle the Secrets SDK alongside their package should set up a `prebuilds` folder alongside their package root.
 
-For example, if your extension build output is placed in the `out` folder, your directory structure should look like this:
+For example, if your package places build output in the `out` folder, your directory structure should look like this:
 
 ```
-your-extension/
+your-pkg/
 ├── package.json
 ├── src/
 ├── out/
-│   └── bundledExtension.js
+│   └── bundle.js
 ├── prebuilds/
 │   └── (node binaries for Secrets SDK)
 ```
