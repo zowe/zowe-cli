@@ -86,8 +86,7 @@ Otherwise, use the Node.js script below (**requires Node 16.7.0 and above**). It
 
 ```js
 const { cpSync } = require("fs");
-const { join } = require("path");
-cpSync("/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds", join(process.cwd(), "prebuilds"), {force: true, recursive: true});
+cpSync("/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds", "prebuilds", {force: true, recursive: true});
 ```
 **Note:** The first argument for `cpSync` will vary, depending on where the *node_modules* folder is located in your environment.
 
