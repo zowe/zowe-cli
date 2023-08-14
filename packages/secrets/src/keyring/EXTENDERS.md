@@ -74,8 +74,8 @@ your-extension/
 ├── src/
 ├── out/
 │   └── bundledExtension.js
-└── prebuilds/
-    └── (node binaries for Secrets SDK)
+├── prebuilds/
+│   └── (node binaries for Secrets SDK)
 ```
 
 If you are using ESbuild or Webpack, consider using a copy plugin to copy the `prebuilds` folder from the Secrets SDK *node_modules* folder:
