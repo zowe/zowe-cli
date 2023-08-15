@@ -95,7 +95,7 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             }
-                            else if (dataToPrint.match(new RegExp(`.*${command}.*`))) {
+                            else if (dataToPrint.includes(command)) {
                                 commandFound = true;
                             }
                             else if (isUserCommand && commandFound) {
