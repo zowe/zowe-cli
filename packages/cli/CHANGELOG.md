@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Bump Secrets SDK to `7.18.2` - uses more reliable resolution logic for `prebuilds` folder.
+
 ## `7.18.0`
 
 - Enhancement: Updated daemon on MacOS to use universal binary which adds support for Apple Silicon.
