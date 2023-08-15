@@ -38,6 +38,7 @@ jobs:
           Native Zowe CLI client which communicates with a "daemon" version of Zowe CLI.
         draft: false
         prerelease: false
+        makeLatest: false
 
     - uses: actions/upload-artifact@v3
       with:
