@@ -64,7 +64,7 @@ function checkMockFunctionsWithCommand(command: string) {
     // Check the stream.end() function is called with an argument containing the SSH command
     expect(mockStreamWrite.mock.calls[0][0]).toMatch(command);
     expect(mockStreamEnd).toHaveBeenCalled();
-    // expect(stdoutHandler).toHaveBeenCalledWith("stdout data\n");
+    expect(stdoutHandler).toHaveBeenCalledWith("stdout data\n");
     expect(stdoutHandler).toHaveBeenCalledWith("\rerror");
     expect(stdoutHandler).not.toContain(command);
 }
