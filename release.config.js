@@ -26,6 +26,7 @@ module.exports = {
                 "zosjobs": "z/OS Jobs SDK",
                 "zoslogs": "z/OS Logs SDK",
                 "provisioning": "Provisioning SDK",
+                "secrets": "Secrets SDK",
                 "zostso": "z/OS TSO SDK",
                 "zosuss": "z/OS USS SDK",
                 "workflows": "Workflows SDK",
