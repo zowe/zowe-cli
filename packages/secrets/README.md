@@ -46,4 +46,4 @@ const wasDeleted = await keyring.deletePassword("ServiceName", "AccountName");
 // wasDeleted should be true; ServiceName/AccountName removed from credential vault
 ```
 
-For more detailed information, see [src/keyring/EXTENDERS.md](src/keyring/EXTENDERS.md).
+For more detailed information, see [src/keyring/EXTENDERS.md](/packages/secrets/src/keyring/EXTENDERS.md).

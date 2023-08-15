@@ -1,15 +1,27 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-const { join } = require("path");
+const { existsSync } = require("fs");
+const { join, normalize, parse } = require("path");
+
+function findPrebuildsDir(dir) {
+    if (!dir || existsSync(join(dir, "package.json"))) {
+        return join(dir, "prebuilds");
+    }
+
+    const dirUp = normalize(join(dir, ".."));
+    if (parse(dirUp).base.length > 0) {
+        return findPrebuildsDir(dirUp);
+    }
+}
 
 function getTargetName() {
     switch (process.platform) {
@@ -31,9 +43,13 @@ function getTargetName() {
     }
 }
 
-const requireFn = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
+const requireFn =
+    typeof __webpack_require__ === "function"
+        ? __non_webpack_require__
+        : require;
+
 const binaryPath = requireFn.resolve(`./keyring.${getTargetName()}.node`, {
-    paths: [__dirname, join(__dirname, "..", "..", "prebuilds")],
+    paths: [__dirname, findPrebuildsDir(__dirname)].filter(Boolean),
 });
 const {
     deletePassword,
