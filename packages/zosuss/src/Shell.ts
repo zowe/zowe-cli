@@ -36,6 +36,7 @@ export class Shell {
                 authsAllowed.push("password");
             }
             const conn = new Client();
+            let commandFound = false;
 
             conn.on("ready", () => {
                 conn.shell((err: any, stream: ClientChannel) => {
@@ -93,7 +94,11 @@ export class Shell {
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                                 isUserCommand = false;
-                            } else if (isUserCommand) {
+                            }
+                            else if (dataToPrint.match(new RegExp(`.*${command}.*`))) {
+                                commandFound = true;
+                            }
+                            else if (isUserCommand && commandFound) {
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                             }
