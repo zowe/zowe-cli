@@ -38,7 +38,7 @@ function projectRootDir() {
     }
 
     // Look for the workspace that is running the current test
-    const getTestRootDir = () => {
+    const getTestRootDir = (defaultRootDir: string) => {
         let stackTrace: string;
         try {
             throw new Error('Debugging error');
@@ -56,10 +56,10 @@ function projectRootDir() {
             const filePath = stackFilePath.replace(/\\/g, "/");
             return !filePath.includes("node_modules/jest-") && !filePath.includes("cli-test-utils");
         });
-        return filtered[0].split("/__tests__")[0];
+        return filtered[0]?.split("/__tests__")[0] ?? defaultRootDir;
     };
 
-    const testRootDir = getTestRootDir();
+    const testRootDir = getTestRootDir(finalProjectRootDir);
     // lernaTestDirExists == true XOR (finalProjectRootDir == testRootDir)
     TEST_USING_WORKSPACE = lernaTestDirExists ? finalProjectRootDir != testRootDir : finalProjectRootDir == testRootDir;
     return TEST_USING_WORKSPACE ? testRootDir : finalProjectRootDir;
