@@ -11,12 +11,12 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 ## **Contents**  <!-- omit in toc -->
  - [Documentation](#documentation)
  - [Contribution Guidelines](#contribution-guidelines)
- - [Building Zowe CLI From Source](#build-zowe-cli-from-source)
- - [Installing Zowe CLI From Source](#install-zowe-cli-from-source)
- - [Uninstalling Zowe CLI](#uninstall-zowe-cli)
- - [Configuring Zowe CLI](#configure-zowe-cli)
+ - [Building Zowe CLI From Source](#building-zowe-cli-from-source)
+ - [Installing Zowe CLI From Source](#installing-zowe-cli-from-source)
+ - [Uninstalling Zowe CLI](#uninstalling-zowe-cli)
+ - [Configuring Zowe CLI](#configuring-zowe-cli)
  - [Zowe Node Client SDK](#zowe-node-client-sdk)
- - [Running System Tests](#run-system-tests)
+ - [Running System Tests](#running-system-tests)
  - [FAQs](#frequently-asked-questions)
 
 <br/>
