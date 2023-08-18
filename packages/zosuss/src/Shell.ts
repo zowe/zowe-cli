@@ -27,6 +27,14 @@ export class Shell {
         const authsAllowed = ["none"];
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
+            const conn = new Client();
+            const maxTerminalChars = 80; //standard value for terminal column width per line
+            let newLines = 0; //lines the command likely occupies
+            let commandFound = false;
+            // Test if multiline command
+            if (command.length > maxTerminalChars){
+                newLines = Math.ceil(command.length/maxTerminalChars);
+            }
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
             if (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
@@ -35,15 +43,13 @@ export class Shell {
             if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
                 authsAllowed.push("password");
             }
-            const conn = new Client();
-            let commandFound = false;
-
             conn.on("ready", () => {
                 conn.shell((err: any, stream: ClientChannel) => {
                     if (err) { throw err; }
                     let dataBuffer = "";
                     let dataToPrint = "";
                     let isUserCommand = false;
+                    let cmd = '';
                     let rc: number;
 
                     stream.on("exit", (exitcode: number) => {
@@ -78,6 +84,13 @@ export class Shell {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
                             // rather than print it out right away
+                            if (dataToPrint.includes(this.startCmdFlag)){
+                                cmd = dataToPrint.slice(0,dataToPrint.indexOf(this.startCmdFlag));
+                                // Find the last occurrence of '\n'
+                                const lastNewlineIndex = cmd.lastIndexOf('\n');
+                                // Extract the text to the right of the last '\n'
+                                cmd = cmd.slice(lastNewlineIndex + 1).trim();
+                            }
                             dataToPrint = dataBuffer.slice(0, dataBuffer.lastIndexOf("\r"));
                             dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
@@ -95,12 +108,21 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             }
-                            else if (dataToPrint.includes(Shell.startCmdFlag)) {
+                            else if (dataToPrint.includes(this.startCmdFlag) || dataToPrint.trimStart().startsWith("$ " + command)) {
                                 commandFound = true;
                             }
-                            else if (isUserCommand && commandFound) {
-                                stdoutHandler(dataToPrint);
-                                dataToPrint = "";
+                            else if (commandFound && dataToPrint.length != 0) {
+                                if (dataToPrint.includes('$') && !dataToPrint.includes(cmd)){
+                                    newLines = 0;
+                                }
+                                if (newLines != 0){
+                                    newLines-=1;
+                                }
+                                else if (newLines = 0){
+                                    //only prints command output
+                                    stdoutHandler(dataToPrint);
+                                    dataToPrint = "";
+                                }
                             }
                         }
                     });
