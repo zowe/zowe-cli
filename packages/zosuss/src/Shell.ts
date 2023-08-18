@@ -95,7 +95,7 @@ export class Shell {
                                 dataToPrint = "";
                                 isUserCommand = false;
                             }
-                            else if (dataToPrint.includes(command)) {
+                            else if (dataToPrint.includes(Shell.startCmdFlag)) {
                                 commandFound = true;
                             }
                             else if (isUserCommand && commandFound) {
