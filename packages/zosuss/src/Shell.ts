@@ -43,6 +43,7 @@ export class Shell {
                     let dataBuffer = "";
                     let dataToPrint = "";
                     let isUserCommand = false;
+                    let cmd = '';
                     let rc: number;
 
                     //isolate the command
@@ -80,6 +81,13 @@ export class Shell {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
                             // rather than print it out right away
+                            if (dataToPrint.includes(this.startCmdFlag)){
+                                cmd = dataToPrint.slice(0,dataToPrint.indexOf(this.startCmdFlag));
+                                // Find the last occurrence of '\n'
+                                const lastNewlineIndex = cmd.lastIndexOf('\n');
+                                // Extract the text to the right of the last '\n'
+                                cmd = cmd.slice(lastNewlineIndex + 1).trim();
+                            }
                             dataToPrint = dataBuffer.slice(0, dataBuffer.lastIndexOf("\r"));
                             dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
