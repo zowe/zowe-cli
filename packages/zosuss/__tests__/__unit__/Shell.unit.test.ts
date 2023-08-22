@@ -50,7 +50,7 @@ const mockShell = jest.fn().mockImplementation((callback) => {
 
 const mockShellExit = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\n${Shell.startCmdFlag}stdout data\n\rerror$ \r\n$ exit`);
+    mockStream.emit("data", `\r\n${Shell.startCmdFlag}stdout data\n\rerror$ /\$ exit/`);
     mockStream.emit("exit", 0);
     mockStream.emit("close");
 });
@@ -113,7 +113,6 @@ describe("Shell", () => {
         await Shell.executeSsh(fakeSshSession, command, stdoutHandler);
         checkMockFunctionsWithCommand(command);
     });
-
 
     describe("Error handling", () => {
         it("should fail when password is expired", async () => {
