@@ -48,6 +48,13 @@ const mockShell = jest.fn().mockImplementation((callback) => {
     mockStream.emit("close");
 });
 
+const mockShellExit = jest.fn().mockImplementation((callback) => {
+    callback(null, mockStream);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}stdout data\n\rerror$ \r\n$ exit`);
+    mockStream.emit("exit", 0);
+    mockStream.emit("close");
+});
+
 (Client as any).mockImplementation(() => {
     mockClient.connect = mockConnect;
     mockClient.shell = mockShell;
@@ -99,6 +106,14 @@ describe("Shell", () => {
 
         checkMockFunctionsWithCommand(command);
     });
+
+    it("Should execute ssh command when `$ exit` found", async () => {
+        const command = "commandtest";
+        mockShell.mockImplementationOnce(mockShellExit);
+        await Shell.executeSsh(fakeSshSession, command, stdoutHandler);
+        checkMockFunctionsWithCommand(command);
+    });
+
 
     describe("Error handling", () => {
         it("should fail when password is expired", async () => {
