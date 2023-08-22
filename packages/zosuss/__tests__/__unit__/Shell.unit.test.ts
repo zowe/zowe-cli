@@ -67,6 +67,9 @@ function checkMockFunctionsWithCommand(command: string) {
     expect(stdoutHandler).not.toEqual("");
     expect(stdoutHandler).toHaveBeenCalledWith("\rerror");
     expect(stdoutHandler).not.toContain(command);
+    // Should execute ssh command and not include the input command in output
+    expect(stdoutHandler).not.toContain('\r<');
+    expect(stdoutHandler).not.toContain('\r\n$ '+ command);
 }
 
 describe("Shell", () => {
