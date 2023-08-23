@@ -50,7 +50,9 @@ const mockShell = jest.fn().mockImplementation((callback) => {
 
 const mockShellExit = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\r\n${Shell.startCmdFlag}stdout data\n\rerror$ /\$ exit/`);
+    mockStream.emit("data", `\r\n${Shell.startCmdFlag}`);
+    mockStream.emit("data", `\r\nstdout data\n\rerror$`);
+    mockStream.emit("data", `\r\n${Shell.startCmdFlag}stdout data\n\rerror$ $ exit`);
     mockStream.emit("exit", 0);
     mockStream.emit("close");
 });
