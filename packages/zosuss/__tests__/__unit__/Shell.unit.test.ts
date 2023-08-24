@@ -43,7 +43,19 @@ mockStream.write = mockStreamWrite;
 
 const mockShell = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\n${Shell.startCmdFlag}stdout data\n\rerror$ `);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}\r\n`);
+    mockStream.emit("data", `$ commandtest\r\n`);
+    mockStream.emit("data", `output\n\rerror`);
+    mockStream.emit("data", `$ exit\r\n`);
+    mockStream.emit("close");
+});
+
+const mockShellExit = jest.fn().mockImplementation((callback) => {
+    callback(null, mockStream);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}\r\n`);
+    mockStream.emit("data", `$ commandtest\r\n`);
+    mockStream.emit("data", `output\n\rerror`);
+    mockStream.emit("data", `$ exit\r\n`);
     mockStream.emit("exit", 0);
     mockStream.emit("close");
 });
@@ -63,10 +75,14 @@ function checkMockFunctionsWithCommand(command: string) {
 
     // Check the stream.end() function is called with an argument containing the SSH command
     expect(mockStreamWrite.mock.calls[0][0]).toMatch(command);
+    expect(mockStreamWrite.mock.calls[0][0]).toContain(Shell.startCmdFlag);
     expect(mockStreamEnd).toHaveBeenCalled();
     expect(stdoutHandler).not.toEqual("");
     expect(stdoutHandler).toHaveBeenCalledWith("\rerror");
     expect(stdoutHandler).not.toContain(command);
+    // Should execute ssh command and not include the input command in output
+    expect(stdoutHandler).not.toContain('\r<');
+    expect(stdoutHandler).not.toContain('\r\n$ '+ command);
 }
 
 describe("Shell", () => {
@@ -93,6 +109,13 @@ describe("Shell", () => {
         const command = "commandtest";
         await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler);
 
+        checkMockFunctionsWithCommand(command);
+    });
+
+    it("Should execute ssh command when `$ exit` found", async () => {
+        const command = "commandtest";
+        mockShell.mockImplementationOnce(mockShellExit);
+        await Shell.executeSsh(fakeSshSession, command, stdoutHandler);
         checkMockFunctionsWithCommand(command);
     });
 
