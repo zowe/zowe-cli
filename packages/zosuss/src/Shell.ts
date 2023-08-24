@@ -28,7 +28,6 @@ export class Shell {
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
             const conn = new Client();
-            let commandFound = false;
 
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
@@ -91,17 +90,14 @@ export class Shell {
                                 isUserCommand = true;
                             }
 
-                            if (isUserCommand && dataToPrint.includes("$ exit")) {
+                            if (isUserCommand && dataToPrint.match(/\$ exit/)) {
                                 // if exit found, print out stuff before exit, then stop printing out.
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                                 isUserCommand = false;
                             }
-                            else if (dataToPrint.includes(Shell.startCmdFlag)) {
-                                commandFound = true;
-                            }
-                            else if (isUserCommand && commandFound && dataToPrint.length != 0) {
+                            else if (isUserCommand && dataToPrint.length != 0) {
                                 if (!dataToPrint.startsWith('\r\n$ '+cmd) && !dataToPrint.startsWith('\r<')){
                                     //only prints command output
                                     stdoutHandler(dataToPrint);

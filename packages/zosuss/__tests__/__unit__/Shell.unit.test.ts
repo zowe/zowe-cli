@@ -43,16 +43,19 @@ mockStream.write = mockStreamWrite;
 
 const mockShell = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\n${Shell.startCmdFlag}stdout data\n\rerror$ `);
-    mockStream.emit("exit", 0);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}\r\n`);
+    mockStream.emit("data", `$ commandtest\r\n`);
+    mockStream.emit("data", `output\n\rerror`);
+    mockStream.emit("data", `$ exit\r\n`);
     mockStream.emit("close");
 });
 
 const mockShellExit = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\r\n${Shell.startCmdFlag}`);
-    mockStream.emit("data", `\r\nstdout data\n\rerror$`);
-    mockStream.emit("data", `\r\n${Shell.startCmdFlag}stdout data\n\rerror$ $ exit`);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}\r\n`);
+    mockStream.emit("data", `$ commandtest\r\n`);
+    mockStream.emit("data", `output\n\rerror`);
+    mockStream.emit("data", `$ exit\r\n`);
     mockStream.emit("exit", 0);
     mockStream.emit("close");
 });
