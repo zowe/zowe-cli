@@ -13,22 +13,56 @@ import * as fs from "fs";
 import * as nodePath from "path";
 import * as findUp from "find-up";
 
+export let TEST_USING_WORKSPACE = false;
+
 function projectRootDir() {
+    let finalProjectRootDir = null;
+    let lernaTestDirExists = false;
     // First look for lerna.json to handle monorepos with tests at top level
-    const lernaJson = findUp.sync("lerna.json");
-    if (lernaJson != null) {
-        const lernaRootDir = nodePath.dirname(lernaJson);
+    const lernaJsonPath = findUp.sync("lerna.json");
+    if (lernaJsonPath != null) {
+        const lernaRootDir = nodePath.dirname(lernaJsonPath);
         if (fs.existsSync(nodePath.join(lernaRootDir, "__tests__"))) {
-            return lernaRootDir;
+            finalProjectRootDir = lernaRootDir;
+            lernaTestDirExists = true;
         }
     }
     // Next look for package.json in single-package repo
-    const packageJson = findUp.sync("package.json");
-    if (packageJson != null) {
-        return nodePath.dirname(packageJson);
+    const packageJsonPath = findUp.sync("package.json");
+    if (packageJsonPath != null && finalProjectRootDir == null) {
+        finalProjectRootDir = nodePath.dirname(packageJsonPath);
     }
-    // Finally fallback to using working directory
-    return process.cwd();
+
+    if (finalProjectRootDir == null) {
+        finalProjectRootDir = process.cwd();
+    }
+
+    // Look for the workspace that is running the current test
+    const getTestRootDir = (defaultRootDir: string) => {
+        let stackTrace: string;
+        try {
+            throw new Error('Debugging error');
+        } catch (e: any) {
+            stackTrace = e.stack;
+        }
+        const filePaths = [];
+        for (const line of stackTrace.split('\n')) {
+            const match = line.match(/\((.*?):\d+:\d+\)$/);
+            if (match) {
+                filePaths.push(match[1]);
+            }
+        }
+        const filtered = filePaths.filter((stackFilePath: string) => {
+            const filePath = stackFilePath.replace(/\\/g, "/");
+            return !filePath.includes("node_modules/jest-") && !filePath.includes("cli-test-utils");
+        });
+        return filtered[0]?.split("/__tests__")[0] ?? defaultRootDir;
+    };
+
+    const testRootDir = getTestRootDir(finalProjectRootDir);
+    // lernaTestDirExists == true XOR (finalProjectRootDir == testRootDir)
+    TEST_USING_WORKSPACE = lernaTestDirExists ? finalProjectRootDir != testRootDir : finalProjectRootDir == testRootDir;
+    return TEST_USING_WORKSPACE ? testRootDir : finalProjectRootDir;
 }
 
 // The root directory of the project - where package.json lives.

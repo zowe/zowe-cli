@@ -19,7 +19,7 @@ import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextU
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
-import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR } from "../TestConstants";
+import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR, TEST_USING_WORKSPACE } from "../TestConstants";
 import { runCliScript } from "../TestUtils";
 
 /**
@@ -173,7 +173,10 @@ export class TestEnvironment {
         const pluginConfig = require(nodePath.join(PROJECT_ROOT_DIR, packageJson.imperative.configurationModule));
 
         let installScript: string = TempTestProfiles.SHEBANG;
-        installScript += `zowe plugins install ${pluginRelPath}\n`; // install plugin from root of project
+        // install plugin from root of project
+        // Note: the TEST_USING_WORKSPACE is just a hack to work around this bug: https://github.com/npm/cli/issues/6099
+        installScript += `zowe plugins install ${pluginRelPath}${TEST_USING_WORKSPACE ? " --registry=https://registry.npmjs.org/": ""}\n`;
+
         installScript += `zowe plugins validate ${packageJson.name}\n`;
         if (pluginConfig.definitions != null && pluginConfig.definitions.length > 0) {
             installScript += `zowe ${pluginConfig.name} --help\n`; // check that the plugin help is available
