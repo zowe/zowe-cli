@@ -4,7 +4,8 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## `7.18.3`
 
-- BugFix: Separated module resolution logic during installation; added more error handling to provide a more graceful installation process.
+- Enhancement: Separated module resolution logic during installation; added more error handling to provide a more graceful installation process.
+- Enhancement: Add static CRT when compiling Windows builds.
 
 ## `7.18.2`
 

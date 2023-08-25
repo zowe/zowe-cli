@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Bump Secrets SDK to `7.18.2` - uses more reliable resolution logic for `prebuilds` folder.
+- Enhancement: Bump Secrets SDK to `7.18.3` - uses more reliable resolution logic for `prebuilds` folder; adds static CRT for Windows builds.
 
 ## `7.18.0`
 
