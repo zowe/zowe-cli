@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## `7.18.3`
+
+- Enhancement: Separated module resolution logic during installation; added more error handling to provide a more graceful installation process.
+- Enhancement: Add static CRT when compiling Windows builds.
+
 ## `7.18.2`
 
 - BugFix: Adds logic to allow the `keyring` module to locate the current package directory for the `prebuilds/` folder.

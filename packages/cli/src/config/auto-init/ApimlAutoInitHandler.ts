@@ -105,7 +105,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
 
         const config = ImperativeConfig.instance.config;
         // Check to see if there is an active base profile to avoid creating a new one named "base"
-        let activeBaseProfile = params.arguments[`${this.mProfileType}-profile`] || config?.properties?.defaults?.[this.mProfileType];
+        let activeBaseProfile = params.arguments[`${this.mProfileType}-profile`] || config.properties.defaults[this.mProfileType];
         let baseProfileCreated = false;
         // Populate the config with base profile information
         if (activeBaseProfile == null) {
