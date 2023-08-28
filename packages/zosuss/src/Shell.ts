@@ -45,8 +45,9 @@ export class Shell {
                     let isUserCommand = false;
                     let rc: number;
 
-                    //isolate the command
-                    const cmd = command.split(' ')[0];
+                    // isolate the command
+                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                    const cmd = command.slice(0, 75);
 
                     stream.on("exit", (exitcode: number) => {
                         Logger.getAppLogger().debug(`Return Code: ${exitcode}`);
