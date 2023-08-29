@@ -27,6 +27,8 @@ export class Shell {
         const authsAllowed = ["none"];
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
+            const conn = new Client();
+
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
             if (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
@@ -35,8 +37,6 @@ export class Shell {
             if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
                 authsAllowed.push("password");
             }
-            const conn = new Client();
-
             conn.on("ready", () => {
                 conn.shell((err: any, stream: ClientChannel) => {
                     if (err) { throw err; }
@@ -44,6 +44,10 @@ export class Shell {
                     let dataToPrint = "";
                     let isUserCommand = false;
                     let rc: number;
+
+                    // isolate the command
+                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                    const cmd = command.slice(0, 75);
 
                     stream.on("exit", (exitcode: number) => {
                         Logger.getAppLogger().debug(`Return Code: ${exitcode}`);
@@ -93,10 +97,13 @@ export class Shell {
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                                 isUserCommand = false;
-                            } else if (isUserCommand) {
-                                // print out the user command result
-                                stdoutHandler(dataToPrint);
-                                dataToPrint = "";
+                            }
+                            else if (isUserCommand && dataToPrint.length != 0) {
+                                if (!dataToPrint.startsWith('\r\n$ '+cmd) && !dataToPrint.startsWith('\r<')){
+                                    //only prints command output
+                                    stdoutHandler(dataToPrint);
+                                    dataToPrint = "";
+                                }
                             }
                         }
                     });

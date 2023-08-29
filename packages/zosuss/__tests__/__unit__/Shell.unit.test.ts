@@ -43,10 +43,13 @@ mockStream.write = mockStreamWrite;
 
 const mockShell = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", `\n${Shell.startCmdFlag}stdout data\n\rerror$ `);
-    mockStream.emit("exit", 0);
+    mockStream.emit("data", `\n${Shell.startCmdFlag}\r\n`);
+    mockStream.emit("data", `$ commandtest\r\n`);
+    mockStream.emit("data", `output\n\rerror`);
+    mockStream.emit("data", `$ exit\r\n`);
     mockStream.emit("close");
 });
+
 
 (Client as any).mockImplementation(() => {
     mockClient.connect = mockConnect;
@@ -61,11 +64,16 @@ function checkMockFunctionsWithCommand(command: string) {
     expect(mockConnect).toBeCalled();
     expect(mockShell).toBeCalled();
 
-    // Check the stream.end() fucntion is called with an argument containing the SSH command
+    // Check the stream.end() function is called with an argument containing the SSH command
     expect(mockStreamWrite.mock.calls[0][0]).toMatch(command);
+    expect(mockStreamWrite.mock.calls[0][0]).toContain(Shell.startCmdFlag);
     expect(mockStreamEnd).toHaveBeenCalled();
-    expect(stdoutHandler).toHaveBeenCalledWith("stdout data\n");
+    expect(stdoutHandler).not.toEqual("");
     expect(stdoutHandler).toHaveBeenCalledWith("\rerror");
+    expect(stdoutHandler).not.toContain(command);
+    // Should execute ssh command and not include the input command in output
+    expect(stdoutHandler).not.toContain('\r<');
+    expect(stdoutHandler).not.toContain('\r\n$ '+ command);
 }
 
 describe("Shell", () => {
