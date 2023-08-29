@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## TBD Release
+
+- Added OVERVIEW document to package: provides context on the Secrets SDK transition and how it affects Zowe CLI and Zowe Explorer.
+
 ## `7.18.3`
 
 - Enhancement: Separated module resolution logic during installation; added more error handling to provide a more graceful installation process.
