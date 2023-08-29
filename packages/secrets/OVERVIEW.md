@@ -25,10 +25,11 @@ CLI users should not be affected by this change. It is intended to be a drop-in 
         - Remote SSH
         - Remote Tunnel
         - Remote Docker
+    - [Click here](https://github.com/zowe/vscode-extension-for-zowe/wiki/Usage-in-Remote-Environments) for more information.
 
 ## Impact on Extenders
 
-**CAUTION:** Regardless of whether you extend Zowe CLI or Zowe Explorer, developers that directly reference `node-keytar` as a dependency or dev dependency must use the new `keyring` module in `@zowe/secrets-for-zowe-sdk`.
+**CAUTION:** Regardless of whether you extend Zowe CLI or Zowe Explorer, developers that directly reference `keytar` as a dependency or dev dependency must use the new `keyring` module in `@zowe/secrets-for-zowe-sdk`.
 
 ### Zowe CLI
 
