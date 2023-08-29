@@ -1,11 +1,12 @@
 # Secrets SDK
 
 Secrets for Zowe SDK is a new development package used in the following Zowe releases:
-- Zowe CLI, v7.18.0 and above
+- Zowe CLI
+    - v7.18.0 and above from the NPM package
+    - Bundle v2.11.0 and above from [Zowe.org](https://www.zowe.org/download#download-v2)
 - Zowe Explorer and Zowe Explorer API
     - v2.10.0 and above (v2 LTS)
-    - v1.22.5 and above (v1)
-- Zowe v2.11 bundle
+    - v1.22.5 and above (v1 LTS)
 
 The `keyring` module in this package replaces node-keytar. Node-keytar was developed by Atom, and is no longer maintained as of December 15th, 2022.
 
@@ -27,7 +28,7 @@ CLI users should not be affected by this change. It is intended to be a drop-in 
 
 ## Impact on Extenders
 
-**CAUTION:** Regardless of whether you extend Zowe CLI or Zowe Explorer, developers that directly reference the dependency `node-keytar` in their code must use the new `keyring` module in `@zowe/secrets-for-zowe-sdk`.
+**CAUTION:** Regardless of whether you extend Zowe CLI or Zowe Explorer, developers that directly reference `node-keytar` as a dependency or dev dependency must use the new `keyring` module in `@zowe/secrets-for-zowe-sdk`.
 
 ### Zowe CLI
 

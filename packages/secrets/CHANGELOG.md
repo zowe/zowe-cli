@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## TBD Release
+## Recent Changes
 
 - Added OVERVIEW document to package: provides context on the Secrets SDK transition and how it affects Zowe CLI and Zowe Explorer.
 
