@@ -18,8 +18,8 @@ CLI users should not be affected by this change. It is intended to be a drop-in 
 ### Zowe Explorer
 
 - **Most** Zowe Explorer users should not be affected by this change.
-- Some Zowe Explorer users may be affected by this change. Specifically, users connecting over remote environments with Zowe Explorer might be required to re-enter credentials. 
-    - Since keytar has been removed from VS Code for the next release, Zowe Explorer cannot access the local credential vault while the extension is running through a remote server. Those users will only have to re-enter their credentials once. 
+- Some Zowe Explorer users may be affected by this change. Specifically, users connecting over remote environments with Zowe Explorer are required to re-enter credentials. 
+    - Since keytar has been removed from VS Code for the next release, Zowe Explorer cannot access the local credential vault while the extension is running through a remote server.
     - "Remote environments" include:
         - Remote SSH
         - Remote Tunnel
