@@ -23052,7 +23052,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "7.18.2",
+      "version": "7.18.3",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -23180,7 +23180,7 @@
     },
     "packages/secrets": {
       "name": "@zowe/secrets-for-zowe-sdk",
-      "version": "7.18.2",
+      "version": "7.18.3",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "devDependencies": {
