@@ -23099,7 +23099,17 @@
         "node": ">=14.0.0"
       },
       "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "7.18.2"
+        "@zowe/secrets-for-zowe-sdk": "7.18.3"
+      }
+    },
+    "packages/cli/node_modules/@zowe/secrets-for-zowe-sdk": {
+      "version": "7.18.3",
+      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/secrets-for-zowe-sdk/-/@zowe/secrets-for-zowe-sdk-7.18.3.tgz",
+      "integrity": "sha512-3/TyFgpZimOUreDLQSlRfZK+GAgRr4zl31YvPD1wOB95wIgcX7dDONmsMuf/Z721eJOkVMuae7W4Ke92oyJECQ==",
+      "hasInstallScript": true,
+      "optional": true,
+      "engines": {
+        "node": ">= 14"
       }
     },
     "packages/cli/node_modules/brace-expansion": {
@@ -29664,7 +29674,7 @@
         "@zowe/imperative": "5.18.1",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.18.2",
-        "@zowe/secrets-for-zowe-sdk": "7.18.2",
+        "@zowe/secrets-for-zowe-sdk": "7.18.3",
         "@zowe/zos-console-for-zowe-sdk": "7.18.2",
         "@zowe/zos-files-for-zowe-sdk": "7.18.2",
         "@zowe/zos-jobs-for-zowe-sdk": "7.18.2",
@@ -29689,6 +29699,12 @@
         "which": "^2.0.2"
       },
       "dependencies": {
+        "@zowe/secrets-for-zowe-sdk": {
+          "version": "7.18.3",
+          "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/secrets-for-zowe-sdk/-/@zowe/secrets-for-zowe-sdk-7.18.3.tgz",
+          "integrity": "sha512-3/TyFgpZimOUreDLQSlRfZK+GAgRr4zl31YvPD1wOB95wIgcX7dDONmsMuf/Z721eJOkVMuae7W4Ke92oyJECQ==",
+          "optional": true
+        },
         "brace-expansion": {
           "version": "2.0.1",
           "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.0.1.tgz",
