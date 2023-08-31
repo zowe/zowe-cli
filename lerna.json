@@ -6,6 +6,9 @@
         "packages/**/__tests__/**"
       ],
       "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+    },
+    "version": {
+      "private": false
     }
   },
   "useWorkspaces": true
