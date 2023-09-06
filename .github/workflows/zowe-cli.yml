@@ -78,7 +78,7 @@ jobs:
 
     - name: Use Original NPM Version
       id: original-npm-version
-      run: npm install -g npm@${{ steps.npm-version.outputs.number }}
+      run: npm install -g npm@${{ steps.npm-version.outputs.number || '9' }}
 
     - name: Install Rust toolchain
       id: install-rust
