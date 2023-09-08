@@ -9,14 +9,12 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
 };
 // Define global variables
 var urlParams = new URLSearchParams(window.location.search);
@@ -44,16 +42,6 @@ function flattenNodes(nestedNodes) {
     return flattenedNodes;
 }
 /**
- * Get the preferred theme name for JSTree (light or dark).
- * @returns Theme name
- */
-function getJstreeThemeName() {
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        return "default-dark";
-    }
-    return "default";
-}
-/**
  * Find all possible combinations of a search string that exist with different aliases
  * @param searchStr - Search string input by user
  * @returns NUL-delimited list of search strings with all combinations of aliases
@@ -67,7 +55,7 @@ function permuteSearchStr(searchStr) {
             var newSearchWordsList_1 = [];
             searchWordsList.forEach(function (oldSearchWords) {
                 aliasList[word].forEach(function (alias) {
-                    newSearchWordsList_1.push(__spreadArray(__spreadArray(__spreadArray([], oldSearchWords.slice(0, i), true), [alias], false), oldSearchWords.slice(i + 1), true));
+                    newSearchWordsList_1.push(__spreadArrays(oldSearchWords.slice(0, i), [alias], oldSearchWords.slice(i + 1)));
                 });
             });
             searchWordsList.push.apply(searchWordsList, newSearchWordsList_1);
@@ -98,14 +86,14 @@ function updateCurrentNode(newNodeId, goto, expand, force) {
     if (goto) {
         // Load docs page for node in iframe
         if (currentView === 0) {
-            $("#docs-page").attr("src", "./docs/".concat(currentNodeId));
+            $("#docs-page").attr("src", "./docs/" + currentNodeId);
         }
         else {
-            $("#docs-page").attr("src", "./docs/all.html#".concat(nodeIdWithoutExt));
+            $("#docs-page").attr("src", "./docs/all.html#" + nodeIdWithoutExt);
         }
     }
     // Update page title
-    document.title = "".concat(nodeIdWithoutExt.replace(/_/g, " "), " | ").concat(headerStr, " Docs");
+    document.title = nodeIdWithoutExt.replace(/_/g, " ") + " | " + headerStr + " Docs";
     // Select node in command tree
     $("#cmd-tree").jstree(true).deselect_all();
     $("#cmd-tree").jstree(true).select_node(currentNodeId);
@@ -192,7 +180,7 @@ function onTreeLoaded() {
     var tempNodeId = currentNodeId;
     if (!tempNodeId) {
         var cmdToLoad = urlParams.get("p");
-        tempNodeId = (cmdToLoad != null) ? "".concat(cmdToLoad, ".html") : treeNodes[0].id;
+        tempNodeId = (cmdToLoad != null) ? cmdToLoad + ".html" : treeNodes[0].id;
     }
     updateCurrentNode(tempNodeId, true, true, true);
     if ($("#tree-search").val()) {
@@ -252,7 +240,7 @@ function loadTree() {
         core: {
             animation: 0,
             multiple: false,
-            themes: { name: getJstreeThemeName(), icons: false },
+            themes: { icons: false },
             data: (currentView === 0) ? treeNodes : flattenNodes(treeNodes)
         },
         plugins: ["contextmenu", "search", "wholerow"],
@@ -270,10 +258,6 @@ function loadTree() {
     // Connect events to search box and iframe
     $("#tree-search").on("change keyup mouseup paste", function () { return onSearchTextChanged(); });
     window.addEventListener("message", onDocsPageChanged, false);
-    if (window.matchMedia) {
-        window.matchMedia("(prefers-color-scheme: dark)")
-            .addEventListener("change", function () { return $("#cmd-tree").jstree(true).set_theme(getJstreeThemeName()); });
-    }
 }
 /**
  * Toggle visibility of command tree
