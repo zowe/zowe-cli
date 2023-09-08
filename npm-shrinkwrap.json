@@ -16,7 +16,7 @@
         "@octorelease/lerna": "^0.1.4",
         "@types/fs-extra": "^8.0.1",
         "@types/jest": "^22.2.3",
-        "@types/lodash": "^4.14.0",
+        "@types/lodash": "4.14.175",
         "@types/node": "^12.12.24",
         "@typescript-eslint/eslint-plugin": "^4.29.0",
         "@typescript-eslint/parser": "^4.29.0",
@@ -7582,9 +7582,9 @@
       "dev": true
     },
     "node_modules/@types/lodash": {
-      "version": "4.14.198",
-      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.198.tgz",
-      "integrity": "sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==",
+      "version": "4.14.175",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.175.tgz",
+      "integrity": "sha512-XmdEOrKQ8a1Y/yxQFOMbC47G/V2VDO1GvMRnl4O75M4GW/abC5tnfzadQYkqEveqRM1dEJGFFegfPNA2vvx2iw==",
       "dev": true
     },
     "node_modules/@types/lodash-deep": {
@@ -7739,16 +7739,6 @@
       "resolved": "https://registry.npmjs.org/@types/sizzle/-/sizzle-2.3.3.tgz",
       "integrity": "sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==",
       "dev": true
-    },
-    "node_modules/@types/ssh2": {
-      "version": "0.5.47",
-      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-0.5.47.tgz",
-      "integrity": "sha512-ZhqJg8BRV7OsCi0KVqPr27lUMMmLEeHYw1VXUNGGDlQEDq9HTsKx+wYvi8E6oNC6gRZ7PV99ZMZmMr5vztcYYA==",
-      "dev": true,
-      "dependencies": {
-        "@types/node": "*",
-        "@types/ssh2-streams": "*"
-      }
     },
     "node_modules/@types/ssh2-streams": {
       "version": "0.1.9",
@@ -29853,7 +29843,7 @@
       },
       "devDependencies": {
         "@types/node": "^12.12.24",
-        "@types/ssh2": "^0.5.44",
+        "@types/ssh2": "0.5.44",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -29863,6 +29853,16 @@
       },
       "peerDependencies": {
         "@zowe/imperative": "^4.8.1"
+      }
+    },
+    "packages/zosuss/node_modules/@types/ssh2": {
+      "version": "0.5.44",
+      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-0.5.44.tgz",
+      "integrity": "sha512-2aKqF0no055Zs8E6eaUtgDJv9yw1ViR7GLkWhuMIMnSPIU46vJJviEFZZtEqGxZEnrPpYxvOPPpWzwll/a4YwQ==",
+      "dev": true,
+      "dependencies": {
+        "@types/node": "*",
+        "@types/ssh2-streams": "*"
       }
     }
   },
@@ -36000,9 +36000,9 @@
       "dev": true
     },
     "@types/lodash": {
-      "version": "4.14.198",
-      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.198.tgz",
-      "integrity": "sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==",
+      "version": "4.14.175",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.175.tgz",
+      "integrity": "sha512-XmdEOrKQ8a1Y/yxQFOMbC47G/V2VDO1GvMRnl4O75M4GW/abC5tnfzadQYkqEveqRM1dEJGFFegfPNA2vvx2iw==",
       "dev": true
     },
     "@types/lodash-deep": {
@@ -36156,16 +36156,6 @@
       "resolved": "https://registry.npmjs.org/@types/sizzle/-/sizzle-2.3.3.tgz",
       "integrity": "sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==",
       "dev": true
-    },
-    "@types/ssh2": {
-      "version": "0.5.47",
-      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-0.5.47.tgz",
-      "integrity": "sha512-ZhqJg8BRV7OsCi0KVqPr27lUMMmLEeHYw1VXUNGGDlQEDq9HTsKx+wYvi8E6oNC6gRZ7PV99ZMZmMr5vztcYYA==",
-      "dev": true,
-      "requires": {
-        "@types/node": "*",
-        "@types/ssh2-streams": "*"
-      }
     },
     "@types/ssh2-streams": {
       "version": "0.1.9",
@@ -36870,7 +36860,7 @@
       "version": "file:packages/zosuss",
       "requires": {
         "@types/node": "^12.12.24",
-        "@types/ssh2": "^0.5.44",
+        "@types/ssh2": "0.5.44",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -36878,6 +36868,18 @@
         "ssh2": "1.4.0",
         "typedoc": "^0.16.0",
         "typescript": "^3.8.0"
+      },
+      "dependencies": {
+        "@types/ssh2": {
+          "version": "0.5.44",
+          "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-0.5.44.tgz",
+          "integrity": "sha512-2aKqF0no055Zs8E6eaUtgDJv9yw1ViR7GLkWhuMIMnSPIU46vJJviEFZZtEqGxZEnrPpYxvOPPpWzwll/a4YwQ==",
+          "dev": true,
+          "requires": {
+            "@types/node": "*",
+            "@types/ssh2-streams": "*"
+          }
+        }
       }
     },
     "@zowe/zos-workflows-for-zowe-sdk": {

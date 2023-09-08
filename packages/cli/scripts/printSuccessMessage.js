@@ -9,7 +9,32 @@
 *
 */
 
+function ensureImperativeBuild() {
+    const fs = require('fs');
+    const path = require('path');
+    const execSync = require("child_process").execSync;
+    const packageName = "@zowe/imperative";
+    let packagePath;
+    try {
+        packagePath = require.resolve(packageName);
+        return;
+    } catch (err) {
+        if (err.message.startsWith("Cannot find module")) {
+            const matches = err.message.match(/'([^']+)'/g);
+            packagePath = path.join(path.dirname(matches[0].slice(1, -1)), "..");
+        } else {
+            throw err;
+        }
+    }
+
+    if (fs.existsSync(path.join(packagePath, 'tsconfig.json')) && !fs.existsSync(path.join(packagePath, "lib", "index.js"))) {
+        // console.log(`Building ${packageName}...`);
+        execSync(`cd ${packagePath} && npm run build`, { stdio: 'inherit' });
+    }
+}
+
 function printSuccessMessage() {
+    ensureImperativeBuild();
     const imperative = require("@zowe/imperative");
 
     const installSuccessMessage = "Zowe CLI has been successfully installed. " +
