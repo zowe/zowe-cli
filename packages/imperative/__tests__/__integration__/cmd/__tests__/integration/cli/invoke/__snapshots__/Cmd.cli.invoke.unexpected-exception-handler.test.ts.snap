@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli invoke unexpected-exception-handler should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   unexpected-exception-handler
+
+ DESCRIPTION
+ -----------
+
+   The unexpected exception handler attempts to perform an operation that will
+   result in an exception.
+
+ USAGE
+ -----
+
+   cmd-cli invoke unexpected-exception-handler [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+"
+`;

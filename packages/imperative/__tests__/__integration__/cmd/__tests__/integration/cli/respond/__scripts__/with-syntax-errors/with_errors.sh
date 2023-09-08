@@ -1,0 +1,2 @@
+#!/bin/bash
+cmd-cli respond with-syntax-errors XYZ --json-option "{das342112309432" --only-specify-one-of-abc-maybe-a test --only-specify-one-of-abc-maybe-b test --value-range blah --fake-file fakeeeeeeeeeeeeee --string-length-over-max asldkfjasdlfj --requires-another test --conflicts-with test --conflicts-with-another test --empty-value --requires-another test --allowable-error hello

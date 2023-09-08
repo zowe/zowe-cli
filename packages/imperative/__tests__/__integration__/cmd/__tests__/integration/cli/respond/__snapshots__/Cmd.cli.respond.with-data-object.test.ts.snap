@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli respond with-data-object should allow us to formulate a response object with a data object and produce JSON 1`] = `
+"Data object response built. Use --response-format-json to see the array.
+"
+`;
+
+exports[`cmd-cli respond with-data-object should allow us to formulate a response object with a data object and produce JSON 2`] = `
+Object {
+  "the": "data object",
+}
+`;
+
+exports[`cmd-cli respond with-data-object should display a syntax error if no parms are specified 1`] = `
+"
+Syntax Error:
+Missing Required Option:
+--data-object (--da)
+
+Option Description:
+An well-formed JSON object to place in the command response.
+
+Syntax Error:
+Missing Required Option:
+--message-for-response (--mfr)
+
+Option Description:
+The message that will be placed in the output object.
+
+Use \\"cmd-cli respond with-data-object --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli respond with-data-object should display a syntax error if the JSON object passed is not valid 1`] = `
+"
+Syntax Error:
+Invalid JSON string supplied for the following option:
+--data-object
+
+You specified:
+invalid json!
+
+JSON parsing failed with the following error:
+Unexpected token i in JSON at position 0
+
+Use \\"cmd-cli respond with-data-object --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli respond with-data-object should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   with-data-object
+
+ DESCRIPTION
+ -----------
+
+   Formulates a JSON object to pass back when response format JSON is specified.
+
+ USAGE
+ -----
+
+   cmd-cli respond with-data-object [options]
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --data-object  | --da (json)
+
+      An well-formed JSON object to place in the command response.
+
+   --message-for-response  | --mfr (string)
+
+      The message that will be placed in the output object.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: with-data-object.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-data-object\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Formulates a JSON object to pass back when response format JSON is specified.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-data-object [options]\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --data-object  | --da (json)\\\\n\\\\n      An well-formed JSON object to place in the command response.\\\\n\\\\n   --message-for-response  | --mfr (string)\\\\n\\\\n      The message that will be placed in the output object.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-data-object\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Formulates a JSON object to pass back when response format JSON is specified.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-data-object [options]\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --data-object  | --da (json)\\\\n\\\\n      An well-formed JSON object to place in the command response.\\\\n\\\\n   --message-for-response  | --mfr (string)\\\\n\\\\n      The message that will be placed in the output object.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

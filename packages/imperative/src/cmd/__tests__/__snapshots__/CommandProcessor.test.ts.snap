@@ -1,0 +1,1294 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command Processor invalidSyntaxNotification should log an invalid syntax notification with examples 1`] = `
+"
+Example:
+
+ - Unripe Banana:
+
+      $ fruit banana --banana-color green --is-spoiled false
+
+Use \\"fruit bad syntax here --help\\" to view command description, usage, and options."
+`;
+
+exports[`Command Processor should allow us to formulate the help for a group 1`] = `
+Object {
+  "data": "Build help invoked!",
+  "error": undefined,
+  "exitCode": 0,
+  "message": "The help was constructed for command: check.",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      66,
+      117,
+      105,
+      108,
+      100,
+      32,
+      104,
+      101,
+      108,
+      112,
+      32,
+      105,
+      110,
+      118,
+      111,
+      107,
+      101,
+      100,
+      33,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should build the help if requested 1`] = `"Build help invoked!"`;
+
+exports[`Command Processor should build the help if requested 2`] = `
+Object {
+  "data": "Build help invoked!",
+  "error": undefined,
+  "exitCode": 0,
+  "message": "The help was constructed for command: banana.",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      66,
+      117,
+      105,
+      108,
+      100,
+      32,
+      104,
+      101,
+      108,
+      112,
+      32,
+      105,
+      110,
+      118,
+      111,
+      107,
+      101,
+      100,
+      33,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should build the web help if requested 1`] = `""`;
+
+exports[`Command Processor should build the web help if requested 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "The web help was launched for command: banana",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should detect blank root command supplied 1`] = `"Expect Error: Command Processor Error: No root command supplied."`;
+
+exports[`Command Processor should detect cli args passed on the arguments object to invoke 1`] = `"Expect Error: Command Processor Error: invoke(): The command arguments object supplied does not contain an array of args."`;
+
+exports[`Command Processor should detect invalid response format on invoke 1`] = `"Expect Error: Command Processor Error: invoke(): Response format must be one of the following: default,json"`;
+
+exports[`Command Processor should detect missing ENV var prefix 1`] = `"Expect Error: Command Processor Error: No ENV variable prefix supplied."`;
+
+exports[`Command Processor should detect missing arguments on invoke 1`] = `"Expect Error: Command Processor Error: invoke(): No command arguments supplied."`;
+
+exports[`Command Processor should detect missing command arguments to validate 1`] = `"Expect Error: Command Processor Error: validate(): No command arguments supplied."`;
+
+exports[`Command Processor should detect missing command response to validate 1`] = `"Expect Error: Command Processor Error: validate(): No response object supplied."`;
+
+exports[`Command Processor should detect missing parameters on invoke 1`] = `"Expect Error: Command Processor Error: invoke(): No parameters supplied."`;
+
+exports[`Command Processor should detect missing parameters to help 1`] = `"Expect Error: Command Processor Error: help(): No command response object supplied."`;
+
+exports[`Command Processor should detect no command definition supplied 1`] = `"Expect Error: Command Processor Error: No command definition supplied."`;
+
+exports[`Command Processor should detect no help generator supplied 1`] = `"Expect Error: Command Processor Error: No help generator supplied."`;
+
+exports[`Command Processor should detect no profile manager factory supplied 1`] = `"Expect Error: Command Processor Error: No profile manager factory supplied."`;
+
+exports[`Command Processor should detect no root command supplied 1`] = `"Expect Error: Command Processor Error: No root command supplied."`;
+
+exports[`Command Processor should detect that no parameters have been supplied 1`] = `"Expect Error: Command Processor Error: No parameters supplied to constructor."`;
+
+exports[`Command Processor should extract arguments not specified on invoke from a profile and merge with args 1`] = `
+"yellow
+"
+`;
+
+exports[`Command Processor should extract arguments not specified on invoke from a profile and merge with args 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      121,
+      101,
+      108,
+      108,
+      111,
+      119,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should extract arguments not specified on invoke from a profile and merge with positional args 1`] = `
+"yellow
+"
+`;
+
+exports[`Command Processor should extract arguments not specified on invoke from a profile and merge with positional args 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      121,
+      101,
+      108,
+      108,
+      111,
+      119,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should fail the command if syntax validation fails 1`] = `
+"
+Use \\"fruit banana --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`Command Processor should fail the command if syntax validation fails 2`] = `""`;
+
+exports[`Command Processor should fail the command if syntax validation fails 3`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 1,
+  "message": "Command syntax invalid",
+  "success": false,
+}
+`;
+
+exports[`Command Processor should fail the creation of the command processor if a definition of type command has no handler 1`] = `"Expect Error: Command Processor Error: The definition supplied is of type \\"command\\", but no handler was specified."`;
+
+exports[`Command Processor should formulate the full help command for a more complex command on syntax failure 1`] = `
+"
+Use \\"fruit check for banana --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`Command Processor should formulate the full help command for a more complex command on syntax failure 2`] = `""`;
+
+exports[`Command Processor should formulate the full help command for a more complex command on syntax failure 3`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 1,
+  "message": "Command syntax invalid",
+  "success": false,
+}
+`;
+
+exports[`Command Processor should handle a strange error type being thrown 1`] = `
+Object {
+  "weird": "error",
+}
+`;
+
+exports[`Command Processor should handle an error thrown from the profile loader 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "msg": "Profile loading failed!",
+  },
+  "exitCode": 1,
+  "message": "Profile loading failed!",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      67,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      80,
+      114,
+      101,
+      112,
+      97,
+      114,
+      97,
+      116,
+      105,
+      111,
+      110,
+      32,
+      70,
+      97,
+      105,
+      108,
+      101,
+      100,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      80,
+      114,
+      111,
+      102,
+      105,
+      108,
+      101,
+      32,
+      108,
+      111,
+      97,
+      100,
+      105,
+      110,
+      103,
+      32,
+      102,
+      97,
+      105,
+      108,
+      101,
+      100,
+      33,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should handle an imperative error thrown from the handler 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "additionalDetails": "More details!",
+    "msg": "Handler threw an imperative error!",
+  },
+  "exitCode": 1,
+  "message": "Handler threw an imperative error!",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      67,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      69,
+      114,
+      114,
+      111,
+      114,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      72,
+      97,
+      110,
+      100,
+      108,
+      101,
+      114,
+      32,
+      116,
+      104,
+      114,
+      101,
+      119,
+      32,
+      97,
+      110,
+      32,
+      105,
+      109,
+      112,
+      101,
+      114,
+      97,
+      116,
+      105,
+      118,
+      101,
+      32,
+      101,
+      114,
+      114,
+      111,
+      114,
+      33,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      69,
+      114,
+      114,
+      111,
+      114,
+      32,
+      68,
+      101,
+      116,
+      97,
+      105,
+      108,
+      115,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      77,
+      111,
+      114,
+      101,
+      32,
+      100,
+      101,
+      116,
+      97,
+      105,
+      108,
+      115,
+      33,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should handle an unexpected syntax validation exception 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "additionalDetails": "Syntax validation error!",
+    "msg": "Unexpected syntax validation error",
+  },
+  "exitCode": 1,
+  "message": "Unexpected syntax validation error: Syntax validation error!",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      85,
+      110,
+      101,
+      120,
+      112,
+      101,
+      99,
+      116,
+      101,
+      100,
+      32,
+      115,
+      121,
+      110,
+      116,
+      97,
+      120,
+      32,
+      118,
+      97,
+      108,
+      105,
+      100,
+      97,
+      116,
+      105,
+      111,
+      110,
+      32,
+      101,
+      114,
+      114,
+      111,
+      114,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      83,
+      121,
+      110,
+      116,
+      97,
+      120,
+      32,
+      118,
+      97,
+      108,
+      105,
+      100,
+      97,
+      116,
+      105,
+      111,
+      110,
+      32,
+      101,
+      114,
+      114,
+      111,
+      114,
+      33,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should handle not being able to instantiate the handler 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "additionalDetails": "Cannot find module 'not_a_real_handler' from 'CommandProcessor.ts'",
+    "msg": "Could not instantiate the handler not_a_real_handler for command banana",
+  },
+  "exitCode": 1,
+  "message": "Could not instantiate the handler not_a_real_handler for command banana",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      72,
+      97,
+      110,
+      100,
+      108,
+      101,
+      114,
+      32,
+      73,
+      110,
+      115,
+      116,
+      97,
+      110,
+      116,
+      105,
+      97,
+      116,
+      105,
+      111,
+      110,
+      32,
+      70,
+      97,
+      105,
+      108,
+      101,
+      100,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      67,
+      111,
+      117,
+      108,
+      100,
+      32,
+      110,
+      111,
+      116,
+      32,
+      105,
+      110,
+      115,
+      116,
+      97,
+      110,
+      116,
+      105,
+      97,
+      116,
+      101,
+      32,
+      116,
+      104,
+      101,
+      32,
+      104,
+      97,
+      110,
+      100,
+      108,
+      101,
+      114,
+      32,
+      110,
+      111,
+      116,
+      95,
+      97,
+      95,
+      114,
+      101,
+      97,
+      108,
+      95,
+      104,
+      97,
+      110,
+      100,
+      108,
+      101,
+      114,
+      32,
+      102,
+      111,
+      114,
+      32,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      98,
+      97,
+      110,
+      97,
+      110,
+      97,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      69,
+      114,
+      114,
+      111,
+      114,
+      32,
+      68,
+      101,
+      116,
+      97,
+      105,
+      108,
+      115,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      67,
+      97,
+      110,
+      110,
+      111,
+      116,
+      32,
+      102,
+      105,
+      110,
+      100,
+      32,
+      109,
+      111,
+      100,
+      117,
+      108,
+      101,
+      32,
+      39,
+      110,
+      111,
+      116,
+      95,
+      97,
+      95,
+      114,
+      101,
+      97,
+      108,
+      95,
+      104,
+      97,
+      110,
+      100,
+      108,
+      101,
+      114,
+      39,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      39,
+      67,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      80,
+      114,
+      111,
+      99,
+      101,
+      115,
+      115,
+      111,
+      114,
+      46,
+      116,
+      115,
+      39,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should handle the handler rejecting with a message 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "msg": "Rejected with a message",
+  },
+  "exitCode": 1,
+  "message": "Rejected with a message",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      67,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      69,
+      114,
+      114,
+      111,
+      114,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      82,
+      101,
+      106,
+      101,
+      99,
+      116,
+      101,
+      100,
+      32,
+      119,
+      105,
+      116,
+      104,
+      32,
+      97,
+      32,
+      109,
+      101,
+      115,
+      115,
+      97,
+      103,
+      101,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should handle the handler rejecting with no messages 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "msg": "Command Failed",
+  },
+  "exitCode": 1,
+  "message": "Command failed",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should invoke the handler and return success=true if the handler was successful 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should just include the command name if no args are present in the help when a syntax error occurs 1`] = `
+"
+Use \\"banana --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`Command Processor should just include the command name if no args are present in the help when a syntax error occurs 2`] = `""`;
+
+exports[`Command Processor should just include the command name if no args are present in the help when a syntax error occurs 3`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 1,
+  "message": "Command syntax invalid",
+  "success": false,
+}
+`;
+
+exports[`Command Processor should just use the primary command (if it cannot infer the rest of the command) in the syntax help message 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "additionalDetails": "Syntax validation error!",
+    "msg": "Unexpected syntax validation error",
+  },
+  "exitCode": 1,
+  "message": "Unexpected syntax validation error: Syntax validation error!",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      85,
+      110,
+      101,
+      120,
+      112,
+      101,
+      99,
+      116,
+      101,
+      100,
+      32,
+      115,
+      121,
+      110,
+      116,
+      97,
+      120,
+      32,
+      118,
+      97,
+      108,
+      105,
+      100,
+      97,
+      116,
+      105,
+      111,
+      110,
+      32,
+      101,
+      114,
+      114,
+      111,
+      114,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      83,
+      121,
+      110,
+      116,
+      97,
+      120,
+      32,
+      118,
+      97,
+      108,
+      105,
+      100,
+      97,
+      116,
+      105,
+      111,
+      110,
+      32,
+      101,
+      114,
+      114,
+      111,
+      114,
+      33,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should not strip tabs from the imperative error message 1`] = `
+"[31mCommand Error:[39m
+[31m[39m	Tab!	Tab again!
+Line should not be indented
+[31mError Details:[39m
+[31m[39mMore details!
+"
+`;
+
+exports[`Command Processor should not strip tabs from the imperative error message 2`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "additionalDetails": "More details!",
+    "msg": "	Tab!	Tab again!
+Line should not be indented",
+  },
+  "exitCode": 1,
+  "message": "	Tab!	Tab again!
+Line should not be indented",
+  "stderr": Object {
+    "data": Array [
+      27,
+      91,
+      51,
+      49,
+      109,
+      67,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      69,
+      114,
+      114,
+      111,
+      114,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      9,
+      84,
+      97,
+      98,
+      33,
+      9,
+      84,
+      97,
+      98,
+      32,
+      97,
+      103,
+      97,
+      105,
+      110,
+      33,
+      10,
+      76,
+      105,
+      110,
+      101,
+      32,
+      115,
+      104,
+      111,
+      117,
+      108,
+      100,
+      32,
+      110,
+      111,
+      116,
+      32,
+      98,
+      101,
+      32,
+      105,
+      110,
+      100,
+      101,
+      110,
+      116,
+      101,
+      100,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      69,
+      114,
+      114,
+      111,
+      114,
+      32,
+      68,
+      101,
+      116,
+      97,
+      105,
+      108,
+      115,
+      58,
+      27,
+      91,
+      51,
+      57,
+      109,
+      10,
+      27,
+      91,
+      51,
+      49,
+      109,
+      27,
+      91,
+      51,
+      57,
+      109,
+      77,
+      111,
+      114,
+      101,
+      32,
+      100,
+      101,
+      116,
+      97,
+      105,
+      108,
+      115,
+      33,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Processor should use the value specified on the CLI option, if the argument is supplied in both CLI and profile 1`] = `
+"green
+"
+`;
+
+exports[`Command Processor should use the value specified on the CLI option, if the argument is supplied in both CLI and profile 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      103,
+      114,
+      101,
+      101,
+      110,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should use the value specified on the CLI positional option, if the argument is supplied in both CLI and profile 1`] = `
+"green
+"
+`;
+
+exports[`Command Processor should use the value specified on the CLI positional option, if the argument is supplied in both CLI and profile 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      103,
+      114,
+      101,
+      101,
+      110,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Processor should validate the syntax if requested 1`] = `
+Object {
+  "valid": true,
+}
+`;

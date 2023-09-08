@@ -1,0 +1,70 @@
+{
+  "name": "override-plugin",
+  "version": "1.0.1",
+  "description": "Some description",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "imperative": {
+    "name": "override-plugin",
+    "rootCommandDescription": "imperative override plugin rootCommandDescription",
+    "pluginBaseCliVersion": "^1.0.0",
+    "pluginHealthCheck": "./lib/sample-plugin/healthCheck.handler",
+    "overrides": {
+      "CredentialManager": "./sample-plugin/overrides/CredentialManager.override"
+    },
+    "pluginSummary": "imperative override plugin pluginSummary",
+    "definitions": [
+      {
+        "name": "foo",
+        "description": "dummy foo command",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/foo/foo.handler"
+      },
+      {
+        "name": "bar",
+        "description": "dummy bar command",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/bar/bar.handler"
+      }
+    ],
+    "profiles": [
+      {
+        "type": "secure-pass",
+        "schema": {
+          "type": "object",
+          "title": "Profile with secure password",
+          "description": "A profile that triggers CredMgr override",
+          "properties": {
+            "password": {
+              "type": "string",
+              "secure": true,
+              "optionDefinition": {
+                "description": "Duh, password",
+                "type": "string",
+                "name": "password",
+                "required": true
+              }
+            }
+          },
+          "required": ["password"]
+        }
+      }
+    ]
+  },
+  "peerDependencies": {
+    "TestCLI": "1.0.2",
+    "@zowe/imperative": "1.0.0"
+  },
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "EPL 2.0",
+  "private": false,
+  "publishConfig": {
+    "registry": "http://imperative-npm-registry:4873"
+  }
+}

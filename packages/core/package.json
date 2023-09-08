@@ -55,7 +55,7 @@
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
     "typedoc": "^0.16.0",
-    "typescript": "^3.8.0"
+    "typescript": "^3.9.10"
   },
   "peerDependencies": {
     "@zowe/imperative": "^4.8.1"

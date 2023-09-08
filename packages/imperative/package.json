@@ -1,0 +1,200 @@
+{
+  "name": "@zowe/imperative",
+  "version": "4.18.17",
+  "description": "framework for building configurable CLIs",
+  "author": "Zowe",
+  "license": "EPL-2.0",
+  "homepage": "https://github.com/zowe/imperative#readme",
+  "bugs": {
+    "url": "https://github.com/zowe/imperative/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/imperative.git"
+  },
+  "keywords": [
+    "CLI",
+    "framework",
+    "zowe"
+  ],
+  "files": [
+    "lib",
+    "web-help/dist"
+  ],
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "circularDependencyCheck": "madge -c lib",
+    "typedoc": "typedoc --options ./typedoc.json ./src/",
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
+    "prepack": "node ../../scripts/prepareLicenses.js",
+    "build:webHelp": "cd web-help && npm run build",
+    "watch:webHelp": "cd web-help && npm run watch",
+    "clean": "rimraf lib",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
+    "lint:packages": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
+    "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
+    "build": "npm run build:packages && npm run build:webHelp",
+    "build:packages": "tsc --pretty",
+    "watch": "gulp watchImperative",
+    "postbuild": "gulp build:install-all-cli-dependencies && gulp build:all-clis"
+  },
+  "dependencies": {
+    "@types/yargs": "13.0.4",
+    "chalk": "2.4.2",
+    "cli-table3": "0.6.2",
+    "cross-spawn": "7.0.3",
+    "dataobject-parser": "1.2.1",
+    "deepmerge": "3.0.0",
+    "fastest-levenshtein": "1.0.12",
+    "find-up": "4.1.0",
+    "fs-extra": "8.1.0",
+    "glob": "7.1.6",
+    "js-yaml": "3.14.1",
+    "jsonfile": "4.0.0",
+    "jsonschema": "1.1.1",
+    "lodash-deep": "2.0.0",
+    "log4js": "6.4.0",
+    "markdown-it": "12.3.2",
+    "mustache": "2.3.0",
+    "npm-package-arg": "8.1.1",
+    "opener": "1.5.2",
+    "pacote": "11.1.4",
+    "prettyjson": "1.2.2",
+    "progress": "2.0.3",
+    "readline-sync": "1.4.10",
+    "semver": "5.7.2",
+    "stack-trace": "0.0.10",
+    "which": "3.0.0",
+    "wrap-ansi": "7.0.0",
+    "yamljs": "0.3.0",
+    "yargs": "15.3.1"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.2",
+    "@types/find-up": "^2.1.1",
+    "@types/fs-extra": "^8.0.1",
+    "@types/glob": "^7.1.1",
+    "@types/gulp": "^4.0.9",
+    "@types/jest": "^24.0.15",
+    "@types/js-base64": "^2.3.1",
+    "@types/jsonfile": "^4.0.1",
+    "@types/lodash-deep": "^2.0.0",
+    "@types/mustache": "^0.8.32",
+    "@types/node": "12.20.55",
+    "@types/npm-package-arg": "^6.1.0",
+    "@types/pacote": "^11.1.0",
+    "@types/progress": "^2.0.3",
+    "@types/rimraf": "^3.0.2",
+    "@types/stack-trace": "^0.0.29",
+    "@types/which": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "ansi-colors": "^4.1.1",
+    "clear-require": "^2.0.0",
+    "cowsay": "^1.2.1",
+    "deep-diff": "^0.3.8",
+    "env-cmd": "^8.0.2",
+    "eslint": "^7.32.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-unused-imports": "^1.1.2",
+    "fancy-log": "^1.3.3",
+    "get-function-arguments": "^1.0.0",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-debug": "^4.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^9.0.0",
+    "gulp-replace": "^0.6.1",
+    "gulp-typedoc": "^2.2.3",
+    "husky": "^6.0.0",
+    "jest": "^24.9.0",
+    "jest-html-reporter": "^3.3.0",
+    "jest-junit": "^6.3.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "jest-stare": "^2.2.0",
+    "jsdoc": "^3.6.2",
+    "keytar": "^7.1.0",
+    "madge": "^4.0.1",
+    "node-pty": "^0.10.1",
+    "postcss": "^8.3.6",
+    "postcss-url": "^10.1.3",
+    "rimraf": "^3.0.2",
+    "shebang-regex": "^2.0.0",
+    "stream-to-string": "^1.2.0",
+    "ts-jest": "^24.2.0",
+    "ts-node": "^7.0.1",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.8.0",
+    "uuid": "^3.3.2",
+    "web-help": "file:web-help",
+    "yargs-parser": "^18.1.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "jest-html-reporter": {
+    "pageTitle": "Imperative CLI Tests",
+    "outputPath": "__tests__/__results__/unit/results.html"
+  },
+  "jest-junit": {
+    "output": "./__tests__/__results__/junit/junit.xml"
+  },
+  "jestSonar": {
+    "reportPath": "__tests__/__results__/jest-sonar"
+  },
+  "jest-stare": {
+    "resultDir": "__tests__/__results__/jest-stare",
+    "additionalResultsProcessors": [
+      "jest-junit",
+      "jest-html-reporter",
+      "jest-sonar-reporter"
+    ],
+    "coverageLink": "../unit/coverage/lcov-report/index.html"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "diagnostics": false,
+        "disableSourceMapSupport": true
+      }
+    },
+    "watchPathIgnorePatterns": [
+      ".*jest-stare.*\\.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "__tests__/__snapshots__/"
+    ],
+    "setupFilesAfterEnv": [
+      "./__tests__/__integration__/imperative/__tests__/beforeTests.js"
+    ],
+    "testResultsProcessor": "jest-stare",
+    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "packages/**/*.ts",
+      "!**/__tests__/**",
+      "!packages/**/doc/I*.ts",
+      "!**/main.ts"
+    ],
+    "collectCoverage": false,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "cobertura"
+    ],
+    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
+  }
+}

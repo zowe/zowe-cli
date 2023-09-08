@@ -31,16 +31,17 @@
     "typedoc": "typedoc",
     "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "prepare": "husky install"
+    "bundle:webHelp": "echo 'gulp bundleWebHelp'",
+    "prepare": "husky install && npm run bundle:webHelp"
   },
   "dependencies": {
-    "@zowe/imperative": "4.18.17",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
     "@octorelease/lerna": "^0.1.4",
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^22.2.3",
+    "@types/lodash": "^4.14.0",
     "@types/node": "^12.12.24",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",

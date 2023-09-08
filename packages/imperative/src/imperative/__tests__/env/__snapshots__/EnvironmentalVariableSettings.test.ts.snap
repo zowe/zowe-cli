@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EnvironmentalVariableSettings tests mock process value for env value tests should return defined app logging env var when set in process 1`] = `"MOCK_PROCESS_APP_TEST_PREFIX_IMPERATIVE_LOG_LEVEL"`;
+
+exports[`EnvironmentalVariableSettings tests mock process value for env value tests should return defined app logging env var when set in process 2`] = `
+Object {
+  "appLogLevel": Object {
+    "key": "MOCK_PROCESS_APP_TEST_PREFIX_APP_LOG_LEVEL",
+    "value": "MORE_EXTREME",
+  },
+  "cliHome": Object {
+    "key": "MOCK_PROCESS_APP_TEST_PREFIX_CLI_HOME",
+    "value": undefined,
+  },
+  "imperativeLogLevel": Object {
+    "key": "MOCK_PROCESS_APP_TEST_PREFIX_IMPERATIVE_LOG_LEVEL",
+    "value": undefined,
+  },
+  "promptPhrase": Object {
+    "key": "MOCK_PROCESS_APP_TEST_PREFIX_PROMPT_PHRASE",
+    "value": undefined,
+  },
+}
+`;
+
+exports[`EnvironmentalVariableSettings tests mock process value for env value tests should return defined imperative and app logging env var when both are set in process 1`] = `
+Object {
+  "appLogLevel": Object {
+    "key": "MOCK_PROCESS_IMP_AND_APP_TEST_PREFIX_APP_LOG_LEVEL",
+    "value": "MOST_EXTREME_EVER",
+  },
+  "cliHome": Object {
+    "key": "MOCK_PROCESS_IMP_AND_APP_TEST_PREFIX_CLI_HOME",
+    "value": undefined,
+  },
+  "imperativeLogLevel": Object {
+    "key": "MOCK_PROCESS_IMP_AND_APP_TEST_PREFIX_IMPERATIVE_LOG_LEVEL",
+    "value": "SOME_EXTREME",
+  },
+  "promptPhrase": Object {
+    "key": "MOCK_PROCESS_IMP_AND_APP_TEST_PREFIX_PROMPT_PHRASE",
+    "value": undefined,
+  },
+}
+`;
+
+exports[`EnvironmentalVariableSettings tests mock process value for env value tests should return defined imperative logging env var when set in process 1`] = `"MOCK_PROCESS_IMP_TEST_PREFIX_APP_LOG_LEVEL"`;
+
+exports[`EnvironmentalVariableSettings tests mock process value for env value tests should return defined imperative logging env var when set in process 2`] = `
+Object {
+  "appLogLevel": Object {
+    "key": "MOCK_PROCESS_IMP_TEST_PREFIX_APP_LOG_LEVEL",
+    "value": undefined,
+  },
+  "cliHome": Object {
+    "key": "MOCK_PROCESS_IMP_TEST_PREFIX_CLI_HOME",
+    "value": undefined,
+  },
+  "imperativeLogLevel": Object {
+    "key": "MOCK_PROCESS_IMP_TEST_PREFIX_IMPERATIVE_LOG_LEVEL",
+    "value": "EXTREME",
+  },
+  "promptPhrase": Object {
+    "key": "MOCK_PROCESS_IMP_TEST_PREFIX_PROMPT_PHRASE",
+    "value": undefined,
+  },
+}
+`;
+
+exports[`EnvironmentalVariableSettings tests should error if no prefix is supplied 1`] = `"Expect Error: You must specify the environmental variable prefix."`;
+
+exports[`EnvironmentalVariableSettings tests should get environmental variables for a given prefix 1`] = `"MY_PREFIX_IMPERATIVE_LOG_LEVEL"`;
+
+exports[`EnvironmentalVariableSettings tests should get environmental variables for a given prefix 2`] = `"MY_PREFIX_APP_LOG_LEVEL"`;
+
+exports[`EnvironmentalVariableSettings tests should get environmental variables for a given prefix 3`] = `
+Object {
+  "appLogLevel": Object {
+    "key": "MY_PREFIX_APP_LOG_LEVEL",
+    "value": undefined,
+  },
+  "cliHome": Object {
+    "key": "MY_PREFIX_CLI_HOME",
+    "value": undefined,
+  },
+  "imperativeLogLevel": Object {
+    "key": "MY_PREFIX_IMPERATIVE_LOG_LEVEL",
+    "value": undefined,
+  },
+  "promptPhrase": Object {
+    "key": "MY_PREFIX_PROMPT_PHRASE",
+    "value": undefined,
+  },
+}
+`;
+
+exports[`EnvironmentalVariableSettings tests should use my prefix even if its bad for linux 1`] = `"_(){}[]$*+-\\\\/\\"#',;.@!?a1234567890_IMPERATIVE_LOG_LEVEL"`;
+
+exports[`EnvironmentalVariableSettings tests should use my prefix even if its bad for linux 2`] = `"_(){}[]$*+-\\\\/\\"#',;.@!?a1234567890_APP_LOG_LEVEL"`;
+
+exports[`EnvironmentalVariableSettings tests should use my prefix even if its bad for linux 3`] = `
+Object {
+  "appLogLevel": Object {
+    "key": "_(){}[]$*+-\\\\/\\"#',;.@!?a1234567890_APP_LOG_LEVEL",
+    "value": undefined,
+  },
+  "cliHome": Object {
+    "key": "_(){}[]$*+-\\\\/\\"#',;.@!?a1234567890_CLI_HOME",
+    "value": undefined,
+  },
+  "imperativeLogLevel": Object {
+    "key": "_(){}[]$*+-\\\\/\\"#',;.@!?a1234567890_IMPERATIVE_LOG_LEVEL",
+    "value": undefined,
+  },
+  "promptPhrase": Object {
+    "key": "_(){}[]$*+-\\\\/\\"#',;.@!?a1234567890_PROMPT_PHRASE",
+    "value": undefined,
+  },
+}
+`;

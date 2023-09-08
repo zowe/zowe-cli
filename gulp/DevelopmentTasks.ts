@@ -13,12 +13,13 @@ import { IGulpError, ITaskFunction } from "./GulpHelpers";
 import { Constants } from "../packages/cli/src/Constants";
 import { SpawnSyncReturns } from "child_process";
 import * as util from "util";
-import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@zowe/imperative";
+import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "../packages/imperative/src";
 
 // "npx" command allows us to issue CLIs from node_modules dependencies
 // without globally installing.
 const npx = "npx" + (require("os").platform() === "win32" ? ".cmd" : ""); // platform dependent extension for npx command
 
+const gulp = require('gulp');
 const ansiColors = require("ansi-colors");
 const childProcess = require("child_process");
 const fancylog = require("fancy-log");
@@ -220,6 +221,114 @@ const doc: ITaskFunction = async () => {
 };
 doc.description = "Create documentation from the CLI help";
 
+const tscExecutable = "node_modules/typescript/bin/tsc";
+const buildImperative: ITaskFunction = (done) => {
+    license((licenseErr?: Error) => {
+        if (licenseErr) {
+            fancylog(ansiColors.red("Error encountered while adding copyright information"));
+            done(licenseErr);
+        }
+        if (fs.existsSync("tsconfig.tsbuildinfo")) {
+            fs.unlinkSync("tsconfig.tsbuildinfo");
+        }
+        if (fs.existsSync(compileDir)) {
+            rimraf(compileDir);
+            fancylog("Deleted old compiled source in '%s' folder", compileDir);
+        }
+        const compileProcess = childProcess.spawnSync("node", [tscExecutable]);
+        const typescriptOutput = compileProcess.output.join("");
+        if (typescriptOutput.trim().length > 0) {
+            fancylog("Typescript output:\n%s", typescriptOutput);
+        }
+        if (compileProcess.status !== 0) {
+            const buildFailedError: IGulpError = new Error(ansiColors.red("Build failed"));
+            buildFailedError.showStack = false;
+            done(buildFailedError);
+        }
+        else {
+            fancylog(ansiColors.blue("Compiled typescript successfully"));
+
+            lint((lintWarning: Error) => {
+                if (lintWarning) {
+                    done(lintWarning);
+                    return;
+                }
+                fancylog(ansiColors.blue("Build succeeded"));
+                done();
+            });
+        }
+    });
+};
+buildImperative.description = "Build the project and generate documentation";
+
+const watchImperative: ITaskFunction = (done) => {
+    gulp.watch("packages/**", gulp.series("lint"));
+    const watchProcess = childProcess.spawn("node", [tscExecutable, "--watch"], {stdio: "inherit"});
+    watchProcess.on("error", (error: Error) => {
+        fancylog(error);
+        throw error;
+    });
+    watchProcess.on("close", () => {
+        fancylog("watch process closed");
+        done();
+    });
+};
+watchImperative.description = "Continuously build the project as you edit the source. To get full linting results and " +
+    "generate documentation, use the 'build' task before attempting to merge with the master branch";
+
+
+const buildAllClis: ITaskFunction = async () => {
+    const cliDirs: string[] = getDirectories(__dirname + "/../__tests__/__integration__/");
+    cliDirs.forEach((dir) => {
+        // Build them all
+        fancylog(`Build "${dir}" cli...`);
+        const buildResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["run", "build"],
+            {cwd: __dirname + `/../__tests__/__integration__/${dir}/`});
+        if (buildResponse.stdout && buildResponse.stdout.toString().length > 0) {
+            fancylog(`***BUILD "${dir}" stdout:\n${buildResponse.stdout.toString()}`);
+        }
+        if (buildResponse.stderr && buildResponse.stderr.toString().length > 0) {
+            fancylog(`***BUILD "${dir}" stderr:\n${buildResponse.stderr.toString()}`);
+        }
+        if (buildResponse.status !== 0) {
+            throw new Error(`Build failed for "${dir}" test CLI. Status code: "${buildResponse.status}". ` +
+                `Please review the stdout/stderr for more details.`);
+        }
+        fancylog(`Build for "${dir}" cli completed successfully.`);
+    });
+};
+
+function getDirectories(path: string) {
+    return fs.readdirSync(path).filter((file: string) => {
+        return fs.statSync(path + "/" + file).isDirectory();
+    });
+}
+
+const installAllCliDependencies: ITaskFunction = async () => {
+    const cliDirs: string[] = getDirectories(__dirname + "/../__tests__/__integration__/");
+    cliDirs.forEach((dir) => {
+        // Perform an NPM install
+        fancylog(`Executing "npm install" for "${dir}" cli to obtain dependencies...`);
+        const installResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["install"],
+            {cwd: __dirname + `/../__tests__/__integration__/${dir}/`});
+        if (installResponse.stdout && installResponse.stdout.toString().length > 0) {
+            fancylog(`***INSTALL "${dir}" stdout:\n${installResponse.stdout.toString()}`);
+        }
+        if (installResponse.stderr && installResponse.stderr.toString().length > 0) {
+            fancylog(`***INSTALL "${dir}" stderr:\n${installResponse.stderr.toString()}`);
+        }
+        if (installResponse.status !== 0) {
+            throw new Error(`Install dependencies failed for "${dir}" test CLI. Status code: "${installResponse.status}". ` +
+                `Please review the stdout/stderr for more details.`);
+        }
+        fancylog(`Install for "${dir}" cli dependencies complete.`);
+    });
+};
+
+exports.buildImperative = buildImperative;
+exports.watchImperative = watchImperative;
+exports.buildAllClis = buildAllClis;
+exports.installAllCliDependencies = installAllCliDependencies;
 exports.doc = doc;
 exports.lint = lint;
 exports.license = license;

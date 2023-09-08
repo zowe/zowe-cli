@@ -1,0 +1,96 @@
+{
+  "name": "cmd-sample-cli",
+  "version": "0.0.0",
+  "description": "Command Sample CLI",
+  "license": "EPL-2.0",
+  "repository": "",
+  "bin": {
+    "cmd-cli": "./lib/index.js"
+  },
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "imperative": {
+    "configurationModule": "lib/imperative/config.js"
+  },
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "lint": "eslint \"src/**/*.ts\"",
+    "prebuild": "npm run clean && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc -b --pretty",
+    "pretest": "npm install -g",
+    "test": "jest",
+    "posttest": "npm uninstall -g",
+    "watch": "npm run build -- --watch"
+  },
+  "dependencies": {
+    "@zowe/imperative": "../../.."
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "jest-junit": {
+    "output": "./__tests__/__results__/junit/junit.xml"
+  },
+  "jestSonar": {
+    "reportPath": "__tests__/__results__/jest-sonar"
+  },
+  "jest-stare": {
+    "resultDir": "__tests__/__results__/jest-stare",
+    "additionalResultsProcessors": [
+      "jest-junit",
+      "jest-sonar-reporter"
+    ],
+    "coverageLink": "../unit/coverage/lcov-report/index.html"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "disableSourceMapSupport": true
+      }
+    },
+    "watchPathIgnorePatterns": [
+      ".*jest-stare.*\\.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "__tests__/__snapshots__/"
+    ],
+    "setupFilesAfterEnv": [
+      "../imperative/__tests__/beforeTests.js"
+    ],
+    "testResultsProcessor": "jest-stare",
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "packages/**/*.ts",
+      "!**/__tests__/**",
+      "!packages/**/doc/I*.ts",
+      "!**/main.ts"
+    ],
+    "collectCoverage": false,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "cobertura"
+    ],
+    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
+  }
+}

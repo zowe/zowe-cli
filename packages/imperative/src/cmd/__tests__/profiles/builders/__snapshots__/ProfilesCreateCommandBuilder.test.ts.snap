@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Create Command Builder should provide a valid command definition for the profile create command based on our test profile type 1`] = `
+Object {
+  "aliases": Array [
+    "type-a",
+  ],
+  "children": Array [],
+  "customize": Object {
+    "profileTypeIdentifier": "type-a",
+  },
+  "description": "Type A profile for builder tests",
+  "name": "type-a-profile",
+  "options": Array [
+    Object {
+      "description": "The age of the profile",
+      "name": "age",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "ow",
+      ],
+      "description": "Overwrite the type-a profile when a profile of the same name exists.",
+      "name": "overwrite",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "dd",
+      ],
+      "description": "Disable populating profile values of undefined properties with default values.",
+      "name": "disable-defaults",
+      "type": "boolean",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "Specifies the name of the new type-a profile. You can load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+      "name": "profileName",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "summary": "Create a type-a profile",
+  "type": "command",
+}
+`;

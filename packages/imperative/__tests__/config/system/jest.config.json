@@ -1,0 +1,15 @@
+{
+    "collectCoverage": false,
+    "modulePathIgnorePatterns": [
+        "__tests__.*/__snapshots__/"
+    ],
+    "preset": "./__tests__/config/jest.preset.json",
+    "rootDir": "../../../",
+    "testPathIgnorePatterns": [
+        "/node_modules/",
+        "<rootDir>/__tests__/__results__",
+        "unit",
+        "__integration__"
+    ],
+    "testRegex": "__system__.*test\\.(ts|js)"
+}

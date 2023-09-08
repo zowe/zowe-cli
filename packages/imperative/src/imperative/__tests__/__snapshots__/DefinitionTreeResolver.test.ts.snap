@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DefinitionTreeResolver tests should error with unmatching globs commands 1`] = `"Command module glob for the glob **/bad/glob did not match any files searching from: /random/caller/dir"`;
+
+exports[`DefinitionTreeResolver tests should error without commands 1`] = `"No command definitions have been provided to Imperative. Specify modules and/or definitions on your Imperativeconfiguration."`;
