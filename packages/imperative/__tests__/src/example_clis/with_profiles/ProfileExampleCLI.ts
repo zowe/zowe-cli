@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative } from "../../../../packages/imperative";
+import { Imperative } from "../../../../src/imperative";
 
 
 process.on("unhandledRejection", (err) => {

@@ -12,8 +12,8 @@
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";
 import { runCliScript } from "../../../../../../src/TestUtil";
-import { ICommandResponse } from "../../../../../../../packages/cmd";
-import { Imperative } from "../../../../../../../packages/imperative";
+import { ICommandResponse } from "../../../../../../../src/cmd";
+import { Imperative } from "../../../../../../../src/imperative";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;

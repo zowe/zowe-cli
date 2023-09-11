@@ -11,7 +11,7 @@
 
 import { HandlerResponse } from "../../src/response/HandlerResponse";
 import { CommandResponse } from "../../src/response/CommandResponse";
-import { IHandlerResponseApi } from "../../src/response/doc/api/handler/IHandlerResponseApi";
+import { IHandlerResponseApi } from "../../src/doc/response/api/handler/IHandlerResponseApi";
 
 describe("Handler Response", () => {
     it("Handler Response", () => {

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractCredentialManager, SecureCredential } from "../../../../../../packages/security";
+import { AbstractCredentialManager, SecureCredential } from "../../../../../../src/security";
 
 export class CustomCredentialManagerClass extends AbstractCredentialManager {
     constructor() {

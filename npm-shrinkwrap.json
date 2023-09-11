@@ -15,7 +15,7 @@
       "devDependencies": {
         "@octorelease/lerna": "^0.1.4",
         "@types/fs-extra": "^8.0.1",
-        "@types/jest": "^22.2.3",
+        "@types/jest": "^22.0.0",
         "@types/lodash": "4.14.175",
         "@types/node": "^12.20.23",
         "@typescript-eslint/eslint-plugin": "^4.29.0",
@@ -29269,7 +29269,7 @@
         "@types/fs-extra": "^8.0.1",
         "@types/glob": "^7.1.1",
         "@types/gulp": "^4.0.9",
-        "@types/jest": "^24.0.15",
+        "@types/jest": "^22.0.0",
         "@types/js-base64": "^2.3.1",
         "@types/jsonfile": "^4.0.1",
         "@types/lodash-deep": "^2.0.0",
@@ -29326,15 +29326,6 @@
       },
       "engines": {
         "node": ">=8.0.0"
-      }
-    },
-    "packages/imperative/node_modules/@types/jest": {
-      "version": "24.9.1",
-      "resolved": "https://registry.npmjs.org/@types/jest/-/jest-24.9.1.tgz",
-      "integrity": "sha512-Fb38HkXSVA4L8fGKEZ6le5bB8r6MRWlOCZbVuWZcmOMSCd2wCYOwN1ibj8daIoV9naq7aaOZjrLCoCMptKU/4Q==",
-      "dev": true,
-      "dependencies": {
-        "jest-diff": "^24.3.0"
       }
     },
     "packages/imperative/node_modules/ansi-styles": {
@@ -36449,7 +36440,7 @@
         "@types/fs-extra": "^8.0.1",
         "@types/glob": "^7.1.1",
         "@types/gulp": "^4.0.9",
-        "@types/jest": "^24.0.15",
+        "@types/jest": "^22.0.0",
         "@types/js-base64": "^2.3.1",
         "@types/jsonfile": "^4.0.1",
         "@types/lodash-deep": "^2.0.0",
@@ -36534,15 +36525,6 @@
         "yargs-parser": "^18.1.2"
       },
       "dependencies": {
-        "@types/jest": {
-          "version": "24.9.1",
-          "resolved": "https://registry.npmjs.org/@types/jest/-/jest-24.9.1.tgz",
-          "integrity": "sha512-Fb38HkXSVA4L8fGKEZ6le5bB8r6MRWlOCZbVuWZcmOMSCd2wCYOwN1ibj8daIoV9naq7aaOZjrLCoCMptKU/4Q==",
-          "dev": true,
-          "requires": {
-            "jest-diff": "^24.3.0"
-          }
-        },
         "ansi-styles": {
           "version": "3.2.1",
           "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz",

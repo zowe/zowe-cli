@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../packages/cmd";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
 
 
 export default class ProduceLogMessagesHandler implements ICommandHandler {

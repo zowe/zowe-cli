@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../../packages/imperative";
+import { IImperativeConfig } from "../../../../../src/imperative";
 import * as path from "path";
 
 const config: IImperativeConfig = {

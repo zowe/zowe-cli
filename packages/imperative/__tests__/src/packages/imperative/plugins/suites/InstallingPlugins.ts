@@ -20,7 +20,7 @@ import { execSync, SpawnSyncReturns } from "child_process";
 
 import { config, cliBin, pluginGroup } from "../PluginManagementFacility.spec";
 import { readFileSync, writeFileSync } from "jsonfile";
-import { IPluginJson } from "../../../../../../packages/imperative/src/plugins/doc/IPluginJson";
+import { IPluginJson } from "../../../../../../src/imperative/src/plugins/doc/IPluginJson";
 import { existsSync } from "fs";
 import { SetupTestEnvironment } from "../../../../../__src__/environment/SetupTestEnvironment";
 import * as rimraf from "rimraf";

@@ -20,8 +20,8 @@
 import * as spawn from "cross-spawn";
 import { SpawnSyncReturns } from "child_process";
 import { inspect, isArray, isNullOrUndefined, isString } from "util";
-import { Constants } from "../../packages/constants";
-import { ICommandResponse } from "../../packages/cmd";
+import { Constants } from "../../src/constants";
+import { ICommandResponse } from "../../src/cmd";
 import { ICompareParms } from "./doc/ICompareParms";
 import { TestLogger } from "../TestLogger";
 import * as nodePath from "path";

@@ -9,10 +9,10 @@
 *
 */
 
-import { LoggerConfigBuilder } from "../packages/logger/src/LoggerConfigBuilder";
-import { Logger } from "../packages/logger/src/Logger";
+import { LoggerConfigBuilder } from "../src/logger/src/LoggerConfigBuilder";
+import { Logger } from "../src/logger/src/Logger";
 import { isNullOrUndefined } from "util";
-import { IConfigLogging } from "../packages/logger/src/doc/IConfigLogging";
+import { IConfigLogging } from "../src/logger/src/doc/IConfigLogging";
 import * as path from "path";
 
 /**

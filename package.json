@@ -40,7 +40,7 @@
   "devDependencies": {
     "@octorelease/lerna": "^0.1.4",
     "@types/fs-extra": "^8.0.1",
-    "@types/jest": "^22.2.3",
+    "@types/jest": "^22.0.0",
     "@types/lodash": "4.14.175",
     "@types/node": "^12.20.23",
     "@typescript-eslint/eslint-plugin": "^4.29.0",

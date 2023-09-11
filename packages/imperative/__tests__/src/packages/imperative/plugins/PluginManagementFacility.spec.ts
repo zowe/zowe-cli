@@ -9,8 +9,8 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../../packages/imperative";
-import { IO } from "../../../../../packages/io";
+import { IImperativeConfig } from "../../../../../src/imperative";
+import { IO } from "../../../../../src/io";
 import * as T from "../../../../src/TestUtil";
 import { join } from "path";
 

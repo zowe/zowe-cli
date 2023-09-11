@@ -10,7 +10,7 @@
 */
 
 import * as TestUtil from "../../TestUtil";
-import { BasicProfileManager } from "../../../../packages/index";
+import { BasicProfileManager } from "../../../../src/index";
 import { TestLogger } from "../../../TestLogger";
 import { PROFILE_TYPE, getConfig } from "./src/constants/BasicProfileManagerTestContants";
 import * as fs from "fs";

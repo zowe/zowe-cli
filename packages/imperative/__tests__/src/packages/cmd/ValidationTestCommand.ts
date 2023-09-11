@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../packages/cmd/index";
+import { ICommandDefinition } from "../../../../src/cmd/index";
 
 export const ValidationTestCommand: ICommandDefinition = {
     name: "validation-test",

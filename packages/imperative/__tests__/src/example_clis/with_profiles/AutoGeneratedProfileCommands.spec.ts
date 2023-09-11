@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../packages/imperative";
+import { IImperativeConfig } from "../../../../src/imperative";
 import * as T from "../../TestUtil";
 
 describe("We should provide auto-generated profile commands for convenience, " +
