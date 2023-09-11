@@ -17,7 +17,7 @@
         "@types/fs-extra": "^8.0.1",
         "@types/jest": "^22.2.3",
         "@types/lodash": "4.14.175",
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@typescript-eslint/eslint-plugin": "^4.29.0",
         "@typescript-eslint/parser": "^4.29.0",
         "ansi-colors": "^4.1.1",
@@ -7631,9 +7631,9 @@
       "dev": true
     },
     "node_modules/@types/node": {
-      "version": "12.20.55",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
-      "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==",
+      "version": "12.20.23",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.23.tgz",
+      "integrity": "sha512-FW0q7NI8UnjbKrJK8NGr6QXY69ATw9IFe6ItIo5yozPwA9DU/xkhiPddctUVyrmFXvyFYerYgQak/qu200UBDw==",
       "dev": true
     },
     "node_modules/@types/node-fetch": {
@@ -7740,14 +7740,20 @@
       "integrity": "sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==",
       "dev": true
     },
-    "node_modules/@types/ssh2-streams": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@types/ssh2-streams/-/ssh2-streams-0.1.9.tgz",
-      "integrity": "sha512-I2J9jKqfmvXLR5GomDiCoHrEJ58hAOmFrekfFqmCFd+A6gaEStvWnPykoWUwld1PNg4G5ag1LwdA+Lz1doRJqg==",
+    "node_modules/@types/ssh2": {
+      "version": "1.11.13",
+      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-1.11.13.tgz",
+      "integrity": "sha512-08WbG68HvQ2YVi74n2iSUnYHYpUdFc/s2IsI0BHBdJwaqYJpWlVv9elL0tYShTv60yr0ObdxJR5NrCRiGJ/0CQ==",
       "dev": true,
       "dependencies": {
-        "@types/node": "*"
+        "@types/node": "^18.11.18"
       }
+    },
+    "node_modules/@types/ssh2/node_modules/@types/node": {
+      "version": "18.17.15",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.15.tgz",
+      "integrity": "sha512-2yrWpBk32tvV/JAd3HNHWuZn/VDN1P+72hWirHnvsvTGSqbANi+kSeuQR9yAHnbvaBvHDsoTdXV0Fe+iRtHLKA==",
+      "dev": true
     },
     "node_modules/@types/ssri": {
       "version": "7.1.1",
@@ -29155,7 +29161,7 @@
         "zowe": "lib/main.js"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "eslint": "^7.32.0",
         "js-yaml": "^3.13.1",
         "madge": "^4.0.1",
@@ -29183,7 +29189,7 @@
         "string-width": "4.2.3"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/imperative": "4.18.17",
         "chalk": "^4.1.0",
         "eslint": "^7.32.0",
@@ -29268,7 +29274,7 @@
         "@types/jsonfile": "^4.0.1",
         "@types/lodash-deep": "^2.0.0",
         "@types/mustache": "^0.8.32",
-        "@types/node": "12.20.55",
+        "@types/node": "12.20.23",
         "@types/npm-package-arg": "^6.1.0",
         "@types/pacote": "^11.1.0",
         "@types/progress": "^2.0.3",
@@ -29674,7 +29680,7 @@
       },
       "devDependencies": {
         "@types/js-yaml": "^3.12.5",
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29696,7 +29702,7 @@
         "@zowe/zos-files-for-zowe-sdk": "6.40.18"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29715,7 +29721,7 @@
       "version": "6.40.18",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29737,7 +29743,7 @@
         "minimatch": "3.1.2"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "@zowe/zos-uss-for-zowe-sdk": "6.40.18",
@@ -29760,7 +29766,7 @@
         "@zowe/zos-files-for-zowe-sdk": "6.40.18"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29779,7 +29785,7 @@
       "version": "6.40.18",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29798,7 +29804,7 @@
       "version": "6.40.18",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29820,7 +29826,7 @@
         "@zowe/zosmf-for-zowe-sdk": "6.40.18"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -29842,8 +29848,8 @@
         "ssh2": "1.4.0"
       },
       "devDependencies": {
-        "@types/node": "^12.12.24",
-        "@types/ssh2": "0.5.44",
+        "@types/node": "12.20.23",
+        "@types/ssh2": "1.11.13",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -29853,16 +29859,6 @@
       },
       "peerDependencies": {
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zosuss/node_modules/@types/ssh2": {
-      "version": "0.5.44",
-      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-0.5.44.tgz",
-      "integrity": "sha512-2aKqF0no055Zs8E6eaUtgDJv9yw1ViR7GLkWhuMIMnSPIU46vJJviEFZZtEqGxZEnrPpYxvOPPpWzwll/a4YwQ==",
-      "dev": true,
-      "dependencies": {
-        "@types/node": "*",
-        "@types/ssh2-streams": "*"
       }
     }
   },
@@ -36049,9 +36045,9 @@
       "dev": true
     },
     "@types/node": {
-      "version": "12.20.55",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz",
-      "integrity": "sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==",
+      "version": "12.20.23",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.20.23.tgz",
+      "integrity": "sha512-FW0q7NI8UnjbKrJK8NGr6QXY69ATw9IFe6ItIo5yozPwA9DU/xkhiPddctUVyrmFXvyFYerYgQak/qu200UBDw==",
       "dev": true
     },
     "@types/node-fetch": {
@@ -36157,13 +36153,21 @@
       "integrity": "sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==",
       "dev": true
     },
-    "@types/ssh2-streams": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@types/ssh2-streams/-/ssh2-streams-0.1.9.tgz",
-      "integrity": "sha512-I2J9jKqfmvXLR5GomDiCoHrEJ58hAOmFrekfFqmCFd+A6gaEStvWnPykoWUwld1PNg4G5ag1LwdA+Lz1doRJqg==",
+    "@types/ssh2": {
+      "version": "1.11.13",
+      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-1.11.13.tgz",
+      "integrity": "sha512-08WbG68HvQ2YVi74n2iSUnYHYpUdFc/s2IsI0BHBdJwaqYJpWlVv9elL0tYShTv60yr0ObdxJR5NrCRiGJ/0CQ==",
       "dev": true,
       "requires": {
-        "@types/node": "*"
+        "@types/node": "^18.11.18"
+      },
+      "dependencies": {
+        "@types/node": {
+          "version": "18.17.15",
+          "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.15.tgz",
+          "integrity": "sha512-2yrWpBk32tvV/JAd3HNHWuZn/VDN1P+72hWirHnvsvTGSqbANi+kSeuQR9yAHnbvaBvHDsoTdXV0Fe+iRtHLKA==",
+          "dev": true
+        }
       }
     },
     "@types/ssri": {
@@ -36371,7 +36375,7 @@
     "@zowe/cli": {
       "version": "file:packages/cli",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "@zowe/perf-timing": "1.0.7",
@@ -36404,7 +36408,7 @@
     "@zowe/core-for-zowe-sdk": {
       "version": "file:packages/core",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/imperative": "4.18.17",
         "chalk": "^4.1.0",
         "eslint": "^7.32.0",
@@ -36450,7 +36454,7 @@
         "@types/jsonfile": "^4.0.1",
         "@types/lodash-deep": "^2.0.0",
         "@types/mustache": "^0.8.32",
-        "@types/node": "12.20.55",
+        "@types/node": "12.20.23",
         "@types/npm-package-arg": "^6.1.0",
         "@types/pacote": "^11.1.0",
         "@types/progress": "^2.0.3",
@@ -36776,7 +36780,7 @@
       "version": "file:packages/provisioning",
       "requires": {
         "@types/js-yaml": "^3.12.5",
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -36790,7 +36794,7 @@
     "@zowe/zos-console-for-zowe-sdk": {
       "version": "file:packages/zosconsole",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -36803,7 +36807,7 @@
     "@zowe/zos-files-for-zowe-sdk": {
       "version": "file:packages/zosfiles",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "@zowe/zos-uss-for-zowe-sdk": "6.40.18",
@@ -36818,7 +36822,7 @@
     "@zowe/zos-jobs-for-zowe-sdk": {
       "version": "file:packages/zosjobs",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "@zowe/zos-files-for-zowe-sdk": "6.40.18",
@@ -36832,7 +36836,7 @@
     "@zowe/zos-logs-for-zowe-sdk": {
       "version": "file:packages/zoslogs",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
@@ -36845,7 +36849,7 @@
     "@zowe/zos-tso-for-zowe-sdk": {
       "version": "file:packages/zostso",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "@zowe/zosmf-for-zowe-sdk": "6.40.18",
@@ -36859,8 +36863,8 @@
     "@zowe/zos-uss-for-zowe-sdk": {
       "version": "file:packages/zosuss",
       "requires": {
-        "@types/node": "^12.12.24",
-        "@types/ssh2": "0.5.44",
+        "@types/node": "12.20.23",
+        "@types/ssh2": "1.11.13",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -36868,24 +36872,12 @@
         "ssh2": "1.4.0",
         "typedoc": "^0.16.0",
         "typescript": "^3.8.0"
-      },
-      "dependencies": {
-        "@types/ssh2": {
-          "version": "0.5.44",
-          "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-0.5.44.tgz",
-          "integrity": "sha512-2aKqF0no055Zs8E6eaUtgDJv9yw1ViR7GLkWhuMIMnSPIU46vJJviEFZZtEqGxZEnrPpYxvOPPpWzwll/a4YwQ==",
-          "dev": true,
-          "requires": {
-            "@types/node": "*",
-            "@types/ssh2-streams": "*"
-          }
-        }
       }
     },
     "@zowe/zos-workflows-for-zowe-sdk": {
       "version": "file:packages/workflows",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "@zowe/zos-files-for-zowe-sdk": "6.40.18",
@@ -36899,7 +36891,7 @@
     "@zowe/zosmf-for-zowe-sdk": {
       "version": "file:packages/zosmf",
       "requires": {
-        "@types/node": "^12.12.24",
+        "@types/node": "12.20.23",
         "@zowe/core-for-zowe-sdk": "6.40.18",
         "@zowe/imperative": "4.18.17",
         "eslint": "^7.32.0",

@@ -9,6 +9,7 @@
     ],
     "target": "es2015",
     "module": "commonjs",
+    "isolatedModules": true,
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -33,10 +34,5 @@
     "../../../packages/**/*.spec.ts",
     "../../../packages/**/*-spec.ts",
     "../../../packages/**/*.test.ts"
-  ],
-  "references": [
-    {
-      "path": "../../.."
-    }
   ]
 }

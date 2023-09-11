@@ -84,7 +84,7 @@
     "@types/jsonfile": "^4.0.1",
     "@types/lodash-deep": "^2.0.0",
     "@types/mustache": "^0.8.32",
-    "@types/node": "12.20.55",
+    "@types/node": "12.20.23",
     "@types/npm-package-arg": "^6.1.0",
     "@types/pacote": "^11.1.0",
     "@types/progress": "^2.0.3",
