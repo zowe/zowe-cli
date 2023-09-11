@@ -21,6 +21,7 @@ var urlParams = new URLSearchParams(window.location.search);
 var currentNodeId;
 var currentView = +(urlParams.get("v") === "1");
 var searchTimeout = 0;
+var htmlChunk = -5; // used to strip off ".html" from string
 /**
  * Generate flattened list of tree nodes
  * @param nestedNodes - Node list for command tree
@@ -35,7 +36,7 @@ function flattenNodes(nestedNodes) {
         else {
             flattenedNodes.push({
                 id: node.id,
-                text: node.id.slice(0, -5).replace(/_/g, " ")
+                text: node.id.slice(0, htmlChunk).replace(/_/g, " ")
             });
         }
     });
@@ -82,7 +83,7 @@ function updateCurrentNode(newNodeId, goto, expand, force) {
         }
     }
     currentNodeId = newNodeId;
-    var nodeIdWithoutExt = currentNodeId.slice(0, -5);
+    var nodeIdWithoutExt = currentNodeId.slice(0, htmlChunk);
     if (goto) {
         // Load docs page for node in iframe
         if (currentView === 0) {
@@ -155,7 +156,7 @@ function onTreeSearch(permutedSearchStr, node) {
         return false; // Don't match root node
     }
     // Strip off ".html" to get full command name
-    var fullCmd = node.id.slice(0, -5).replace(/_/g, " ");
+    var fullCmd = node.id.slice(0, htmlChunk).replace(/_/g, " ");
     var searchStrList = permutedSearchStr.split("\0");
     // Do fuzzy search that allows space or no char to be substituted for hyphen
     for (var _i = 0, _a = [fullCmd, fullCmd.replace(/-/g, " "), fullCmd.replace(/-/g, "")]; _i < _a.length; _i++) {
@@ -204,6 +205,7 @@ function onTreeSelectionChanged(_, data) {
  */
 function onSearchTextChanged(noDelay) {
     if (noDelay === void 0) { noDelay = false; }
+    var timeOut = 250;
     if (searchTimeout) {
         clearTimeout(searchTimeout);
     }
@@ -213,7 +215,7 @@ function onSearchTextChanged(noDelay) {
         if (!searchStr) {
             updateCurrentNode(currentNodeId, false, false, true);
         }
-    }, noDelay ? 0 : 250);
+    }, noDelay ? 0 : timeOut);
 }
 /**
  * Update selected node in command tree after new page loaded in iframe
@@ -226,6 +228,7 @@ function onDocsPageChanged(e) {
 /**
  * Load command tree components
  */
+// eslint-disable-next-line unused-imports/no-unused-vars
 function loadTree() {
     // Set header and footer strings
     $("#header-text").text(headerStr);
@@ -263,14 +266,18 @@ function loadTree() {
  * Toggle visibility of command tree
  * @param splitter - Split.js object
  */
+// eslint-disable-next-line unused-imports/no-unused-vars
 function toggleTree(splitter) {
+    var min = 20;
+    var mid = 80;
+    var max = 100;
     if ($("#panel-left").is(":visible")) {
         $("#panel-left").children().hide();
         $("#panel-left").hide();
-        splitter.setSizes([0, 100]);
+        splitter.setSizes([0, max]);
     }
     else {
-        splitter.setSizes([20, 80]);
+        splitter.setSizes([min, mid]);
         $("#panel-left").show();
         $("#panel-left").children().show();
     }
@@ -279,6 +286,7 @@ function toggleTree(splitter) {
  * Change display mode of page
  * @param newMode - 0 = Tree View, 1 = Flat View
  */
+// eslint-disable-next-line unused-imports/no-unused-vars
 function changeView(newMode) {
     if (newMode === currentView) {
         return;

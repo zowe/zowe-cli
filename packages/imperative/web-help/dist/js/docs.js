@@ -52,10 +52,11 @@ if (isInIframe) {
 function setTooltip(btn, message) {
     btn.setAttribute("aria-label", message);
     btn.setAttribute("data-balloon-visible", "");
+    var maxTimeout = 1000;
     setTimeout(function () {
         btn.removeAttribute("aria-label");
         btn.removeAttribute("data-balloon-visible");
-    }, 1000);
+    }, maxTimeout);
 }
 // Enable clipboard access for copy buttons
 var clipboard = new ClipboardJS(".btn-copy");

@@ -56,10 +56,11 @@ if (isInIframe) {
 function setTooltip(btn: any, message: string) {
     btn.setAttribute("aria-label", message);
     btn.setAttribute("data-balloon-visible", "");
+    const maxTimeout = 1000;
     setTimeout(() => {
         btn.removeAttribute("aria-label");
         btn.removeAttribute("data-balloon-visible");
-    }, 1000);
+    }, maxTimeout);
 }
 
 // Enable clipboard access for copy buttons

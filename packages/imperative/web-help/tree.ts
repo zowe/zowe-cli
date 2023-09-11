@@ -29,6 +29,7 @@ const urlParams = new URLSearchParams(window.location.search);
 let currentNodeId: string;
 let currentView: number = +(urlParams.get("v") === "1");
 let searchTimeout: number = 0;
+const htmlChunk = -5; // used to strip off ".html" from string
 
 /**
  * Generate flattened list of tree nodes
@@ -43,7 +44,7 @@ function flattenNodes(nestedNodes: ITreeNode[]): ITreeNode[] {
         } else {
             flattenedNodes.push({
                 id: node.id,
-                text: node.id.slice(0, -5).replace(/_/g, " ")
+                text: node.id.slice(0, htmlChunk).replace(/_/g, " ")
             });
         }
     });
@@ -91,7 +92,7 @@ function updateCurrentNode(newNodeId: string, goto: boolean, expand: boolean, fo
         }
     }
     currentNodeId = newNodeId;
-    const nodeIdWithoutExt: string = currentNodeId.slice(0, -5);
+    const nodeIdWithoutExt: string = currentNodeId.slice(0, htmlChunk);
 
     if (goto) {
         // Load docs page for node in iframe
@@ -173,7 +174,7 @@ function onTreeSearch(permutedSearchStr: string, node: any): boolean {
     }
 
     // Strip off ".html" to get full command name
-    const fullCmd: string = node.id.slice(0, -5).replace(/_/g, " ");
+    const fullCmd: string = node.id.slice(0, htmlChunk).replace(/_/g, " ");
     const searchStrList = permutedSearchStr.split("\0");
 
     // Do fuzzy search that allows space or no char to be substituted for hyphen
@@ -225,6 +226,7 @@ function onTreeSelectionChanged(_: any, data: any) {
  * @param noDelay - If true, searches instantly rather than delaying 250 ms
  */
 function onSearchTextChanged(noDelay: boolean = false) {
+    const timeOut = 250;
     if (searchTimeout) {
         clearTimeout(searchTimeout);
     }
@@ -236,7 +238,7 @@ function onSearchTextChanged(noDelay: boolean = false) {
         if (!searchStr) {
             updateCurrentNode(currentNodeId, false, false, true);
         }
-    }, noDelay ? 0 : 250);
+    }, noDelay ? 0 : timeOut);
 }
 
 /**
@@ -251,6 +253,7 @@ function onDocsPageChanged(e: any) {
 /**
  * Load command tree components
  */
+// eslint-disable-next-line unused-imports/no-unused-vars
 function loadTree() {
     // Set header and footer strings
     $("#header-text").text(headerStr);
@@ -280,8 +283,8 @@ function loadTree() {
             search_callback: onTreeSearch
         }
     })
-    .on("ready.jstree refresh.jstree", onTreeLoaded)
-    .on("changed.jstree", onTreeSelectionChanged);
+        .on("ready.jstree refresh.jstree", onTreeLoaded)
+        .on("changed.jstree", onTreeSelectionChanged);
 
     // Connect events to search box and iframe
     $("#tree-search").on("change keyup mouseup paste", () => onSearchTextChanged());
@@ -292,13 +295,17 @@ function loadTree() {
  * Toggle visibility of command tree
  * @param splitter - Split.js object
  */
+// eslint-disable-next-line unused-imports/no-unused-vars
 function toggleTree(splitter: any) {
+    const min = 20;
+    const mid = 80;
+    const max = 100;
     if ($("#panel-left").is(":visible")) {
         $("#panel-left").children().hide();
         $("#panel-left").hide();
-        splitter.setSizes([0, 100]);
+        splitter.setSizes([0, max]);
     } else {
-        splitter.setSizes([20, 80]);
+        splitter.setSizes([min, mid]);
         $("#panel-left").show();
         $("#panel-left").children().show();
     }
@@ -308,6 +315,7 @@ function toggleTree(splitter: any) {
  * Change display mode of page
  * @param newMode - 0 = Tree View, 1 = Flat View
  */
+// eslint-disable-next-line unused-imports/no-unused-vars
 function changeView(newMode: number) {
     if (newMode === currentView) {
         return;

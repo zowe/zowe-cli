@@ -17,7 +17,7 @@ import {relative} from "path";
 const isMock = jest.isMockFunction(relative);
 
 if (isMock) {
-  jest.dontMock("path");
+    jest.dontMock("path");
 }
 
 const yargs = jest.genMockFromModule("yargs");
@@ -25,7 +25,7 @@ const yargs = jest.genMockFromModule("yargs");
 // Once we are done, we should install the mock back so that the test that needed
 // to mock yargs continues as expected.
 if (isMock) {
-  jest.doMock("path");
+    jest.doMock("path");
 }
 
 module.exports = yargs;
