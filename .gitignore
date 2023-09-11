@@ -101,3 +101,7 @@ imperative_debug.log
 # Licenses in package folders (managed with build scripts)
 packages/*/LICENSE
 zowex/
+
+# Browserified bundles and compiled JS for web help
+packages/imperative/web-help/dist/css/bundle*
+packages/imperative/web-help/dist/js/

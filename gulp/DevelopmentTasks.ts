@@ -10,10 +10,11 @@
 */
 
 import { IGulpError, ITaskFunction } from "./GulpHelpers";
-import { Constants } from "../packages/cli/src/Constants";
 import { SpawnSyncReturns } from "child_process";
 import * as util from "util";
 import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "../packages/imperative/src";
+
+import { CliConstants } from "../packages/cli/src/CliConstants";
 
 // "npx" command allows us to issue CLIs from node_modules dependencies
 // without globally installing.
@@ -130,7 +131,7 @@ const doc: ITaskFunction = async () => {
     clearRequire.all(); // in case the code has changed, reload any code
 
     let totalCommands = 0;
-    let markdownContent = "# " + Constants.DISPLAY_NAME + " Help\n\n";
+    let markdownContent = "# " + CliConstants.DISPLAY_NAME + " Help\n\n";
     markdownContent += "\n" + loadedDefinitions.description + "\n\n";
 
     markdownContent += "{{tableOfContents}}\n\n";
@@ -187,7 +188,7 @@ const doc: ITaskFunction = async () => {
 
             const helpGen = new DefaultHelpGenerator({
                 produceMarkdown: true,
-                rootCommandName: Constants.BINARY_NAME + oldCommandName
+                rootCommandName: CliConstants.BINARY_NAME + oldCommandName
             } as any, {
                 commandDefinition: child,
                 fullCommandTree: definition
@@ -262,7 +263,7 @@ const buildImperative: ITaskFunction = (done) => {
 buildImperative.description = "Build the project and generate documentation";
 
 const watchImperative: ITaskFunction = (done) => {
-    gulp.watch("packages/**", gulp.series("lint"));
+    gulp.watch("packages/imperative/src/**", gulp.series("lint"));
     const watchProcess = childProcess.spawn("node", [tscExecutable, "--watch"], {stdio: "inherit"});
     watchProcess.on("error", (error: Error) => {
         fancylog(error);
@@ -277,13 +278,14 @@ watchImperative.description = "Continuously build the project as you edit the so
     "generate documentation, use the 'build' task before attempting to merge with the master branch";
 
 
+const imperativeDirectory = __dirname + "/../packages/imperative/";
 const buildAllClis: ITaskFunction = async () => {
-    const cliDirs: string[] = getDirectories(__dirname + "/../__tests__/__integration__/");
+    const cliDirs: string[] = getDirectories(imperativeDirectory + "__tests__/__integration__/");
     cliDirs.forEach((dir) => {
         // Build them all
         fancylog(`Build "${dir}" cli...`);
         const buildResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["run", "build"],
-            {cwd: __dirname + `/../__tests__/__integration__/${dir}/`});
+            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`});
         if (buildResponse.stdout && buildResponse.stdout.toString().length > 0) {
             fancylog(`***BUILD "${dir}" stdout:\n${buildResponse.stdout.toString()}`);
         }
@@ -305,12 +307,12 @@ function getDirectories(path: string) {
 }
 
 const installAllCliDependencies: ITaskFunction = async () => {
-    const cliDirs: string[] = getDirectories(__dirname + "/../__tests__/__integration__/");
+    const cliDirs: string[] = getDirectories(imperativeDirectory + "__tests__/__integration__/");
     cliDirs.forEach((dir) => {
         // Perform an NPM install
         fancylog(`Executing "npm install" for "${dir}" cli to obtain dependencies...`);
         const installResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["install"],
-            {cwd: __dirname + `/../__tests__/__integration__/${dir}/`});
+            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`});
         if (installResponse.stdout && installResponse.stdout.toString().length > 0) {
             fancylog(`***INSTALL "${dir}" stdout:\n${installResponse.stdout.toString()}`);
         }
