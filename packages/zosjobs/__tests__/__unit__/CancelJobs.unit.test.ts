@@ -46,7 +46,7 @@ describe("Cancel Jobs unit tests", () => {
 
     describe("Positive tests", () => {
         it("should allow users to call cancelJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(returnCancelJobsDataAsync);
             let caughtError;
             let response;
             try {
@@ -59,7 +59,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(returnCancelJobsDataAsync);
             let caughtError;
             let response;
             try {
@@ -72,7 +72,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 1_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
@@ -81,7 +81,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 2_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
@@ -90,7 +90,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 2_0) and get a bad response", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });
@@ -99,7 +99,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(returnCancelJobsDataAsync);
             let caughtError;
             let response;
             try {
@@ -112,7 +112,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 1_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
@@ -121,7 +121,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 2_0)", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
@@ -130,7 +130,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 2_0) and get a failed response", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
             });
@@ -141,7 +141,7 @@ describe("Cancel Jobs unit tests", () => {
 
     describe("Error handling tests - async/await", () => {
         it("should be able to catch errors from cancelJob with async/await syntax", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB0000");
@@ -154,7 +154,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from cancelJobForJob with async/await syntax", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJobForJob(fakeSession, fakeJob);
@@ -167,7 +167,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from cancelJobCommon with async/await syntax", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
@@ -186,7 +186,7 @@ describe("Cancel Jobs unit tests", () => {
     describe("Error handling tests - Promise catch() syntax", () => {
         /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors from cancelJob with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB0000").then(() => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
@@ -198,7 +198,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from cancelJobForJob with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             CancelJobs.cancelJobForJob(fakeSession, fakeJob)
                 .then(() => {
                     expect(".catch() should have been called").toEqual("test failed");
@@ -211,7 +211,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from cancelJobCommon with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             CancelJobs.cancelJobCommon(fakeSession, {
                 jobname: "MYJOB1",
                 jobid: "JOB0001"
@@ -230,7 +230,7 @@ describe("Cancel Jobs unit tests", () => {
     describe("Parameter validation", () => {
 
         it("should reject calls to cancelJob that omit jobname", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJob(fakeSession, undefined, "JOB0000");
@@ -243,7 +243,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should reject calls to cancelJob that omit jobid", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJob(fakeSession, "MYJOB1", undefined);
@@ -256,7 +256,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should reject calls to cancelJobForJob that omit jobname", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             const badJob: IJob = JSON.parse(JSON.stringify(fakeJob));
             delete badJob.jobname;
@@ -271,7 +271,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should reject calls to cancelJobForJob that omit jobid", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             const badJob: IJob = JSON.parse(JSON.stringify(fakeJob));
             delete badJob.jobid;
@@ -286,7 +286,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should reject calls to cancelJobCommon that omit jobname from the parms object", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {
@@ -302,7 +302,7 @@ describe("Cancel Jobs unit tests", () => {
         });
 
         it("should reject calls to cancelJobCommon that omit jobid from the parms object", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(throwImperativeError);
+            (ZosmfRestClient.putExpectJSON as any) = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await CancelJobs.cancelJobCommon(fakeSession, {

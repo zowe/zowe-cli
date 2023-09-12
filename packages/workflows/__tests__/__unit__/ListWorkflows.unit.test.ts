@@ -96,7 +96,7 @@ describe("List workflows", () => {
     // List workflow that match all optional parameters
     it("Successful call with all optional parameters.", async () => {
 
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -121,7 +121,7 @@ describe("List workflows", () => {
     // List all workflows - without any optional parameters
     it("Successful call without any optional parameters.", async () => {
 
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -175,7 +175,7 @@ describe("Get workflow key by name", () => {
     describe("Success scenarios", () => {
         it("Returns wf key if only one wf with requested name was found", async () => {
             const apiResponse = {workflows: [PRETEND_ZOSMF_RESPONSE]};
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(apiResponse);
@@ -196,7 +196,7 @@ describe("Get workflow key by name", () => {
         });
 
         it("Returns null if no workflow with requested name was found", async () => {
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve({workflows: []});
@@ -242,7 +242,7 @@ describe("Get workflow key by name", () => {
             expectZosmfResponseFailed(response, error, noWorkflowName.message);
         });
         it("Throws an error if multiple wf were found.", async () => {
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE_MULTIPLE_WF);

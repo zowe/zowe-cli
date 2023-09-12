@@ -69,4 +69,9 @@ export interface IRestClientResponse {
      * @memberof IRestClientResponse
      */
     log?: Logger;
+
+    /**
+     * This is for convenient programmatic access to properties in this interface
+     */
+    [key: string]: any
 }

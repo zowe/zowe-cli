@@ -47,7 +47,7 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
 
     it("should succeed with all correct parameters", async () => {
 
-        (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.deleteExpectString as any) = jest.fn(() => {
             return "";
         });
 

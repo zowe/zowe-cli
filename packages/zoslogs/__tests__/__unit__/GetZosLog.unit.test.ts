@@ -59,7 +59,7 @@ describe("GetZosLog getResourcePath", () => {
 
 describe("GetZosLog getZosLog", () => {
     it("should succeed and return logs", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(GetZosLogsData.SAMPLE_RESP_DATA);
@@ -82,7 +82,7 @@ describe("GetZosLog getZosLog", () => {
     });
 
     it("should succeed and return unprocessed logs", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(GetZosLogsData.SAMPLE_RESP_DATA);

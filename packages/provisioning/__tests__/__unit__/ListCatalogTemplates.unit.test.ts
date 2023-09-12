@@ -97,7 +97,7 @@ function expectZosmfResponseFailed(response: IPublishedTemplates, error: Imperat
 
 describe("ListCatalogTemplates listCatalogCommon", () => {
     it("should succeed with all correctly provided parameters", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);

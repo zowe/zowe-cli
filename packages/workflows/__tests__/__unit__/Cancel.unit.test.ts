@@ -45,7 +45,7 @@ describe("Cancel workflow", () => {
     describe("Successful scenarios", () => {
         it("Successful call returns 204 - No Content.", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 
@@ -66,7 +66,7 @@ describe("Cancel workflow", () => {
         });
         it("Successful even with zOSMF version undefined (because of default value).", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 

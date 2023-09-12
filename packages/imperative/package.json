@@ -40,7 +40,7 @@
     "build": "npm run build:packages && npm run build:webHelp",
     "build:packages": "tsc --pretty",
     "watch": "gulp watchImperative",
-    "postbuild": "gulp build:install-all-cli-dependencies && gulp build:all-clis"
+    "postbuild": "gulp build:install-all-cli-dependencies --stdio=inherit && gulp build:all-clis --stdio=inherit"
   },
   "dependencies": {
     "@types/yargs": "13.0.4",

@@ -56,7 +56,7 @@ describe("List archived workflows", () => {
     // List all archived workflows - without any optional parameters
     it("Successful call without any optional parameters.", async () => {
 
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);

@@ -115,7 +115,7 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         let error: ImperativeError;
         let response: ISendResponse;
 
-        jest.spyOn(StartTso, "start").mockResolvedValueOnce({ success: false });
+        jest.spyOn(StartTso, "start").mockResolvedValueOnce({ success: false } as any);
 
         try {
             response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "acc", "command");
@@ -131,28 +131,28 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
 
 describe("TsoIssue issueTsoCommand", () => {
     it("should succeed", async () => {
-        (StartTso.start as any) = jest.fn<object>((): Promise<object> => {
+        (StartTso.start as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(START_RESPONSE);
                 });
             });
         });
-        (SendTso.getAllResponses as any) = jest.fn<object>((): Promise<object> => {
+        (SendTso.getAllResponses as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve({});
                 });
             });
         });
-        (SendTso.sendDataToTSOCollect as any) = jest.fn<object>((): Promise<object> => {
+        (SendTso.sendDataToTSOCollect as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(SEND_RESPONSE);
                 });
             });
         });
-        (StopTso.stop as any) = jest.fn<object>((): Promise<object> => {
+        (StopTso.stop as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(null);
@@ -172,7 +172,7 @@ describe("TsoIssue issueTsoCommand", () => {
     });
 
     it("should succeed (with params)", async () => {
-        (IssueTso.issueTsoCommand as any) = jest.fn<object>((): Promise<object> => {
+        (IssueTso.issueTsoCommand as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve({});

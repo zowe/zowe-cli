@@ -193,7 +193,7 @@ describe("StartTso getResourcesQuery", () => {
 
 describe("StartTso startCommon", () => {
     it("should succeed with correct parameters", async () => {
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -239,14 +239,14 @@ describe("StartTso startCommon", () => {
 
 describe("StartTso start", () => {
     it("should succeed with all correctly provided parameters", async () => {
-        (StartTso.startCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StartTso.startCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
                 });
             });
         });
-        (SendTso.getAllResponses as any) = jest.fn<object>((): Promise<object> => {
+        (SendTso.getAllResponses as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -269,7 +269,7 @@ describe("StartTso start", () => {
     });
 
     it("should throw an error if session parameter is undefined", async () => {
-        (StartTso.startCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StartTso.startCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -318,14 +318,14 @@ describe("StartTso start", () => {
     it("should succeed even if z/OSMF parameters are undefined, it will use default parameters", async () => {
         let error: ImperativeError;
         let response: IStartStopResponse;
-        (StartTso.startCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StartTso.startCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
                 });
             });
         });
-        (SendTso.getAllResponses as any) = jest.fn<object>((): Promise<object> => {
+        (SendTso.getAllResponses as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);

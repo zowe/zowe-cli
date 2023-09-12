@@ -64,7 +64,7 @@ describe("ListInstanceVariables getResourcesQuery", () => {
 describe("ListInstanceVariables listVariablesCommon", () => {
 
     it("should succeed and return list of variables", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);

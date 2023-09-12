@@ -285,7 +285,7 @@ const buildAllClis: ITaskFunction = async () => {
         // Build them all
         fancylog(`Build "${dir}" cli...`);
         const buildResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["run", "build"],
-            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`});
+            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`, stdio: "inherit"});
         if (buildResponse.stdout && buildResponse.stdout.toString().length > 0) {
             fancylog(`***BUILD "${dir}" stdout:\n${buildResponse.stdout.toString()}`);
         }
@@ -312,7 +312,7 @@ const installAllCliDependencies: ITaskFunction = async () => {
         // Perform an NPM install
         fancylog(`Executing "npm install" for "${dir}" cli to obtain dependencies...`);
         const installResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["install"],
-            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`});
+            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`, stdio: "inherit"});
         if (installResponse.stdout && installResponse.stdout.toString().length > 0) {
             fancylog(`***INSTALL "${dir}" stdout:\n${installResponse.stdout.toString()}`);
         }

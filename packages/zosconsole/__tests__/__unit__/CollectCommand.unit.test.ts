@@ -100,7 +100,7 @@ describe("CollectCommand collectCommon", () => {
      * Verify that ZosmfRestClient.getExpectJSON method has been called with proper parameters
      */
     it("should get response from custom console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -128,7 +128,7 @@ describe("CollectCommand collectCommon", () => {
      * Command should fail with incorrect parameters and
      */
     it("should fail if session is not provided.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -177,7 +177,7 @@ describe("CollectCommand collectCommon", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Collect error message"}, {suppressReport: false, tag: "some tag"});
         });
 
@@ -196,7 +196,7 @@ describe("CollectCommand collectCommon", () => {
 describe("CollectCommand collectDefConsoleCommon", () => {
 
     it("should get response from default console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -223,7 +223,7 @@ describe("CollectCommand collectDefConsoleCommon", () => {
 describe("CollectCommand collect", () => {
 
     it("should get response from custom console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
@@ -249,7 +249,7 @@ describe("CollectCommand collect", () => {
     });
 
     it("should get response (one chunk of data provided as a response).", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
@@ -275,7 +275,7 @@ describe("CollectCommand collect", () => {
     });
 
     it("should get response (two chunks of data with empty responses provided as a response).", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
@@ -306,7 +306,7 @@ describe("CollectCommand collect", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Issue error message"}, {suppressReport: false, tag: "some tag"});
         })
             .mockReturnValueOnce(FOLLOW_UP_RESPONSE1);
@@ -331,7 +331,7 @@ describe("CollectCommand collect", () => {
     });
 
     it("with non empty console response should collect all data.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((reject) => {
                 process.nextTick(() => {
                     reject(FOLLOW_UP_RESPONSE1);

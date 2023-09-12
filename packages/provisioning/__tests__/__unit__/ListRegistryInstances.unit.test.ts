@@ -147,7 +147,7 @@ describe("ListRegistryInstances getResourcesQuery", () => {
 describe("ListRegistryInstances listRegistryCommon", () => {
 
     it("should succeed and return list of provisioned instances", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -172,7 +172,7 @@ describe("ListRegistryInstances listRegistryCommon", () => {
     });
 
     it("should succeed and return list of instances filtered by DB2 type", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_DB2_TYPE);
@@ -240,7 +240,7 @@ describe("ListRegistryInstances listRegistryCommon", () => {
 describe("ListRegistryInstances listFilteredRegistry", () => {
 
     it("should succeed and return list of instances filtered by 'type'", async () => {
-        (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {
+        (ListRegistryInstances.listRegistryCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_DB2_TYPE);
@@ -267,7 +267,7 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
     });
 
     it("should succeed and return list of instances filtered by 'external-name'", async () => {
-        (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {
+        (ListRegistryInstances.listRegistryCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_DB2_TYPE);
@@ -294,7 +294,7 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
     });
 
     it("should succeed and return list of templates filtered by 'type' and 'external-name'", async () => {
-        (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {
+        (ListRegistryInstances.listRegistryCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_CICS_TYPE);

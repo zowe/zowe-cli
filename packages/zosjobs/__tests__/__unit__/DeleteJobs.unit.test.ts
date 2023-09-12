@@ -46,7 +46,7 @@ describe("Delete Jobs unit tests", () => {
 
     describe("Positive tests", () => {
         it("should allow users to call deleteJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync) as any;
             let caughtError;
             let response;
             try {
@@ -59,7 +59,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync) as any;
             let caughtError;
             let response;
             try {
@@ -75,7 +75,7 @@ describe("Delete Jobs unit tests", () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
-            });
+            }) as any;
             const response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "1.0");
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
@@ -84,7 +84,7 @@ describe("Delete Jobs unit tests", () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
-            });
+            }) as any;
             const response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "2.0");
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
@@ -93,13 +93,13 @@ describe("Delete Jobs unit tests", () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
-            });
+            }) as any;
             const response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "2.0");
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync) as any;
             let caughtError;
             let response;
             try {
@@ -115,7 +115,7 @@ describe("Delete Jobs unit tests", () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
-            });
+            }) as any;
             const response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "1.0"});
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
@@ -124,7 +124,7 @@ describe("Delete Jobs unit tests", () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
-            });
+            }) as any;
             const response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "2.0"});
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
@@ -133,7 +133,7 @@ describe("Delete Jobs unit tests", () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
-            });
+            }) as any;
             const response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "2.0"});
             expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });

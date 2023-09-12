@@ -337,7 +337,7 @@ describe("System Tests - Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 // check that the status is input
                 const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
@@ -373,7 +373,7 @@ describe("System Tests - Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 // check that the status is active
                 const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
@@ -409,7 +409,7 @@ describe("System Tests - Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 // check that the status is output
                 const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
@@ -440,7 +440,7 @@ describe("System Tests - Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 // submit the job
                 SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
@@ -498,7 +498,7 @@ describe("System Tests - Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 // submit the job
                 SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {

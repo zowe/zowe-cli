@@ -28,7 +28,7 @@ describe("Logger tests", () => {
     const name = "sample";
     //
     // // This needs to be mocked before running process function of uninstall handler
-    // (Logger as any).writeToLog = jest.fn<string>((data: string) => data);
+    // (Logger as any).writeToLog = jest.fn((data: string) => data);
 
     beforeAll(() => {
         let configuration: ILog4jsConfig;
@@ -80,12 +80,12 @@ describe("Logger tests", () => {
         const config = LoggingConfigurer.configureLogger(fakeHome, {name});
         const logger = Logger.initLogger(config);
 
-        (logger as any).logService.trace = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.info = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.debug = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.warn = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.error = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.fatal = jest.fn<string, any>((data: string) => data);
+        (logger as any).logService.trace = jest.fn((data: string) => data);
+        (logger as any).logService.info = jest.fn((data: string) => data);
+        (logger as any).logService.debug = jest.fn((data: string) => data);
+        (logger as any).logService.warn = jest.fn((data: string) => data);
+        (logger as any).logService.error = jest.fn((data: string) => data);
+        (logger as any).logService.fatal = jest.fn((data: string) => data);
 
         logger.trace("message");
         logger.info("test");
@@ -165,12 +165,12 @@ describe("Logger tests", () => {
         const config = LoggingConfigurer.configureLogger(fakeHome, {name});
         const logger = Logger.initLogger(config);
 
-        (logger as any).logService.trace = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.info = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.debug = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.warn = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.error = jest.fn<string, any>((data: string) => data);
-        (logger as any).logService.fatal = jest.fn<string, any>((data: string) => data);
+        (logger as any).logService.trace = jest.fn((data: string) => data);
+        (logger as any).logService.info = jest.fn((data: string) => data);
+        (logger as any).logService.debug = jest.fn((data: string) => data);
+        (logger as any).logService.warn = jest.fn((data: string) => data);
+        (logger as any).logService.error = jest.fn((data: string) => data);
+        (logger as any).logService.fatal = jest.fn((data: string) => data);
 
         const error = new ImperativeError({msg: "sample error"});
 

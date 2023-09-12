@@ -50,7 +50,7 @@ describe("Start workflow", () => {
 
         it("Successful call returns 201 - no message. Test just with workflow key.", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 
@@ -71,7 +71,7 @@ describe("Start workflow", () => {
         });
         it("Should succeed even with zOSMF version undefined(because of default value).", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 
@@ -92,7 +92,7 @@ describe("Start workflow", () => {
         });
         it("Should succeed with all optional variables.", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 

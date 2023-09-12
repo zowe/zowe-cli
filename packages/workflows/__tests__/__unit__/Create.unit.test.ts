@@ -103,7 +103,7 @@ describe("Create workflow", () => {
     describe("Successful scenarios", () => {
         it("Successful call with all parameters returns IRegisteredWorkflow response.", async () => {
 
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -129,7 +129,7 @@ describe("Create workflow", () => {
 
         it("Successful call without optional parameters returns IRegisteredWorkflow response.", async () => {
 
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -154,7 +154,7 @@ describe("Create workflow", () => {
         });
         it("Successful call without optional parameters and variables are empty string returns IRegisteredWorkflow response.", async () => {
 
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -179,7 +179,7 @@ describe("Create workflow", () => {
             expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
         });
         it("Should succeed even with zOSMF version undefined (because of default value).", async () => {
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -206,7 +206,7 @@ describe("Create workflow", () => {
         it("Successful call with short DSNAME.", async () => {
             PRETEND_INPUT_PARMS_NO_INPUT.workflowDefinitionFile = "A.A.C";
             const definitionFile = PRETEND_INPUT_PARMS_NO_INPUT.workflowDefinitionFile;
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -232,7 +232,7 @@ describe("Create workflow", () => {
         it("Successful call with DSNAME including member.", async () => {
             PRETEND_INPUT_PARMS_NO_INPUT.workflowDefinitionFile = "DATA.SET(MEMBER)";
             const definitionFile = PRETEND_INPUT_PARMS_NO_INPUT.workflowDefinitionFile;
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -258,7 +258,7 @@ describe("Create workflow", () => {
         it("Successful call with DSNAME starting with special character(allowed one).", async () => {
             PRETEND_INPUT_PARMS_NO_INPUT.workflowDefinitionFile = "#DATA.SET";
             const definitionFile = PRETEND_INPUT_PARMS_NO_INPUT.workflowDefinitionFile;
-            (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.postExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -434,24 +434,24 @@ describe("Create workflow", () => {
 describe("Create workflow from local file", () => {
     describe("Successful scenarios", () => {
         it("Should succeed even with zOSMF version undefined (because of default value).", async () => {
-            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+            (Upload.fileToUSSFile as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve("success");
                     });
                 });
             });
-            (CreateWorkflow.getTempFile as any) = jest.fn<string>(() => {
+            (CreateWorkflow.getTempFile as any) = jest.fn(() => {
                 return PRETEND_INPUT_PARMS.workflowDefinitionFile;
             });
-            (CreateWorkflow.createWorkflow as any) = jest.fn<string>(() => {
+            (CreateWorkflow.createWorkflow as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
                     });
                 });
             });
-            (Delete.ussFile as any) = jest.fn<string>(() => {
+            (Delete.ussFile as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve("success");
@@ -477,17 +477,17 @@ describe("Create workflow from local file", () => {
             expect((Delete.ussFile as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_INPUT_PARMS.workflowDefinitionFile.slice(1));
         });
         it("Should succeed and keep files", async () => {
-            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+            (Upload.fileToUSSFile as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve("success");
                     });
                 });
             });
-            (CreateWorkflow.getTempFile as any) = jest.fn<string>(() => {
+            (CreateWorkflow.getTempFile as any) = jest.fn(() => {
                 return PRETEND_INPUT_PARMS.workflowDefinitionFile;
             });
-            (CreateWorkflow.createWorkflow as any) = jest.fn<string>(() => {
+            (CreateWorkflow.createWorkflow as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);
@@ -651,14 +651,14 @@ describe("Create workflow from local file", () => {
         it("Throws an error if uss files were not uploaded successfully", async () => {
             let error: ImperativeError;
             let response: any;
-            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+            (Upload.fileToUSSFile as any) = jest.fn(() => {
                 return new Promise((resolve, reject) => {
                     process.nextTick(() => {
                         reject(new ImperativeError({msg : "failed"}));
                     });
                 });
             });
-            (CreateWorkflow.createWorkflow as any) = jest.fn<string>(() => {
+            (CreateWorkflow.createWorkflow as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE);

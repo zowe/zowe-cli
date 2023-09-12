@@ -100,7 +100,7 @@ describe("ListTemplateInfo getResourcesQuery", () => {
 
 describe("ListTemplateInfo listTemplateCommon", () => {
     it("should succeed with all correctly provided parameters", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_NO_PROMPT_VARS);

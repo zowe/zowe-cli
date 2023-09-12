@@ -46,7 +46,7 @@ describe("Delete workflow", () => {
     describe("Successful scenarios", () => {
         it("Successful call returns 204 - No Content.", async () => {
 
-            (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.deleteExpectString as any) = jest.fn(() => {
                 return "";
             });
 
@@ -66,7 +66,7 @@ describe("Delete workflow", () => {
         });
         it("Successful even with zOSMF version undefined (because of default value).", async () => {
 
-            (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.deleteExpectString as any) = jest.fn(() => {
                 return "";
             });
 
