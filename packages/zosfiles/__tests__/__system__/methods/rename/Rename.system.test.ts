@@ -53,7 +53,7 @@ describe("Rename", () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, beforeDataSetName);
             } catch (err) {
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
         describe("Success Scenarios", () => {
@@ -67,10 +67,10 @@ describe("Rename", () => {
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName);
                     beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName);
                     afterList = await List.dataSet(REAL_SESSION, afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -92,10 +92,10 @@ describe("Rename", () => {
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName, {responseTimeout: 5});
                     beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName, {responseTimeout: 5});
                     afterList = await List.dataSet(REAL_SESSION, afterDataSetName, {responseTimeout: 5});
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -121,10 +121,10 @@ describe("Rename", () => {
                     );
                     beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName);
                     afterList = await List.dataSet(REAL_SESSION, afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -145,10 +145,10 @@ describe("Rename", () => {
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, afterDataSetName);
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -160,10 +160,10 @@ describe("Rename", () => {
 
                 try {
                     response = await Rename.dataSet(REAL_SESSION, "NON.EXISTING.SET.BDLL12", afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -175,10 +175,10 @@ describe("Rename", () => {
 
                 try {
                     response = await Rename.dataSet(REAL_SESSION, "", afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -191,10 +191,10 @@ describe("Rename", () => {
 
                 try {
                     response = await Rename.dataSet(REAL_SESSION, undefined, afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -207,10 +207,10 @@ describe("Rename", () => {
 
                 try {
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, "");
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -223,10 +223,10 @@ describe("Rename", () => {
 
                 try {
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, undefined);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -239,10 +239,10 @@ describe("Rename", () => {
 
                 try {
                     response = await Rename.dataSet(undefined, beforeDataSetName, afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -256,7 +256,7 @@ describe("Rename", () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, beforeDataSetName);
             } catch (err) {
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
         describe("Success Scenarios", () => {
@@ -270,10 +270,10 @@ describe("Rename", () => {
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName);
                     beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName);
                     afterList = await List.dataSet(REAL_SESSION, afterDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -295,10 +295,10 @@ describe("Rename", () => {
                     response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName, {responseTimeout: 5});
                     beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName, {responseTimeout: 5});
                     afterList = await List.dataSet(REAL_SESSION, afterDataSetName, {responseTimeout: 5});
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -318,7 +318,7 @@ describe("Rename", () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, beforeDataSetName);
                 await Upload.fileToDataset(REAL_SESSION, fileLocation, beforeDataSetName);
             } catch (err) {
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
         describe("Success Scenarios", () => {
@@ -330,10 +330,10 @@ describe("Rename", () => {
                 try {
                     response = await Rename.dataSetMember(REAL_SESSION, beforeDataSetName, beforeMemberName, afterMemberName);
                     allMembers = await List.allMembers(REAL_SESSION, beforeDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -353,10 +353,10 @@ describe("Rename", () => {
                 try {
                     response = await Rename.dataSetMember(REAL_SESSION, beforeDataSetName, beforeMemberName, afterMemberName, {responseTimeout: 5});
                     allMembers = await List.allMembers(REAL_SESSION, beforeDataSetName, {responseTimeout: 5});
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -381,10 +381,10 @@ describe("Rename", () => {
                         `   ${afterMemberName}   `
                     );
                     allMembers = await List.allMembers(REAL_SESSION, beforeDataSetName);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -408,7 +408,7 @@ describe("Rename", () => {
                     response = await Rename.dataSetMember(REAL_SESSION, beforeDataSetName, beforeMemberName, afterMemberName);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();

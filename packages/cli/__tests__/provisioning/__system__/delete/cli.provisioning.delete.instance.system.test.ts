@@ -36,18 +36,18 @@ describe("provisioning delete instance with profile", () => {
 
         // Provision the template to have an instance to delete
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+        // Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
         instanceID = instance["object-id"];
 
         // Deprovision the instance
         instance = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
             instanceID, ProvisioningTestUtils.ACTION_DEPROV);
-        Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+        // Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
         // Wait until instance state is 'deprovisioned'
         instance = await ProvisioningTestUtils.waitInstanceState(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
             instanceID, ProvisioningTestUtils.STATE_DEPROV);
         instanceName = instance["external-name"];
-        Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     afterAll(async () => {
@@ -83,18 +83,18 @@ describe("provisioning delete instance without profiles", () => {
 
         // Provision the template to have an instance to delete
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+        // Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
         instanceID = instance["object-id"];
 
         // Deprovision the instance
         instance = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
             instanceID, ProvisioningTestUtils.ACTION_DEPROV);
-        Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+        // Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
         // Wait until instance state is 'deprovisioned'
         instance = await ProvisioningTestUtils.waitInstanceState(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
             instanceID, ProvisioningTestUtils.STATE_DEPROV);
         instanceName = instance["external-name"];
-        Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     afterAll(async () => {

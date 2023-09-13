@@ -109,10 +109,10 @@ describe("ListCatalogTemplates listCatalogCommon", () => {
         let response: IPublishedTemplates;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, RESOURCES_QUERY);
@@ -126,10 +126,10 @@ describe("ListCatalogTemplates listCatalogCommon", () => {
         let response: IPublishedTemplates;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(undefined, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -139,10 +139,10 @@ describe("ListCatalogTemplates listCatalogCommon", () => {
         let response: IPublishedTemplates;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -152,10 +152,10 @@ describe("ListCatalogTemplates listCatalogCommon", () => {
         let response: IPublishedTemplates;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(PRETEND_SESSION, "");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });

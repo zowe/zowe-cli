@@ -51,7 +51,7 @@ describe("Download Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
-        Imperative.console.info("Using dsname:" + dsname);
+        // Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
@@ -106,10 +106,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -137,10 +137,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -170,10 +170,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -207,10 +207,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -233,10 +233,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -265,10 +265,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
 
                 expect(error).toBeFalsy();
@@ -304,10 +304,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -368,10 +368,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -401,10 +401,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -434,10 +434,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -478,10 +478,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -511,10 +511,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -544,10 +544,10 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -780,7 +780,7 @@ describe("Download Data Set", () => {
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.apiResponse.etag).toBeDefined();
-                Imperative.console.info(response.apiResponse.etag);
+                // Imperative.console.info(response.apiResponse.etag);
             });
 
             it("should download uss file content in binary", async () => {

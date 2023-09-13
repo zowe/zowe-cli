@@ -37,7 +37,7 @@ describe("provisioning list instance-variables", () => {
 
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
         instanceID = instance["object-id"];
-        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+        // Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should display instance info(expects first instance in registry to have variables)", async () => {

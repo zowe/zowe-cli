@@ -71,10 +71,10 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(PRETEND_SESSION, COMMAND_PARAMS_FULL);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledWith(PRETEND_SESSION, EXPECTED_PATH_FULL, [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
@@ -94,10 +94,10 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(PRETEND_SESSION, COMMAND_PARAMS_FULL_PR);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledWith(PRETEND_SESSION, EXPECTED_PATH_FULL, [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
@@ -109,10 +109,10 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(undefined, COMMAND_PARAMS_FULL);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionMessage.message);
     });

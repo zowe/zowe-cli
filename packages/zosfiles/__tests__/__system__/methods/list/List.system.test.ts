@@ -36,12 +36,12 @@ describe("List command group", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`);
-        Imperative.console.info("Using dsname:" + dsname);
+        // Imperative.console.info("Using dsname:" + dsname);
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
         path = `${defaultSystem.unix.testdir}/${user}`;
         filename = "aTestUssFolder.txt";
-        Imperative.console.info("Using USS path:" + path + " and filename " + filename);
+        // Imperative.console.info("Using USS path:" + path + " and filename " + filename);
     });
 
     afterAll(async () => {
@@ -70,10 +70,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.allMembers(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -89,10 +89,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -111,10 +111,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.allMembers(REAL_SESSION, dsname, option);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -197,10 +197,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.dataSet(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -220,10 +220,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.dataSet(REAL_SESSION, dsname, option);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -244,10 +244,10 @@ describe("List command group", () => {
                 try {
                     response = await List.dataSet(REAL_SESSION, dsname, option);  // Get the volser
                     response = await List.dataSet(REAL_SESSION, dsname, { ...option, volume: response.apiResponse.items[0].volser });
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -305,7 +305,7 @@ describe("List command group", () => {
                     await delay(delayTime);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
@@ -314,10 +314,10 @@ describe("List command group", () => {
                 let response;
                 try {
                     response = await Delete.ussFile(REAL_SESSION, path, true);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
             });
 
@@ -327,10 +327,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.fileList(REAL_SESSION, path);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
 
                 expect(error).toBeFalsy();
@@ -350,10 +350,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.fileList(REAL_SESSION, path, {maxLength: 1});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
 
                 expect(error).toBeFalsy();
@@ -406,10 +406,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.fs(REAL_SESSION);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
 
                 expect(error).toBeFalsy();
@@ -427,10 +427,10 @@ describe("List command group", () => {
 
                 try {
                     response = await List.fs(REAL_SESSION, {maxLength: 1});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
 
                 expect(error).toBeFalsy();

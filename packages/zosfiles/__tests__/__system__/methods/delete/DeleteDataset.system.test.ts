@@ -46,7 +46,7 @@ describe("Delete Dataset", () => {
                 response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -56,10 +56,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, dsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -74,10 +74,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -94,10 +94,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -112,10 +112,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, nonExistDsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();

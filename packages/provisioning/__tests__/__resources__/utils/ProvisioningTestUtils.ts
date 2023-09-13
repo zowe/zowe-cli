@@ -78,17 +78,17 @@ export class ProvisioningTestUtils {
         let instance;
         try {
             instance = await ProvisionPublishedTemplate.provisionTemplate(session, zOSMFVersion, templateName);
-            Imperative.console.info(`Provisioned template: ${instance}`);
+            // Imperative.console.info(`Provisioned template: ${instance}`);
             const instanceID = instance["registry-info"]["object-id"];
             instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
             while(instance.state !== this.STATE_PROV) {
                 instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
-                Imperative.console.info(`Instance state: ${instance.state}`);
+                // Imperative.console.info(`Instance state: ${instance.state}`);
                 await this.sleep(this.SLEEP_TIME);
             }
             return instance;
         } catch (thrownError) {
-            Imperative.console.info(`Error ${thrownError}`);
+            // Imperative.console.info(`Error ${thrownError}`);
             throw thrownError;
         }
     }
@@ -114,7 +114,7 @@ export class ProvisioningTestUtils {
                 instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
                     instanceID, this.ACTION_DEPROV);
 
-                Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+                // Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
                 // Wait until instance state is 'deprovisioned'
                 instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_DEPROV);
 
@@ -125,7 +125,7 @@ export class ProvisioningTestUtils {
                 // Deprovision an instance in 'provisioned' state
                 instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
                     instanceID, this.ACTION_DEPROV);
-                Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+                // Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
 
                 // Wait until instance state is 'deprovisioned'
                 instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_DEPROV);
@@ -133,10 +133,10 @@ export class ProvisioningTestUtils {
 
             // Delete deprovisioned instance
             await DeleteInstance.deleteDeprovisionedInstance(session, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-            Imperative.console.info(`Instance ${instance["external-name"]} was removed`);
+            // Imperative.console.info(`Instance ${instance["external-name"]} was removed`);
 
         } catch (thrownError) {
-            Imperative.console.info(`Error ${thrownError}`);
+            // Imperative.console.info(`Error ${thrownError}`);
             throw thrownError;
         }
     }
@@ -152,7 +152,7 @@ export class ProvisioningTestUtils {
         instanceID: string, state: string) {
         let instance;
         try {
-            Imperative.console.info(`Waiting instance state to be "${state}"`);
+            // Imperative.console.info(`Waiting instance state to be "${state}"`);
             // Get the instance
             instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
             // Check if the instance state is equal to desired state
@@ -160,10 +160,10 @@ export class ProvisioningTestUtils {
                 instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
                 await this.sleep(this.SLEEP_TIME);
             }
-            Imperative.console.info(`${state} instance name: ${instance["external-name"]}`);
+            // Imperative.console.info(`${state} instance name: ${instance["external-name"]}`);
             return instance;
         } catch (thrownError) {
-            Imperative.console.info(`Error ${thrownError}`);
+            // Imperative.console.info(`Error ${thrownError}`);
             throw thrownError;
         }
     }

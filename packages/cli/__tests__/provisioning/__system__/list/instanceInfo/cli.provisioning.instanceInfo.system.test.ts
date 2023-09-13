@@ -42,7 +42,7 @@ describe("provisioning list instance-info", () => {
         );
         instanceID = instance["object-id"];
         instanceName = instance["external-name"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Provisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it(

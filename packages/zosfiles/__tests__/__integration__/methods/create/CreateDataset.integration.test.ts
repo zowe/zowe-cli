@@ -37,12 +37,12 @@ describe("Create Dataset", () => {
                 "Content-Type": "application/json"
             }
         }, (res) => {
-            Imperative.console.info("Response: " + res.statusCode + " " + res.statusMessage);
+            // Imperative.console.info("Response: " + res.statusCode + " " + res.statusMessage);
             done();
         });
 
         req.on("error", (e) => {
-            Imperative.console.info("Error: " + inspect(e));
+            // Imperative.console.info("Error: " + inspect(e));
             done();
         });
 

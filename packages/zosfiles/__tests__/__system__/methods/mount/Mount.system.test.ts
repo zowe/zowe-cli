@@ -70,7 +70,7 @@ describe("Mount and unmount a file system", () => {
             await Shell.executeSsh(thisSshSession, "mkdir " + mountPoint, jest.fn());
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         // Create a ZFS
@@ -84,7 +84,7 @@ describe("Mount and unmount a file system", () => {
             await Create.zfs(REAL_SESSION, fsname, zfsOptions);
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -101,7 +101,7 @@ describe("Mount and unmount a file system", () => {
         try {
             await Delete.zfs(REAL_SESSION, fsname);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         await TestEnvironment.cleanUp(testEnvironment);
 
@@ -109,7 +109,7 @@ describe("Mount and unmount a file system", () => {
         try {
             await Shell.executeSsh(thisSshSession, "rmdir " + mountPoint, jest.fn());
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -121,10 +121,10 @@ describe("Mount and unmount a file system", () => {
 
         try {
             response = await Mount.fs(REAL_SESSION, fsname, mountPoint, mountOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -134,10 +134,10 @@ describe("Mount and unmount a file system", () => {
 
         try{
             response = await List.fs(REAL_SESSION, {fsname});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -148,10 +148,10 @@ describe("Mount and unmount a file system", () => {
 
         try {
             response = await Unmount.fs(REAL_SESSION, fsname);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -161,10 +161,10 @@ describe("Mount and unmount a file system", () => {
 
         try{
             response = await List.fs(REAL_SESSION, {fsname});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeDefined();
@@ -181,10 +181,10 @@ describe("Mount and unmount a file system", () => {
 
         try {
             response = await Mount.fs(REAL_SESSION, fsname, mountPoint, mountOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -194,10 +194,10 @@ describe("Mount and unmount a file system", () => {
 
         try{
             response = await List.fs(REAL_SESSION, {fsname, responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -208,10 +208,10 @@ describe("Mount and unmount a file system", () => {
 
         try {
             response = await Unmount.fs(REAL_SESSION, fsname, {responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -221,10 +221,10 @@ describe("Mount and unmount a file system", () => {
 
         try{
             response = await List.fs(REAL_SESSION, {fsname, responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeDefined();

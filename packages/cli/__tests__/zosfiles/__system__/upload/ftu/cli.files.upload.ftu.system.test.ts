@@ -37,7 +37,7 @@ describe("Upload uss file", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
     });
 
     afterAll(async () => {

@@ -77,12 +77,12 @@ describe("StartCommand (system)", () => {
         try {
             START_PARAMS.account = ACCOUNT_NUMBER;
             response = await StartTso.startCommon(REAL_SESSION, START_PARAMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
             // stop successfully started address spaces
             StopTso.stop(REAL_SESSION, response.servletKey);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
@@ -95,10 +95,10 @@ describe("StartCommand (system)", () => {
 
         try {
             response = await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, START_PARAMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expectStartResponseSucceeded(response, error);
@@ -110,10 +110,10 @@ describe("StartCommand (system)", () => {
 
         try {
             response = await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, undefined);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expectStartResponseSucceeded(response, error);
@@ -125,10 +125,10 @@ describe("StartCommand (system)", () => {
 
         try {
             response = await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, BAD_START_PARMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectStartResponseSucceeded(response, error);
     });
@@ -139,10 +139,10 @@ describe("StartCommand (system)", () => {
 
         try {
             response = await StartTso.start(REAL_SESSION, undefined, START_PARAMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expectStartResponseFailed(response, error, noAccountNumber.message);
@@ -154,10 +154,10 @@ describe("StartCommand (system)", () => {
 
         try {
             response = await StartTso.start(REAL_SESSION, "", START_PARAMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expectStartResponseFailed(response, error, noAccountNumber.message);
@@ -169,10 +169,10 @@ describe("StartCommand (system)", () => {
 
         try {
             response = await StartTso.start(undefined, ACCOUNT_NUMBER, START_PARAMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expectStartResponseFailed(response, error, noSessionTso.message);

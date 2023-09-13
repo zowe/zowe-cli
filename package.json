@@ -115,7 +115,8 @@
       "packages/**/*.ts",
       "!**/__tests__/**",
       "!packages/**/doc/I*.ts",
-      "!**/main.ts"
+      "!**/main.ts",
+      "!packages/imperative/web-help/**"
     ],
     "collectCoverage": false,
     "coverageReporters": [

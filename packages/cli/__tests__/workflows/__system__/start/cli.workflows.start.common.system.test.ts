@@ -94,7 +94,7 @@ describe("Start workflow cli system tests", () => {
                 try {
                     await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
                 } catch (err) {
-                    Imperative.console.info(err);
+                    // Imperative.console.info(err);
                 }
             });
             it("Should start full workflow using wf key in zOSMF.", async () => {

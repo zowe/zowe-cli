@@ -76,10 +76,10 @@ describe("ListInstanceVariables listVariablesCommon", () => {
         let response: IProvisionedInstanceVariables;
         try {
             response = await ListInstanceVariables.listVariablesCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_RESOURCES_QUERY);
@@ -92,10 +92,10 @@ describe("ListInstanceVariables listVariablesCommon", () => {
         let response: IProvisionedInstanceVariables;
         try {
             response = await ListInstanceVariables.listVariablesCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -105,10 +105,10 @@ describe("ListInstanceVariables listVariablesCommon", () => {
         let response: IProvisionedInstanceVariables;
         try {
             response = await ListInstanceVariables.listVariablesCommon(PRETEND_SESSION, undefined, instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -118,10 +118,10 @@ describe("ListInstanceVariables listVariablesCommon", () => {
         let response: IProvisionedInstanceVariables;
         try {
             response = await ListInstanceVariables.listVariablesCommon(PRETEND_SESSION, "", instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -131,10 +131,10 @@ describe("ListInstanceVariables listVariablesCommon", () => {
         let response: IProvisionedInstanceVariables;
         try {
             response = await ListInstanceVariables.listVariablesCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
@@ -144,10 +144,10 @@ describe("ListInstanceVariables listVariablesCommon", () => {
         let response: IProvisionedInstanceVariables;
         try {
             response = await ListInstanceVariables.listVariablesCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });

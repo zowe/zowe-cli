@@ -62,7 +62,7 @@ describe("Delete File", () => {
                 response = await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -108,7 +108,7 @@ describe("Delete File", () => {
                 response = await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 

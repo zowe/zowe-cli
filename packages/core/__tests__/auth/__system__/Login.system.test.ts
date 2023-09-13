@@ -35,10 +35,10 @@ describe("Login system test", () => {
         try {
             response = await Login.apimlLogin(REAL_SESSION);
             REAL_SESSION.ISession.tokenValue = response;
-            Imperative.console.info(`Got token: ${response}`);
+            // Imperative.console.info(`Got token: ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();

@@ -43,7 +43,7 @@ describe("Check Status Api", () => {
                 response = await CheckStatus.getZosmfInfo(REAL_SESSION);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -61,7 +61,7 @@ describe("Check Status Api", () => {
                 response = await CheckStatus.getZosmfInfo(undefined);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -87,7 +87,7 @@ describe("Check Status Api", () => {
                 response = await CheckStatus.getZosmfInfo(badSession);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -113,7 +113,7 @@ describe("Check Status Api", () => {
                 response = await CheckStatus.getZosmfInfo(badSession);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();

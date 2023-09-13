@@ -32,7 +32,7 @@ describe("ListTemplateInfo (system)", () => {
             testName: "provisioning_list_template_info"
         });
         TEMPLATE_NAME = testEnvironment.systemTestProperties.provisioning.templateName;
-        Imperative.console.info(`Template name: ${TEMPLATE_NAME}`);
+        // Imperative.console.info(`Template name: ${TEMPLATE_NAME}`);
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
@@ -46,10 +46,10 @@ describe("ListTemplateInfo (system)", () => {
 
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, TEMPLATE_NAME);
-            Imperative.console.info(`Response ${response.name}`);
+            // Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response.name).toEqual(TEMPLATE_NAME);
@@ -61,10 +61,10 @@ describe("ListTemplateInfo (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListTemplateInfo.listTemplateCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, TEMPLATE_NAME);
-            Imperative.console.info(`Response ${response.name}`);
+            // Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -74,10 +74,10 @@ describe("ListTemplateInfo (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, undefined, TEMPLATE_NAME);
-            Imperative.console.info(`Response ${response.name}`);
+            // Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -87,10 +87,10 @@ describe("ListTemplateInfo (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, "", TEMPLATE_NAME);
-            Imperative.console.info(`Response ${response.name}`);
+            // Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -100,10 +100,10 @@ describe("ListTemplateInfo (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${response.name}`);
+            // Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
@@ -113,10 +113,10 @@ describe("ListTemplateInfo (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${response.name}`);
+            // Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
     });

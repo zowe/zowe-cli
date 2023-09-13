@@ -44,7 +44,7 @@ async function removeWorkflows() {
         const currentKey = allWorkflowKeys.pop();
         const query: string = `/zosmf/workflow/rest/1.0/archivedworkflows/${currentKey}`;
         const deleted = await ZosmfRestClient.deleteExpectString(session, query);
-        Imperative.console.info(JSON.stringify(deleted));
+        // Imperative.console.info(JSON.stringify(deleted));
     }
 }
 
@@ -92,7 +92,7 @@ describe("Missing session", () => {
             await ArchiveWorkflow.archiveWorkflowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             const expectedError: object = { msg: "Imperative API Error No session was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -102,7 +102,7 @@ describe("Missing session", () => {
             await ArchiveWorkflow.archiveWorkflowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             const expectedError: object = { msg: "Imperative API Error No session was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -112,7 +112,7 @@ describe("Missing session", () => {
             await ArchiveWorkflow.archiveWorkflowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             const expectedError: object = { msg: "Required parameter 'hostname' must be defined" };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -128,7 +128,7 @@ describe("Missing workflow key", () => {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             const expectedError: object = { msg: "Imperative API Error No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -138,7 +138,7 @@ describe("Missing workflow key", () => {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             const expectedError: object = { msg: "Imperative API Error No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -148,7 +148,7 @@ describe("Missing workflow key", () => {
             const response = await ArchiveWorkflow.archiveWorkflowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             const expectedError: object = { msg: "Imperative API Error No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -169,7 +169,7 @@ describe("Errors caused by the user interaction", () => {
             await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(JSON.stringify(error));
+            // Imperative.console.info(JSON.stringify(error));
             expect(error.mDetails.errorCode).toEqual(404);
             expect(error.message).toContain("IZUWF5001W");
             // https://www.ibm.com/docs/en/zos/2.5.0?topic=izuwf9999-izuwf5001w
@@ -188,7 +188,7 @@ describe("Errors caused by the user interaction", () => {
             await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
-            Imperative.console.info(error);
+            // Imperative.console.info(error);
             expect(error.mDetails.errorCode).toBe(409);
             expect(error.message).toContain("IZUWF0158E");
             // https://www.ibm.com/docs/en/zos/2.5.0?topic=izuwf9999-izuwf0158e

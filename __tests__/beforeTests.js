@@ -10,3 +10,18 @@
 */
 
 jest.setTimeout(200000);
+const __mockedLogger = {debug: jest.fn(), info: jest.fn(), error: jest.fn(), trace: jest.fn(), fatal: jest.fn()};
+const __imperativeLogger = {
+  Logger: {
+    getAppLogger: () => __mockedLogger,
+    getImperativeLogger: () => __mockedLogger,
+    getConsoleLogger: () => __mockedLogger,
+    initLogger: jest.fn()
+  },
+  LoggerConfigBuilder: {
+      getDefaultIConfigLogging: jest.fn(),
+      getDefaultFileName: jest.fn(),
+      addFileAppender: jest.fn()
+  }
+};
+jest.mock("@zowe/imperative/lib/logger", () => __imperativeLogger);

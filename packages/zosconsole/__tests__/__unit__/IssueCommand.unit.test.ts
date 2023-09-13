@@ -189,10 +189,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, CUSTOM_CONSOLE, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
@@ -205,10 +205,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(undefined, ConsoleConstants.RES_DEF_CN, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noSession.message);
@@ -219,10 +219,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, undefined, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, noConsoleName.message);
     });
@@ -232,10 +232,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, ConsoleConstants.RES_DEF_CN, undefined);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, noZosmfInput.message);
     });
@@ -249,10 +249,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, CUSTOM_CONSOLE, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, "Issue error message");
         expect(ZosmfRestClient.putExpectJSON as any).toHaveBeenCalledTimes(1);
@@ -274,10 +274,10 @@ describe("IssueCommand issueDefConsoleCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueDefConsoleCommon(PRETEND_SESSION, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(error).not.toBeDefined();
@@ -294,10 +294,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, undefined);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectConsoleResponseFailed(response, error, noConsoleInput.message);
     });
@@ -316,10 +316,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -341,10 +341,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -364,10 +364,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_CUSTOM_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -387,10 +387,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_CUSTOM_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -406,10 +406,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -432,10 +432,10 @@ describe("IssueCommand issueSimple", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueSimple(PRETEND_SESSION, COMMAND_NAME);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -468,10 +468,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);
@@ -504,10 +504,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);
@@ -536,10 +536,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);
@@ -568,10 +568,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);

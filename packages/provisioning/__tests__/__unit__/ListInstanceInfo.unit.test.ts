@@ -98,10 +98,10 @@ describe("ListInstanceInfo listInstanceCommon", () => {
         let response;
         try {
             response = await ListInstanceInfo.listInstanceCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, RESOURCES_QUERY);
@@ -116,10 +116,10 @@ describe("ListInstanceInfo listInstanceCommon", () => {
         let response;
         try {
             response = await ListInstanceInfo.listInstanceCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -129,10 +129,10 @@ describe("ListInstanceInfo listInstanceCommon", () => {
         let response;
         try {
             response = await ListInstanceInfo.listInstanceCommon(PRETEND_SESSION, undefined, instanceId);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -142,10 +142,10 @@ describe("ListInstanceInfo listInstanceCommon", () => {
         let response;
         try {
             response = await ListInstanceInfo.listInstanceCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
@@ -155,10 +155,10 @@ describe("ListInstanceInfo listInstanceCommon", () => {
         let response;
         try {
             response = await ListInstanceInfo.listInstanceCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });

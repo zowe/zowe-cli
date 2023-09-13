@@ -55,10 +55,10 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
         let response: any;
         try {
             response = await DeleteInstance.deleteDeprovisionedInstance(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, DELETE_RESOURCES_QUERY, [Headers.APPLICATION_JSON]);
@@ -71,10 +71,10 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
         let response: any;
         try {
             response = await DeleteInstance.deleteDeprovisionedInstance(undefined, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -84,10 +84,10 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
         let response: any;
         try {
             response = await DeleteInstance.deleteDeprovisionedInstance(PRETEND_SESSION, undefined, instanceId);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -97,10 +97,10 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
         let response: any;
         try {
             response = await DeleteInstance.deleteDeprovisionedInstance(PRETEND_SESSION, "", instanceId);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -110,10 +110,10 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
         let response: any;
         try {
             response = await DeleteInstance.deleteDeprovisionedInstance(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
@@ -123,10 +123,10 @@ describe("DeleteInstance deleteDeprovisionedInstance", () => {
         let response: any;
         try {
             response = await DeleteInstance.deleteDeprovisionedInstance(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });

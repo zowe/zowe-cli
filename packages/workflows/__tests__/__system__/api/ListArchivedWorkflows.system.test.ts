@@ -103,10 +103,10 @@ describe("List archived workflows", () => {
 
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -117,10 +117,10 @@ describe("List archived workflows", () => {
             let response: any;
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -129,10 +129,10 @@ describe("List archived workflows", () => {
             let response: any;
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

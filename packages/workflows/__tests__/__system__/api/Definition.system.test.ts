@@ -85,10 +85,10 @@ describe("Properties workflow", () => {
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion,
                     definitionFile, propertiesSteps, propertiesVariables);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -100,10 +100,10 @@ describe("Properties workflow", () => {
 
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, definitionFile, true, propertiesVariables);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -116,10 +116,10 @@ describe("Properties workflow", () => {
 
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, definitionFile, propertiesSteps, true);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -132,10 +132,10 @@ describe("Properties workflow", () => {
 
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, definitionFile, true, true);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -149,10 +149,10 @@ describe("Properties workflow", () => {
 
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, definitionFile, undefined, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -164,10 +164,10 @@ describe("Properties workflow", () => {
 
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, definitionFile, null, null);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -180,10 +180,10 @@ describe("Properties workflow", () => {
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, undefined, definitionFile,
                     propertiesSteps, propertiesVariables);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowDescription).toContain("Greeting workflow");
@@ -212,10 +212,10 @@ describe("Properties workflow", () => {
             let response: any;
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(undefined, wfVersion, definitionFile, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -224,10 +224,10 @@ describe("Properties workflow", () => {
             let response: any;
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, undefined, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowDefinitionFile.message);
         });
@@ -236,10 +236,10 @@ describe("Properties workflow", () => {
             let response: any;
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, wfVersion, "", propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowDefinitionFile.message);
         });
@@ -248,10 +248,10 @@ describe("Properties workflow", () => {
             let response: any;
             try {
                 response = await DefinitionWorkflow.getWorkflowDefinition(REAL_SESSION, "", definitionFile, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

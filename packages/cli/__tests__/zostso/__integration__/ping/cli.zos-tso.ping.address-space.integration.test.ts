@@ -34,7 +34,7 @@ describe("zos-tso ping address-space", () => {
 
     it("should display the help", async () => {
         const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_help.sh", TEST_ENVIRONMENT);
-        Imperative.console.info(inspect(response));
+        // Imperative.console.info(inspect(response));
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();

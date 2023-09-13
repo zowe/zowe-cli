@@ -47,7 +47,7 @@ describe("Migrate Dataset", () => {
                 Delete.dataSet(REAL_SESSION, dataSet2),
                 Delete.dataSet(REAL_SESSION, dataSet3)]);
         } catch (err) {
-            Imperative.console.info(`Error: ${inspect(err)}`);
+            // Imperative.console.info(`Error: ${inspect(err)}`);
         }
     });
     describe("Success Scenarios", () => {
@@ -56,7 +56,7 @@ describe("Migrate Dataset", () => {
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("should migrate a sequential data set", async () => {
@@ -67,10 +67,10 @@ describe("Migrate Dataset", () => {
                 try {
                     migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
-                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                    // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -88,10 +88,10 @@ describe("Migrate Dataset", () => {
                 try {
                     migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, {responseTimeout: 5});
                     listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
-                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                    // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -110,10 +110,10 @@ describe("Migrate Dataset", () => {
                 try {
                     migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, migrateOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
-                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                    // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -129,7 +129,7 @@ describe("Migrate Dataset", () => {
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSet2);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("should migrate a partitioned dataset", async () => {
@@ -140,10 +140,10 @@ describe("Migrate Dataset", () => {
                 try {
                     migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
-                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                    // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -161,10 +161,10 @@ describe("Migrate Dataset", () => {
                 try {
                     migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, {responseTimeout: 5});
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
-                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                    // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -183,10 +183,10 @@ describe("Migrate Dataset", () => {
                 try {
                     migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, migrateOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
-                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                    // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -203,7 +203,7 @@ describe("Migrate Dataset", () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet3);
             } catch (err) {
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
         it("should throw an error if data set name is undefined", async () => {
@@ -212,10 +212,10 @@ describe("Migrate Dataset", () => {
 
             try {
                 migrateResponse = await HMigrate.dataSet(REAL_SESSION, undefined);
-                Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
             } catch (err) {
                 error = err;
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
 
             expect(error).toBeTruthy();
@@ -229,10 +229,10 @@ describe("Migrate Dataset", () => {
 
             try {
                 migrateResponse = await HMigrate.dataSet(REAL_SESSION, "");
-                Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                // Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
             } catch (err) {
                 error = err;
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
 
             expect(error).toBeTruthy();

@@ -43,7 +43,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(REAL_SESSION);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -61,7 +61,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(undefined);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -87,7 +87,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(badSession);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -113,7 +113,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(badSession);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();

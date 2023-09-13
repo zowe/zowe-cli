@@ -92,7 +92,7 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 describe("ListTemplateInfo getResourcesQuery", () => {
     it("should successfully generate a query from provided parameters", () => {
         const resourcesQuery = ListTemplateInfo.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, templateName);
-        Imperative.console.info(`Generated query: ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query: ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(RESOURCES_QUERY);
     });
@@ -112,10 +112,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, RESOURCES_QUERY);
@@ -129,10 +129,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, templateName);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -142,10 +142,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, undefined, templateName);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -155,10 +155,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
@@ -168,10 +168,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noTemplateName.message);
     });

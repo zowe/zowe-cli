@@ -58,10 +58,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
@@ -79,10 +79,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey, null, null, null, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
@@ -100,10 +100,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey, conflict, step, subsequet);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             const data: IStartWorkflow = {
                 resolveConflictByUsing: conflict,
@@ -123,10 +123,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(undefined, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -135,10 +135,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(PRETEND_SESSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -147,10 +147,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(PRETEND_SESSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -159,10 +159,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey, null, null, null,"");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

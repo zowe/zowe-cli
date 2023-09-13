@@ -35,12 +35,12 @@ describe("Get", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
-        Imperative.console.info("Using dsname:" + dsname);
+        // Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
         ussname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
     });
 
     afterAll(async () => {

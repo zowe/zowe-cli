@@ -13,7 +13,7 @@ jest.mock("../../../../../../zostso/lib/StartTso");
 
 import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { CliUtils, CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/start/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/start/address-space/AddressSpace.definition";
 
@@ -116,6 +116,7 @@ describe("start address-space handler tests", () => {
     });
 
     it("should be able respond with error message, if required z/OSMF parameters were not passed", async () => {
+        (CliUtils.sleep as any) = jest.fn();
         const handler = new AddressSpaceHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.user = "FakeUser";

@@ -45,7 +45,7 @@ describe("provisioning provision template", () => {
 
         // Get instanceID later delete that instance
         instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
-        Imperative.console.info(`Instance ID: ${instanceID}`);
+        // Imperative.console.info(`Instance ID: ${instanceID}`);
         // Delete the provisioned instance
         await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
 
@@ -79,7 +79,7 @@ describe("provisioning provision template", () => {
 
             // Get instanceID later delete that instance
             instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
-            Imperative.console.info(`Instance ID: ${instanceID}`);
+            // Imperative.console.info(`Instance ID: ${instanceID}`);
             // Delete the provisioned instance
             await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
 

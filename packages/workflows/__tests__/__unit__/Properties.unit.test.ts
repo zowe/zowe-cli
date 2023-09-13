@@ -651,10 +651,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [HEAD]);
@@ -676,10 +676,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, true, true);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY_ALL_PARMS,
@@ -702,10 +702,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, true, false);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY_STEPS,
@@ -728,10 +728,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, false, true);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY_VARIABLES,
@@ -754,10 +754,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, undefined, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [HEAD]);
@@ -779,10 +779,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, undefined, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [HEAD]);
@@ -804,10 +804,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, null, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [HEAD]);
@@ -829,10 +829,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, propertiesSteps, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [HEAD]);
@@ -854,10 +854,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, wfVersion, null, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [HEAD]);
@@ -870,10 +870,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.processStepSummaries(STEP_WITH_SUBSTEPS);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
 
             expectZosmfResponseSucceeded(response, error);
@@ -887,10 +887,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(undefined, wfKey, wfVersion, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -900,10 +900,10 @@ describe("Get workflow properties", () => {
             try {
                 response = await PropertiesWorkflow.
                     getWorkflowProperties(PRETEND_SESSION, undefined, wfVersion, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -912,10 +912,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, "", wfVersion, propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -924,10 +924,10 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.getWorkflowProperties(PRETEND_SESSION, wfKey, "", propertiesSteps, propertiesVariables);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

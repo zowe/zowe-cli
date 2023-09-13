@@ -57,7 +57,7 @@ describe("Delete a z/OS File System", () => {
                 response = await Create.zfs(REAL_SESSION, fsname, createOptions);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -67,10 +67,10 @@ describe("Delete a z/OS File System", () => {
 
             try {
                 response = await Delete.zfs(REAL_SESSION, fsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeUndefined();
@@ -85,10 +85,10 @@ describe("Delete a z/OS File System", () => {
 
             try {
                 response = await Delete.zfs(REAL_SESSION, fsname, {responseTimeout: 5});
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeUndefined();
@@ -105,10 +105,10 @@ describe("Delete a z/OS File System", () => {
 
             try {
                 response = await Delete.zfs(REAL_SESSION, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -123,10 +123,10 @@ describe("Delete a z/OS File System", () => {
 
             try {
                 response = await Delete.zfs(REAL_SESSION, nonExistZfs);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(error).toBeDefined();
             expect(response).toBeUndefined();

@@ -58,7 +58,7 @@ describe("Delete migrated Dataset", () => {
                 Delete.dataSet(REAL_SESSION, dataSetName2),
                 Delete.dataSet(REAL_SESSION, dataSetName3)]);
         } catch (err) {
-            Imperative.console.info(`Error: ${inspect(err)}`);
+            // Imperative.console.info(`Error: ${inspect(err)}`);
         }
     });
 
@@ -69,7 +69,7 @@ describe("Delete migrated Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
                     await HMigrate.dataSet(REAL_SESSION, dataSetName1);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should delete a migrated data set", async () => {
@@ -105,7 +105,7 @@ describe("Delete migrated Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
                     await HMigrate.dataSet(REAL_SESSION, dataSetName2);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should delete a migrated data set", async () => {
@@ -143,7 +143,7 @@ describe("Delete migrated Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
                     await HMigrate.dataSet(REAL_SESSION, dataSetName3);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should throw an error if a missing data set name is selected", async () => {

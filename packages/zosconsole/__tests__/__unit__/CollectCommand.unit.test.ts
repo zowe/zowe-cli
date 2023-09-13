@@ -112,10 +112,10 @@ describe("CollectCommand collectCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, CUSTOM_CONSOLE, COMMAND_RESPONSE_KEY);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseSucceeded(response, error);
@@ -140,10 +140,10 @@ describe("CollectCommand collectCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await CollectCommand.collectCommon(undefined, CUSTOM_CONSOLE, COMMAND_RESPONSE_KEY);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noSession.message);
@@ -157,7 +157,7 @@ describe("CollectCommand collectCommon", () => {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, undefined, COMMAND_RESPONSE_KEY);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noConsoleName.message);
@@ -170,7 +170,7 @@ describe("CollectCommand collectCommon", () => {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, "console", undefined);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noCommandKey.message);
@@ -187,7 +187,7 @@ describe("CollectCommand collectCommon", () => {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, "console", COMMAND_RESPONSE_KEY);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, "Collect error message");
     });
@@ -208,10 +208,10 @@ describe("CollectCommand collectDefConsoleCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await CollectCommand.collectDefConsoleCommon(PRETEND_SESSION, COMMAND_RESPONSE_KEY);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseSucceeded(response, error);
@@ -237,10 +237,10 @@ describe("CollectCommand collect", () => {
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_CUST_CONSOLE_COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectConsoleResponseSucceeded(response, error);
@@ -263,10 +263,10 @@ describe("CollectCommand collect", () => {
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectConsoleResponseSucceeded(response, error);
@@ -293,10 +293,10 @@ describe("CollectCommand collect", () => {
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_COLLECT_FOLLOWUP2_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectConsoleResponseSucceeded(response, error);
@@ -315,10 +315,10 @@ describe("CollectCommand collect", () => {
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(error).not.toBeDefined();

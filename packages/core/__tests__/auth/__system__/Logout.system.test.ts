@@ -36,10 +36,10 @@ describe("Logout system test", () => {
                 throw new ImperativeError({msg: "Unable to retrieve token for test."});
             }
             REAL_SESSION.ISession.tokenValue = token;
-            Imperative.console.info(`Got token: ${token}`);
+            // Imperative.console.info(`Got token: ${token}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
             throw thrownError;
         }
     });
@@ -60,7 +60,7 @@ describe("Logout system test", () => {
             await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expect(client.response.statusCode).toEqual(200);
@@ -76,7 +76,7 @@ describe("Logout system test", () => {
             await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expect(client.response.statusCode).toEqual(401);

@@ -73,10 +73,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(PRETEND_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCES,
@@ -95,10 +95,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(PRETEND_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCES,
@@ -111,10 +111,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(PRETEND_SESSION, null);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noPingInput.message);
     });

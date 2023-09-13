@@ -56,13 +56,13 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     templateName, ACCOUNT_NUMBER);
                 instanceID = response["registry-info"]["object-id"];
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
                 OBJECT_URI_RESPONSE = OBJECT_URI + instanceID;
                 // Delete the provisioned instance
                 await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response["registry-info"]["object-uri"]).toEqual(OBJECT_URI_RESPONSE);
@@ -74,10 +74,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(undefined, ProvisioningConstants.ZOSMF_VERSION,
                     templateName, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
         });
@@ -88,10 +88,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, undefined,
                     templateName, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
@@ -102,10 +102,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, "",
                     templateName, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
@@ -116,10 +116,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     undefined, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
@@ -130,10 +130,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     "", null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
@@ -144,10 +144,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     templateName, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noAccountInfo.message);
         });
@@ -158,10 +158,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     templateName, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noAccountInfo.message);
         });
@@ -178,10 +178,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             let error: ImperativeError;
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplate(undefined, ProvisioningConstants.ZOSMF_VERSION, templateName);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
         });
@@ -191,10 +191,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             let error: ImperativeError;
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplate(REAL_SESSION, undefined, templateName);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
@@ -204,10 +204,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             let error: ImperativeError;
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplate(REAL_SESSION, "", templateName);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
@@ -217,10 +217,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             let error: ImperativeError;
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplate(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
@@ -230,10 +230,10 @@ describe("ProvisionPublishedTemplate (system)", () => {
             let error: ImperativeError;
             try {
                 response = await ProvisionPublishedTemplate.provisionTemplate(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
@@ -247,13 +247,13 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 response = await ProvisionPublishedTemplate.provisionTemplate(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     templateName, null);
                 instanceID = response["registry-info"]["object-id"];
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
                 OBJECT_URI_RESPONSE = OBJECT_URI + instanceID;
                 // Delete the provisioned instance
                 await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response["registry-info"]["object-uri"]).toEqual(OBJECT_URI_RESPONSE);

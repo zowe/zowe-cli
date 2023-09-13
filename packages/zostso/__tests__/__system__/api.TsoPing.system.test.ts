@@ -69,10 +69,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(REAL_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response.success).toEqual(true);
@@ -82,10 +82,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(REAL_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response.success).toEqual(true);
@@ -96,10 +96,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(REAL_SESSION, null);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noPingInput.message);
     });

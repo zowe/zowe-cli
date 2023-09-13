@@ -62,13 +62,13 @@ describe("Delete Directory", () => {
                 response = await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             try {
                 response = await Create.uss(REAL_SESSION, `${ussname}/appendFile.txt`, "directory");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -114,7 +114,7 @@ describe("Delete Directory", () => {
                 response = await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 

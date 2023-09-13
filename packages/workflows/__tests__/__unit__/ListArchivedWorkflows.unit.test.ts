@@ -68,10 +68,10 @@ describe("List archived workflows", () => {
         let response: any;
         try {
             response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [Headers.APPLICATION_JSON]);
@@ -85,10 +85,10 @@ describe("List archived workflows", () => {
             let response: any;
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });

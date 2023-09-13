@@ -53,7 +53,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 describe("PerformAction getResourcesQuery", () => {
     it("should successfully build resources query from passed parameters", () => {
         const resourcesQuery: string = PerformAction.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, instanceId, actionName);
-        Imperative.console.info(`Generated query ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(RESOURCES_QUERY);
     });
@@ -74,10 +74,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId, actionName);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, RESOURCES_QUERY, [Headers.APPLICATION_JSON]);
@@ -90,10 +90,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, instanceId, actionName);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -103,10 +103,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, undefined, instanceId, actionName);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -116,10 +116,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, "", instanceId, actionName);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -129,10 +129,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined, actionName);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
@@ -142,10 +142,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "", actionName);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
@@ -155,10 +155,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId, undefined);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noActionName.message);
     });
@@ -168,10 +168,10 @@ describe("PerformAction doProvisioningActionCommon", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId, "");
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noActionName.message);
     });
