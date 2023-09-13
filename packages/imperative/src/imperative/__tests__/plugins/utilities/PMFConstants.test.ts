@@ -57,11 +57,11 @@ describe("PMFConstants", () => {
         const platform = process.platform;
 
         afterEach(() => {
-            process.platform = platform;
+            (process.platform as any) = platform;
         });
 
         it("should point to the correct module location (win32)", () => {
-            process.platform = "win32";
+            (process.platform as any) = "win32";
 
             const pmf = PMFConstants.instance;
 
@@ -69,7 +69,7 @@ describe("PMFConstants", () => {
         });
 
         it("should point to the correct module location (linux)", () => {
-            process.platform = "linux";
+            (process.platform as any) = "linux";
 
             const pmf = PMFConstants.instance;
 

@@ -33,7 +33,7 @@ describe("Invoke AMS statements handler", () => {
 
         beforeEach(() => {
             // Mock the submit JCL function
-            Invoke.ams = jest.fn((session) => {
+            Invoke.ams = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

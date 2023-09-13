@@ -45,7 +45,7 @@ describe("list catalog templates handler tests", () => {
             (session, zOSMFVersion) => {
                 return ProvisioningListMocks.LIST_CATALOG_TEMPLATES_RESPONSE;
             }
-        );
+        ) as any;
         const handler = new Handler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         await handler.process(params);

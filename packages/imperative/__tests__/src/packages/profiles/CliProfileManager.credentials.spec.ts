@@ -31,7 +31,7 @@ describe("Cli Profile Manager", () => {
 
     ProfileIO.exists = jest.fn((profilePath: string) => {
         return profilePath.indexOf("meta") === -1 ? profilePath : undefined;
-    });
+    }) as any;
 
     ProfileIO.readMetaFile = jest.fn((fullFilePath: string) => {
         return {
@@ -51,7 +51,7 @@ describe("Cli Profile Manager", () => {
                 }
             }
         };
-    });
+    }) as any;
     afterEach(() => {
         writtenProfile = undefined; // clear any saved profile to not pollute results across tests
     });
@@ -59,7 +59,7 @@ describe("Cli Profile Manager", () => {
     describe("Default Credential Management", () => {
         const cliBin = path.join(__dirname, "test_cli/TestCLI.ts");
         const config: IImperativeConfig = require(path.join(__dirname, "test_cli/TestConfiguration"));
-        const homeDir: string = config.defaultHome;
+        const homeDir: string = config.defaultHome as any;
 
         const testProfileName = "username-password";
         const username: string = "username";
@@ -310,7 +310,7 @@ describe("Cli Profile Manager", () => {
     describe("Custom Credential Management (Absolute String)", () => {
         const cliBin = path.join(__dirname, "test_cli/TestCustomCredString.ts");
         const config: IImperativeConfig = require(path.join(__dirname, "test_cli/TestCustomCredStringConfiguration"));
-        const homeDir: string = config.defaultHome;
+        const homeDir: string = config.defaultHome as any;
 
         const testProfileName = "username-password";
         const username: string = "username";
@@ -337,7 +337,7 @@ describe("Cli Profile Manager", () => {
     describe("Custom Credential Management (Class)", () => {
         const cliBin = path.join(__dirname, "test_cli/TestCustomCredClass.ts");
         const config: IImperativeConfig = require(path.join(__dirname, "test_cli/TestCustomCredClassConfiguration"));
-        const homeDir: string = config.defaultHome;
+        const homeDir: string = config.defaultHome as any;
 
         const testProfileName = "username-password";
         const username: string = "username";

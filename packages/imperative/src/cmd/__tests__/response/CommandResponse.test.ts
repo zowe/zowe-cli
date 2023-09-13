@@ -200,10 +200,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({responseFormat: "default"});
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             stdoutMsg += data;
         });
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             stderrMsg += data;
         });
         const task = {
@@ -331,7 +331,7 @@ describe("Command Response", () => {
     it("should write to stdout (with newline) and buffer to the response object", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "hello from the tests";
@@ -345,7 +345,7 @@ describe("Command Response", () => {
     it("should write to stderr (with newline) and buffer to the response object", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "hello from the tests";
@@ -360,10 +360,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             stdoutMsg += data;
         });
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             stderrMsg += data;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
@@ -382,7 +382,7 @@ describe("Command Response", () => {
     it("should write data to stdout (no newline) and buffer to the response object", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "hello from the tests";
@@ -396,7 +396,7 @@ describe("Command Response", () => {
     it("should write data to stderr (no newline) and buffer to the response object", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "hello from the tests";
@@ -410,7 +410,7 @@ describe("Command Response", () => {
     it("should write error header messages to stderr and invoke chalk to colorize in red", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             messages += data;
         });
         chalk.red = jest.fn((message) => {
@@ -428,7 +428,7 @@ describe("Command Response", () => {
     it("should not write to stdout (but still buffer) if silent mode is enabled", () => {
         let messages: string = "";
         const response = new CommandResponse({ silent: true });
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "hello from the tests";
@@ -443,7 +443,7 @@ describe("Command Response", () => {
     it("should not write to stderr (but still buffer) if silent mode is enabled", () => {
         let messages: string = "";
         const response = new CommandResponse({ silent: true });
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "hello from the tests";
@@ -458,7 +458,7 @@ describe("Command Response", () => {
     it("should not write an error header to stderr (but still buffer) if silent mode is enabled", () => {
         let messages: string = "";
         const response = new CommandResponse({ silent: true });
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             messages += data;
         });
         chalk.red = jest.fn((message) => {
@@ -478,10 +478,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({ silent: true });
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             stdoutMsg += data;
         });
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             stderrMsg += data;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
@@ -502,7 +502,7 @@ describe("Command Response", () => {
     it("should format messages when using a format string to stdout", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const format: string = "hello %s";
@@ -517,7 +517,7 @@ describe("Command Response", () => {
     it("should format messages when using a format string to stderr", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stderr.write = jest.fn((data) => {
+        (process.stderr.write as any) = jest.fn((data) => {
             messages += data;
         });
         const format: string = "hello %s";
@@ -532,7 +532,7 @@ describe("Command Response", () => {
     it("should allow us to set a JSON message", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "JSON object message";
@@ -546,7 +546,7 @@ describe("Command Response", () => {
     it("should allow us to set an exit code", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const exitCode = 143;
@@ -559,7 +559,7 @@ describe("Command Response", () => {
     it("should overwrite the message if set multiple times", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const firstMsg: string = "The First Message";
@@ -575,7 +575,7 @@ describe("Command Response", () => {
     it("should allow us to set the data object in the response as a string", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const testData: string = "test data";
@@ -589,7 +589,7 @@ describe("Command Response", () => {
     it("should allow us to set the data object in the response as an object", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const testData: any = { theData: "test data" };
@@ -603,7 +603,7 @@ describe("Command Response", () => {
     it("should allow us to set the data object in the response as an array", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const testData: any = [{ theData: "test data" }];
@@ -617,7 +617,7 @@ describe("Command Response", () => {
     it("should allow us to merge the data object in the response as an array", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((stdoutData) => {
+        (process.stdout.write  as any) = jest.fn((stdoutData) => {
             messages += stdoutData;
         });
         const data: any = { theData: "test data" };
@@ -637,7 +637,7 @@ describe("Command Response", () => {
     it("should overwrite the first object if set obj is called again", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const data1: any = { theData: "test data 1" };
@@ -653,7 +653,7 @@ describe("Command Response", () => {
     it("should allow us to set the message and the data", () => {
         let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             messages += data;
         });
         const msg: string = "The JSON message";
@@ -671,10 +671,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
+        (process.stdout.write  as any) = jest.fn((data) => {
             stdoutMsg += data;
         });
-        process.stderr.write = jest.fn((stderrData) => {
+        (process.stderr.write as any) = jest.fn((stderrData) => {
             stderrMsg += stderrData;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
@@ -710,10 +710,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({ responseFormat: "json" });
-        process.stdout.write = jest.fn((stdoutData) => {
+        (process.stdout.write  as any) = jest.fn((stdoutData) => {
             stdoutMsg += stdoutData;
         });
-        process.stderr.write = jest.fn((stderrData) => {
+        (process.stderr.write as any) = jest.fn((stderrData) => {
             stderrMsg += stderrData;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
@@ -750,10 +750,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({ silent: true });
-        process.stdout.write = jest.fn((stdoutData) => {
+        (process.stdout.write  as any) = jest.fn((stdoutData) => {
             stdoutMsg += stdoutData;
         });
-        process.stderr.write = jest.fn((stderrData) => {
+        (process.stderr.write as any) = jest.fn((stderrData) => {
             stderrMsg += stderrData;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
@@ -790,7 +790,7 @@ describe("Command Response", () => {
         describe("error checking", () => {
             it("should detect missing parameters", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -809,7 +809,7 @@ describe("Command Response", () => {
 
             it("should detect missing output data", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -828,7 +828,7 @@ describe("Command Response", () => {
 
             it("should detect missing format", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -847,7 +847,7 @@ describe("Command Response", () => {
 
             it("should not allow a string to be formatted as a table", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -866,7 +866,7 @@ describe("Command Response", () => {
 
             it("should not allow a string to be formatted as an object", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -885,7 +885,7 @@ describe("Command Response", () => {
 
             it("should not allow a string to be formatted as a list", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -904,7 +904,7 @@ describe("Command Response", () => {
 
             it("should not allow a boolean to be formatted as a table", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -923,7 +923,7 @@ describe("Command Response", () => {
 
             it("should not allow a boolean to be formatted as an object", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -942,7 +942,7 @@ describe("Command Response", () => {
 
             it("should not allow a boolean to be formatted as a list", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -961,7 +961,7 @@ describe("Command Response", () => {
 
             it("should not allow an object to be formatted as a list", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -980,7 +980,7 @@ describe("Command Response", () => {
 
             it("should handle a circular reference and throw an error", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1002,7 +1002,7 @@ describe("Command Response", () => {
 
             it("should handle an invalid format type and throw an error", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1023,7 +1023,7 @@ describe("Command Response", () => {
 
             it("should give the extraction field name if data extraction changed the type", () => {
                 let messages: string = "";
-                process.stderr.write = jest.fn((data) => {
+                (process.stderr.write as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1045,7 +1045,7 @@ describe("Command Response", () => {
 
             it("should allow extraction of multiple nested properties and keep the property structure", () => {
                 let messages: string = "";
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1064,7 +1064,7 @@ describe("Command Response", () => {
 
             it("should allow extraction of multiple nested properties and consolidate for a table", () => {
                 let messages: string = "";
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1084,7 +1084,7 @@ describe("Command Response", () => {
 
             it("should not attempt filtering on a string", () => {
                 let messages: string = "";
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1096,7 +1096,7 @@ describe("Command Response", () => {
 
             it("should not attempt filtering on a boolean", () => {
                 let messages: string = "";
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 const response = new CommandResponse();
@@ -1109,7 +1109,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and format a table", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1124,7 +1124,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and format a table with a single column", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1141,7 +1141,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and format a stringified list", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1156,7 +1156,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and format a string", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1171,7 +1171,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and format a list of prettified objects", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1186,7 +1186,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and format a table with a header", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1202,7 +1202,7 @@ describe("Command Response", () => {
             it("should accept a JSON object and format a table with a header", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1218,7 +1218,7 @@ describe("Command Response", () => {
             it("should accept a JSON object and format a table", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1233,7 +1233,7 @@ describe("Command Response", () => {
             it("should accept a JSON object and prettify", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1248,7 +1248,7 @@ describe("Command Response", () => {
             it("should accept a JSON object and stringify", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1263,7 +1263,7 @@ describe("Command Response", () => {
             it("should accept an array of strings and stringify", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1278,7 +1278,7 @@ describe("Command Response", () => {
             it("should accept an array of strings and format a list", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1293,7 +1293,7 @@ describe("Command Response", () => {
             it("should accept a string and format a string", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1308,7 +1308,7 @@ describe("Command Response", () => {
             it("should accept a boolean and format a string", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1323,7 +1323,7 @@ describe("Command Response", () => {
             it("should accept a number and format a string", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1338,7 +1338,7 @@ describe("Command Response", () => {
             it("should accept an array of booleans and format a list", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1353,7 +1353,7 @@ describe("Command Response", () => {
             it("should accept an array of numbers and format a list", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1368,7 +1368,7 @@ describe("Command Response", () => {
             it("should accept an array of numbers and format a string", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1383,7 +1383,7 @@ describe("Command Response", () => {
             it("should accept an array of objects and allow filtering for string output", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1400,7 +1400,7 @@ describe("Command Response", () => {
             it("should accept an array of objects and allow filtering for list output", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1417,7 +1417,7 @@ describe("Command Response", () => {
             it("should accept an array of objects and allow filtering for object output", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1434,7 +1434,7 @@ describe("Command Response", () => {
             it("should accept an array of objects and allow filtering for table output", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1452,7 +1452,7 @@ describe("Command Response", () => {
             it("should accept a JSON object and allow filtering to a single property", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1469,7 +1469,7 @@ describe("Command Response", () => {
             it("should accept a JSON object and allow filtering", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1486,7 +1486,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON object and allow filtering to a single field and format a string", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1503,7 +1503,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON object and allow filtering to a single field and format an object", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1520,7 +1520,7 @@ describe("Command Response", () => {
             it("should accept an array of booleans and a filter and format a string of an array of nulls", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1537,7 +1537,7 @@ describe("Command Response", () => {
             it("should accept a JSON object, filter to a single field (which is an array), and change to output a list", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1554,7 +1554,7 @@ describe("Command Response", () => {
             it("should accept a JSON object, filter to a single field (which is an object), and change to output an object", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1571,7 +1571,7 @@ describe("Command Response", () => {
             it("should accept an array of JSON objects and allow filtering to a single property list", () => {
                 let messages: string = "";
                 const response = new CommandResponse();
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1600,7 +1600,7 @@ describe("Command Response", () => {
                         responseFormatHeader: true
                     }
                 });
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1628,7 +1628,7 @@ describe("Command Response", () => {
                         responseFormatFilter: ["name", "details", "colors"]
                     }
                 });
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({
@@ -1657,7 +1657,7 @@ describe("Command Response", () => {
                         responseFormatType: "object"
                     }
                 });
-                process.stdout.write = jest.fn((data) => {
+                (process.stdout.write  as any) = jest.fn((data) => {
                     messages += data;
                 });
                 response.format.output({

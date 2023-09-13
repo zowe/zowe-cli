@@ -43,7 +43,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -52,11 +52,11 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -82,11 +82,11 @@ describe("stop address-space handler tests", () => {
     it("should be able to stop address-space", async () => {
         StopTso.stop = jest.fn((session, servletKey) => {
             return StopTsoData.SAMPLE_STOP_RESPONSE;
-        });
+        }) as any;
         const handler = new AddressSpaceHandler.default();
         let  params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        params = {...params,...args} as any;
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         await handler.process(params);
         expect(StopTso.stop).toHaveBeenCalledTimes(1);
@@ -102,7 +102,7 @@ describe("stop address-space handler tests", () => {
         const handler = new AddressSpaceHandler.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        params = {...params,...args} as any;
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         try {
             await handler.process(params);

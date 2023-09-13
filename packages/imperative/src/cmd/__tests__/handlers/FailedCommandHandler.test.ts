@@ -31,10 +31,10 @@ describe("Failed Command Handler", () => {
             await handler.process({
                 response: cmdResp,
                 arguments: {$0: undefined, _: undefined, failureMessage: "We failed and we're sorry.", error: new Error("What a failure!")},
-                definition: MULTIPLE_GROUPS.children[0].children[0],
+                definition: MULTIPLE_GROUPS.children?.[0].children?.[0],
                 fullDefinition: MULTIPLE_GROUPS,
                 profiles: undefined
-            });
+            } as any);
         } catch (e) {
             TestLogger.info("Error Thrown:\n" + inspect(e));
             TestLogger.info("Command Response:\n" + inspect(cmdResp.buildJsonResponse()));
@@ -56,10 +56,10 @@ describe("Failed Command Handler", () => {
             await handler.process({
                 response: cmdResp,
                 arguments: {$0: undefined, _: undefined, failureMessage: "We failed syntax and we're sorry.", error: new Error("What a failure!")},
-                definition: MULTIPLE_GROUPS.children[0].children[0],
+                definition: MULTIPLE_GROUPS.children?.[0].children?.[0],
                 fullDefinition: MULTIPLE_GROUPS,
                 profiles: undefined
-            });
+            } as any);
         } catch (e) {
             TestLogger.info("Error Thrown:\n" + inspect(e));
             TestLogger.info("Command Response:\n" + inspect(cmdResp.buildJsonResponse()));

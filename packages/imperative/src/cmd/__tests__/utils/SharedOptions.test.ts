@@ -10,7 +10,6 @@
 */
 
 // jest.mock("process");
-import { Arguments } from "yargs";
 import { SharedOptions } from "../../src/utils/SharedOptions";
 import { Constants } from "../../../constants/src/Constants";
 
@@ -25,19 +24,19 @@ describe("Shared Options", () => {
 
     it("should not perform any reads if the arguments do not indicate to read from stdin", async () => {
         const response = new CommandResponse({silent: true});
-        const args: Arguments = {_: undefined, $0: undefined};
+        const args: any = {_: undefined, $0: undefined};
         await SharedOptions.readStdinIfRequested(args, response, "command");
         expect(args[Constants.STDIN_CONTENT_KEY]).toBeUndefined();
     });
 
     it("should be able to return stdin as part of the arguments", async () => {
         const response = new CommandResponse({silent: true});
-        const stream = new Socket();
+        const stream: any = new Socket();
         const interval = setInterval(() => {
             stream.emit("data", Buffer.from("tasty"));
             stream.emit("end");
         }, intervalNum);
-        const args = {_: undefined, $0: undefined, stdin: true};
+        const args: any = {_: undefined, $0: undefined, stdin: true};
         await SharedOptions.readStdinIfRequested(args, response, "command", stream);
         clearInterval(interval);
         stream.removeAllListeners("on");
@@ -49,9 +48,8 @@ describe("Shared Options", () => {
 
     it("should not read stdin if the type is not command", async () => {
         const response = new CommandResponse({silent: true});
-        const message: string[] = [];
-        const stream = new Socket();
-        const args = {_: undefined, $0: undefined, stdin: true};
+        const stream: any = new Socket();
+        const args: any = {_: undefined, $0: undefined, stdin: true};
         const stdinWasRead = await SharedOptions.readStdinIfRequested(args, response, "group", stream);
         stream.removeAllListeners("on");
         stream.removeAllListeners("once");
@@ -62,13 +60,13 @@ describe("Shared Options", () => {
 
     it("should be able to handle a stdin read error", async () => {
         const response = new CommandResponse({silent: true});
-        const stream = new Socket();
+        const stream: any = new Socket();
         const interval = setInterval(() => {
             stream.emit("error");
         }, intervalNum);
         let error;
         try {
-            await SharedOptions.readStdinIfRequested({_: undefined, $0: undefined, stdin: true}, response, "command", stream);
+            await SharedOptions.readStdinIfRequested({_: undefined, $0: undefined, stdin: true} as any, response, "command", stream);
         } catch (e) {
             error = e;
         }

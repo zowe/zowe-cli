@@ -25,7 +25,7 @@ const cmdOutputJson = {
     stderr: "The validate commands's standard error",
     data: {}
 };
-const spawnSyncOutput = {
+const spawnSyncOutput: any = {
     status: 0,
     stdout: JSON.stringify(cmdOutputJson)
 };
@@ -45,7 +45,7 @@ describe("runValidatePlugin", () => {
     });
 
     const mocks = {
-        spawnSync: sync as Mock<typeof sync>
+        spawnSync: sync as any as Mock<typeof sync>
     };
 
     it("should display both the stdout and stderr of the validate command", () => {

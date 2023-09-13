@@ -31,7 +31,7 @@ describe("z/OS Files - View", () => {
     });
 
     describe("dataset", () => {
-        const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+        const zosmfExpectSpy: any = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
 
         beforeEach(() => {
             zosmfExpectSpy.mockClear();
@@ -44,7 +44,7 @@ describe("z/OS Files - View", () => {
 
             // Test for NULL
             try {
-                response = await Get.dataSet(dummySession, null);
+                response = await Get.dataSet(dummySession, null as any);
             } catch (e) {
                 caughtError = e;
             }
@@ -233,7 +233,7 @@ describe("z/OS Files - View", () => {
         });
 
         describe("uss file", () => {
-            const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+            const zosmfExpectSecondSpy: any = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
 
             beforeEach(() => {
                 zosmfExpectSecondSpy.mockClear();

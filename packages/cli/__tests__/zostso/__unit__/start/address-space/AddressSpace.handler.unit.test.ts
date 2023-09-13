@@ -64,7 +64,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -73,11 +73,11 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -105,11 +105,11 @@ describe("start address-space handler tests", () => {
             expect(startParms).toBeDefined();
             expect(startParms).toMatchSnapshot();
             return StartTsoData.SAMPLE_START_RESPONSE;
-        });
+        }) as any;
         const handler = new AddressSpaceHandler.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {...ZOSMF_PROF_OPTS, ...TSO_PROF_OPTS};
-        params = { ...params, arguments: args};
+        params = { ...params, arguments: args} as any;
 
         await handler.process(params);
         expect(StartTso.start).toHaveBeenCalledTimes(1);
@@ -141,7 +141,7 @@ describe("start address-space handler tests", () => {
                     message: failure
                 }
             };
-        });
+        }) as any;
         const handler = new AddressSpaceHandler.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {...ZOSMF_PROF_OPTS, ...TSO_PROF_OPTS};

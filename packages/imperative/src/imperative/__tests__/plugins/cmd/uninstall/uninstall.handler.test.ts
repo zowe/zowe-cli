@@ -35,7 +35,7 @@ describe("Plugin Management Facility uninstall handler", () => {
 
     // Objects created so types are correct.
     const mocks = {
-        execSync: execSync as Mock<typeof execSync>,
+        execSync: execSync as any as Mock<typeof execSync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         uninstall: uninstall as Mock<typeof uninstall>
@@ -55,9 +55,9 @@ describe("Plugin Management Facility uninstall handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
-        mocks.execSync.mockReturnValue(packageRegistry);
-        mocks.readFileSync.mockReturnValue({});
+        (Logger.getImperativeLogger as any as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        mocks.execSync.mockReturnValue(packageRegistry as any);
+        mocks.readFileSync.mockReturnValue({} as any);
     });
 
     /**
@@ -104,7 +104,7 @@ describe("Plugin Management Facility uninstall handler", () => {
 
     test("uninstall specified package", async () => {
     // plugin definitions mocking file contents
-        const fileJson: IPluginJson = {
+        const fileJson: IPluginJson | any = {
             a: {
                 package: packageName,
                 registry: undefined,

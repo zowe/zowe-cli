@@ -30,9 +30,9 @@ import { getPackageInfo, installPackages } from "../../../../src/plugins/utiliti
 describe("PMF: update Interface", () => {
     // Objects created so types are correct.
     const mocks = {
-        installPackages: installPackages as Mock<typeof installPackages>,
+        installPackages: installPackages as any as Mock<typeof installPackages>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
-        getPackageInfo: getPackageInfo as Mock<typeof getPackageInfo>
+        getPackageInfo: getPackageInfo as any as Mock<typeof getPackageInfo>
     };
 
     const packageName = "pretty-format";
@@ -44,12 +44,12 @@ describe("PMF: update Interface", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running update
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as any as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
 
         /* Since update() adds new plugins into the value returned from
      * readFileSyc(plugins.json), we must reset readFileSync to return an empty set before each test.
      */
-        mocks.readFileSync.mockReturnValue({});
+        mocks.readFileSync.mockReturnValue({} as any);
     });
 
     afterAll(() => {
@@ -81,8 +81,9 @@ describe("PMF: update Interface", () => {
                 }
             };
 
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
-            mocks.readFileSync.mockReturnValue(oneOldPlugin);
+            const resOutput: any = { name: packageName, version: packageVersion };
+            mocks.getPackageInfo.mockResolvedValue(resOutput as never);
+            mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
             const data = await update(packageName, packageRegistry);
             expect(data).toEqual(packageVersion);
@@ -102,8 +103,9 @@ describe("PMF: update Interface", () => {
             }
         };
 
-        mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
-        mocks.readFileSync.mockReturnValue(oneOldPlugin);
+        const resOutput: any = { name: packageName, version: packageVersion };
+        mocks.getPackageInfo.mockResolvedValue(resOutput as never);
+        mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
         const data = await update(packageName, packageRegistry);
         expect(data).toEqual(packageVersion);

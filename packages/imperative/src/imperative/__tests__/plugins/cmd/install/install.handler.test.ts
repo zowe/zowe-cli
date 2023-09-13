@@ -59,11 +59,11 @@ describe("Plugin Management Facility install handler", () => {
     // Objects created so types are correct.
     const mocks = {
         npmLogin: npmLogin as Mock<typeof npmLogin>,
-        getRegistry: getRegistry as Mock<typeof getRegistry>,
+        getRegistry: getRegistry as any as Mock<typeof getRegistry>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        install: install as Mock<typeof install>,
-        runValidatePlugin: runValidatePlugin as Mock<typeof runValidatePlugin>
+        install: install as any as Mock<typeof install>,
+        runValidatePlugin: runValidatePlugin as any as Mock<typeof runValidatePlugin>
     };
 
     // two plugin set of values
@@ -82,11 +82,11 @@ describe("Plugin Management Facility install handler", () => {
         jest.clearAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
-        mocks.getRegistry.mockReturnValue(packageRegistry);
-        mocks.readFileSync.mockReturnValue({});
+        (Logger.getImperativeLogger as any as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        mocks.getRegistry.mockReturnValue(packageRegistry as any);
+        mocks.readFileSync.mockReturnValue({} as any);
         npmLogin(packageRegistry);
-        mocks.runValidatePlugin.mockReturnValue(finalValidationMsg);
+        mocks.runValidatePlugin.mockReturnValue(finalValidationMsg as any);
         expectedVal = undefined;
         returnedVal = undefined;
     });
@@ -177,7 +177,7 @@ describe("Plugin Management Facility install handler", () => {
 
     it("should install from specified JSON file", async () => {
     // plugin definitions mocking file contents
-        const fileJson: IPluginJson = {
+        const fileJson: IPluginJson | any = {
             a: {
                 package: packageName,
                 registry: undefined,
@@ -193,8 +193,8 @@ describe("Plugin Management Facility install handler", () => {
         // Override the return value for this test only
         mocks.readFileSync.mockReturnValueOnce(fileJson);
         mocks.install
-            .mockReturnValueOnce("a")
-            .mockReturnValueOnce("plugin2");
+            .mockReturnValueOnce("a" as any)
+            .mockReturnValueOnce("plugin2" as any);
 
         const handler = new InstallHandler();
 

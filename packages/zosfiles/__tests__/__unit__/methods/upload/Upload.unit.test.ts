@@ -653,7 +653,7 @@ describe("z/OS Files - Upload", () => {
     });
     describe("streamToDataSet", () => {
         const zosmfPutFullSpy: any = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag: any = {data: dsName, response:{headers:{etag: etagValue}}};
         const inputStream = new Readable();
         inputStream.push("testing");
         inputStream.push(null);
@@ -1663,7 +1663,7 @@ describe("z/OS Files - Upload", () => {
     describe("streamToUssFile", () => {
         let USSresponse: IZosFilesResponse | any;
         const zosmfExpectFullSpy: any = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
-        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag: any = {data: dsName, response:{headers:{etag: etagValue}}};
         const inputStream = new Readable();
         inputStream.push("testing");
         inputStream.push(null);
@@ -1997,7 +1997,7 @@ describe("z/OS Files - Upload", () => {
         const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
-        const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
+        const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter" as any);
         const promiseSpy = jest.spyOn(Promise, "all");
         const testReturn: any = {};
         const testPath = "test/path";
@@ -2165,7 +2165,7 @@ describe("z/OS Files - Upload", () => {
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const promiseSpy = jest.spyOn(Promise, "all");
-        const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
+        const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter" as any);
         const testReturn: any = {};
         const testPath = "test/path";
 

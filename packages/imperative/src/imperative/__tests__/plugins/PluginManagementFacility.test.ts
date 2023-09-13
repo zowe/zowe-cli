@@ -18,7 +18,7 @@ jest.mock("../../src/plugins/PluginRequireProvider");
 
 import { existsSync, mkdirSync } from "fs";
 import { AppSettings } from "../../../settings";
-import { ICommandDefinition } from "../../../../packages/cmd";
+import { ICommandDefinition } from "../../../../src/cmd";
 import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 import { UpdateImpConfig } from "../../src/UpdateImpConfig";
@@ -38,8 +38,8 @@ import { ISettingsFile } from "../../../settings/src/doc/ISettingsFile";
 
 describe("Plugin Management Facility", () => {
     const mocks = {
-        existsSync: existsSync as Mock<typeof existsSync>,
-        mkdirSync: mkdirSync as Mock<typeof mkdirSync>,
+        existsSync: existsSync as any as Mock<typeof existsSync>,
+        mkdirSync: mkdirSync as any as Mock<typeof mkdirSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>
     };
@@ -144,7 +144,7 @@ describe("Plugin Management Facility", () => {
         description: basePluginConfig.rootCommandDescription,
         type: "group",
         children: basePluginConfig.definitions
-    };
+    } as any;
     const defaultSettings: ISettingsFile = {
         overrides: {
             CredentialManager: false
@@ -173,7 +173,7 @@ describe("Plugin Management Facility", () => {
     });
 
     it("should initialize properly", () => {
-        mocks.existsSync.mockReturnValue(true);
+        mocks.existsSync.mockReturnValue(true as any);
         expect(PluginManagementFacility.instance).toBeTruthy();
     });
 
@@ -190,7 +190,7 @@ describe("Plugin Management Facility", () => {
         const uninstallDef: ICommandDefinition = require("../../src/plugins/cmd/uninstall/uninstall.definition").uninstallDefinition;
         const updateDef: ICommandDefinition = require("../../src/plugins/cmd/update/update.definition").updateDefinition;
         const validateDef: ICommandDefinition = require("../../src/plugins/cmd/validate/validate.definition").validateDefinition;
-        mocks.existsSync.mockReturnValue(true);
+        mocks.existsSync.mockReturnValue(true as any);
 
         expect((PluginManagementFacility.instance as any).wasInitCalled).toBe(false);
         PluginManagementFacility.instance.init();
@@ -237,13 +237,13 @@ describe("Plugin Management Facility", () => {
 
         beforeEach(() => {
             // supply data for PluginIssues.getInstalledPlugins()
-            mocks.readFileSync.mockReturnValue(mockInstalledPlugins);
+            mocks.readFileSync.mockReturnValue(mockInstalledPlugins as any);
         });
 
         it("should create the plugins.json file and directory", () => {
             mocks.existsSync
-                .mockReturnValueOnce(false)   // directory does not exist
-                .mockReturnValueOnce(false);  // plugins.json does not exist
+                .mockReturnValueOnce(false as any)   // directory does not exist
+                .mockReturnValueOnce(false as any);  // plugins.json does not exist
             AppSettings.initialize("test.json",defaultSettings);
             PluginManagementFacility.instance.loadAllPluginCfgProps();
 
@@ -259,8 +259,8 @@ describe("Plugin Management Facility", () => {
 
         it("should create the plugins.json file but not the directory", () => {
             mocks.existsSync
-                .mockReturnValueOnce(false) // directory does not exist
-                .mockReturnValueOnce(true); // file does exist
+                .mockReturnValueOnce(false as any) // directory does not exist
+                .mockReturnValueOnce(true as any); // file does exist
             AppSettings.initialize("test.json",defaultSettings);
             PluginManagementFacility.instance.loadAllPluginCfgProps();
 
@@ -270,7 +270,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should not create the file", () => {
-            mocks.existsSync.mockReturnValue(true);  // both directory and file exists
+            mocks.existsSync.mockReturnValue(true as any);  // both directory and file exists
             AppSettings.initialize("test.json",defaultSettings);
             PluginManagementFacility.instance.loadAllPluginCfgProps();
 
@@ -279,7 +279,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should not crash when loadPluginCfgProps returns null", () => {
-            mocks.existsSync.mockReturnValue(true);  // both directory and file exists
+            mocks.existsSync.mockReturnValue(true as any);  // both directory and file exists
             loadPluginCfgPropsMock.mockReturnValue(null);
             let caughtError;
             try {
@@ -292,7 +292,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should not crash when loadPluginCfgProps has no overrides", () => {
-            mocks.existsSync.mockReturnValue(true);  // both directory and file exists
+            mocks.existsSync.mockReturnValue(true as any);  // both directory and file exists
             loadPluginCfgPropsMock.mockReturnValue(basePluginCfgProps);
             let caughtError;
             try {
@@ -305,7 +305,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should store the CredentialManager override", () => {
-            mocks.existsSync.mockReturnValue(true);  // both directory and file exists
+            mocks.existsSync.mockReturnValue(true as any);  // both directory and file exists
 
             /* An override string will be required, so set the string to our own file.
              * Then mock the results that a 'require' of our filename will return.
@@ -352,7 +352,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should use an invalid CredMgr when the settings point to an uninstalled plugin", () => {
-            mocks.existsSync.mockReturnValue(true);  // both directory and file exists
+            mocks.existsSync.mockReturnValue(true as any);  // both directory and file exists
 
             /* An override string will be 'required', so set the string to our own file.
              * Then mock the results that a 'require' of our filename will return.
@@ -402,7 +402,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should use an invalid CredMgr when the CredentialManager string cannot be 'required'", () => {
-            mocks.existsSync.mockReturnValue(true);  // both directory and file exists
+            mocks.existsSync.mockReturnValue(true as any);  // both directory and file exists
 
             /* An override string will be 'required', so set the string to our own file.
              * Then mock the results that a 'require' of our filename will return.
@@ -444,8 +444,8 @@ describe("Plugin Management Facility", () => {
     }); // end loadAllPluginCfgProps
 
     describe("Plugin validation", () => {
-        let badPluginConfig: IImperativeConfig = null;
-        let badPluginCfgProps: IPluginCfgProps = null;
+        let badPluginConfig: IImperativeConfig | any = null;
+        let badPluginCfgProps: IPluginCfgProps | any = null;
         const mockValidatePluginCmdDefs = jest.fn();
         const realValidatePluginCmdDefs = PMF.validatePluginCmdDefs;
         const mockAreVersionsCompatible = jest.fn();
@@ -515,7 +515,7 @@ describe("Plugin Management Facility", () => {
                 pluginCfgPropsOnlyNpmName.npmPackageName = "WeHaveAnNpmPackageName";
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
                 PMF.conflictingNameOrAlias = realConflictName;
                 PMF.areVersionsCompatible = realAreVersionsCompatible;
 
@@ -573,7 +573,7 @@ describe("Plugin Management Facility", () => {
                 // Ensure we get to the function that we want to validate
                 PMF.conflictingNameOrAlias.mockReturnValue({hasConflict: false});
                 mockAreVersionsCompatible.mockReturnValueOnce(true);
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 isValid = PMF.validatePlugin(basePluginCfgProps, badPluginCmdDef);
                 expect(isValid).toBe(false);
@@ -591,7 +591,7 @@ describe("Plugin Management Facility", () => {
                 // Ensure we get to the function that we want to validate
                 PMF.conflictingNameOrAlias.mockReturnValue({hasConflict: false});
                 mockAreVersionsCompatible.mockReturnValueOnce(true);
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 isValid = PMF.validatePlugin(basePluginCfgProps, badPluginCmdDef);
                 expect(isValid).toBe(false);
@@ -609,7 +609,7 @@ describe("Plugin Management Facility", () => {
                 badPluginCfgProps.impConfig = badPluginConfig;
 
                 // Ensure we get to the function that we want to validate
-                mockConflictNmOrAlias.mockReturnValueOnce(false);
+                mockConflictNmOrAlias.mockReturnValueOnce(false as any);
                 mockAreVersionsCompatible.mockReturnValueOnce(true);
 
                 isValid = PMF.validatePlugin(badPluginCfgProps, basePluginCmdDef);
@@ -631,7 +631,7 @@ describe("Plugin Management Facility", () => {
                 badPluginCfgProps.impConfig = badPluginConfig;
 
                 // Ensure we get to the function that we want to validate
-                mockConflictNmOrAlias.mockReturnValueOnce(false);
+                mockConflictNmOrAlias.mockReturnValueOnce(false as any);
                 mockAreVersionsCompatible.mockReturnValueOnce(true);
 
                 isValid = PMF.validatePlugin(badPluginCfgProps, basePluginCmdDef);
@@ -647,7 +647,7 @@ describe("Plugin Management Facility", () => {
             it("should record error when ConfigurationValidator throws an exception", () => {
                 // Ensure we get to the function that we want to validate
                 PMF.conflictingNameOrAlias = realConflictName;
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
                 PMF.areVersionsCompatible = realAreVersionsCompatible;
 
                 mockCfgValidator.mockImplementationOnce(() => {
@@ -667,7 +667,7 @@ describe("Plugin Management Facility", () => {
             it("should have no errors or warnings, when everything is correct", () => {
                 PMF.conflictingNameOrAlias = realConflictName;
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
                 PMF.areVersionsCompatible = realAreVersionsCompatible;
 
                 isValid = PMF.validatePlugin(basePluginCfgProps, basePluginCmdDef);
@@ -692,7 +692,7 @@ describe("Plugin Management Facility", () => {
 
             it("should have no issues when the plugin command defs are valid", () => {
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [basePluginCmdDef], 1);
                 expect(pluginIssues.getIssueListForPlugin(pluginName).length).toBe(0);
@@ -708,7 +708,7 @@ describe("Plugin Management Facility", () => {
                 delete badPluginCmdDef.children;
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -722,11 +722,11 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when the children property is empty", () => {
                 // remove name property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef = JSON.parse(JSON.stringify(basePluginCmdDef));
                 badPluginCmdDef.children = [];
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -740,11 +740,11 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command has no name", () => {
                 // remove name property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[0].name;
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -759,11 +759,11 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command has no type", () => {
                 // remove type property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[0].type;
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -778,11 +778,11 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command has no handler", () => {
                 // remove handler property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[0].handler;
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -797,11 +797,11 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command handler file does not exist", () => {
                 // set a handler property to a bad path
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef: ICommandDefinition | any = JSON.parse(JSON.stringify(basePluginCmdDef));
                 badPluginCmdDef.children[0].handler = "./This/File/Does/Not/Exist";
 
                 // Ensure we get to the function that we want to test
-                mocks.existsSync.mockReturnValueOnce(false);
+                mocks.existsSync.mockReturnValueOnce(false as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -817,12 +817,12 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command has an empty chained handler", () => {
                 // remove handler property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef: ICommandDefinition | any = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[0].handler;
                 badPluginCmdDef.children[0].chainedHandlers = [];
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -837,7 +837,7 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command has a missing chained handler", () => {
                 // remove handler property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef: ICommandDefinition | any = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[0].handler;
                 badPluginCmdDef.children[0].chainedHandlers = [
                     {
@@ -847,7 +847,7 @@ describe("Plugin Management Facility", () => {
                 ];
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -862,7 +862,7 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin chained command handler file does not exist", () => {
                 // set a handler property to a bad path
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[0].handler;
                 badPluginCmdDef.children[0].chainedHandlers = [
                     {
@@ -874,7 +874,7 @@ describe("Plugin Management Facility", () => {
                 ];
 
                 // Ensure we get to the function that we want to test
-                mocks.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(false);
+                mocks.existsSync.mockReturnValueOnce(false as any).mockReturnValueOnce(false as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -890,11 +890,11 @@ describe("Plugin Management Facility", () => {
 
             it("should record an error when a plugin command has no description", () => {
                 // remove description property from a command definition
-                const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
+                const badPluginCmdDef = JSON.parse(JSON.stringify(basePluginCmdDef));
                 delete badPluginCmdDef.children[1].description;
 
                 // Ensure we get to the function that we want to validate
-                mocks.existsSync.mockReturnValue(true);
+                mocks.existsSync.mockReturnValue(true as any);
 
                 PMF.validatePluginCmdDefs(pluginName, [badPluginCmdDef], 1);
 
@@ -911,7 +911,7 @@ describe("Plugin Management Facility", () => {
         describe("Validate a plugin's profile", () => {
 
             it("should record an error when the profiles are null", () => {
-                const pluginProfiles: ICommandProfileTypeConfiguration[] = null;
+                const pluginProfiles: ICommandProfileTypeConfiguration[] | any = null;
 
                 PMF.validatePluginProfiles(pluginName, pluginProfiles);
                 expect(pluginIssues.doesPluginHaveIssueSev(pluginName, [
@@ -1147,7 +1147,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should record an error when the path to the plugin does not exist", () => {
-            mocks.existsSync.mockReturnValue(false);
+            mocks.existsSync.mockReturnValue(false as any);
 
             const pluginCfgProps = PMF.loadPluginCfgProps(pluginName);
 
@@ -1164,8 +1164,8 @@ describe("Plugin Management Facility", () => {
 
         it("should record an error when plugin's package.json does not exist", () => {
             mocks.existsSync
-                .mockReturnValueOnce(true)
-                .mockReturnValueOnce(false);
+                .mockReturnValueOnce(true as any)
+                .mockReturnValueOnce(false as any);
 
             const pluginCfgProps = PMF.loadPluginCfgProps(pluginName);
 
@@ -1182,7 +1182,7 @@ describe("Plugin Management Facility", () => {
 
         it("should record an error when readFileSync throws an error", () => {
             // Ensure we get to the function that we want to test
-            mocks.existsSync.mockReturnValue(true);
+            mocks.existsSync.mockReturnValue(true as any);
 
             // simulate an I/O error trying to read package.json
             mocks.readFileSync.mockImplementationOnce(() => {
@@ -1205,12 +1205,12 @@ describe("Plugin Management Facility", () => {
 
         it("should record an error when package.json contains no 'imperative' property", () => {
             // Ensure we get to the function that we want to test
-            mocks.existsSync.mockReturnValue(true);
+            mocks.existsSync.mockReturnValue(true as any);
             mocks.readFileSync.mockReturnValueOnce({
                 name: "imperative-sample-plugin",
                 version: "1.0.1",
                 description: "Some description"
-            });
+            } as any);
 
             const pluginCfgProps = PMF.loadPluginCfgProps(pluginName);
 
@@ -1227,7 +1227,7 @@ describe("Plugin Management Facility", () => {
 
         it("should record return null when ConfigurationLoader throws an exception", () => {
             // Ensure we get to the function that we want to test
-            mocks.existsSync.mockReturnValue(true);
+            mocks.existsSync.mockReturnValue(true as any);
             const pluginCfg = {
                 name: "sample-plugin"
             };
@@ -1236,7 +1236,7 @@ describe("Plugin Management Facility", () => {
                 version: "1.0.1",
                 description: "Some description",
                 imperative: pluginCfg
-            });
+            } as any);
             mockCfgLoad.mockImplementationOnce(() => {
                 throw new Error("Mock load error");
             });
@@ -1253,7 +1253,7 @@ describe("Plugin Management Facility", () => {
             expectedCfgProps.impDependency.peerDepVer = "1.x";
 
             // mock reading the package.json file of the plugin
-            mocks.existsSync.mockReturnValue(true);
+            mocks.existsSync.mockReturnValue(true as any);
             mocks.readFileSync.mockReturnValueOnce({
                 name: pluginName,
                 version: "1.0.1",
@@ -1263,7 +1263,7 @@ describe("Plugin Management Facility", () => {
                     "@zowe/coreIsNotInPkgJson": "1.x",
                     "@zowe/imperative": "1.x"
                 }
-            });
+            } as any);
 
             // utility functions mocked to return good values
             mockGetCliPkgName.mockReturnValue("@zowe/core");
@@ -1291,7 +1291,7 @@ describe("Plugin Management Facility", () => {
             expectedCfgProps.impDependency.peerDepVer = "1.x";
 
             // mock reading the package.json file of the plugin
-            mocks.existsSync.mockReturnValue(true);
+            mocks.existsSync.mockReturnValue(true as any);
             mocks.readFileSync.mockReturnValueOnce({
                 name: pluginName,
                 version: "1.0.1",
@@ -1301,7 +1301,7 @@ describe("Plugin Management Facility", () => {
                     "@zowe/core": "1.x",
                     "@zowe/imperative": "1.x"
                 }
-            });
+            } as any);
 
             // utility functions mocked to return good values
             mockGetCliPkgName.mockReturnValue("@zowe/core");
@@ -1323,7 +1323,7 @@ describe("Plugin Management Facility", () => {
 
     describe("conflictingNameOrAlias function", () => {
         let groupName: string;
-        let impCmdTree: ICommandDefinition;
+        let impCmdTree: ICommandDefinition | any;
 
         beforeEach(() => {
             impCmdTree = require("./impCmdTree.testData");
@@ -1479,7 +1479,7 @@ describe("Plugin Management Facility", () => {
 
         it("should record an error when addProfiles throws an exception", () => {
             // Ensure we get to the function that we want to test
-            testPluginCofig.impConfig.profiles = [{schema: "dummy1"}, {schema: "dummy2"}];
+            testPluginCofig.impConfig.profiles = [{schema: "dummy1"} as never, {schema: "dummy2"} as never];
             mockCombineAllCmdDefs.mockReturnValueOnce({});
             mockValidatePlugin.mockReturnValue(true);
             mockAddCmdGrpToResolvedCliCmdTree.mockReturnValue(true);
@@ -1499,7 +1499,7 @@ describe("Plugin Management Facility", () => {
 
         it("should call addCmdGrpToResolvedCliCmdTree and addProfiles with the proper parameters", () => {
             // Ensure we get to the function that we want to test
-            testPluginCofig.impConfig.profiles = [{schema: "dummy1"}];
+            testPluginCofig.impConfig.profiles = [{schema: "dummy1"} as never];
             mockCombineAllCmdDefs.mockReturnValueOnce({});
             mockValidatePlugin.mockReturnValue(true);
             mockAddCmdGrpToResolvedCliCmdTree.mockReturnValue(true);
@@ -1687,7 +1687,7 @@ describe("Plugin Management Facility", () => {
     }); // end describe
 
     describe("addAllPluginsToHostCli function", () => {
-        const mockInstalledPlugins: IPluginCfgProps[] = [
+        const mockInstalledPlugins: IPluginCfgProps[] | any = [
             {pluginName: "firstPlugin", npmPackageName: "firstPackageName", impConfig: null, cliDependency: null, impDependency: null},
             {pluginName: "secondPlugin", npmPackageName: "secondPackageName", impConfig: null, cliDependency: null, impDependency: null}
         ];
@@ -1705,7 +1705,7 @@ describe("Plugin Management Facility", () => {
 
         it("should pass the proper data to addPluginToHostCli", () => {
             // mocking addPlugin function
-            mocks.readFileSync.mockReturnValue(mockInstalledPlugins);
+            mocks.readFileSync.mockReturnValue(mockInstalledPlugins as any);
 
             const savedPluginCfgProps = PMF.mAllPluginCfgProps;
             PMF.mAllPluginCfgProps = mockInstalledPlugins;

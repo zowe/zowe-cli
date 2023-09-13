@@ -196,6 +196,6 @@ export class PluginRequireProvider {
                 // Otherwise use the package dependencies
                 return origRequire.apply(this, args);
             }
-        });
+        } as any);
     }
 }

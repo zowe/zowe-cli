@@ -36,7 +36,7 @@ const fakeSession: any = {
 describe("Auth Login APIML unit tests", () => {
     describe("Positive tests", () => {
         it("should allow users to call apimlLogin with correct parameters", async () => {
-            ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            ZosmfRestClient.prototype.request = jest.fn(returnEmpty) as any;
             (ZosmfRestClient.prototype as any).mResponse = goodResponse;
             let caughtError;
             try {
@@ -50,7 +50,7 @@ describe("Auth Login APIML unit tests", () => {
 
     describe("Error handling tests - HTTP 401", () => {
         it("should be able to raise an error with HTTP 401", async () => {
-            ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            ZosmfRestClient.prototype.request = jest.fn(returnEmpty) as any;
             (ZosmfRestClient.prototype as any).mResponse = badResponse;
             let caughtError;
             try{
@@ -99,7 +99,7 @@ describe("Auth Login APIML unit tests", () => {
             ZosmfRestClient.prototype.request = jest.fn(throwImperativeError);
             let caughtError;
             try {
-                await Login.apimlLogin(null);
+                await Login.apimlLogin(null as any);
             } catch (error) {
                 caughtError = error;
             }

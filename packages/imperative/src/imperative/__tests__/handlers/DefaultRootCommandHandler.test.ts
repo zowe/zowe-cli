@@ -111,12 +111,12 @@ describe("Default Root Command Handler", () => {
         await handler.process({
             response: cmdResp,
             arguments: {_: [], $0: ""},
-            definition: prepared.children[0].children[0],
+            definition: prepared.children?.[0].children?.[0],
             fullDefinition: prepared,
             profiles: undefined
-        });
+        } as any);
         TestLogger.info("Help Text: \n" + cmdResp.buildJsonResponse().stdout);
-        expect(cmdResp.buildJsonResponse().stdout.toString()).toMatchSnapshot();
+        expect(cmdResp.buildJsonResponse().stdout?.toString()).toMatchSnapshot();
     });
 
     it ("should display a list of available commands with --available-commands", async() => {
@@ -132,10 +132,10 @@ describe("Default Root Command Handler", () => {
             definition: MULTIPLE_GROUPS,
             fullDefinition: MULTIPLE_GROUPS,
             profiles: undefined
-        });
+        } as any);
 
         expect(cmdResp.buildJsonResponse().data).toEqual(MOCKED_COMMAND_TREE);
-        expect(cmdResp.buildJsonResponse().stdout.toString()).toMatchSnapshot();
+        expect(cmdResp.buildJsonResponse().stdout?.toString()).toMatchSnapshot();
         expect(cmdResp.buildJsonResponse()).toMatchSnapshot();
     });
 
@@ -150,10 +150,10 @@ describe("Default Root Command Handler", () => {
         await handler.process({
             response: cmdResp,
             arguments: {_: [], $0: "", version: true},
-            definition: MULTIPLE_GROUPS.children[0].children[0],
+            definition: MULTIPLE_GROUPS.children?.[0].children?.[0],
             fullDefinition: MULTIPLE_GROUPS,
             profiles: undefined
-        });
+        } as any);
         TestLogger.info("Version Text: \n" + cmdResp.buildJsonResponse().stdout);
         expect(cmdResp.buildJsonResponse()).toMatchSnapshot();
     });

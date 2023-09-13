@@ -88,7 +88,7 @@ describe("Abstract Help Generator Unit Tests", () => {
 
     it("FormatHelpHeader test", () => {
         expect(() => {
-            InheritedHelpGenerator.formatHelpHeader(null, undefined, chalkColor);
+            InheritedHelpGenerator.formatHelpHeader(null as any, undefined, chalkColor);
         }).toThrowErrorMatchingSnapshot();
         expect(() => {
             InheritedHelpGenerator.formatHelpHeader("", undefined, chalkColor);
@@ -136,7 +136,7 @@ describe("Abstract Help Generator Unit Tests", () => {
         expect(abstractHelpGenerator.getOptionAndAliasesString(goodOptionNoAlias)).toMatchSnapshot("Good option, no alias present");
         expect(abstractHelpGenerator.getOptionAndAliasesString(goodOptionSingleChar)).toMatchSnapshot("Good option, single char");
 
-        const badOptionAliasEdgeCases: ICommandOptionDefinition = {
+        const badOptionAliasEdgeCases: ICommandOptionDefinition | any = {
             name: "my_option",
             aliases: [""],
             description: "option_description",
@@ -154,7 +154,7 @@ describe("Abstract Help Generator Unit Tests", () => {
         expect(abstractHelpGenerator.getOptionAndAliasesString(badOptionAliasEdgeCases))
             .toMatchSnapshot("Alias array with a blank as well as good elements");
 
-        const badOptionNameEdgeCases: ICommandOptionDefinition = {
+        const badOptionNameEdgeCases: ICommandOptionDefinition | any = {
             name: "",
             description: "option_description",
             type: "string",
@@ -163,7 +163,7 @@ describe("Abstract Help Generator Unit Tests", () => {
         badOptionNameEdgeCases.name = null;
         expect(abstractHelpGenerator.getOptionAndAliasesString(badOptionNameEdgeCases)).toMatchSnapshot("Null name");
 
-        const badOptionTypeEdgeCases: ICommandOptionDefinition = {
+        const badOptionTypeEdgeCases: ICommandOptionDefinition | any = {
             name: "good_name",
             description: "option_description",
             type: "",
@@ -186,7 +186,7 @@ describe("Abstract Help Generator Unit Tests", () => {
     });
 
     it("buildOptionMaps with default/allowable test", () => {
-        const abstractHelpGenerator = new InheritedHelpGenerator(generatorParms,
+        const abstractHelpGenerator: any = new InheritedHelpGenerator(generatorParms,
             { commandDefinition: definitionWithDefault, fullCommandTree: fakeParent });
         abstractHelpGenerator.buildOptionsMapsTest();
         expect(abstractHelpGenerator.optionToDescription).toMatchSnapshot();
@@ -197,7 +197,7 @@ describe("Abstract Help Generator Unit Tests", () => {
         expect(abstractHelpGenerator.getCaseSensitiveFlagByOptionNameTest("aReaLOption")).toMatchSnapshot();
         expect(abstractHelpGenerator.getCaseSensitiveFlagByOptionNameTest("fakeOption")).toMatchSnapshot();
         expect(abstractHelpGenerator.getCaseSensitiveFlagByOptionNameTest("")).toMatchSnapshot();
-        expect(abstractHelpGenerator.getCaseSensitiveFlagByOptionNameTest(undefined)).toMatchSnapshot();
+        expect(abstractHelpGenerator.getCaseSensitiveFlagByOptionNameTest(undefined as any)).toMatchSnapshot();
     });
 
     it("renderHelp test", () => {
@@ -213,7 +213,7 @@ describe("Abstract Help Generator Unit Tests", () => {
         expect(abstractHelpGenerator.renderHelpTest("{{codeEnd} code bad {codeStart}}")).toMatchSnapshot();
         expect(abstractHelpGenerator.renderHelpTest("")).toMatchSnapshot();
         expect(() => {
-            abstractHelpGenerator.renderHelpTest(undefined);
+            abstractHelpGenerator.renderHelpTest(undefined as any);
         }).toThrowErrorMatchingSnapshot();
     });
 

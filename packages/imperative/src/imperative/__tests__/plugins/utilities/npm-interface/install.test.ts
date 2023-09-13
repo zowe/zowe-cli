@@ -57,12 +57,12 @@ function setResolve(toResolve: string, resolveTo?: string) {
 describe("PMF: Install Interface", () => {
     // Objects created so types are correct.
     const mocks = {
-        installPackages: installPackages as Mock<typeof installPackages>,
+        installPackages: installPackages as any as Mock<typeof installPackages>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        sync: sync as Mock<typeof sync>,
-        getPackageInfo: getPackageInfo as Mock<typeof getPackageInfo>,
-        path: path as Mock<typeof path>
+        sync: sync as any as Mock<typeof sync>,
+        getPackageInfo: getPackageInfo as any as Mock<typeof getPackageInfo>,
+        path: path as any as Mock<typeof path>
     };
 
     const packageName = "a";
@@ -75,13 +75,13 @@ describe("PMF: Install Interface", () => {
         returnedVal = undefined;
 
         // This needs to be mocked before running install
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as any as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
 
         /* Since install() adds new plugins into the value returned from
      * readFileSyc(plugins.json), we must reset readFileSync to return an empty set before each test.
      */
-        mocks.readFileSync.mockReturnValue({});
-        mocks.sync.mockReturnValue("fake_find-up_sync_result");
+        mocks.readFileSync.mockReturnValue({} as any);
+        mocks.sync.mockReturnValue("fake_find-up_sync_result" as any);
         jest.spyOn(path, "dirname").mockReturnValue("fake-dirname");
         jest.spyOn(path, "join").mockReturnValue("/fake/join/path");
     });
@@ -128,12 +128,13 @@ describe("PMF: Install Interface", () => {
 
     describe("Basic install", () => {
         beforeEach(() => {
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+            const resOutput: any = { name: packageName, version: packageVersion };
+            mocks.getPackageInfo.mockResolvedValue(resOutput as never);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
-            });
+            } as any);
         });
 
         it("should install from the npm registry", async () => {
@@ -234,11 +235,12 @@ describe("PMF: Install Interface", () => {
 
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(false);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+            const resOutput: any = { name: packageName, version: packageVersion };
+            mocks.getPackageInfo.mockResolvedValue(resOutput as never);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             await install(location, packageRegistry, true);
 
@@ -254,14 +256,15 @@ describe("PMF: Install Interface", () => {
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
-            });
+            } as any);
 
             // While this doesn't replicate the function, we are installing an npm package
             // so it is shorter to just skip the if condition in install.
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(true);
 
             // This is valid under semver ^1.5.2
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: "1.5.16" });
+            const resOutput: any = { name: packageName, version: "1.5.16" };
+            mocks.getPackageInfo.mockResolvedValue(resOutput as never);
 
             // Call the install
             setResolve(semverPackage);
@@ -286,13 +289,14 @@ describe("PMF: Install Interface", () => {
                 }
             };
 
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+            const resOutput: any = { name: packageName, version: packageVersion };
+            mocks.getPackageInfo.mockResolvedValue(resOutput as never);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
-            });
-            mocks.readFileSync.mockReturnValue(oneOldPlugin);
+            } as any);
+            mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
             setResolve(packageName);
             await install(packageName, packageRegistry);

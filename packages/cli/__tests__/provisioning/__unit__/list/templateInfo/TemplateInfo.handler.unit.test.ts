@@ -40,10 +40,10 @@ describe("list template info handler tests", () => {
 
     it("should be able to list catalog", async () => {
         ListTemplateInfo.listTemplateCommon = jest.fn(
-            () => {
+            async () => {
                 return {};
             }
-        );
+        ) as any;
         const handler = new Handler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         await handler.process(params);

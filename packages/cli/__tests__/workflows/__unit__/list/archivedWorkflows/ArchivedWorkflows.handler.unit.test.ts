@@ -29,7 +29,7 @@ describe("List archived workflows common handler", () => {
             let fakeSession = null;
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });

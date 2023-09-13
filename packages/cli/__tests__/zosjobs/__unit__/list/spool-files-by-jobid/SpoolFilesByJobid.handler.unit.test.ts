@@ -44,10 +44,10 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
     });
 
     it("should be able to get spool files", async () => {
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn((session, ijob) => {
+        GetJobs.getSpoolFilesForJob = jest.fn(async (session, ijob) => {
             return GetJobsData.SAMPLE_SPOOL_FILES;
         });
         const handler = new SpoolFilesHandler.default();
@@ -81,7 +81,7 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
     it("should not transform an error thrown from get jobs getSpoolFilesForJob API", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         GetJobs.getSpoolFilesForJob = jest.fn((session, jobid) => {

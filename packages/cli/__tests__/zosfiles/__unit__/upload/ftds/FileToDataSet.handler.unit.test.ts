@@ -26,10 +26,10 @@ describe("Upload file-to-data-set handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.fileToDataset = jest.fn((session) => {
+            Upload.fileToDataset = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -121,10 +121,10 @@ describe("Upload file-to-data-set handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.fileToDataset = jest.fn((session) => {
+            Upload.fileToDataset = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -218,10 +218,10 @@ describe("Upload file-to-data-set handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.fileToDataset = jest.fn((session) => {
+            Upload.fileToDataset = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -314,10 +314,10 @@ describe("Upload file-to-data-set handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.fileToDataset = jest.fn((session) => {
+            Upload.fileToDataset = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,

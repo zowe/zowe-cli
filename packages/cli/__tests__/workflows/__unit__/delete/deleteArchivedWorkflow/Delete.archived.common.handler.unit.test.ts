@@ -35,7 +35,7 @@ describe("Delete workflow common handler", () => {
                     success: true,
                     commandResponse: "deleted"
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {
@@ -100,16 +100,16 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "deleted"
-                };
+                } as any;
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -249,16 +249,16 @@ describe("Delete workflow common handler", () => {
             let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn((session) => {
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "deleted"
-                };
+                } as any;
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}_fake`}]};
             });
@@ -336,7 +336,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -415,7 +415,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
                 fakeSession = session;
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });

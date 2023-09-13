@@ -56,7 +56,6 @@ export * from "fs";
 
 export { inspect } from "util";
 
-export * from "path";
 export { sync } from "cross-spawn";
 export { SpawnSyncReturns } from "child_process";
 export const DataObjectParser = require("dataobject-parser");

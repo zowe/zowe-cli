@@ -349,7 +349,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const promptWithTimeoutReal = CliUtils.promptWithTimeout;
         CliUtils.promptWithTimeout = jest.fn(() => {
             return Promise.resolve(portFromPrompt);
-        });
+        }) as any;
 
         const initialSessCfg = {
             rejectUnauthorized: true

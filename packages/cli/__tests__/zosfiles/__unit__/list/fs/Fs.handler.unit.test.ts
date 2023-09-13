@@ -27,7 +27,7 @@ describe("fs handler", () => {
             let fakeSession = null;
 
             // Mock the List.fs function
-            List.fs = jest.fn((session) => {
+            List.fs = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -113,7 +113,7 @@ describe("fs handler", () => {
             let fakeSession = null;
 
             // Mock the List.fs function
-            List.fsWithPath = jest.fn((session) => {
+            List.fsWithPath = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

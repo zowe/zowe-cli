@@ -47,7 +47,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -56,11 +56,11 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs.toString()).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -81,7 +81,7 @@ describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs using defaults", async () => {
         let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn((session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms: any) => {
             passedSession = session;
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
@@ -97,7 +97,7 @@ describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs for a specific owner", async () => {
         let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn((session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms: any) => {
             passedSession = session;
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
@@ -114,7 +114,7 @@ describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs for a specific prefix", async () => {
         let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn((session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
             passedSession = session;
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;

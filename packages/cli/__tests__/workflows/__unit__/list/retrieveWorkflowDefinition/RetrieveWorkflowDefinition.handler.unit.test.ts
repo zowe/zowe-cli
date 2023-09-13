@@ -39,7 +39,7 @@ describe("List workflow definition file details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            DefinitionWorkflow.getWorkflowDefinition = jest.fn((session) => {
+            DefinitionWorkflow.getWorkflowDefinition = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     workflowDefaultName: "wf1",

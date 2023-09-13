@@ -154,10 +154,10 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
+        (profManager.load as any) = jest.fn((parms) => {
             const loadResp: IProfileLoaded = {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -186,10 +186,10 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
+        (profManager.load as any) = jest.fn((parms) => {
             throw new ImperativeError({msg: `An error occurred during the load.`});
         });
         let error;
@@ -215,10 +215,10 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
+        (profManager.load as any) = jest.fn((parms) => {
             return {};
         });
         let error;
@@ -244,10 +244,10 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
+        (profManager.load as any) = jest.fn((parms) => {
             return {};
         });
         let error;
@@ -273,10 +273,10 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
+        (profManager.load as any) = jest.fn((parms) => {
             const loadResp: IProfileLoaded = {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -305,10 +305,10 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
+        (profManager.load as any) = jest.fn((parms) => {
             const loadResp: IProfileLoaded = {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -356,7 +356,7 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             if (type === PROFILE_BANANA_TYPE) {
                 return profManagerBanana;
             }
@@ -365,7 +365,7 @@ describe("Command Profile Loader", () => {
             }
             return undefined;
         });
-        profManagerBanana.load = jest.fn((parms) => {
+        (profManagerBanana.load as any) = jest.fn((parms) => {
             return {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -377,7 +377,7 @@ describe("Command Profile Loader", () => {
                 }
             };
         });
-        profManagerStrawberry.load = jest.fn((parms) => {
+        (profManagerStrawberry.load as any) = jest.fn((parms) => {
             return {
                 message: "Profile Loaded",
                 type: STRAWBERRY_PROFILE_TYPE,
@@ -411,7 +411,7 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             if (type === PROFILE_BANANA_TYPE) {
                 return profManagerBanana;
             }
@@ -420,7 +420,7 @@ describe("Command Profile Loader", () => {
             }
             return undefined;
         });
-        profManagerBanana.load = jest.fn((parms) => {
+        (profManagerBanana.load as any) = jest.fn((parms) => {
             return {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -432,7 +432,7 @@ describe("Command Profile Loader", () => {
                 }
             };
         });
-        profManagerStrawberry.load = jest.fn((parms) => {
+        (profManagerStrawberry.load as any) = jest.fn((parms) => {
             throw new ImperativeError({msg: `Not found`});
         });
         let error;
@@ -458,13 +458,13 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: PROFILE_BANANA_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             if (type === PROFILE_BANANA_TYPE) {
                 return profManagerBanana;
             }
             return undefined;
         });
-        profManagerBanana.load = jest.fn((parms) => {
+        (profManagerBanana.load as any) = jest.fn((parms) => {
             const loadResponse: IProfileLoaded = {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -528,7 +528,7 @@ describe("Command Profile Loader", () => {
             profileRootDirectory: sampleRoot,
             type: STRAWBERRY_PROFILE_TYPE
         });
-        manager.getManager = jest.fn((type) => {
+        (manager.getManager as any) = jest.fn((type) => {
             if (type === PROFILE_BANANA_TYPE) {
                 return profManagerBanana;
             }
@@ -537,7 +537,7 @@ describe("Command Profile Loader", () => {
             }
             return undefined;
         });
-        profManagerBanana.load = jest.fn((parms) => {
+        (profManagerBanana.load as any) = jest.fn((parms) => {
             return {
                 message: "Profile Loaded",
                 type: PROFILE_BANANA_TYPE,
@@ -549,7 +549,7 @@ describe("Command Profile Loader", () => {
                 }
             };
         });
-        profManagerStrawberry.load = jest.fn((parms) => {
+        (profManagerStrawberry.load as any) = jest.fn((parms) => {
             return {
                 message: "Profile Loaded",
                 type: STRAWBERRY_PROFILE_TYPE,

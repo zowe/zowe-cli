@@ -4,8 +4,8 @@
   "description": "Dependencies used by the web help bundle",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "tsc --build ./tsconfig.json",
+    "watch": "tsc --build ./tsconfig.json -w"
   },
   "keywords": [],
   "author": "",

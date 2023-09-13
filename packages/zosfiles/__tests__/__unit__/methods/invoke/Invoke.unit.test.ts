@@ -69,7 +69,7 @@ describe("Invoke", () => {
             let caughtError;
 
             try {
-                await Invoke.ams(dummySession, null);
+                await Invoke.ams(dummySession, null as any);
             } catch (e) {
                 caughtError = e;
             }
@@ -81,7 +81,7 @@ describe("Invoke", () => {
             caughtError = undefined;
 
             try {
-                await Invoke.ams(dummySession, undefined);
+                await Invoke.ams(dummySession, undefined as any);
             } catch (e) {
                 caughtError = e;
             }
@@ -131,7 +131,7 @@ describe("Invoke", () => {
         });
 
         it("should throw and error if there is a statement longer than the maximum allowed length", async () => {
-            const errorContextMock = getErrorContext as jest.Mock<typeof getErrorContext>;
+            const errorContextMock = getErrorContext as any as jest.Mock<typeof getErrorContext>;
 
             // Formulate the long string
             let longStatement = "";
@@ -144,7 +144,7 @@ describe("Invoke", () => {
 
             // Mock the return value expected
             const returnString = "This should be returned";
-            errorContextMock.mockReturnValue(returnString);
+            errorContextMock.mockReturnValue(returnString as any);
 
             // Run the command and see if the correct line is reported
             let response;

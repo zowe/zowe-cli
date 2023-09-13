@@ -48,7 +48,7 @@ describe("Plugin Management Facility list handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of install handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as any as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
 
     });
 
@@ -80,7 +80,7 @@ describe("Plugin Management Facility list handler", () => {
     };
 
     beforeEach(() => {
-        mocks.readFileSync.mockReturnValue({});
+        mocks.readFileSync.mockReturnValue({} as any);
     });
 
     test("list packages", async () => {
@@ -100,7 +100,7 @@ describe("Plugin Management Facility list handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson);
+        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
 
         const handler = new ListHandler();
 
@@ -129,7 +129,7 @@ describe("Plugin Management Facility list handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson);
+        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
 
         const handler = new ListHandler();
 

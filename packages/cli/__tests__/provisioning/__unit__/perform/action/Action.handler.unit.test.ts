@@ -46,15 +46,15 @@ describe("perform action handler tests", () => {
 
     it("should be able to provision template", async () => {
         ListRegistryInstances.listFilteredRegistry = jest.fn(
-            (session, zOSMFVersion, instanceId) => {
+            async (session, zOSMFVersion, instanceId) => {
                 return ProvisioningListMocks.LIST_REGISTRY_INSTANCES_RESPONSE;
             }
         );
         PerformAction.doProvisioningActionCommon = jest.fn(
-            (session, zOSMFVersion, templateName) => {
+            async (session, zOSMFVersion, templateName) => {
                 return {};
             }
-        );
+        ) as any;
         const handler = new ActionHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.zOSMFVersion = ProvisioningConstants.ZOSMF_VERSION;

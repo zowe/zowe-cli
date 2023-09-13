@@ -36,7 +36,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
     profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
-const DEFAULT_RESPONSE_FEEDBACK: IJobFeedback = {
+const DEFAULT_RESPONSE_FEEDBACK: any = {
     jobid: undefined,
     jobname: undefined,
     "original-jobid": undefined,
@@ -81,10 +81,10 @@ describe("delete job handler tests", () => {
         GetJobs.getJob = jest.fn((session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
-        });
+        }) as any;
         DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
             return DEFAULT_RESPONSE_FEEDBACK;
-        });
+        }) as any;
         const handler = new JobHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -103,10 +103,10 @@ describe("delete job handler tests", () => {
         GetJobs.getJob = jest.fn((session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
-        });
+        }) as any;
         DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
             return DEFAULT_RESPONSE_FEEDBACK_2;
-        });
+        }) as any;
         const handler = new JobHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments], {modifyVersion: "2.0"});
@@ -122,11 +122,11 @@ describe("delete job handler tests", () => {
 
     it("should fail to delete a job by job id version 2.0", async () => {
         let passedSession: Session;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (session, job) => {
             return DEFAULT_RESPONSE_FEEDBACK_2_BAD;
         });
         const handler = new JobHandler.default();
@@ -173,7 +173,7 @@ describe("delete job handler tests", () => {
     it("should not transform an error from the DeleteJobs API class", async () => {
         const failMessage = "You fail in DeleteJobs";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         DeleteJobs.deleteJobForJob = jest.fn((session, job) => {

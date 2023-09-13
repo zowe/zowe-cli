@@ -325,8 +325,6 @@ describe("Using a Plugin", () => {
             `"CredentialManager": ${credMgrValue}`
         );
 
-        writeFileSync(settingsPathNm, settingsContent, {
-            spaces: 2
-        });
+        writeFileSync(settingsPathNm, JSON.stringify(settingsContent, null, 2));
     }
 });

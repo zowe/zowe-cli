@@ -286,10 +286,10 @@ export class TextUtils {
                 return isString(value) || isNumber(value) || isJson;
             };
             if (isArray(values) && values.filter(isPrintfValue).length === values.length) {
-                message = format.apply(this, [message].concat(values));
+                message = format.apply(this, [message, ...values]);
             }
             else {
-                message = TextUtils.renderWithMustache.apply(this, [message].concat(values));
+                message = TextUtils.renderWithMustache.apply(this, [message, ...values]);
             }
         }
         return message;

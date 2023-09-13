@@ -37,16 +37,16 @@ describe("behavior of main.ts", () => {
 
             let setExitCode = 0;
 
-            const mockExit = jest.spyOn(process, 'exit').mockImplementation((newExitCode) => {
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation(((newExitCode) => {
                 setExitCode = newExitCode;
-            });
+            }) as any);
 
             const errMsg = "This should fail zowe!";
             let loggedMsg = "";
 
-            fatalLogMock.mockImplementation((message: string, ...args: any[]) => {
+            fatalLogMock.mockImplementation(((message: string, ...args: any[]) => {
                 loggedMsg = message;
-            });
+            }) as any);
 
             imperativeMock.mockImplementation(async () => {
                 throw new Error(errMsg);

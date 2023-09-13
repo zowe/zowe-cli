@@ -62,7 +62,7 @@ describe("issue ssh handler tests", () => {
     it("should be able to get stdout", async () => {
         Shell.executeSsh = jest.fn((session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
-        });
+        }) as any;
         const handler = new SshHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.command = "pwd";
@@ -74,7 +74,7 @@ describe("issue ssh handler tests", () => {
     it("should be able to get stdout with cwd option", async () => {
         Shell.executeSshCwd = jest.fn((session, command, cwd, stdoutHandler) => {
             stdoutHandler(testOutput);
-        });
+        }) as any;
         const handler = new SshHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.command = "pwd";

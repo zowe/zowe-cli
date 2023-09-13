@@ -230,8 +230,8 @@ describe("CollectCommand collect", () => {
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -256,8 +256,8 @@ describe("CollectCommand collect", () => {
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -282,12 +282,12 @@ describe("CollectCommand collect", () => {
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1)
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1)
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -309,7 +309,7 @@ describe("CollectCommand collect", () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Issue error message"}, {suppressReport: false, tag: "some tag"});
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
@@ -338,8 +338,8 @@ describe("CollectCommand collect", () => {
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         const response: IConsoleResponse = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS,
             FOLLOW_UP_CONSOLE_RESPONSE);

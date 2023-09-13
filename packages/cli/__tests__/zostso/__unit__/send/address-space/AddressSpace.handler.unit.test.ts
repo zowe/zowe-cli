@@ -44,7 +44,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -53,11 +53,11 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -83,11 +83,11 @@ describe("send address-space handler tests", () => {
     it("should be able to ping address-space", async () => {
         SendTso.sendDataToTSOCollect = jest.fn((session, servletKey, data) => {
             return PingTsoData.SAMPLE_PING_RESPONSE;
-        });
+        }) as any;
         const handler = new SendToAddressSpace.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        params = {...params,...args} as any;
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.data = "data";
         await handler.process(params);
@@ -104,7 +104,7 @@ describe("send address-space handler tests", () => {
         const handler = new SendToAddressSpace.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        params = {...params,...args} as any;
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.servletKey = "data";
         try {

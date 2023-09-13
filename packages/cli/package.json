@@ -72,7 +72,7 @@
     "minimatch": "3.1.2"
   },
   "devDependencies": {
-    "@types/node": "^12.20.23",
+    "@types/node": "^16.11.7",
     "eslint": "^7.32.0",
     "js-yaml": "^3.13.1",
     "madge": "^4.0.1",

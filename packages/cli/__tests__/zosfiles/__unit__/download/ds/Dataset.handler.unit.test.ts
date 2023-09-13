@@ -28,7 +28,7 @@ describe("Download data set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.dataSet = jest.fn((session) => {
+            Download.dataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -118,7 +118,7 @@ describe("Download data set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.dataSet = jest.fn((session) => {
+            Download.dataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -210,7 +210,7 @@ describe("Download data set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.dataSet = jest.fn((session) => {
+            Download.dataSet = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

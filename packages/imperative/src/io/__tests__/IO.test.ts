@@ -112,7 +112,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return false;
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -125,7 +125,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return true;
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -149,7 +149,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return false;
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -168,7 +168,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return true;
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -188,7 +188,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return (data++ % 2); // pretend every other dir exists
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -207,7 +207,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return false;
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -232,7 +232,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return true;
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
@@ -258,7 +258,7 @@ describe("IO tests", () => {
         fn.mockImplementation(((file: fs.PathLike) => {
             return (data++ % 2); // pretend every other dir exists
         }) as any);
-        const fnFm = fs.mkdirSync as Mock<typeof fs.mkdirSync>;
+        const fnFm = fs.mkdirSync as any as Mock<typeof fs.mkdirSync>;
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
