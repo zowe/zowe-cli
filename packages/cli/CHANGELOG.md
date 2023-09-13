@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Bump Secrets SDK to `7.18.5` to resolve build failures for FreeBSD users.
+
 ## `7.18.4`
 
 - BugFix: Bump Secrets SDK to `7.18.4` - uses more reliable resolution logic for `prebuilds` folder; adds static CRT for Windows builds.

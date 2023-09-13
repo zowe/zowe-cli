@@ -7,7 +7,7 @@ pub enum KeyringError {
     #[error("[keyring] Invalid parameter provided for '{argument:?}'. Details:\n\n{details:?}")]
     InvalidArg { argument: String, details: String },
 
-    #[cfg(any(target_os = "macos", target_os = "linux"))]
+    #[cfg(any(target_os = "macos", target_os = "linux", target_os = "freebsd"))]
     #[error("[keyring] {name:?} library returned an error:\n\n{details:?}")]
     Library { name: String, details: String },
 
