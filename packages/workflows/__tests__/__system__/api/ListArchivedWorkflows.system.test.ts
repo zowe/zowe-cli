@@ -13,14 +13,13 @@ import { CreateWorkflow } from "../../../src/Create";
 import { ArchivedDeleteWorkflow } from "../../../src/ArchivedDelete";
 import { ListArchivedWorkflows } from "../../../src/ListArchivedWorkflows";
 import { ArchiveWorkflow } from "../../../src/ArchiveWorkflow";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 
 

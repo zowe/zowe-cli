@@ -10,12 +10,11 @@
 */
 
 import { CreateWorkflow, DeleteWorkflow } from "../../../src";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import {
     noOwner,

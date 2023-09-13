@@ -9,9 +9,8 @@
 *
 */
 
-import { inspect } from "util";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import {
     IStartStopResponse,
     IStopTsoParms,

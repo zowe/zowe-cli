@@ -9,9 +9,8 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { Create } from "@zowe/zos-files-for-zowe-sdk";
-import { inspect } from "util";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

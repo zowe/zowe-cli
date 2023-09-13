@@ -9,8 +9,7 @@
 *
 */
 
-import { inspect } from "util";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import {
     IProvisionedInstance,

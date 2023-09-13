@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { GetZosLog, IZosLogType, noSessionMessage, IZosLogParms } from "../../src";

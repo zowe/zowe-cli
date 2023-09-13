@@ -9,8 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { Create } from "../../../../src/methods/create";
 import { Mount, IMountFsOptions } from "../../../../src/methods/mount";
 import { Unmount } from "../../../../src/methods/unmount";

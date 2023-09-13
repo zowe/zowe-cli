@@ -11,7 +11,7 @@
 
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { AbstractSession, Imperative } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/imperative";
 import { Utilities, Tag, Upload, Create, Download } from "../../../../src";
 import { getUniqueDatasetName, getTag } from "../../../../../../__tests__/__src__/TestUtils";
 

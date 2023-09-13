@@ -10,9 +10,8 @@
 */
 
 import { ICreateDataSetOptions, ZosFilesConstants } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import * as http from "http";
-import { inspect } from "util";
 
 const PRETEND_SESSION = new Session({
     user: "user",

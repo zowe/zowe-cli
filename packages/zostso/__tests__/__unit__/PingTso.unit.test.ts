@@ -9,10 +9,9 @@
 *
 */
 
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import { IPingResponse, IZosmfPingResponse, noPingInput, PingTso } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { inspect } from "util";
 
 
 const ISSUE_HEADERS: any[] = [Headers.APPLICATION_JSON];

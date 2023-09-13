@@ -9,9 +9,8 @@
 *
 */
 
-import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import { IProvisionedInstanceVariables, noInstanceId, ProvisioningConstants,
     noSessionProvisioning, ListInstanceVariables } from "../../src";
 

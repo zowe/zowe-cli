@@ -20,8 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../src";
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import { noConsoleInput, noConsoleName, noZosmfInput } from "../../src/ConsoleConstants";
 
 const PRETEND_SESSION = new Session({
