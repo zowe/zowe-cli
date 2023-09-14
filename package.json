@@ -13,6 +13,7 @@
     "installWithBuild": "npm install && npm run build",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
+    "link:imperative": "node -e \"require('symlink-dir')(process.argv[1] || '../imperative', './node_modules/@zowe/imperative').then(console.log)\"",
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
@@ -35,10 +36,10 @@
     "prepare": "husky install && npm run bundle:webHelp"
   },
   "dependencies": {
+    "@zowe/imperative": "4.18.18",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
-    "@octorelease/lerna": "^0.1.4",
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^24.9.1",
     "@types/lodash": "4.14.175",
@@ -77,6 +78,7 @@
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
     "syncpack": "^5.6.10",
+    "symlink-dir": "^5.1.1",
     "ts-jest": "^24.2.0",
     "ts-node": "^7.0.1",
     "typedoc": "^0.16.0",
