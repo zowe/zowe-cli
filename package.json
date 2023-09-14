@@ -40,6 +40,7 @@
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
+    "@types/babel__traverse": "7.17.1",
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^24.9.1",
     "@types/lodash": "4.14.175",

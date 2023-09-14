@@ -14,6 +14,7 @@
         "@zowe/perf-timing": "1.0.7"
       },
       "devDependencies": {
+        "@types/babel__traverse": "7.17.1",
         "@types/fs-extra": "^8.0.1",
         "@types/jest": "^24.9.1",
         "@types/lodash": "4.14.175",
@@ -7727,12 +7728,12 @@
       }
     },
     "node_modules/@types/babel__traverse": {
-      "version": "7.20.1",
-      "resolved": "https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.20.1.tgz",
-      "integrity": "sha512-MitHFXnhtgwsGZWtT68URpOvLN4EREih1u3QtQiN4VdAxWKRVvGCSvw/Qth0M0Qq3pJpnGOu5JaM/ydK7OGbqg==",
+      "version": "7.17.1",
+      "resolved": "https://registry.npmjs.org/@types/babel__traverse/-/babel__traverse-7.17.1.tgz",
+      "integrity": "sha512-kVzjari1s2YVi77D3w1yuvohV2idweYXMCDzqBiVNN63TcDWrIlTVOYpqVrvbbyOE/IyzBoTKF0fdnLPEORFxA==",
       "dev": true,
       "dependencies": {
-        "@babel/types": "^7.20.7"
+        "@babel/types": "^7.3.0"
       }
     },
     "node_modules/@types/cross-spawn": {
