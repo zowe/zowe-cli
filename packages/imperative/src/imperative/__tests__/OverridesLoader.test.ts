@@ -61,7 +61,7 @@ describe("OverridesLoader", () => {
             // Fake out package.json for the overrides loader
             const packageJson = {
                 dependencies: {
-                    keytar: "1.0"
+                    "@zowe/secrets-for-zowe-sdk": "1.0"
                 }
             };
 

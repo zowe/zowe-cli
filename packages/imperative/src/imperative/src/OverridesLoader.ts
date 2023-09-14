@@ -62,7 +62,8 @@ export class OverridesLoader {
             config.productDisplayName || config.name;
 
         // Initialize the credential manager if an override was supplied and/or keytar was supplied in package.json
-        if (overrides.CredentialManager != null || (packageJson.dependencies != null && packageJson.dependencies.keytar != null)) {
+        if (overrides.CredentialManager != null ||
+            (packageJson.dependencies != null && packageJson.dependencies['@zowe/secrets-for-zowe-sdk'] != null)) {
             let Manager = overrides.CredentialManager;
             if (typeof overrides.CredentialManager === "string" && !isAbsolute(overrides.CredentialManager)) {
                 Manager = resolve(process.mainModule.filename, "../", overrides.CredentialManager);

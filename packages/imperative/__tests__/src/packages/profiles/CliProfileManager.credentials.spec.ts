@@ -240,8 +240,8 @@ describe("Cli Profile Manager", () => {
 
         describe("Missing keytar installation", () => {
             const profileName = "missing-keytar";
-            const keyTarDir = path.join(__dirname, "../../../../node_modules/keytar");
-            const renamedKeyTarDir = path.join(__dirname, "../../../../node_modules/keytar-renamed");
+            const keyTarDir = path.join(__dirname, "../../../../node_modules/@zowe/secrets-for-zowe-sdk");
+            const renamedKeyTarDir = path.join(__dirname, "../../../../node_modules/@zowe/secrets-for-zowe-sdk");
 
             const renameKeyTar = () => {
                 if (fs.existsSync(keyTarDir)) {
@@ -264,7 +264,7 @@ describe("Cli Profile Manager", () => {
                 const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
                 expect(result.stdout).toEqual("");
                 expect(result.stderr).toContain(profileName);
-                expect(result.stderr).toContain("Keytar not Installed");
+                expect(result.stderr).toContain("Secrets SDK not installed");
             });
 
             it("should fail if keytar is not loaded on using profile handler", () => {
@@ -279,7 +279,7 @@ describe("Cli Profile Manager", () => {
                 cmd = `display-profile`;
                 result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
                 expect(result.stderr).toContain("Command Preparation Failed");
-                expect(result.stderr).toContain("Keytar not Installed");
+                expect(result.stderr).toContain("Secrets SDK not installed");
             });
 
             it("should fail if keytar is not loaded on profiles delete", () => {

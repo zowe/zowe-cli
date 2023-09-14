@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@zowe/imperative": "../../..",
-    "keytar": "^7.1.0"
+    "@zowe/secrets-for-zowe-sdk": "^7.18.4"
   },
   "engines": {
     "node": ">=8.0.0"

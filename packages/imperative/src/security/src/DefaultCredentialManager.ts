@@ -12,7 +12,7 @@
 import { AbstractCredentialManager, SecureCredential } from "./abstract/AbstractCredentialManager";
 import { ImperativeError } from "../../error";
 
-import * as keytar from "keytar"; // Used for typing purposes only
+import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
 
 /**
  * Default Credential Manager is our implementation of the Imperative Credential Manager. This manager invokes methods
@@ -86,10 +86,10 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
      */
     public async initialize(): Promise<void> {
         try {
-            this.keytar = await import("keytar");
+            this.keytar = (await import("@zowe/secrets-for-zowe-sdk")).keyring;
         } catch (error) {
             this.loadError = new ImperativeError({
-                msg: "Keytar not Installed",
+                msg: "Secrets SDK not installed",
                 causeErrors: error
             });
         }

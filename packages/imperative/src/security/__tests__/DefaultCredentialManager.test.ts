@@ -9,10 +9,10 @@
 *
 */
 
-jest.mock("keytar");
+jest.mock("@zowe/secrets-for-zowe-sdk");
 
 import { DefaultCredentialManager } from "..";
-import * as keytar from "keytar";
+import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ImperativeError } from "../../error";
 
 describe("DefaultCredentialManager", () => {
@@ -66,7 +66,7 @@ describe("DefaultCredentialManager", () => {
 
                 expect(privateManager.keytar).toBeUndefined();
                 expect(privateManager.loadError).toBeInstanceOf(ImperativeError);
-                expect(privateManager.loadError.message).toEqual("Keytar not Installed");
+                expect(privateManager.loadError.message).toEqual("Secrets SDK not installed");
             });
         });
 
