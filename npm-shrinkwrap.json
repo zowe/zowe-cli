@@ -8043,21 +8043,6 @@
       "integrity": "sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==",
       "dev": true
     },
-    "node_modules/@types/ssh2": {
-      "version": "1.11.13",
-      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-1.11.13.tgz",
-      "integrity": "sha512-08WbG68HvQ2YVi74n2iSUnYHYpUdFc/s2IsI0BHBdJwaqYJpWlVv9elL0tYShTv60yr0ObdxJR5NrCRiGJ/0CQ==",
-      "dev": true,
-      "dependencies": {
-        "@types/node": "^18.11.18"
-      }
-    },
-    "node_modules/@types/ssh2/node_modules/@types/node": {
-      "version": "18.17.15",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.15.tgz",
-      "integrity": "sha512-2yrWpBk32tvV/JAd3HNHWuZn/VDN1P+72hWirHnvsvTGSqbANi+kSeuQR9yAHnbvaBvHDsoTdXV0Fe+iRtHLKA==",
-      "dev": true
-    },
     "node_modules/@types/ssri": {
       "version": "7.1.1",
       "resolved": "https://registry.npmjs.org/@types/ssri/-/ssri-7.1.1.tgz",
@@ -31710,7 +31695,7 @@
       },
       "devDependencies": {
         "@types/node": "^16.11.7",
-        "@types/ssh2": "^1.11.13",
+        "@types/ssh2": "1.11.6",
         "@zowe/imperative": "4.18.18",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -31720,6 +31705,15 @@
       },
       "peerDependencies": {
         "@zowe/imperative": "^4.8.1"
+      }
+    },
+    "packages/zosuss/node_modules/@types/ssh2": {
+      "version": "1.11.6",
+      "resolved": "https://registry.npmjs.org/@types/ssh2/-/ssh2-1.11.6.tgz",
+      "integrity": "sha512-8Mf6bhzYYBLEB/G6COux7DS/F5bCWwojv/qFo2yH/e4cLzAavJnxvFXrYW59iKfXdhG6OmzJcXDasgOb/s0rxw==",
+      "dev": true,
+      "dependencies": {
+        "@types/node": "*"
       }
     }
   }
