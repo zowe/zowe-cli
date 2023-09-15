@@ -24,11 +24,5 @@
   "devDependencies": {
     "@types/jquery": "^3.3.31",
     "@types/jstree": "^3.3.39"
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "./.*\\.ts"
-    ]
   }
 }
