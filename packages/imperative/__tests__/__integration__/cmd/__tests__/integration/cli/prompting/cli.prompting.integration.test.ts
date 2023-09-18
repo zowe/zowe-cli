@@ -34,6 +34,7 @@ describe("cmd-cli profile mapping", () => {
         const myColor = "army green";
         // for some reason, node-pty won't find "sh" on Windows unless you add .exe
         const shProgram = require("os").platform() === "win32" ? "bash.exe" : "bash";
+        const rootDir = __dirname.slice(0, __dirname.indexOf("__tests__"));
         const ptyProcess = require("node-pty")
             .spawn(shProgram, [join(__dirname, "__scripts__", "prompt_for_color.sh")],
                 {
@@ -41,7 +42,10 @@ describe("cmd-cli profile mapping", () => {
                     cols: 80,
                     rows: 30,
                     cwd: TEST_ENVIRONMENT.workingDir,
-                    env: process.env
+                    env: {
+                        ...process.env,
+                        PATH: join(rootDir, "..", "..", ".npm-global", "bin") + ":" + process.env.PATH
+                    }
                 });
 
         let output: Buffer = Buffer.alloc(0);
