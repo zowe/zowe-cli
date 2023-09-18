@@ -84,6 +84,7 @@ typings/
 node-report*
 /docs/typedoc/
 __tests__/__system__/util/Zosmf.info.ts
+/.npm-global
 
 audit.txt
 imperative_debug.log

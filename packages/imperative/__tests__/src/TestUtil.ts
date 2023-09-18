@@ -423,6 +423,13 @@ export function runCliScript(scriptPath: string, cwd: string, args: any = [], en
         const childEnv = JSON.parse(JSON.stringify(process.env));
         childEnv.FORCE_COLOR = "0";
 
+        // Add .npm-global folder where test CLIs are installed to front of PATH
+        if (process.platform === "win32") {
+            childEnv.Path = nodePath.join(__dirname, "..", "..", "..", "..", ".npm-global") + ";" + childEnv.Path;
+        } else {
+            childEnv.PATH = nodePath.join(__dirname, "..", "..", "..", "..", ".npm-global", "bin") + ":" + childEnv.PATH;
+        }
+
         // Add the ENV vars if any are specified
         if (envVars != null) {
             Object.keys(envVars).forEach((property) => {
