@@ -9,6 +9,21 @@ pub enum OpaqueSecKeychainRef {}
 pub type KeychainItemRef = *mut OpaqueSecKeychainItemRef;
 pub type KeychainRef = *mut OpaqueSecKeychainRef;
 
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct KeychainAttribute {
+    pub tag: u32,
+    pub length: u32,
+    pub data: *mut c_void
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct KeychainAttributeList {
+    pub count: u32,
+    pub attr: *mut KeychainAttribute
+}
+
 ///
 /// Defined below are the C functions that the Rust logic uses
 /// to interact with macOS's Security.framework.

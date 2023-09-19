@@ -3,7 +3,7 @@ use std::ops::Deref;
 use core_foundation::{impl_TCFType, base::TCFType, declare_TCFType};
 use crate::os::mac::error::{Error, handle_os_status};
 use crate::os::mac::keychain_item::{KeychainItem};
-use crate::os::mac::ffi::{KeychainRef, SecKeychainCopyDefault, SecKeychainAddGenericPassword, SecKeychainFindGenericPassword};
+use crate::os::mac::ffi::{KeychainRef, SecKeychainCopyDefault, SecKeychainAddGenericPassword, SecKeychainFindGenericPassword, SecKeychainGetTypeID};
 
 
 declare_TCFType! {
