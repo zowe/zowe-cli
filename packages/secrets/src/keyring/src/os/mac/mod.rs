@@ -1,18 +1,16 @@
-extern crate security_framework;
 use super::error::KeyringError;
 
-use security_framework::{
-    item::{ItemClass, ItemSearchOptions},
-    os::macos::keychain::SecKeychain,
-};
+mod keychain;
+mod keychain_item;
 
+use keychain::Keychain;
 const ERR_SEC_ITEM_NOT_FOUND: i32 = -25300;
 
-impl From<security_framework::base::Error> for KeyringError {
-    fn from(error: security_framework::base::Error) -> Self {
+impl From<keychain::Error> for KeyringError {
+    fn from(error: keychain::Error) -> Self {
         KeyringError::Library {
             name: "security_framework".to_owned(),
-            details: format!("{:?}", error),
+            details: format!("{:?}", error.message()),
         }
     }
 }
@@ -32,8 +30,8 @@ pub fn set_password(
     account: &String,
     password: &mut String,
 ) -> Result<bool, KeyringError> {
-    let keychain = SecKeychain::default().unwrap();
-    match keychain.set_generic_password(service.as_str(), account.as_str(), password.as_bytes()) {
+    let keychain = Keychain::default().unwrap();
+    match keychain.set_password(service.as_str(), account.as_str(), password.as_bytes()) {
         Ok(()) => Ok(true),
         Err(err) => Err(KeyringError::from(err)),
     }
@@ -50,8 +48,8 @@ pub fn set_password(
 /// - A `KeyringError` if there were any issues interacting with the credential vault
 /// 
 pub fn get_password(service: &String, account: &String) -> Result<Option<String>, KeyringError> {
-    let keychain = SecKeychain::default().unwrap();
-    match keychain.find_generic_password(service.as_str(), account.as_str()) {
+    let keychain = Keychain::default().unwrap();
+    match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((pw, _)) => Ok(Some(String::from_utf8(pw.to_owned())?)),
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
         Err(err) => Err(KeyringError::from(err)),
@@ -77,8 +75,8 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
         });
     }
 
-    let keychain = SecKeychain::default().unwrap();
-    match keychain.find_generic_password(cred_attrs[0], cred_attrs[1]) {
+    let keychain = Keychain::default().unwrap();
+    match keychain.find_password(cred_attrs[0], cred_attrs[1]) {
         Ok((pw, _)) => {
             let pw_str = String::from_utf8(pw.to_owned())?;
             return Ok(Some(pw_str));
@@ -98,8 +96,8 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
 /// - A `KeyringError` if there were any issues interacting with the credential vault
 /// 
 pub fn delete_password(service: &String, account: &String) -> Result<bool, KeyringError> {
-    let keychain = SecKeychain::default().unwrap();
-    match keychain.find_generic_password(service.as_str(), account.as_str()) {
+    let keychain = Keychain::default().unwrap();
+    match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((_, item)) => {
             item.delete();
             return Ok(true);
@@ -123,7 +121,9 @@ pub fn find_credentials(
     service: &String,
     credentials: &mut Vec<(String, String)>,
 ) -> Result<bool, KeyringError> {
-    match ItemSearchOptions::new()
+    // TODO: implement ItemSearchOptions
+    Ok(false)
+    /*match ItemSearchOptions::new()
         .class(ItemClass::generic_password())
         .label(service.as_str())
         .limit(i32::MAX as i64)
@@ -145,5 +145,5 @@ pub fn find_credentials(
         }
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(false),
         Err(err) => Err(KeyringError::from(err)),
-    }
+    }*/
 }
