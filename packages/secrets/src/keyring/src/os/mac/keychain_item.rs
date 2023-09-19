@@ -1,13 +1,9 @@
 use std::ffi::c_void;
-use std::fmt::Error;
 use core_foundation::{declare_TCFType, impl_TCFType};
 use core_foundation::base::TCFType;
-use core_foundation_sys::base::{CFTypeID, OSStatus};
-use crate::os::mac::keychain;
-use crate::os::mac::keychain::cvt;
-
-pub enum OpaqueSecKeychainItemRef {}
-pub type KeychainItemRef = *mut OpaqueSecKeychainItemRef;
+use core_foundation_sys::base::OSStatus;
+use crate::os::mac::ffi::{SecKeychainItemDelete, SecKeychainItemModifyAttributesAndData};
+use crate::os::mac::error::{Error, handle_os_status};
 
 declare_TCFType! {
     KeychainItem, KeychainItemRef
@@ -25,9 +21,9 @@ impl KeychainItem {
         unsafe { SecKeychainItemDelete(self.as_CFTypeRef() as *mut _) }
     }
 
-    pub fn set_password(&mut self, password: &[u8]) -> Result<(), keychain::Error> {
+    pub fn set_password(&mut self, password: &[u8]) -> Result<(), Error> {
         unsafe {
-            cvt(SecKeychainItemModifyAttributesAndData(
+            handle_os_status(SecKeychainItemModifyAttributesAndData(
                 self.as_CFTypeRef() as *mut _,
                 std::ptr::null(),
                 password.len() as u32,
@@ -52,15 +48,4 @@ pub struct KeychainAttribute {
 pub struct KeychainAttributeList {
     pub count: u32,
     pub attr: *mut KeychainAttribute
-}
-
-extern "C" {
-    pub fn SecKeychainItemGetTypeID() -> CFTypeID;
-    pub fn SecKeychainItemModifyAttributesAndData(
-        item_ref: KeychainItemRef,
-        attr_list: *const KeychainAttributeList,
-        length: u32,
-        data: *const c_void
-    ) -> OSStatus;
-    pub fn SecKeychainItemDelete(item_ref: KeychainItemRef) -> OSStatus;
 }
