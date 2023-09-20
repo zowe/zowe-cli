@@ -76,7 +76,7 @@
     "jest-stare": "^2.2.0",
     "js-yaml": "^3.13.1",
     "jsonfile": "^4.0.0",
-    "lerna": "^3.22.1",
+    "lerna": "^5.4.3",
     "madge": "^4.0.1",
     "npm-lockfile": "^3.0.4",
     "rimraf": "^2.6.3",
