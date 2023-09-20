@@ -120,7 +120,7 @@
     "jest-stare": "^2.2.0",
     "jsdoc": "^3.6.2",
     "madge": "^4.0.1",
-    "node-pty": "^0.10.1",
+    "node-pty": "^1.0.0",
     "postcss": "^8.3.6",
     "postcss-url": "^10.1.3",
     "rimraf": "^3.0.2",
