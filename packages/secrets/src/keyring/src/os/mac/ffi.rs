@@ -1,5 +1,6 @@
 use std::ffi::{c_char, c_void};
 use core_foundation_sys::base::{CFTypeID, CFTypeRef, OSStatus};
+use core_foundation_sys::dictionary::CFDictionaryRef;
 use core_foundation_sys::string::CFStringRef;
 
 pub enum OpaqueSecKeychainItemRef {}
@@ -56,6 +57,7 @@ extern "C" {
     ) -> OSStatus;
     pub fn SecKeychainGetTypeID() -> CFTypeID;
     pub fn SecCopyErrorMessageString(status: OSStatus, reserved: *mut c_void) -> CFStringRef;
+
     // used in keychain_item.rs:
     pub fn SecKeychainItemGetTypeID() -> CFTypeID;
     pub fn SecKeychainItemModifyAttributesAndData(
@@ -65,4 +67,21 @@ extern "C" {
         data: *const c_void,
     ) -> OSStatus;
     pub fn SecKeychainItemDelete(item_ref: KeychainItemRef) -> OSStatus;
+
+    // used in keychain_search.rs:
+    pub fn SecItemCopyMatching(query: CFDictionaryRef, result: *mut CFTypeRef) -> OSStatus;
+    pub static kSecClass: CFStringRef;
+    pub static kSecClassGenericPassword: CFStringRef;
+    pub static kSecAttrAccount: CFStringRef;
+    pub static kSecAttrLabel: CFStringRef;
+    pub static kSecAttrService: CFStringRef;
+    pub static kSecMatchLimit: CFStringRef;
+    pub static kSecReturnData: CFStringRef;
+    pub static kSecReturnAttributes: CFStringRef;
+    pub static kSecReturnRef: CFStringRef;
+
+    // used in misc.rs:
+    pub fn SecCertificateGetTypeID() -> CFTypeID;
+    pub fn SecIdentityGetTypeID() -> CFTypeID;
+    pub fn SecKeyGetTypeID() -> CFTypeID;
 }

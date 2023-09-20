@@ -4,10 +4,13 @@ mod keychain;
 mod keychain_item;
 mod ffi;
 mod error;
+mod keychain_search;
+mod misc;
 
 use error::Error;
 
 use keychain::Keychain;
+use crate::os::mac::keychain_search::KeychainSearch;
 
 const ERR_SEC_ITEM_NOT_FOUND: i32 = -25300;
 
@@ -126,17 +129,12 @@ pub fn find_credentials(
     service: &String,
     credentials: &mut Vec<(String, String)>,
 ) -> Result<bool, KeyringError> {
-    // TODO: implement ItemSearchOptions
-    Ok(false)
-    /*match ItemSearchOptions::new()
-        .class(ItemClass::generic_password())
+    match KeychainSearch::new()
         .label(service.as_str())
-        .limit(i32::MAX as i64)
-        .load_attributes(true)
-        .load_data(true)
-        .load_refs(true)
-        .search()
-    {
+        .with_attrs()
+        .with_data()
+        .with_refs()
+        .execute() {
         Ok(search_results) => {
             for result in search_results {
                 if let Some(result_map) = result.simplify_dict() {
@@ -150,5 +148,5 @@ pub fn find_credentials(
         }
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(false),
         Err(err) => Err(KeyringError::from(err)),
-    }*/
+    }
 }
