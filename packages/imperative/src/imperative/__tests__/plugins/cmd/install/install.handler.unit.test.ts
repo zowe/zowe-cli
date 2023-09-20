@@ -93,6 +93,7 @@ describe("Plugin Management Facility install handler", () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
+        jest.unmock("path");
     });
 
     /**

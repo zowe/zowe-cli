@@ -88,6 +88,7 @@ describe("PMF: Install Interface", () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
+        jest.unmock("path");
     });
 
     /**
