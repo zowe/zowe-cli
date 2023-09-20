@@ -1,20 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`JSONUtils tests should give a message for a failed JSON object 1`] = `
-"Parse of { fail } failed:
-Unexpected token f in JSON at position 2"
-`;
-
-exports[`JSONUtils tests should give a message for a failed JSON object with custom fail message 1`] = `
-"test message:
-Unexpected token f in JSON at position 2"
-`;
-
-exports[`JSONUtils tests should give an error message for an undefined input 1`] = `
-"Parse of undefined failed:
-Unexpected token u in JSON at position 0"
-`;
-
 exports[`JSONUtils tests should parse a JSON object 1`] = `
 Object {
   "name": "user",

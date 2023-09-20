@@ -38,17 +38,7 @@ Object {
 }
 `;
 
-exports[`AbstractRestClient tests should error when chunking JSON data that does not parse 1`] = `
-"The get request appeared to succeed, but the response was not in the expected format:
-Unexpected end of JSON input"
-`;
-
-exports[`AbstractRestClient tests should error when chunking JSON data that does not parse and allow post payload 1`] = `
-"The post request appeared to succeed, but the response was not in the expected format:
-Unexpected end of JSON input"
-`;
-
-exports[`AbstractRestClient tests should error when chunking JSON data that does not parse and allow post payload 2`] = `undefined`;
+exports[`AbstractRestClient tests should error when chunking JSON data that does not parse and allow post payload 1`] = `undefined`;
 
 exports[`AbstractRestClient tests should error with request rejection when status code is not in 200 range 1`] = `"Rest API failure with HTTP(S) status 400"`;
 

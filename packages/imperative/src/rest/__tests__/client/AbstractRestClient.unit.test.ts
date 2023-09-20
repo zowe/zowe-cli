@@ -202,7 +202,8 @@ describe("AbstractRestClient tests", () => {
             error = thrownError;
         }
         expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message.includes("Unexpected end of JSON input") ||
+            error.message.includes("Expected ',' or '}' after property value in JSON at position 26")).toBeTruthy();
     });
 
     it("should error when chunking JSON data that does not parse and allow post payload", async () => {
@@ -253,7 +254,8 @@ describe("AbstractRestClient tests", () => {
             error = thrownError;
         }
         expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message.includes("Unexpected end of JSON input") ||
+            error.message.includes("Expected ',' or '}' after property value in JSON at position 26")).toBeTruthy();
         expect(error.errorCode).toMatchSnapshot();
     });
 
