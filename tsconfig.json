@@ -13,7 +13,8 @@
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "experimentalDecorators": true
   },
   "exclude": [
     "lib",

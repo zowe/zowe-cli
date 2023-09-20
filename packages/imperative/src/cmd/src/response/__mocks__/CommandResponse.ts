@@ -16,7 +16,7 @@ import { ICommandResponseApi } from "../../doc/response/api/processor/ICommandRe
 import { ICommandResponse } from "../../../src/doc/response/response/ICommandResponse";
 import { IImperativeError } from "../../../../error";
 
-export class CommandResponse implements ICommandResponseApi {
+export class CommandResponse implements Partial<ICommandResponseApi> {
     public format: "json" | "default";
     public silent: boolean;
     public console: IHandlerResponseConsoleApi = {

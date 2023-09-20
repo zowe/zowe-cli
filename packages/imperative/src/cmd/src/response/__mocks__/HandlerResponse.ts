@@ -14,7 +14,7 @@ import { IHandlerResponseConsoleApi } from "../../doc/response/api/handler/IHand
 import { IHandlerResponseDataApi } from "../../doc/response/api/handler/IHandlerResponseDataApi";
 import { IHandlerProgressApi } from "../../doc/response/api/handler/IHandlerProgressApi";
 
-export class HandlerResponse implements IHandlerResponseApi {
+export class HandlerResponse implements Partial<IHandlerResponseApi> {
     public console: IHandlerResponseConsoleApi = {
         log: jest.fn((message: string | Buffer, ...values: any[]) => {
             return message + "\n";
