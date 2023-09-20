@@ -68,9 +68,9 @@ function lstatSync(filePath: string) {
 }
 
 fs.__setMockFiles = __setMockFiles;
-fs.existsSync = existsSync;
-fs.readFileSync = readFileSync;
-fs.readdirSync = readdirSync;
-fs.lstatSync = lstatSync;
+fs.existsSync = jest.fn(existsSync);
+fs.readFileSync = jest.fn(readFileSync);
+fs.readdirSync = jest.fn(readdirSync);
+fs.lstatSync = jest.fn(lstatSync);
 
 module.exports = fs;
