@@ -52,6 +52,8 @@ import * as path from "path";
 function setResolve(toResolve: string, resolveTo?: string) {
     expectedVal = toResolve;
     returnedVal = resolveTo;
+    jest.spyOn(path, "dirname").mockReturnValueOnce("fake-dirname");
+    jest.spyOn(path, "join").mockReturnValueOnce("/fake/join/path");
 }
 
 describe("PMF: Install Interface", () => {
@@ -82,8 +84,6 @@ describe("PMF: Install Interface", () => {
         */
         mocks.readFileSync.mockReturnValue({} as any);
         mocks.sync.mockReturnValue("fake_find-up_sync_result" as any);
-        jest.spyOn(path, "dirname").mockReturnValueOnce("fake-dirname");
-        jest.spyOn(path, "join").mockReturnValueOnce("/fake/join/path");
     });
 
     afterAll(() => {

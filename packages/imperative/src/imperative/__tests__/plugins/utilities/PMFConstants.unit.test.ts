@@ -65,7 +65,7 @@ describe("PMFConstants", () => {
 
             const pmf = PMFConstants.instance;
 
-            expect(pmf.PLUGIN_INSTALL_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "node_modules"));
+            expect(pmf.PLUGIN_NODE_MODULE_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "node_modules"));
         });
 
         it("should point to the correct module location (linux)", () => {
@@ -73,7 +73,7 @@ describe("PMFConstants", () => {
 
             const pmf = PMFConstants.instance;
 
-            expect(pmf.PLUGIN_INSTALL_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "lib", "node_modules"));
+            expect(pmf.PLUGIN_NODE_MODULE_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "lib", "node_modules"));
         });
     });
 });
