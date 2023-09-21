@@ -30,6 +30,7 @@ describe("cmd-cli respond with-syntax-errors", () => {
             TEST_ENVIRONMENT.workingDir);
         expect(response.stdout.toString()).toBe("");
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
+        // Strip out JSON parse error message since it varies depending on Node version
+        expect(response.stderr.toString().replace(/(?<=JSON parsing failed with the following error:\r?\n).+\r?\n/, "")).toMatchSnapshot();
     });
 });

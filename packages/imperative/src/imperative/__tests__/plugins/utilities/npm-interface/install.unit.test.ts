@@ -22,19 +22,6 @@ jest.mock("../../../../../logger");
 jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../src/plugins/utilities/NpmFunctions");
-jest.doMock("path", () => {
-    const originalPath = jest.requireActual("path");
-    return {
-        ...originalPath,
-        resolve: (...path: string[]) => {
-            if (path[0] == expectedVal) {
-                return returnedVal ? returnedVal : expectedVal;
-            } else {
-                return originalPath.resolve(...path);
-            }
-        }
-    };
-});
 
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
@@ -69,8 +56,19 @@ describe("PMF: Install Interface", () => {
     const packageVersion = "1.2.3";
     const packageRegistry = "https://registry.npmjs.org/";
 
+    beforeAll(() => {
+        const oldPathResolve = path.resolve;
+        jest.spyOn(path, "resolve").mockImplementation((...path: string[]) => {
+            if (path[0] == expectedVal) {
+                return returnedVal ? returnedVal : expectedVal;
+            } else {
+                return oldPathResolve(...path);
+            }
+        });
+    });
+
     beforeEach(() => {
-    // Mocks need cleared after every test for clean test runs
+        // Mocks need cleared after every test for clean test runs
         expectedVal = undefined;
         returnedVal = undefined;
 
@@ -78,8 +76,8 @@ describe("PMF: Install Interface", () => {
         (Logger.getImperativeLogger as any as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
 
         /* Since install() adds new plugins into the value returned from
-     * readFileSyc(plugins.json), we must reset readFileSync to return an empty set before each test.
-     */
+        * readFileSync(plugins.json), we must reset readFileSync to return an empty set before each test.
+        */
         mocks.readFileSync.mockReturnValue({} as any);
         mocks.sync.mockReturnValue("fake_find-up_sync_result" as any);
         jest.spyOn(path, "dirname").mockReturnValue("fake-dirname");
@@ -88,31 +86,30 @@ describe("PMF: Install Interface", () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
-        jest.unmock("path");
     });
 
     /**
-   * Validates that an npm install call was valid based on the parameters passed.
-   *
-   * @param {string} expectedPackage The package that should be sent to npm install
-   * @param {string} expectedRegistry The registry that should be sent to npm install
-   */
+     * Validates that an npm install call was valid based on the parameters passed.
+     *
+     * @param {string} expectedPackage The package that should be sent to npm install
+     * @param {string} expectedRegistry The registry that should be sent to npm install
+     */
     const wasNpmInstallCallValid = (expectedPackage: string, expectedRegistry: string) => {
         expect(mocks.installPackages).toHaveBeenCalledWith(PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
             expectedRegistry, expectedPackage);
     };
 
     /**
-   * Validates that the writeFileSync was called with the proper JSON object. This object is created
-   * by merging the object returned by readFileSync (should be mocked) and an object that represents
-   * the new plugin added according to the plugins.json file syntax.
-   *
-   * @param {IPluginJson} originalJson The JSON object that was returned by readFileSync
-   * @param {string} expectedName The name of the plugin that was installed
-   * @param {IPluginJsonObject} expectedNewPlugin The expected object for the new plugin
-   */
+     * Validates that the writeFileSync was called with the proper JSON object. This object is created
+     * by merging the object returned by readFileSync (should be mocked) and an object that represents
+     * the new plugin added according to the plugins.json file syntax.
+     *
+     * @param {IPluginJson} originalJson The JSON object that was returned by readFileSync
+     * @param {string} expectedName The name of the plugin that was installed
+     * @param {IPluginJsonObject} expectedNewPlugin The expected object for the new plugin
+     */
     const wasWriteFileSyncCallValid = (originalJson: IPluginJson, expectedName: string, expectedNewPlugin: IPluginJsonObject) => {
-    // Create the object that should be sent to the command.
+        // Create the object that should be sent to the command.
         const expectedObject = {
             ...originalJson
         };
