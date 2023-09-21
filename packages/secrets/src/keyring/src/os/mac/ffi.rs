@@ -32,6 +32,8 @@ pub struct KeychainAttributeList {
 /// Since we can call C functions directly from Rust, we just need to define the
 /// fn prototypes ahead of time - Rust will link to the proper C symbols during compile time.
 ///
+///
+#[link(name = "Security", kind = "framework")]
 extern "C" {
     // used in keychain.rs:
     pub fn SecKeychainCopyDefault(keychain: *mut KeychainRef) -> OSStatus;
@@ -82,7 +84,6 @@ extern "C" {
 
     // used in misc.rs:
     pub fn SecCertificateGetTypeID() -> CFTypeID;
-    pub fn _SecCertificateGetTypeID() -> CFTypeID;
     pub fn SecIdentityGetTypeID() -> CFTypeID;
     pub fn SecKeyGetTypeID() -> CFTypeID;
 }
