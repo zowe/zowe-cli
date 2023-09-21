@@ -23,6 +23,19 @@ jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
 jest.mock("../../../../../logger");
 jest.mock("../../../../src/Imperative");
 jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.doMock("path", () => {
+    const originalPath = jest.requireActual("path");
+    return {
+        ...originalPath,
+        resolve: (...path: string[]) => {
+            if (path[0] == expectedVal) {
+                return returnedVal ? returnedVal : expectedVal;
+            } else {
+                return originalPath.resolve(...path);
+            }
+        }
+    };
+});
 
 import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
@@ -37,7 +50,6 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
 import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
-import * as path from "path";
 
 let expectedVal;
 let returnedVal;
@@ -64,17 +76,6 @@ describe("Plugin Management Facility install handler", () => {
     const packageRegistry2 = "https://zowe.jfrog.io/zowe/api/npm/npm-release/";
 
     const finalValidationMsg = "The final message from runPluginValidation";
-
-    beforeAll(() => {
-        const oldPathResolve = path.resolve;
-        jest.spyOn(path, "resolve").mockImplementation((...path: string[]) => {
-            if (path[0] == expectedVal) {
-                return returnedVal ? returnedVal : expectedVal;
-            } else {
-                return oldPathResolve(...path);
-            }
-        });
-    });
 
     beforeEach(() => {
         // Mocks need cleared after every test for clean test runs

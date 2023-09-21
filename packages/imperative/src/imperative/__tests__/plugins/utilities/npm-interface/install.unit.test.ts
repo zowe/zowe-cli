@@ -22,6 +22,19 @@ jest.mock("../../../../../logger");
 jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.doMock("path", () => {
+    const originalPath = jest.requireActual("path");
+    return {
+        ...originalPath,
+        resolve: (...path: string[]) => {
+            if (path[0] == expectedVal) {
+                return returnedVal ? returnedVal : expectedVal;
+            } else {
+                return originalPath.resolve(...path);
+            }
+        }
+    };
+});
 
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
@@ -56,17 +69,6 @@ describe("PMF: Install Interface", () => {
     const packageVersion = "1.2.3";
     const packageRegistry = "https://registry.npmjs.org/";
 
-    beforeAll(() => {
-        const oldPathResolve = path.resolve;
-        jest.spyOn(path, "resolve").mockImplementation((...path: string[]) => {
-            if (path[0] == expectedVal) {
-                return returnedVal ? returnedVal : expectedVal;
-            } else {
-                return oldPathResolve(...path);
-            }
-        });
-    });
-
     beforeEach(() => {
         // Mocks need cleared after every test for clean test runs
         expectedVal = undefined;
@@ -80,8 +82,8 @@ describe("PMF: Install Interface", () => {
         */
         mocks.readFileSync.mockReturnValue({} as any);
         mocks.sync.mockReturnValue("fake_find-up_sync_result" as any);
-        jest.spyOn(path, "dirname").mockReturnValue("fake-dirname");
-        jest.spyOn(path, "join").mockReturnValue("/fake/join/path");
+        jest.spyOn(path, "dirname").mockReturnValueOnce("fake-dirname");
+        jest.spyOn(path, "join").mockReturnValueOnce("/fake/join/path");
     });
 
     afterAll(() => {
