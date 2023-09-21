@@ -1,5 +1,5 @@
 use core_foundation::{declare_TCFType, impl_TCFType};
-use crate::os::mac::ffi::{SecCertificateGetTypeID, SecIdentityGetTypeID, SecKeyGetTypeID};
+use crate::os::mac::ffi::{_SecCertificateGetTypeID, SecIdentityGetTypeID, SecKeyGetTypeID};
 use core_foundation::base::TCFType;
 
 pub enum OpaqueSecIdentityRef {}
@@ -26,7 +26,7 @@ declare_TCFType!(
 impl_TCFType!(
     Certificate,
     SecCertificateRef,
-    SecCertificateGetTypeID
+    _SecCertificateGetTypeID
 );
 
 pub enum OpaqueSecKeyRef {}

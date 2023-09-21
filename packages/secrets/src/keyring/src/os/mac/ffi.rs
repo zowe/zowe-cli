@@ -82,6 +82,7 @@ extern "C" {
 
     // used in misc.rs:
     pub fn SecCertificateGetTypeID() -> CFTypeID;
+    pub fn _SecCertificateGetTypeID() -> CFTypeID;
     pub fn SecIdentityGetTypeID() -> CFTypeID;
     pub fn SecKeyGetTypeID() -> CFTypeID;
 }
