@@ -183,6 +183,17 @@ test.serial("findPassword for CJK symbols", async (t) => {
     t.is(pw, "「こんにちは世界」");
 });
 
+test.serial("findCredentials works when only one credential is found", async (t) => {
+    await setPassword("TestKeyring2", "TestOneCred", "pass");
+
+    const creds = await findCredentials("TestKeyring2");
+    t.deepEqual(creds, [{
+        account: "TestOneCred",
+        password: "pass"
+    }]);
+    await deletePassword("TestKeyring2", "TestOneCred");
+});
+
 test("deletePassword deletes all test credentials", async (t) => {
     console.log(
         "\nThe deletePassword test is running. There is an intended delay of 5 seconds to wait for the keyring to update."
