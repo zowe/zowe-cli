@@ -9,21 +9,19 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IWorkflows, DeleteWorkflow, CreateWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { CreateWorkflow, DeleteWorkflow, IWorkflows, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
-let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
@@ -44,7 +42,6 @@ describe("List workflow cli system tests", () => {
     });
 
     afterAll(async () => {
-        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
         await TestEnvironment.cleanUp(testEnvironment);
     });
     describe("List all workflows", () => {
@@ -56,29 +53,15 @@ describe("List workflow cli system tests", () => {
             await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
         });
         afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
             // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
+            await Delete.ussFile(REAL_SESSION, definitionFile);
 
-            response =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
-            response.workflows.forEach(async (element: any) => {
-                if(element.workflowName===wfName){
-                    wfKey = element.workflowKey;
-                    try {
-                        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
-                    } catch (err) {
-                        error = err;
-                    }
+            const response = await ListWorkflows.getWorkflows(REAL_SESSION, { owner }) as IWorkflows;
+            for (const element of response.workflows) {
+                if (element.workflowName === wfName) {
+                    await DeleteWorkflow.deleteWorkflow(REAL_SESSION, element.workflowKey as string);
                 }
-            });
+            }
         });
         describe("Success Scenarios", () => {
             it("Should return list of workflows in zOSMF.", async () => {
