@@ -5,7 +5,6 @@ use crate::os::mac::ffi::{
 };
 use core_foundation::base::TCFType;
 use core_foundation::{declare_TCFType, impl_TCFType};
-use core_foundation_sys::base::OSStatus;
 
 /*
  * SecKeychainItem: https://developer.apple.com/documentation/security/seckeychainitem
@@ -21,11 +20,27 @@ impl_TCFType! {
 }
 
 impl SecKeychainItem {
+    ///
+    /// delete
+    /// Attempts to delete this keychain item from the keychain.
+    ///
+    /// Returns:
+    /// - Nothing if the deletion request was successful, or
+    /// - An `Error` object if an error was encountered
+    ///
     #[inline]
-    pub fn delete(self) -> OSStatus {
-        unsafe { SecKeychainItemDelete(self.as_CFTypeRef() as *mut _) }
+    pub fn delete(self) -> Result<(), Error> {
+        unsafe { handle_os_status(SecKeychainItemDelete(self.as_CFTypeRef() as *mut _)) }
     }
 
+    ///
+    /// set_password  
+    /// Attempts to set the password for this keychain item.
+    ///
+    /// Returns:
+    /// - Nothing if the password was set successfully, or
+    /// - An `Error` object if an error was encountered
+    ///
     pub fn set_password(&mut self, password: &[u8]) -> Result<(), Error> {
         unsafe {
             handle_os_status(SecKeychainItemModifyAttributesAndData(

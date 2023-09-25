@@ -10,13 +10,13 @@ mod misc;
 use error::Error;
 
 use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
-use crate::os::mac::keychain_search::KeychainSearch;
+use crate::os::mac::keychain_search::{KeychainSearch, SearchResult};
 use keychain::SecKeychain;
 
 impl From<Error> for KeyringError {
     fn from(error: Error) -> Self {
         KeyringError::Library {
-            name: "security_framework".to_owned(),
+            name: "macOS Security.framework".to_owned(),
             details: format!("{:?}", error.message()),
         }
     }
@@ -106,7 +106,7 @@ pub fn delete_password(service: &String, account: &String) -> Result<bool, Keyri
     let keychain = SecKeychain::default().unwrap();
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((_, item)) => {
-            item.delete();
+            item.delete()?;
             return Ok(true);
         }
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(false),
@@ -136,15 +136,23 @@ pub fn find_credentials(
         .execute()
     {
         Ok(search_results) => {
-            for result in search_results {
-                if let Some(result_map) = result.simplify_dict() {
-                    credentials.push((
-                        result_map.get("acct").unwrap().to_owned(),
-                        result_map.get("v_Data").unwrap().to_owned(),
-                    ))
-                }
-            }
-            return Ok(!credentials.is_empty());
+            *credentials = search_results
+                .iter()
+                .filter_map(|result| match result {
+                    SearchResult::Dict(_) => {
+                        return match result.parse_dict() {
+                            Some(attrs) => Some((
+                                attrs.get("acct").unwrap().to_owned(),
+                                attrs.get("v_Data").unwrap().to_owned(),
+                            )),
+                            None => None,
+                        };
+                    }
+                    _ => None,
+                })
+                .collect();
+
+            Ok(!credentials.is_empty())
         }
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(false),
         Err(err) => Err(KeyringError::from(err)),

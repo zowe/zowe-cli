@@ -43,10 +43,15 @@ pub enum SearchResult {
 }
 
 impl SearchResult {
-    /// Returns `Some(hash_map)` containing the attribute keys/values
-    /// if the result is of the `Dict` variant, or `None` otherwise.
+    ///
+    /// parse_dict  
+    /// Tries to parse a CFDictionary object into a hashmap of string pairs.
+    ///
+    /// Returns:
+    /// - `Some(hash_map)` containing the attribute keys/values if parsed successfully
+    /// - `None` otherwise
     #[must_use]
-    pub fn simplify_dict(&self) -> Option<HashMap<String, String>> {
+    pub fn parse_dict(&self) -> Option<HashMap<String, String>> {
         match *self {
             Self::Dict(ref d) => unsafe {
                 // build map of attributes to return for this search result
@@ -86,7 +91,8 @@ impl SearchResult {
 /// get_item
 ///
 /// item: The item reference to convert to a SearchResult
-/// Returns: a SearchResult enum variant based on the item reference provided.
+/// Returns:
+/// - a SearchResult enum variant based on the item reference provided.
 ///
 unsafe fn get_item(item: CFTypeRef) -> SearchResult {
     let type_id = CFGetTypeID(item);
@@ -156,8 +162,9 @@ impl KeychainSearch {
 
     /// Executes a search within the keychain, factoring in the set search options.
     ///
-    /// Returns: If successful, a `Vec<SearchResult>` containing a list of search results;
-    /// an `Error` otherwise.
+    /// Returns:
+    /// - If successful, a `Vec<SearchResult>` containing a list of search results
+    /// - an `Error` object otherwise
     pub fn execute(&self) -> Result<Vec<SearchResult>, Error> {
         let mut params = vec![];
 

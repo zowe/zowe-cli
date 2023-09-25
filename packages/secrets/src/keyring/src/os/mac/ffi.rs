@@ -6,7 +6,7 @@ use std::ffi::{c_char, c_void};
 ///
 /// Keychain item reference types.
 ///
-/// Source (lib/SecBase.h):
+/// See lib/SecBase.h here:
 /// https://opensource.apple.com/source/libsecurity_keychain/libsecurity_keychain-55050.2/
 ///
 pub enum OpaqueSecKeychainItemRef {}
@@ -15,37 +15,30 @@ pub type SecKeychainItemRef = *mut OpaqueSecKeychainItemRef;
 pub type SecKeychainRef = *mut OpaqueSecKeychainRef;
 
 ///
-/// Certificate item reference types.
-///
-/// Source:
+/// Certificate item reference types.  
 /// https://developer.apple.com/documentation/security/opaqueseccertificateref
 ///
 pub enum OpaqueSecCertificateRef {}
 pub type SecCertificateRef = *mut OpaqueSecCertificateRef;
 
 ///
-/// Identity reference types.
-///
-/// Source:
+/// Identity reference types.  
 /// https://developer.apple.com/documentation/security/opaquesecidentityref
 ///
 pub enum OpaqueSecIdentityRef {}
 pub type SecIdentityRef = *mut OpaqueSecIdentityRef;
 
 ///
-/// Key reference types.
-///
-/// Source:
+/// Key reference types.  
 /// https://developer.apple.com/documentation/security/seckeyref
 ///
 pub enum OpaqueSecKeyRef {}
 pub type SecKeyRef = *mut OpaqueSecKeyRef;
 
 ///
-/// Keychain attribute structure for searching items.
-///
-/// Source:
-/// https://developer.apple.com/documentation/security/seckeychainattribute
+/// Keychain attribute structure for searching items.  
+/// https://developer.apple.com/documentation/security/seckeychainattribute,
+/// https://developer.apple.com/documentation/security/seckeychainattributelist
 ///
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -72,7 +65,7 @@ pub struct SecKeychainAttributeList {
 #[link(name = "Security", kind = "framework")]
 extern "C" {
     // keychain.rs:
-    pub fn SecKeychainCopyDefault(keychain: *mut SecKeychainRef) -> OSStatus;
+    pub fn SecCopyErrorMessageString(status: OSStatus, reserved: *mut c_void) -> CFStringRef;
     pub fn SecKeychainAddGenericPassword(
         keychain: SecKeychainRef,
         service_name_length: u32,
@@ -83,6 +76,7 @@ extern "C" {
         password_data: *const c_void,
         item_ref: *mut SecKeychainItemRef,
     ) -> OSStatus;
+    pub fn SecKeychainCopyDefault(keychain: *mut SecKeychainRef) -> OSStatus;
     pub fn SecKeychainFindGenericPassword(
         keychain_or_array: CFTypeRef,
         service_name_len: u32,
@@ -94,9 +88,9 @@ extern "C" {
         item_ref: *mut SecKeychainItemRef,
     ) -> OSStatus;
     pub fn SecKeychainGetTypeID() -> CFTypeID;
-    pub fn SecCopyErrorMessageString(status: OSStatus, reserved: *mut c_void) -> CFStringRef;
 
     // keychain_item.rs:
+    pub fn SecKeychainItemDelete(item_ref: SecKeychainItemRef) -> OSStatus;
     pub fn SecKeychainItemGetTypeID() -> CFTypeID;
     pub fn SecKeychainItemModifyAttributesAndData(
         item_ref: SecKeychainItemRef,
@@ -104,18 +98,17 @@ extern "C" {
         length: u32,
         data: *const c_void,
     ) -> OSStatus;
-    pub fn SecKeychainItemDelete(item_ref: SecKeychainItemRef) -> OSStatus;
 
     // keychain_search.rs:
     pub fn SecItemCopyMatching(query: CFDictionaryRef, result: *mut CFTypeRef) -> OSStatus;
-    pub static kSecClass: CFStringRef;
-    pub static kSecClassGenericPassword: CFStringRef;
     pub static kSecAttrAccount: CFStringRef;
     pub static kSecAttrLabel: CFStringRef;
     pub static kSecAttrService: CFStringRef;
+    pub static kSecClass: CFStringRef;
+    pub static kSecClassGenericPassword: CFStringRef;
     pub static kSecMatchLimit: CFStringRef;
-    pub static kSecReturnData: CFStringRef;
     pub static kSecReturnAttributes: CFStringRef;
+    pub static kSecReturnData: CFStringRef;
     pub static kSecReturnRef: CFStringRef;
 
     // misc.rs:

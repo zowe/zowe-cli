@@ -46,6 +46,14 @@ impl SecKeychain {
         unsafe { Ok(Self::wrap_under_create_rule(keychain)) }
     }
 
+    ///
+    /// set_password  
+    /// Attempts to set the password within the keychain for a given service and account.
+    ///
+    /// Returns:
+    /// - Nothing if the password was set successfully, or
+    /// - An `Error` object if an error was encountered
+    ///
     pub fn set_password(&self, service: &str, account: &str, password: &[u8]) -> Result<(), Error> {
         match self.find_password(service, account) {
             Ok((_, mut item)) => item.set_password(password),
@@ -63,6 +71,15 @@ impl SecKeychain {
             },
         }
     }
+
+    ///
+    /// find_password  
+    /// Attempts to find a password within the keychain matching a given service and account.
+    ///
+    /// Returns:
+    /// - A pair containing the KeychainItem object with its password data if the password was found, or
+    /// - An `Error` object if an error was encountered
+    ///
     pub fn find_password(
         &self,
         service: &str,

@@ -22,6 +22,7 @@ impl Error {
         self.0.get() as _
     }
 
+    /// Gets the message matching an OSStatus error code, if one exists.
     pub fn message(&self) -> Option<String> {
         unsafe {
             let s = SecCopyErrorMessageString(self.code(), std::ptr::null_mut());
@@ -54,12 +55,12 @@ impl Display for Error {
     }
 }
 
+/// Handles the OSStatus code from macOS FFI calls (error handling helper fn)
 #[inline(always)]
 pub fn handle_os_status(err: OSStatus) -> Result<(), Error> {
     match err {
         // errSecSuccess
         0 => Ok(()),
-        // TODO: better error handling
         err => Err(Error::from_code(err)),
     }
 }
