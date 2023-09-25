@@ -1,21 +1,26 @@
-use std::ffi::c_void;
-use core_foundation::{declare_TCFType, impl_TCFType};
+use crate::os::mac::error::{handle_os_status, Error};
+use crate::os::mac::ffi::{
+    SecKeychainItemDelete, SecKeychainItemGetTypeID, SecKeychainItemModifyAttributesAndData,
+    SecKeychainItemRef,
+};
 use core_foundation::base::TCFType;
+use core_foundation::{declare_TCFType, impl_TCFType};
 use core_foundation_sys::base::OSStatus;
-use crate::os::mac::ffi::{KeychainItemRef, SecKeychainItemDelete, SecKeychainItemGetTypeID, SecKeychainItemModifyAttributesAndData};
-use crate::os::mac::error::{Error, handle_os_status};
 
+/*
+ * SecKeychainItem: https://developer.apple.com/documentation/security/seckeychainitem
+ * SecKeychainItemRef: https://developer.apple.com/documentation/security/seckeychainitemref
+ */
 declare_TCFType! {
-    KeychainItem, KeychainItemRef
+    SecKeychainItem, SecKeychainItemRef
 }
-
 impl_TCFType! {
-    KeychainItem,
-    KeychainItemRef,
+    SecKeychainItem,
+    SecKeychainItemRef,
     SecKeychainItemGetTypeID
 }
 
-impl KeychainItem {
+impl SecKeychainItem {
     #[inline]
     pub fn delete(self) -> OSStatus {
         unsafe { SecKeychainItemDelete(self.as_CFTypeRef() as *mut _) }

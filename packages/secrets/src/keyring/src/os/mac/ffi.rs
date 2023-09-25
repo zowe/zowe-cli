@@ -1,51 +1,87 @@
-use std::ffi::{c_char, c_void};
 use core_foundation_sys::base::{CFTypeID, CFTypeRef, OSStatus};
 use core_foundation_sys::dictionary::CFDictionaryRef;
 use core_foundation_sys::string::CFStringRef;
+use std::ffi::{c_char, c_void};
 
+///
+/// Keychain item reference types.
+///
+/// Source (lib/SecBase.h):
+/// https://opensource.apple.com/source/libsecurity_keychain/libsecurity_keychain-55050.2/
+///
 pub enum OpaqueSecKeychainItemRef {}
-
 pub enum OpaqueSecKeychainRef {}
+pub type SecKeychainItemRef = *mut OpaqueSecKeychainItemRef;
+pub type SecKeychainRef = *mut OpaqueSecKeychainRef;
 
-pub type KeychainItemRef = *mut OpaqueSecKeychainItemRef;
-pub type KeychainRef = *mut OpaqueSecKeychainRef;
+///
+/// Certificate item reference types.
+///
+/// Source:
+/// https://developer.apple.com/documentation/security/opaqueseccertificateref
+///
+pub enum OpaqueSecCertificateRef {}
+pub type SecCertificateRef = *mut OpaqueSecCertificateRef;
 
+///
+/// Identity reference types.
+///
+/// Source:
+/// https://developer.apple.com/documentation/security/opaquesecidentityref
+///
+pub enum OpaqueSecIdentityRef {}
+pub type SecIdentityRef = *mut OpaqueSecIdentityRef;
+
+///
+/// Key reference types.
+///
+/// Source:
+/// https://developer.apple.com/documentation/security/seckeyref
+///
+pub enum OpaqueSecKeyRef {}
+pub type SecKeyRef = *mut OpaqueSecKeyRef;
+
+///
+/// Keychain attribute structure for searching items.
+///
+/// Source:
+/// https://developer.apple.com/documentation/security/seckeychainattribute
+///
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct KeychainAttribute {
+pub struct SecKeychainAttribute {
     pub tag: u32,
     pub length: u32,
-    pub data: *mut c_void
+    pub data: *mut c_void,
 }
-
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct KeychainAttributeList {
+pub struct SecKeychainAttributeList {
     pub count: u32,
-    pub attr: *mut KeychainAttribute
+    pub attr: *mut SecKeychainAttribute,
 }
 
-///
-/// Defined below are the C functions that the Rust logic uses
-/// to interact with macOS's Security.framework.
-///
-/// Since we can call C functions directly from Rust, we just need to define the
-/// fn prototypes ahead of time - Rust will link to the proper C symbols during compile time.
-///
-///
+/*
+ * Defined below are the C functions that the Rust logic
+ * uses to interact with macOS's Security.framework.
+ *
+ * Since we can call C functions directly using Rust FFI, we just need to define
+ * the function prototypes ahead of time, and link them to the Security.framework library.
+ * Rust will evaluate these symbols during compile time.
+ */
 #[link(name = "Security", kind = "framework")]
 extern "C" {
-    // used in keychain.rs:
-    pub fn SecKeychainCopyDefault(keychain: *mut KeychainRef) -> OSStatus;
+    // keychain.rs:
+    pub fn SecKeychainCopyDefault(keychain: *mut SecKeychainRef) -> OSStatus;
     pub fn SecKeychainAddGenericPassword(
-        keychain: KeychainRef,
+        keychain: SecKeychainRef,
         service_name_length: u32,
         service_name: *const c_char,
         account_name_length: u32,
         account_name: *const c_char,
         password_length: u32,
         password_data: *const c_void,
-        item_ref: *mut KeychainItemRef,
+        item_ref: *mut SecKeychainItemRef,
     ) -> OSStatus;
     pub fn SecKeychainFindGenericPassword(
         keychain_or_array: CFTypeRef,
@@ -55,22 +91,22 @@ extern "C" {
         account_name: *const c_char,
         password_len: *mut u32,
         password: *mut *mut c_void,
-        item_ref: *mut KeychainItemRef,
+        item_ref: *mut SecKeychainItemRef,
     ) -> OSStatus;
     pub fn SecKeychainGetTypeID() -> CFTypeID;
     pub fn SecCopyErrorMessageString(status: OSStatus, reserved: *mut c_void) -> CFStringRef;
 
-    // used in keychain_item.rs:
+    // keychain_item.rs:
     pub fn SecKeychainItemGetTypeID() -> CFTypeID;
     pub fn SecKeychainItemModifyAttributesAndData(
-        item_ref: KeychainItemRef,
-        attr_list: *const KeychainAttributeList,
+        item_ref: SecKeychainItemRef,
+        attr_list: *const SecKeychainAttributeList,
         length: u32,
         data: *const c_void,
     ) -> OSStatus;
-    pub fn SecKeychainItemDelete(item_ref: KeychainItemRef) -> OSStatus;
+    pub fn SecKeychainItemDelete(item_ref: SecKeychainItemRef) -> OSStatus;
 
-    // used in keychain_search.rs:
+    // keychain_search.rs:
     pub fn SecItemCopyMatching(query: CFDictionaryRef, result: *mut CFTypeRef) -> OSStatus;
     pub static kSecClass: CFStringRef;
     pub static kSecClassGenericPassword: CFStringRef;
@@ -82,7 +118,7 @@ extern "C" {
     pub static kSecReturnAttributes: CFStringRef;
     pub static kSecReturnRef: CFStringRef;
 
-    // used in misc.rs:
+    // misc.rs:
     pub fn SecCertificateGetTypeID() -> CFTypeID;
     pub fn SecIdentityGetTypeID() -> CFTypeID;
     pub fn SecKeyGetTypeID() -> CFTypeID;

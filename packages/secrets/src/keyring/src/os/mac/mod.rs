@@ -1,18 +1,17 @@
 use super::error::KeyringError;
 
+mod error;
+mod ffi;
 mod keychain;
 mod keychain_item;
-mod ffi;
-mod error;
 mod keychain_search;
 mod misc;
 
 use error::Error;
 
-use keychain::Keychain;
+use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
 use crate::os::mac::keychain_search::KeychainSearch;
-
-const ERR_SEC_ITEM_NOT_FOUND: i32 = -25300;
+use keychain::SecKeychain;
 
 impl From<Error> for KeyringError {
     fn from(error: Error) -> Self {
@@ -38,7 +37,7 @@ pub fn set_password(
     account: &String,
     password: &mut String,
 ) -> Result<bool, KeyringError> {
-    let keychain = Keychain::default().unwrap();
+    let keychain = SecKeychain::default().unwrap();
     match keychain.set_password(service.as_str(), account.as_str(), password.as_bytes()) {
         Ok(()) => Ok(true),
         Err(err) => Err(KeyringError::from(err)),
@@ -56,7 +55,7 @@ pub fn set_password(
 /// - A `KeyringError` if there were any issues interacting with the credential vault
 ///
 pub fn get_password(service: &String, account: &String) -> Result<Option<String>, KeyringError> {
-    let keychain = Keychain::default().unwrap();
+    let keychain = SecKeychain::default().unwrap();
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((pw, _)) => Ok(Some(String::from_utf8(pw.to_owned())?)),
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
@@ -83,7 +82,7 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
         });
     }
 
-    let keychain = Keychain::default().unwrap();
+    let keychain = SecKeychain::default().unwrap();
     match keychain.find_password(cred_attrs[0], cred_attrs[1]) {
         Ok((pw, _)) => {
             let pw_str = String::from_utf8(pw.to_owned())?;
@@ -104,7 +103,7 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
 /// - A `KeyringError` if there were any issues interacting with the credential vault
 ///
 pub fn delete_password(service: &String, account: &String) -> Result<bool, KeyringError> {
-    let keychain = Keychain::default().unwrap();
+    let keychain = SecKeychain::default().unwrap();
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((_, item)) => {
             item.delete();
@@ -119,7 +118,7 @@ pub fn delete_password(service: &String, account: &String) -> Result<bool, Keyri
 /// Builds a vector of all credentials matching the given service pattern.
 ///
 /// - `service`: The service pattern that matches the credential(s) of interest
-/// - `credentials`: The vector consisting of (username, password) pairs for each credential that matches 
+/// - `credentials`: The vector consisting of (username, password) pairs for each credential that matches
 ///
 /// Returns:
 /// - `true` if at least 1 credential was found, `false` otherwise
@@ -134,7 +133,8 @@ pub fn find_credentials(
         .with_attrs()
         .with_data()
         .with_refs()
-        .execute() {
+        .execute()
+    {
         Ok(search_results) => {
             for result in search_results {
                 if let Some(result_map) = result.simplify_dict() {

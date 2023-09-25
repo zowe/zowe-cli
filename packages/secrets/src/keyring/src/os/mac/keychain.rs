@@ -1,17 +1,22 @@
-use std::fmt::{Debug, Display};
+use crate::os::mac::error::{handle_os_status, Error};
+use crate::os::mac::ffi::{
+    SecKeychainAddGenericPassword, SecKeychainCopyDefault, SecKeychainFindGenericPassword,
+    SecKeychainGetTypeID, SecKeychainRef,
+};
+use crate::os::mac::keychain_item::SecKeychainItem;
+use core_foundation::{base::TCFType, declare_TCFType, impl_TCFType};
 use std::ops::Deref;
-use core_foundation::{impl_TCFType, base::TCFType, declare_TCFType};
-use crate::os::mac::error::{Error, handle_os_status};
-use crate::os::mac::keychain_item::{KeychainItem};
-use crate::os::mac::ffi::{KeychainRef, SecKeychainCopyDefault, SecKeychainAddGenericPassword, SecKeychainFindGenericPassword, SecKeychainGetTypeID};
 
-
+/*
+ * SecKeychain: https://developer.apple.com/documentation/security/seckeychain
+ * SecKeychainRef: https://developer.apple.com/documentation/security/seckeychainref
+ */
 declare_TCFType! {
-    Keychain, KeychainRef
+    SecKeychain, SecKeychainRef
 }
+impl_TCFType!(SecKeychain, SecKeychainRef, SecKeychainGetTypeID);
 
-impl_TCFType!(Keychain, KeychainRef, SecKeychainGetTypeID);
-
+/* Wrapper struct for handling passwords within SecKeychainItem objects. */
 pub struct KeychainItemPassword {
     pub data: *const u8,
     pub data_len: usize,
@@ -32,10 +37,12 @@ impl Deref for KeychainItemPassword {
     }
 }
 
-impl Keychain {
+impl SecKeychain {
     pub fn default() -> Result<Self, Error> {
         let mut keychain = std::ptr::null_mut();
-        unsafe { handle_os_status(SecKeychainCopyDefault(&mut keychain))?; }
+        unsafe {
+            handle_os_status(SecKeychainCopyDefault(&mut keychain))?;
+        }
         unsafe { Ok(Self::wrap_under_create_rule(keychain)) }
     }
 
@@ -53,10 +60,14 @@ impl Keychain {
                     password.as_ptr().cast(),
                     std::ptr::null_mut(),
                 ))
-            }
+            },
         }
     }
-    pub fn find_password(&self, service: &str, account: &str) -> Result<(KeychainItemPassword, KeychainItem), Error> {
+    pub fn find_password(
+        &self,
+        service: &str,
+        account: &str,
+    ) -> Result<(KeychainItemPassword, SecKeychainItem), Error> {
         let keychain_ref = self.as_CFTypeRef();
 
         let mut len = 0;
@@ -79,7 +90,7 @@ impl Keychain {
                     data: data as *const _,
                     data_len: len as usize,
                 },
-                KeychainItem::wrap_under_create_rule(item)
+                SecKeychainItem::wrap_under_create_rule(item),
             ))
         }
     }

@@ -1,12 +1,15 @@
-use std::fmt::{Debug, Display, Formatter};
-use std::num::NonZeroI32;
+use crate::os::mac::ffi::SecCopyErrorMessageString;
 use core_foundation::base::TCFType;
 use core_foundation::string::CFString;
 use core_foundation_sys::base::OSStatus;
-use crate::os::mac::ffi::SecCopyErrorMessageString;
+use std::fmt::{Debug, Display, Formatter};
+use std::num::NonZeroI32;
 
 #[derive(Copy, Clone)]
 pub struct Error(NonZeroI32);
+
+/// errSecItemNotFound
+pub const ERR_SEC_ITEM_NOT_FOUND: i32 = -25300;
 
 impl Error {
     #[inline]
@@ -46,7 +49,7 @@ impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self.message() {
             Some(msg) => write!(f, "{}", msg),
-            None => write!(f, "code: {}", self.code())
+            None => write!(f, "code: {}", self.code()),
         }
     }
 }
@@ -57,6 +60,6 @@ pub fn handle_os_status(err: OSStatus) -> Result<(), Error> {
         // errSecSuccess
         0 => Ok(()),
         // TODO: better error handling
-        err => Err(Error::from_code(err))
+        err => Err(Error::from_code(err)),
     }
 }

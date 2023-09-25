@@ -1,4 +1,10 @@
-use std::collections::HashMap;
+use crate::os::mac::error::{handle_os_status, Error};
+use crate::os::mac::ffi::{
+    kSecAttrAccount, kSecAttrLabel, kSecAttrService, kSecClass, kSecClassGenericPassword,
+    kSecMatchLimit, kSecReturnAttributes, kSecReturnData, kSecReturnRef, SecItemCopyMatching,
+};
+use crate::os::mac::keychain_item::SecKeychainItem;
+use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
 use core_foundation::array::CFArray;
 use core_foundation::base::{CFType, TCFType};
 use core_foundation::boolean::CFBoolean;
@@ -8,11 +14,9 @@ use core_foundation::dictionary::CFDictionary;
 use core_foundation::number::CFNumber;
 use core_foundation::string::CFString;
 use core_foundation_sys::base::{CFCopyDescription, CFGetTypeID, CFRelease, CFTypeRef};
-use crate::os::mac::error::{Error, handle_os_status};
-use crate::os::mac::ffi::{kSecAttrAccount, kSecAttrLabel, kSecAttrService, kSecClass, kSecClassGenericPassword, kSecMatchLimit, kSecReturnAttributes, kSecReturnData, kSecReturnRef, SecItemCopyMatching};
-use crate::os::mac::misc::{Certificate, Identity, Key};
-use crate::os::mac::keychain_item::KeychainItem;
+use std::collections::HashMap;
 
+/// Keychain Search structure to reference when making searches within the keychain.
 #[derive(Default)]
 pub struct KeychainSearch {
     label: Option<CFString>,
@@ -23,29 +27,36 @@ pub struct KeychainSearch {
     load_refs: bool,
 }
 
+/// Reference enum for categorizing search results based on item type.
 pub enum Reference {
-    Identity(Identity),
-    Certificate(Certificate),
-    Key(Key),
-    KeychainItem(KeychainItem),
+    Identity(SecIdentity),
+    Certificate(SecCertificate),
+    Key(SecKey),
+    KeychainItem(SecKeychainItem),
 }
 
+/// Enum for organizing types of items found during the keychain search operation.
 pub enum SearchResult {
     Ref(Reference),
     Dict(CFDictionary),
     Data(Vec<u8>),
-    Other,
 }
 
 impl SearchResult {
+    /// Returns `Some(hash_map)` containing the attribute keys/values
+    /// if the result is of the `Dict` variant, or `None` otherwise.
     #[must_use]
     pub fn simplify_dict(&self) -> Option<HashMap<String, String>> {
         match *self {
             Self::Dict(ref d) => unsafe {
+                // build map of attributes to return for this search result
                 let mut retmap = HashMap::new();
                 let (keys, values) = d.get_keys_and_values();
                 for (k, v) in keys.iter().zip(values.iter()) {
+                    // get key as CFString from pointer
                     let key_cfstr = CFString::wrap_under_get_rule((*k).cast());
+
+                    // get value based on CFType
                     let val: String = match CFGetTypeID(*v) {
                         cfstring if cfstring == CFString::type_id() => {
                             format!("{}", CFString::wrap_under_get_rule((*v).cast()))
@@ -56,20 +67,31 @@ impl SearchResult {
                             vec.extend_from_slice(buf.bytes());
                             format!("{}", String::from_utf8_lossy(&vec))
                         }
-                        cfdate if cfdate == CFDate::type_id() => format!("{}", CFString::wrap_under_create_rule(CFCopyDescription(*v))),
-                        _ => String::from("unknown")
+                        cfdate if cfdate == CFDate::type_id() => format!(
+                            "{}",
+                            CFString::wrap_under_create_rule(CFCopyDescription(*v))
+                        ),
+                        _ => String::from("unknown"),
                     };
                     retmap.insert(format!("{}", key_cfstr), val);
                 }
                 Some(retmap)
-            }
-            _ => None
+            },
+            _ => None,
         }
     }
 }
 
+///
+/// get_item
+///
+/// item: The item reference to convert to a SearchResult
+/// Returns: a SearchResult enum variant based on the item reference provided.
+///
 unsafe fn get_item(item: CFTypeRef) -> SearchResult {
     let type_id = CFGetTypeID(item);
+
+    // if type is a raw buffer, return Vec of bytes based on item size
     if type_id == CFData::type_id() {
         let data = CFData::wrap_under_get_rule(item as *mut _);
         let mut buf = Vec::new();
@@ -77,21 +99,29 @@ unsafe fn get_item(item: CFTypeRef) -> SearchResult {
         return SearchResult::Data(buf);
     }
 
+    // if type is dictionary of items, cast as CFDictionary object
     if type_id == CFDictionary::<*const u8, *const u8>::type_id() {
         return SearchResult::Dict(CFDictionary::wrap_under_get_rule(item as *mut _));
     }
 
-    if type_id == KeychainItem::type_id() {
+    // if type is a single Keychain item, return it as a reference
+    if type_id == SecKeychainItem::type_id() {
         return SearchResult::Ref(Reference::KeychainItem(
-            KeychainItem::wrap_under_get_rule(item as *mut _)
+            SecKeychainItem::wrap_under_get_rule(item as *mut _),
         ));
     }
 
+    // handle certificate, cryptographic key, and identity types as
+    // they can also appear in search results for the keychain
     let reference = match type_id {
-        r if r == Certificate::type_id() => Reference::Certificate(Certificate::wrap_under_get_rule(item as *mut _)),
-        r if r == Key::type_id() => Reference::Key(Key::wrap_under_get_rule(item as *mut _)),
-        r if r == Identity::type_id() => Reference::Identity(Identity::wrap_under_get_rule(item as *mut _)),
-        _ => panic!("Bad type received from SecItemCopyMatching: {}", type_id)
+        r if r == SecCertificate::type_id() => {
+            Reference::Certificate(SecCertificate::wrap_under_get_rule(item as *mut _))
+        }
+        r if r == SecKey::type_id() => Reference::Key(SecKey::wrap_under_get_rule(item as *mut _)),
+        r if r == SecIdentity::type_id() => {
+            Reference::Identity(SecIdentity::wrap_under_get_rule(item as *mut _))
+        }
+        _ => panic!("Bad type received from SecItemCopyMatching: {}", type_id),
     };
 
     SearchResult::Ref(reference)
@@ -124,54 +154,76 @@ impl KeychainSearch {
         self
     }
 
+    /// Executes a search within the keychain, factoring in the set search options.
+    ///
+    /// Returns: If successful, a `Vec<SearchResult>` containing a list of search results;
+    /// an `Error` otherwise.
     pub fn execute(&self) -> Result<Vec<SearchResult>, Error> {
         let mut params = vec![];
 
         unsafe {
-            params.push((CFString::wrap_under_get_rule(kSecClass), CFType::wrap_under_get_rule(kSecClassGenericPassword.cast())));
+            params.push((
+                CFString::wrap_under_get_rule(kSecClass),
+                CFType::wrap_under_get_rule(kSecClassGenericPassword.cast()),
+            ));
 
+            // Handle any parameters that were configured before execution (label, service, account)
             if let Some(ref label) = self.label {
-                params.push((CFString::wrap_under_get_rule(kSecAttrLabel), label.as_CFType()));
+                params.push((
+                    CFString::wrap_under_get_rule(kSecAttrLabel),
+                    label.as_CFType(),
+                ));
             }
-
             if let Some(ref service) = self.service {
-                params.push((CFString::wrap_under_get_rule(kSecAttrService), service.as_CFType()));
+                params.push((
+                    CFString::wrap_under_get_rule(kSecAttrService),
+                    service.as_CFType(),
+                ));
             }
-
             if let Some(ref acc) = self.account {
-                params.push((CFString::wrap_under_get_rule(kSecAttrAccount), acc.as_CFType()));
+                params.push((
+                    CFString::wrap_under_get_rule(kSecAttrAccount),
+                    acc.as_CFType(),
+                ));
             }
 
+            // Add params to fetch data, attributes, and/or refs if requested from search options
             if self.load_data {
                 params.push((
                     CFString::wrap_under_get_rule(kSecReturnData),
-                    CFBoolean::true_value().into_CFType()
+                    CFBoolean::true_value().into_CFType(),
                 ));
             }
             if self.load_attrs {
                 params.push((
                     CFString::wrap_under_get_rule(kSecReturnAttributes),
-                    CFBoolean::true_value().into_CFType()
+                    CFBoolean::true_value().into_CFType(),
                 ));
             }
             if self.load_refs {
                 params.push((
                     CFString::wrap_under_get_rule(kSecReturnRef),
-                    CFBoolean::true_value().into_CFType()
+                    CFBoolean::true_value().into_CFType(),
                 ));
             }
 
-            params.push((CFString::wrap_under_get_rule(kSecMatchLimit), CFNumber::from(i32::MAX).into_CFType()));
+            // Remove the default limit of 0 by requesting all items that match the search
+            params.push((
+                CFString::wrap_under_get_rule(kSecMatchLimit),
+                CFNumber::from(i32::MAX).into_CFType(),
+            ));
 
             let params = CFDictionary::from_CFType_pairs(&params);
             let mut ret = std::ptr::null();
 
+            // handle copy operation status and get type ID based on return value
             handle_os_status(SecItemCopyMatching(params.as_concrete_TypeRef(), &mut ret))?;
             if ret.is_null() {
                 return Ok(vec![]);
             }
             let type_id = CFGetTypeID(ret);
 
+            // Build vector of items based on return reference type
             let mut items = vec![];
             if type_id == CFArray::<CFType>::type_id() {
                 let array: CFArray<CFType> = CFArray::wrap_under_create_rule(ret as *mut _);
