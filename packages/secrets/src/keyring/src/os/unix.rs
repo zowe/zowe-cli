@@ -4,6 +4,7 @@ use glib::translate::{FromGlibPtrContainer, ToGlibPtr};
 use glib_sys::{g_hash_table_unref};
 use libsecret::{
     prelude::CollectionExtManual, traits::ItemExt, SearchFlags, Service, ServiceFlags,
+    password_free
 };
 use std::collections::HashMap;
 
@@ -181,32 +182,29 @@ pub fn find_credentials(
     match collection.search_sync(
         Some(&get_schema()),
         HashMap::from([("service", service.as_str())]),
-        SearchFlags::ALL | SearchFlags::LOAD_SECRETS,
+        SearchFlags::ALL | SearchFlags::UNLOCK | SearchFlags::LOAD_SECRETS,
         gio::Cancellable::NONE,
     ) {
         Ok(vec) => {
             let valid_creds: Vec<(String, String)> = vec
                 .iter()
                 .filter_map(|item| {
-                    let attrs: HashMap<String, String> = unsafe {
-                        let attrs =
-                            libsecret_sys::secret_item_get_attributes(item.to_glib_none().0);
-                        FromGlibPtrContainer::from_glib_full(attrs)
-                    };
                     match item.secret() {
                         Some(secret) => {
+                            let attrs: HashMap<String, String> = unsafe {
+                                let attrs = libsecret_sys::secret_item_get_attributes(item.to_glib_none().0);
+                                FromGlibPtrContainer::from_glib_full(attrs)
+                            };
                             let bytes = secret.get();
-                            let acc = attrs.get("account").unwrap().clone();
                             let pw = String::from_utf8(bytes).unwrap_or("".to_string());
+
+                            let acc = attrs.get("account").unwrap().clone();
                             unsafe {
-                                secret.unref();
                                 g_hash_table_unref(attrs.to_glib_full());
                             }
-
                             Some((acc, pw))
                         }
                         None => {
-                            g_hash_table_unref(attrs.to_glib_full());
                             None
                         },
                     }

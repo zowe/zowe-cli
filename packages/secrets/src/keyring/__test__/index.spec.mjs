@@ -163,6 +163,17 @@ test.serial(
     }
 );
 
+test.serial("findCredentials works when only one credential is found", async (t) => {
+    await setPassword("TestKeyring2", "TestOneCred", "pass");
+
+    const creds = await findCredentials("TestKeyring2");
+    t.deepEqual(creds, [{
+        account: "TestOneCred",
+        password: "pass"
+    }]);
+    await deletePassword("TestKeyring2", "TestOneCred");
+});
+
 test.serial("findPassword for ASCII string", async (t) => {
     const pw = await findPassword("TestKeyring/TestASCII");
     t.is(pw, "ASCII string");
@@ -181,17 +192,6 @@ test.serial("findPassword for UTF-16", async (t) => {
 test.serial("findPassword for CJK symbols", async (t) => {
     const pw = await findPassword("TestKeyring/TestCJK");
     t.is(pw, "「こんにちは世界」");
-});
-
-test.serial("findCredentials works when only one credential is found", async (t) => {
-    await setPassword("TestKeyring2", "TestOneCred", "pass");
-
-    const creds = await findCredentials("TestKeyring2");
-    t.deepEqual(creds, [{
-        account: "TestOneCred",
-        password: "pass"
-    }]);
-    await deletePassword("TestKeyring2", "TestOneCred");
 });
 
 test("deletePassword deletes all test credentials", async (t) => {
