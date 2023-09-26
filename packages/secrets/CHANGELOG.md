@@ -5,6 +5,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 ## `7.18.6`
 
 - BugFix: Use `core-foundation-rs` instead of `security-framework` for macOS logic, as `security-framework` is now archived. [#1802](https://github.com/zowe/zowe-cli/issues/1802)
+- BugFix: Resolve bug where `findCredentials` scenarios with one match causes a segmentation fault on Linux.
 
 ## `7.18.5`
 
