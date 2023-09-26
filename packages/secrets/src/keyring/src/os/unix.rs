@@ -1,5 +1,7 @@
 extern crate libsecret;
+extern crate glib_sys;
 use glib::translate::{FromGlibPtrContainer, ToGlibPtr};
+use glib_sys::{g_hash_table_unref};
 use libsecret::{
     prelude::CollectionExtManual, traits::ItemExt, SearchFlags, Service, ServiceFlags,
 };
@@ -197,16 +199,21 @@ pub fn find_credentials(
                             let acc = attrs.get("account").unwrap().clone();
                             let pw = String::from_utf8(bytes).unwrap_or("".to_string());
                             unsafe {
-                                libsecret_sys::secret_value_unref(secret.as_ptr() as *mut _);
+                                secret.unref();
+                                g_hash_table_unref(attrs.to_glib_full());
                             }
 
                             Some((acc, pw))
                         }
-                        None => None,
+                        None => {
+                            g_hash_table_unref(attrs.to_glib_full());
+                            None
+                        },
                     }
                 })
                 .collect();
             *credentials = valid_creds;
+            
 
             Ok(true)
         }
