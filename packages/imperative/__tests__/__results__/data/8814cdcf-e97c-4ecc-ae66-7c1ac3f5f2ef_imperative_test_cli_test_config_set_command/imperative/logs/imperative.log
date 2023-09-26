@@ -1,0 +1,308 @@
+[2023/06/29 15:01:48.016] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:01:48.017] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:01:48.083] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:01:48.084] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:01:48.084] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:01:53.401] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:01:53.403] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:01:53.458] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:01:53.459] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:01:53.459] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:01:58.465] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:01:58.467] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:01:58.526] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:01:58.527] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:01:58.528] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:04.245] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:04.247] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:04.311] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:04.312] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:04.313] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:09.027] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:09.028] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:09.076] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:09.077] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:09.078] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:14.515] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:14.517] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:14.574] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:14.574] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:14.575] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:19.091] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:19.093] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:19.148] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:19.150] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:19.151] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:23.629] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:23.631] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:23.690] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:23.691] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:23.693] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:29.180] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:29.182] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:29.243] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:29.244] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:29.245] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:33.653] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:33.655] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:33.703] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:33.704] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:33.705] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:38.223] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:38.225] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:38.281] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:38.282] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:38.283] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:46.279] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:46.281] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:46.381] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:46.382] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:46.383] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:52.675] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:52.677] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:52.769] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:52.771] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:52.773] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:02:59.314] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:02:59.317] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:02:59.407] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:02:59.409] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:02:59.411] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:07.358] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:07.360] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:07.434] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:07.435] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:07.436] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:13.850] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:13.852] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:13.921] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:13.922] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:13.924] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:19.974] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:19.978] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:20.091] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:20.093] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:20.094] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:26.272] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:26.274] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:26.339] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:26.340] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:26.340] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:31.238] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:31.240] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:31.291] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:31.293] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:31.293] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:35.842] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:35.844] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:35.903] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:35.905] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:35.906] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:41.580] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:41.581] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:41.644] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:41.644] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:41.645] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:46.271] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:46.272] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:46.321] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:46.322] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:46.323] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:46.448] [ERROR] [CommandProcessor.js:946] Handler for command "set" failed.
+[2023/06/29 15:03:46.450] [ERROR] [CommandProcessor.js:949] Diagnostic information:
+Platform: 'win32', Architecture: 'x64', Process.argv: 'C:\Program Files\nodejs\node.exe C:\ourstuff\repos\dev\imperative\.npm-global\node_modules\imperative-test-cli\lib\main.js config set profiles.secured.properties.info data:fake --global-config --user-config --json --secure'
+Node versions: '{
+  "node": "18.16.0",
+  "acorn": "8.8.2",
+  "ada": "1.0.4",
+  "ares": "1.19.0",
+  "brotli": "1.0.9",
+  "cldr": "42.0",
+  "icu": "72.1",
+  "llhttp": "6.0.10",
+  "modules": "108",
+  "napi": "8",
+  "nghttp2": "1.52.0",
+  "nghttp3": "0.7.0",
+  "ngtcp2": "0.8.1",
+  "openssl": "3.0.8+quic",
+  "simdutf": "3.2.2",
+  "tz": "2022g",
+  "undici": "5.21.0",
+  "unicode": "15.0",
+  "uv": "1.44.2",
+  "uvwasi": "0.0.15",
+  "v8": "10.2.154.26-node.26",
+  "zlib": "1.2.13"
+}'Environmental variables: '{
+  "ALLUSERSPROFILE": "C:\\ProgramData",
+  "ANSICON": "174x1000 (174x58)",
+  "ANSICON_DEF": "7",
+  "APPDATA": "C:\\Users\\ej608771\\AppData\\Roaming",
+  "CARGO_HOME": "C:\\pkgs\\cargo",
+  "COLOR": "1",
+  "COMMONPROGRAMFILES": "C:\\Program Files\\Common Files",
+  "COMPUTERNAME": "GSNMQV2",
+  "COMSPEC": "C:\\WINDOWS\\system32\\cmd.exe",
+  "ChocolateyInstall": "C:\\ProgramData\\chocolatey",
+  "ChocolateyLastPathUpdate": "132476746047740870",
+  "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+  "CommonProgramW6432": "C:\\Program Files\\Common Files",
+  "ConEmuANSI": "ON",
+  "ConEmuAnsiLog": "",
+  "ConEmuArgs2": "",
+  "ConEmuArgs": "",
+  "ConEmuBackHWND": "0x00140862",
+  "ConEmuBaseDir": "C:\\Program Files\\ConEmu\\ConEmu",
+  "ConEmuBaseDirShort": "C:\\PROGRA~1\\ConEmu\\ConEmu",
+  "ConEmuBuild": "221218",
+  "ConEmuCfgDir": "C:\\Users\\ej608771\\AppData\\Roaming",
+  "ConEmuConfig": "",
+  "ConEmuDir": "C:\\Program Files\\ConEmu",
+  "ConEmuDrawHWND": "0x000F0FCE",
+  "ConEmuDrive": "C:",
+  "ConEmuHWND": "0x00550DD6",
+  "ConEmuHooks": "Enabled",
+  "ConEmuPID": "19172",
+  "ConEmuPalette": "<Current color scheme>",
+  "ConEmuServerPID": "24072",
+  "ConEmuTask": "{Powershell 7}",
+  "ConEmuWorkDir": "C:\\ourstuff\\repos\\dev\\imperative",
+  "ConEmuWorkDrive": "C:",
+  "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+  "EDITOR": "C:\\WINDOWS\\notepad.exe",
+  "FORCE_COLOR": "0",
+  "FPS_BROWSER_APP_PROFILE_STRING": "Internet Explorer",
+  "FPS_BROWSER_USER_PROFILE_STRING": "Default",
+  "GENE_CLASSPATH": "c:\\pkgs\\cmds\\classes;c:\\pkgs\\cmds\\classes\\log4j-1.2.14.jar",
+  "GENE_DIFF": "C:\\Program Files\\KDiff3\\bin\\kdiff3.exe",
+  "GENE_EDIT": "C:\\pkgs\\CudaText\\cudatext.exe",
+  "HOME": "C:\\Users\\ej608771",
+  "HOMEDRIVE": "C:",
+  "HOMEPATH": "\\Users\\ej608771",
+  "IMPERATIVE_TEST_CLI_CLI_HOME": "C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\data\\8814cdcf-e97c-4ecc-ae66-7c1ac3f5f2ef_imperative_test_cli_test_config_set_command",
+  "INIT_CWD": "C:\\ourstuff\\repos\\dev\\imperative",
+  "IntelliJ IDEA": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2019.2\\bin;",
+  "JAVA_HOME": "c:\\pkgs\\java\\jdk",
+  "JEST_JUNIT_ANCESTOR_SEPARATOR": " > ",
+  "JEST_JUNIT_CLASSNAME": "Integration.{classname}",
+  "JEST_JUNIT_OUTPUT": "__tests__\\__results__\\integration\\junit\\junit.xml",
+  "JEST_JUNIT_TITLE": "{title}",
+  "JEST_STARE_RESULT_DIR": "__tests__\\__results__\\integration\\html",
+  "JEST_SUIT_NAME": "Integration Tests",
+  "JEST_WORKER_ID": "1",
+  "LOCALAPPDATA": "C:\\Users\\ej608771\\AppData\\Local",
+  "LOGONSERVER": "\\\\WPDPASHEGC02",
+  "NEXTHINK": "C:\\Program Files\\Nexthink\\Collector",
+  "NODE": "C:\\Program Files\\nodejs\\node.exe",
+  "NODE_ENV": "test",
+  "NODE_EXE": "C:\\Program Files\\nodejs\\\\node.exe",
+  "NPM_CLI_JS": "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+  "NPM_PREFIX_NPM_CLI_JS": "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+  "NUMBER_OF_PROCESSORS": "12",
+  "NVM_HOME": "C:\\pkgs\\nvm",
+  "NVM_SYMLINK": "C:\\Program Files\\nodejs",
+  "OLDPWD": "C:/ourstuff/repos/dev/imperative/__tests__/__results__/data/8814cdcf-e97c-4ecc-ae66-7c1ac3f5f2ef_imperative_test_cli_test_config_set_command",
+  "OS": "Windows_NT",
+  "OneDrive": "C:\\Users\\ej608771\\OneDrive",
+  "PATH": "C:\\ourstuff\\repos\\dev\\imperative\\.npm-global;C:\\ourstuff\\repos\\dev\\imperative\\node_modules\\.bin;C:\\ourstuff\\repos\\dev\\node_modules\\.bin;C:\\ourstuff\\repos\\node_modules\\.bin;C:\\ourstuff\\node_modules\\.bin;C:\\node_modules\\.bin;C:\\pkgs\\nvm\\v18.16.0\\node_modules\\npm\\node_modules\\@npmcli\\run-script\\lib\\node-gyp-bin;C:\\Program Files\\PowerShell\\7;C:\\Program Files\\ConEmu\\ConEmu\\Scripts;C:\\Program Files\\ConEmu;C:\\Program Files\\ConEmu\\ConEmu;C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath;.;C:\\pkgs\\cmds\\winScr;C:\\pkgs\\cmds\\workScr;C:\\pkgs\\cmds\\bin;C:\\ourstuff\\records\\Broadcom\\zowe\\cmds;C:\\Program Files\\PowerShell\\7;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\pkgs\\java\\jdk\\bin;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2019.2\\bin;C:\\Program Files\\doxygen\\bin;C:\\pkgs\\Ruby25-x64\\bin;C:\\ProgramData\\chocolatey\\bin;C:\\windows\\system32;C:\\windows;C:\\windows\\System32\\Wbem;C:\\WINDOWS\\System32\\OpenSSH;C:\\Program Files\\Intel\\WiFi\\bin;C:\\Program Files\\Common Files\\Intel\\WirelessCommon;C:\\Program Files (x86)\\Box\\Box Edit;C:\\Program Files (x86)\\Symantec\\VIP Access Client;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files\\dotnet;C:\\pkgs\\nvm;C:\\Program Files\\nodejs;C:\\Program Files (x86)\\GitExtensions;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Git\\mingw64\\bin;C:\\Program Files\\Git\\usr\\bin;C:\\Program Files\\PowerShell\\7;C:\\pkgs\\cargo\\bin;C:\\Users\\ej608771\\AppData\\Local\\Microsoft\\WindowsApps",
+  "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.RB;.RBW;.CPL",
+  "PKGS": "c:\\pkgs",
+  "POWERSHELL_DISTRIBUTION_CHANNEL": "MSI:Windows 10 Pro",
+  "PROCESSOR_ARCHITECTURE": "AMD64",
+  "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+  "PROCESSOR_LEVEL": "6",
+  "PROCESSOR_REVISION": "9e0a",
+  "PROGRAMFILES": "C:\\Program Files",
+  "PROMPT": "$P$G",
+  "PSModulePath": "C:\\Users\\ej608771\\Documents\\PowerShell\\Modules;C:\\Program Files\\PowerShell\\Modules;c:\\program files\\powershell\\7\\Modules;C:\\Program Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
+  "PUBLIC": "C:\\Users\\Public",
+  "PWD": "C:/ourstuff/repos/dev/imperative/__tests__/__results__/data/8814cdcf-e97c-4ecc-ae66-7c1ac3f5f2ef_imperative_test_cli_test_config_set_command/test",
+  "ProgramData": "C:\\ProgramData",
+  "ProgramFiles(x86)": "C:\\Program Files (x86)",
+  "ProgramW6432": "C:\\Program Files",
+  "SHLVL": "1",
+  "SYSTEMDRIVE": "C:",
+  "SYSTEMROOT": "C:\\WINDOWS",
+  "TEMP": "C:\\Users\\ej608771\\AppData\\Local\\Temp",
+  "TERM": "xterm-256color",
+  "TMP": "C:\\Users\\ej608771\\AppData\\Local\\Temp",
+  "TS_JEST": "1",
+  "USERDNSDOMAIN": "BROADCOM.NET",
+  "USERDOMAIN": "BRCMLTD",
+  "USERDOMAIN_ROAMINGPROFILE": "BRCMLTD",
+  "USERNAME": "ej608771",
+  "USERPROFILE": "C:\\Users\\ej608771",
+  "VBOX_MSI_INSTALL_PATH": "C:\\Program Files\\Oracle\\VirtualBox\\",
+  "WINDIR": "C:\\WINDOWS",
+  "ZES_ENABLE_SYSMAN": "1",
+  "__COMPAT_LAYER": "DPIUnaware",
+  "__PSLockDownPolicy": "0",
+  "npm_command": "run-script",
+  "npm_config_cache": "C:\\Users\\ej608771\\AppData\\Local\\npm-cache",
+  "npm_config_global_prefix": "C:\\Program Files\\nodejs",
+  "npm_config_globalconfig": "C:\\Program Files\\nodejs\\etc\\npmrc",
+  "npm_config_http://registry.npmjs.org": "",
+  "npm_config_init_module": "C:\\Users\\ej608771\\.npm-init.js",
+  "npm_config_install_links": "false",
+  "npm_config_local_prefix": "C:\\ourstuff\\repos\\dev\\imperative",
+  "npm_config_metrics_registry": "https://registry.npmjs.org/",
+  "npm_config_node_gyp": "C:\\pkgs\\nvm\\v18.16.0\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js",
+  "npm_config_noproxy": "",
+  "npm_config_prefix": "C:\\Program Files\\nodejs",
+  "npm_config_user_agent": "npm/9.5.1 node/v18.16.0 win32 x64 workspaces/false",
+  "npm_config_userconfig": "C:\\Users\\ej608771\\.npmrc",
+  "npm_execpath": "C:\\pkgs\\nvm\\v18.16.0\\node_modules\\npm\\bin\\npm-cli.js",
+  "npm_lifecycle_event": "test:integration",
+  "npm_lifecycle_script": "env-cmd ./__tests__/config/integration/.env.js --no-override jest -c ./__tests__/config/integration/jest.config.json --runInBand",
+  "npm_node_execpath": "C:\\Program Files\\nodejs\\node.exe",
+  "npm_package_engines_node": ">=14.0.0",
+  "npm_package_json": "C:\\ourstuff\\repos\\dev\\imperative\\package.json",
+  "npm_package_name": "@zowe/imperative",
+  "npm_package_version": "5.15.0",
+  "ourstuff": "c:\\ourstuff",
+  "zowe_set_env_test": "C:\\Users\\ej608771\\.zowe\\bin;C:\\Program Files\\PowerShell\\7;C:\\Program Files\\ConEmu\\ConEmu\\Scripts;C:\\Program Files\\ConEmu;C:\\Program Files\\ConEmu\\ConEmu;.\\;c:\\pkgs\\cmds\\winScr;c:\\pkgs\\cmds\\workScr;c:\\pkgs\\cmds\\bin;C:\\ourstuff\\records\\Broadcom\\zowe\\cmds;C:\\Program Files (x86)\\GitExtensions\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Git\\mingw64\\bin;C:\\Program Files\\Git\\usr\\bin;C:\\Program Files\\PowerShell\\7;C:\\Windows\\System32\\WindowsPowerShell\\v1.0;C:\\Program Files (x86)\\Common Files\\Oracle\\Java\\javapath;C:\\pkgs\\java\\jdk\\bin;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2019.2\\bin;C:\\Program Files\\doxygen\\bin;C:\\pkgs\\Ruby25-x64\\bin;C:\\ProgramData\\chocolatey\\bin;C:\\windows\\system32;C:\\windows;C:\\windows\\System32\\Wbem;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Intel\\WiFi\\bin\\;C:\\Program Files\\Common Files\\Intel\\WirelessCommon\\;C:\\Program Files (x86)\\Box\\Box Edit\\;C:\\Program Files (x86)\\Symantec\\VIP Access Client\\;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\pkgs\\cargo\\bin;C:\\Users\\ej608771\\AppData\\Local"
+}'
+[2023/06/29 15:03:46.450] [ERROR] [CommandProcessor.js:957] Handler for set rejected by thrown ImperativeError.
+[2023/06/29 15:03:46.455] [ERROR] [CommandYargs.js:148] Error in command set
+[2023/06/29 15:03:46.456] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'could not parse JSON value: Unexpected token d',
+    stdout: <Buffer >,
+    stderr: <Buffer 43 6f 6d 6d 61 6e 64 20 45 72 72 6f 72 3a 0a 63 6f 75 6c 64 20 6e 6f 74 20 70 61 72 73 65 20 4a 53 4f 4e 20 76 61 6c 75 65 3a 20 55 6e 65 78 70 65 63 ... 12 more bytes>,
+    data: {},
+    error: { msg: 'could not parse JSON value: Unexpected token d' }
+  }
+]
+[2023/06/29 15:03:52.650] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:52.652] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:52.722] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:52.723] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:52.723] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:03:57.963] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:03:57.965] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:03:58.032] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:03:58.034] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:03:58.035] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:04:04.234] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:04:04.236] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:04:04.306] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:04:04.306] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:04:04.307] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:04:09.660] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:04:09.662] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:04:09.749] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:04:09.752] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:04:09.753] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:04:15.335] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:04:15.337] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:04:15.405] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:04:15.406] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:04:15.407] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 15:04:20.855] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:04:20.857] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:04:20.916] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 15:04:20.917] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 15:04:20.919] [FATAL] [main.js:23] This is a fatal message after init!

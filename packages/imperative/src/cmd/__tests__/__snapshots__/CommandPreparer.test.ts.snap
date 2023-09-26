@@ -1,0 +1,4402 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command Preparer should append the auto-format options if requested 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [],
+  "description": "my parent command",
+  "name": "fake",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "rff",
+      ],
+      "description": "Filter (include) fields in the response. Accepts an array of field/property names to include in the output response. You can filter JSON objects properties OR table columns/fields. In addition, you can use this option in conjunction with '--response-format-type' to reduce the output of a command to a single field/property or a list of a single field/property.",
+      "group": "Response Format Options",
+      "name": "response-format-filter",
+      "type": "array",
+    },
+    Object {
+      "aliases": Array [
+        "rft",
+      ],
+      "allowableValues": Object {
+        "caseSensitive": false,
+        "values": Array [
+          "table",
+          "list",
+          "object",
+          "string",
+        ],
+      },
+      "description": "The command response output format type. Must be one of the following:
+
+table: Formats output data as a table. Use this option when the output data is an array of homogeneous JSON objects. Each property of the object will become a column in the table.
+
+list: Formats output data as a list of strings. Can be used on any data type (JSON objects/arrays) are stringified and a new line is added after each entry in an array.
+
+object: Formats output data as a list of prettified objects (or single object). Can be used in place of \\"table\\" to change from tabular output to a list of prettified objects.
+
+string: Formats output data as a string. JSON objects/arrays are stringified.",
+      "group": "Response Format Options",
+      "name": "response-format-type",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfh",
+      ],
+      "defaultValue": null,
+      "description": "If \\"--response-format-type table\\" is specified, include the column headers in the output.",
+      "group": "Response Format Options",
+      "name": "response-format-header",
+      "type": "boolean",
+    },
+  ],
+  "outputFormatOptions": true,
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "command",
+}
+`;
+
+exports[`Command Preparer should be able to detect a command with both a handler and chained handlers 1`] = `"A command definition node (test) contains both a handler and chained handler configuration. The two are mutually exclusive. The definition in error has been placed in the additional details field of this error object."`;
+
+exports[`Command Preparer should be able to detect children that are ill-formed 1`] = `"A command definition node (test-outer-group of type group) contains ill-formed children. The definition in error has been placed in the additional details field of this error object."`;
+
+exports[`Command Preparer should be able to detect definition nodes with missing type 1`] = `"A command definition node (test-outer-group) contains an undefined or empty type. The definition in error has been placed in the additional details field of this error object."`;
+
+exports[`Command Preparer should be able to detect groups with no children 1`] = `"A \\"group\\" command definition node (test-outer-group) contains no children. A group implies children. The definition in error has been placed in the additional details field of this error object."`;
+
+exports[`Command Preparer should be able to detect groups with undefined children 1`] = `"A \\"group\\" command definition node (test-outer-group) contains no children. A group implies children. The definition in error has been placed in the additional details field of this error object."`;
+
+exports[`Command Preparer should be able to detect if a undefined or null attribute is being passed down (error) 1`] = `"You cannot pass on a trait (stdinOptionDescription) with a value of undefined (current command definition name: test-outer-group of type group)."`;
+
+exports[`Command Preparer should be able to generate options for base profile fields 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [],
+  "description": "Command with only service profile",
+  "name": "command-with-service-profile",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "a",
+      ],
+      "description": "The amount of fruits.",
+      "group": "Options",
+      "name": "amount",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "apple-p",
+      ],
+      "description": "The name of a (apple) profile to load for this command execution.",
+      "group": "Profile Options",
+      "name": "apple-profile",
+      "type": "string",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "profile": Object {
+    "optional": Array [
+      "apple",
+    ],
+  },
+  "type": "command",
+}
+`;
+
+exports[`Command Preparer should be able to generate options for base profile fields 2`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [],
+  "description": "Command with only base profile",
+  "name": "command-with-base-profile",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "a",
+      ],
+      "description": "The amount of fruits.",
+      "group": "Options",
+      "name": "amount",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "fruit-p",
+      ],
+      "description": "The name of a (fruit) profile to load for this command execution.",
+      "group": "Profile Options",
+      "name": "fruit-profile",
+      "type": "string",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "profile": Object {
+    "optional": Array [
+      "fruit",
+    ],
+  },
+  "type": "command",
+}
+`;
+
+exports[`Command Preparer should be able to generate options for base profile fields 3`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [],
+  "description": "Command with both service and base profile",
+  "name": "command-with-both-profiles",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "a",
+      ],
+      "description": "The amount of fruits.",
+      "group": "Options",
+      "name": "amount",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "apple-p",
+      ],
+      "description": "The name of a (apple) profile to load for this command execution.",
+      "group": "Profile Options",
+      "name": "apple-profile",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "fruit-p",
+      ],
+      "description": "The name of a (fruit) profile to load for this command execution.",
+      "group": "Profile Options",
+      "name": "fruit-profile",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "p",
+      ],
+      "description": "The price of one fruit.",
+      "group": "Options",
+      "name": "price",
+      "type": "number",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "profile": Object {
+    "optional": Array [
+      "apple",
+      "fruit",
+    ],
+  },
+  "type": "command",
+}
+`;
+
+exports[`Command Preparer should be able to generate profile options (and suppress if desired) 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "grape",
+            ],
+            "required": Array [
+              "apple",
+            ],
+            "suppressOptions": Array [
+              "grape",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to ignore everything if specified 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "apple",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+        Object {
+          "type": "command",
+        },
+      ],
+      "property": "profile",
+      "value": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on (and overwrite) enableStdin settings 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": true,
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "pipe",
+              ],
+              "description": "Pipe data into this command via stdin",
+              "group": "Options",
+              "name": "stdin",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": true,
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "pipe",
+              ],
+              "description": "Pipe data into this command via stdin",
+              "group": "Options",
+              "name": "stdin",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": true,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [
+                "pipe",
+              ],
+              "description": "Pipe data into this command via stdin",
+              "group": "Options",
+              "name": "stdin",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "apple",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "enableStdin": true,
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "pipe",
+          ],
+          "description": "Pipe data into this command via stdin",
+          "group": "Options",
+          "name": "stdin",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "property": "enableStdin",
+      "value": true,
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on (and overwrite) profile attributes from parents to children 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "banana-p",
+          ],
+          "description": "The name of a (banana) profile to load for this command execution.",
+          "group": "Profile Options",
+          "name": "banana-profile",
+          "type": "string",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "profile": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "property": "profile",
+      "value": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on attributes from parents to children and ignore definitions with type group 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "property": "profile",
+      "value": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on attributes from parents to children and not erroneously ignore nodes 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "banana-p",
+          ],
+          "description": "The name of a (banana) profile to load for this command execution.",
+          "group": "Profile Options",
+          "name": "banana-profile",
+          "type": "string",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "profile": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "name": "test-command-child3",
+          "type": "group",
+        },
+      ],
+      "property": "profile",
+      "value": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on new options to children (and merge them) 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is a passed down option",
+              "group": "Options",
+              "name": "new-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is a passed down option",
+              "group": "Options",
+              "name": "new-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is a passed down option",
+              "group": "Options",
+              "name": "new-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "apple",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "This is a passed down option",
+          "group": "Options",
+          "name": "new-option",
+          "type": "string",
+        },
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "merge": true,
+      "property": "options",
+      "value": Array [
+        Object {
+          "description": "This is a passed down option",
+          "name": "new-option",
+          "type": "string",
+        },
+      ],
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on new options to children, merge them, but ignore groups 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is a passed down option",
+              "group": "Options",
+              "name": "new-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is a passed down option",
+              "group": "Options",
+              "name": "new-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is a passed down option",
+              "group": "Options",
+              "name": "new-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "apple",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Array [
+        Object {
+          "description": "This is a passed down option",
+          "name": "new-option",
+          "type": "string",
+        },
+      ],
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on options of a parent to children 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is outer group option",
+              "group": "Options",
+              "name": "outer-group-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is outer group option",
+              "group": "Options",
+              "name": "outer-group-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "This is outer group option",
+              "group": "Options",
+              "name": "outer-group-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "apple",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "This is outer group option",
+          "group": "Options",
+          "name": "outer-group-option",
+          "type": "string",
+        },
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "merge": true,
+      "property": "options",
+      "value": Array [
+        Object {
+          "description": "This is outer group option",
+          "name": "outer-group-option",
+          "type": "string",
+        },
+      ],
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should be able to pass on profile attributes from parents to children except children of a certain name 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child1",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "name": "test-command-child2",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "banana-p",
+              ],
+              "description": "The name of a (banana) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "banana-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "banana",
+            ],
+          },
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [],
+          "children": Array [],
+          "description": "my command",
+          "enableStdin": false,
+          "name": "test-command-child3",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "the option",
+              "group": "Options",
+              "name": "test-option",
+              "type": "string",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "the boolean option",
+              "group": "Options",
+              "name": "test-boolean",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [],
+              "description": "Show command inputs and do not run the command",
+              "group": "Global Options",
+              "name": "show-inputs-only",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "rfj",
+              ],
+              "description": "Produce JSON formatted data from a command",
+              "group": "Global Options",
+              "name": "response-format-json",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "h",
+              ],
+              "description": "Display help text",
+              "group": "Global Options",
+              "name": "help",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "hw",
+              ],
+              "description": "Display HTML help in browser",
+              "group": "Global Options",
+              "name": "help-web",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "apple-p",
+              ],
+              "description": "The name of a (apple) profile to load for this command execution.",
+              "group": "Profile Options",
+              "name": "apple-profile",
+              "type": "string",
+            },
+          ],
+          "passOn": Array [],
+          "positionals": Array [
+            Object {
+              "description": "the positional option",
+              "name": "positional1",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "required": Array [
+              "apple",
+            ],
+          },
+          "type": "command",
+        },
+      ],
+      "description": "my group",
+      "name": "test-group",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Display examples for all the commands in a group",
+          "group": "Global Options",
+          "name": "help-examples",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "banana-p",
+          ],
+          "description": "The name of a (banana) profile to load for this command execution.",
+          "group": "Profile Options",
+          "name": "banana-profile",
+          "type": "string",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "profile": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+      "type": "group",
+    },
+  ],
+  "description": "test group",
+  "name": "test-outer-group",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "This is outer group option",
+      "group": "Options",
+      "name": "outer-group-option",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "name": "test-command-child3",
+        },
+      ],
+      "property": "profile",
+      "value": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;
+
+exports[`Command Preparer should prepare the final command document for imperative usage 1`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [],
+  "description": "Test Command",
+  "name": "test-command",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "banana-p",
+      ],
+      "description": "The name of a (banana) profile to load for this command execution.",
+      "group": "Profile Options",
+      "name": "banana-profile",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "apple-p",
+      ],
+      "description": "The name of a (apple) profile to load for this command execution.",
+      "group": "Profile Options",
+      "name": "apple-profile",
+      "type": "string",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "profile": Object {
+    "optional": Array [
+      "apple",
+    ],
+    "required": Array [
+      "banana",
+    ],
+  },
+  "type": "command",
+}
+`;
+
+exports[`Command Preparer should prepare the final command document for imperative usage 2`] = `
+Object {
+  "aliases": Array [],
+  "children": Array [
+    Object {
+      "aliases": Array [],
+      "children": Array [],
+      "description": "Test Command",
+      "experimental": true,
+      "name": "test-command",
+      "options": Array [
+        Object {
+          "aliases": Array [],
+          "description": "Show command inputs and do not run the command",
+          "group": "Global Options",
+          "name": "show-inputs-only",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "rfj",
+          ],
+          "description": "Produce JSON formatted data from a command",
+          "group": "Global Options",
+          "name": "response-format-json",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "h",
+          ],
+          "description": "Display help text",
+          "group": "Global Options",
+          "name": "help",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "hw",
+          ],
+          "description": "Display HTML help in browser",
+          "group": "Global Options",
+          "name": "help-web",
+          "type": "boolean",
+        },
+        Object {
+          "aliases": Array [
+            "banana-p",
+          ],
+          "description": "The name of a (banana) profile to load for this command execution.",
+          "group": "Profile Options",
+          "name": "banana-profile",
+          "type": "string",
+        },
+      ],
+      "passOn": Array [],
+      "positionals": Array [],
+      "profile": Object {
+        "required": Array [
+          "banana",
+        ],
+      },
+      "type": "command",
+    },
+  ],
+  "description": "Test Group",
+  "experimental": true,
+  "name": "test-group",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "rfj",
+      ],
+      "description": "Produce JSON formatted data from a command",
+      "group": "Global Options",
+      "name": "response-format-json",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "h",
+      ],
+      "description": "Display help text",
+      "group": "Global Options",
+      "name": "help",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "hw",
+      ],
+      "description": "Display HTML help in browser",
+      "group": "Global Options",
+      "name": "help-web",
+      "type": "boolean",
+    },
+  ],
+  "passOn": Array [
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "command",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Display examples for all the commands in a group",
+        "group": "Global Options",
+        "name": "help-examples",
+        "type": "boolean",
+      },
+    },
+    Object {
+      "ignoreNodes": Array [
+        Object {
+          "type": "group",
+        },
+      ],
+      "merge": true,
+      "property": "options",
+      "value": Object {
+        "description": "Show command inputs and do not run the command",
+        "group": "Global Options",
+        "name": "show-inputs-only",
+        "type": "boolean",
+      },
+    },
+  ],
+  "positionals": Array [],
+  "type": "group",
+}
+`;

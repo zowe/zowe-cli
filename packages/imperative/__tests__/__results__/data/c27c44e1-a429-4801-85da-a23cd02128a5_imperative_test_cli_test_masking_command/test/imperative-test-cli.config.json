@@ -1,0 +1,32 @@
+{
+    "$schema": "./imperative-test-cli.schema.json",
+    "profiles": {
+        "secured": {
+            "type": "secured",
+            "properties": {
+                "info": ""
+            },
+            "secure": [],
+            "profiles": {
+                "secure_profile": {
+                    "properties": {},
+                    "secure": [
+                        "info"
+                    ]
+                }
+            }
+        },
+        "base": {
+            "type": "base",
+            "properties": {},
+            "secure": [
+                "secret"
+            ]
+        }
+    },
+    "defaults": {
+        "secured": "secured",
+        "base": "base"
+    },
+    "autoStore": true
+}

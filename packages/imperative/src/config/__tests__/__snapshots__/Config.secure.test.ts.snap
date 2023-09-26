@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Config secure tests should not actually load config that has a bad vault when noLoad specified 1`] = `
+Object {
+  "defaults": Object {},
+  "profiles": Object {},
+}
+`;

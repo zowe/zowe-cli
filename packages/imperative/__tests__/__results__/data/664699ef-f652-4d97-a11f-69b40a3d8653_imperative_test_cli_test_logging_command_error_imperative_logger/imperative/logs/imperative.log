@@ -1,0 +1,8 @@
+[2023/06/29 14:55:30.420] [WARN] [Imperative.js:458] Imperative log level 'AWESOME' from environmental variable setting 'IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL' is not recognised.  Logger level is set to 'WARN'.  Valid levels are ALL,TRACE,DEBUG,INFO,WARN,ERROR,FATAL,MARK,OFF
+[2023/06/29 14:55:30.421] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 14:55:30.480] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 14:55:30.480] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 14:55:30.481] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 14:55:30.548] [WARN] [Logging.handler.js:37] This is an imperative logger warn message from the test logging handler!
+[2023/06/29 14:55:30.550] [ERROR] [Logging.handler.js:38] This is an imperative logger error message from the test logging handler!
+[2023/06/29 14:55:30.551] [FATAL] [Logging.handler.js:39] This is an imperative logger fatal message from the test logging handler!

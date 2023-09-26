@@ -1,0 +1,787 @@
+[2023/06/29 15:37:49.016] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_profiles/ProfileExampleCLI --help
+[2023/06/29 15:37:49.019] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_profiles/ProfileExampleCLI --help
+[2023/06/29 15:37:53.258] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts <group|command>
+
+   Where <group|command> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   log      Log example messages                                  
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ COMMANDS
+ --------
+
+   optional-profile-c    Use a profile of type C                      
+   use-dependent-profile Use a profile of type profile-with-dependency
+   use-profile-a         Use a profile of type A                      
+   use-profile-b         Use a profile of type B                      
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:37:53.260] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts <group|command>
+
+   Where <group|command> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   log      Log example messages                                  
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ COMMANDS
+ --------
+
+   optional-profile-c    Use a profile of type C                      
+   use-dependent-profile Use a profile of type profile-with-dependency
+   use-profile-a         Use a profile of type A                      
+   use-profile-b         Use a profile of type B                      
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:37:53.260] [INFO] [TestUtil.ts:318] [ 'Test CLI with Profiles', 'log' ]
+[2023/06/29 15:37:53.263] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_profiles/ProfileExampleCLI log --help
+[2023/06/29 15:37:53.264] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_profiles/ProfileExampleCLI log --help
+[2023/06/29 15:37:55.130] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Log example messages
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts log <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   messages Log example messages
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:37:55.130] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Log example messages
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts log <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   messages Log example messages
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:37:55.132] [INFO] [TestUtil.ts:318] [ 'ProfileExampleCLI.ts', 'Log example messages', 'messages' ]
+[2023/06/29 15:37:55.133] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_profiles/ProfileExampleCLI log messages --help
+[2023/06/29 15:37:55.134] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_profiles/ProfileExampleCLI log messages --help
+[2023/06/29 15:37:57.002] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   messages
+
+ DESCRIPTION
+ -----------
+
+   Log example messages
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts log messages [options]
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --level (string)
+
+      The level to log messages at.
+
+      Allowed values: trace, debug, info, warn, error, fatal
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:37:57.003] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   messages
+
+ DESCRIPTION
+ -----------
+
+   Log example messages
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts log messages [options]
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --level (string)
+
+      The level to log messages at.
+
+      Allowed values: trace, debug, info, warn, error, fatal
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:37:57.003] [INFO] [TestUtil.ts:318] [ 'ProfileExampleCLI.ts', 'Log example messages', 'messages', 'level' ]
+[2023/06/29 15:37:57.433] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI --help
+[2023/06/29 15:37:57.434] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI --help
+[2023/06/29 15:38:04.057] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   sample-with-bin <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ [2023/06/29 15:38:03.044] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:03.063] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+exit code: 0
+[2023/06/29 15:38:04.058] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   sample-with-bin <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+[2023/06/29 15:38:03.044] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:03.063] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+[2023/06/29 15:38:04.059] [INFO] [TestUtil.ts:318] [ 'Test CLI with Profiles', '--version' ]
+[2023/06/29 15:38:04.489] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI --help
+[2023/06/29 15:38:04.490] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI --help
+[2023/06/29 15:38:06.419] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   sample-with-bin <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ [2023/06/29 15:38:06.212] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:06.229] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+exit code: 0
+[2023/06/29 15:38:06.420] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   sample-with-bin <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+[2023/06/29 15:38:06.212] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:06.229] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+[2023/06/29 15:38:06.420] [INFO] [TestUtil.ts:318] [ 'Test CLI with Profiles', 'ape', 'bat', 'cat' ]
+[2023/06/29 15:38:06.422] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI ape --help
+[2023/06/29 15:38:06.423] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI ape --help
+[2023/06/29 15:38:08.367] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Ape commands
+
+ USAGE
+ -----
+
+   sample-with-bin ape <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   grape An ape eats grapes
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ [2023/06/29 15:38:08.187] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:08.206] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+exit code: 0
+[2023/06/29 15:38:08.368] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Ape commands
+
+ USAGE
+ -----
+
+   sample-with-bin ape <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   grape An ape eats grapes
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+[2023/06/29 15:38:08.187] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:08.206] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+[2023/06/29 15:38:08.369] [INFO] [TestUtil.ts:318] [ 'sample-with-bin', 'An ape eats grapes' ]
+[2023/06/29 15:38:08.370] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI ape grape --help
+[2023/06/29 15:38:08.371] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\packages\cmd\__integration__/../../../example_clis/with_bin_package/ProfileBinExampleCLI ape grape --help
+[2023/06/29 15:38:10.527] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   grape
+
+ DESCRIPTION
+ -----------
+
+   An ape eats grapes
+
+ USAGE
+ -----
+
+   sample-with-bin ape grape [options]
+
+ OPTIONS
+ -------
+
+   --grape-color (string)
+
+      the color of the grapes eaten by the ape
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ [2023/06/29 15:38:10.365] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:10.382] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+exit code: 0
+[2023/06/29 15:38:10.528] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   grape
+
+ DESCRIPTION
+ -----------
+
+   An ape eats grapes
+
+ USAGE
+ -----
+
+   sample-with-bin ape grape [options]
+
+ OPTIONS
+ -------
+
+   --grape-color (string)
+
+      the color of the grapes eaten by the ape
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+[2023/06/29 15:38:10.365] [ERROR] [CredentialManagerFactory.ts:148] Failed to load the credential manager named "profile-example-cli"
+[2023/06/29 15:38:10.382] [ERROR] [CredentialManagerFactory.ts:151] Unable to override "CredentialManager" with "profile-example-cli" from plugin "profile-example-cli"
+Reason = No plugin has been installed that overrides 'CredentialManager' with 'profile-example-cli'.
+Plugins that provide overrides are:
+{}
+We will use a "CredentialManager" that purposely fails until you reconfigure.
+You can edit the file $ZOWE_CLI_HOME/settings/imperative.json and enter a value for the "CredentialManager" property
+For the "CredentialManager" property you can specify "@zowe/cli" or you can install a plugin from the list below:
+
+"CredentialManager": "@zowe/cli" (default)
+"CredentialManager": "Secrets for Kubernetes" (supplied in CLI plugin @zowe/secrets-for-kubernetes-for-zowe-cli
+                                               and in ZE extension Zowe.secrets-for-kubernetes)
+
+[2023/06/29 15:38:10.529] [INFO] [TestUtil.ts:318] [
+  'sample-with-bin',
+  '--grape-color',
+  'the color of the grapes eaten by the ape'
+]

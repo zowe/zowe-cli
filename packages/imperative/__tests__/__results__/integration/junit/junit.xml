@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="435" failures="0" time="4127.016">
+  <testsuite name="imperative-test-cli test logging command" errors="0" failures="0" skipped="0" timestamp="2023-06-29T18:55:00" time="80.871" tests="16">
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; default levels &gt; imperative logger" name="should default to WARN" time="4.348">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; default levels &gt; app logger" name="should default to WARN" time="4.116">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; error &amp; invalid value handling &gt; imperative logger" name="should default to WARN if a blank is specified" time="4.111">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; error &amp; invalid value handling &gt; imperative logger" name="should default to WARN if an invalid level is specified and also warn user with the error" time="4.181">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; error &amp; invalid value handling &gt; app logger" name="should default to WARN if a blank is specified" time="4.152">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; error &amp; invalid value handling &gt; app logger" name="should default to WARN if an invalid level is specified and also warn user with the error" time="4.186">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; imperative logger" name="should only produce NO log messages if the level is OFF" time="4.132">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; imperative logger" name="should produce all message levels if TRACE is specified" time="4.209">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; app logger" name="should only produce NO log messages if the level is OFF" time="4.215">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; app logger" name="should produce all message levels if TRACE is specified" time="4.114">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; all loggers" name="should only produce NO log messages if the level is OFF" time="4.184">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; all loggers" name="should produce all message levels if TRACE is specified" time="4.134">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; all loggers" name="should produce the correct levels if app is INFO and imperative is ERROR" time="4.158">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; all loggers" name="should produce only INFO, WARN, ERROR, &amp; FATAL if INFO is specified" time="4.167">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; all loggers" name="should produce all for IMP if TRACE and none for APP if OFF" time="4.372">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test logging command &gt; logging &gt; all loggers" name="should produce all for APP if TRACE and none for IMP if OFF" time="4.51">
+    </testcase>
+  </testsuite>
+  <testsuite name="Imperative should provide advanced syntax validation rules" errors="0" failures="0" skipped="0" timestamp="2023-06-29T18:56:21" time="3.672" tests="46">
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="We should be able to correctly specify the options for our test command without an error" time="0.188">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an unknown positional, the command should fail" time="0.016">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify multiple unknown positionals, the command should fail" time="0.013">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we omit a required boolean option, the command should fail" time="0.014">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we omit a required string option, the command should fail" time="0.014">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify the --name of a required string option, but no value, the command should fail" time="0.018">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify a conflicting option, the command should fail." time="0.014">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option that implies another option, but omit the implied option, the command should fail. " time="0.013">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option that implies another option, and include the implied option, the command should succeed. " time="0.015">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option that has a set of allowable string values, but specify a value that doesn&apos;t match any of the values, the command should fail " time="0.017">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option that has a set of allowable string values, but specify a value that partially match one of the values, the command should fail " time="0.027">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option that has a set of allowable string values, but specify a value that is the regular expression itself, the command should fail " time="0.029">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option that has a set of allowable string values, and specify a value that matches one of the allowable values, the command should succeed " time="0.023">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and which has a set of allowable string values, and specify multiple values each of which matches one of the allowable values, the command should succeed " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and which has a set of allowable string values, and specify multiple values one of which doesn&apos;t match one of the allowable values, the command should fail " time="0.015">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we don&apos;t specify an option, and the absence of that option implies the presence of another option, and we omit that option as well, the command should fail " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we don&apos;t specify an option, and the absence of that option implies the presence of another option, but we specify that implied option, the command should succeed " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option that should be numerical, but a non-numeric option is specified, the command should fail  " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option that should be numerical, and we specify a number, the command should succeed  " time="0.013">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option for which specifying a certain value implies another option, if we omit the implied option, the command should fail " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option for which specifying a certain value implies another option, if we specify the implied option, the command should succeed " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max length of eight characters and a minimum of two,  and we specify a value that&apos;s one character long, the command should fail " time="0.013">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max length of eight characters and a minimum of two,  and we specify a value that&apos;s exactly two characters long, the command should succeed " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max length of eight characters and a minimum of two,  and we specify a value that&apos;s exactly eight characters long, the command should succeed " time="0.014">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max length of eight characters and a minimum of two,  and we specify a value that&apos;s nine characters long, the command should fail " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max value of 12 and a minimum of 1,  and we specify 0, the command should fail " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max value of 12 and a minimum of 1,  and we specify 1, the command should succeed " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max value of 12 and a minimum of 1,  and we specify 1 long, the command should succeed " time="0.013">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with a max value of 12 and a minimum of 1,  and we specify 15, the command should fail " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and do not specify arrayAllowDuplicate, and specify an array containing duplicate values, the command should succeed " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and arrayAllowDuplicate is true, and specify an array containing duplicate values, the command should succeed " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and arrayAllowDuplicate is false, and specify an array containing duplicate values, the command should fail " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and arrayAllowDuplicate is false, and specify an array containing multiple duplicate values, the command should fail and the error message contains all duplicate values " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify an option whose type is array and arrayAllowDuplicate is false, and specify an array containing no duplicate values, the command should succeed " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option that implies at least one of a set of other options, if we specify that option but omit all of the implications, the command should fail " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option that implies at least one of a set of other options, if we specify that option and satisfy the implication, the command should succeed " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with multiple conflicts, if we specify the first of the conflicting options, the command should fail " time="0.013">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with multiple conflicts, if we specify two of the conflicting options, the command should fail " time="0.011">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with multiple conflicts, if we specify all of the conflicting options, the command should fail " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If there is an option with multiple conflicts, if we specify the last of the conflicting options, the command should fail " time="0.01">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command" name="If we specify a string type option multiple times,  but  otherwise have a correct command " time="0.012">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command &gt; We should be able to validate array positional arguments" name="If we have a command with a required string array type argument, we should successfully validate when we specify a value for the array" time="0.008">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command &gt; We should be able to validate array positional arguments" name="If we have a command with a required string array type argument, we should fail to validate when we specify no value for the array" time="0.008">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command &gt; We should be able to validate positional arguments of type &apos;number&apos;" name="If we have a command with a number-type positional, and we try to specify a non-numeric argument, the command should fail" time="0.008">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command &gt; We should be able to validate positional arguments of type &apos;number&apos;" name="If we have a command with a number-type positional, and we try to specify a numeric argument, the command should succeed" time="0.008">
+    </testcase>
+    <testcase classname="Integration.Imperative should provide advanced syntax validation rules &gt; Advanced syntax validation for commands using a test command &gt; We should be able to validate positional arguments of type &apos;number&apos;" name="If we have a command with a number-type positional, and we try to specify 0, the command should succeed" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config report-env" errors="0" failures="0" skipped="0" timestamp="2023-06-29T18:56:24" time="188.975" tests="6">
+    <testcase classname="Integration.imperative-test-cli config report-env &gt; success scenarios" name="should display the help" time="4.292">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config report-env &gt; success scenarios" name="should successfully produce a report" time="35.991">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config report-env &gt; success scenarios" name="should set up environment with file and successfully produce a report - home directory" time="36.22">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config report-env &gt; success scenarios" name="should set up environment with file and successfully produce a report - cli directory" time="37.514">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config report-env &gt; success scenarios" name="should set up environment with file and successfully produce a report - both directories" time="37.272">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config report-env &gt; success scenarios" name="should set up bad environment with file and successfully produce a report" time="36.748">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config import" errors="0" failures="0" skipped="0" timestamp="2023-06-29T18:59:33" time="128.84" tests="17">
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios" name="should display the help" time="5.724">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios" name="should successfully import and overwrite a config and schema" time="10.398">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios &gt; from the web" name="should successfully import a config from a URL" time="6.545">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios &gt; from the web" name="should successfully import a config and schema from a URL" time="6.183">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios &gt; from the web" name="should successfully import a config without schema if it is defined with a URL" time="6.54">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios &gt; from the disk" name="should successfully import a config from a file" time="6.615">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios &gt; from the disk" name="should successfully import a config and schema from a file" time="7.044">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; success scenarios &gt; from the disk" name="should successfully import a config without schema if it is defined with an absolute path" time="8">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios" name="should fail to import if location is not specified" time="7.507">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios" name="should fail to import a schema and config if they already exist" time="11.866">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the web" name="should fail to import a config from a bad URL" time="7.472">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the web" name="should fail to import a schema from a bad URL" time="6.721">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the web" name="should fail to import a config that is invalid JSON from a URL" time="6.766">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the web" name="should fail to import a schema that is invalid JSON from a URL" time="6.746">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the disk" name="should fail to import a config from a bad path" time="6.468">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the disk" name="should fail to import a schema from a bad path" time="6.338">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config import &gt; failure scenarios &gt; from the disk" name="should fail to import a config that is invalid JSON from a path" time="6.621">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config set" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:01:42" time="159.344" tests="11">
+    <testcase classname="Integration.imperative-test-cli config set" name="should display the help" time="5.206">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set" name="should store a property in plain text" time="10.599">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set" name="should prompt for and store a property in plain text" time="10.438">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should make the info property secure in the project config" time="14.681">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should make the info property secure in the user config" time="14.893">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should make the info property secure in the global project config" time="21.215">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should make the info property secure in the global user config" time="20.438">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should supply secured JSON to the info property in the global user config" time="15.588">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should fail to parse improperly formatted JSON objects" time="10.526">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should store property securely without --secure flag if found in secure array" time="11.755">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config set &gt; secure" name="should toggle the security of a property if requested" time="22.94">
+    </testcase>
+  </testsuite>
+  <testsuite name="Cli Profile Manager" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:04:22" time="248.773" tests="13">
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Success Scenarios" name="should create and load a profile with saved credentials" time="176.706">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Success Scenarios" name="should overwrite and load a profile with saved credentials" time="4.316">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Success Scenarios" name="should update and load a profile with saved credentials" time="9.325">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Success Scenarios" name="should delete a profile with saved credentials" time="6.504">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Success Scenarios" name="should update a password" time="6.295">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Failure Scenarios" name="should fail if the Credential Manager is unable to find the profile" time="6.098">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Generic Failure Scenarios" name="should fail if the Credential Manager is unable to retrieve a password" time="7.159">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Missing keytar installation" name="should fail if keytar is not loaded on profiles create" time="2.23">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Missing keytar installation" name="should fail if keytar is not loaded on using profile handler" time="4.173">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Missing keytar installation" name="should fail if keytar is not loaded on profiles delete" time="4.212">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Default Credential Management &gt; Missing keytar installation" name="should be able to issue command" time="4.362">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Custom Credential Management (Absolute String)" name="should use an overwritten credential manager (Absolute String)" time="7.88">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager &gt; Custom Credential Management (Class)" name="should use an overwritten credential manager (Class)" time="7.819">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli profile mapping" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:08:30" time="116.863" tests="16">
+    <testcase classname="Integration.cmd-cli profile mapping" name="should map profile fields to required options" time="8.286">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should have command line arguments take precedence over profile fields" time="8.236">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should have environmental variables take precedence over profile fields" time="8.036">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should have command line arguments take precedence over profile fields and environmental variables" time="8.445">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should have environmental variables take precedence over default values" time="4.945">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should have service profile fields take precedence over base profile fields" time="13.513">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should be able to specify positional options via environmental variables" time="4.872">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should map profile fields to positional options" time="9.327">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should be able to specify valid number type options via environmental variables" time="4.942">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should get a syntax error when specifying a non-numeric value via environmental variables" time="5.249">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should be able to specify valid boolean type options (true) via environmental variables" time="5.409">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should be able to specify valid boolean type options (false) via environmental variables" time="5.314">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should get a syntax error when specifying a non-boolean value via environmental variables" time="5.306">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should be able to specify valid array type options via environmental variables" time="4.889">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should not map profile fields to --name or --type" time="9.478">
+    </testcase>
+    <testcase classname="Integration.cmd-cli profile mapping" name="should still be able to specify --name and --type on command line" time="9.616">
+    </testcase>
+  </testsuite>
+  <testsuite name="We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:10:27" time="204.73" tests="14">
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we accept the default of auto-generating profile commands, commands should be generated for each profile type, and able to be invoked with --help" time="43.715">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we specify updateProfileExamples on our profile configuration, our examples should appear in the help text" time="4.992">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we turn off  auto-generating profile commands, commands should NOT be generated for each profile type" time="34.907">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we have a profile type defined with a dependent profile, if we specify a non-existent profile-a profile, the command should fail" time="5.587">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we have a profile type defined with a dependent profile, if we specify a valid dependent profile, the command should succeed and we should be able to use the profile on a command" time="12.585">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we create a profile-with-dependencies, and the profile-a dependency is different than the default profile-a profile, the default profile-a profile should not be loaded when the profile-with-dependencies is used on a command" time="11.517">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we omit a required option definition on a generate create profile command,defined in the profile schema, we should get a syntax error" time="2.59">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="We should be able to run through all auto-generated profile commands for two types of profiles" time="50.795">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="should not fail a command where the profile is listed as optional and not specified" time="5.045">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="If we update an existing profile, the contents of the old profile should be merged with teh" time="7.792">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="should contain examples specified on profile config in the help text" time="2.403">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="should be able to validate a many-field-profile with an auto generated validate command" time="9.22">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="should not print output more than once if a progress bar is used in a profiles validate command" time="5.782">
+    </testcase>
+    <testcase classname="Integration.We should provide auto-generated profile commands for convenience, so that Imperative-based CLIs can let users manage configuration profiles" name="should be fail to validate an invalid many-fields-profile" time="5.975">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli auth login" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:13:52" time="153.519" tests="12">
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and store token in it with alias" time="15.192">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and store token in it - basic auth" time="14.784">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and store token in it - certificate auth" time="13.546">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and show token only - basic auth" time="14.549">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and show token only - certificate auth" time="14.418">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and show token in rfj - basic auth" time="15.059">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should load values from base profile and show token in rfj - certificate auth" time="14.472">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should create a profile, if requested 1" time="9.804">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should create a profile, if requested 2" time="9.845">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should create a profile, if requested 3" time="10.713">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should not create a profile, if requested 1" time="10.479">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth login" name="should not create a profile, if requested 2" time="9.276">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli config auto-init" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:16:26" time="89.141" tests="11">
+    <testcase classname="Integration.cmd-cli config auto-init" name="should initialize project config" time="6.01">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should initialize project user config" time="5.985">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should initialize global config" time="5.854">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should initialize global user config" time="5.904">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should prompt for missing host" time="6.058">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should prompt for missing user" time="6.17">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should authenticate with token if provided" time="5.915">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should not update file on disk in dry-run mode" time="5.813">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should merge with existing config" time="13.574">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should not overwrite file without confirmation" time="13.349">
+    </testcase>
+    <testcase classname="Integration.cmd-cli config auto-init" name="should overwrite file when confirmation is given" time="13.504">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli auth login" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:17:55" time="181.607" tests="9">
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should load values from base profile and store token in it 1" time="21.047">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should load values from base profile and store token in it 2" time="21.065">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should load values from base profile and store token in it 3" time="24.877">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should load values from base profile and store token in it 4" time="24.795">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should load values from base profile and show token only" time="21.557">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should load values from base profile and show token in rfj" time="23.323">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should create a profile, if requested 1" time="15.649">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should create a profile, if requested 2" time="13.897">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth login &gt; single profile" name="should not create a profile, if requested" time="14.502">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config init" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:20:56" time="51.426" tests="9">
+    <testcase classname="Integration.imperative-test-cli config init" name="should display the help" time="5.333">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a project config" time="5.864">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a user project config" time="5.568">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a global config" time="5.452">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a user global config" time="5.277">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a project config with prompting" time="5.909">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a user project config with prompting" time="5.723">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a global config with prompting" time="5.662">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config init" name="should initialize a user global config with prompting" time="5.564">
+    </testcase>
+  </testsuite>
+  <testsuite name="Operation Infrastructure" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:21:48" time="1.73" tests="3">
+    <testcase classname="Integration.Operation Infrastructure" name="Operations: Test a simple set of operations" time="0.041">
+    </testcase>
+    <testcase classname="Integration.Operation Infrastructure" name="Operations: Test for complex set of operations" time="0.05">
+    </testcase>
+    <testcase classname="Integration.Operation Infrastructure" name="Operations: Test for complex set of undo operations" time="0.073">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config list" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:21:50" time="72.047" tests="10">
+    <testcase classname="Integration.imperative-test-cli config list" name="should display the help" time="4.161">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the configuration" time="4.767">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the configuration in RFJ" time="4.559">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the configurations based on location" time="4.508">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the configurations based on location in RFJ" time="4.47">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the root level property names only" time="4.454">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should get a list of config file paths" time="4.635">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the profiles configuration property" time="4.571">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the defaults configuration property" time="4.446">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config list" name="should list the configuration without showing secure values" time="11.146">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config secure" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:23:02" time="89.463" tests="6">
+    <testcase classname="Integration.imperative-test-cli config secure" name="should display the help" time="5.001">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config secure" name="should secure the project config" time="14.842">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config secure" name="should secure the user config" time="16.043">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config secure" name="should secure the global project config" time="17.375">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config secure" name="should secure the global user config" time="15.301">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config secure" name="should prompt for user and password to obtain auth token" time="19.994">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config update-schemas" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:24:31" time="90.163" tests="8">
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should display the help" time="5.06">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should not update schemas if we could not find any" time="5.561">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should update project config schema" time="9.906">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should update user config schema" time="10.098">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should update global config schemas" time="10.042">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should update global user config schema" time="9.781">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should update all four layers of schemas" time="24.335">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config update-schemas" name="should update only local schemas" time="14.491">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invoke test-handler" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:26:01" time="52.894" tests="11">
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should display the help" time="8.13">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fulfill the promise and complete the command successfully" time="4.348">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fulfill the promise and complete the command successfully with a JSON response" time="4.339">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail the command if fail-with-message is specified and no message is supplied" time="4.249">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail the command if fail-with-message is specified with a message" time="4.188">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail the command if fail-with-message is specified with a message and produce a JSON response" time="4.31">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail a handler if a generic error is thrown" time="4.391">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail a handler if a generic error is thrown and produce a JSON response" time="4.743">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail a handler if an imperative error is thrown" time="4.435">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should fail a handler if an imperative error is thrown and produce a JSON response" time="4.479">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-handler" name="should invoke the handler and print a message if no options are specified" time="4.369">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config convert-profiles" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:26:54" time="148.946" tests="5">
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; success scenarios" name="should display the help" time="24.435">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; success scenarios" name="should convert profiles to team config" time="25.586">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config convert-profiles" name="should convert v1 profile property names to v2 names" time="36.782">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; failure scenarios" name="should not convert profiles if prompt is rejected" time="24.674">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; failure scenarios" name="should not delete profiles if prompt is rejected" time="36.497">
+    </testcase>
+  </testsuite>
+  <testsuite name="Cli Profile Manager" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:29:23" time="2.477" tests="5">
+    <testcase classname="Integration.Cli Profile Manager" name="should take a handler to create a profile from command line arguments, and the handler should be called and the resulting profile should have the created fields in it." time="0.463">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager" name="If we provide a non existent handler to create a profile from command line arguments, we should get a helpful error." time="0.25">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager" name="should take a handler to update a profile that has already been created, call the handler and update the profile from arguments." time="0.29">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager" name="If we provide a non existent handler to update a profile from command line arguments, we should get a helpful error." time="0.237">
+    </testcase>
+    <testcase classname="Integration.Cli Profile Manager" name="should be able to automatically map command line options to profile fields without a handler for a simple single layer profile schema" time="0.25">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli auth logout" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:29:26" time="161.545" tests="5">
+    <testcase classname="Integration.imperative-test-cli auth logout" name="should have auth logout command that loads values from base profile and removes the token 1" time="30.923">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth logout" name="should have auth logout command that loads values from base profile and removes the token 2" time="31.945">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth logout" name="should have auth logout command that loads values from base profile and removes the token 3" time="32.904">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth logout" name="should have auth logout command that loads values from base profile and removes the token 4" time="35.825">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli auth logout" name="should have auth logout command that invalidates another token" time="29.026">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli chained handlers" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:32:07" time="34.536" tests="9">
+    <testcase classname="Integration.cmd-cli chained handlers" name="should not allow us to configure chained handlers that map arguments to indices beyond the end of the list of chained handlers (edge case - one beyond the length of the array)" time="0.161">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should be able to chain three different handlers together and get all output" time="4.163">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should produce valid json for chained handlers if --response-format-json is specified" time="4.233">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should be able to chain three different handlers together, but not print output for commands marked silent" time="4.133">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should fail if a non optional response object mapping fail" time="4.207">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should succeed if an optional mapping fails" time="4.152">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should throw an error if a non-existent mapping access fails" time="4.209">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should throw an error if a handler throws an error, and future handlers are not invoked" time="4.265">
+    </testcase>
+    <testcase classname="Integration.cmd-cli chained handlers" name="should properly map arguments in a command with many handlers" time="4.156">
+    </testcase>
+  </testsuite>
+  <testsuite name="Imperative should allow CLI implementations to configure their own profiles and types" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:32:42" time="4.321" tests="6">
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="should be able to create a profile type and retrieve all defined types after init" time="0.599">
+    </testcase>
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="should be receive a failure message when attempting to load a profile that doesn&apos;t exist" time="0.548">
+    </testcase>
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="should receive a failure message when attempting to create an ill-formed profile" time="0.574">
+    </testcase>
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="should be able to create a basic profile" time="0.553">
+    </testcase>
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="should be able to create a basic profile and load that profile" time="0.547">
+    </testcase>
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="should be able to create a basic profile and load as the default" time="0.518">
+    </testcase>
+  </testsuite>
+  <testsuite name="Imperative should allow CLI implementations to configure their own profiles and types" errors="0" failures="0" skipped="1" timestamp="2023-06-29T19:32:46" time="0.804" tests="1">
+    <testcase classname="Integration.Imperative should allow CLI implementations to configure their own profiles and types" name="We should be able to issue a command and have a profile be automatically loaded" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli auth logout" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:32:47" time="60.319" tests="3">
+    <testcase classname="Integration.cmd-cli auth logout" name="should have auth logout command that loads values from base profile and removes the token with alias" time="19.86">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth logout" name="should have auth logout command that loads values from base profile and removes the token" time="19.731">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auth logout" name="should have auth logout command that invalidates another token" time="19.946">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invoke test-async-handler" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:33:48" time="33.476" tests="5">
+    <testcase classname="Integration.cmd-cli invoke test-async-handler" name="should display the help" time="7.932">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-async-handler" name="should detect if the mutually exclusive fail options are specified" time="7.953">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-async-handler" name="should fail a handler if an imperative error is thrown" time="7.96">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-async-handler" name="should fail a handler if a generic error is thrown" time="4.373">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke test-async-handler" name="should fail a handler if a generic error is thrown and produce a JSON response" time="4.319">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli test masking command" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:34:21" time="29.059" tests="4">
+    <testcase classname="Integration.imperative-test-cli test masking command" name="should mask only what is required to be masked when _APP_MASK_OUTPUT is FALSE" time="4.614">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test masking command" name="should mask only what is required to be masked when _APP_MASK_OUTPUT is FALSE with --rfj" time="4.632">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test masking command" name="should mask only what is required to be masked when _APP_MASK_OUTPUT is NOT FALSE" time="4.748">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli test masking command" name="should mask only what is required to be masked when _APP_MASK_OUTPUT is NOT FALSE with --rfj" time="4.649">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli gen-webhelp example-test" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:34:50" time="11.563" tests="2">
+    <testcase classname="Integration.cmd-cli gen-webhelp example-test" name="should generate the help and display it" time="5.174">
+    </testcase>
+    <testcase classname="Integration.cmd-cli gen-webhelp example-test" name="should support the --rfj option" time="5.41">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invoke unexpected-exception-handler" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:35:02" time="14.127" tests="3">
+    <testcase classname="Integration.cmd-cli invoke unexpected-exception-handler" name="should display the help" time="4.272">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke unexpected-exception-handler" name="should fail because of an unexpected exception" time="4.246">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke unexpected-exception-handler" name="should fail because of an unexpected exception and produce a JSON response" time="4.402">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config convert-profiles" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:35:16" time="27.833" tests="3">
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; success scenarios" name="should display the help" time="8.648">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; success scenarios" name="should open config file in editor specified by environment variable" time="9.71">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config convert-profiles &gt; failure scenarios" name="should not open config file that does not exist" time="8.562">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli profiles create banana" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:35:44" time="29.441" tests="1">
+    <testcase classname="Integration.cmd-cli profiles create banana" name="should create profiles and only list the type requested" time="28.56">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli auto-format object" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:36:13" time="29.825" tests="6">
+    <testcase classname="Integration.cmd-cli auto-format object" name="should use the defaults coded in the handler to prettify the object" time="4.288">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format object" name="should allow a single field to be output" time="4.198">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format object" name="should allow a single field to be filtered and printed as a table" time="4.171">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format object" name="should allow the object to be printed as a single row of a table with a header" time="4.165">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format object" name="should allow a nested property to be targeted and formatted" time="4.228">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format object" name="should allow multiple nested properties to be extract and formatted as a table and object" time="7.931">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-data-object" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:36:43" time="21.444" tests="4">
+    <testcase classname="Integration.cmd-cli respond with-data-object" name="should display the help" time="7.96">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-data-object" name="should display a syntax error if no parms are specified" time="4.227">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-data-object" name="should display a syntax error if the JSON object passed is not valid" time="4.168">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-data-object" name="should allow us to formulate a response object with a data object and produce JSON" time="4.236">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-mixed-responses" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:37:05" time="21.48" tests="4">
+    <testcase classname="Integration.cmd-cli respond with-mixed-responses" name="should display the help" time="8.058">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-mixed-responses" name="should display a syntax error if no parameters are specified" time="4.228">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-mixed-responses" name="should display mixed responses, logs, errors, etc." time="4.161">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-mixed-responses" name="should display mixed responses, logs, errors, etc. and produce a JSON response" time="4.199">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-error-messages" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:37:26" time="21.239" tests="4">
+    <testcase classname="Integration.cmd-cli respond with-error-messages" name="should display the help" time="7.846">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-error-messages" name="should display a syntax error if no parameters are specified" time="4.131">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-error-messages" name="should display display a few error messages and allow format strings" time="4.112">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-error-messages" name="should display display a few error messages and allow format strings and produce a JSON response" time="4.205">
+    </testcase>
+  </testsuite>
+  <testsuite name="Imperative help should be available for a range of definitions" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:37:47" time="22.898" tests="3">
+    <testcase classname="Integration.Imperative help should be available for a range of definitions" name="We should be able to get --help for our example CLI - no bin specified in package" time="8.45">
+    </testcase>
+    <testcase classname="Integration.Imperative help should be available for a range of definitions" name="should display --version in the root help" time="7.05">
+    </testcase>
+    <testcase classname="Integration.Imperative help should be available for a range of definitions" name="We should be able to get --help for our example CLI - with bin in package" time="6.487">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-log-messages" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:38:10" time="22.095" tests="4">
+    <testcase classname="Integration.cmd-cli respond with-log-messages" name="should display the help" time="8.132">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-log-messages" name="should display a syntax error if no parameters are specified" time="4.542">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-log-messages" name="should display display a few log messages and allow format strings" time="4.169">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-log-messages" name="should display display a few log messages and allow format strings and produce a JSON response" time="4.3">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli auto-format cmd-output" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:38:32" time="21.831" tests="5">
+    <testcase classname="Integration.cmd-cli auto-format cmd-output" name="should use the defaults coded in the handler to output a table with no header" time="4.183">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format cmd-output" name="should use the defaults coded in the handler to output a table with a header" time="4.271">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format cmd-output" name="should allow the user to format the output as a list" time="4.2">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format cmd-output" name="should allow the user to format the output as a objects" time="4.161">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format cmd-output" name="should allow the user to format the output as a string" time="4.127">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:38:54" time="31.173" tests="5">
+    <testcase classname="Integration.cmd-cli" name="should display the help" time="12.391">
+    </testcase>
+    <testcase classname="Integration.cmd-cli" name="should show a list of available commands" time="4.539">
+    </testcase>
+    <testcase classname="Integration.cmd-cli" name="should flag an invalid group and give a close suggestion" time="4.293">
+    </testcase>
+    <testcase classname="Integration.cmd-cli" name="should flag an invalid command and list valid commands" time="4.469">
+    </testcase>
+    <testcase classname="Integration.cmd-cli" name="should display the version" time="4.535">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli auto-format table" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:39:26" time="20.677" tests="4">
+    <testcase classname="Integration.cmd-cli auto-format table" name="should include the header if no option is specified because it is defaulted in the handler" time="4.983">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format table" name="should include the header if the user specifies rfh" time="4.95">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format table" name="should NOT include the header if the user specifies rfh=false" time="4.902">
+    </testcase>
+    <testcase classname="Integration.cmd-cli auto-format table" name="should allow extraction of properties within each entry of an array" time="4.897">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-data-array" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:39:46" time="22.787" tests="3">
+    <testcase classname="Integration.cmd-cli respond with-data-array" name="should display the help" time="9.712">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-data-array" name="should display a syntax error if no parms are specified" time="6.68">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-data-array" name="should construct a response object with the strings inputted and produce a JSON response" time="5.412">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:40:09" time="20.675" tests="4">
+    <testcase classname="Integration.cmd-cli" name="should display proper messages when missing positional parameter" time="4.973">
+    </testcase>
+    <testcase classname="Integration.cmd-cli &gt; StringOrBlank type option" name="should allow user to input blank as input" time="4.835">
+    </testcase>
+    <testcase classname="Integration.cmd-cli &gt; StringOrBlank type option" name="should allow user to input valid string as input" time="4.906">
+    </testcase>
+    <testcase classname="Integration.cmd-cli &gt; StringOrBlank type option" name="should display proper help message when value is missing" time="4.762">
+    </testcase>
+  </testsuite>
+  <testsuite name="We should provide the ability to create, manage, and use profiles, tested through an example CLI" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:40:30" time="17.438" tests="3">
+    <testcase classname="Integration.We should provide the ability to create, manage, and use profiles, tested through an example CLI" name="If we try to issue a &apos;log messages&apos; command without the --level option, the command should fail" time="4.758">
+    </testcase>
+    <testcase classname="Integration.We should provide the ability to create, manage, and use profiles, tested through an example CLI" name="If we issue a &apos;log messages&apos; command with --level info, we should not see any trace or debug messages in the log file " time="7.115">
+    </testcase>
+    <testcase classname="Integration.We should provide the ability to create, manage, and use profiles, tested through an example CLI" name="If we issue a &apos;log messages&apos; command with --level trace, we should see all messages in the log file " time="4.636">
+    </testcase>
+  </testsuite>
+  <testsuite name="We should provide the ability to set commands as experimental" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:40:47" time="30.038" tests="5">
+    <testcase classname="Integration.We should provide the ability to set commands as experimental" name="should show the text &apos;experimental&apos; when listing experimental commands" time="8.902">
+    </testcase>
+    <testcase classname="Integration.We should provide the ability to set commands as experimental" name="should mark parent commands with all experimental children as experimental" time="4.264">
+    </testcase>
+    <testcase classname="Integration.We should provide the ability to set commands as experimental" name="should show the configured experimental command help text under an experimental command" time="4.251">
+    </testcase>
+    <testcase classname="Integration.We should provide the ability to set commands as experimental" name="should inherit experimental setting from parent commands to child commands" time="4.271">
+    </testcase>
+    <testcase classname="Integration.We should provide the ability to set commands as experimental" name="should show the default experimental command help text under an experimental command if no custom text is configured" time="7.361">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-error-headers" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:41:17" time="17.669" tests="3">
+    <testcase classname="Integration.cmd-cli respond with-error-headers" name="should display the help" time="8.081">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-error-headers" name="should display a few error headers and not fail the command" time="4.324">
+    </testcase>
+    <testcase classname="Integration.cmd-cli respond with-error-headers" name="should display a few error headers and not fail the command and produce a JSON response" time="4.31">
+    </testcase>
+  </testsuite>
+  <testsuite name="environmental variable integration" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:41:35" time="1.123" tests="2">
+    <testcase classname="Integration.environmental variable integration" name="should be able to extract the values for the environment variables" time="0.004">
+    </testcase>
+    <testcase classname="Integration.environmental variable integration" name="should set the log levels based on the imperative prefix" time="0.318">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config profiles" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:41:36" time="28.016" tests="2">
+    <testcase classname="Integration.imperative-test-cli config profiles" name="should display the help" time="4.108">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config profiles" name="should list profiles" time="4.912">
+    </testcase>
+  </testsuite>
+  <testsuite name="Plugin Management Facility" errors="0" failures="0" skipped="0" timestamp="2023-06-29T19:42:04" time="1083.903" tests="75">
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should install a plugin from a file location - no space in path" time="22.297">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should fail when a credMgr override plugin has no pluginLifeCycle property" time="12.718">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should fail to override credential manager with unknown credMgr" time="12.548">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should fail when a credMgr override plugin has no postInstall function" time="12.503">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should successfully override the credMgr with a valid override plugin" time="14.616">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should install multiple plugins at the same time" time="19.753">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should re-install plugins using files in the cli home directory" time="30.458">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins" name="should install a plugin from a file location that contain space in it path" time="14.483">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; Injection Tests" name="should fail to install a plugin from a file location with a command in it 1" time="13.013">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; Injection Tests" name="should fail to install a plugin from a file location with a command in it 2" time="3.307">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; Injection Tests" name="should fail to install a plugin from a file location with a command in it 3" time="3.048">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; providing a plugin json" name="should install using the created plugin json file" time="21.105">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; providing a plugin json" name="should merge a plugins.json provided with one that is already managed" time="37.564">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; providing a plugin json" name="should error when a package and --file is specified" time="3.11">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Installing Plugins &gt; providing a plugin json" name="should error when --file and --registry are specified" time="2.41">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should validate successfully" name="when all plugin installed successfully and no plugin name is provided" time="15.196">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should validate successfully" name="when plugin contain space in path is installed sucessfully" time="12.872">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should validate successfully" name="when provided plugin name is installed successfully" time="12.343">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should validate successfully" name="when imperative object in package.json does not contains a name property" time="12.928">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should validate successfully" name="when imperative object in package.json does not contains a handler property but contains a chained handler" time="13.724">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message" name="when no plugin is installed" time="2">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message" name="when the provided plugin is not installed" time="14.052">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message" name="when the provided plugin is not installed - error" time="12.586">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="duplicated command name with base CLI commands" time="12.44">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="duplicated command name with base CLI commands - error" time="12.837">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="duplicated command name with installed plugin" time="17.669">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="duplicated command name with installed plugin - error" time="18.351">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing pluginHealthCheck property" time="14.813">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing pluginHealthCheck property - warning" time="13.075">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing pluginHealthCheck handler" time="12.7">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing pluginHealthCheck handler - error" time="12.493">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing peerDependencies properties" time="12.539">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing peerDependencies properties - warning" time="12.458">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing rootCommandDescription property" time="13.054">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios" name="missing rootCommandDescription property - error" time="13.123">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is missing" time="14.795">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is missing - error" time="12.863">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with empty array" time="14.927">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with empty array - error" time="14.475">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain name property" time="13.331">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain name property - error" time="13.601">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain description property" time="14.901">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain description property - error" time="14.097">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain type property" time="13.49">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain type property - error" time="13.579">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain handler property" time="13.544">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain handler property - error" time="15.084">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain handler in chained handler property" time="16.552">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain handler in chained handler property - error" time="13.768">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain anything in chained handler property" time="13.196">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which does not contain anything in chained handler property - error" time="13.334">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which has a bad handler path in chained handler property" time="13.185">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which has a bad handler path in chained handler property - error" time="13.416">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which contains group type and missing children" time="12.85">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which contains group type and missing children - error" time="13.366">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which contains invalid handler" time="13.686">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; definitions property" name="is defined with definition which contains invalid handler - error" time="16.064">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; Detect profile problems" name="should fail with duplicate profiles within a plugin" time="13.763">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; Detect profile problems" name="should fail with duplicate profiles within a plugin - error" time="13.422">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; Detect profile problems" name="should fail when a plugin contains a profile with the same name as the CLI" time="13.885">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Validate plugin &gt; should display proper error message &gt; when package json contains the following scenarios &gt; Detect profile problems" name="should fail when a plugin contains a profile with the same name as the CLI - error" time="12.723">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Using a Plugin" name="should create plugin commands from in-line JSON text" time="25.201">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Using a Plugin" name="should create plugin commands and profiles from config modules" time="29.854">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Using a Plugin" name="should use plugins to verify access of Imperative features" time="25.956">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Using a Plugin" name="should override CredentialManager" time="18.481">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Uninstall plugin" name="should uninstall plugin properly" time="16.424">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Uninstall plugin" name="should display proper message when no plugin package is provided" time="2.72">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Uninstall plugin" name="should display proper message when invalid plugin package is provided" time="13.729">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Uninstall plugin &gt; PluginLifecycle" name="should fail when a credMgr override plugin has no pluginLifeCycle property" time="20.541">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Uninstall plugin &gt; PluginLifecycle" name="should successfully uninstall a credMgr override plugin" time="19.394">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; List plugin" name="should list all installed plugin" time="13.315">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; List plugin" name="should display proper message when no plugin is installed" time="2.275">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Update plugin" name="should update plugin properly" time="18.084">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Update plugin" name="should fail to update a plugin from a file location with a command in it" time="12.383">
+    </testcase>
+    <testcase classname="Integration.Plugin Management Facility &gt; Update plugin" name="should display proper message when no plugin package is provided" time="3.063">
+    </testcase>
+  </testsuite>
+  <testsuite name="Basic Profile Manager Initialize" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:00:08" time="1.101" tests="1">
+    <testcase classname="Integration.Basic Profile Manager Initialize" name="Should allow us to initialize the environment and create a profile manager" time="0.058">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli config schema" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:00:09" time="16.625" tests="2">
+    <testcase classname="Integration.imperative-test-cli config schema" name="should display the help" time="4.848">
+    </testcase>
+    <testcase classname="Integration.imperative-test-cli config schema" name="should print the generated schema" time="4.989">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli test config-auto-store command" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:00:26" time="18.641" tests="1">
+    <testcase classname="Integration.imperative-test-cli test config-auto-store command" name="should store the password automatically" time="17.799">
+    </testcase>
+  </testsuite>
+  <testsuite name="Imperative should validate config provided by the consumer" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:00:45" time="1.229" tests="1">
+    <testcase classname="Integration.Imperative should validate config provided by the consumer" name="We should be able to load our configuration from our package.json" time="0.186">
+    </testcase>
+  </testsuite>
+  <testsuite name="We should provide the ability to define commands through Javascript objects passed through the config or globs that match modules locally, tested through an example CLI" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:00:46" time="26.7" tests="1">
+    <testcase classname="Integration.We should provide the ability to define commands through Javascript objects passed through the config or globs that match modules locally, tested through an example CLI" name="All commands defined through module globs should be accurately defined, and a definition module in the same directory that does not " time="25.815">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli profiles create secured-profile" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:01:13" time="9.089" tests="1">
+    <testcase classname="Integration.imperative-test-cli profiles create secured-profile" name="should allow us to create a secured profile, list the contents and the secured fields should be hidden" time="8.164">
+    </testcase>
+  </testsuite>
+  <testsuite name="Hello World" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:01:22" time="13.396" tests="3">
+    <testcase classname="Integration.Hello World" name="should print world from the hello command" time="4.097">
+    </testcase>
+    <testcase classname="Integration.Hello World" name="should print help if the option is specified" time="4.029">
+    </testcase>
+    <testcase classname="Integration.Hello World" name="should print version if the option is specified" time="4.496">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli test config-override command" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:01:35" time="10.316" tests="1">
+    <testcase classname="Integration.imperative-test-cli test config-override command" name="should override the password with another property" time="9.354">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli profiles create insecure" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:01:46" time="8.913" tests="1">
+    <testcase classname="Integration.cmd-cli profiles create insecure" name="should create a profile with a field marked as secure in plain text if the cli does not mark keytar as a dependency" time="8.119">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli profile mapping" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:01:54" time="5.4" tests="1">
+    <testcase classname="Integration.cmd-cli profile mapping" name="should prompt the user for a value when the default prompt phrase is specified" time="4.401">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invoke" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:00" time="13.445" tests="2">
+    <testcase classname="Integration.cmd-cli invoke" name="should display the help" time="8.174">
+    </testcase>
+    <testcase classname="Integration.cmd-cli invoke" name="should display help examples for a group" time="4.405">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli profiles read profiles" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:13" time="9.254" tests="1">
+    <testcase classname="Integration.cmd-cli profiles read profiles" name="should create a profile with a field marked as secure in plain text (no keytar) and be able to read the contents" time="8.167">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invalid no-handler" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:23" time="8.935" tests="1">
+    <testcase classname="Integration.cmd-cli invalid no-handler" name="should fail the command with a message if the command definition of type command omits a handler" time="8.08">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli nested first-group" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:32" time="5.243" tests="1">
+    <testcase classname="Integration.cmd-cli nested first-group" name="should display both groups and commands in the help" time="4.328">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invalid profile-spec" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:37" time="5.09" tests="1">
+    <testcase classname="Integration.cmd-cli invalid profile-spec" name="should fail the command if the profile property is not supplied and the handler requests a profile" time="4.281">
+    </testcase>
+  </testsuite>
+  <testsuite name="imperative-test-cli test command" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:42" time="8.887" tests="1">
+    <testcase classname="Integration.imperative-test-cli test command" name="should display the help" time="8.098">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-wrapped-text" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:51" time="5.1" tests="1">
+    <testcase classname="Integration.cmd-cli respond with-wrapped-text" name="should produce both wrapped and non-wrapped text" time="4.327">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond with-syntax-errors" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:02:56" time="5.266" tests="1">
+    <testcase classname="Integration.cmd-cli respond with-syntax-errors" name="should produce a bunch of syntax errors" time="4.288">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invalid no-handler" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:01" time="9.703" tests="1">
+    <testcase classname="Integration.cmd-cli invalid no-handler" name="should fail the command with a message if the command definition of type command omits a handler" time="8.897">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli nested" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:11" time="5.941" tests="1">
+    <testcase classname="Integration.cmd-cli nested" name="should display both groups and commands in the help" time="4.763">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli gen-help allowable-options" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:17" time="5.11" tests="1">
+    <testcase classname="Integration.cmd-cli gen-help allowable-options" name="should display the help with allowable options" time="4.299">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli invoke exit 143" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:22" time="5.476" tests="1">
+    <testcase classname="Integration.cmd-cli invoke exit 143" name="should allow a handler to set an exit code and throw an error" time="4.513">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli gen-help example-test" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:28" time="5.66" tests="1">
+    <testcase classname="Integration.cmd-cli gen-help example-test" name="should display the help with allowable options" time="4.828">
+    </testcase>
+  </testsuite>
+  <testsuite name="cmd-cli respond" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:33" time="9.814" tests="1">
+    <testcase classname="Integration.cmd-cli respond" name="should display the help" time="8.621">
+    </testcase>
+  </testsuite>
+  <testsuite name="We should provide the ability to create, manage, and use profiles, tested through an example CLI" errors="0" failures="0" skipped="0" timestamp="2023-06-29T20:03:43" time="2.918" tests="1">
+    <testcase classname="Integration.We should provide the ability to create, manage, and use profiles, tested through an example CLI" name="We should be able to get --help for our example CLI" time="2.183">
+    </testcase>
+  </testsuite>
+</testsuites>

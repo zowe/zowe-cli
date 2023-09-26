@@ -1,0 +1,1557 @@
+{
+    "$schema": "../ProfInfoApp_team_config_proj/ProfInfoApp.schema.json",
+    "profiles": {
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "example.com",
+                "rejectUnauthorized": true
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "zosmf_000": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1000
+            }
+        },
+        "zosmf_001": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1001
+            }
+        },
+        "zosmf_002": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1002
+            }
+        },
+        "zosmf_003": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1003
+            }
+        },
+        "zosmf_004": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1004
+            }
+        },
+        "zosmf_005": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1005
+            }
+        },
+        "zosmf_006": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1006
+            }
+        },
+        "zosmf_007": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1007
+            }
+        },
+        "zosmf_008": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1008
+            }
+        },
+        "zosmf_009": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1009
+            }
+        },
+        "zosmf_010": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1010
+            }
+        },
+        "zosmf_011": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1011
+            }
+        },
+        "zosmf_012": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1012
+            }
+        },
+        "zosmf_013": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1013
+            }
+        },
+        "zosmf_014": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1014
+            }
+        },
+        "zosmf_015": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1015
+            }
+        },
+        "zosmf_016": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1016
+            }
+        },
+        "zosmf_017": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1017
+            }
+        },
+        "zosmf_018": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1018
+            }
+        },
+        "zosmf_019": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1019
+            }
+        },
+        "zosmf_020": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1020
+            }
+        },
+        "zosmf_021": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1021
+            }
+        },
+        "zosmf_022": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1022
+            }
+        },
+        "zosmf_023": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1023
+            }
+        },
+        "zosmf_024": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1024
+            }
+        },
+        "zosmf_025": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1025
+            }
+        },
+        "zosmf_026": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1026
+            }
+        },
+        "zosmf_027": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1027
+            }
+        },
+        "zosmf_028": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1028
+            }
+        },
+        "zosmf_029": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1029
+            }
+        },
+        "zosmf_030": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1030
+            }
+        },
+        "zosmf_031": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1031
+            }
+        },
+        "zosmf_032": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1032
+            }
+        },
+        "zosmf_033": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1033
+            }
+        },
+        "zosmf_034": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1034
+            }
+        },
+        "zosmf_035": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1035
+            }
+        },
+        "zosmf_036": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1036
+            }
+        },
+        "zosmf_037": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1037
+            }
+        },
+        "zosmf_038": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1038
+            }
+        },
+        "zosmf_039": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1039
+            }
+        },
+        "zosmf_040": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1040
+            }
+        },
+        "zosmf_041": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1041
+            }
+        },
+        "zosmf_042": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1042
+            }
+        },
+        "zosmf_043": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1043
+            }
+        },
+        "zosmf_044": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1044
+            }
+        },
+        "zosmf_045": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1045
+            }
+        },
+        "zosmf_046": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1046
+            }
+        },
+        "zosmf_047": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1047
+            }
+        },
+        "zosmf_048": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1048
+            }
+        },
+        "zosmf_049": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1049
+            }
+        },
+        "zosmf_050": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1050
+            }
+        },
+        "zosmf_051": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1051
+            }
+        },
+        "zosmf_052": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1052
+            }
+        },
+        "zosmf_053": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1053
+            }
+        },
+        "zosmf_054": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1054
+            }
+        },
+        "zosmf_055": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1055
+            }
+        },
+        "zosmf_056": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1056
+            }
+        },
+        "zosmf_057": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1057
+            }
+        },
+        "zosmf_058": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1058
+            }
+        },
+        "zosmf_059": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1059
+            }
+        },
+        "zosmf_060": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1060
+            }
+        },
+        "zosmf_061": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1061
+            }
+        },
+        "zosmf_062": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1062
+            }
+        },
+        "zosmf_063": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1063
+            }
+        },
+        "zosmf_064": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1064
+            }
+        },
+        "zosmf_065": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1065
+            }
+        },
+        "zosmf_066": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1066
+            }
+        },
+        "zosmf_067": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1067
+            }
+        },
+        "zosmf_068": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1068
+            }
+        },
+        "zosmf_069": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1069
+            }
+        },
+        "zosmf_070": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1070
+            }
+        },
+        "zosmf_071": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1071
+            }
+        },
+        "zosmf_072": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1072
+            }
+        },
+        "zosmf_073": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1073
+            }
+        },
+        "zosmf_074": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1074
+            }
+        },
+        "zosmf_075": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1075
+            }
+        },
+        "zosmf_076": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1076
+            }
+        },
+        "zosmf_077": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1077
+            }
+        },
+        "zosmf_078": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1078
+            }
+        },
+        "zosmf_079": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1079
+            }
+        },
+        "zosmf_080": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1080
+            }
+        },
+        "zosmf_081": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1081
+            }
+        },
+        "zosmf_082": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1082
+            }
+        },
+        "zosmf_083": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1083
+            }
+        },
+        "zosmf_084": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1084
+            }
+        },
+        "zosmf_085": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1085
+            }
+        },
+        "zosmf_086": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1086
+            }
+        },
+        "zosmf_087": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1087
+            }
+        },
+        "zosmf_088": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1088
+            }
+        },
+        "zosmf_089": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1089
+            }
+        },
+        "zosmf_090": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1090
+            }
+        },
+        "zosmf_091": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1091
+            }
+        },
+        "zosmf_092": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1092
+            }
+        },
+        "zosmf_093": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1093
+            }
+        },
+        "zosmf_094": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1094
+            }
+        },
+        "zosmf_095": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1095
+            }
+        },
+        "zosmf_096": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1096
+            }
+        },
+        "zosmf_097": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1097
+            }
+        },
+        "zosmf_098": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1098
+            }
+        },
+        "zosmf_099": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1099
+            }
+        },
+        "zosmf_100": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1100
+            }
+        },
+        "zosmf_101": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1101
+            }
+        },
+        "zosmf_102": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1102
+            }
+        },
+        "zosmf_103": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1103
+            }
+        },
+        "zosmf_104": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1104
+            }
+        },
+        "zosmf_105": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1105
+            }
+        },
+        "zosmf_106": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1106
+            }
+        },
+        "zosmf_107": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1107
+            }
+        },
+        "zosmf_108": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1108
+            }
+        },
+        "zosmf_109": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1109
+            }
+        },
+        "zosmf_110": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1110
+            }
+        },
+        "zosmf_111": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1111
+            }
+        },
+        "zosmf_112": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1112
+            }
+        },
+        "zosmf_113": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1113
+            }
+        },
+        "zosmf_114": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1114
+            }
+        },
+        "zosmf_115": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1115
+            }
+        },
+        "zosmf_116": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1116
+            }
+        },
+        "zosmf_117": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1117
+            }
+        },
+        "zosmf_118": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1118
+            }
+        },
+        "zosmf_119": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1119
+            }
+        },
+        "zosmf_120": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1120
+            }
+        },
+        "zosmf_121": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1121
+            }
+        },
+        "zosmf_122": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1122
+            }
+        },
+        "zosmf_123": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1123
+            }
+        },
+        "zosmf_124": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1124
+            }
+        },
+        "zosmf_125": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1125
+            }
+        },
+        "zosmf_126": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1126
+            }
+        },
+        "zosmf_127": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1127
+            }
+        },
+        "zosmf_128": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1128
+            }
+        },
+        "zosmf_129": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1129
+            }
+        },
+        "zosmf_130": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1130
+            }
+        },
+        "zosmf_131": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1131
+            }
+        },
+        "zosmf_132": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1132
+            }
+        },
+        "zosmf_133": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1133
+            }
+        },
+        "zosmf_134": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1134
+            }
+        },
+        "zosmf_135": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1135
+            }
+        },
+        "zosmf_136": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1136
+            }
+        },
+        "zosmf_137": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1137
+            }
+        },
+        "zosmf_138": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1138
+            }
+        },
+        "zosmf_139": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1139
+            }
+        },
+        "zosmf_140": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1140
+            }
+        },
+        "zosmf_141": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1141
+            }
+        },
+        "zosmf_142": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1142
+            }
+        },
+        "zosmf_143": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1143
+            }
+        },
+        "zosmf_144": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1144
+            }
+        },
+        "zosmf_145": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1145
+            }
+        },
+        "zosmf_146": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1146
+            }
+        },
+        "zosmf_147": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1147
+            }
+        },
+        "zosmf_148": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1148
+            }
+        },
+        "zosmf_149": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1149
+            }
+        },
+        "zosmf_150": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1150
+            }
+        },
+        "zosmf_151": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1151
+            }
+        },
+        "zosmf_152": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1152
+            }
+        },
+        "zosmf_153": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1153
+            }
+        },
+        "zosmf_154": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1154
+            }
+        },
+        "zosmf_155": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1155
+            }
+        },
+        "zosmf_156": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1156
+            }
+        },
+        "zosmf_157": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1157
+            }
+        },
+        "zosmf_158": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1158
+            }
+        },
+        "zosmf_159": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1159
+            }
+        },
+        "zosmf_160": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1160
+            }
+        },
+        "zosmf_161": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1161
+            }
+        },
+        "zosmf_162": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1162
+            }
+        },
+        "zosmf_163": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1163
+            }
+        },
+        "zosmf_164": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1164
+            }
+        },
+        "zosmf_165": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1165
+            }
+        },
+        "zosmf_166": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1166
+            }
+        },
+        "zosmf_167": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1167
+            }
+        },
+        "zosmf_168": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1168
+            }
+        },
+        "zosmf_169": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1169
+            }
+        },
+        "zosmf_170": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1170
+            }
+        },
+        "zosmf_171": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1171
+            }
+        },
+        "zosmf_172": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1172
+            }
+        },
+        "zosmf_173": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1173
+            }
+        },
+        "zosmf_174": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1174
+            }
+        },
+        "zosmf_175": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1175
+            }
+        },
+        "zosmf_176": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1176
+            }
+        },
+        "zosmf_177": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1177
+            }
+        },
+        "zosmf_178": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1178
+            }
+        },
+        "zosmf_179": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1179
+            }
+        },
+        "zosmf_180": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1180
+            }
+        },
+        "zosmf_181": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1181
+            }
+        },
+        "zosmf_182": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1182
+            }
+        },
+        "zosmf_183": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1183
+            }
+        },
+        "zosmf_184": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1184
+            }
+        },
+        "zosmf_185": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1185
+            }
+        },
+        "zosmf_186": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1186
+            }
+        },
+        "zosmf_187": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1187
+            }
+        },
+        "zosmf_188": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1188
+            }
+        },
+        "zosmf_189": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1189
+            }
+        },
+        "zosmf_190": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1190
+            }
+        },
+        "zosmf_191": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1191
+            }
+        },
+        "zosmf_192": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1192
+            }
+        },
+        "zosmf_193": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1193
+            }
+        },
+        "zosmf_194": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1194
+            }
+        },
+        "zosmf_195": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1195
+            }
+        },
+        "zosmf_196": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1196
+            }
+        },
+        "zosmf_197": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1197
+            }
+        },
+        "zosmf_198": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1198
+            }
+        },
+        "zosmf_199": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1199
+            }
+        },
+        "zosmf_200": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1200
+            }
+        },
+        "zosmf_201": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1201
+            }
+        },
+        "zosmf_202": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1202
+            }
+        },
+        "zosmf_203": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1203
+            }
+        },
+        "zosmf_204": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1204
+            }
+        },
+        "zosmf_205": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1205
+            }
+        },
+        "zosmf_206": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1206
+            }
+        },
+        "zosmf_207": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1207
+            }
+        },
+        "zosmf_208": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1208
+            }
+        },
+        "zosmf_209": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1209
+            }
+        },
+        "zosmf_210": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1210
+            }
+        },
+        "zosmf_211": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1211
+            }
+        },
+        "zosmf_212": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1212
+            }
+        },
+        "zosmf_213": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1213
+            }
+        },
+        "zosmf_214": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1214
+            }
+        },
+        "zosmf_215": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1215
+            }
+        },
+        "zosmf_216": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1216
+            }
+        },
+        "zosmf_217": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1217
+            }
+        },
+        "zosmf_218": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1218
+            }
+        },
+        "zosmf_219": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1219
+            }
+        },
+        "zosmf_220": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1220
+            }
+        },
+        "zosmf_221": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1221
+            }
+        },
+        "zosmf_222": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1222
+            }
+        },
+        "zosmf_223": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1223
+            }
+        },
+        "zosmf_224": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1224
+            }
+        },
+        "zosmf_225": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1225
+            }
+        },
+        "zosmf_226": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1226
+            }
+        },
+        "zosmf_227": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1227
+            }
+        },
+        "zosmf_228": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1228
+            }
+        },
+        "zosmf_229": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1229
+            }
+        },
+        "zosmf_230": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1230
+            }
+        },
+        "zosmf_231": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1231
+            }
+        },
+        "zosmf_232": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1232
+            }
+        },
+        "zosmf_233": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1233
+            }
+        },
+        "zosmf_234": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1234
+            }
+        },
+        "zosmf_235": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1235
+            }
+        },
+        "zosmf_236": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1236
+            }
+        },
+        "zosmf_237": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1237
+            }
+        },
+        "zosmf_238": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1238
+            }
+        },
+        "zosmf_239": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1239
+            }
+        },
+        "zosmf_240": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1240
+            }
+        },
+        "zosmf_241": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1241
+            }
+        },
+        "zosmf_242": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1242
+            }
+        },
+        "zosmf_243": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1243
+            }
+        },
+        "zosmf_244": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1244
+            }
+        },
+        "zosmf_245": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1245
+            }
+        },
+        "zosmf_246": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1246
+            }
+        },
+        "zosmf_247": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1247
+            }
+        },
+        "zosmf_248": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1248
+            }
+        },
+        "zosmf_249": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1249
+            }
+        },
+        "zosmf_250": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1250
+            }
+        },
+        "zosmf_251": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1251
+            }
+        },
+        "zosmf_252": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1252
+            }
+        },
+        "zosmf_253": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1253
+            }
+        },
+        "zosmf_254": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1254
+            }
+        },
+        "zosmf_255": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1255
+            }
+        }
+    },
+    "defaults": {
+        "base": "base",
+        "zosmf": "zosmf_000"
+    },
+    "autoStore": true
+}

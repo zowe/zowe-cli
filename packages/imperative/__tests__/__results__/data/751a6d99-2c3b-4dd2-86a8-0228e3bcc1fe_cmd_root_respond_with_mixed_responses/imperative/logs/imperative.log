@@ -1,0 +1,120 @@
+[2023/06/29 15:37:09.992] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:37:09.994] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:37:13.747] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:37:13.749] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:37:17.945] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:37:17.947] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:37:18.168] [ERROR] [CommandProcessor.js:687] Syntax for command "with-mixed-responses" is invalid.
+[2023/06/29 15:37:18.170] [ERROR] [CommandYargs.js:148] Error in command with-mixed-responses
+[2023/06/29 15:37:18.172] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'Command syntax invalid',
+    stdout: <Buffer >,
+    stderr: <Buffer 0a 53 79 6e 74 61 78 20 45 72 72 6f 72 3a 0a 4d 69 73 73 69 6e 67 20 52 65 71 75 69 72 65 64 20 4f 70 74 69 6f 6e 3a 0a 2d 2d 64 61 74 61 2d 6f 62 6a ... 901 more bytes>,
+    data: [
+      {
+        message: 'Missing Required Option:\n' +
+          '--data-object (--da)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'An well-formed JSON object to place in the command response.\n',
+        optionInError: 'data-object',
+        definition: {
+          name: 'data-object',
+          aliases: [ 'da' ],
+          description: 'An well-formed JSON object to place in the command response.',
+          type: 'json',
+          required: true,
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--message-for-response (--mfr)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'The message that will be placed in the output object.\n',
+        optionInError: 'message-for-response',
+        definition: {
+          name: 'message-for-response',
+          aliases: [ 'mfr' ],
+          description: 'The message that will be placed in the output object.',
+          type: 'string',
+          required: true,
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--error-format-string (--efs)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'A format string that will be used to create a message\n',
+        optionInError: 'error-format-string',
+        definition: {
+          name: 'error-format-string',
+          aliases: [ 'efs' ],
+          type: 'string',
+          required: true,
+          description: 'A format string that will be used to create a message',
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--error-format-values (--efv)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'The set of values to use in the format string.\n',
+        optionInError: 'error-format-values',
+        definition: {
+          name: 'error-format-values',
+          aliases: [ 'efv' ],
+          type: 'array',
+          required: true,
+          description: 'The set of values to use in the format string.',
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--log-format-string (--lfs)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'A format string that will be used to create a message\n',
+        optionInError: 'log-format-string',
+        definition: {
+          name: 'log-format-string',
+          aliases: [ 'lfs' ],
+          type: 'string',
+          required: true,
+          description: 'A format string that will be used to create a message',
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--log-format-values (--lfv)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'The set of values to use in the format string.\n',
+        optionInError: 'log-format-values',
+        definition: {
+          name: 'log-format-values',
+          aliases: [ 'lfv' ],
+          type: 'array',
+          required: true,
+          description: 'The set of values to use in the format string.',
+          group: 'Required Options'
+        }
+      }
+    ],
+    error: undefined
+  }
+]
+[2023/06/29 15:37:22.130] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:37:22.132] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:37:26.285] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:37:26.286] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.

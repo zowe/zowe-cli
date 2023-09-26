@@ -1,0 +1,600 @@
+[2023/06/29 15:40:48.762] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help
+[2023/06/29 15:40:48.765] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help
+[2023/06/29 15:40:55.414] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts <command|group>
+
+   Where <command|group> is one of the following:
+
+ GROUPS
+ ------
+
+   config                         Manage JSON project and global configuration
+   experimental-parent            this command's children will inherit the    
+                                  experimentalness (experimental)             
+   has-all-experimental-children  has experimental children (experimental)    
+   has-some-experimental-children this command has some experimental children 
+   plugins                        Install and manage plug-ins.                
+
+ COMMANDS
+ --------
+
+   is-experimental     this command is experimental (experimental)
+   is-not-experimental A command that is not experimental         
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:40:55.415] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help --response-format-json
+[2023/06/29 15:40:55.416] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help --response-format-json
+[2023/06/29 15:40:57.593] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Sample command line interface\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLI.ts <command|group>\n\n   Where <command|group> is one of the following:\n\n GROUPS\n ------\n\n   config                         Manage JSON project and global configuration\n   experimental-parent            this command's children will inherit the    \n                                  experimentalness (experimental)             \n   has-all-experimental-children  has experimental children (experimental)    \n   has-some-experimental-children this command has some experimental children \n   plugins                        Install and manage plug-ins.                \n\n COMMANDS\n --------\n\n   is-experimental     this command is experimental (experimental)\n   is-not-experimental A command that is not experimental         \n\n OPTIONS\n -------\n\n   --version | -V (boolean)\n\n      Display the current version of Test CLI with Profiles\n\n   --available-commands | --ac (boolean)\n\n      Displays a list of available commands\n\n GLOBAL OPTIONS\n --------------\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:40:57.594] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts <command|group>
+
+   Where <command|group> is one of the following:
+
+ GROUPS
+ ------
+
+   config                         Manage JSON project and global configuration
+   experimental-parent            this command's children will inherit the    
+                                  experimentalness (experimental)             
+   has-all-experimental-children  has experimental children (experimental)    
+   has-some-experimental-children this command has some experimental children 
+   plugins                        Install and manage plug-ins.                
+
+ COMMANDS
+ --------
+
+   is-experimental     this command is experimental (experimental)
+   is-not-experimental A command that is not experimental         
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:40:57.595] [INFO] [TestUtil.ts:318] [ 'this command is experimental (experimental)' ]
+[2023/06/29 15:40:57.601] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help
+[2023/06/29 15:40:57.602] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help
+[2023/06/29 15:40:59.675] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts <command|group>
+
+   Where <command|group> is one of the following:
+
+ GROUPS
+ ------
+
+   config                         Manage JSON project and global configuration
+   experimental-parent            this command's children will inherit the    
+                                  experimentalness (experimental)             
+   has-all-experimental-children  has experimental children (experimental)    
+   has-some-experimental-children this command has some experimental children 
+   plugins                        Install and manage plug-ins.                
+
+ COMMANDS
+ --------
+
+   is-experimental     this command is experimental (experimental)
+   is-not-experimental A command that is not experimental         
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:40:59.677] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help --response-format-json
+[2023/06/29 15:40:59.678] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts --help --response-format-json
+[2023/06/29 15:41:01.862] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Sample command line interface\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLI.ts <command|group>\n\n   Where <command|group> is one of the following:\n\n GROUPS\n ------\n\n   config                         Manage JSON project and global configuration\n   experimental-parent            this command's children will inherit the    \n                                  experimentalness (experimental)             \n   has-all-experimental-children  has experimental children (experimental)    \n   has-some-experimental-children this command has some experimental children \n   plugins                        Install and manage plug-ins.                \n\n COMMANDS\n --------\n\n   is-experimental     this command is experimental (experimental)\n   is-not-experimental A command that is not experimental         \n\n OPTIONS\n -------\n\n   --version | -V (boolean)\n\n      Display the current version of Test CLI with Profiles\n\n   --available-commands | --ac (boolean)\n\n      Displays a list of available commands\n\n GLOBAL OPTIONS\n --------------\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:41:01.863] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts <command|group>
+
+   Where <command|group> is one of the following:
+
+ GROUPS
+ ------
+
+   config                         Manage JSON project and global configuration
+   experimental-parent            this command's children will inherit the    
+                                  experimentalness (experimental)             
+   has-all-experimental-children  has experimental children (experimental)    
+   has-some-experimental-children this command has some experimental children 
+   plugins                        Install and manage plug-ins.                
+
+ COMMANDS
+ --------
+
+   is-experimental     this command is experimental (experimental)
+   is-not-experimental A command that is not experimental         
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:41:01.864] [INFO] [TestUtil.ts:318] [ 'has experimental children (experimental)' ]
+[2023/06/29 15:41:01.869] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts is-experimental --help
+[2023/06/29 15:41:01.870] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts is-experimental --help
+[2023/06/29 15:41:03.978] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   is-experimental   (experimental command)
+
+ DESCRIPTION
+ -----------
+
+   this command is experimental
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts is-experimental [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ ABOUT EXPERIMENTAL COMMANDS
+ ---------------------------
+
+   this is my custom experimental description help text. it explains what
+   experimental commands mean to me
+
+ 
+exit code: 0
+[2023/06/29 15:41:03.979] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts is-experimental --help --response-format-json
+[2023/06/29 15:41:03.980] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts is-experimental --help --response-format-json
+[2023/06/29 15:41:06.110] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: is-experimental.",
+  "stdout": "\n COMMAND NAME\n ------------\n\n   is-experimental   (experimental command)\n\n DESCRIPTION\n -----------\n\n   this command is experimental\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLI.ts is-experimental [options]\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n ABOUT EXPERIMENTAL COMMANDS\n ---------------------------\n\n   this is my custom experimental description help text. it explains what\n   experimental commands mean to me\n\n",
+  "stderr": "",
+  "data": "\n COMMAND NAME\n ------------\n\n   is-experimental   (experimental command)\n\n DESCRIPTION\n -----------\n\n   this command is experimental\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLI.ts is-experimental [options]\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n ABOUT EXPERIMENTAL COMMANDS\n ---------------------------\n\n   this is my custom experimental description help text. it explains what\n   experimental commands mean to me\n\n"
+} 
+exit code: 0
+[2023/06/29 15:41:06.112] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   is-experimental   (experimental command)
+
+ DESCRIPTION
+ -----------
+
+   this command is experimental
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts is-experimental [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ ABOUT EXPERIMENTAL COMMANDS
+ ---------------------------
+
+   this is my custom experimental description help text. it explains what
+   experimental commands mean to me
+
+
+[2023/06/29 15:41:06.113] [INFO] [TestUtil.ts:318] [
+  'this',         'is',
+  'my',           'custom',
+  'experimental', 'description',
+  'help',         'text.',
+  'it',           'explains',
+  'what',         'experimental',
+  'commands',     'mean',
+  'to',           'me'
+]
+[2023/06/29 15:41:06.123] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts experimental-parent child --help
+[2023/06/29 15:41:06.124] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts experimental-parent child --help
+[2023/06/29 15:41:08.266] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   child   (experimental command)
+
+ DESCRIPTION
+ -----------
+
+   will inherit being experimental despite not specifying it explicitly on this
+   command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts experimental-parent child [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ ABOUT EXPERIMENTAL COMMANDS
+ ---------------------------
+
+   this is my custom experimental description help text. it explains what
+   experimental commands mean to me
+
+ 
+exit code: 0
+[2023/06/29 15:41:08.267] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts experimental-parent child --help --response-format-json
+[2023/06/29 15:41:08.268] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLI.ts experimental-parent child --help --response-format-json
+[2023/06/29 15:41:10.387] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: child.",
+  "stdout": "\n COMMAND NAME\n ------------\n\n   child   (experimental command)\n\n DESCRIPTION\n -----------\n\n   will inherit being experimental despite not specifying it explicitly on this\n   command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLI.ts experimental-parent child [options]\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n ABOUT EXPERIMENTAL COMMANDS\n ---------------------------\n\n   this is my custom experimental description help text. it explains what\n   experimental commands mean to me\n\n",
+  "stderr": "",
+  "data": "\n COMMAND NAME\n ------------\n\n   child   (experimental command)\n\n DESCRIPTION\n -----------\n\n   will inherit being experimental despite not specifying it explicitly on this\n   command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLI.ts experimental-parent child [options]\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n ABOUT EXPERIMENTAL COMMANDS\n ---------------------------\n\n   this is my custom experimental description help text. it explains what\n   experimental commands mean to me\n\n"
+} 
+exit code: 0
+[2023/06/29 15:41:10.388] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   child   (experimental command)
+
+ DESCRIPTION
+ -----------
+
+   will inherit being experimental despite not specifying it explicitly on this
+   command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLI.ts experimental-parent child [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ ABOUT EXPERIMENTAL COMMANDS
+ ---------------------------
+
+   this is my custom experimental description help text. it explains what
+   experimental commands mean to me
+
+
+[2023/06/29 15:41:10.388] [INFO] [TestUtil.ts:318] [
+  'this',         'is',
+  'my',           'custom',
+  'experimental', 'description',
+  'help',         'text.',
+  'it',           'explains',
+  'what',         'experimental',
+  'commands',     'mean',
+  'to',           'me'
+]
+[2023/06/29 15:41:10.398] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLINoCustomHelpText.ts is-experimental --help
+[2023/06/29 15:41:10.399] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLINoCustomHelpText.ts is-experimental --help
+[2023/06/29 15:41:15.857] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   is-experimental   (experimental command)
+
+ DESCRIPTION
+ -----------
+
+   this command is experimental
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLINoCustomHelpText.ts is-experimental [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ ABOUT EXPERIMENTAL COMMANDS
+ ---------------------------
+
+   Experimental commands are commands that are not ready for general availability.
+   If you decide to use these commands, you might encounter bugs, incompatibilities
+   with your system, or incomplete help text.
+
+ 
+exit code: 0
+[2023/06/29 15:41:15.858] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLINoCustomHelpText.ts is-experimental --help --response-format-json
+[2023/06/29 15:41:15.858] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\__integration__/../ExperimentalExampleCLINoCustomHelpText.ts is-experimental --help --response-format-json
+[2023/06/29 15:41:17.753] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: is-experimental.",
+  "stdout": "\n COMMAND NAME\n ------------\n\n   is-experimental   (experimental command)\n\n DESCRIPTION\n -----------\n\n   this command is experimental\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLINoCustomHelpText.ts is-experimental [options]\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n ABOUT EXPERIMENTAL COMMANDS\n ---------------------------\n\n   Experimental commands are commands that are not ready for general availability.\n   If you decide to use these commands, you might encounter bugs, incompatibilities\n   with your system, or incomplete help text.\n\n",
+  "stderr": "",
+  "data": "\n COMMAND NAME\n ------------\n\n   is-experimental   (experimental command)\n\n DESCRIPTION\n -----------\n\n   this command is experimental\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_experimental\\ExperimentalExampleCLINoCustomHelpText.ts is-experimental [options]\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n ABOUT EXPERIMENTAL COMMANDS\n ---------------------------\n\n   Experimental commands are commands that are not ready for general availability.\n   If you decide to use these commands, you might encounter bugs, incompatibilities\n   with your system, or incomplete help text.\n\n"
+} 
+exit code: 0
+[2023/06/29 15:41:17.754] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   is-experimental   (experimental command)
+
+ DESCRIPTION
+ -----------
+
+   this command is experimental
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_experimental\ExperimentalExampleCLINoCustomHelpText.ts is-experimental [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ ABOUT EXPERIMENTAL COMMANDS
+ ---------------------------
+
+   Experimental commands are commands that are not ready for general availability.
+   If you decide to use these commands, you might encounter bugs, incompatibilities
+   with your system, or incomplete help text.
+
+
+[2023/06/29 15:41:17.755] [INFO] [TestUtil.ts:318] [
+  'Experimental',      'commands',
+  'are',               'commands',
+  'that',              'are',
+  'not',               'ready',
+  'for',               'general',
+  'availability.',     'If',
+  'you',               'decide',
+  'to',                'use',
+  'these',             'commands,',
+  'you',               'might',
+  'encounter',         'bugs,',
+  'incompatibilities', 'with',
+  'your',              'system,',
+  'or',                'incomplete',
+  'help',              'text.',
+  ''
+]

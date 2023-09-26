@@ -1,0 +1,2118 @@
+[2023/06/29 15:10:29.588] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles --help
+[2023/06/29 15:10:29.591] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles --help
+[2023/06/29 15:10:39.187] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Create and manage configuration profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   create | cre      Create new configuration profiles (deprecated)       
+   delete | rm       Delete existing profiles (deprecated)                
+   list | ls         List existing profiles (deprecated)                  
+   set-default | set Set which profiles are loaded by default (deprecated)
+   update | upd      Update existing profiles (deprecated)                
+   validate | val    Test the validity of a profile (deprecated)          
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:10:39.189] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles --help --response-format-json
+[2023/06/29 15:10:39.190] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles --help --response-format-json
+[2023/06/29 15:10:41.343] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: profiles.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Create and manage configuration profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles <group>\n\n   Where <group> is one of the following:\n\n GROUPS\n ------\n\n   create | cre      Create new configuration profiles (deprecated)       \n   delete | rm       Delete existing profiles (deprecated)                \n   list | ls         List existing profiles (deprecated)                  \n   set-default | set Set which profiles are loaded by default (deprecated)\n   update | upd      Update existing profiles (deprecated)                \n   validate | val    Test the validity of a profile (deprecated)          \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Create and manage configuration profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles <group>\n\n   Where <group> is one of the following:\n\n GROUPS\n ------\n\n   create | cre      Create new configuration profiles (deprecated)       \n   delete | rm       Delete existing profiles (deprecated)                \n   list | ls         List existing profiles (deprecated)                  \n   set-default | set Set which profiles are loaded by default (deprecated)\n   update | upd      Update existing profiles (deprecated)                \n   validate | val    Test the validity of a profile (deprecated)          \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:10:41.345] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Create and manage configuration profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   create | cre      Create new configuration profiles (deprecated)       
+   delete | rm       Delete existing profiles (deprecated)                
+   list | ls         List existing profiles (deprecated)                  
+   set-default | set Set which profiles are loaded by default (deprecated)
+   update | upd      Update existing profiles (deprecated)                
+   validate | val    Test the validity of a profile (deprecated)          
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:10:41.345] [INFO] [TestUtil.ts:318] [ 'create', 'set' ]
+[2023/06/29 15:10:41.348] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create --help
+[2023/06/29 15:10:41.352] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create --help
+[2023/06/29 15:10:43.649] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Create new configuration profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles create <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Create a many-field-profile profile     
+   many-field-profile                (deprecated)                            
+   profile-a-profile | profile-a     Create a profile-a profile (deprecated) 
+   profile-b-profile | profile-b     Create a profile-b profile (deprecated) 
+   profile-c-profile | profile-c     Create a profile-c profile (deprecated) 
+   profile-with-dependency-profile | Create a profile-with-dependency profile
+   profile-with-dependency           (deprecated)                            
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:10:43.651] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create --help --response-format-json
+[2023/06/29 15:10:43.651] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create --help --response-format-json
+[2023/06/29 15:10:45.929] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: create.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Create new configuration profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Create a many-field-profile profile     \n   many-field-profile                (deprecated)                            \n   profile-a-profile | profile-a     Create a profile-a profile (deprecated) \n   profile-b-profile | profile-b     Create a profile-b profile (deprecated) \n   profile-c-profile | profile-c     Create a profile-c profile (deprecated) \n   profile-with-dependency-profile | Create a profile-with-dependency profile\n   profile-with-dependency           (deprecated)                            \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Create new configuration profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Create a many-field-profile profile     \n   many-field-profile                (deprecated)                            \n   profile-a-profile | profile-a     Create a profile-a profile (deprecated) \n   profile-b-profile | profile-b     Create a profile-b profile (deprecated) \n   profile-c-profile | profile-c     Create a profile-c profile (deprecated) \n   profile-with-dependency-profile | Create a profile-with-dependency profile\n   profile-with-dependency           (deprecated)                            \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:10:45.930] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Create new configuration profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles create <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Create a many-field-profile profile     
+   many-field-profile                (deprecated)                            
+   profile-a-profile | profile-a     Create a profile-a profile (deprecated) 
+   profile-b-profile | profile-b     Create a profile-b profile (deprecated) 
+   profile-c-profile | profile-c     Create a profile-c profile (deprecated) 
+   profile-with-dependency-profile | Create a profile-with-dependency profile
+   profile-with-dependency           (deprecated)                            
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:10:45.931] [INFO] [TestUtil.ts:318] [ 'profile-a', 'profile-b' ]
+[2023/06/29 15:10:45.932] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a --help
+[2023/06/29 15:10:45.933] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a --help
+[2023/06/29 15:10:48.128] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   profile-a-profile | profile-a
+
+ DESCRIPTION
+ -----------
+
+   Example profile type A
+
+   Warning: This command has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles create profile-a-profile <profileName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   profileName		 (string)
+
+      Specifies the name of the new profile-a profile. You can load this profile by
+      using the name on commands that support the "--profile-a-profile" option.
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --animal | -a (string)
+
+      The animal
+
+ OPTIONS
+ -------
+
+   --number-with-default (number)
+
+      A number field with default value
+
+      Default value: 8080
+
+   --overwrite | --ow (boolean)
+
+      Overwrite the profile-a profile when a profile of the same name exists.
+
+   --disable-defaults | --dd (boolean)
+
+      Disable populating profile values of undefined properties with default values.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Create a profile-a profile with a doggy as the animal:
+
+      $ C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy
+
+ 
+exit code: 0
+[2023/06/29 15:10:48.129] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a --help --response-format-json
+[2023/06/29 15:10:48.130] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a --help --response-format-json
+[2023/06/29 15:10:50.392] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: profile-a-profile.",
+  "stdout": "\n COMMAND NAME\n ------------\n\n   profile-a-profile | profile-a\n\n DESCRIPTION\n -----------\n\n   Example profile type A\n\n   Warning: This command has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile <profileName> [options]\n\n POSITIONAL ARGUMENTS\n --------------------\n\n   profileName\t\t (string)\n\n      Specifies the name of the new profile-a profile. You can load this profile by\n      using the name on commands that support the \"--profile-a-profile\" option.\n\n REQUIRED OPTIONS\n ----------------\n\n   --animal | -a (string)\n\n      The animal\n\n OPTIONS\n -------\n\n   --number-with-default (number)\n\n      A number field with default value\n\n      Default value: 8080\n\n   --overwrite | --ow (boolean)\n\n      Overwrite the profile-a profile when a profile of the same name exists.\n\n   --disable-defaults | --dd (boolean)\n\n      Disable populating profile values of undefined properties with default values.\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n EXAMPLES\n --------\n\n   - Create a profile-a profile with a doggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy\n\n",
+  "stderr": "",
+  "data": "\n COMMAND NAME\n ------------\n\n   profile-a-profile | profile-a\n\n DESCRIPTION\n -----------\n\n   Example profile type A\n\n   Warning: This command has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile <profileName> [options]\n\n POSITIONAL ARGUMENTS\n --------------------\n\n   profileName\t\t (string)\n\n      Specifies the name of the new profile-a profile. You can load this profile by\n      using the name on commands that support the \"--profile-a-profile\" option.\n\n REQUIRED OPTIONS\n ----------------\n\n   --animal | -a (string)\n\n      The animal\n\n OPTIONS\n -------\n\n   --number-with-default (number)\n\n      A number field with default value\n\n      Default value: 8080\n\n   --overwrite | --ow (boolean)\n\n      Overwrite the profile-a profile when a profile of the same name exists.\n\n   --disable-defaults | --dd (boolean)\n\n      Disable populating profile values of undefined properties with default values.\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n EXAMPLES\n --------\n\n   - Create a profile-a profile with a doggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy\n\n"
+} 
+exit code: 0
+[2023/06/29 15:10:50.393] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   profile-a-profile | profile-a
+
+ DESCRIPTION
+ -----------
+
+   Example profile type A
+
+   Warning: This command has been deprecated.
+   Recommended replacement: The 'config init' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles create profile-a-profile <profileName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   profileName		 (string)
+
+      Specifies the name of the new profile-a profile. You can load this profile by
+      using the name on commands that support the "--profile-a-profile" option.
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --animal | -a (string)
+
+      The animal
+
+ OPTIONS
+ -------
+
+   --number-with-default (number)
+
+      A number field with default value
+
+      Default value: 8080
+
+   --overwrite | --ow (boolean)
+
+      Overwrite the profile-a profile when a profile of the same name exists.
+
+   --disable-defaults | --dd (boolean)
+
+      Disable populating profile values of undefined properties with default values.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Create a profile-a profile with a doggy as the animal:
+
+      $ C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy
+
+
+[2023/06/29 15:10:50.394] [INFO] [TestUtil.ts:318] [ 'profile-a' ]
+[2023/06/29 15:10:50.395] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set --help
+[2023/06/29 15:10:50.396] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set --help
+[2023/06/29 15:10:52.590] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Set which profiles are loaded by default.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config set' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles set-default <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Set the default                         
+   many-field-profile                profiles for the many-field-profile     
+                                     group (deprecated)                      
+   profile-a-profile | profile-a     Set the default                         
+                                     profiles for the profile-a group        
+                                     (deprecated)                            
+   profile-b-profile | profile-b     Set the default                         
+                                     profiles for the profile-b group        
+                                     (deprecated)                            
+   profile-c-profile | profile-c     Set the default                         
+                                     profiles for the profile-c group        
+                                     (deprecated)                            
+   profile-with-dependency-profile | Set the default                         
+   profile-with-dependency           profiles for the profile-with-dependency
+                                     group (deprecated)                      
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:10:52.591] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set --help --response-format-json
+[2023/06/29 15:10:52.592] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set --help --response-format-json
+[2023/06/29 15:10:54.824] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: set-default.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Set which profiles are loaded by default.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config set' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles set-default <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Set the default                         \n   many-field-profile                profiles for the many-field-profile     \n                                     group (deprecated)                      \n   profile-a-profile | profile-a     Set the default                         \n                                     profiles for the profile-a group        \n                                     (deprecated)                            \n   profile-b-profile | profile-b     Set the default                         \n                                     profiles for the profile-b group        \n                                     (deprecated)                            \n   profile-c-profile | profile-c     Set the default                         \n                                     profiles for the profile-c group        \n                                     (deprecated)                            \n   profile-with-dependency-profile | Set the default                         \n   profile-with-dependency           profiles for the profile-with-dependency\n                                     group (deprecated)                      \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Set which profiles are loaded by default.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config set' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles set-default <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Set the default                         \n   many-field-profile                profiles for the many-field-profile     \n                                     group (deprecated)                      \n   profile-a-profile | profile-a     Set the default                         \n                                     profiles for the profile-a group        \n                                     (deprecated)                            \n   profile-b-profile | profile-b     Set the default                         \n                                     profiles for the profile-b group        \n                                     (deprecated)                            \n   profile-c-profile | profile-c     Set the default                         \n                                     profiles for the profile-c group        \n                                     (deprecated)                            \n   profile-with-dependency-profile | Set the default                         \n   profile-with-dependency           profiles for the profile-with-dependency\n                                     group (deprecated)                      \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:10:54.825] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Set which profiles are loaded by default.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config set' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles set-default <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Set the default                         
+   many-field-profile                profiles for the many-field-profile     
+                                     group (deprecated)                      
+   profile-a-profile | profile-a     Set the default                         
+                                     profiles for the profile-a group        
+                                     (deprecated)                            
+   profile-b-profile | profile-b     Set the default                         
+                                     profiles for the profile-b group        
+                                     (deprecated)                            
+   profile-c-profile | profile-c     Set the default                         
+                                     profiles for the profile-c group        
+                                     (deprecated)                            
+   profile-with-dependency-profile | Set the default                         
+   profile-with-dependency           profiles for the profile-with-dependency
+                                     group (deprecated)                      
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:10:54.826] [INFO] [TestUtil.ts:318] [ 'profile-a', 'profile-b' ]
+[2023/06/29 15:10:54.827] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list --help
+[2023/06/29 15:10:54.829] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list --help
+[2023/06/29 15:10:57.014] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   List profiles of the type {{type}}.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config list' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles list <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profiles |      List profiles of the type            
+   many-field-profile                 many-field-profile. (deprecated)     
+   profile-a-profiles | profile-a     List profiles of the type profile-a. 
+                                      (deprecated)                         
+   profile-b-profiles | profile-b     List profiles of the type profile-b. 
+                                      (deprecated)                         
+   profile-c-profiles | profile-c     List profiles of the type profile-c. 
+                                      (deprecated)                         
+   profile-with-dependency-profiles | List profiles of the type            
+   profile-with-dependency            profile-with-dependency. (deprecated)
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:10:57.015] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list --help --response-format-json
+[2023/06/29 15:10:57.016] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list --help --response-format-json
+[2023/06/29 15:10:59.297] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: list.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   List profiles of the type {{type}}.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config list' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles list <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profiles |      List profiles of the type            \n   many-field-profile                 many-field-profile. (deprecated)     \n   profile-a-profiles | profile-a     List profiles of the type profile-a. \n                                      (deprecated)                         \n   profile-b-profiles | profile-b     List profiles of the type profile-b. \n                                      (deprecated)                         \n   profile-c-profiles | profile-c     List profiles of the type profile-c. \n                                      (deprecated)                         \n   profile-with-dependency-profiles | List profiles of the type            \n   profile-with-dependency            profile-with-dependency. (deprecated)\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   List profiles of the type {{type}}.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config list' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles list <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profiles |      List profiles of the type            \n   many-field-profile                 many-field-profile. (deprecated)     \n   profile-a-profiles | profile-a     List profiles of the type profile-a. \n                                      (deprecated)                         \n   profile-b-profiles | profile-b     List profiles of the type profile-b. \n                                      (deprecated)                         \n   profile-c-profiles | profile-c     List profiles of the type profile-c. \n                                      (deprecated)                         \n   profile-with-dependency-profiles | List profiles of the type            \n   profile-with-dependency            profile-with-dependency. (deprecated)\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:10:59.298] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   List profiles of the type {{type}}.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config list' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles list <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profiles |      List profiles of the type            
+   many-field-profile                 many-field-profile. (deprecated)     
+   profile-a-profiles | profile-a     List profiles of the type profile-a. 
+                                      (deprecated)                         
+   profile-b-profiles | profile-b     List profiles of the type profile-b. 
+                                      (deprecated)                         
+   profile-c-profiles | profile-c     List profiles of the type profile-c. 
+                                      (deprecated)                         
+   profile-with-dependency-profiles | List profiles of the type            
+   profile-with-dependency            profile-with-dependency. (deprecated)
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:10:59.298] [INFO] [TestUtil.ts:318] [ 'profile-a', 'profile-b' ]
+[2023/06/29 15:10:59.300] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete --help
+[2023/06/29 15:10:59.301] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete --help
+[2023/06/29 15:11:01.610] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Delete existing profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: Edit your Zowe V2 configuration
+   example_with_profiles.config.json
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles delete <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Delete a many-field-profile profile.    
+   many-field-profile                (deprecated)                            
+   profile-a-profile | profile-a     Delete a profile-a profile. (deprecated)
+   profile-b-profile | profile-b     Delete a profile-b profile. (deprecated)
+   profile-c-profile | profile-c     Delete a profile-c profile. (deprecated)
+   profile-with-dependency-profile | Delete a profile-with-dependency        
+   profile-with-dependency           profile. (deprecated)                   
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:11:01.611] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete --help --response-format-json
+[2023/06/29 15:11:01.612] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete --help --response-format-json
+[2023/06/29 15:11:03.843] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: delete.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Delete existing profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: Edit your Zowe V2 configuration\n   example_with_profiles.config.json\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles delete <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Delete a many-field-profile profile.    \n   many-field-profile                (deprecated)                            \n   profile-a-profile | profile-a     Delete a profile-a profile. (deprecated)\n   profile-b-profile | profile-b     Delete a profile-b profile. (deprecated)\n   profile-c-profile | profile-c     Delete a profile-c profile. (deprecated)\n   profile-with-dependency-profile | Delete a profile-with-dependency        \n   profile-with-dependency           profile. (deprecated)                   \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Delete existing profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: Edit your Zowe V2 configuration\n   example_with_profiles.config.json\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles delete <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Delete a many-field-profile profile.    \n   many-field-profile                (deprecated)                            \n   profile-a-profile | profile-a     Delete a profile-a profile. (deprecated)\n   profile-b-profile | profile-b     Delete a profile-b profile. (deprecated)\n   profile-c-profile | profile-c     Delete a profile-c profile. (deprecated)\n   profile-with-dependency-profile | Delete a profile-with-dependency        \n   profile-with-dependency           profile. (deprecated)                   \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:11:03.844] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Delete existing profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: Edit your Zowe V2 configuration
+   example_with_profiles.config.json
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles delete <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Delete a many-field-profile profile.    
+   many-field-profile                (deprecated)                            
+   profile-a-profile | profile-a     Delete a profile-a profile. (deprecated)
+   profile-b-profile | profile-b     Delete a profile-b profile. (deprecated)
+   profile-c-profile | profile-c     Delete a profile-c profile. (deprecated)
+   profile-with-dependency-profile | Delete a profile-with-dependency        
+   profile-with-dependency           profile. (deprecated)                   
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:11:03.845] [INFO] [TestUtil.ts:318] [ 'profile-a', 'profile-b' ]
+[2023/06/29 15:11:03.846] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update --help
+[2023/06/29 15:11:03.847] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update --help
+[2023/06/29 15:11:06.098] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Update a {{type}} profile. You can update any property present within the
+   profile configuration. The updated profile will be printed so that you can
+   review the result of the updates.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config set' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles update <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Update a many-field-profile profile. You
+   many-field-profile                can update any property present within  
+                                     the profile configuration. The updated  
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-a-profile | profile-a     Update a profile-a profile. You can     
+                                     update any property present within the  
+                                     profile configuration. The updated      
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-b-profile | profile-b     Update a profile-b profile. You can     
+                                     update any property present within the  
+                                     profile configuration. The updated      
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-c-profile | profile-c     Update a profile-c profile. You can     
+                                     update any property present within the  
+                                     profile configuration. The updated      
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-with-dependency-profile | Update a profile-with-dependency        
+   profile-with-dependency           profile. You can update any property    
+                                     present within the profile              
+                                     configuration. The updated profile will 
+                                     be printed so that you can review the   
+                                     result of the updates. (deprecated)     
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:11:06.099] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update --help --response-format-json
+[2023/06/29 15:11:06.100] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update --help --response-format-json
+[2023/06/29 15:11:08.469] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: update.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Update a {{type}} profile. You can update any property present within the\n   profile configuration. The updated profile will be printed so that you can\n   review the result of the updates.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config set' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles update <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Update a many-field-profile profile. You\n   many-field-profile                can update any property present within  \n                                     the profile configuration. The updated  \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-a-profile | profile-a     Update a profile-a profile. You can     \n                                     update any property present within the  \n                                     profile configuration. The updated      \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-b-profile | profile-b     Update a profile-b profile. You can     \n                                     update any property present within the  \n                                     profile configuration. The updated      \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-c-profile | profile-c     Update a profile-c profile. You can     \n                                     update any property present within the  \n                                     profile configuration. The updated      \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-with-dependency-profile | Update a profile-with-dependency        \n   profile-with-dependency           profile. You can update any property    \n                                     present within the profile              \n                                     configuration. The updated profile will \n                                     be printed so that you can review the   \n                                     result of the updates. (deprecated)     \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Update a {{type}} profile. You can update any property present within the\n   profile configuration. The updated profile will be printed so that you can\n   review the result of the updates.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: The 'config set' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles update <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile |      Update a many-field-profile profile. You\n   many-field-profile                can update any property present within  \n                                     the profile configuration. The updated  \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-a-profile | profile-a     Update a profile-a profile. You can     \n                                     update any property present within the  \n                                     profile configuration. The updated      \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-b-profile | profile-b     Update a profile-b profile. You can     \n                                     update any property present within the  \n                                     profile configuration. The updated      \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-c-profile | profile-c     Update a profile-c profile. You can     \n                                     update any property present within the  \n                                     profile configuration. The updated      \n                                     profile will be printed so that you can \n                                     review the result of the updates.       \n                                     (deprecated)                            \n   profile-with-dependency-profile | Update a profile-with-dependency        \n   profile-with-dependency           profile. You can update any property    \n                                     present within the profile              \n                                     configuration. The updated profile will \n                                     be printed so that you can review the   \n                                     result of the updates. (deprecated)     \n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:11:08.470] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Update a {{type}} profile. You can update any property present within the
+   profile configuration. The updated profile will be printed so that you can
+   review the result of the updates.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: The 'config set' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles update <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile |      Update a many-field-profile profile. You
+   many-field-profile                can update any property present within  
+                                     the profile configuration. The updated  
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-a-profile | profile-a     Update a profile-a profile. You can     
+                                     update any property present within the  
+                                     profile configuration. The updated      
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-b-profile | profile-b     Update a profile-b profile. You can     
+                                     update any property present within the  
+                                     profile configuration. The updated      
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-c-profile | profile-c     Update a profile-c profile. You can     
+                                     update any property present within the  
+                                     profile configuration. The updated      
+                                     profile will be printed so that you can 
+                                     review the result of the updates.       
+                                     (deprecated)                            
+   profile-with-dependency-profile | Update a profile-with-dependency        
+   profile-with-dependency           profile. You can update any property    
+                                     present within the profile              
+                                     configuration. The updated profile will 
+                                     be printed so that you can review the   
+                                     result of the updates. (deprecated)     
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:11:08.470] [INFO] [TestUtil.ts:318] [ 'profile-a', 'profile-b' ]
+[2023/06/29 15:11:08.472] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate --help
+[2023/06/29 15:11:08.473] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate --help
+[2023/06/29 15:11:10.747] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Test the validity of your profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: Edit your Zowe V2 configuration
+   example_with_profiles.config.json
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles validate <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile | Test the validity of a                  
+   many-field-profile           many-field-profile profile. (deprecated)
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 15:11:10.748] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate --help --response-format-json
+[2023/06/29 15:11:10.749] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate --help --response-format-json
+[2023/06/29 15:11:13.031] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: validate.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Test the validity of your profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: Edit your Zowe V2 configuration\n   example_with_profiles.config.json\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles validate <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile | Test the validity of a                  \n   many-field-profile           many-field-profile profile. (deprecated)\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Test the validity of your profiles.\n\n   Warning: This group has been deprecated.\n   Recommended replacement: Edit your Zowe V2 configuration\n   example_with_profiles.config.json\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles validate <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   many-field-profile-profile | Test the validity of a                  \n   many-field-profile           many-field-profile profile. (deprecated)\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 15:11:13.032] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Test the validity of your profiles.
+
+   Warning: This group has been deprecated.
+   Recommended replacement: Edit your Zowe V2 configuration
+   example_with_profiles.config.json
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles validate <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   many-field-profile-profile | Test the validity of a                  
+   many-field-profile           many-field-profile profile. (deprecated)
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 15:11:13.033] [INFO] [TestUtil.ts:318] [ 'many-field-profile' ]
+[2023/06/29 15:11:13.297] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update profile-a --help
+[2023/06/29 15:11:13.298] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update profile-a --help
+[2023/06/29 15:11:15.546] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ COMMAND NAME
+ ------------
+
+   profile-a-profile | profile-a
+
+ DESCRIPTION
+ -----------
+
+   Example profile type A
+
+   Warning: This command has been deprecated.
+   Recommended replacement: The 'config set' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles update profile-a-profile <profileName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   profileName		 (string)
+
+      Specifies the name of the new profile-a profile. You can load this profile by
+      using the name on commands that support the "--profile-a-profile" option.
+
+ OPTIONS
+ -------
+
+   --animal | -a (string)
+
+      The animal
+
+   --number-with-default (number)
+
+      A number field with default value
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Update a profile-a profile to use froggy as the animal:
+
+      $ C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles update profile-a-profile --animal froggy
+
+ 
+exit code: 0
+[2023/06/29 15:11:15.547] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update profile-a --help --response-format-json
+[2023/06/29 15:11:15.548] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update profile-a --help --response-format-json
+[2023/06/29 15:11:18.027] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: profile-a-profile.",
+  "stdout": "\n COMMAND NAME\n ------------\n\n   profile-a-profile | profile-a\n\n DESCRIPTION\n -----------\n\n   Example profile type A\n\n   Warning: This command has been deprecated.\n   Recommended replacement: The 'config set' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles update profile-a-profile <profileName> [options]\n\n POSITIONAL ARGUMENTS\n --------------------\n\n   profileName\t\t (string)\n\n      Specifies the name of the new profile-a profile. You can load this profile by\n      using the name on commands that support the \"--profile-a-profile\" option.\n\n OPTIONS\n -------\n\n   --animal | -a (string)\n\n      The animal\n\n   --number-with-default (number)\n\n      A number field with default value\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n EXAMPLES\n --------\n\n   - Update a profile-a profile to use froggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles update profile-a-profile --animal froggy\n\n",
+  "stderr": "",
+  "data": "\n COMMAND NAME\n ------------\n\n   profile-a-profile | profile-a\n\n DESCRIPTION\n -----------\n\n   Example profile type A\n\n   Warning: This command has been deprecated.\n   Recommended replacement: The 'config set' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles update profile-a-profile <profileName> [options]\n\n POSITIONAL ARGUMENTS\n --------------------\n\n   profileName\t\t (string)\n\n      Specifies the name of the new profile-a profile. You can load this profile by\n      using the name on commands that support the \"--profile-a-profile\" option.\n\n OPTIONS\n -------\n\n   --animal | -a (string)\n\n      The animal\n\n   --number-with-default (number)\n\n      A number field with default value\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n EXAMPLES\n --------\n\n   - Update a profile-a profile to use froggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles update profile-a-profile --animal froggy\n\n"
+} 
+exit code: 0
+[2023/06/29 15:11:18.028] [INFO] [TestUtil.ts:317] 
+ COMMAND NAME
+ ------------
+
+   profile-a-profile | profile-a
+
+ DESCRIPTION
+ -----------
+
+   Example profile type A
+
+   Warning: This command has been deprecated.
+   Recommended replacement: The 'config set' command
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles update profile-a-profile <profileName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   profileName		 (string)
+
+      Specifies the name of the new profile-a profile. You can load this profile by
+      using the name on commands that support the "--profile-a-profile" option.
+
+ OPTIONS
+ -------
+
+   --animal | -a (string)
+
+      The animal
+
+   --number-with-default (number)
+
+      A number field with default value
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Update a profile-a profile to use froggy as the animal:
+
+      $ C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts profiles update profile-a-profile --animal froggy
+
+
+[2023/06/29 15:11:18.029] [INFO] [TestUtil.ts:318] [ 'froggy' ]
+[2023/06/29 15:11:18.339] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles --help
+[2023/06/29 15:11:18.340] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles --help
+[2023/06/29 15:11:23.276] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins?
+
+Command entered: "profiles --help"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:23.277] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles --help --response-format-json
+[2023/06/29 15:11:23.278] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles --help --response-format-json
+[2023/06/29 15:11:25.480] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins?\n\nCommand entered: \"profiles --help --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins?\n\nCommand entered: \"profiles --help --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins?\n\nCommand entered: \"profiles --help --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:25.481] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins?
+
+Command entered: "profiles --help"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:25.482] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:25.483] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create
+[2023/06/29 15:11:25.484] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create
+[2023/06/29 15:11:27.656] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins update?
+
+Command entered: "profiles create"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:27.658] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create --response-format-json
+[2023/06/29 15:11:27.659] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create --response-format-json
+[2023/06/29 15:11:29.908] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles create --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles create --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles create --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:29.909] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins update?
+
+Command entered: "profiles create"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:29.909] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:29.910] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create profile-a
+[2023/06/29 15:11:29.911] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create profile-a
+[2023/06/29 15:11:32.064] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: config convert-profiles?
+
+Command entered: "profiles create profile-a"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:32.065] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create profile-a --response-format-json
+[2023/06/29 15:11:32.066] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles create profile-a --response-format-json
+[2023/06/29 15:11:34.166] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: config convert-profiles?\n\nCommand entered: \"profiles create profile-a --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: config convert-profiles?\n\nCommand entered: \"profiles create profile-a --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: config convert-profiles?\n\nCommand entered: \"profiles create profile-a --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:34.167] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: config convert-profiles?
+
+Command entered: "profiles create profile-a"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:34.168] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:34.169] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles set
+[2023/06/29 15:11:34.170] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles set
+[2023/06/29 15:11:36.369] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: config set?
+
+Command entered: "profiles set"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:36.370] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles set --response-format-json
+[2023/06/29 15:11:36.371] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles set --response-format-json
+[2023/06/29 15:11:38.530] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: config set?\n\nCommand entered: \"profiles set --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: config set?\n\nCommand entered: \"profiles set --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: config set?\n\nCommand entered: \"profiles set --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:38.531] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: config set?
+
+Command entered: "profiles set"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:38.532] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:38.533] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles list
+[2023/06/29 15:11:38.534] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles list
+[2023/06/29 15:11:40.747] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins list?
+
+Command entered: "profiles list"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:40.749] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles list --response-format-json
+[2023/06/29 15:11:40.750] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles list --response-format-json
+[2023/06/29 15:11:42.982] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins list?\n\nCommand entered: \"profiles list --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins list?\n\nCommand entered: \"profiles list --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins list?\n\nCommand entered: \"profiles list --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:42.983] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins list?
+
+Command entered: "profiles list"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:42.984] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:42.985] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles delete
+[2023/06/29 15:11:42.986] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles delete
+[2023/06/29 15:11:45.432] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins update?
+
+Command entered: "profiles delete"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:45.433] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles delete --response-format-json
+[2023/06/29 15:11:45.435] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles delete --response-format-json
+[2023/06/29 15:11:48.105] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles delete --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles delete --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles delete --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:48.106] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins update?
+
+Command entered: "profiles delete"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:48.106] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:48.108] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles update
+[2023/06/29 15:11:48.109] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles update
+[2023/06/29 15:11:50.524] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins update?
+
+Command entered: "profiles update"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 15:11:50.525] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles update --response-format-json
+[2023/06/29 15:11:50.527] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLINoAutoGen.ts profiles update --response-format-json
+[2023/06/29 15:11:52.937] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles update --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles update --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: profiles\nDid you mean: plugins update?\n\nCommand entered: \"profiles update --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLINoAutoGen.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:52.938] [INFO] [TestUtil.ts:317] Command Error:
+Command failed due to improper syntax
+Unknown group: profiles
+Did you mean: plugins update?
+
+Command entered: "profiles update"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLINoAutoGen.ts --help" to view groups, commands, and options.
+
+[2023/06/29 15:11:52.939] [INFO] [TestUtil.ts:318] [ 'Error' ]
+[2023/06/29 15:11:53.221] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency bad --profile-a-profile fake --ghost lenore
+[2023/06/29 15:11:53.222] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency bad --profile-a-profile fake --ghost lenore
+[2023/06/29 15:11:56.001] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Could not save the profile, because one or more dependencies is invalid or does not exist.
+Load Error Details: An error occurred while loading the dependencies of profile "bad" of type "profile-with-dependency". Dependency load list: 
+Type: "profile-a" Name: "fake"
+
+Error Details: Profile "fake" of type "profile-a" does not exist.
+
+Warning: The command 'profiles create' is deprecated.
+Recommended replacement: The 'config init' command
+
+exit code: 1
+[2023/06/29 15:11:56.002] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency bad --profile-a-profile fake --ghost lenore --response-format-json
+[2023/06/29 15:11:56.003] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency bad --profile-a-profile fake --ghost lenore --response-format-json
+[2023/06/29 15:11:58.529] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Could not save the profile, because one or more dependencies is invalid or does not exist.\nLoad Error Details: An error occurred while loading the dependencies of profile \"bad\" of type \"profile-with-dependency\". Dependency load list: \nType: \"profile-a\" Name: \"fake\"\n\nError Details: Profile \"fake\" of type \"profile-a\" does not exist.",
+  "stdout": "",
+  "stderr": "Command Error:\nCould not save the profile, because one or more dependencies is invalid or does not exist.\nLoad Error Details: An error occurred while loading the dependencies of profile \"bad\" of type \"profile-with-dependency\". Dependency load list: \nType: \"profile-a\" Name: \"fake\"\n\nError Details: Profile \"fake\" of type \"profile-a\" does not exist.\n\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {},
+  "error": {
+    "msg": "Could not save the profile, because one or more dependencies is invalid or does not exist.\nLoad Error Details: An error occurred while loading the dependencies of profile \"bad\" of type \"profile-with-dependency\". Dependency load list: \nType: \"profile-a\" Name: \"fake\"\n\nError Details: Profile \"fake\" of type \"profile-a\" does not exist."
+  }
+} 
+exit code: 1
+[2023/06/29 15:11:58.529] [INFO] [TestUtil.ts:317] command error:
+could not save the profile, because one or more dependencies is invalid or does not exist.
+load error details: an error occurred while loading the dependencies of profile "bad" of type "profile-with-dependency". dependency load list: 
+type: "profile-a" name: "fake"
+
+error details: profile "fake" of type "profile-a" does not exist.
+
+warning: the command 'profiles create' is deprecated.
+recommended replacement: the 'config init' command
+
+[2023/06/29 15:11:58.530] [INFO] [TestUtil.ts:318] [ 'fake', 'depend' ]
+[2023/06/29 15:11:58.793] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a good --animal doggy --response-format-json
+[2023/06/29 15:11:58.794] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a good --animal doggy --response-format-json
+[2023/06/29 15:12:01.279] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-a\\good.yaml\n\nanimal:            doggy\nnumberWithDefault: 8080\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:01.280] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:01.281] [INFO] [TestUtil.ts:318] [ 'doggy', 'success', 'numberWithDefault', '8080' ]
+[2023/06/29 15:12:01.283] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency big_profile --profile-a-profile good --ghost lenore --response-format-json
+[2023/06/29 15:12:01.285] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency big_profile --profile-a-profile good --ghost lenore --response-format-json
+[2023/06/29 15:12:04.036] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-with-dependency\\big_profile.yaml\n\nghost:        lenore\ndependencies: \n  - \n    type: profile-a\n    name: good\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:04.036] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:04.037] [INFO] [TestUtil.ts:318] [ 'success' ]
+[2023/06/29 15:12:04.038] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile
+[2023/06/29 15:12:04.039] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile
+[2023/06/29 15:12:08.886] [DEBUG] [TestUtil.ts:203] Command output: 
+ Loaded profile dependency of type profile-a
+Loaded main profile of type profile-with-dependency
+ 
+exit code: 0
+[2023/06/29 15:12:08.887] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile --response-format-json
+[2023/06/29 15:12:08.888] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile --response-format-json
+[2023/06/29 15:12:11.118] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile dependency of type profile-a\nLoaded main profile of type profile-with-dependency\n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:11.119] [INFO] [TestUtil.ts:317] Loaded profile dependency of type profile-a
+Loaded main profile of type profile-with-dependency
+
+[2023/06/29 15:12:11.120] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:12:11.372] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a the_default_a_profile --animal emu --response-format-json
+[2023/06/29 15:12:11.373] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a the_default_a_profile --animal emu --response-format-json
+[2023/06/29 15:12:13.656] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-a\\the_default_a_profile.yaml\n\nanimal:            emu\nnumberWithDefault: 8080\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:13.656] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:13.657] [INFO] [TestUtil.ts:318] [ 'emu', 'success' ]
+[2023/06/29 15:12:13.658] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a good --animal doggy --response-format-json
+[2023/06/29 15:12:13.659] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a good --animal doggy --response-format-json
+[2023/06/29 15:12:15.941] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-a\\good.yaml\n\nanimal:            doggy\nnumberWithDefault: 8080\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:15.942] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:15.942] [INFO] [TestUtil.ts:318] [ 'doggy', 'success' ]
+[2023/06/29 15:12:15.943] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency big_profile --profile-a-profile good --ghost lenore --response-format-json
+[2023/06/29 15:12:15.944] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-with-dependency big_profile --profile-a-profile good --ghost lenore --response-format-json
+[2023/06/29 15:12:18.187] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-with-dependency\\big_profile.yaml\n\nghost:        lenore\ndependencies: \n  - \n    type: profile-a\n    name: good\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:18.188] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:18.188] [INFO] [TestUtil.ts:318] [ 'success' ]
+[2023/06/29 15:12:18.189] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile
+[2023/06/29 15:12:18.190] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile
+[2023/06/29 15:12:20.360] [DEBUG] [TestUtil.ts:203] Command output: 
+ Loaded profile dependency of type profile-a
+Loaded main profile of type profile-with-dependency
+ 
+exit code: 0
+[2023/06/29 15:12:20.361] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile --response-format-json
+[2023/06/29 15:12:20.361] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-dependent-profile --response-format-json
+[2023/06/29 15:12:22.636] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile dependency of type profile-a\nLoaded main profile of type profile-with-dependency\n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:22.637] [INFO] [TestUtil.ts:317] Loaded profile dependency of type profile-a
+Loaded main profile of type profile-with-dependency
+
+[2023/06/29 15:12:22.638] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:12:22.895] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a bad --response-format-json
+[2023/06/29 15:12:22.896] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a bad --response-format-json
+[2023/06/29 15:12:25.230] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command syntax invalid",
+  "stdout": "",
+  "stderr": "\nSyntax Error:\nMissing Required Option:\n--animal (-a)\n\nOption Description:\nThe animal\n\nExample:\n\n - Create a profile-a profile with a doggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy\n\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a --help\" to view command description, usage, and options.\n",
+  "data": [
+    {
+      "message": "Missing Required Option:\n--animal (-a)\n\nOption Description:\nThe animal\n",
+      "optionInError": "animal",
+      "definition": {
+        "description": "The animal",
+        "type": "string",
+        "name": "animal",
+        "aliases": [
+          "a"
+        ],
+        "required": true,
+        "group": "Required Options"
+      }
+    }
+  ]
+} 
+exit code: 1
+[2023/06/29 15:12:25.231] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:25.231] [INFO] [TestUtil.ts:318] [ 'animal' ]
+[2023/06/29 15:12:25.489] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a first --animal doggy --response-format-json
+[2023/06/29 15:12:25.490] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a first --animal doggy --response-format-json
+[2023/06/29 15:12:28.092] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-a\\first.yaml\n\nanimal:            doggy\nnumberWithDefault: 8080\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:28.093] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:28.093] [INFO] [TestUtil.ts:318] [ 'doggy', 'success' ]
+[2023/06/29 15:12:28.095] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a second --animal sloth --response-format-json
+[2023/06/29 15:12:28.095] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a second --animal sloth --response-format-json
+[2023/06/29 15:12:30.312] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-a\\second.yaml\n\nanimal:            sloth\nnumberWithDefault: 8080\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:30.313] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:30.313] [INFO] [TestUtil.ts:318] [ 'sloth', 'success' ]
+[2023/06/29 15:12:30.315] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-b first --bumblebee dumbledore --response-format-json
+[2023/06/29 15:12:30.315] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-b first --bumblebee dumbledore --response-format-json
+[2023/06/29 15:12:32.587] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-b\\first.yaml\n\nbumblebee: dumbledore\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:32.588] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:32.589] [INFO] [TestUtil.ts:318] [ 'dumbledore', 'success' ]
+[2023/06/29 15:12:32.590] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-b second --bumblebee jerry --response-format-json
+[2023/06/29 15:12:32.590] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-b second --bumblebee jerry --response-format-json
+[2023/06/29 15:12:34.886] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-b\\second.yaml\n\nbumblebee: jerry\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:34.887] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:34.887] [INFO] [TestUtil.ts:318] [ 'jerry', 'success' ]
+[2023/06/29 15:12:34.889] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update profile-b second --bumblebee seinfeld --response-format-json
+[2023/06/29 15:12:34.889] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update profile-b second --bumblebee seinfeld --response-format-json
+[2023/06/29 15:12:37.146] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Overwrote existing profile for second.\nProfile updated successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\profile-b\\second.yaml\n\nbumblebee: seinfeld\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles update' is deprecated.\nRecommended replacement: The 'config set' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:37.146] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:37.147] [INFO] [TestUtil.ts:318] [ 'seinfeld', 'success' ]
+[2023/06/29 15:12:37.148] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list profile-a --response-format-json
+[2023/06/29 15:12:37.149] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list profile-a --response-format-json
+[2023/06/29 15:12:41.992] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "\"2\" profiles loaded for type \"profile-a\"",
+  "stdout": "first (default) \nsecond\n",
+  "stderr": "\nWarning: The command 'profiles list' is deprecated.\nRecommended replacement: The 'config list' command\n",
+  "data": [
+    {
+      "message": "Profile \"first\" of type \"profile-a\" loaded successfully.",
+      "profile": {
+        "animal": "doggy",
+        "numberWithDefault": 8080
+      },
+      "type": "profile-a",
+      "name": "first (default) ",
+      "failNotFound": true,
+      "dependenciesLoaded": false,
+      "dependencyLoadResponses": []
+    },
+    {
+      "message": "Profile \"second\" of type \"profile-a\" loaded successfully.",
+      "profile": {
+        "animal": "sloth",
+        "numberWithDefault": 8080
+      },
+      "type": "profile-a",
+      "name": "second",
+      "failNotFound": true,
+      "dependenciesLoaded": false,
+      "dependencyLoadResponses": []
+    }
+  ]
+} 
+exit code: 0
+[2023/06/29 15:12:41.993] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:41.994] [INFO] [TestUtil.ts:318] [ 'first', 'second' ]
+[2023/06/29 15:12:41.995] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list profile-b --response-format-json
+[2023/06/29 15:12:41.996] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list profile-b --response-format-json
+[2023/06/29 15:12:44.255] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "\"2\" profiles loaded for type \"profile-b\"",
+  "stdout": "first (default) \nsecond\n",
+  "stderr": "\nWarning: The command 'profiles list' is deprecated.\nRecommended replacement: The 'config list' command\n",
+  "data": [
+    {
+      "message": "Profile \"first\" of type \"profile-b\" loaded successfully.",
+      "profile": {
+        "bumblebee": "dumbledore"
+      },
+      "type": "profile-b",
+      "name": "first (default) ",
+      "failNotFound": true,
+      "dependenciesLoaded": false,
+      "dependencyLoadResponses": []
+    },
+    {
+      "message": "Profile \"second\" of type \"profile-b\" loaded successfully.",
+      "profile": {
+        "bumblebee": "seinfeld"
+      },
+      "type": "profile-b",
+      "name": "second",
+      "failNotFound": true,
+      "dependenciesLoaded": false,
+      "dependencyLoadResponses": []
+    }
+  ]
+} 
+exit code: 0
+[2023/06/29 15:12:44.255] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:44.256] [INFO] [TestUtil.ts:318] [ 'first', 'second' ]
+[2023/06/29 15:12:44.257] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-a --response-format-json
+[2023/06/29 15:12:44.258] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-a --response-format-json
+[2023/06/29 15:12:49.304] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile  of type \n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:49.306] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:49.306] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:12:49.308] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-a --profile-a-profile second --response-format-json
+[2023/06/29 15:12:49.309] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-a --profile-a-profile second --response-format-json
+[2023/06/29 15:12:51.750] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile  of type \n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:51.751] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:51.752] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:12:51.753] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-b --response-format-json
+[2023/06/29 15:12:51.754] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-b --response-format-json
+[2023/06/29 15:12:56.997] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile  of type \n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:56.998] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:56.999] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:12:57.000] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-b --profile-b-profile second --response-format-json
+[2023/06/29 15:12:57.001] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-b --profile-b-profile second --response-format-json
+[2023/06/29 15:12:59.242] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile  of type \n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:12:59.243] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:12:59.244] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:12:59.245] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set profile-a second --response-format-json
+[2023/06/29 15:12:59.246] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set profile-a second --response-format-json
+[2023/06/29 15:13:04.623] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "The default profile for profile-a set to second\n",
+  "stderr": "\nWarning: The command 'profiles set' is deprecated.\nRecommended replacement: The 'config set' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:04.624] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:04.624] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:13:04.626] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-a --response-format-json
+[2023/06/29 15:13:04.627] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-a --response-format-json
+[2023/06/29 15:13:06.922] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile  of type \n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:06.923] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:06.924] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:13:06.925] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set profile-b second --response-format-json
+[2023/06/29 15:13:06.926] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles set profile-b second --response-format-json
+[2023/06/29 15:13:09.167] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "The default profile for profile-b set to second\n",
+  "stderr": "\nWarning: The command 'profiles set' is deprecated.\nRecommended replacement: The 'config set' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:09.168] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:09.169] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:13:09.170] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-b --response-format-json
+[2023/06/29 15:13:09.171] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts use-profile-b --response-format-json
+[2023/06/29 15:13:11.450] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Loaded profile  of type \n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:11.451] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:11.451] [INFO] [TestUtil.ts:318] []
+[2023/06/29 15:13:11.453] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete profile-a first --force --response-format-json
+[2023/06/29 15:13:11.454] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete profile-a first --force --response-format-json
+[2023/06/29 15:13:13.656] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Your profile named first of type profile-a was successfully deleted.\n",
+  "stderr": "\nWarning: The command 'profiles delete' is deprecated.\nRecommended replacement: Edit your Zowe V2 configuration\n    example_with_profiles.config.json\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:13.657] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:13.658] [INFO] [TestUtil.ts:318] [ 'success', 'delete', 'first' ]
+[2023/06/29 15:13:13.660] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete profile-b second --force --response-format-json
+[2023/06/29 15:13:13.660] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles delete profile-b second --force --response-format-json
+[2023/06/29 15:13:16.028] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Your default profile named second of type profile-b was successfully deleted.\nBecause you deleted it, the default profile for type profile-b has been cleared.\nTo set a new default profile, run \"zowe profiles set-default profile-b <profileName>\".\n",
+  "stderr": "\nWarning: The command 'profiles delete' is deprecated.\nRecommended replacement: Edit your Zowe V2 configuration\n    example_with_profiles.config.json\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:16.029] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:16.029] [INFO] [TestUtil.ts:318] [ 'success', 'delete', 'second' ]
+[2023/06/29 15:13:16.291] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts optional-profile-c --response-format-json
+[2023/06/29 15:13:16.292] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts optional-profile-c --response-format-json
+[2023/06/29 15:13:21.075] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile Cs loaded: undefined\n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:21.076] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:21.077] [INFO] [TestUtil.ts:318] [ 'Profile Cs loaded: undefined' ]
+[2023/06/29 15:13:21.373] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile merge_me --tea earl_grey --soda diet_coke --water dirty --response-format-json
+[2023/06/29 15:13:21.374] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile merge_me --tea earl_grey --soda diet_coke --water dirty --response-format-json
+[2023/06/29 15:13:23.898] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\many-field-profile\\merge_me.yaml\n\ntea:   earl_grey\nsoda:  diet_coke\nwater: dirty\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:23.899] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:23.899] [INFO] [TestUtil.ts:318] [ 'diet_coke', 'dirty', 'earl_grey' ]
+[2023/06/29 15:13:23.901] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update many-field-profile merge_me --water clean --response-format-json
+[2023/06/29 15:13:23.902] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles update many-field-profile merge_me --water clean --response-format-json
+[2023/06/29 15:13:26.481] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Overwrote existing profile for merge_me.\nProfile updated successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\many-field-profile\\merge_me.yaml\n\ntea:   earl_grey\nsoda:  diet_coke\nwater: clean\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles update' is deprecated.\nRecommended replacement: The 'config set' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:26.482] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:26.483] [INFO] [TestUtil.ts:318] [ 'diet_coke', 'clean', 'earl_grey' ]
+[2023/06/29 15:13:26.485] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list many-field-profile --show-contents --response-format-json
+[2023/06/29 15:13:26.486] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles list many-field-profile --show-contents --response-format-json
+[2023/06/29 15:13:28.872] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "\"1\" profiles loaded for type \"many-field-profile\"",
+  "stdout": "- \n  name:     merge_me (default) \n  contents: \n    tea:   earl_grey\n    soda:  diet_coke\n    water: clean\n",
+  "stderr": "\nWarning: The command 'profiles list' is deprecated.\nRecommended replacement: The 'config list' command\n",
+  "data": [
+    {
+      "message": "Profile \"merge_me\" of type \"many-field-profile\" loaded successfully.",
+      "profile": {
+        "tea": "earl_grey",
+        "soda": "diet_coke",
+        "water": "clean"
+      },
+      "type": "many-field-profile",
+      "name": "merge_me (default) ",
+      "failNotFound": true,
+      "dependenciesLoaded": false,
+      "dependencyLoadResponses": []
+    }
+  ]
+} 
+exit code: 0
+[2023/06/29 15:13:28.873] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:28.874] [INFO] [TestUtil.ts:318] [ 'diet_coke', 'clean', 'earl_grey' ]
+[2023/06/29 15:13:29.132] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a --help --response-format-json
+[2023/06/29 15:13:29.133] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create profile-a --help --response-format-json
+[2023/06/29 15:13:31.280] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: profile-a-profile.",
+  "stdout": "\n COMMAND NAME\n ------------\n\n   profile-a-profile | profile-a\n\n DESCRIPTION\n -----------\n\n   Example profile type A\n\n   Warning: This command has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile <profileName> [options]\n\n POSITIONAL ARGUMENTS\n --------------------\n\n   profileName\t\t (string)\n\n      Specifies the name of the new profile-a profile. You can load this profile by\n      using the name on commands that support the \"--profile-a-profile\" option.\n\n REQUIRED OPTIONS\n ----------------\n\n   --animal | -a (string)\n\n      The animal\n\n OPTIONS\n -------\n\n   --number-with-default (number)\n\n      A number field with default value\n\n      Default value: 8080\n\n   --overwrite | --ow (boolean)\n\n      Overwrite the profile-a profile when a profile of the same name exists.\n\n   --disable-defaults | --dd (boolean)\n\n      Disable populating profile values of undefined properties with default values.\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n EXAMPLES\n --------\n\n   - Create a profile-a profile with a doggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy\n\n",
+  "stderr": "",
+  "data": "\n COMMAND NAME\n ------------\n\n   profile-a-profile | profile-a\n\n DESCRIPTION\n -----------\n\n   Example profile type A\n\n   Warning: This command has been deprecated.\n   Recommended replacement: The 'config init' command\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile <profileName> [options]\n\n POSITIONAL ARGUMENTS\n --------------------\n\n   profileName\t\t (string)\n\n      Specifies the name of the new profile-a profile. You can load this profile by\n      using the name on commands that support the \"--profile-a-profile\" option.\n\n REQUIRED OPTIONS\n ----------------\n\n   --animal | -a (string)\n\n      The animal\n\n OPTIONS\n -------\n\n   --number-with-default (number)\n\n      A number field with default value\n\n      Default value: 8080\n\n   --overwrite | --ow (boolean)\n\n      Overwrite the profile-a profile when a profile of the same name exists.\n\n   --disable-defaults | --dd (boolean)\n\n      Disable populating profile values of undefined properties with default values.\n\n GLOBAL OPTIONS\n --------------\n\n   --show-inputs-only (boolean)\n\n      Show command inputs and do not run the command\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n EXAMPLES\n --------\n\n   - Create a profile-a profile with a doggy as the animal:\n\n      $ C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts profiles create profile-a-profile --animal doggy\n\n"
+} 
+exit code: 0
+[2023/06/29 15:13:31.280] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:31.281] [INFO] [TestUtil.ts:318] [ 'Examples', '--animal doggy' ]
+[2023/06/29 15:13:31.533] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile validate_me --tea earl_grey --soda diet_coke --water dirty --response-format-json
+[2023/06/29 15:13:31.534] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile validate_me --tea earl_grey --soda diet_coke --water dirty --response-format-json
+[2023/06/29 15:13:33.833] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\many-field-profile\\validate_me.yaml\n\ntea:   earl_grey\nsoda:  diet_coke\nwater: dirty\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:33.834] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:33.835] [INFO] [TestUtil.ts:318] [ 'diet_coke', 'dirty', 'earl_grey' ]
+[2023/06/29 15:13:33.836] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate many-field-profile validate_me --response-format-json
+[2023/06/29 15:13:33.838] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate many-field-profile validate_me --response-format-json
+[2023/06/29 15:13:40.502] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": " PROFILE SUMMARY\n ---------------\n\ntea:   earl_grey\nsoda:  diet_coke\nwater: dirty\n\n PROFILE VALIDATION RESULTS\n --------------------------\n\n╔═════════╤══════╤═════════════════╗\n║Task     │Status│Description      ║\n╟─────────┼──────┼─────────────────╢\n║Tea color│OK    │Tea was earl_grey║\n╚═════════╧══════╧═════════════════╝\n\nOf 1 tests, 1 succeeded, 0 failed, and 0 had warnings or undetermined results.\n\n   *~~ Perfect score! Wow! ~~*   \n\nThe many-field-profile profile named \"validate_me\" is valid and ready for use\nwith Test CLI with Profiles.\nAll profile validation tests succeeded.\n",
+  "stderr": "\nWarning: The command 'profiles validate' is deprecated.\nRecommended replacement: Edit your Zowe V2 configuration\n    example_with_profiles.config.json\n",
+  "data": {
+    "overallResult": "OK",
+    "taskResults": [
+      {
+        "outcome": "OK",
+        "resultDescription": "Tea was earl_grey",
+        "taskName": "Tea color"
+      }
+    ],
+    "overallMessage": "Your profile is valid and ready for use with Test CLI with Profiles",
+    "profile": {
+      "tea": "earl_grey",
+      "soda": "diet_coke",
+      "water": "dirty"
+    }
+  }
+} 
+exit code: 0
+[2023/06/29 15:13:40.503] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:40.504] [INFO] [TestUtil.ts:318] [ 'perfect', 'validate_me', 'many-field-profile' ]
+[2023/06/29 15:13:40.804] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile validate_me --tea earl_grey --soda diet_coke --water dirty
+[2023/06/29 15:13:40.807] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile validate_me --tea earl_grey --soda diet_coke --water dirty
+[2023/06/29 15:13:43.423] [DEBUG] [TestUtil.ts:203] Command output: 
+ Profile created successfully! Path:
+C:\ourstuff\repos\dev\imperative\__tests__\__results__\.examplewithprofiles\profiles\many-field-profile\validate_me.yaml
+
+tea:   earl_grey
+soda:  diet_coke
+water: dirty
+
+Review the created profile and edit if necessary using the profile update command.
+ 
+Warning: The command 'profiles create' is deprecated.
+Recommended replacement: The 'config init' command
+
+exit code: 0
+[2023/06/29 15:13:43.424] [INFO] [TestUtil.ts:317] profile created successfully! path:
+c:\ourstuff\repos\dev\imperative\__tests__\__results__\.examplewithprofiles\profiles\many-field-profile\validate_me.yaml
+
+tea:   earl_grey
+soda:  diet_coke
+water: dirty
+
+review the created profile and edit if necessary using the profile update command.
+
+warning: the command 'profiles create' is deprecated.
+recommended replacement: the 'config init' command
+
+[2023/06/29 15:13:43.425] [INFO] [TestUtil.ts:318] [ 'diet_coke', 'dirty', 'earl_grey' ]
+[2023/06/29 15:13:43.428] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate many-field-profile validate_me
+[2023/06/29 15:13:43.430] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate many-field-profile validate_me
+[2023/06/29 15:13:46.289] [DEBUG] [TestUtil.ts:203] Command output: 
+  PROFILE SUMMARY
+ ---------------
+
+tea:   earl_grey
+soda:  diet_coke
+water: dirty
+
+ PROFILE VALIDATION RESULTS
+ --------------------------
+
+╔═════════╤══════╤═════════════════╗
+║Task     │Status│Description      ║
+╟─────────┼──────┼─────────────────╢
+║Tea color│OK    │Tea was earl_grey║
+╚═════════╧══════╧═════════════════╝
+
+Of 1 tests, 1 succeeded, 0 failed, and 0 had warnings or undetermined results.
+
+   *~~ Perfect score! Wow! ~~*   
+
+The many-field-profile profile named "validate_me" is valid and ready for use
+with Test CLI with Profiles.
+All profile validation tests succeeded.
+ 
+Warning: The command 'profiles validate' is deprecated.
+Recommended replacement: Edit your Zowe V2 configuration
+    example_with_profiles.config.json
+
+exit code: 0
+[2023/06/29 15:13:46.623] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile validate_me --tea not_earl_grey --soda diet_coke --water dirty --response-format-json
+[2023/06/29 15:13:46.624] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles create many-field-profile validate_me --tea not_earl_grey --soda diet_coke --water dirty --response-format-json
+[2023/06/29 15:13:49.495] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "Profile created successfully! Path:\nC:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\.examplewithprofiles\\profiles\\many-field-profile\\validate_me.yaml\n\ntea:   not_earl_grey\nsoda:  diet_coke\nwater: dirty\n\nReview the created profile and edit if necessary using the profile update command.\n",
+  "stderr": "\nWarning: The command 'profiles create' is deprecated.\nRecommended replacement: The 'config init' command\n",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 15:13:49.496] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:49.498] [INFO] [TestUtil.ts:318] [ 'diet_coke', 'dirty', 'not_earl_grey' ]
+[2023/06/29 15:13:49.500] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate many-field-profile validate_me --response-format-json
+[2023/06/29 15:13:49.501] [DEBUG] [TestUtil.ts:182] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts profiles validate many-field-profile validate_me --response-format-json
+[2023/06/29 15:13:52.267] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "The profile validation was not successful",
+  "stdout": " PROFILE SUMMARY\n ---------------\n\ntea:   not_earl_grey\nsoda:  diet_coke\nwater: dirty\n\n PROFILE VALIDATION RESULTS\n --------------------------\n\n╔═════════╤══════╤═════════════════════╗\n║Task     │Status│Description          ║\n╟─────────┼──────┼─────────────────────╢\n║Tea color│X     │Tea was not earl_grey║\n║         │Failed│                     ║\n╚═════════╧══════╧═════════════════════╝\n\nOf 1 tests, 0 succeeded, 1 failed, and 0 had warnings or undetermined results.\n\nThe many-field-profile profile named \"validate_me\" will not function fully with\nTest CLI with Profiles.\nAt least one of the above tests failed.\nGet earl grey tea\n",
+  "stderr": "Command Error:\nThe profile validation was not successful\n\nWarning: The command 'profiles validate' is deprecated.\nRecommended replacement: Edit your Zowe V2 configuration\n    example_with_profiles.config.json\n",
+  "data": {
+    "overallResult": "Failed",
+    "taskResults": [
+      {
+        "outcome": "Failed",
+        "resultDescription": "Tea was not earl_grey",
+        "taskName": "Tea color"
+      }
+    ],
+    "overallMessage": "Your profile is valid and ready for use with Test CLI with Profiles",
+    "profile": {
+      "tea": "not_earl_grey",
+      "soda": "diet_coke",
+      "water": "dirty"
+    }
+  },
+  "error": {
+    "msg": "The profile validation was not successful"
+  }
+} 
+exit code: 1
+[2023/06/29 15:13:52.267] [INFO] [TestUtil.ts:317] undefined
+[2023/06/29 15:13:52.268] [INFO] [TestUtil.ts:318] [ 'failed' ]

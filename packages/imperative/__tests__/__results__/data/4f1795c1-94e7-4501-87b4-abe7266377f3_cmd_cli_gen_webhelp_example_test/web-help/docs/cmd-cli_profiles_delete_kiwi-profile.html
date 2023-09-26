@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>profiles delete kiwi-profile</title>
+<link rel="stylesheet" href="../css/bundle-docs.css">
+<link rel="stylesheet" href="../css/docs.css">
+<article class="markdown-body">
+<h2><a href="cmd-cli.html">cmd-cli</a> › <a href="cmd-cli_profiles.html">profiles</a> › <a href="cmd-cli_profiles_delete.html">delete</a> › <a href="cmd-cli_profiles_delete_kiwi-profile.html">kiwi-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Delete a kiwi profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration     cmd-cli.config.json</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles delete kiwi-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the kiwi  profile to be deleted. You can also load this profile by using the name on commands that support the &quot;--kiwi-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--force</code> <em>(boolean)</em></p>
+<ul>
+<li>Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Delete a kiwi profile named profilename:</p>
+<ul>
+<li><code>cmd-cli profiles delete kiwi-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles delete kiwi-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+</article>
+<script src="../js/bundle-docs.js"></script>
+<script src="../js/docs.js"></script>

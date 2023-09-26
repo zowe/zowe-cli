@@ -1,0 +1,55 @@
+[2023/06/29 15:39:52.495] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:39:52.497] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:39:56.946] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:39:56.947] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:40:03.734] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:40:03.736] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:40:04.055] [ERROR] [CommandProcessor.js:687] Syntax for command "with-data-array" is invalid.
+[2023/06/29 15:40:04.058] [ERROR] [CommandYargs.js:148] Error in command with-data-array
+[2023/06/29 15:40:04.059] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'Command syntax invalid',
+    stdout: <Buffer >,
+    stderr: <Buffer 0a 53 79 6e 74 61 78 20 45 72 72 6f 72 3a 0a 4d 69 73 73 69 6e 67 20 52 65 71 75 69 72 65 64 20 4f 70 74 69 6f 6e 3a 0a 2d 2d 73 74 72 69 6e 67 73 2d ... 364 more bytes>,
+    data: [
+      {
+        message: 'Missing Required Option:\n' +
+          '--strings-for-array (--sfa)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'An array of space delimited strings that will be placed in the output object\n' +
+          'array.\n',
+        optionInError: 'strings-for-array',
+        definition: {
+          name: 'strings-for-array',
+          aliases: [ 'sfa' ],
+          description: 'An array of space delimited strings that will be placed in the output object array.',
+          type: 'array',
+          required: true,
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--message-for-response (--mfr)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'The message that will be placed in the output object.\n',
+        optionInError: 'message-for-response',
+        definition: {
+          name: 'message-for-response',
+          aliases: [ 'mfr' ],
+          description: 'The message that will be placed in the output object.',
+          type: 'string',
+          required: true,
+          group: 'Required Options'
+        }
+      }
+    ],
+    error: undefined
+  }
+]
+[2023/06/29 15:40:09.121] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:40:09.123] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.

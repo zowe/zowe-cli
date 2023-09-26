@@ -1,0 +1,27 @@
+defaultProfile: test_kiwi
+configuration:
+    type: kiwi
+    schema:
+        type: object
+        title: 'Kiwi Profile'
+        description: 'Kiwi Profile'
+        properties:
+            amount:
+                type: number
+                optionDefinition:
+                    name: amount
+                    aliases:
+                        - a
+                    description: 'The amount of kiwis.'
+                    type: number
+            price:
+                type: number
+                optionDefinition:
+                    name: price
+                    aliases:
+                        - p
+                    description: 'The price of one kiwi.'
+                    type: number
+                    defaultValue: 1
+            kiwiSecret:
+                type: string

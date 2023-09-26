@@ -1,0 +1,26 @@
+[2023/06/29 14:56:12.082] [INFO] [Imperative.js:450] Set imperative log level to INFO from environmental variable setting 'IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL'
+[2023/06/29 14:56:12.084] [INFO] [Imperative.js:468] Set app log level to INFO from environmental variable setting 'IMPERATIVE_TEST_CLI_APP_LOG_LEVEL'
+[2023/06/29 14:56:12.090] [INFO] [Imperative.js:247] Loaded and validated config for 'imperative-test-cli'. Config details at trace level of logging.
+[2023/06/29 14:56:12.132] [INFO] [Imperative.js:268] Inherited traits applied to CLI command tree children. Cmd tree details at trace level of logging.
+[2023/06/29 14:56:12.141] [INFO] [main.js:20] This is an info message after init!
+[2023/06/29 14:56:12.142] [WARN] [main.js:21] This is a warn message after init!
+[2023/06/29 14:56:12.143] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 14:56:12.143] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 14:56:12.173] [INFO] [CommandProcessor.js:271] Invoking command "logging"...
+[2023/06/29 14:56:12.189] [INFO] [CommandProcessor.js:272] Command issued:
+
+imperative-test-cli test logging
+
+
+[2023/06/29 14:56:12.190] [INFO] [CommandProcessor.js:307] Preparing (loading profiles, reading stdin, etc.) execution of "logging" command...
+[2023/06/29 14:56:12.211] [INFO] [CommandProfileLoader.js:83] Request to load profiles for command: logging...
+[2023/06/29 14:56:12.212] [INFO] [CommandProcessor.js:211] Performing syntax validation for command "logging"...
+[2023/06/29 14:56:12.229] [INFO] [CommandProcessor.js:467] Invoking process method of handler for "logging" command.
+[2023/06/29 14:56:12.230] [INFO] [CommandProcessor.js:879] Requiring handler "C:\ourstuff\repos\dev\imperative\__tests__\__integration__\imperative\lib\cli\test\logging/Logging.handler" for command "C:\ourstuff\repos\dev\imperative\__tests__\__integration__\imperative\lib\cli\test\logging/Logging.handler"...
+[2023/06/29 14:56:12.232] [INFO] [CommandProcessor.js:882] Handler "C:\ourstuff\repos\dev\imperative\__tests__\__integration__\imperative\lib\cli\test\logging/Logging.handler" for command "logging" successfully loaded/required.
+[2023/06/29 14:56:12.233] [INFO] [Logging.handler.js:36] This is an imperative logger info message from the test logging handler!
+[2023/06/29 14:56:12.234] [WARN] [Logging.handler.js:37] This is an imperative logger warn message from the test logging handler!
+[2023/06/29 14:56:12.234] [ERROR] [Logging.handler.js:38] This is an imperative logger error message from the test logging handler!
+[2023/06/29 14:56:12.234] [FATAL] [Logging.handler.js:39] This is an imperative logger fatal message from the test logging handler!
+[2023/06/29 14:56:12.237] [INFO] [CommandProcessor.js:498] Handler for command "logging" succeeded.
+[2023/06/29 14:56:12.237] [INFO] [CommandProcessor.js:933] Command "logging" completed with success flag: "true"

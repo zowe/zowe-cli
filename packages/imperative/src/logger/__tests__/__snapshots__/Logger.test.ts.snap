@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logger tests Should get the correct requested logger appender 1`] = `"ERROR"`;
+
+exports[`Logger tests Should get the correct requested logger appender 2`] = `"TRACE"`;
+
+exports[`Logger tests Should set the level like we say 1`] = `"DEBUG"`;
+
+exports[`Logger tests Should set the level like we say 2`] = `"TRACE"`;

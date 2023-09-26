@@ -1,0 +1,521 @@
+{
+  "numFailedTestSuites": 0,
+  "numFailedTests": 0,
+  "numPassedTestSuites": 1,
+  "numPassedTests": 30,
+  "numPendingTestSuites": 0,
+  "numPendingTests": 0,
+  "numRuntimeErrorTestSuites": 0,
+  "numTodoTests": 0,
+  "numTotalTestSuites": 1,
+  "numTotalTests": 30,
+  "openHandles": [],
+  "snapshot": {
+    "added": 0,
+    "didUpdate": false,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 16,
+    "total": 16,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0
+  },
+  "startTime": 1688074812448,
+  "success": true,
+  "testResults": [
+    {
+      "leaks": false,
+      "numFailingTests": 0,
+      "numPassingTests": 30,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "openHandles": [],
+      "perfStats": {
+        "end": 1688074817249,
+        "runtime": 4625,
+        "slow": false,
+        "start": 1688074812624
+      },
+      "skipped": false,
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 16,
+        "unchecked": 0,
+        "uncheckedKeys": [],
+        "unmatched": 0,
+        "updated": 0
+      },
+      "testFilePath": "C:\\ourstuff\\repos\\dev\\imperative\\packages\\rest\\__tests__\\client\\AbstractRestClient.test.ts",
+      "testResults": [
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 9,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should not append any headers to a request by default",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not append any headers to a request by default"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 1,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should give an error when no session is provided",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should give an error when no session is provided"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 7,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should give an error when no resource URI is provided",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should give an error when no resource URI is provided"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 41,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should not error when chunking data and payload data are present in outgoing request",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when chunking data and payload data are present in outgoing request"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should error with request rejection when status code is not in 200 range",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should error with request rejection when status code is not in 200 range"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should give a v3-format error when status code is not in 200 range",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should give a v3-format error when status code is not in 200 range"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should error when chunking JSON data that does not parse",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should error when chunking JSON data that does not parse"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should error when chunking JSON data that does not parse and allow post payload",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should error when chunking JSON data that does not parse and allow post payload"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should not error when headers and payload data are present in outgoing request",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when headers and payload data are present in outgoing request"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should not error when data and end events are sent",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when data and end events are sent"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should give an error message when error event is called",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should give an error message when error event is called"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should call http request for http requests",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should call http request for http requests"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should call https request for https requests",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should call https request for https requests"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 13,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should not error when streaming data",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when streaming data"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should return full response when requested",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should return full response when requested"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should return one part of response when requested",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should return one part of response when requested"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should return several parts of response when requested",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should return several parts of response when requested"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should create buildOptions according to input parameter options 1",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should create buildOptions according to input parameter options 1"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should create buildOptions according to input parameter options 2",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should create buildOptions according to input parameter options 2"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 0,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests Should error when trying to open an invalid certificate file path",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "Should error when trying to open an invalid certificate file path"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests"
+          ],
+          "duration": 5,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests should convert line endings from LF to CRLF for streamed request on Windows",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should convert line endings from LF to CRLF for streamed request on Windows"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should not error when decompressing gzip buffer",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when decompressing gzip buffer"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 2,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should not error when decompressing gzip buffer with lowercase header",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when decompressing gzip buffer with lowercase header"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 18,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should not error when decompressing gzip stream",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when decompressing gzip stream"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should not error when decompressing truncated gzip stream with binary content",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should not error when decompressing truncated gzip stream with binary content"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 39,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should error when decompressing invalid gzip buffer",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should error when decompressing invalid gzip buffer"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should error when decompressing invalid gzip stream",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should error when decompressing invalid gzip stream"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should error when decompressing truncated gzip stream with text content",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should error when decompressing truncated gzip stream with text content"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 4,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should decompress error message for streamed request",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should decompress error message for streamed request"
+        },
+        {
+          "ancestorTitles": [
+            "AbstractRestClient tests",
+            "content encoding"
+          ],
+          "duration": 3,
+          "failureDetails": [],
+          "failureMessages": [],
+          "fullName": "AbstractRestClient tests content encoding should convert line endings from LF to CRLF for streamed request on Windows",
+          "invocations": 1,
+          "location": null,
+          "numPassingAsserts": 0,
+          "retryReasons": [],
+          "status": "passed",
+          "title": "should convert line endings from LF to CRLF for streamed request on Windows"
+        }
+      ],
+      "failureMessage": null
+    }
+  ],
+  "wasInterrupted": false
+}

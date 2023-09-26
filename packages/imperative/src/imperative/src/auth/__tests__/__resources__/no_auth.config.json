@@ -1,0 +1,28 @@
+{
+    "profiles": {
+        "gala": {
+            "type": "apple",
+            "properties": {
+                "color": "red"
+            }
+        },
+        "mandarin": {
+            "type": "orange",
+            "properties": {
+                "color": "orange"
+            }
+        },
+        "fruit": {
+            "type": "fruit",
+            "properties": {
+                "protocol": "ftp"
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        }
+    },
+    "defaults": {},
+    "plugins": []
+}

@@ -1,0 +1,2530 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>cmd-cli</title>
+<link rel="stylesheet" href="../css/bundle-docs.css">
+<link rel="stylesheet" href="../css/docs.css">
+<article class="markdown-body">
+<h2><a href="#cmd-cli" name="cmd-cli">cmd-cli</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>A test CLI for the 'cmd' imperative package</p>
+
+
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--version</code> | <code>-V</code> <em>(boolean)</em></p>
+<ul>
+<li>Display the current version of Cmd Package CLI</li>
+</ul>
+</li>
+<li>
+<p><code>--available-commands</code> | <code>--ac</code> <em>(boolean)</em></p>
+<ul>
+<li>Displays a list of available commands</li>
+</ul>
+</li>
+</ul>
+<h4>Global Options</h4>
+<ul>
+<li>
+<p><code>--response-format-json</code> | <code>--rfj</code> <em>(boolean)</em></p>
+<ul>
+<li>Produce JSON formatted data from a command</li>
+</ul>
+</li>
+<li>
+<p><code>--help</code> | <code>-h</code> <em>(boolean)</em></p>
+<ul>
+<li>Display help text</li>
+</ul>
+</li>
+<li>
+<p><code>--help-web</code> | <code>--hw</code> <em>(boolean)</em></p>
+<ul>
+<li>Display HTML help in browser</li>
+</ul>
+</li>
+</ul>
+<div class="page-break print-only"><h4>Table of Contents</h4>
+<ul><li><a href="#cmd-cli_auth">auth</a><ul><li><a href="#cmd-cli_auth_login">login | li</a><ul><li><a href="#cmd-cli_auth_login_fruit">fruit</a></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_auth_logout">logout | lo</a><ul><li><a href="#cmd-cli_auth_logout_fruit">fruit</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#cmd-cli_auto-format">auto-format</a><ul><li><a href="#cmd-cli_auto-format_cmd-output">cmd-output</a></li>
+</ul><ul><li><a href="#cmd-cli_auto-format_object">object</a></li>
+</ul><ul><li><a href="#cmd-cli_auto-format_table">table</a></li>
+</ul></li>
+<li><a href="#cmd-cli_chained">chained</a><ul><li><a href="#cmd-cli_chained_fail-response-mapping">fail-response-mapping</a></li>
+</ul><ul><li><a href="#cmd-cli_chained_handler-chain-failure">handler-chain-failure</a></li>
+</ul><ul><li><a href="#cmd-cli_chained_many-handlers">many-handlers</a></li>
+</ul><ul><li><a href="#cmd-cli_chained_mapping-notexist">mapping-notexist</a></li>
+</ul><ul><li><a href="#cmd-cli_chained_optional-response-mapping">optional-response-mapping</a></li>
+</ul><ul><li><a href="#cmd-cli_chained_print-animals">print-animals</a></li>
+</ul><ul><li><a href="#cmd-cli_chained_print-cheetah">print-cheetah</a></li>
+</ul></li>
+<li><a href="#cmd-cli_gen-help">gen-help</a><ul><li><a href="#cmd-cli_gen-help_allowable-options">allowable-options | ao</a></li>
+</ul><ul><li><a href="#cmd-cli_gen-help_example-test">example-test | et</a></li>
+</ul></li>
+<li><a href="#cmd-cli_invalid">invalid</a><ul><li><a href="#cmd-cli_invalid_invalid-handler">invalid-handler</a></li>
+</ul><ul><li><a href="#cmd-cli_invalid_no-handler">no-handler</a></li>
+</ul><ul><li><a href="#cmd-cli_invalid_profile-spec">profile-spec | ao</a></li>
+</ul></li>
+<li><a href="#cmd-cli_invoke">invoke</a><ul><li><a href="#cmd-cli_invoke_exit-143">exit-143</a></li>
+</ul><ul><li><a href="#cmd-cli_invoke_test-async-handler">test-async-handler</a></li>
+</ul><ul><li><a href="#cmd-cli_invoke_test-handler">test-handler</a></li>
+</ul><ul><li><a href="#cmd-cli_invoke_unexpected-exception-handler">unexpected-exception-handler</a></li>
+</ul></li>
+<li><a href="#cmd-cli_nested">nested</a><ul><li><a href="#cmd-cli_nested_first-group">first-group | fg</a><ul><li><a href="#cmd-cli_nested_first-group_first-group-command-one">first-group-command-one | fgco</a></li>
+</ul><ul><li><a href="#cmd-cli_nested_first-group_first-group-command-two">first-group-command-two | fgct</a></li>
+</ul><ul><li><a href="#cmd-cli_nested_first-group_second-group">second-group | sg</a><ul><li><a href="#cmd-cli_nested_first-group_second-group_second-group-command-one">second-group-command-one | sgco</a></li>
+</ul><ul><li><a href="#cmd-cli_nested_first-group_second-group_second-group-command-two">second-group-command-two | sgct</a></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_nested_first-group_third-group">third-group | tg</a><ul><li><a href="#cmd-cli_nested_first-group_third-group_third-group-command-one">third-group-command-one | tgco</a></li>
+</ul></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_nested_nested-group-command">nested-group-command | ngc</a></li>
+</ul></li>
+<li><a href="#cmd-cli_profile">profile</a><ul><li><a href="#cmd-cli_profile_mapping">mapping</a></li>
+</ul><ul><li><a href="#cmd-cli_profile_mapping-base">mapping-base</a></li>
+</ul><ul><li><a href="#cmd-cli_profile_mapping-name-type">mapping-name-type</a></li>
+</ul><ul><li><a href="#cmd-cli_profile_mapping-positional">mapping-positional | mp</a></li>
+</ul></li>
+<li><a href="#cmd-cli_profiles">profiles</a><ul><li><a href="#cmd-cli_profiles_create">create | cre</a><ul><li><a href="#cmd-cli_profiles_create_banana-profile">banana-profile | banana</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_create_base-profile">base-profile | base</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_create_insecure-profile">insecure-profile | insecure</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_create_kiwi-profile">kiwi-profile | kiwi</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_create_strawberry-profile">strawberry-profile | strawberry</a></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_profiles_delete">delete | rm</a><ul><li><a href="#cmd-cli_profiles_delete_banana-profile">banana-profile | banana</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_delete_base-profile">base-profile | base</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_delete_insecure-profile">insecure-profile | insecure</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_delete_kiwi-profile">kiwi-profile | kiwi</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_delete_strawberry-profile">strawberry-profile | strawberry</a></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_profiles_list">list | ls</a><ul><li><a href="#cmd-cli_profiles_list_banana-profiles">banana-profiles | banana</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_list_base-profiles">base-profiles | base</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_list_insecure-profiles">insecure-profiles | insecure</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_list_kiwi-profiles">kiwi-profiles | kiwi</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_list_strawberry-profiles">strawberry-profiles | strawberry</a></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_profiles_set-default">set-default | set</a><ul><li><a href="#cmd-cli_profiles_set-default_banana-profile">banana-profile | banana</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_set-default_base-profile">base-profile | base</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_set-default_insecure-profile">insecure-profile | insecure</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_set-default_kiwi-profile">kiwi-profile | kiwi</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_set-default_strawberry-profile">strawberry-profile | strawberry</a></li>
+</ul></li>
+</ul><ul><li><a href="#cmd-cli_profiles_update">update | upd</a><ul><li><a href="#cmd-cli_profiles_update_banana-profile">banana-profile | banana</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_update_base-profile">base-profile | base</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_update_insecure-profile">insecure-profile | insecure</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_update_kiwi-profile">kiwi-profile | kiwi</a></li>
+</ul><ul><li><a href="#cmd-cli_profiles_update_strawberry-profile">strawberry-profile | strawberry</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#cmd-cli_read">read</a><ul><li><a href="#cmd-cli_read_profile">profile</a></li>
+</ul></li>
+<li><a href="#cmd-cli_respond">respond</a><ul><li><a href="#cmd-cli_respond_with-data-array">with-data-array</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-data-object">with-data-object</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-error-headers">with-error-headers</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-error-messages">with-error-messages</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-log-messages">with-log-messages</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-mixed-responses">with-mixed-responses</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-syntax-errors">with-syntax-errors</a></li>
+</ul><ul><li><a href="#cmd-cli_respond_with-wrapped-text">with-wrapped-text</a></li>
+</ul></li>
+<li><a href="#cmd-cli_validate">validate</a><ul><li><a href="#cmd-cli_validate_string-or-empty">string-or-empty</a></li>
+</ul><ul><li><a href="#cmd-cli_validate_syntax">syntax</a></li>
+</ul></li>
+</ul></div>
+<hr class="no-print">
+<a name="cmd-cli_auth"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auth">auth</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Connect to token-based authentication services</p>
+<a name="cmd-cli_auth_login"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auth">auth</a> › <a href="#cmd-cli_auth_login">login</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Log in to an authentication service.</p>
+<a class="cmd-anchor" name="cmd-cli_auth_login_fruit"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auth">auth</a> › <a href="#cmd-cli_auth_login">login</a> › <a href="#cmd-cli_auth_login_fruit">fruit</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Log in to fruit authentication service</p>
+<h4>Usage</h4>
+<p>cmd-cli auth login fruit [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--show-token</code> | <code>--st</code> <em>(boolean)</em></p>
+<ul>
+<li>Show the token when login is successful. If specified, does not save the token to a profile.</li>
+</ul>
+</li>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<a name="cmd-cli_auth_logout"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auth">auth</a> › <a href="#cmd-cli_auth_logout">logout</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Log out of an authentication service.</p>
+<a class="cmd-anchor" name="cmd-cli_auth_logout_fruit"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auth">auth</a> › <a href="#cmd-cli_auth_logout">logout</a> › <a href="#cmd-cli_auth_logout_fruit">fruit</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Log out of fruit authentication service</p>
+<h4>Usage</h4>
+<p>cmd-cli auth logout fruit [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+</ul>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<hr class="no-print">
+<a name="cmd-cli_auto-format"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auto-format">auto-format</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>The invoke commands with handlers that pass back data to auto-format/print.</p>
+<a class="cmd-anchor" name="cmd-cli_auto-format_cmd-output"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auto-format">auto-format</a> › <a href="#cmd-cli_auto-format_cmd-output">cmd-output</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Allows the user to specify the output format.</p>
+<h4>Usage</h4>
+<p>cmd-cli auto-format cmd-output [options]</p>
+<h4>Response Format Options</h4>
+<ul>
+<li>
+<p><code>--response-format-filter</code> | <code>--rff</code> <em>(array)</em></p>
+<ul>
+<li>Filter (include) fields in the response. Accepts an array of field/property names to include in the output response. You can filter JSON objects properties OR table columns/fields. In addition, you can use this option in conjunction with '--response-format-type' to reduce the output of a command to a single field/property or a list of a single field/property.</li>
+</ul>
+</li>
+<li>
+<p><code>--response-format-type</code> | <code>--rft</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>The command response output format type. Must be one of the following:</p>
+<p>table: Formats output data as a table. Use this option when the output data is an array of homogeneous JSON objects. Each property of the object will become a column in the table.</p>
+<p>list: Formats output data as a list of strings. Can be used on any data type (JSON objects/arrays) are stringified and a new line is added after each entry in an array.</p>
+<p>object: Formats output data as a list of prettified objects (or single object). Can be used in place of &quot;table&quot; to change from tabular output to a list of prettified objects.</p>
+<p>string: Formats output data as a string. JSON objects/arrays are stringified.</p>
+<p>Allowed values: table, list, object, string</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--response-format-header</code> | <code>--rfh</code> <em>(boolean)</em></p>
+<ul>
+<li>If &quot;--response-format-type table&quot; is specified, include the column headers in the output.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_auto-format_object"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auto-format">auto-format</a> › <a href="#cmd-cli_auto-format_object">object</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Returns an object.</p>
+<h4>Usage</h4>
+<p>cmd-cli auto-format object [options]</p>
+<h4>Response Format Options</h4>
+<ul>
+<li>
+<p><code>--response-format-filter</code> | <code>--rff</code> <em>(array)</em></p>
+<ul>
+<li>Filter (include) fields in the response. Accepts an array of field/property names to include in the output response. You can filter JSON objects properties OR table columns/fields. In addition, you can use this option in conjunction with '--response-format-type' to reduce the output of a command to a single field/property or a list of a single field/property.</li>
+</ul>
+</li>
+<li>
+<p><code>--response-format-type</code> | <code>--rft</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>The command response output format type. Must be one of the following:</p>
+<p>table: Formats output data as a table. Use this option when the output data is an array of homogeneous JSON objects. Each property of the object will become a column in the table.</p>
+<p>list: Formats output data as a list of strings. Can be used on any data type (JSON objects/arrays) are stringified and a new line is added after each entry in an array.</p>
+<p>object: Formats output data as a list of prettified objects (or single object). Can be used in place of &quot;table&quot; to change from tabular output to a list of prettified objects.</p>
+<p>string: Formats output data as a string. JSON objects/arrays are stringified.</p>
+<p>Allowed values: table, list, object, string</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--response-format-header</code> | <code>--rfh</code> <em>(boolean)</em></p>
+<ul>
+<li>If &quot;--response-format-type table&quot; is specified, include the column headers in the output.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_auto-format_table"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_auto-format">auto-format</a> › <a href="#cmd-cli_auto-format_table">table</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Format a table</p>
+<h4>Usage</h4>
+<p>cmd-cli auto-format table [options]</p>
+<h4>Response Format Options</h4>
+<ul>
+<li>
+<p><code>--response-format-filter</code> | <code>--rff</code> <em>(array)</em></p>
+<ul>
+<li>Filter (include) fields in the response. Accepts an array of field/property names to include in the output response. You can filter JSON objects properties OR table columns/fields. In addition, you can use this option in conjunction with '--response-format-type' to reduce the output of a command to a single field/property or a list of a single field/property.</li>
+</ul>
+</li>
+<li>
+<p><code>--response-format-type</code> | <code>--rft</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>The command response output format type. Must be one of the following:</p>
+<p>table: Formats output data as a table. Use this option when the output data is an array of homogeneous JSON objects. Each property of the object will become a column in the table.</p>
+<p>list: Formats output data as a list of strings. Can be used on any data type (JSON objects/arrays) are stringified and a new line is added after each entry in an array.</p>
+<p>object: Formats output data as a list of prettified objects (or single object). Can be used in place of &quot;table&quot; to change from tabular output to a list of prettified objects.</p>
+<p>string: Formats output data as a string. JSON objects/arrays are stringified.</p>
+<p>Allowed values: table, list, object, string</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--response-format-header</code> | <code>--rfh</code> <em>(boolean)</em></p>
+<ul>
+<li>If &quot;--response-format-type table&quot; is specified, include the column headers in the output.</li>
+</ul>
+</li>
+</ul>
+<hr class="no-print">
+<a name="cmd-cli_chained"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>chained handler test commands</p>
+<a class="cmd-anchor" name="cmd-cli_chained_fail-response-mapping"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_fail-response-mapping">fail-response-mapping</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>try to map a non-existent response field, not optional - fail</p>
+<h4>Usage</h4>
+<p>cmd-cli chained fail-response-mapping [options]</p>
+<a class="cmd-anchor" name="cmd-cli_chained_handler-chain-failure"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_handler-chain-failure">handler-chain-failure</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>a handler mid-chain throws an error</p>
+<h4>Usage</h4>
+<p>cmd-cli chained handler-chain-failure [options]</p>
+<a class="cmd-anchor" name="cmd-cli_chained_many-handlers"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_many-handlers">many-handlers</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>many handlers with argument mappings</p>
+<h4>Usage</h4>
+<p>cmd-cli chained many-handlers [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--main-option</code> <em>(string)</em></p>
+<ul>
+<li>the main option to use when testing mapping to future arguments</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_chained_mapping-notexist"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_mapping-notexist">mapping-notexist</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>try to map a non-existent response field, optional - succeed</p>
+<h4>Usage</h4>
+<p>cmd-cli chained mapping-notexist [options]</p>
+<a class="cmd-anchor" name="cmd-cli_chained_optional-response-mapping"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_optional-response-mapping">optional-response-mapping</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>try to map a non-existent response field, optional - succeed</p>
+<h4>Usage</h4>
+<p>cmd-cli chained optional-response-mapping [options]</p>
+<a class="cmd-anchor" name="cmd-cli_chained_print-animals"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_print-animals">print-animals</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>print three animal names</p>
+<h4>Usage</h4>
+<p>cmd-cli chained print-animals [options]</p>
+<a class="cmd-anchor" name="cmd-cli_chained_print-cheetah"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_chained">chained</a> › <a href="#cmd-cli_chained_print-cheetah">print-cheetah</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>three handlers, but the first two are silent. only prints 'cheetah'</p>
+<h4>Usage</h4>
+<p>cmd-cli chained print-cheetah [options]</p>
+<hr class="no-print">
+<a name="cmd-cli_gen-help"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_gen-help">gen-help</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Commands to test help generator.</p>
+<a class="cmd-anchor" name="cmd-cli_gen-help_allowable-options"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_gen-help">gen-help</a> › <a href="#cmd-cli_gen-help_allowable-options">allowable-options</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Displays allowable options in the help!</p>
+<h4>Usage</h4>
+<p>cmd-cli gen-help allowable-options [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--both-default-and-allowable</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>has some allowable options and a default Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</p>
+<p>Default value: these<br>
+Allowed values: these, are, the, allowable, values</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--just-default-value</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>has a default option Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</p>
+<p>Default value: theValue</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--just-allowable-values</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>has allowable values Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</p>
+<p>Allowed values: these, are, the, allowable, values, that, span, past, the, word, wrap</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--neither</code> <em>(string)</em></p>
+<ul>
+<li>has neither Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_gen-help_example-test"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_gen-help">gen-help</a> › <a href="#cmd-cli_gen-help_example-test">example-test</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Displays example inputs in the help!</p>
+<h4>Usage</h4>
+<p>cmd-cli gen-help example-test [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--Sample Option</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>has some allowable options and a default Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</p>
+<p>Default value: these<br>
+Allowed values: these, are, the, allowable, values</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Tests no options:</p>
+<ul>
+<li><code>cmd-cli gen-help example-test</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli gen-help example-test">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>Tests one option:</p>
+<ul>
+<li><code>cmd-cli gen-help example-test testop</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli gen-help example-test testop">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>Tests several options:</p>
+<ul>
+<li><code>cmd-cli gen-help example-test testop1 testop2 testop3</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli gen-help example-test testop1 testop2 testop3">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>:</p>
+<ul>
+<li><code>cmd-cli gen-help example-test nodesc</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli gen-help example-test nodesc">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>:</p>
+<ul>
+<li><code>cmd-cli gen-help example-test</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli gen-help example-test">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>has a prefix:</p>
+<ul>
+<li><code>echo &quot;hello world&quot; |  cmd-cli gen-help example-test --options</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="echo &quot;hello world&quot; |  cmd-cli gen-help example-test --options">Copy</button></li>
+</ul>
+</li>
+</ul>
+<hr class="no-print">
+<a name="cmd-cli_invalid"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invalid">invalid</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Attempt to invoke commands that have poorly coded definitions.</p>
+<a class="cmd-anchor" name="cmd-cli_invalid_invalid-handler"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invalid">invalid</a> › <a href="#cmd-cli_invalid_invalid-handler">invalid-handler</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test async handler command tests tests a fulfill/reject from an asynchronous handler.</p>
+<h4>Usage</h4>
+<p>cmd-cli invalid invalid-handler [options]</p>
+<a class="cmd-anchor" name="cmd-cli_invalid_no-handler"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invalid">invalid</a> › <a href="#cmd-cli_invalid_no-handler">no-handler</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>This will never get invoked. No handler specified on this definition.</p>
+<h4>Usage</h4>
+<p>cmd-cli invalid no-handler [options]</p>
+<a class="cmd-anchor" name="cmd-cli_invalid_profile-spec"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invalid">invalid</a> › <a href="#cmd-cli_invalid_profile-spec">profile-spec</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Command handler attempts to load a profile that wasn't specified on the command definition</p>
+<h4>Usage</h4>
+<p>cmd-cli invalid profile-spec [options]</p>
+<hr class="no-print">
+<a name="cmd-cli_invoke"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invoke">invoke</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>The invoke command allows you to invoke handlers and other test commands.</p>
+<a class="cmd-anchor" name="cmd-cli_invoke_exit-143"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invoke">invoke</a> › <a href="#cmd-cli_invoke_exit-143">exit-143</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test handler that exits with status code 143</p>
+<h4>Usage</h4>
+<p>cmd-cli invoke exit-143 [options]</p>
+<a class="cmd-anchor" name="cmd-cli_invoke_test-async-handler"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invoke">invoke</a> › <a href="#cmd-cli_invoke_test-async-handler">test-async-handler</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test async handler command tests tests a fulfill/reject from an asynchronous handler.</p>
+<h4>Usage</h4>
+<p>cmd-cli invoke test-async-handler [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--fail</code> <em>(boolean)</em></p>
+<ul>
+<li>Fail the handler with an 'Imperative Error'.</li>
+</ul>
+</li>
+<li>
+<p><code>--fail-with-error</code> <em>(boolean)</em></p>
+<ul>
+<li>Fail the handler with a generic 'Error'.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_invoke_test-handler"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invoke">invoke</a> › <a href="#cmd-cli_invoke_test-handler">test-handler</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test handler that returns a promise. Tests rejecting and fulfilling the promise via the methods.</p>
+<h4>Usage</h4>
+<p>cmd-cli invoke test-handler [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--fail</code> <em>(boolean)</em></p>
+<ul>
+<li>Fail the handler by invoking the reject method.</li>
+</ul>
+</li>
+<li>
+<p><code>--fail-with-message</code> <em>(string)</em></p>
+<ul>
+<li>Fail the handler by invoking the reject method with a message.</li>
+</ul>
+</li>
+<li>
+<p><code>--fail-with-error</code> <em>(boolean)</em></p>
+<ul>
+<li>Fail the handler by throwning a generic 'Error'.</li>
+</ul>
+</li>
+<li>
+<p><code>--fail-with-imperative-error</code> <em>(boolean)</em></p>
+<ul>
+<li>Fail the handler by throwning an 'Imperative Error'.</li>
+</ul>
+</li>
+<li>
+<p><code>--fulfill-promise</code> <em>(boolean)</em></p>
+<ul>
+<li>Fail the handler by throwning an 'Imperative Error'.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_invoke_unexpected-exception-handler"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_invoke">invoke</a> › <a href="#cmd-cli_invoke_unexpected-exception-handler">unexpected-exception-handler</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>The unexpected exception handler attempts to perform an operation that will result in an exception.</p>
+<h4>Usage</h4>
+<p>cmd-cli invoke unexpected-exception-handler [options]</p>
+<hr class="no-print">
+<a name="cmd-cli_nested"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Test a more complex command structure of nested commands</p>
+<a name="cmd-cli_nested_first-group"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>The first group under nested</p>
+<a class="cmd-anchor" name="cmd-cli_nested_first-group_first-group-command-one"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_first-group-command-one">first-group-command-one</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>A command in the first group</p>
+<h4>Usage</h4>
+<p>cmd-cli nested first-group first-group-command-one [options]</p>
+<a class="cmd-anchor" name="cmd-cli_nested_first-group_first-group-command-two"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_first-group-command-two">first-group-command-two</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>A command in the first group</p>
+<h4>Usage</h4>
+<p>cmd-cli nested first-group first-group-command-two [options]</p>
+<a name="cmd-cli_nested_first-group_second-group"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_second-group">second-group</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>The second group under nested</p>
+<a class="cmd-anchor" name="cmd-cli_nested_first-group_second-group_second-group-command-one"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_second-group">second-group</a> › <a href="#cmd-cli_nested_first-group_second-group_second-group-command-one">second-group-command-one</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>A command in the second group</p>
+<h4>Usage</h4>
+<p>cmd-cli nested first-group second-group second-group-command-one [options]</p>
+<a class="cmd-anchor" name="cmd-cli_nested_first-group_second-group_second-group-command-two"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_second-group">second-group</a> › <a href="#cmd-cli_nested_first-group_second-group_second-group-command-two">second-group-command-two</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>A command in the second group</p>
+<h4>Usage</h4>
+<p>cmd-cli nested first-group second-group second-group-command-two [options]</p>
+<a name="cmd-cli_nested_first-group_third-group"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_third-group">third-group</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>The third group under nested</p>
+<a class="cmd-anchor" name="cmd-cli_nested_first-group_third-group_third-group-command-one"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_first-group">first-group</a> › <a href="#cmd-cli_nested_first-group_third-group">third-group</a> › <a href="#cmd-cli_nested_first-group_third-group_third-group-command-one">third-group-command-one</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>A command in the third group</p>
+<h4>Usage</h4>
+<p>cmd-cli nested first-group third-group third-group-command-one [options]</p>
+<a class="cmd-anchor" name="cmd-cli_nested_nested-group-command"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_nested">nested</a> › <a href="#cmd-cli_nested_nested-group-command">nested-group-command</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>A command in the nested group</p>
+<h4>Usage</h4>
+<p>cmd-cli nested nested-group-command [options]</p>
+<hr class="no-print">
+<a name="cmd-cli_profile"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profile">profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Invoke commands to validate that mapping profile fields to options is working correctly</p>
+<a class="cmd-anchor" name="cmd-cli_profile_mapping"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profile">profile</a> › <a href="#cmd-cli_profile_mapping">mapping</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Tests Imperative's profile to CLI mapping capabilities.</p>
+<h4>Usage</h4>
+<p>cmd-cli profile mapping [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--color</code> | <code>-c</code> <em>(string)</em></p>
+<ul>
+<li>The color of the banana.</li>
+</ul>
+</li>
+<li>
+<p><code>--banana-description</code> | <code>--bd</code> <em>(string)</em></p>
+<ul>
+<li>A description of the banana</li>
+</ul>
+</li>
+<li>
+<p><code>--mold-type</code> | <code>--mt</code> <em>(string)</em></p>
+<ul>
+<li>The type of mold on the banana if any</li>
+</ul>
+</li>
+<li>
+<p><code>--sweetness</code> | <code>-s</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>The sweetness of the banana</p>
+<p>Default value: mild</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--ripe</code> | <code>-r</code> <em>(boolean)</em></p>
+<ul>
+<li>Is the banana ripe?</li>
+</ul>
+</li>
+<li>
+<p><code>--sides</code> <em>(number)</em></p>
+<ul>
+<li>Number of sides on the banana</li>
+</ul>
+</li>
+<li>
+<p><code>--names</code> <em>(array)</em></p>
+<ul>
+<li>The names that this banana is known by</li>
+</ul>
+</li>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--banana-profile</code> | <code>--banana-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (banana) profile to load for this command execution.</li>
+</ul>
+</li>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profile_mapping-base"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profile">profile</a> › <a href="#cmd-cli_profile_mapping-base">mapping-base</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Tests handling of options across base and service profiles.</p>
+<h4>Usage</h4>
+<p>cmd-cli profile mapping-base [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of the fruit.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--kiwi-profile</code> | <code>--kiwi-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (kiwi) profile to load for this command execution.</li>
+</ul>
+</li>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profile_mapping-name-type"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profile">profile</a> › <a href="#cmd-cli_profile_mapping-name-type">mapping-name-type</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Tests that --type and --name are not filled in from profiles.</p>
+<h4>Usage</h4>
+<p>cmd-cli profile mapping-name-type [name] [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>name</code>		 <em>(string)</em></p>
+<ul>
+<li>the name of the banana</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--type</code> | <code>-t</code> <em>(string)</em></p>
+<ul>
+<li>The type of the banana.</li>
+</ul>
+</li>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--banana-profile</code> | <code>--banana-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (banana) profile to load for this command execution.</li>
+</ul>
+</li>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profile_mapping-positional"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profile">profile</a> › <a href="#cmd-cli_profile_mapping-positional">mapping-positional</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Tests Imperative's profile to CLI mapping capabilities.</p>
+<h4>Usage</h4>
+<p>cmd-cli profile mapping-positional &lt;color&gt; &lt;bananaDescription&gt; &lt;moldType&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>color</code>		 <em>(string)</em></p>
+<ul>
+<li>The color of the banana.</li>
+</ul>
+</li>
+<li>
+<p><code>bananaDescription</code>		 <em>(string)</em></p>
+<ul>
+<li>A description of the banana</li>
+</ul>
+</li>
+<li>
+<p><code>moldType</code>		 <em>(string)</em></p>
+<ul>
+<li>The type of mold on the banana if any</li>
+</ul>
+</li>
+</ul>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--banana-profile</code> | <code>--banana-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (banana) profile to load for this command execution.</li>
+</ul>
+</li>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<hr class="no-print">
+<a name="cmd-cli_profiles"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Create and manage configuration profiles.</p>
+<p>Warning: This group has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<a name="cmd-cli_profiles_create"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_create">create</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Create new configuration profiles.</p>
+<p>Warning: This group has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<a class="cmd-anchor" name="cmd-cli_profiles_create_banana-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_create">create</a> › <a href="#cmd-cli_profiles_create_banana-profile">banana-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Banana Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles create banana-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new banana profile. You can load this profile by using the name on commands that support the &quot;--banana-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--color</code> | <code>-c</code> <em>(string)</em></p>
+<ul>
+<li>The color of the banana.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--banana-description</code> | <code>--bd</code> <em>(string)</em></p>
+<ul>
+<li>A description of the banana</li>
+</ul>
+</li>
+<li>
+<p><code>--mold-type</code> | <code>--mt</code> <em>(string)</em></p>
+<ul>
+<li>The type of mold on the banana if any</li>
+</ul>
+</li>
+<li>
+<p><code>--overwrite</code> | <code>--ow</code> <em>(boolean)</em></p>
+<ul>
+<li>Overwrite the banana profile when a profile of the same name exists.</li>
+</ul>
+</li>
+<li>
+<p><code>--disable-defaults</code> | <code>--dd</code> <em>(boolean)</em></p>
+<ul>
+<li>Disable populating profile values of undefined properties with default values.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_create_base-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_create">create</a> › <a href="#cmd-cli_profiles_create_base-profile">base-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Fruit Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles create base-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new base profile. You can load this profile by using the name on commands that support the &quot;--base-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+<li>
+<p><code>--overwrite</code> | <code>--ow</code> <em>(boolean)</em></p>
+<ul>
+<li>Overwrite the base profile when a profile of the same name exists.</li>
+</ul>
+</li>
+<li>
+<p><code>--disable-defaults</code> | <code>--dd</code> <em>(boolean)</em></p>
+<ul>
+<li>Disable populating profile values of undefined properties with default values.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_create_insecure-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_create">create</a> › <a href="#cmd-cli_profiles_create_insecure-profile">insecure-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test Secured Fields</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles create insecure-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new insecure profile. You can load this profile by using the name on commands that support the &quot;--insecure-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--info</code> <em>(string)</em></p>
+<ul>
+<li>The info the keep in the profile.</li>
+</ul>
+</li>
+<li>
+<p><code>--secret</code> <em>(string)</em></p>
+<ul>
+<li>The secret info the keep in the profile.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--overwrite</code> | <code>--ow</code> <em>(boolean)</em></p>
+<ul>
+<li>Overwrite the insecure profile when a profile of the same name exists.</li>
+</ul>
+</li>
+<li>
+<p><code>--disable-defaults</code> | <code>--dd</code> <em>(boolean)</em></p>
+<ul>
+<li>Disable populating profile values of undefined properties with default values.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_create_kiwi-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_create">create</a> › <a href="#cmd-cli_profiles_create_kiwi-profile">kiwi-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Kiwi Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles create kiwi-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new kiwi profile. You can load this profile by using the name on commands that support the &quot;--kiwi-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of kiwis.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>
+<p>The price of one kiwi.</p>
+<p>Default value: 1</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--overwrite</code> | <code>--ow</code> <em>(boolean)</em></p>
+<ul>
+<li>Overwrite the kiwi profile when a profile of the same name exists.</li>
+</ul>
+</li>
+<li>
+<p><code>--disable-defaults</code> | <code>--dd</code> <em>(boolean)</em></p>
+<ul>
+<li>Disable populating profile values of undefined properties with default values.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_create_strawberry-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_create">create</a> › <a href="#cmd-cli_profiles_create_strawberry-profile">strawberry-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Strawberry Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config init' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles create strawberry-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new strawberry profile. You can load this profile by using the name on commands that support the &quot;--strawberry-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of strawberries.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--overwrite</code> | <code>--ow</code> <em>(boolean)</em></p>
+<ul>
+<li>Overwrite the strawberry profile when a profile of the same name exists.</li>
+</ul>
+</li>
+<li>
+<p><code>--disable-defaults</code> | <code>--dd</code> <em>(boolean)</em></p>
+<ul>
+<li>Disable populating profile values of undefined properties with default values.</li>
+</ul>
+</li>
+</ul>
+<a name="cmd-cli_profiles_delete"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_delete">delete</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Delete existing profiles.</p>
+<p>Warning: This group has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration cmd-cli.config.json</p>
+<a class="cmd-anchor" name="cmd-cli_profiles_delete_banana-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_delete">delete</a> › <a href="#cmd-cli_profiles_delete_banana-profile">banana-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Delete a banana profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration     cmd-cli.config.json</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles delete banana-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the banana  profile to be deleted. You can also load this profile by using the name on commands that support the &quot;--banana-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--force</code> <em>(boolean)</em></p>
+<ul>
+<li>Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Delete a banana profile named profilename:</p>
+<ul>
+<li><code>cmd-cli profiles delete banana-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles delete banana-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_delete_base-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_delete">delete</a> › <a href="#cmd-cli_profiles_delete_base-profile">base-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Delete a base profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration     cmd-cli.config.json</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles delete base-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the base  profile to be deleted. You can also load this profile by using the name on commands that support the &quot;--base-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--force</code> <em>(boolean)</em></p>
+<ul>
+<li>Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Delete a base profile named profilename:</p>
+<ul>
+<li><code>cmd-cli profiles delete base-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles delete base-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_delete_insecure-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_delete">delete</a> › <a href="#cmd-cli_profiles_delete_insecure-profile">insecure-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Delete a insecure profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration     cmd-cli.config.json</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles delete insecure-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the insecure  profile to be deleted. You can also load this profile by using the name on commands that support the &quot;--insecure-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--force</code> <em>(boolean)</em></p>
+<ul>
+<li>Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Delete a insecure profile named profilename:</p>
+<ul>
+<li><code>cmd-cli profiles delete insecure-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles delete insecure-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_delete_kiwi-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_delete">delete</a> › <a href="#cmd-cli_profiles_delete_kiwi-profile">kiwi-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Delete a kiwi profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration     cmd-cli.config.json</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles delete kiwi-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the kiwi  profile to be deleted. You can also load this profile by using the name on commands that support the &quot;--kiwi-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--force</code> <em>(boolean)</em></p>
+<ul>
+<li>Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Delete a kiwi profile named profilename:</p>
+<ul>
+<li><code>cmd-cli profiles delete kiwi-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles delete kiwi-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_delete_strawberry-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_delete">delete</a> › <a href="#cmd-cli_profiles_delete_strawberry-profile">strawberry-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Delete a strawberry profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: Edit your Zowe V2 configuration     cmd-cli.config.json</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles delete strawberry-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the strawberry  profile to be deleted. You can also load this profile by using the name on commands that support the &quot;--strawberry-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--force</code> <em>(boolean)</em></p>
+<ul>
+<li>Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Delete a strawberry profile named profilename:</p>
+<ul>
+<li><code>cmd-cli profiles delete strawberry-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles delete strawberry-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a name="cmd-cli_profiles_list"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_list">list</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>List profiles of the type {{type}}.</p>
+<p>Warning: This group has been deprecated.<br>
+Recommended replacement: The 'config list' command</p>
+<a class="cmd-anchor" name="cmd-cli_profiles_list_banana-profiles"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_list">list</a> › <a href="#cmd-cli_profiles_list_banana-profiles">banana-profiles</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Banana Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config list' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles list banana-profiles [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--show-contents</code> | <code>--sc</code> <em>(boolean)</em></p>
+<ul>
+<li>List banana  profiles  and their contents. All profile details will be printed as part of command output.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>List profiles of type banana:</p>
+<ul>
+<li><code>cmd-cli profiles list banana-profiles</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list banana-profiles">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>List profiles of type banana and display their contents:</p>
+<ul>
+<li><code>cmd-cli profiles list banana-profiles --sc</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list banana-profiles --sc">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_list_base-profiles"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_list">list</a> › <a href="#cmd-cli_profiles_list_base-profiles">base-profiles</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Fruit Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config list' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles list base-profiles [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--show-contents</code> | <code>--sc</code> <em>(boolean)</em></p>
+<ul>
+<li>List base  profiles  and their contents. All profile details will be printed as part of command output.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>List profiles of type base:</p>
+<ul>
+<li><code>cmd-cli profiles list base-profiles</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list base-profiles">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>List profiles of type base and display their contents:</p>
+<ul>
+<li><code>cmd-cli profiles list base-profiles --sc</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list base-profiles --sc">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_list_insecure-profiles"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_list">list</a> › <a href="#cmd-cli_profiles_list_insecure-profiles">insecure-profiles</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test Secured Fields</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config list' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles list insecure-profiles [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--show-contents</code> | <code>--sc</code> <em>(boolean)</em></p>
+<ul>
+<li>List insecure  profiles  and their contents. All profile details will be printed as part of command output.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>List profiles of type insecure:</p>
+<ul>
+<li><code>cmd-cli profiles list insecure-profiles</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list insecure-profiles">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>List profiles of type insecure and display their contents:</p>
+<ul>
+<li><code>cmd-cli profiles list insecure-profiles --sc</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list insecure-profiles --sc">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_list_kiwi-profiles"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_list">list</a> › <a href="#cmd-cli_profiles_list_kiwi-profiles">kiwi-profiles</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Kiwi Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config list' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles list kiwi-profiles [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--show-contents</code> | <code>--sc</code> <em>(boolean)</em></p>
+<ul>
+<li>List kiwi  profiles  and their contents. All profile details will be printed as part of command output.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>List profiles of type kiwi:</p>
+<ul>
+<li><code>cmd-cli profiles list kiwi-profiles</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list kiwi-profiles">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>List profiles of type kiwi and display their contents:</p>
+<ul>
+<li><code>cmd-cli profiles list kiwi-profiles --sc</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list kiwi-profiles --sc">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_list_strawberry-profiles"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_list">list</a> › <a href="#cmd-cli_profiles_list_strawberry-profiles">strawberry-profiles</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Strawberry Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config list' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles list strawberry-profiles [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--show-contents</code> | <code>--sc</code> <em>(boolean)</em></p>
+<ul>
+<li>List strawberry  profiles  and their contents. All profile details will be printed as part of command output.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>List profiles of type strawberry:</p>
+<ul>
+<li><code>cmd-cli profiles list strawberry-profiles</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list strawberry-profiles">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>List profiles of type strawberry and display their contents:</p>
+<ul>
+<li><code>cmd-cli profiles list strawberry-profiles --sc</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles list strawberry-profiles --sc">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a name="cmd-cli_profiles_set-default"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_set-default">set-default</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Set which profiles are loaded by default.</p>
+<p>Warning: This group has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<a class="cmd-anchor" name="cmd-cli_profiles_set-default_banana-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_set-default">set-default</a> › <a href="#cmd-cli_profiles_set-default_banana-profile">banana-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>The banana set default-profiles command allows you to set the default profiles for this command group. When a banana command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles set-default banana-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specify a<br>
+profile for default usage within the banana group. When you issue commands within the banana group without a profile specified as part of the command, the default will be loaded instead.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Set the default profile for type banana to the profile named 'profilename':</p>
+<ul>
+<li><code>cmd-cli profiles set-default banana-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles set-default banana-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_set-default_base-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_set-default">set-default</a> › <a href="#cmd-cli_profiles_set-default_base-profile">base-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>The base set default-profiles command allows you to set the default profiles for this command group. When a base command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles set-default base-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specify a<br>
+profile for default usage within the base group. When you issue commands within the base group without a profile specified as part of the command, the default will be loaded instead.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Set the default profile for type base to the profile named 'profilename':</p>
+<ul>
+<li><code>cmd-cli profiles set-default base-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles set-default base-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_set-default_insecure-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_set-default">set-default</a> › <a href="#cmd-cli_profiles_set-default_insecure-profile">insecure-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>The insecure set default-profiles command allows you to set the default profiles for this command group. When a insecure command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles set-default insecure-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specify a<br>
+profile for default usage within the insecure group. When you issue commands within the insecure group without a profile specified as part of the command, the default will be loaded instead.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Set the default profile for type insecure to the profile named 'profilename':</p>
+<ul>
+<li><code>cmd-cli profiles set-default insecure-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles set-default insecure-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_set-default_kiwi-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_set-default">set-default</a> › <a href="#cmd-cli_profiles_set-default_kiwi-profile">kiwi-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>The kiwi set default-profiles command allows you to set the default profiles for this command group. When a kiwi command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles set-default kiwi-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specify a<br>
+profile for default usage within the kiwi group. When you issue commands within the kiwi group without a profile specified as part of the command, the default will be loaded instead.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Set the default profile for type kiwi to the profile named 'profilename':</p>
+<ul>
+<li><code>cmd-cli profiles set-default kiwi-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles set-default kiwi-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_set-default_strawberry-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_set-default">set-default</a> › <a href="#cmd-cli_profiles_set-default_strawberry-profile">strawberry-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>The strawberry set default-profiles command allows you to set the default profiles for this command group. When a strawberry command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles set-default strawberry-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specify a<br>
+profile for default usage within the strawberry group. When you issue commands within the strawberry group without a profile specified as part of the command, the default will be loaded instead.</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>Set the default profile for type strawberry to the profile named 'profilename':</p>
+<ul>
+<li><code>cmd-cli profiles set-default strawberry-profile profilename</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli profiles set-default strawberry-profile profilename">Copy</button></li>
+</ul>
+</li>
+</ul>
+<a name="cmd-cli_profiles_update"></a><h2><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_update">update</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Update a {{type}} profile. You can update any property present within the profile configuration. The updated profile will be printed so that you can review the result of the updates.</p>
+<p>Warning: This group has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<a class="cmd-anchor" name="cmd-cli_profiles_update_banana-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_update">update</a> › <a href="#cmd-cli_profiles_update_banana-profile">banana-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Banana Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles update banana-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new banana profile. You can load this profile by using the name on commands that support the &quot;--banana-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--color</code> | <code>-c</code> <em>(string)</em></p>
+<ul>
+<li>The color of the banana.</li>
+</ul>
+</li>
+<li>
+<p><code>--banana-description</code> | <code>--bd</code> <em>(string)</em></p>
+<ul>
+<li>A description of the banana</li>
+</ul>
+</li>
+<li>
+<p><code>--mold-type</code> | <code>--mt</code> <em>(string)</em></p>
+<ul>
+<li>The type of mold on the banana if any</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_update_base-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_update">update</a> › <a href="#cmd-cli_profiles_update_base-profile">base-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Fruit Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles update base-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new base profile. You can load this profile by using the name on commands that support the &quot;--base-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_update_insecure-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_update">update</a> › <a href="#cmd-cli_profiles_update_insecure-profile">insecure-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test Secured Fields</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles update insecure-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new insecure profile. You can load this profile by using the name on commands that support the &quot;--insecure-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--info</code> <em>(string)</em></p>
+<ul>
+<li>The info the keep in the profile.</li>
+</ul>
+</li>
+<li>
+<p><code>--secret</code> <em>(string)</em></p>
+<ul>
+<li>The secret info the keep in the profile.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_update_kiwi-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_update">update</a> › <a href="#cmd-cli_profiles_update_kiwi-profile">kiwi-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Kiwi Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles update kiwi-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new kiwi profile. You can load this profile by using the name on commands that support the &quot;--kiwi-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of kiwis.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one kiwi.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_profiles_update_strawberry-profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_profiles">profiles</a> › <a href="#cmd-cli_profiles_update">update</a> › <a href="#cmd-cli_profiles_update_strawberry-profile">strawberry-profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Strawberry Profile</p>
+<p>Warning: This command has been deprecated.<br>
+Recommended replacement: The 'config set' command</p>
+<h4>Usage</h4>
+<p>cmd-cli profiles update strawberry-profile &lt;profileName&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>profileName</code>		 <em>(string)</em></p>
+<ul>
+<li>Specifies the name of the new strawberry profile. You can load this profile by using the name on commands that support the &quot;--strawberry-profile&quot; option.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of strawberries.</li>
+</ul>
+</li>
+</ul>
+<hr class="no-print">
+<a name="cmd-cli_read"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_read">read</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Read some profiles</p>
+<a class="cmd-anchor" name="cmd-cli_read_profile"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_read">read</a> › <a href="#cmd-cli_read_profile">profile</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Read some profiles</p>
+<h4>Usage</h4>
+<p>cmd-cli read profile [options]</p>
+<h4>Profile Options</h4>
+<ul>
+<li>
+<p><code>--insecure-profile</code> | <code>--insecure-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (insecure) profile to load for this command execution.</li>
+</ul>
+</li>
+<li>
+<p><code>--base-profile</code> | <code>--base-p</code> <em>(string)</em></p>
+<ul>
+<li>The name of a (base) profile to load for this command execution.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--amount</code> | <code>-a</code> <em>(number)</em></p>
+<ul>
+<li>The amount of fruits.</li>
+</ul>
+</li>
+<li>
+<p><code>--price</code> | <code>-p</code> <em>(number)</em></p>
+<ul>
+<li>The price of one fruit.</li>
+</ul>
+</li>
+<li>
+<p><code>--host</code> <em>(string)</em></p>
+<ul>
+<li>Fruit host</li>
+</ul>
+</li>
+<li>
+<p><code>--port</code> <em>(number)</em></p>
+<ul>
+<li>Fruit port</li>
+</ul>
+</li>
+<li>
+<p><code>--user</code> <em>(string)</em></p>
+<ul>
+<li>Fruit username</li>
+</ul>
+</li>
+<li>
+<p><code>--password</code> <em>(string)</em></p>
+<ul>
+<li>Fruit password</li>
+</ul>
+</li>
+<li>
+<p><code>--token-type</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token type</li>
+</ul>
+</li>
+<li>
+<p><code>--token-value</code> <em>(string)</em></p>
+<ul>
+<li>Fruit token value</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate file</li>
+</ul>
+</li>
+<li>
+<p><code>--cert-key-file</code> <em>(local file path)</em></p>
+<ul>
+<li>Fruit certificate key file</li>
+</ul>
+</li>
+</ul>
+<hr class="no-print">
+<a name="cmd-cli_respond"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Invoke various types of handlers that will formulate different responses via console messages, data objects, etc.</p>
+<a class="cmd-anchor" name="cmd-cli_respond_with-data-array"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-data-array">with-data-array</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Formulates a string array object to pass back when response format JSON is specified.</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-data-array [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--strings-for-array</code> | <code>--sfa</code> <em>(array)</em></p>
+<ul>
+<li>An array of space delimited strings that will be placed in the output object array.</li>
+</ul>
+</li>
+<li>
+<p><code>--message-for-response</code> | <code>--mfr</code> <em>(string)</em></p>
+<ul>
+<li>The message that will be placed in the output object.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_respond_with-data-object"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-data-object">with-data-object</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Formulates a JSON object to pass back when response format JSON is specified.</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-data-object [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--data-object</code> | <code>--da</code> <em>(json)</em></p>
+<ul>
+<li>An well-formed JSON object to place in the command response.</li>
+</ul>
+</li>
+<li>
+<p><code>--message-for-response</code> | <code>--mfr</code> <em>(string)</em></p>
+<ul>
+<li>The message that will be placed in the output object.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_respond_with-error-headers"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-error-headers">with-error-headers</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Responds with a few error headers (colorized in red).</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-error-headers [options]</p>
+<a class="cmd-anchor" name="cmd-cli_respond_with-error-messages"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-error-messages">with-error-messages</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Reponds with a few error messages.</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-error-messages [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--format-string</code> <em>(string)</em></p>
+<ul>
+<li>A format string that will be used to create a message</li>
+</ul>
+</li>
+<li>
+<p><code>--format-values</code> <em>(array)</em></p>
+<ul>
+<li>The set of values to use in the format string.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_respond_with-log-messages"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-log-messages">with-log-messages</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Reponds with a few log messages.</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-log-messages [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--format-string</code> <em>(string)</em></p>
+<ul>
+<li>A format string that will be used to create a message</li>
+</ul>
+</li>
+<li>
+<p><code>--format-values</code> <em>(array)</em></p>
+<ul>
+<li>The set of values to use in the format string.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_respond_with-mixed-responses"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-mixed-responses">with-mixed-responses</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Responds with error, headers, messages, data, etc. (all handler response APIs, except progress)</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-mixed-responses [options]</p>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--data-object</code> | <code>--da</code> <em>(json)</em></p>
+<ul>
+<li>An well-formed JSON object to place in the command response.</li>
+</ul>
+</li>
+<li>
+<p><code>--message-for-response</code> | <code>--mfr</code> <em>(string)</em></p>
+<ul>
+<li>The message that will be placed in the output object.</li>
+</ul>
+</li>
+<li>
+<p><code>--error-format-string</code> | <code>--efs</code> <em>(string)</em></p>
+<ul>
+<li>A format string that will be used to create a message</li>
+</ul>
+</li>
+<li>
+<p><code>--error-format-values</code> | <code>--efv</code> <em>(array)</em></p>
+<ul>
+<li>The set of values to use in the format string.</li>
+</ul>
+</li>
+<li>
+<p><code>--log-format-string</code> | <code>--lfs</code> <em>(string)</em></p>
+<ul>
+<li>A format string that will be used to create a message</li>
+</ul>
+</li>
+<li>
+<p><code>--log-format-values</code> | <code>--lfv</code> <em>(array)</em></p>
+<ul>
+<li>The set of values to use in the format string.</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_respond_with-syntax-errors"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-syntax-errors">with-syntax-errors</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Responds with syntax errors</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-syntax-errors &lt;positionalparams&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>positionalparams</code>		 <em>(string)</em></p>
+<ul>
+<li>The positional param Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.      Must match regular expression: <code>ABC</code></li>
+</ul>
+</li>
+</ul>
+<h4>Required Options</h4>
+<ul>
+<li>
+<p><code>--long-option</code> | <code>--lo</code> <em>(string)</em></p>
+<ul>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--json-option</code> <em>(json)</em></p>
+<ul>
+<li>The JSON optionLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--value-range</code> <em>(number)</em></p>
+<ul>
+<li>value-rangeLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--fake-file</code> <em>(local file path)</em></p>
+<ul>
+<li>fake-fileLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--string-length-over-max</code> <em>(string)</em></p>
+<ul>
+<li>fake-fileLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--requires-another</code> <em>(string)</em></p>
+<ul>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--required-with-long-option</code> <em>(boolean)</em></p>
+<ul>
+<li>This is required with --long-option</li>
+</ul>
+</li>
+<li>
+<p><code>--must-specify-one-of-abc-maybe-a</code> <em>(string)</em></p>
+<ul>
+<li>a must specify one option - maybe aLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--must-specify-one-of-abc-maybe-b</code> <em>(string)</em></p>
+<ul>
+<li>a must specify one option - maybe bLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--must-specify-one-of-abc-maybe-c</code> <em>(string)</em></p>
+<ul>
+<li>a must specify one option - maybe cLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--only-specify-one-of-abc-maybe-a</code> <em>(string)</em></p>
+<ul>
+<li>a only specify one option - maybe aLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--only-specify-one-of-abc-maybe-b</code> <em>(string)</em></p>
+<ul>
+<li>a only specify one option - maybe bLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--absence-impl-a</code> <em>(string)</em></p>
+<ul>
+<li>absence-impl-aLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--absence-impl-b</code> <em>(string)</em></p>
+<ul>
+<li>absence-impl-bLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--absence-impl-c</code> <em>(string)</em></p>
+<ul>
+<li>absence-impl-cLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--required-by-another</code> <em>(boolean)</em></p>
+<ul>
+<li>This is required with --required-by-another</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicts-with-another</code> <em>(string)</em></p>
+<ul>
+<li>This conflicts with another parameter</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicts-with</code> <em>(string)</em></p>
+<ul>
+<li>This will cause a conflicts with error</li>
+</ul>
+</li>
+<li>
+<p><code>--invalid-regex</code> <em>(string)</em></p>
+<ul>
+<li>This will cause an invalid regex syntax error</li>
+</ul>
+</li>
+<li>
+<p><code>--empty-value</code> <em>(string)</em></p>
+<ul>
+<li>This will cause an empty value error Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
+</ul>
+</li>
+<li>
+<p><code>--allowable-error</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>This will cause an allowable option error Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>Allowed values: ABC, 123</p>
+</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_respond_with-wrapped-text"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_respond">respond</a> › <a href="#cmd-cli_respond_with-wrapped-text">with-wrapped-text</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Responds with wrapped text and non wrapped text</p>
+<h4>Usage</h4>
+<p>cmd-cli respond with-wrapped-text [options]</p>
+<hr class="no-print">
+<a name="cmd-cli_validate"></a><h2 class="page-break"><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_validate">validate</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h2>
+<p>Invoke commands to validate that syntax checking is working correctly.</p>
+<a class="cmd-anchor" name="cmd-cli_validate_string-or-empty"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_validate">validate</a> › <a href="#cmd-cli_validate_string-or-empty">string-or-empty</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Test string or empty option.</p>
+<h4>Usage</h4>
+<p>cmd-cli validate string-or-empty [options]</p>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--string-or-empty</code> <em>(string)</em></p>
+<ul>
+<li>value should be string or empty</li>
+</ul>
+</li>
+</ul>
+<a class="cmd-anchor" name="cmd-cli_validate_syntax"></a><h3><a href="#cmd-cli">cmd-cli</a> › <a href="#cmd-cli_validate">validate</a> › <a href="#cmd-cli_validate_syntax">syntax</a><button id="btn-print" class="no-print" onclick="window.print();" title="Print">🖨️</button></h3>
+<p>Tests Imperatives syntax validation capabilities.</p>
+<h4>Usage</h4>
+<p>cmd-cli validate syntax &lt;position1&gt; [options]</p>
+<h4>Positional Arguments</h4>
+<ul>
+<li>
+<p><code>position1</code>		 <em>(string)</em></p>
+<ul>
+<li>first posional parameters</li>
+</ul>
+</li>
+</ul>
+<h4>Options</h4>
+<ul>
+<li>
+<p><code>--option-to-specify-1</code> <em>(boolean)</em></p>
+<ul>
+<li>Part of must specify one group</li>
+</ul>
+</li>
+<li>
+<p><code>--option-to-specify-2</code> <em>(boolean)</em></p>
+<ul>
+<li>Part of must specify one group</li>
+</ul>
+</li>
+<li>
+<p><code>--option-to-specify-3</code> <em>(string)</em></p>
+<ul>
+<li>
+<p>Part of must specify one group</p>
+<p>Allowed values: allowableA, allowableB, ^allowableC\$</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--option-to-specify-4</code> <em>(array)</em></p>
+<ul>
+<li>
+<p>Part of must specify one group</p>
+<p>Allowed values: allowableA, allowableB</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicts-with-1</code> <em>(string)</em></p>
+<ul>
+<li>Conflicts with option-to-specify-2</li>
+</ul>
+</li>
+<li>
+<p><code>--implied-by-2</code> <em>(boolean)</em></p>
+<ul>
+<li>Implied by option-to-specify-2</li>
+</ul>
+</li>
+<li>
+<p><code>--absence-implies</code> <em>(boolean)</em></p>
+<ul>
+<li>Absence of this option implies presence of another</li>
+</ul>
+</li>
+<li>
+<p><code>--implied-by-absence</code> <em>(boolean)</em></p>
+<ul>
+<li>implied by the absence of absence-implies</li>
+</ul>
+</li>
+<li>
+<p><code>--should-be-number</code> <em>(number)</em></p>
+<ul>
+<li>should be a numerical value</li>
+</ul>
+</li>
+<li>
+<p><code>--dog-type</code> <em>(string)</em></p>
+<ul>
+<li>A certain value of this option will imply 'fluffy'</li>
+</ul>
+</li>
+<li>
+<p><code>--fluffy</code> <em>(string)</em></p>
+<ul>
+<li>How fluffy the dog is</li>
+</ul>
+</li>
+<li>
+<p><code>--length-range</code> <em>(string)</em></p>
+<ul>
+<li>this value should be less than or equal to eight characters long but greater than or equal to 2 characters long</li>
+</ul>
+</li>
+<li>
+<p><code>--eggs-to-eat</code> <em>(number)</em></p>
+<ul>
+<li>How many eggs to eat out of a dozen</li>
+</ul>
+</li>
+<li>
+<p><code>--array-allow-duplicate</code> <em>(array)</em></p>
+<ul>
+<li>this array allows explicitly duplicate</li>
+</ul>
+</li>
+<li>
+<p><code>--array-not-allow-duplicate</code> <em>(array)</em></p>
+<ul>
+<li>this array does not allow duplicate</li>
+</ul>
+</li>
+<li>
+<p><code>--implies-one-of</code> <em>(boolean)</em></p>
+<ul>
+<li>this option implies at least one of a group of options</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicts-with-multiple</code> <em>(boolean)</em></p>
+<ul>
+<li>conflicts with multiple other options</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicted-1</code> <em>(boolean)</em></p>
+<ul>
+<li>conflicted</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicted-2</code> <em>(boolean)</em></p>
+<ul>
+<li>conflicted</li>
+</ul>
+</li>
+<li>
+<p><code>--conflicted-3</code> <em>(boolean)</em></p>
+<ul>
+<li>conflicted</li>
+</ul>
+</li>
+<li>
+<p><code>--always-required-boolean</code> <em>(boolean)</em></p>
+<ul>
+<li>this flag is always required</li>
+</ul>
+</li>
+<li>
+<p><code>--always-required-string</code> <em>(string)</em></p>
+<ul>
+<li>this string is always required</li>
+</ul>
+</li>
+</ul>
+<h4>Examples</h4>
+<ul>
+<li>
+<p>example 1:</p>
+<ul>
+<li><code>cmd-cli validate syntax &quot;position1&quot; &quot;testposition&quot;</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli validate syntax &quot;position1&quot; &quot;testposition&quot;">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>example 2:</p>
+<ul>
+<li><code>cmd-cli validate syntax &quot;file.txt&quot; &quot;ibmuser.pds(mem)&quot;</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli validate syntax &quot;file.txt&quot; &quot;ibmuser.pds(mem)&quot;">Copy</button></li>
+</ul>
+</li>
+<li>
+<p>example 3:</p>
+<ul>
+<li><code>cmd-cli validate syntax &quot;file.txt&quot; &quot;ibmuser.ps&quot; --mr wait</code> <button class="btn-copy no-print" data-balloon-pos="right" data-clipboard-text="cmd-cli validate syntax &quot;file.txt&quot; &quot;ibmuser.ps&quot; --mr wait">Copy</button></li>
+</ul>
+</li>
+</ul>
+</article>
+<script src="../js/bundle-docs.js"></script>
+<script src="../js/docs.js"></script>

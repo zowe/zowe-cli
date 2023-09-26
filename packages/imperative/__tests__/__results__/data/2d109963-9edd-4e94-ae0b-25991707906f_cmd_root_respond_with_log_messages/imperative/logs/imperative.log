@@ -1,0 +1,58 @@
+[2023/06/29 15:38:15.719] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:38:15.720] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:38:19.643] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:38:19.645] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:38:24.179] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:38:24.180] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:38:24.399] [ERROR] [CommandProcessor.js:687] Syntax for command "with-log-messages" is invalid.
+[2023/06/29 15:38:24.400] [ERROR] [CommandYargs.js:148] Error in command with-log-messages
+[2023/06/29 15:38:24.401] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'Command syntax invalid',
+    stdout: <Buffer >,
+    stderr: <Buffer 0a 53 79 6e 74 61 78 20 45 72 72 6f 72 3a 0a 4d 69 73 73 69 6e 67 20 52 65 71 75 69 72 65 64 20 4f 70 74 69 6f 6e 3a 0a 2d 2d 66 6f 72 6d 61 74 2d 73 ... 304 more bytes>,
+    data: [
+      {
+        message: 'Missing Required Option:\n' +
+          '--format-string \n' +
+          '\n' +
+          'Option Description:\n' +
+          'A format string that will be used to create a message\n',
+        optionInError: 'format-string',
+        definition: {
+          name: 'format-string',
+          type: 'string',
+          required: true,
+          description: 'A format string that will be used to create a message',
+          implies: [ 'format-values' ],
+          group: 'Required Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--format-values \n' +
+          '\n' +
+          'Option Description:\n' +
+          'The set of values to use in the format string.\n',
+        optionInError: 'format-values',
+        definition: {
+          name: 'format-values',
+          type: 'array',
+          required: true,
+          description: 'The set of values to use in the format string.',
+          implies: [ 'format-string' ],
+          group: 'Required Options',
+          aliases: []
+        }
+      }
+    ],
+    error: undefined
+  }
+]
+[2023/06/29 15:38:28.347] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:38:28.349] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:38:32.640] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:38:32.642] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.

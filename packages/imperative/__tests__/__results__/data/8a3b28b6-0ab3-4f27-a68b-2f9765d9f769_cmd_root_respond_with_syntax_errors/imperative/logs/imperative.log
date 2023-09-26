@@ -1,0 +1,267 @@
+[2023/06/29 16:03:01.566] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 16:03:01.568] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 16:03:01.824] [ERROR] [CommandProcessor.js:687] Syntax for command "with-syntax-errors" is invalid.
+[2023/06/29 16:03:01.826] [ERROR] [CommandYargs.js:148] Error in command with-syntax-errors
+[2023/06/29 16:03:01.827] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'Command syntax invalid',
+    stdout: <Buffer >,
+    stderr: <Buffer 0a 53 79 6e 74 61 78 20 45 72 72 6f 72 3a 0a 4e 6f 20 76 61 6c 75 65 20 73 70 65 63 69 66 69 65 64 20 66 6f 72 20 6f 70 74 69 6f 6e 3a 0a 2d 2d 65 6d ... 3054 more bytes>,
+    data: [
+      {
+        message: 'No value specified for option:\n' +
+          '--empty-value\n' +
+          '\n' +
+          'This option requires a value of type:\n' +
+          'string\n' +
+          '\n' +
+          'Option Description:\n' +
+          'This will cause an empty value error Lorem ipsum dolor sit amet, consectetur\n' +
+          'adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna\n' +
+          'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi\n' +
+          'ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in\n' +
+          'voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\n' +
+          'occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim\n' +
+          'id est laborum.\n',
+        optionInError: 'empty-value'
+      },
+      {
+        message: 'You must specify one of the following options for this command:\n' +
+          '[--must-specify-one-of-abc-maybe-a, --must-specify-one-of-abc-maybe-b, --must-specify-one-of-abc-maybe-c]\n',
+        optionInError: '--must-specify-one-of-abc-maybe-a,--must-specify-one-of-abc-maybe-b,--must-specify-one-of-abc-maybe-c'
+      },
+      {
+        message: 'You may specify only one of the following options for this command:\n' +
+          '[--only-specify-one-of-abc-maybe-a, --only-specify-one-of-abc-maybe-b]\n' +
+          '\n' +
+          'You specified the following:\n' +
+          '[--only-specify-one-of-abc-maybe-a, --only-specify-one-of-abc-maybe-b]\n',
+        optionInError: '--only-specify-one-of-abc-maybe-a,--only-specify-one-of-abc-maybe-b'
+      },
+      {
+        message: 'Invalid format specified for positional option:\n' +
+          'positionalparams\n' +
+          '\n' +
+          'You specified:\n' +
+          'XYZ\n' +
+          '\n' +
+          'Option must match the following regular expression:\n' +
+          'ABC\n',
+        optionInError: 'positionalparams',
+        definition: {
+          name: 'positionalparams',
+          description: 'The positional param Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'string',
+          regex: 'ABC',
+          required: true
+        }
+      },
+      {
+        message: 'Missing Required Option:\n' +
+          '--long-option (--lo)\n' +
+          '\n' +
+          'Option Description:\n' +
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor\n' +
+          'incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis\n' +
+          'nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n' +
+          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu\n' +
+          'fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in\n' +
+          'culpa qui officia deserunt mollit anim id est laborum.\n',
+        optionInError: 'long-option',
+        definition: {
+          name: 'long-option',
+          aliases: [ 'lo' ],
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'string',
+          required: true,
+          implies: [ 'required-with-long-option' ],
+          group: 'Required Options'
+        }
+      },
+      {
+        message: 'Invalid JSON string supplied for the following option:\n' +
+          '--json-option\n' +
+          '\n' +
+          'You specified:\n' +
+          '{das342112309432\n' +
+          '\n' +
+          'JSON parsing failed with the following error:\n' +
+          'Unexpected token d in JSON at position 1\n',
+        optionInError: 'json-option',
+        definition: {
+          name: 'json-option',
+          description: 'The JSON optionLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'json',
+          required: true,
+          group: 'Required Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'If you do not specify the following option:\n' +
+          '--absence-impl-a\n' +
+          '\n' +
+          'You must specify one of these options:\n' +
+          '[--absence-impl-b, --absence-impl-c]\n',
+        optionInError: 'absence-impl-a',
+        definition: {
+          name: 'absence-impl-a',
+          description: 'absence-impl-aLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'string',
+          absenceImplications: [ 'absence-impl-b', 'absence-impl-c' ],
+          group: 'Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'Invalid value specified for option:\n' +
+          '--value-range \n' +
+          '\n' +
+          'You specified:\n' +
+          'blah\n' +
+          '\n' +
+          'The value must be a number\n',
+        optionInError: 'value-range',
+        definition: {
+          name: 'value-range',
+          description: 'value-rangeLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'number',
+          numericValueRange: [ 1, 3 ],
+          required: true,
+          group: 'Required Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'Invalid file path specified for option:\n' +
+          '--fake-file \n' +
+          '\n' +
+          'You specified:\n' +
+          '"fakeeeeeeeeeeeeee"\n' +
+          '\n' +
+          'The file does not exist\n',
+        optionInError: 'fake-file',
+        definition: {
+          name: 'fake-file',
+          description: 'fake-fileLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'existingLocalFile',
+          required: true,
+          group: 'Required Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'Invalid value length for option:\n' +
+          '--string-length-over-max\n' +
+          '\n' +
+          'You specified a string of length 13:\n' +
+          'asldkfjasdlfj\n' +
+          '\n' +
+          'The length must be between 1 and 3 (inclusive)\n',
+        optionInError: 'string-length-over-max',
+        definition: {
+          name: 'string-length-over-max',
+          description: 'fake-fileLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'string',
+          stringLengthRange: [ 1, 3 ],
+          required: true,
+          group: 'Required Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'You cannot specify the following option multiple times:\n' +
+          '--requires-another \n',
+        optionInError: 'requires-another',
+        definition: {
+          name: 'requires-another',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'string',
+          required: true,
+          implies: [ 'required-by-another' ],
+          group: 'Required Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'If you specify the following option:\n' +
+          '--requires-another\n' +
+          '\n' +
+          'You must also specify:\n' +
+          '--required-by-another\n',
+        optionInError: 'requires-another',
+        definition: {
+          name: 'required-by-another',
+          description: 'This is required with --required-by-another',
+          type: 'boolean',
+          group: 'Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'If you specify the following option:\n' +
+          '--requires-another\n' +
+          '\n' +
+          'You must also specify:\n' +
+          '--required-by-another\n',
+        optionInError: 'required-by-another',
+        definition: {
+          name: 'required-by-another',
+          description: 'This is required with --required-by-another',
+          type: 'boolean',
+          group: 'Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'The following options conflict (mutually exclusive):\n' +
+          '--conflicts-with\n' +
+          '--conflicts-with-another\n',
+        optionInError: 'conflicts-with',
+        definition: {
+          name: 'conflicts-with',
+          description: 'This will cause a conflicts with error',
+          type: 'string',
+          conflictsWith: [ 'conflicts-with-another' ],
+          group: 'Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'The following options conflict (mutually exclusive):\n' +
+          '--conflicts-with\n' +
+          '--conflicts-with-another\n',
+        optionInError: 'conflicts-with-another',
+        definition: {
+          name: 'conflicts-with-another',
+          description: 'This conflicts with another parameter',
+          type: 'string',
+          group: 'Options',
+          aliases: []
+        }
+      },
+      {
+        message: 'Invalid value specified for option:\n' +
+          '--allowable-error \n' +
+          '\n' +
+          'You specified:\n' +
+          'hello\n' +
+          '\n' +
+          'The value must match one of the following regular expressions:\n' +
+          "[ '^ABC$', '^123$' ].\n",
+        optionInError: 'allowable-error',
+        definition: {
+          name: 'allowable-error',
+          description: 'This will cause an allowable option error Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          type: 'string',
+          allowableValues: { values: [ '^ABC$', '^123$' ] },
+          group: 'Options',
+          aliases: []
+        }
+      }
+    ],
+    error: undefined
+  }
+]

@@ -1,0 +1,20 @@
+[2023/06/29 14:59:01.208] [ERROR] [Imperative.js:209] Error: Failed to set up environment variables from the environment file.
+Environment variables will not be available.
+File: C:\Users\ej608771\.imperative-test-cli.env.json
+Line: 1
+Column: 34
+    at EnvFileUtils.setEnvironmentForApp (C:\ourstuff\repos\dev\imperative\lib\utilities\src\EnvFileUtils.js:51:23)
+    at Imperative.<anonymous> (C:\ourstuff\repos\dev\imperative\lib\imperative\src\Imperative.js:165:49)
+    at Generator.next (<anonymous>)
+    at C:\ourstuff\repos\dev\imperative\lib\imperative\src\Imperative.js:18:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\ourstuff\repos\dev\imperative\lib\imperative\src\Imperative.js:14:12)
+    at C:\ourstuff\repos\dev\imperative\lib\imperative\src\Imperative.js:127:78
+    at new Promise (<anonymous>)
+    at Imperative.init (C:\ourstuff\repos\dev\imperative\lib\imperative\src\Imperative.js:127:16)
+    at Object.<anonymous> (C:\ourstuff\repos\dev\imperative\__tests__\__integration__\imperative\lib\main.js:16:20)
+[2023/06/29 14:59:01.211] [ERROR] [Imperative.js:209] Failed to set up environment variables from the environment file.
+Environment variables will not be available.
+File: C:\Users\ej608771\.imperative-test-cli.env.json
+Line: 1
+Column: 34

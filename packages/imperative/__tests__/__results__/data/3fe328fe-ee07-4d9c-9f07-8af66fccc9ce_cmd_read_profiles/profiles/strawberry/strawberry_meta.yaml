@@ -1,0 +1,19 @@
+defaultProfile: null
+configuration:
+    type: strawberry
+    schema:
+        type: object
+        title: 'Strawberry Profile'
+        description: 'Strawberry Profile'
+        properties:
+            amount:
+                type: number
+                optionDefinition:
+                    name: amount
+                    aliases:
+                        - a
+                    description: 'The amount of strawberries.'
+                    type: number
+                    required: true
+        required:
+            - amount

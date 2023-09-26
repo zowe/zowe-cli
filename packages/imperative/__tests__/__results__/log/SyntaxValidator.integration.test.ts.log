@@ -1,0 +1,12 @@
+[2023/06/29 14:56:22.254] [DEBUG] [Imperative.ts:183] WARNING: No "bin" configuration was found in your package.json, or your package.json could not be found. Defaulting command name to filepath instead.
+[2023/06/29 14:56:23.002] [DEBUG] [ConfigManagementFacility.ts:66] ConfigManagementFacility.init() - Start
+[2023/06/29 14:56:23.003] [DEBUG] [UpdateImpConfig.ts:39] Adding definition = 'config'
+[2023/06/29 14:56:23.004] [DEBUG] [ConfigManagementFacility.ts:89] ConfigManagementFacility.init() - Success
+[2023/06/29 14:56:23.036] [DEBUG] [PluginManagementFacility.ts:155] PluginManagementFacility.init() - Start
+[2023/06/29 14:56:23.659] [DEBUG] [UpdateImpConfig.ts:39] Adding definition = 'plugins'
+[2023/06/29 14:56:23.660] [DEBUG] [PluginManagementFacility.ts:185] PluginManagementFacility.init() - Success
+[2023/06/29 14:56:23.661] [DEBUG] [PluginManagementFacility.ts:231] Creating PMF_ROOT directory
+[2023/06/29 14:56:23.662] [DEBUG] [PluginManagementFacility.ts:235] Creating PLUGIN_JSON file
+[2023/06/29 14:56:23.664] [INFO] [PluginManagementFacility.ts:354] All plugin configurations have been loaded. Details at trace level of logging.
+[2023/06/29 14:56:23.666] [WARN] [Imperative.ts:551] Environmental setting for imperative log level ('@zowe/imperative_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 14:56:23.667] [WARN] [Imperative.ts:569] Environmental setting for app log level ('@zowe/imperative_APP_LOG_LEVEL') was blank.

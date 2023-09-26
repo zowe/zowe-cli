@@ -1,0 +1,70 @@
+{
+  "name": "normal-plugin",
+  "version": "1.0.1",
+  "description": "Some description",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "imperative": {
+    "name": "normal-plugin",
+    "rootCommandDescription": "imperative working test plugin",
+    "pluginBaseCliVersion": "^1.0.0",
+    "pluginHealthCheck": "./lib/sample-plugin/healthCheck.handler",
+    "pluginAliases": [
+      "np",
+      "normalp"
+    ],
+    "pluginSummary": "This summary is completely different from the description!",
+    "definitions": [
+      {
+        "name": "foo",
+        "description": "dummy foo command",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/foo/foo.handler"
+      },
+      {
+        "name": "bar",
+        "description": "dummy bar command",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/bar/bar.handler"
+      }
+    ],
+    "profiles": [
+      {
+        "type": "normal-plugin",
+        "schema": {
+          "type": "object",
+          "title": "normal-plugin Profile",
+          "description": "A normal-plugin profile",
+          "properties": {
+            "cool": {
+              "type": "string",
+              "optionDefinition": {
+                "name": "cool",
+                "description": "A cool property",
+                "type": "string",
+                "required": false,
+                "defaultValue": "duck"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "peerDependencies": {
+    "TestCLI": "1.0.2",
+    "@zowe/imperative": "1.0.0"
+  },
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "EPL 2.0",
+  "private": false,
+  "publishConfig": {
+    "registry": "http://imperative-npm-registry:4873"
+  }
+}

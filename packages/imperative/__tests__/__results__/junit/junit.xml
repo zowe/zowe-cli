@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="30" failures="0" time="4.953">
+  <testsuite name="AbstractRestClient tests" errors="0" failures="0" skipped="0" timestamp="2023-06-29T21:40:12" time="4.625" tests="30">
+    <testcase classname="AbstractRestClient tests should not append any headers to a request by default" name="AbstractRestClient tests should not append any headers to a request by default" time="0.009">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should give an error when no session is provided" name="AbstractRestClient tests should give an error when no session is provided" time="0.001">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should give an error when no resource URI is provided" name="AbstractRestClient tests should give an error when no resource URI is provided" time="0.007">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should not error when chunking data and payload data are present in outgoing request" name="AbstractRestClient tests should not error when chunking data and payload data are present in outgoing request" time="0.041">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should error with request rejection when status code is not in 200 range" name="AbstractRestClient tests should error with request rejection when status code is not in 200 range" time="0.005">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should give a v3-format error when status code is not in 200 range" name="AbstractRestClient tests should give a v3-format error when status code is not in 200 range" time="0.004">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should error when chunking JSON data that does not parse" name="AbstractRestClient tests should error when chunking JSON data that does not parse" time="0.003">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should error when chunking JSON data that does not parse and allow post payload" name="AbstractRestClient tests should error when chunking JSON data that does not parse and allow post payload" time="0.004">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should not error when headers and payload data are present in outgoing request" name="AbstractRestClient tests should not error when headers and payload data are present in outgoing request" time="0.003">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should not error when data and end events are sent" name="AbstractRestClient tests should not error when data and end events are sent" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should give an error message when error event is called" name="AbstractRestClient tests should give an error message when error event is called" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should call http request for http requests" name="AbstractRestClient tests should call http request for http requests" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should call https request for https requests" name="AbstractRestClient tests should call https request for https requests" time="0.005">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should not error when streaming data" name="AbstractRestClient tests should not error when streaming data" time="0.013">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should return full response when requested" name="AbstractRestClient tests should return full response when requested" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should return one part of response when requested" name="AbstractRestClient tests should return one part of response when requested" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should return several parts of response when requested" name="AbstractRestClient tests should return several parts of response when requested" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should create buildOptions according to input parameter options 1" name="AbstractRestClient tests should create buildOptions according to input parameter options 1" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should create buildOptions according to input parameter options 2" name="AbstractRestClient tests should create buildOptions according to input parameter options 2" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests Should error when trying to open an invalid certificate file path" name="AbstractRestClient tests Should error when trying to open an invalid certificate file path" time="0">
+    </testcase>
+    <testcase classname="AbstractRestClient tests should convert line endings from LF to CRLF for streamed request on Windows" name="AbstractRestClient tests should convert line endings from LF to CRLF for streamed request on Windows" time="0.005">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should not error when decompressing gzip buffer" name="AbstractRestClient tests content encoding should not error when decompressing gzip buffer" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should not error when decompressing gzip buffer with lowercase header" name="AbstractRestClient tests content encoding should not error when decompressing gzip buffer with lowercase header" time="0.002">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should not error when decompressing gzip stream" name="AbstractRestClient tests content encoding should not error when decompressing gzip stream" time="0.018">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should not error when decompressing truncated gzip stream with binary content" name="AbstractRestClient tests content encoding should not error when decompressing truncated gzip stream with binary content" time="0.004">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should error when decompressing invalid gzip buffer" name="AbstractRestClient tests content encoding should error when decompressing invalid gzip buffer" time="0.039">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should error when decompressing invalid gzip stream" name="AbstractRestClient tests content encoding should error when decompressing invalid gzip stream" time="0.003">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should error when decompressing truncated gzip stream with text content" name="AbstractRestClient tests content encoding should error when decompressing truncated gzip stream with text content" time="0.004">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should decompress error message for streamed request" name="AbstractRestClient tests content encoding should decompress error message for streamed request" time="0.004">
+    </testcase>
+    <testcase classname="AbstractRestClient tests content encoding should convert line endings from LF to CRLF for streamed request on Windows" name="AbstractRestClient tests content encoding should convert line endings from LF to CRLF for streamed request on Windows" time="0.003">
+    </testcase>
+  </testsuite>
+</testsuites>

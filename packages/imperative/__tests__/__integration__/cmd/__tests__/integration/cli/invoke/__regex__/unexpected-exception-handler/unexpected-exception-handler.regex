@@ -1,0 +1,1 @@
+^Unexpected Command Error:[\s\S]*Please review the message and stack below.[\s\S]*UnexpectedExceptionHandler\.handler[\s\S]*Message:[\s\S]*Cannot read (property 'split' of undefined|properties of undefined \(reading 'split'\))[\s\S]*Stack:[\s\S]*TypeError: Cannot read (property 'split' of undefined|properties of undefined \(reading 'split'\))[\s\S]*$

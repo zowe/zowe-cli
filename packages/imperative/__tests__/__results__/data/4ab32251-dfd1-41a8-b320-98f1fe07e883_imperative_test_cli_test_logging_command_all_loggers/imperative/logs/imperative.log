@@ -1,0 +1,4 @@
+[2023/06/29 14:56:07.977] [ERROR] [main.js:22] This is an error message after init!
+[2023/06/29 14:56:07.978] [FATAL] [main.js:23] This is a fatal message after init!
+[2023/06/29 14:56:08.063] [ERROR] [Logging.handler.js:38] This is an imperative logger error message from the test logging handler!
+[2023/06/29 14:56:08.064] [FATAL] [Logging.handler.js:39] This is an imperative logger fatal message from the test logging handler!

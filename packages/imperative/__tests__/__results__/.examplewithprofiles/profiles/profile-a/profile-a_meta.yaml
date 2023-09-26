@@ -1,0 +1,35 @@
+defaultProfile: null
+configuration:
+    type: profile-a
+    schema:
+        type: object
+        title: 'Example profile type A'
+        description: 'Example profile type A'
+        properties:
+            animal:
+                optionDefinition:
+                    description: 'The animal'
+                    type: string
+                    name: animal
+                    aliases:
+                        - a
+                    required: true
+                type: string
+            numberWithDefault:
+                optionDefinition:
+                    defaultValue: 8080
+                    name: number-with-default
+                    type: number
+                    description: 'A number field with default value'
+                type: number
+        required:
+            - animal
+            - numberWithDefault
+    createProfileExamples:
+        -
+            options: '--animal doggy'
+            description: 'Create a profile-a profile with a doggy as the animal'
+    updateProfileExamples:
+        -
+            options: '--animal froggy'
+            description: 'Update a profile-a profile to use froggy as the animal'

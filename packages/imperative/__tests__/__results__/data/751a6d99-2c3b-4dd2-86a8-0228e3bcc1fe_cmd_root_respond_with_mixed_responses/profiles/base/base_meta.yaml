@@ -1,0 +1,189 @@
+defaultProfile: null
+configuration:
+    type: base
+    schema:
+        type: object
+        title: 'Fruit Profile'
+        description: 'Fruit Profile'
+        properties:
+            amount:
+                type: number
+                optionDefinition:
+                    name: amount
+                    aliases:
+                        - a
+                    description: 'The amount of fruits.'
+                    type: number
+                    group: Options
+            price:
+                type: number
+                optionDefinition:
+                    name: price
+                    aliases:
+                        - p
+                    description: 'The price of one fruit.'
+                    type: number
+                    group: Options
+            host:
+                type: string
+                optionDefinition:
+                    name: host
+                    description: 'Fruit host'
+                    type: string
+                    group: Options
+                    aliases: []
+            port:
+                type: number
+                optionDefinition:
+                    name: port
+                    description: 'Fruit port'
+                    type: number
+                    group: Options
+                    aliases: []
+            user:
+                type: string
+                optionDefinition:
+                    name: user
+                    description: 'Fruit username'
+                    type: string
+                    group: Options
+                    aliases: []
+                secure: true
+            password:
+                type: string
+                optionDefinition:
+                    name: password
+                    description: 'Fruit password'
+                    type: string
+                    group: Options
+                    aliases: []
+                secure: true
+            tokenType:
+                type: string
+                optionDefinition:
+                    name: token-type
+                    description: 'Fruit token type'
+                    type: string
+                    group: Options
+                    aliases: []
+            tokenValue:
+                type: string
+                optionDefinition:
+                    name: token-value
+                    description: 'Fruit token value'
+                    type: string
+                    group: Options
+                    aliases: []
+                secure: true
+            certFile:
+                type: existingLocalFile
+                optionDefinition:
+                    name: cert-file
+                    description: 'Fruit certificate file'
+                    type: existingLocalFile
+                    group: Options
+                    aliases: []
+            certKeyFile:
+                type: existingLocalFile
+                optionDefinition:
+                    name: cert-key-file
+                    description: 'Fruit certificate key file'
+                    type: existingLocalFile
+                    group: Options
+                    aliases: []
+    authConfig:
+        -
+            serviceName: fruit
+            handler: 'C:\ourstuff\repos\dev\imperative\__tests__\__integration__\cmd\lib\imperative/../cli/auth/FruitAuthHandler'
+            login:
+                options:
+                    -
+                        name: amount
+                        aliases:
+                            - a
+                        description: 'The amount of fruits.'
+                        type: number
+                        group: Options
+                    -
+                        name: price
+                        aliases:
+                            - p
+                        description: 'The price of one fruit.'
+                        type: number
+                        group: Options
+                    -
+                        name: host
+                        description: 'Fruit host'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: port
+                        description: 'Fruit port'
+                        type: number
+                        group: Options
+                        aliases: []
+                    -
+                        name: user
+                        description: 'Fruit username'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: password
+                        description: 'Fruit password'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: cert-file
+                        description: 'Fruit certificate file'
+                        type: existingLocalFile
+                        group: Options
+                        aliases: []
+                    -
+                        name: cert-key-file
+                        description: 'Fruit certificate key file'
+                        type: existingLocalFile
+                        group: Options
+                        aliases: []
+            logout:
+                options:
+                    -
+                        name: amount
+                        aliases:
+                            - a
+                        description: 'The amount of fruits.'
+                        type: number
+                        group: Options
+                    -
+                        name: price
+                        aliases:
+                            - p
+                        description: 'The price of one fruit.'
+                        type: number
+                        group: Options
+                    -
+                        name: host
+                        description: 'Fruit host'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: port
+                        description: 'Fruit port'
+                        type: number
+                        group: Options
+                        aliases: []
+                    -
+                        name: token-type
+                        description: 'Fruit token type'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: token-value
+                        description: 'Fruit token value'
+                        type: string
+                        group: Options
+                        aliases: []

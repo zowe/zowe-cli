@@ -1,0 +1,26 @@
+[2023/06/29 15:32:44.639] [INFO] [BasicProfileManager.spec.ts:62] Profile "notreal" of type "banana" does not exist.
+[2023/06/29 15:32:45.216] [INFO] [BasicProfileManager.spec.ts:81] Errors located in profile "illformed" of type "banana":
+profile requires property "age"
+
+[2023/06/29 15:32:45.771] [INFO] [BasicProfileManager.spec.ts:95] Profile create success response: {
+  path: 'C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\data\\f597d937-d25e-4e7d-abaf-e53d22a991a8\\profile-manager-initialize\\profiles\\banana\\legit.yaml',
+  overwritten: false,
+  message: 'Profile ("legit" of type "banana") successfully written: C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\data\\f597d937-d25e-4e7d-abaf-e53d22a991a8\\profile-manager-initialize\\profiles\\banana\\legit.yaml',
+  profile: { age: 1000 }
+}
+[2023/06/29 15:32:46.314] [INFO] [BasicProfileManager.spec.ts:111] Save response: Profile ("legit" of type "banana") successfully written: C:\ourstuff\repos\dev\imperative\__tests__\__results__\data\1058a7a5-7233-47a7-9274-41216d5aa8d1\profile-manager-initialize\profiles\banana\legit.yaml
+[2023/06/29 15:32:46.319] [INFO] [BasicProfileManager.spec.ts:113] Profile loaded success response: {
+  message: 'Profile "legit" of type "banana" loaded successfully.',
+  profile: { age: 1000 },
+  type: 'banana',
+  name: 'legit',
+  failNotFound: true,
+  dependenciesLoaded: false,
+  dependencyLoadResponses: []
+}
+[2023/06/29 15:32:46.836] [INFO] [BasicProfileManager.spec.ts:129] Profile create success response: {
+  path: 'C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\data\\903509b1-f201-43ba-91cb-67db223eb6d1\\profile-manager-initialize\\profiles\\banana\\legit.yaml',
+  overwritten: true,
+  message: 'Profile ("legit" of type "banana") successfully written: C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\__results__\\data\\903509b1-f201-43ba-91cb-67db223eb6d1\\profile-manager-initialize\\profiles\\banana\\legit.yaml',
+  profile: { age: 1000 }
+}

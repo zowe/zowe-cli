@@ -1,0 +1,4 @@
+[2023/06/29 14:56:12.235] [INFO] [Logging.handler.js:43] This is an app logger info message from the test logging handler!
+[2023/06/29 14:56:12.235] [WARN] [Logging.handler.js:44] This is an app logger warn message from the test logging handler!
+[2023/06/29 14:56:12.236] [ERROR] [Logging.handler.js:45] This is an app logger error message from the test logging handler!
+[2023/06/29 14:56:12.236] [FATAL] [Logging.handler.js:46] This is an app logger fatal message from the test logging handler!

@@ -1,0 +1,112 @@
+[2023/06/29 15:08:36.112] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:08:36.113] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:08:39.880] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:08:39.882] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:08:44.263] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:08:44.265] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:08:48.174] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:08:48.176] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:08:52.412] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:08:52.413] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:08:56.197] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:08:56.199] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:00.435] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:00.437] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:04.593] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:04.595] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:09.568] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:09.569] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:14.402] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:14.403] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:18.707] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:18.709] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:23.059] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:23.062] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:27.962] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:27.964] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:32.506] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:32.507] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:37.285] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:37.287] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:42.234] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:42.236] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:47.430] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:47.432] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:47.749] [ERROR] [CommandProcessor.js:687] Syntax for command "mapping" is invalid.
+[2023/06/29 15:09:47.752] [ERROR] [CommandYargs.js:148] Error in command mapping
+[2023/06/29 15:09:47.753] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'Command syntax invalid',
+    stdout: <Buffer >,
+    stderr: <Buffer 0a 53 79 6e 74 61 78 20 45 72 72 6f 72 3a 0a 49 6e 76 61 6c 69 64 20 76 61 6c 75 65 20 73 70 65 63 69 66 69 65 64 20 66 6f 72 20 6f 70 74 69 6f 6e 3a ... 150 more bytes>,
+    data: [
+      {
+        message: 'Invalid value specified for option:\n' +
+          '--sides \n' +
+          '\n' +
+          'You specified:\n' +
+          'glarbles\n' +
+          '\n' +
+          'The value must be a number\n',
+        optionInError: 'sides',
+        definition: {
+          name: 'sides',
+          type: 'number',
+          description: 'Number of sides on the banana',
+          group: 'Options',
+          aliases: []
+        }
+      }
+    ],
+    error: undefined
+  }
+]
+[2023/06/29 15:09:52.834] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:52.836] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:09:58.174] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:09:58.176] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:10:03.522] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:10:03.524] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:10:03.793] [ERROR] [CommandProcessor.js:687] Syntax for command "mapping" is invalid.
+[2023/06/29 15:10:03.795] [ERROR] [CommandYargs.js:148] Error in command mapping
+[2023/06/29 15:10:03.796] [ERROR] [CommandYargs.js:149] [
+  {
+    success: false,
+    exitCode: 1,
+    message: 'Command syntax invalid',
+    stdout: <Buffer >,
+    stderr: <Buffer 0a 53 79 6e 74 61 78 20 45 72 72 6f 72 3a 0a 49 6e 76 61 6c 69 64 20 76 61 6c 75 65 20 73 70 65 63 69 66 69 65 64 20 66 6f 72 20 6f 70 74 69 6f 6e 3a ... 171 more bytes>,
+    data: [
+      {
+        message: 'Invalid value specified for option:\n' +
+          '--ripe (-r)\n' +
+          '\n' +
+          'You specified:\n' +
+          'gleebles\n' +
+          '\n' +
+          'The value must be a boolean (true or false).\n',
+        optionInError: 'ripe',
+        definition: {
+          name: 'ripe',
+          aliases: [ 'r' ],
+          description: 'Is the banana ripe?',
+          type: 'boolean',
+          group: 'Options'
+        }
+      }
+    ],
+    error: undefined
+  }
+]
+[2023/06/29 15:10:08.417] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:10:08.419] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:10:13.419] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:10:13.421] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:10:17.861] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:10:17.863] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:10:23.077] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:10:23.079] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.
+[2023/06/29 15:10:27.508] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('CMD_CLI_IMPERATIVE_LOG_LEVEL') was blank.
+[2023/06/29 15:10:27.510] [WARN] [Imperative.js:480] Environmental setting for app log level ('CMD_CLI_APP_LOG_LEVEL') was blank.

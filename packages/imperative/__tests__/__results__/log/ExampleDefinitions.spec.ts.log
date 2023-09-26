@@ -1,0 +1,545 @@
+[2023/06/29 16:00:47.308] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts --help
+[2023/06/29 16:00:47.310] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts --help
+[2023/06/29 16:00:49.810] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts <group|command>
+
+   Where <group|command> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   log      Log example messages                                  
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ COMMANDS
+ --------
+
+   optional-profile-c    Use a profile of type C                      
+   use-dependent-profile Use a profile of type profile-with-dependency
+   use-profile-a         Use a profile of type A                      
+   use-profile-b         Use a profile of type B                      
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 16:00:49.813] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts --help --response-format-json
+[2023/06/29 16:00:49.814] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts --help --response-format-json
+[2023/06/29 16:00:52.414] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Sample command line interface\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts <group|command>\n\n   Where <group|command> is one of the following:\n\n GROUPS\n ------\n\n   ape      Ape commands                                          \n   bat      Bat commands                                          \n   cat      Cat commands                                          \n   config   Manage JSON project and global configuration          \n   dog      Dog commands                                          \n   log      Log example messages                                  \n   plugins  Install and manage plug-ins.                          \n   profiles Create and manage configuration profiles. (deprecated)\n\n COMMANDS\n --------\n\n   optional-profile-c    Use a profile of type C                      \n   use-dependent-profile Use a profile of type profile-with-dependency\n   use-profile-a         Use a profile of type A                      \n   use-profile-b         Use a profile of type B                      \n\n OPTIONS\n -------\n\n   --version | -V (boolean)\n\n      Display the current version of Test CLI with Profiles\n\n   --available-commands | --ac (boolean)\n\n      Displays a list of available commands\n\n GLOBAL OPTIONS\n --------------\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": {}
+} 
+exit code: 0
+[2023/06/29 16:00:52.415] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Sample command line interface
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts <group|command>
+
+   Where <group|command> is one of the following:
+
+ GROUPS
+ ------
+
+   ape      Ape commands                                          
+   bat      Bat commands                                          
+   cat      Cat commands                                          
+   config   Manage JSON project and global configuration          
+   dog      Dog commands                                          
+   log      Log example messages                                  
+   plugins  Install and manage plug-ins.                          
+   profiles Create and manage configuration profiles. (deprecated)
+
+ COMMANDS
+ --------
+
+   optional-profile-c    Use a profile of type C                      
+   use-dependent-profile Use a profile of type profile-with-dependency
+   use-profile-a         Use a profile of type A                      
+   use-profile-b         Use a profile of type B                      
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Test CLI with Profiles
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 16:00:52.416] [INFO] [TestUtil.ts:318] [ 'ape', 'bat', 'cat', 'dog' ]
+[2023/06/29 16:00:52.419] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts ape
+[2023/06/29 16:00:52.421] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts ape
+[2023/06/29 16:00:54.417] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Ape commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts ape <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   grape An ape eats grapes
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 16:00:54.418] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts ape --response-format-json
+[2023/06/29 16:00:54.419] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts ape --response-format-json
+[2023/06/29 16:00:56.492] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: ape.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Ape commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts ape <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   grape An ape eats grapes\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Ape commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts ape <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   grape An ape eats grapes\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 16:00:56.492] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Ape commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts ape <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   grape An ape eats grapes
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 16:00:56.493] [INFO] [TestUtil.ts:318] [ 'grape' ]
+[2023/06/29 16:00:56.494] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts bat
+[2023/06/29 16:00:56.495] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts bat
+[2023/06/29 16:00:58.503] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Bat commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts bat <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   rat A bat eats rats
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 16:00:58.504] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts bat --response-format-json
+[2023/06/29 16:00:58.506] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts bat --response-format-json
+[2023/06/29 16:01:00.657] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: bat.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Bat commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts bat <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   rat A bat eats rats\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Bat commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts bat <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   rat A bat eats rats\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 16:01:00.659] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Bat commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts bat <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   rat A bat eats rats
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 16:01:00.659] [INFO] [TestUtil.ts:318] [ 'rat' ]
+[2023/06/29 16:01:00.661] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts cat
+[2023/06/29 16:01:00.662] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts cat
+[2023/06/29 16:01:02.814] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Cat commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts cat <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   splat A cat eats splats
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 16:01:02.815] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts cat --response-format-json
+[2023/06/29 16:01:02.815] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts cat --response-format-json
+[2023/06/29 16:01:04.855] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: cat.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Cat commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts cat <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   splat A cat eats splats\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Cat commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts cat <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   splat A cat eats splats\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 16:01:04.856] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Cat commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts cat <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   splat A cat eats splats
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 16:01:04.857] [INFO] [TestUtil.ts:318] [ 'splat' ]
+[2023/06/29 16:01:04.858] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts dog
+[2023/06/29 16:01:04.859] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts dog
+[2023/06/29 16:01:06.886] [DEBUG] [TestUtil.ts:203] Command output: 
+ 
+ DESCRIPTION
+ -----------
+
+   Dog commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts dog <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   log A dog eats logs
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ 
+exit code: 0
+[2023/06/29 16:01:06.888] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts dog --response-format-json
+[2023/06/29 16:01:06.889] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts dog --response-format-json
+[2023/06/29 16:01:08.939] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: dog.",
+  "stdout": "\n DESCRIPTION\n -----------\n\n   Dog commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts dog <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   log A dog eats logs\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n",
+  "stderr": "",
+  "data": "\n DESCRIPTION\n -----------\n\n   Dog commands\n\n USAGE\n -----\n\n   C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts dog <command>\n\n   Where <command> is one of the following:\n\n COMMANDS\n --------\n\n   log A dog eats logs\n\n GLOBAL OPTIONS\n --------------\n\n   --help-examples (boolean)\n\n      Display examples for all the commands in a group\n\n   --response-format-json | --rfj (boolean)\n\n      Produce JSON formatted data from a command\n\n   --help | -h (boolean)\n\n      Display help text\n\n   --help-web | --hw (boolean)\n\n      Display HTML help in browser\n\n"
+} 
+exit code: 0
+[2023/06/29 16:01:08.940] [INFO] [TestUtil.ts:317] 
+ DESCRIPTION
+ -----------
+
+   Dog commands
+
+ USAGE
+ -----
+
+   C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts dog <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   log A dog eats logs
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+
+[2023/06/29 16:01:08.940] [INFO] [TestUtil.ts:318] [ 'log' ]
+[2023/06/29 16:01:08.942] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts do-not-include
+[2023/06/29 16:01:08.943] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts do-not-include
+[2023/06/29 16:01:11.017] [DEBUG] [TestUtil.ts:203] Command output: 
+  Command Error:
+Command failed due to improper syntax
+Unknown group: do-not-include
+Did you mean: config list?
+
+Command entered: "do-not-include"
+Use "C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\ProfileExampleCLI.ts --help" to view groups, commands, and options.
+
+exit code: 1
+[2023/06/29 16:01:11.019] [INFO] [TestUtil.ts:180] Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts do-not-include --response-format-json
+[2023/06/29 16:01:11.020] [DEBUG] [TestUtil.ts:182] [Object: null prototype] {} Executing node --require ts-node/register C:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\__integration__/../ProfileExampleCLI.ts do-not-include --response-format-json
+[2023/06/29 16:01:13.089] [DEBUG] [TestUtil.ts:203] Command output: 
+ {
+  "success": false,
+  "exitCode": 1,
+  "message": "Command failed due to improper syntax\nUnknown group: do-not-include\nDid you mean: config list?\n\nCommand entered: \"do-not-include --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts --help\" to view groups, commands, and options.",
+  "stdout": "",
+  "stderr": "Command Error:\nCommand failed due to improper syntax\nUnknown group: do-not-include\nDid you mean: config list?\n\nCommand entered: \"do-not-include --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts --help\" to view groups, commands, and options.\n",
+  "data": {},
+  "error": {
+    "msg": "Command failed due to improper syntax\nUnknown group: do-not-include\nDid you mean: config list?\n\nCommand entered: \"do-not-include --response-format-json\"\nUse \"C:\\ourstuff\\repos\\dev\\imperative\\__tests__\\src\\example_clis\\with_profiles\\ProfileExampleCLI.ts --help\" to view groups, commands, and options."
+  }
+} 
+exit code: 1
+[2023/06/29 16:01:13.090] [INFO] [TestUtil.ts:317] command error:
+command failed due to improper syntax
+unknown group: do-not-include
+did you mean: config list?
+
+command entered: "do-not-include"
+use "c:\ourstuff\repos\dev\imperative\__tests__\src\example_clis\with_profiles\profileexamplecli.ts --help" to view groups, commands, and options.
+
+[2023/06/29 16:01:13.090] [INFO] [TestUtil.ts:318] [ 'unknown' ]

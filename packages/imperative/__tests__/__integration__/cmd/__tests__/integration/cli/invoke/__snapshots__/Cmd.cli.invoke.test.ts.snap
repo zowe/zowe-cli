@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli invoke should display help examples for a group 1`] = `
+"============ISSUING GROUP WITH HELP EXAMPLES===========
+
+ DESCRIPTION
+ -----------
+
+   Connect to token-based authentication services
+
+ USAGE
+ -----
+
+   cmd-cli auth <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   login | li  Log in to an authentication service 
+   logout | lo Log out of an authentication service
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+"
+`;
+
+exports[`cmd-cli invoke should display the help 1`] = `
+"================ISSUING INVOKE WITH HELP===============
+
+ DESCRIPTION
+ -----------
+
+   The invoke command allows you to invoke handlers and other test commands.
+
+ USAGE
+ -----
+
+   cmd-cli invoke <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   exit-143                     Test handler that exits with status code 143
+   test-async-handler           Test basic async command handler completion 
+   test-handler                 Test handler with promise                   
+   unexpected-exception-handler Test an unexpected exception                
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+================ISSUING INVOKE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: invoke.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   The invoke command allows you to invoke handlers and other test commands.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   exit-143                     Test handler that exits with status code 143\\\\n   test-async-handler           Test basic async command handler completion \\\\n   test-handler                 Test handler with promise                   \\\\n   unexpected-exception-handler Test an unexpected exception                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   The invoke command allows you to invoke handlers and other test commands.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   exit-143                     Test handler that exits with status code 143\\\\n   test-async-handler           Test basic async command handler completion \\\\n   test-handler                 Test handler with promise                   \\\\n   unexpected-exception-handler Test an unexpected exception                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

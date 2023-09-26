@@ -1,0 +1,5 @@
+host: lpar2.fakehost.com
+port: 443
+user: someUser
+password: somePassword
+reject-unauthorized: true
