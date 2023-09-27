@@ -35,7 +35,8 @@
     "typedoc": "typedoc",
     "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "prepare": "husky install"
+    "bundle:webHelp": "echo \"todo: Fix this does not work: cd packages/imperative/web-help && node build.js\"",
+    "prepare": "husky install && npm run bundle:webHelp"
   },
   "dependencies": {
     "@zowe/imperative": "5.18.1",
