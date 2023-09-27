@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "types": [
+      "node",
+      "jest"
+    ],
+    "lib": [
+      "esnext"
+    ],
+    "experimentalDecorators": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "noEmit": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "./lib",
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "pretty": true,
+    "sourceMap": true,
+    "newLine": "lf"
+  },
+  "typeRoots": [
+    "./node_modules/@types"
+  ],
+  "include": [
+    "**/__tests__/*"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules",
+    "**/__mocks__/*"
+  ],
+  "files": [
+    "./__types__/wontache.d.ts"
+  ]
+}
