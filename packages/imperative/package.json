@@ -4,13 +4,13 @@
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
-  "homepage": "https://github.com/zowe/imperative#readme",
+  "homepage": "https://github.com/zowe/zowe-cli/tree/master/packages/imperative#readme",
   "bugs": {
-    "url": "https://github.com/zowe/imperative/issues"
+    "url": "https://github.com/zowe/zowe-cli/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zowe/imperative.git"
+    "url": "https://github.com/zowe/zowe-cli.git"
   },
   "keywords": [
     "CLI",
@@ -28,27 +28,21 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "build:packages": "tsc && node scripts/updateLicenses.js && npm run lint && npm run circularDependencyCheck",
+    "build:packages": "tsc --pretty",
     "build": "npm run build:packages && npm run build:webHelp",
-    "postbuild": "node scripts/sampleCliTool.js build && npm run checkTestsCompile",
-    "checkTestsCompile": "echo \"Checking that test source compiles\" && tsc --noEmit -p tsconfig-tests.json",
-    "test": "npm run test:unit && npm run test:integration",
-    "test:unit": "env-cmd ./__tests__/config/unit/.env.js --no-override jest -c ./__tests__/config/unit/jest.config.json",
+    "postbuild": "node scripts/sampleCliTool.js build",
     "pretest:integration": "node scripts/sampleCliTool.js install",
-    "test:integration": "env-cmd ./__tests__/config/integration/.env.js --no-override jest -c ./__tests__/config/integration/jest.config.json --runInBand",
     "posttest:integration": "node scripts/sampleCliTool.js uninstall",
-    "test:system": "env-cmd ./__tests__/config/system/.env.js --no-override jest -c ./__tests__/config/system/jest.config.json --runInBand",
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
-    "watch": "tsc-watch --onSuccess \"npm run lint\"",
+    "watch": "tsc --pretty --watch",
     "build:webHelp": "cd web-help && npm run build",
     "watch:webHelp": "cd web-help && npm run watch",
-    "bundle:webHelp": "cd web-help && node build.js",
-    "typedoc": "typedoc --options ./typedoc.json ./packages/",
-    "prepare": "husky install && npm run bundle:webHelp",
+    "typedoc": "typedoc --options ./typedoc.json ./src/",
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
+    "prepack": "node ../../scripts/prepareLicenses.js",
     "clean": "rimraf lib tsconfig.tsbuildinfo"
   },
   "dependencies": {
