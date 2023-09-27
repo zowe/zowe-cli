@@ -1,1 +1,1 @@
-[\s]*IEE254I.*IPLINFO DISPLAY .*[\s]*SYSTEM IPLED AT .* ON .*[\s]*RELEASE z\/OS .*LICENSE = z\/OS.*[\s]*USED .*[\s]*ARCHLVL = .* MTLSHARE = .*[\s]*IEASYM LIST = .*[\s]*IEASYS LIST = .*[\s]*IODF DEVICE: .*[\s]*IPL DEVICE: .*
+[\s]*IEE254I.*IPLINFO DISPLAY .*[\s]*SYSTEM IPLED AT .* ON .*[\s]*RELEASE z\/OS .*LICENSE = z\/OS.*[\s]*USED .*[\s]*ARCHLVL = .* MTLSHARE = .*[\s]*VALIDATED BOOT: .*[\s]*IEASYM LIST = .*[\s]*IEASYS LIST = .*[\s]*IODF DEVICE: .*[\s]*IPL DEVICE: .*
