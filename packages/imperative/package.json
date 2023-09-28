@@ -30,9 +30,6 @@
   "scripts": {
     "build:packages": "tsc --pretty",
     "build": "npm run build:packages && npm run build:webHelp",
-    "postbuild": "node scripts/sampleCliTool.js build",
-    "pretest:integration": "node scripts/sampleCliTool.js install",
-    "posttest:integration": "node scripts/sampleCliTool.js uninstall",
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
