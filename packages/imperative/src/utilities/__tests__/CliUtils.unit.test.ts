@@ -151,7 +151,7 @@ describe("CliUtils", () => {
 
         beforeEach(() => {
             readlineReal = readline;
-            readline.createInterface = jest.fn(() => {
+            readline.createInterface = jest.fn().mockImplementationOnce(() => {
                 return {
                     prompt: jest.fn(() => {
                         // do nothing
