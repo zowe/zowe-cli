@@ -43,6 +43,8 @@ describe("ZosFilesUtils", () => {
         it("should convert input path to full path", () => {
             const inputPath = "/dummy";
             const expectedResult = path.resolve(process.cwd(), inputPath);
+            console.log(expectedResult);
+            console.log(inputPath);
 
             expect(ZosFilesUtils.getFullPath(inputPath)).toBe(expectedResult);
         });
