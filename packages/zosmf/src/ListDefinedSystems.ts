@@ -29,7 +29,7 @@ export class ListDefinedSystems {
      *                           the REST API call.
      */
     public static async listDefinedSystems(session: AbstractSession): Promise<IZosmfListDefinedSystemsResponse> {
-        const endpoint = posix.join(ZosmfConstants.RESOURCE, ZosmfConstants.TOPOLOGY, ZosmfConstants.SYSTEMS);
+        const endpoint = ZosmfConstants.RESOURCE + ZosmfConstants.TOPOLOGY + ZosmfConstants.SYSTEMS;
         ImperativeExpect.toNotBeNullOrUndefined(session, ZosmfMessages.missingSession.message);
         return ZosmfRestClient.getExpectJSON<IZosmfListDefinedSystemsResponse>(session, endpoint);
     }
