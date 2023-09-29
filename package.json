@@ -107,6 +107,9 @@
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
+    "testPathIgnorePatterns": [
+      "./packages/imperative/__tests__/__system__/AbstractRestClient.system.test.ts"
+    ],
     "testResultsProcessor": "jest-stare",
     "transform": {
       "\\.ts$": "ts-jest"
