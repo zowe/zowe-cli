@@ -145,14 +145,11 @@ describe("CliUtils", () => {
     });
 
     describe("promptWithTimeout", () => {
-        let readline = require("readline");
-        let readlineReal: any;
         const mockedAnswer = "User answer";
 
         beforeEach(() => {
-            readlineReal = readline;
-            readline.createInterface = jest.fn().mockImplementationOnce(() => {
-                return {
+            jest.doMock("readline", () => ({
+                createInterface: jest.fn().mockReturnValue({
                     prompt: jest.fn(() => {
                         // do nothing
                     }),
@@ -176,12 +173,12 @@ describe("CliUtils", () => {
                     close: jest.fn(() => {
                         // do nothing
                     })
-                };
-            });
+                })
+            }));
         });
 
         afterEach(() => {
-            readline = readlineReal;
+            jest.unmock("readline");
         });
 
         it("should return the user's answer", async () => {

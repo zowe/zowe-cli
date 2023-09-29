@@ -56,16 +56,13 @@ describe("PMFConstants", () => {
         // Be sure to remember the current platform
         const platform = process.platform;
 
-        if (platform === "win32") {
-            it("should point to the correct module location (win32)", () => {
-                const pmf = PMFConstants.instance;
-                expect(pmf.PLUGIN_NODE_MODULE_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "node_modules"));
-            });
-        } else if (platform === "linux") {
-            it("should point to the correct module location (linux)", () => {
-                const pmf = PMFConstants.instance;
-                expect(pmf.PLUGIN_NODE_MODULE_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "lib", "node_modules"));
-            });
-        }
+        (platform === "win32" ? it : it.skip)("should point to the correct module location (win32)", () => {
+            const pmf = PMFConstants.instance;
+            expect(pmf.PLUGIN_NODE_MODULE_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "node_modules"));
+        });
+        (platform === "linux" ? it : it.skip)("should point to the correct module location (linux)", () => {
+            const pmf = PMFConstants.instance;
+            expect(pmf.PLUGIN_NODE_MODULE_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "lib", "node_modules"));
+        });
     });
 });

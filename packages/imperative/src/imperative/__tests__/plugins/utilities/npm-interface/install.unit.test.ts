@@ -53,7 +53,6 @@ function setResolve(toResolve: string, resolveTo?: string) {
     expectedVal = toResolve;
     returnedVal = resolveTo;
     jest.spyOn(path, "dirname").mockReturnValueOnce("fake-dirname");
-    jest.spyOn(path, "join").mockReturnValueOnce("/fake/join/path");
 }
 
 describe("PMF: Install Interface", () => {

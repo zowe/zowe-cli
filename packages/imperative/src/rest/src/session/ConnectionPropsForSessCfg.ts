@@ -199,7 +199,6 @@ export class ConnectionPropsForSessCfg {
                     answer = await CliUtils.promptWithTimeout(
                         "Enter the port number for your service: "
                     );
-                    console.log(answer);
                     if (answer === null) {
                         throw new ImperativeError({msg: "Timed out waiting for port number."});
                     } else {
