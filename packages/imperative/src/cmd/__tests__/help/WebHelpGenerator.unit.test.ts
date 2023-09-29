@@ -29,6 +29,7 @@ describe("WebHelpGenerator", () => {
         let webHelpDirNm: string;
         let rimraf: any;
         let loremIpsum: string;
+        let mainMod;
 
         beforeAll( async () => {
             rimraf = require("rimraf");
@@ -103,6 +104,8 @@ describe("WebHelpGenerator", () => {
             /* process.mainModule.filename was null, so we must give it a value.
              * mainModule is a getter of a property, so we mock the property.
              */
+
+            mainMod = process.mainModule;
             Object.defineProperty(process, "mainModule", {
                 configurable: true,
                 get: jest.fn(() => {
@@ -118,6 +121,7 @@ describe("WebHelpGenerator", () => {
 
         afterAll( async () => {
             rimraf.sync(cliHome);
+            process.mainModule = mainMod;
         });
 
         it("should create Help files", async () => {
