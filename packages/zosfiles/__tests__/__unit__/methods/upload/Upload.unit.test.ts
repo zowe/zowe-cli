@@ -2022,6 +2022,7 @@ describe("z/OS Files - Upload", () => {
 
         afterAll(() => {
             zosmfExpectFullSpy.mockRestore();
+            pathNormalizeSpy.mockRestore();
         });
 
         it("should upload recursively if option is specified", async () => {

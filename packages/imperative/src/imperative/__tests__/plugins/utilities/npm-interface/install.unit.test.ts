@@ -126,14 +126,19 @@ describe("PMF: Install Interface", () => {
     };
 
     describe("Basic install", () => {
+        const normalizeSpy = jest.spyOn(path, "normalize");
         beforeEach(() => {
             const resOutput: any = { name: packageName, version: packageVersion };
             mocks.getPackageInfo.mockResolvedValue(resOutput as never);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            jest.spyOn(path, "normalize").mockReturnValue("testing");
+            normalizeSpy.mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
+        });
+
+        afterAll(() => {
+            normalizeSpy.mockRestore();
         });
 
         it("should install from the npm registry", async () => {
@@ -227,6 +232,12 @@ describe("PMF: Install Interface", () => {
     });
 
     describe("Advanced install", () => {
+        const normalizeSpy = jest.spyOn(path, "normalize");
+
+        afterAll(() => {
+            normalizeSpy.mockRestore();
+        });
+
         it("should write even when install from file is true", async () => {
             // This test is constructed in such a way that all if conditions with installFromFile
             // are validated to have been called or not.
@@ -236,7 +247,7 @@ describe("PMF: Install Interface", () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             const resOutput: any = { name: packageName, version: packageVersion };
             mocks.getPackageInfo.mockResolvedValue(resOutput as never);
-            jest.spyOn(path, "normalize").mockReturnValue("testing");
+            normalizeSpy.mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
@@ -252,7 +263,7 @@ describe("PMF: Install Interface", () => {
             const semverPackage = `${packageName}@${semverVersion}`;
 
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            jest.spyOn(path, "normalize").mockReturnValue("testing");
+            normalizeSpy.mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
@@ -291,7 +302,7 @@ describe("PMF: Install Interface", () => {
             const resOutput: any = { name: packageName, version: packageVersion };
             mocks.getPackageInfo.mockResolvedValue(resOutput as never);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            jest.spyOn(path, "normalize").mockReturnValue("testing");
+            normalizeSpy.mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
