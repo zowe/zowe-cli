@@ -93,8 +93,6 @@ imperative_debug.log
 #MacOS fs
 .DS_Store
 
-/web-help/dist/
-
 *.bat
 
 /packages/cli/lib
