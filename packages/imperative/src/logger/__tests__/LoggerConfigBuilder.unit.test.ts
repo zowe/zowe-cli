@@ -14,12 +14,17 @@ import { LoggerConfigBuilder } from "../../logger";
 import * as os from "os";
 import * as path from "path";
 
-(os.homedir as any) = jest.fn(() => "./someHome");
-(path.normalize as any) = jest.fn( (p: string) => p);
-
 const fakeHome = "./someHome";
 
 describe("LoggerConfigBuilder tests", () => {
+    beforeAll(() => {
+        jest.spyOn(os, "homedir").mockReturnValue("./someHome");
+        jest.spyOn(path, "normalize").mockImplementation((p: string) => p);
+    });
+
+    afterAll(() => {
+        jest.restoreAllMocks();
+    })
 
     it("Should get a basic log4js configuration from getDefaultIConfigLogging", () => {
         expect(LoggerConfigBuilder.getDefaultIConfigLogging()).toMatchSnapshot();

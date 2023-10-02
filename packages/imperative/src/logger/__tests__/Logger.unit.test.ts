@@ -32,7 +32,7 @@ describe("Logger tests", () => {
 
     beforeAll(() => {
         let configuration: ILog4jsConfig;
-        (log4js.configure as any) = jest.fn((config: any) => {
+        jest.spyOn(log4js, "configure").mockImplementation((config: any): any => {
             // console.log("config passed to configure: " + require("util").inspect(config));
             configuration = config;
         });
@@ -49,7 +49,7 @@ describe("Logger tests", () => {
             }
         }
 
-        (log4js.getLogger as any) = jest.fn((category: string) => {
+        jest.spyOn(log4js, "getLogger").mockImplementation((category?: string): any => {
             let configuredLevel = "debug";
             if (category !== null) {
                 for (const configuredCategory of Object.keys(configuration.categories)) {
@@ -61,18 +61,16 @@ describe("Logger tests", () => {
             const newLogger = new MockedLoggerInstance();
             newLogger.level = configuredLevel;
             return newLogger;
-        }
-        );
-
-        (os.homedir as any) = jest.fn(() => "./someHome");
-        (path.normalize as any) = jest.fn((p: string) => p);
-        (IO.createDirsSync as any) = jest.fn((myPath: string) => {
-            // do nothing
         });
+
+        jest.spyOn(os, "homedir").mockReturnValue("./someHome");
+        jest.spyOn(path, "normalize").mockImplementation((p: string) => p);
+        jest.spyOn(IO, "createDirsSync").mockReturnValue();
     });
 
     afterEach(() => {
         (LoggerManager as any).mInstance = null;
+        jest.restoreAllMocks();
     });
 
     it("Should call underlying service function", () => {
