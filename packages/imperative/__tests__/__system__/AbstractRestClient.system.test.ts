@@ -11,8 +11,8 @@
 
 import * as dns from "dns";
 import { promisify } from "util";
-import { RestClient } from "../../packages/rest/src/client/RestClient";
-import { Session } from "../../packages/rest/src/session/Session";
+import { RestClient } from "../../src/rest/src/client/RestClient";
+import { Session } from "../../src/rest/src/session/Session";
 import { TestLogger } from "../src/TestLogger";
 
 describe("AbstractRestClient system tests", () => {

@@ -11,8 +11,8 @@
 
 import { TestProfileLoader } from "./TestProfileLoader";
 import { TestAppImperativeConfig } from "../src/constants/ProfileInfoConstants";
-import { CliProfileManager } from "../../../../../packages/cmd/src/profiles/CliProfileManager";
-import { Logger } from "../../../../../packages/logger/src/Logger";
+import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
+import { Logger } from "../../../../../src/logger/src/Logger";
 import * as path from "path";
 
 const setupOldProfiles = async (projectDir: string) => {

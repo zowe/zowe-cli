@@ -10,7 +10,7 @@
 */
 
 import { join } from "path";
-import { IImperativeConfig } from "../../../../../packages/imperative";
+import { IImperativeConfig } from "../../../../../src/imperative";
 
 /////////////////////////////////////////////////////////////////////////////
 //////////// USE ONLY FROM WITHIN /test/src/packages/plugins ////////////////

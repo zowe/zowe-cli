@@ -9,7 +9,7 @@
 *
 */
 
-import { IConfig } from "../../../../../../../../packages/config";
+import { IConfig } from "../../../../../../../../src/config";
 
 export const expectedSchemaObject = {
     $schema: "https://json-schema.org/draft/2020-12/schema",

@@ -11,7 +11,7 @@
 
 import * as T from "../../../TestUtil";
 import { ExperimentalExampleConstants } from "../ExperimentalExampleConstants";
-import { Constants } from "../../../../../packages/constants";
+import { Constants } from "../../../../../src/constants";
 
 describe("We should provide the ability to set commands as experimental", function () {
     const cliBin = __dirname + "/../ExperimentalExampleCLI.ts";

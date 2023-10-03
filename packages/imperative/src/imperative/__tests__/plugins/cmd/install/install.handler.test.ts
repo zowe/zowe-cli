@@ -59,11 +59,11 @@ describe("Plugin Management Facility install handler", () => {
     // Objects created so types are correct.
     const mocks = {
         npmLogin: npmLogin as Mock<typeof npmLogin>,
-        getRegistry: getRegistry as Mock<typeof getRegistry>,
+        getRegistry: getRegistry as unknown as Mock<typeof getRegistry>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        install: install as Mock<typeof install>,
-        runValidatePlugin: runValidatePlugin as Mock<typeof runValidatePlugin>
+        install: install as unknown as Mock<typeof install>,
+        runValidatePlugin: runValidatePlugin as unknown as Mock<typeof runValidatePlugin>
     };
 
     // two plugin set of values
@@ -82,11 +82,11 @@ describe("Plugin Management Facility install handler", () => {
         jest.clearAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
-        mocks.getRegistry.mockReturnValue(packageRegistry);
-        mocks.readFileSync.mockReturnValue({});
+        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        mocks.getRegistry.mockReturnValue(packageRegistry as any);
+        mocks.readFileSync.mockReturnValue({} as any);
         npmLogin(packageRegistry);
-        mocks.runValidatePlugin.mockReturnValue(finalValidationMsg);
+        mocks.runValidatePlugin.mockReturnValue(finalValidationMsg as any);
         expectedVal = undefined;
         returnedVal = undefined;
     });
@@ -180,7 +180,7 @@ describe("Plugin Management Facility install handler", () => {
         const fileJson: IPluginJson = {
             a: {
                 package: packageName,
-                registry: undefined,
+                registry: "",
                 version: packageVersion
             },
             plugin2: {
@@ -191,10 +191,10 @@ describe("Plugin Management Facility install handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson);
+        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
         mocks.install
-            .mockReturnValueOnce("a")
-            .mockReturnValueOnce("plugin2");
+            .mockReturnValueOnce("a" as any)
+            .mockReturnValueOnce("plugin2" as any);
 
         const handler = new InstallHandler();
 
@@ -231,12 +231,13 @@ describe("Plugin Management Facility install handler", () => {
 
     it("should install single package with file specified which is an error", async () => {
         const handler = new InstallHandler();
-        let expectedError: ImperativeError;
         const chalk = TextUtils.chalk;
-
         const params = getIHandlerParametersObject();
         params.arguments.plugin = ["sample1"];
         params.arguments.file = "plugin.json";
+        let expectedError: ImperativeError = new ImperativeError({
+            msg: "fake-error-message",
+        });
 
         try {
             await handler.process(params);
@@ -336,7 +337,10 @@ describe("Plugin Management Facility install handler", () => {
         params.arguments.plugin = ["sample1"];
 
         const installError = new Error("This is a test");
-        let expectedError: ImperativeError;
+
+        let expectedError: ImperativeError = new ImperativeError({
+            msg: "fake-error-message",
+        });
 
         mocks.install.mockImplementationOnce(() => {
             throw installError;
@@ -358,7 +362,9 @@ describe("Plugin Management Facility install handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.plugin = ["sample1"];
 
-        let expectedError: ImperativeError;
+        let expectedError: ImperativeError = new ImperativeError({
+            msg: "fake-error-message",
+        });
 
         jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 1 } as any);
         mocks.getRegistry.mockImplementationOnce(jest.requireActual("../../../../src/plugins/utilities/NpmFunctions").getRegistry);

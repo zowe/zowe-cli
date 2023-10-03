@@ -14,8 +14,8 @@ jest.mock("../../../../../packages/utilities/src/ImperativeConfig");
 import { inspect } from "util";
 import { rimraf, TEST_RESULT_DIR } from "../../../TestUtil";
 import { TestLogger } from "../../../../src/TestLogger";
-import { CliProfileManager } from "../../../../../packages/cmd/src/profiles/CliProfileManager";
-import { ICommandProfileTypeConfiguration } from "../../../../../packages/cmd";
+import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
+import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
 
 describe("Cli Profile Manager", () => {
     const profileDir = TEST_RESULT_DIR + "/cliprofilemanager";

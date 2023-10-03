@@ -17,7 +17,7 @@ import * as fs from "fs";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import * as path from "path";
 import * as lodash from "lodash";
-import { IConfigProfile } from "../../../../../../../../packages";
+import { IConfigProfile } from "../../../../../../../../src";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;

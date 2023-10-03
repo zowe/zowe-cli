@@ -11,15 +11,15 @@
 
 /* eslint-disable jest/expect-expect */
 import { isNullOrUndefined } from "util";
-import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../packages/cmd/index";
+import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
 import { ValidationTestCommand } from "../ValidationTestCommand";
-import { Constants } from "../../../../../packages/constants/index";
-import { Imperative } from "../../../../../packages/imperative/src/Imperative";
+import { Constants } from "../../../../../src/constants/index";
+import { Imperative } from "../../../../../src/imperative/src/Imperative";
 import { TestLogger } from "../../../../src/TestLogger";
 import { createUniqueTestDataDir, rimraf } from "../../../TestUtil";
-import { AbstractHelpGenerator } from "../../../../../packages/cmd/src/help/abstract/AbstractHelpGenerator";
-import { DefaultHelpGenerator } from "../../../../../packages/cmd/src/help/DefaultHelpGenerator";
-import { BasicProfileManagerFactory, IProfileTypeConfiguration } from "../../../../../packages/index";
+import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
+import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
+import { BasicProfileManagerFactory, IProfileTypeConfiguration } from "../../../../../src/index";
 
 const ENV_PREFIX = "INTEGRATION_TEST";
 const TEST_HOME = createUniqueTestDataDir();

@@ -15,8 +15,7 @@ jest.mock("../../../utilities/src/ImperativeConfig");
 jest.mock("find-up");
 jest.mock("path");
 
-import Module = require("module");
-
+import * as Module from "module";
 import * as findUp from "find-up";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 import { PluginRequireProvider } from "../../src/plugins/PluginRequireProvider";
@@ -459,7 +458,7 @@ describe("PluginRequireProvider", () => {
                                 const thisObject = "This should not be returned";
                                 const mockedRequire = getMockedRequire();
 
-                                mocks.join.mockReturnValue(packageRoot);
+                                mocks.join.mockReturnValue(packageRoot as any);
 
                                 mImperativeConfig.instance.mHostPackageName = module;
 
@@ -490,7 +489,7 @@ describe("PluginRequireProvider", () => {
                                 const mockedRequire = getMockedRequire();
                                 const submoduleImport = "/some/submodule/import";
 
-                                mocks.join.mockReturnValue(packageRoot);
+                                mocks.join.mockReturnValue(packageRoot as any);
 
                                 mImperativeConfig.instance.mHostPackageName = module;
 

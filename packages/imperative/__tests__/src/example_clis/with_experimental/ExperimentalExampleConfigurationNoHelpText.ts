@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../packages/imperative";
+import { IImperativeConfig } from "../../../../src/imperative";
 
 const config: IImperativeConfig = JSON.parse(JSON.stringify(require("./ExperimentalExampleConfiguration")));
 // copy the configuration of the other CLI but don't provide a custom experimental command description

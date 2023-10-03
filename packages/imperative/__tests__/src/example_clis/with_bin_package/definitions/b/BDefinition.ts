@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../../../packages/cmd";
+import { ICommandDefinition } from "../../../../../../src/cmd";
 
 const definition: ICommandDefinition = {
     name: "bat",

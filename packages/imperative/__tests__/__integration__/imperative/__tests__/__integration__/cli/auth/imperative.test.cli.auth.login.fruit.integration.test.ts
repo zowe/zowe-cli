@@ -9,7 +9,7 @@
 *
 */
 
-import { IConfigSecureProperties } from "../../../../../../../packages/config/src/doc/IConfigSecure";
+import { IConfigSecureProperties } from "../../../../../../../src/config/src/doc/IConfigSecure";
 import { runCliScript } from "../../../../../../src/TestUtil";
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";

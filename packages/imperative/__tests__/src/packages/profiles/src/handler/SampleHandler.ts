@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../../packages/cmd";
+import { ICommandHandler, IHandlerParameters } from "../../../../../../src/cmd";
 import { isNullOrUndefined } from "util";
-import { ImperativeError } from "../../../../../../packages/error";
+import { ImperativeError } from "../../../../../../src/error";
 
 export default class SampleHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {

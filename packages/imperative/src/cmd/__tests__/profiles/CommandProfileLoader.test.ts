@@ -19,7 +19,7 @@ import { BasicProfileManager } from "../../../profiles/src/BasicProfileManager";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { CommandProfiles } from "../../src/profiles/CommandProfiles";
 import { ImperativeError } from "../../../error";
-import { BasicProfileManagerFactory, IProfileLoaded } from "../../../profiles";
+import { BasicProfileManagerFactory, IProfile, IProfileLoaded } from "../../../profiles";
 import { ImperativeConfig } from "../../../utilities";
 
 const TEST_PROFILES_DIR = "/test/data/profiles/fake";
@@ -183,7 +183,7 @@ describe("Command Profile Loader", () => {
         const emptyProfileMetaMap: Map<string, IProfileLoaded[]> = new Map<string, IProfileLoaded[]>();
         const noProfilesLoaded = new CommandProfiles(emptyProfileMap, emptyProfileMetaMap);
 
-        // because we have a team config, we should load no old-school profiles
+        // because we have a team config, we should load no old-scemptyProfileMaphool profiles
         const loadedCmdProfiles: CommandProfiles = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,

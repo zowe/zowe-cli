@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig, Imperative } from "../../../../packages/imperative";
+import { IImperativeConfig, Imperative } from "../../../../src/imperative";
 // load the other config
 const config: IImperativeConfig = require(__dirname + "/ProfileExampleConfiguration.ts");
 config.autoGenerateProfileCommands = false; // but turn off the auto generated commands

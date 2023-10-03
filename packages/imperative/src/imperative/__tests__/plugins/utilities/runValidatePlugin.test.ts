@@ -45,12 +45,12 @@ describe("runValidatePlugin", () => {
     });
 
     const mocks = {
-        spawnSync: sync as Mock<typeof sync>
+        spawnSync: sync as any as Mock<typeof sync>
     };
 
     it("should display both the stdout and stderr of the validate command", () => {
         // mock the output of executing the validatePlugin command
-        mocks.spawnSync.mockReturnValue(spawnSyncOutput);
+        mocks.spawnSync.mockReturnValue(spawnSyncOutput as any);
         (Imperative as any).mRootCommandName = "dummy";
         const resultMsg = runValidatePlugin(pluginName);
         expect(resultMsg).toContain(cmdOutputJson.stdout);

@@ -34,7 +34,7 @@ import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 describe("PMF: Uninstall Interface", () => {
     // Objects created so types are correct.
     const mocks = {
-        spawnSync: sync as Mock<typeof sync>,
+        spawnSync: sync as unknown as Mock<typeof sync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>
     };
@@ -49,7 +49,7 @@ describe("PMF: Uninstall Interface", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running uninstall
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
     });
 
     afterAll(() => {

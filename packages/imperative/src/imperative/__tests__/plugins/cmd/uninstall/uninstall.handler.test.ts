@@ -42,7 +42,7 @@ describe("Plugin Management Facility uninstall handler", () => {
 
     // Objects created so types are correct.
     const mocks = {
-        execSync: execSync as Mock<typeof execSync>,
+        execSync: execSync as unknown as Mock<typeof execSync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         uninstall: uninstall as Mock<typeof uninstall>
@@ -62,9 +62,9 @@ describe("Plugin Management Facility uninstall handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
-        mocks.execSync.mockReturnValue(packageRegistry);
-        mocks.readFileSync.mockReturnValue({});
+        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        mocks.execSync.mockReturnValue(packageRegistry as any);
+        mocks.readFileSync.mockReturnValue({} as any);
     });
 
     /**
@@ -114,7 +114,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         const fileJson: IPluginJson = {
             a: {
                 package: packageName,
-                registry: undefined,
+                registry: "",
                 version: packageVersion
             },
             plugin1: {
@@ -125,7 +125,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson);
+        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
 
         const handler = new UninstallHandler();
 
@@ -141,11 +141,12 @@ describe("Plugin Management Facility uninstall handler", () => {
 
     it("should handle an error during the uninstall", async () => {
         const chalk = TextUtils.chalk;
-
         const handler = new UninstallHandler();
-        let expectedError: ImperativeError;
         const params = getIHandlerParametersObject();
         params.arguments.plugin = [];
+        let expectedError: ImperativeError = new ImperativeError({
+            msg: "fake-error-message",
+        });
 
         try {
             await handler.process(params as IHandlerParameters);
@@ -178,14 +179,14 @@ describe("callPluginPreUninstall", () => {
     const knownCredMgrDispNm = "Secrets for Kubernetes";
     const preUninstallErrText = "Pretend that the plugin's preUninstall function threw an error";
     let callPluginPreUninstallPrivate : any;
-    let cfgLoaderLoadSpy;
+    let cfgLoaderLoadSpy: any;
     let fakePluginConfig: IImperativeConfig;
-    let getPackageInfoSpy;
-    let LifeCycleClass;
+    let getPackageInfoSpy: any;
+    let LifeCycleClass: any;
     let preUninstallWorked = false;
-    let recordDefaultCredMgrInConfigSpy;
-    let requirePluginModuleCallbackSpy;
-    let uninstallHndlr;
+    let recordDefaultCredMgrInConfigSpy: any;
+    let requirePluginModuleCallbackSpy: any;
+    let uninstallHndlr: any;
 
     /**
      *  Set config to reflect if a plugin has a lifecycle class.

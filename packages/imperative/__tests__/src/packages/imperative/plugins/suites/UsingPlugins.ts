@@ -20,7 +20,7 @@ import { cliBin, config } from "../PluginTestConstants";
 import { join, resolve } from "path";
 import { readFileSync, writeFileSync } from "fs";
 import { execSync } from "child_process";
-import { CredentialManagerOverride } from "../../../../../../packages/security/src/CredentialManagerOverride";
+import { CredentialManagerOverride } from "../../../../../../src/security/src/CredentialManagerOverride";
 
 describe("Using a Plugin", () => {
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { IO } from "../../../../../packages/io";
+import { IO } from "../../../../../src/io";
 import * as T from "../../../TestUtil";
 import { join } from "path";
 import { config } from "../plugins/PluginTestConstants";

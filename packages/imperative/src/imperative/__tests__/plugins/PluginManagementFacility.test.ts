@@ -18,7 +18,7 @@ jest.mock("../../src/plugins/PluginRequireProvider");
 
 import { existsSync } from "fs";
 import { AppSettings } from "../../../settings";
-import { ICommandDefinition } from "../../../../packages/cmd";
+import { ICommandDefinition } from "../../../../src/cmd";
 import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 import { UpdateImpConfig } from "../../src/UpdateImpConfig";

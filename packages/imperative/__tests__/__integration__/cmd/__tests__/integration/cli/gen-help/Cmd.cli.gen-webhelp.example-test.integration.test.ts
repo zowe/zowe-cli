@@ -17,7 +17,7 @@ import * as rimraf from "rimraf";
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";
 import { runCliScript } from "../../../../../../src/TestUtil";
-import { GuiResult, ProcessUtils } from "../../../../../../../packages/utilities";
+import { GuiResult, ProcessUtils } from "../../../../../../../src/utilities";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
