@@ -238,9 +238,11 @@ describe("Command Response", () => {
         const response = new CommandResponse({responseFormat: "default"});
         process.stdout.write = jest.fn((data) => {
             stdoutMsg += data;
+            return true;
         });
         process.stderr.write = jest.fn((data) => {
             stderrMsg += data;
+            return true;
         });
         const task = {
             percentComplete: 0,
@@ -396,6 +398,7 @@ describe("Command Response", () => {
         // method to simulate writing
         const write = jest.fn((data) => {
             // do nothing
+            return false;
         });
         process.stdout.write = write;
 
@@ -423,6 +426,7 @@ describe("Command Response", () => {
         // method to simulate writing
         const write = jest.fn((data) => {
             // do nothing
+            return false;
         });
         process.stdout.write = write;
 
@@ -449,6 +453,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.log(msg);
@@ -469,6 +474,7 @@ describe("Command Response", () => {
         });
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.log(msg);
@@ -489,6 +495,7 @@ describe("Command Response", () => {
         });
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.error(msg);
@@ -504,6 +511,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.error(msg);
@@ -519,9 +527,11 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             stdoutMsg += data;
+            return true;
         });
         process.stderr.write = jest.fn((data) => {
             stderrMsg += data;
+            return true;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
         const stderrMessage: string = "hello from the tests - stderr";
@@ -541,6 +551,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.log(Buffer.from(msg));
@@ -555,6 +566,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.error(Buffer.from(msg));
@@ -569,6 +581,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         chalk.red = jest.fn((message) => {
             return message;
@@ -587,6 +600,7 @@ describe("Command Response", () => {
         const response = new CommandResponse({ silent: true });
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.log(msg);
@@ -602,6 +616,7 @@ describe("Command Response", () => {
         const response = new CommandResponse({ silent: true });
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "hello from the tests";
         response.console.error(msg);
@@ -617,6 +632,7 @@ describe("Command Response", () => {
         const response = new CommandResponse({ silent: true });
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         chalk.red = jest.fn((message) => {
             return message;
@@ -635,11 +651,10 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({ silent: true });
-        process.stdout.write = jest.fn((data) => {
-            stdoutMsg += data;
-        });
+
         process.stderr.write = jest.fn((data) => {
             stderrMsg += data;
+            return true;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
         const stderrMessage: string = "hello from the tests - stderr";
@@ -661,6 +676,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const format: string = "hello %s";
         const msg: string = "from the tests";
@@ -676,6 +692,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stderr.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const format: string = "hello %s";
         const msg: string = "from the tests";
@@ -691,6 +708,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "JSON object message";
         response.data.setMessage(msg);
@@ -705,6 +723,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const exitCode = 143;
         response.data.setExitCode(exitCode);
@@ -718,6 +737,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const firstMsg: string = "The First Message";
         const msg: string = "JSON object message";
@@ -734,6 +754,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const testData: string = "test data";
         response.data.setObj(testData);
@@ -748,6 +769,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const testData: any = { theData: "test data" };
         response.data.setObj(testData);
@@ -762,6 +784,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const testData: any = [{ theData: "test data" }];
         response.data.setObj(testData);
@@ -776,6 +799,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((stdoutData) => {
             messages += stdoutData;
+            return true;
         });
         const data: any = { theData: "test data" };
         const mergeData: any = { moreData: "more test data" };
@@ -796,6 +820,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const data1: any = { theData: "test data 1" };
         const data2: any = { theData: "test data 2" };
@@ -812,6 +837,7 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             messages += data;
+            return true;
         });
         const msg: string = "The JSON message";
         const testData: any = { theData: "test data" };
@@ -830,9 +856,11 @@ describe("Command Response", () => {
         const response = new CommandResponse();
         process.stdout.write = jest.fn((data) => {
             stdoutMsg += data;
+            return true;
         });
         process.stderr.write = jest.fn((stderrData) => {
             stderrMsg += stderrData;
+            return true
         });
         const stdoutMessage: string = "hello from the tests - stdout";
         const stderrMessage: string = "hello from the tests - stderr";
@@ -869,9 +897,11 @@ describe("Command Response", () => {
         const response = new CommandResponse({ responseFormat: "json" });
         process.stdout.write = jest.fn((stdoutData) => {
             stdoutMsg += stdoutData;
+            return true;
         });
         process.stderr.write = jest.fn((stderrData) => {
             stderrMsg += stderrData;
+            return true;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
         const stderrMessage: string = "hello from the tests - stderr";
@@ -909,9 +939,11 @@ describe("Command Response", () => {
         const response = new CommandResponse({ silent: true });
         process.stdout.write = jest.fn((stdoutData) => {
             stdoutMsg += stdoutData;
+            return true;
         });
         process.stderr.write = jest.fn((stderrData) => {
             stderrMsg += stderrData;
+            return true;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
         const stderrMessage: string = "hello from the tests - stderr";
@@ -949,6 +981,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -968,6 +1001,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -987,6 +1021,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1006,6 +1041,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1025,6 +1061,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1044,6 +1081,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1063,6 +1101,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1082,6 +1121,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1101,6 +1141,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1120,6 +1161,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1139,6 +1181,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1161,6 +1204,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1182,6 +1226,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stderr.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 let error;
@@ -1204,6 +1249,8 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    //return true to indicate successful write operation
+                    return true;
                 });
                 const response = new CommandResponse();
                 response.format.output({
@@ -1223,6 +1270,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 response.format.output({
@@ -1243,6 +1291,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 response.format.output({ format: "string", output: "this is a string", fields: ["wow"] });
@@ -1255,6 +1304,7 @@ describe("Command Response", () => {
                 let messages: string = "";
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 const response = new CommandResponse();
                 response.format.output({ format: "string", output: true, fields: ["wow"] });
@@ -1268,6 +1318,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "table",
@@ -1283,6 +1334,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "table",
@@ -1300,6 +1352,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "list",
@@ -1315,6 +1368,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1330,6 +1384,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "object",
@@ -1345,6 +1400,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1361,6 +1417,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1377,6 +1434,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "table",
@@ -1392,6 +1450,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "object",
@@ -1407,6 +1466,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1422,6 +1482,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1437,6 +1498,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "list",
@@ -1452,6 +1514,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1467,6 +1530,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1482,6 +1546,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1497,6 +1562,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "list",
@@ -1512,6 +1578,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "list",
@@ -1527,6 +1594,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1542,6 +1610,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "string",
@@ -1559,6 +1628,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "list",
@@ -1576,6 +1646,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     format: "list",
@@ -1593,6 +1664,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1611,6 +1683,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1628,6 +1701,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1645,6 +1719,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1662,6 +1737,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1679,6 +1755,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1696,6 +1773,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1713,6 +1791,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1730,6 +1809,7 @@ describe("Command Response", () => {
                 const response = new CommandResponse();
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1752,13 +1832,14 @@ describe("Command Response", () => {
                         outputFormatOptions: true
                     },
                     args: {
-                        $0: undefined,
-                        _: undefined,
+                        $0: "some-string-value",
+                        _: ["array-of-strings"],
                         responseFormatHeader: true
                     }
                 });
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: false,
@@ -1780,13 +1861,15 @@ describe("Command Response", () => {
                         outputFormatOptions: true
                     },
                     args: {
-                        $0: undefined,
-                        _: undefined,
+                        $0: "some-string-value",
+                        _: ["array-of-strings"],
                         responseFormatFilter: ["name", "details", "colors"]
                     }
                 });
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    //return true to indicate successful write operation
+                    return true;
                 });
                 response.format.output({
                     header: true,
@@ -1809,13 +1892,14 @@ describe("Command Response", () => {
                         outputFormatOptions: true
                     },
                     args: {
-                        $0: undefined,
-                        _: undefined,
+                        $0: "some-string-value",
+                        _: ["array-of-strings"],
                         responseFormatType: "object"
                     }
                 });
                 process.stdout.write = jest.fn((data) => {
                     messages += data;
+                    return true;
                 });
                 response.format.output({
                     header: false,

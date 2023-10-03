@@ -160,7 +160,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.secured.properties.testProperty": "aSecuredTestProperty",
@@ -226,7 +226,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         fakeSecureDataExpectedJson[fakeProjUserPath] = {
             "profiles.secured.properties.testProperty": "aSecuredTestProperty"
         };
@@ -291,7 +291,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeGblProjPath];
         fakeSecureDataExpectedJson[fakeGblProjPath] = {
             "profiles.secured.properties.testProperty": "aSecuredTestProperty",
@@ -358,7 +358,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         fakeSecureDataExpectedJson[fakeGblProjUserPath] = {
             "profiles.secured.properties.testProperty": "aSecuredTestProperty"
         };
@@ -422,7 +422,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
 
@@ -482,7 +482,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
 
         const compObj: any = {};
@@ -542,7 +542,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeGblProjPath];
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
 
@@ -603,7 +603,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
 
         const compObj: any = {};
@@ -667,7 +667,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeUnrelatedPath] = {"profiles.base.properties.secret": "anotherFakeSecureValue"};
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
@@ -732,7 +732,7 @@ describe("Configuration Set command handler", () => {
         await handler.process(params);
 
         // ConfigSecure.save() deletes and adds back this secure entry, which changes the order
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.base.properties.secret": "fakeSecureValue"
@@ -798,7 +798,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.base.properties.secret": "aSecuredTestProperty"
@@ -863,7 +863,7 @@ describe("Configuration Set command handler", () => {
         await handler.process(params);
 
         // ConfigSecure.save() deletes and adds back this secure entry, which changes the order
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.base.properties.secret": "fakeSecureValue"
@@ -928,7 +928,7 @@ describe("Configuration Set command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.base.properties.secret": {"fakeProp": "fakeVal"}
