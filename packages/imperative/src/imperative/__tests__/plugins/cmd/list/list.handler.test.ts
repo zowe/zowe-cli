@@ -48,7 +48,7 @@ describe("Plugin Management Facility list handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of install handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
 
     });
 

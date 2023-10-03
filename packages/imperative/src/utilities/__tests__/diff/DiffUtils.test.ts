@@ -12,6 +12,7 @@
 import * as diff from "diff";
 import { DiffUtils } from "../../src/diff/DiffUtils";
 import { IDiffOptions } from "../../src/diff/doc/IDiffOptions";
+import { IDiffNameOptions } from "../../src/diff/doc/IDiffNameOptions";
 import { WebDiffManager } from "../../src/diff/WebDiffManager";
 import * as jestDiff from "jest-diff";
 import * as diff2html from "diff2html";
@@ -60,7 +61,7 @@ describe("DiffUtils", () => {
         });
         it("should open the diffs in browser with optionally supplied file names", async () => {
             jest.spyOn(diff, "createTwoFilesPatch").mockReturnValue("test");
-            const options: IDiffOptions = {
+            const options: IDiffNameOptions = {
                 name1: "file-a",
                 name2: "file-b"
             };

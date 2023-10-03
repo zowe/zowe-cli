@@ -60,7 +60,7 @@ describe("Plugin Management Facility update handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of update handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
         mocks.execSync.mockReturnValue(packageRegistry);
         mocks.readFileSync.mockReturnValue({});
         npmLogin(packageRegistry);

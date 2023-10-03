@@ -9,7 +9,7 @@
     "__tests__/__packages__/*"
   ],
   "scripts": {
-    "build": "lerna run build && node scripts/updateLicenses.js && npm run lint && echo \"todo:fix: npm run checkTestsCompile\" && npm run circularDependencyCheck",
+    "build": "lerna run build && node scripts/updateLicenses.js && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "postbuild": "node scripts/sampleCliTool.js build",
     "build:exe": "cd zowex && cargo build && cargo clippy && cargo test",
     "clean": "lerna run --parallel clean",

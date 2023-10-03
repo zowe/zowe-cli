@@ -44,7 +44,7 @@ describe("PMF: update Interface", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running update
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
 
         /* Since update() adds new plugins into the value returned from
         * readFileSyc(plugins.json), we must reset readFileSync to return an empty set before each test.
@@ -82,7 +82,7 @@ describe("PMF: update Interface", () => {
             };
 
             mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
-            mocks.readFileSync.mockReturnValue(oneOldPlugin);
+            mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
             const data = await update(packageName, packageRegistry);
             expect(data).toEqual(packageVersion);
@@ -103,7 +103,7 @@ describe("PMF: update Interface", () => {
         };
 
         mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
-        mocks.readFileSync.mockReturnValue(oneOldPlugin);
+        mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
         const data = await update(packageName, packageRegistry);
         expect(data).toEqual(packageVersion);

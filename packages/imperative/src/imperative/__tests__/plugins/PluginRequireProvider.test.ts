@@ -196,7 +196,7 @@ describe("PluginRequireProvider", () => {
         // Inject a dummy require so we can check it.
         const mockedRequire = getMockedRequire();
 
-        mocks.findUpSync.mockReturnValueOnce("will-be-tested");
+        mocks.findUpSync.mockReturnValueOnce("will-be-tested" as any);
 
         PluginRequireProvider.createPluginHooks(["test"]);
 
@@ -221,7 +221,7 @@ describe("PluginRequireProvider", () => {
 
     describe("environment stability", () => {
         it("should guard against adding multiple hooks", () => {
-            mocks.findUpSync.mockReturnValue("does-not-matter");
+            mocks.findUpSync.mockReturnValue("does-not-matter" as any);
 
             expect(() => {
                 PluginRequireProvider.createPluginHooks(["test"]);
@@ -288,8 +288,8 @@ describe("PluginRequireProvider", () => {
 
                     const modulesForRegex = escapeModules(injectedModules);
 
-                    mocks.findUpSync.mockReturnValue("does-not-matter");
-                    mocks.join.mockReturnValue("does-not-matter");
+                    mocks.findUpSync.mockReturnValue("does-not-matter" as any);
+                    mocks.join.mockReturnValue("does-not-matter" as any);
 
                     // Inject our test modules
                     PluginRequireProvider.createPluginHooks(injectedModules);
@@ -376,8 +376,8 @@ describe("PluginRequireProvider", () => {
                                 const thisObject = "This string gets attached as the this to require so we can track if it got called correctly";
                                 const mockedRequire = getMockedRequire();
 
-                                mocks.findUpSync.mockReturnValue("does-not-matter");
-                                mocks.join.mockReturnValue("does-not-matter");
+                                mocks.findUpSync.mockReturnValue("does-not-matter" as any);
+                                mocks.join.mockReturnValue("does-not-matter" as any);
 
                                 PluginRequireProvider.createPluginHooks(testData.modules);
 
@@ -412,8 +412,8 @@ describe("PluginRequireProvider", () => {
                                 // Account for the possibility that someone made a palindrome
                                 expect(module).not.toEqual(nonMatchingHostPackage);
 
-                                mocks.findUpSync.mockReturnValue("does-not-matter");
-                                mocks.join.mockReturnValue("does-not-matter");
+                                mocks.findUpSync.mockReturnValue("does-not-matter" as any);
+                                mocks.join.mockReturnValue("does-not-matter" as any);
 
                                 // Set the imperative config to what we need
                                 mImperativeConfig.instance.mHostPackageName = nonMatchingHostPackage;

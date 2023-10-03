@@ -52,7 +52,7 @@ const FAKE_PROFS: IProfileLoaded[] = [
 
 // "Mocked" version of the imperative API - done here rather than a manual mock
 const MockedImperativeAPI = {
-    profileManager: (args) => {
+    profileManager: (args: any) => {
         return {
             getDefaultProfileName: jest.fn(() => {
                 return "fake1";
@@ -66,7 +66,7 @@ const MockedImperativeAPI = {
 
 // "Mocked" version to thrown an error
 const MockedImperativeAPIError = {
-    profileManager: (args) => {
+    profileManager: (args: any) => {
         return {
             getDefaultProfileName: jest.fn(() => {
                 return "fake1";
@@ -184,7 +184,7 @@ describe("list profiles handler", () => {
             Object.defineProperty(Imperative, "api", {
                 configurable: true,
                 value: {
-                    profileManager: (args) => {
+                    profileManager: (args: any) => {
                         throw new Error(fakeProfileIoError);
                     }
                 }

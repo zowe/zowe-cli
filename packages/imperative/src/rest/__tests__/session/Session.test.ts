@@ -264,7 +264,7 @@ describe("Session tests", () => {
     });
 
     it("should match non-default port, protocol, secure protocol, and host", () => {
-        const session = new Session({hostname: "localhost", port: "123", protocol: "http", secureProtocol: "somethingNew"});
+        const session = new Session({hostname: "localhost", port: 123, protocol: "http", secureProtocol: "somethingNew"});
         expect(session.ISession).toMatchSnapshot();
     });
 
@@ -276,6 +276,7 @@ describe("Session tests", () => {
     it("should require proper type", () => {
         let error;
         try {
+            // @ts-expect-error testing wrong argument type
             const session = new Session({hostname: "localhost", type: "madeThisUp"});
         } catch (thrownError) {
             error = thrownError;
@@ -286,6 +287,7 @@ describe("Session tests", () => {
     it("should require proper protocol", () => {
         let error;
         try {
+            // @ts-expect-error testing wrong argument type
             const session = new Session({hostname: "localhost", protocol: "ftp"});
         } catch (thrownError) {
             error = thrownError;

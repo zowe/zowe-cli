@@ -273,7 +273,7 @@ describe("RestClient tests", () => {
         expect(error).toBeUndefined();
         expect(response).toBeDefined();
         expect(response.data).toEqual(Buffer.concat([randomBytes1, randomBytes2]));
-        listOfClientProperties.forEach((property) => expect(response[`${property}`]).toBeDefined());
+        listOfClientProperties.forEach((property) => expect((response as any)[`${property}`]).toBeDefined());
 
         randomBytes1 = await getRandomBytes(randomByteLength);
         randomBytes2 = await getRandomBytes(randomByteLength);
@@ -285,7 +285,7 @@ describe("RestClient tests", () => {
         expect(error).toBeUndefined();
         expect(response).toBeDefined();
         expect(response.data).toEqual(Buffer.concat([randomBytes1, randomBytes2]));
-        listOfClientProperties.forEach((property) => expect(response[`${property}`]).toBeDefined());
+        listOfClientProperties.forEach((property) => expect((response as any)[`${property}`]).toBeDefined());
 
         randomBytes1 = await getRandomBytes(randomByteLength);
         randomBytes2 = await getRandomBytes(randomByteLength);
@@ -297,7 +297,7 @@ describe("RestClient tests", () => {
         expect(error).toBeUndefined();
         expect(response).toBeDefined();
         expect(response.data).toEqual(Buffer.concat([randomBytes1, randomBytes2]));
-        listOfClientProperties.forEach((property) => expect(response[`${property}`]).toBeDefined());
+        listOfClientProperties.forEach((property) => expect((response as any)[`${property}`]).toBeDefined());
 
         randomBytes1 = await getRandomBytes(randomByteLength);
         randomBytes2 = await getRandomBytes(randomByteLength);
@@ -309,7 +309,7 @@ describe("RestClient tests", () => {
         expect(error).toBeUndefined();
         expect(response).toBeDefined();
         expect(response.data).toEqual(Buffer.concat([randomBytes1, randomBytes2]));
-        listOfClientProperties.forEach((property) => expect(response[`${property}`]).toBeDefined());
+        listOfClientProperties.forEach((property) => expect((response as any)[`${property}`]).toBeDefined());
     });
 
 });

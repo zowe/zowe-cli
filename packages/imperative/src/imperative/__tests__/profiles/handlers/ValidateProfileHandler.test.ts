@@ -99,14 +99,14 @@ const ProfileLoaded = {
 
 // "Mocked" version of a crashing imperative API
 const impApiMockedCrash = {
-    profileManager: (args) => {
+    profileManager: (args: any) => {
         throw new Error(fakeProfileIoError);
     },
 };
 
 // "Mocked" version of a successful imperative API - done here rather than a manual mock
 const impApiMockedOk = {
-    profileManager: (args) => {
+    profileManager: (args: any) => {
         return {
             getDefaultProfileName: jest.fn(() => {
                 return "fake1";

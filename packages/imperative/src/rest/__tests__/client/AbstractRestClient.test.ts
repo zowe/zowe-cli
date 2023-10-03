@@ -591,7 +591,7 @@ describe("AbstractRestClient tests", () => {
         const listOfClientProperties = Object.keys(CLIENT_PROPERTY);
 
         const data = await RestClient.getExpectFullResponse(new Session({hostname: "test"}), restOptions);
-        listOfClientProperties.forEach((property) => expect(data[`${property}`]).toBeDefined());
+        listOfClientProperties.forEach((property) => expect((data as any)[`${property}`]).toBeDefined());
     });
 
     it("should return one part of response when requested", async () => {
@@ -629,7 +629,7 @@ describe("AbstractRestClient tests", () => {
         const data = await RestClient.getExpectFullResponse(new Session({hostname: "test"}), restOptions);
 
         expect(data.response).toBeDefined();
-        listOfClientProperties.forEach((property) => expect(data[`${property}`]).not.toBeDefined());
+        listOfClientProperties.forEach((property) => expect((data as any)[`${property}`]).not.toBeDefined());
     });
 
     it("should return several parts of response when requested", async () => {
@@ -667,8 +667,8 @@ describe("AbstractRestClient tests", () => {
         });
 
         const data = await RestClient.getExpectFullResponse(new Session({hostname: "test"}), restOptions);
-        restOptions.dataToReturn.forEach((property) => expect(data[`${property}`]).toBeDefined());
-        listOfClientProperties.forEach((property) => expect(data[`${property}`]).not.toBeDefined());
+        restOptions.dataToReturn.forEach((property) => expect((data as any)[`${property}`]).toBeDefined());
+        listOfClientProperties.forEach((property) => expect((data as any)[`${property}`]).not.toBeDefined());
     });
 
     it("should create buildOptions according to input parameter options 1", async () => {

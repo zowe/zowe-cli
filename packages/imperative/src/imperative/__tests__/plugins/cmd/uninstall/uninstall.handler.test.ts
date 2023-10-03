@@ -62,7 +62,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()));
+        (Logger.getImperativeLogger as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
         mocks.execSync.mockReturnValue(packageRegistry);
         mocks.readFileSync.mockReturnValue({});
     });
@@ -284,7 +284,7 @@ describe("callPluginPreUninstall", () => {
         }
 
         expect(recordDefaultCredMgrInConfigSpy).toHaveBeenCalledWith(knownCredMgrDispNm);
-        expect(requirePluginModuleCallbackSpy).toHaveBeenCalledTimes(1);
+        expect(requirePluginModuleCallbackSpy as any).toHaveBeenCalledTimes(1);
         expect(cfgLoaderLoadSpy).toHaveBeenCalledTimes(1);
         expect(thrownErr).not.toBeNull();
         expect(thrownErr.message).toContain(
