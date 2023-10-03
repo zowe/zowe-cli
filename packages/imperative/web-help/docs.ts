@@ -54,12 +54,13 @@ if (isInIframe) {
  * @param message - Message to show in the tooltip
  */
 function setTooltip(btn: any, message: string) {
+    const oneSecAsMillis = 1000;
     btn.setAttribute("aria-label", message);
     btn.setAttribute("data-balloon-visible", "");
     setTimeout(() => {
         btn.removeAttribute("aria-label");
         btn.removeAttribute("data-balloon-visible");
-    }, 1000);
+    }, oneSecAsMillis);
 }
 
 // Enable clipboard access for copy buttons
