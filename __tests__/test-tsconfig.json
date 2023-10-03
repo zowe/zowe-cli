@@ -4,9 +4,6 @@
       "node",
       "jest"
     ],
-    "lib": [
-      "esnext"
-    ],
     "target": "es2015",
     "module": "commonjs",
     "declaration": true,

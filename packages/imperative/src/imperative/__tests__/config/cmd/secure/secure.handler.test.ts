@@ -156,13 +156,13 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        const promptWithTimeoutSpy = jest.fn(() => "fakePromptingData");
+        const promptWithTimeoutSpy: any = jest.fn(() => "fakePromptingData");
         (params.response.console as any).prompt = promptWithTimeoutSpy;
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.base.properties.secret": "fakePromptingData"
@@ -226,7 +226,7 @@ describe("Configuration Secure command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         fakeSecureDataExpectedJson[fakeProjUserPath] = {
             "profiles.base.properties.secret": "fakePromptingData"
         };
@@ -290,7 +290,7 @@ describe("Configuration Secure command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeGblProjPath];
         fakeSecureDataExpectedJson[fakeGblProjPath] = {
             "profiles.base.properties.secret": "fakePromptingData"
@@ -349,14 +349,14 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        const promptWithTimeoutSpy = jest.fn(() => "fakePromptingData");
+        const promptWithTimeoutSpy: any = jest.fn(() => "fakePromptingData");
         (params.response.console as any).prompt = promptWithTimeoutSpy;
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+        const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeGblProjUserPath];
         fakeSecureDataExpectedJson[fakeGblProjUserPath] = {
             "profiles.base.properties.secret": "fakePromptingData"
@@ -468,7 +468,7 @@ describe("Configuration Secure command handler", () => {
 
         await handler.process(params);
 
-        const fakeSecureDataExpectedJson = {
+        const fakeSecureDataExpectedJson: { [key: string]: any} = {
             [fakeProjPath]: {
                 "profiles.base.properties.secret": "fakePromptingData"
             }
@@ -520,8 +520,8 @@ describe("Configuration Secure command handler", () => {
         const authHandlerPath = __dirname + "/../../../../src/auth/handlers/AbstractAuthHandler";
         const handler = new SecureHandler();
         const params = getIHandlerParametersObject();
-        let mockAuthHandlerApi;
-        let promptWithTimeoutSpy;
+        let mockAuthHandlerApi: any;
+        let promptWithTimeoutSpy: any;
 
         beforeAll(() => {
             mockAuthHandlerApi = {
@@ -592,7 +592,7 @@ describe("Configuration Secure command handler", () => {
 
             await handler.process(params);
 
-            const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+            const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
             delete fakeSecureDataExpectedJson[fakeProjPath];
             fakeSecureDataExpectedJson[fakeProjPath] = {
                 "profiles.base.properties.tokenValue": "fakeLoginData",
@@ -630,7 +630,7 @@ describe("Configuration Secure command handler", () => {
             await setupConfigToLoad(undefined, configOpts); // Setup the config
             await handler.process(params);
 
-            const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+            const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
             delete fakeSecureDataExpectedJson[fakeProjPath];
             fakeSecureDataExpectedJson[fakeProjPath] = {
                 "profiles.base.properties.tokenValue": "fakePromptingData"
@@ -665,7 +665,7 @@ describe("Configuration Secure command handler", () => {
             await setupConfigToLoad(undefined, configOpts); // Setup the config
             await handler.process(params);
 
-            const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+            const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
             delete fakeSecureDataExpectedJson[fakeProjPath];
             fakeSecureDataExpectedJson[fakeProjPath] = {
                 "profiles.base.properties.tokenValue": "fakePromptingData"
@@ -707,7 +707,7 @@ describe("Configuration Secure command handler", () => {
 
             await handler.process(params);
 
-            const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+            const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
             delete fakeSecureDataExpectedJson[fakeProjPath];
             fakeSecureDataExpectedJson[fakeProjPath] = {
                 "profiles.base.properties.tokenValue": "fakePromptingData"
@@ -751,7 +751,7 @@ describe("Configuration Secure command handler", () => {
             await handler.process(params);
             mockAuthHandlerApi.promptParams.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
 
-            const fakeSecureDataExpectedJson = lodash.cloneDeep(fakeSecureDataJson);
+            const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
             delete fakeSecureDataExpectedJson[fakeProjPath];
             fakeSecureDataExpectedJson[fakeProjPath] = {
                 "profiles.base.properties.tokenValue": "fakePromptingData"

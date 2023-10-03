@@ -11,8 +11,8 @@
 
 /* eslint-disable jest/expect-expect */
 import Mock = jest.Mock;
-let expectedVal;
-let returnedVal;
+let expectedVal: any;
+let returnedVal: any;
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");

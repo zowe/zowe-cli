@@ -24,8 +24,8 @@ import ConvertProfilesHandler from "../../../../src/config/cmd/convert-profiles/
 jest.mock("../../../../src/plugins/utilities/npm-interface");
 jest.mock("../../../../../imperative/src/OverridesLoader");
 
-let stdout;
-let stderr;
+let stdout: string;
+let stderr: string;
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
