@@ -561,6 +561,46 @@ describe("AbstractRestClient tests", () => {
         expect(caughtError).toBeUndefined();
     });
 
+    it("should not error when streaming normalized data", async () => {
+        const fakeRequestStream = new PassThrough();
+        const emitter = new MockHttpRequestResponse();
+        const receivedArray: string[] = [];
+        jest.spyOn(emitter, "write").mockImplementation((data) => {
+            receivedArray.push(data.toString());
+        });
+        const requestFnc = jest.fn((options, callback) => {
+            ProcessUtils.nextTick(async () => {
+                const newEmit = new MockHttpRequestResponse();
+                callback(newEmit);
+                await ProcessUtils.nextTick(() => {
+                    newEmit.emit("end");
+                });
+            });
+            return emitter;
+        });
+        (https.request as any) = requestFnc;
+        let caughtError;
+        try {
+            await ProcessUtils.nextTick(() => {
+                fakeRequestStream.write(Buffer.from("ChunkOne\r", "utf8"));
+            });
+            await ProcessUtils.nextTick(() => {
+                fakeRequestStream.write(Buffer.from("\nChunkTwo\r", "utf8"));
+            });
+            await ProcessUtils.nextTick(() => {
+                fakeRequestStream.end();
+            });
+            await RestClient.putStreamed(new Session({
+                hostname: "test",
+            }), "/resource", [Headers.APPLICATION_JSON], null, fakeRequestStream, false, true);
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
+        expect(receivedArray.length).toEqual(3);
+        expect(receivedArray).toEqual(["ChunkOne", "\nChunkTwo", "\r"]);
+    });
+
     it("should return full response when requested", async () => {
         const emitter = new MockHttpRequestResponse();
         const requestFnc = jest.fn((options, callback) => {
