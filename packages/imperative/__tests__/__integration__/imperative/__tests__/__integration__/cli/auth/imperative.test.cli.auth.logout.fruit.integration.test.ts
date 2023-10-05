@@ -21,7 +21,11 @@ describe("imperative-test-cli auth logout", () => {
     async function loadSecureProp(profileName: string): Promise<string> {
         const securedValue = await keytar.getPassword("imperative-test-cli", "secure_config_props") as string;
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-        return Object.values(securedValueJson)[0]?.[`profiles.${profileName}.properties.tokenValue`];
+        if ( Array.isArray(securedValueJson) ) {
+            return Object.values(securedValueJson)[0][`profiles.${profileName}.properties.tokenValue`];
+        } else {
+            return "";
+        }
     }
 
     // Create the unique test environment
