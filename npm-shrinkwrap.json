@@ -10,7 +10,7 @@
         "packages/*"
       ],
       "dependencies": {
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "@zowe/perf-timing": "1.0.7"
       },
       "devDependencies": {
@@ -31390,7 +31390,7 @@
       "license": "EPL-2.0",
       "dependencies": {
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "6.40.19",
         "@zowe/zos-console-for-zowe-sdk": "6.40.19",
@@ -31438,7 +31438,7 @@
       },
       "devDependencies": {
         "@types/node": "^16.11.7",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "chalk": "^4.1.0",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -31786,7 +31786,7 @@
         "@types/js-yaml": "^3.12.5",
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -31796,47 +31796,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/provisioning/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/provisioning/node_modules/ansi-styles": {
@@ -31940,7 +31899,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -31950,47 +31909,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/workflows/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/workflows/node_modules/ansi-styles": {
@@ -32091,7 +32009,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -32101,47 +32019,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zosconsole/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zosconsole/node_modules/ansi-styles": {
@@ -32245,7 +32122,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "@zowe/zos-uss-for-zowe-sdk": "6.40.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -32256,47 +32133,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zosfiles/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zosfiles/node_modules/ansi-styles": {
@@ -32400,7 +32236,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -32410,47 +32246,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zosjobs/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zosjobs/node_modules/ansi-styles": {
@@ -32551,7 +32346,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -32561,47 +32356,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zoslogs/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zoslogs/node_modules/ansi-styles": {
@@ -32702,7 +32456,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -32712,47 +32466,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zosmf/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zosmf/node_modules/ansi-styles": {
@@ -32856,7 +32569,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@zowe/core-for-zowe-sdk": "6.40.19",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -32866,47 +32579,6 @@
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^6.24.1",
         "@zowe/imperative": "^4.8.1"
-      }
-    },
-    "packages/zostso/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zostso/node_modules/ansi-styles": {
@@ -33010,7 +32682,7 @@
       "devDependencies": {
         "@types/node": "^16.11.7",
         "@types/ssh2": "1.11.6",
-        "@zowe/imperative": "4.18.18",
+        "@zowe/imperative": "4.18.19",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -33028,47 +32700,6 @@
       "dev": true,
       "dependencies": {
         "@types/node": "*"
-      }
-    },
-    "packages/zosuss/node_modules/@zowe/imperative": {
-      "version": "4.18.18",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-release/@zowe/imperative/-/@zowe/imperative-4.18.18.tgz",
-      "integrity": "sha512-QoWqem4WuEyoVGdKLVtG/mwDrw6caXQHuFnbEtBC7bNFA6rfAO7aysGRo2mIu9ujZ7r5aLBjTh+CtuGT2BmBjw==",
-      "dev": true,
-      "dependencies": {
-        "@types/yargs": "13.0.4",
-        "@zowe/perf-timing": "1.0.7",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "3.0.0",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "glob": "7.1.6",
-        "js-yaml": "3.14.1",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.0",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "8.1.1",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "readline-sync": "1.4.10",
-        "semver": "5.7.2",
-        "stack-trace": "0.0.10",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
-      },
-      "engines": {
-        "node": ">=8.0.0"
       }
     },
     "packages/zosuss/node_modules/ansi-styles": {
