@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `4.18.19`
+
+- BugFix: Fixed normalization on stream chunk boundaries [#1815](https://github.com/zowe/zowe-cli/issues/1815)
+
 ## `4.18.18`
 
 - BugFix: Replaced use of `node-keytar` with the new `keyring` module from `@zowe/secrets-for-zowe-sdk`. [zowe-cli#1622](https://github.com/zowe/zowe-cli/issues/1622)
