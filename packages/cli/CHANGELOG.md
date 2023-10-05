@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.40.20`
 
 - BugFix: Updated Imperative to version `4.18.19` to fix issues with normalizing newlines on file uploads [#1815](https://github.com/zowe/zowe-cli/issues/1815)
 
