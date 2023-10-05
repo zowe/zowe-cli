@@ -22,8 +22,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const imperative_cli_1 = require("imperative");
 class HealthCheckHandler {
     process(params) {
-        return __awaiter(this, void 0, void 0, yield function* () {
-            const impFileLogger = imperative_cli_1.Logger.getImperativeLogger();
+        return __awaiter(this, void 0, void 0, function* () {
+            const impFileLogger = yield imperative_cli_1.Logger.getImperativeLogger();
             impFileLogger.debug("Invoked health check handler");
             params.response.console.log("You would report problems identified by healthCheck.");
         });

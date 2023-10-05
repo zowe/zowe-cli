@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to version `4.18.19` to fix issues with normalizing newlines on file uploads [#1815](https://github.com/zowe/zowe-cli/issues/1815)
+
 ## `6.40.19`
 
 - BugFix: Updated Imperative to version `4.18.18` to use `@zowe/secrets-for-zowe-sdk` as the default credential manager.
