@@ -79,7 +79,7 @@ describe("imperative-test-cli config list", () => {
                         properties: {
                             info: ""
                         },
-                        secure: []
+                        secure: [] as string[]
                     }
                 },
                 defaults: {
@@ -119,12 +119,12 @@ describe("imperative-test-cli config list", () => {
                 secured: {
                     properties: {},
                     type: "secured",
-                    secure: []
+                    secure: [] as string[]
                 },
                 base: {
                     properties: {},
                     type: "base",
-                    secure: []
+                    secure: [] as string[]
                 }
             },
             defaults: {},
@@ -132,7 +132,7 @@ describe("imperative-test-cli config list", () => {
         };
         const expectedProjectConfig = lodash.cloneDeep(expectedConfigObject);
         const expectedResponse = {
-            data: {}
+            data: {} as any
         };
         expectedResponse.data[expectedUserConfigLocation] = expectedUserConfig;
         expectedResponse.data[expectedGlobalUserConfigLocation] = expectedUserConfig;
