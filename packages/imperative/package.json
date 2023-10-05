@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "5.18.1",
+  "version": "5.18.2",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",

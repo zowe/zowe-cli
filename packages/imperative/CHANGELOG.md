@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `5.18.2`
+
+- BugFix: Fixed normalization on stream chunk boundaries [#1815](https://github.com/zowe/zowe-cli/issues/1815)
+
 ## `5.18.1`
 
 - BugFix: Fixed merging of profile properties in `ProfileInfo.createSession`. [#1008](https://github.com/zowe/imperative/issues/1008)

@@ -335,11 +335,21 @@ export abstract class AbstractRestClient {
                 // if the user requested streaming write of data to the request,
                 // write the data chunk by chunk to the server
                 let bytesUploaded = 0;
+                let heldByte: string;
                 options.requestStream.on("data", (data: Buffer) => {
                     this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
                     if (this.mNormalizeRequestNewlines) {
                         this.log.debug("Normalizing new lines in request chunk to \\n");
-                        data = Buffer.from(data.toString().replace(/\r?\n/g, "\n"));
+                        let dataString = data.toString();
+                        if (heldByte != null) {
+                            dataString = heldByte + dataString;
+                            heldByte = undefined;
+                        }
+                        if (dataString.charAt(dataString.length - 1) === "\r") {
+                            heldByte = dataString.charAt(dataString.length - 1);
+                            dataString = dataString.slice(0,-1);
+                        }
+                        data = Buffer.from(dataString.replace(/\r?\n/g, "\n"));
                     }
                     if (this.mTask != null) {
                         bytesUploaded += data.byteLength;
@@ -361,6 +371,10 @@ export abstract class AbstractRestClient {
                     }));
                 });
                 options.requestStream.on("end", () => {
+                    if (heldByte != null) {
+                        clientRequest.write(Buffer.from(heldByte));
+                        heldByte = undefined;
+                    }
                     this.log.debug("Finished reading requestStream");
                     // finish the request
                     clientRequest.end();
