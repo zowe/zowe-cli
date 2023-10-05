@@ -366,12 +366,13 @@ export class GetJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param jobFile - the spool file for which you want to retrieve the content
+     * @param encoding - the code page to use for EBCDIC translation
      * @returns {Promise<string>} - promise that resolves to the spool content
      * @memberof GetJobs
      */
-    public static getSpoolContent(session: AbstractSession, jobFile: IJobFile) {
+    public static getSpoolContent(session: AbstractSession, jobFile: IJobFile, encoding?: string) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContent()");
-        return GetJobs.getSpoolContentCommon(session, jobFile);
+        return GetJobs.getSpoolContentCommon(session, jobFile, encoding);
     }
 
     /**
@@ -400,14 +401,16 @@ export class GetJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param jobFile - the spool file for which you want to retrieve the content
+     * @param encoding - the code page to use for EBCDIC translation
      * @returns {Promise<string>} - promise that resolves to the spool content
      * @memberof GetJobs
      */
-    public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile) {
+    public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile, encoding?: string) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContentCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(jobFile, "Required job file object must be defined");
-        const parameters: string = "/" + encodeURIComponent(jobFile.jobname) + "/" + encodeURIComponent(jobFile.jobid) +
+        let parameters: string = "/" + encodeURIComponent(jobFile.jobname) + "/" + encodeURIComponent(jobFile.jobid) +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(jobFile.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        if (encoding && encoding.trim() != "") {parameters += "?fileEncoding=" + encoding;}
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
     }

@@ -122,6 +122,10 @@ export class DownloadJobs {
             parameters += "?mode=record";
         }
 
+        if (!parms.binary && !parms.record && parms.encoding && parms.encoding.trim() != "") {
+            parameters += "?fileEncoding=" + parms.encoding;
+        }
+
         const writeStream = parms.stream ?? IO.createWriteStream(file);
         await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, undefined, writeStream,
             true);

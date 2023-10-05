@@ -524,6 +524,26 @@ describe("GetJobs tests", () => {
             expect(contentCommon).toMatchSnapshot();
         });
 
+        it("should be able to get spool content with encoding", async () => {
+            (ZosmfRestClient.getExpectString as any) = mockGetJobsStringData(GetJobsData.SAMPLE_JES_MSG_LG);
+            const encoding = "IBM-037";
+
+            const content = await GetJobs.getSpoolContent(pretendSession, GetJobsData.SAMPLE_JOB_FILE, encoding);
+            const contentCommon = await GetJobs.getSpoolContentCommon(pretendSession, GetJobsData.SAMPLE_JOB_FILE, encoding);
+            expect(content).toMatchSnapshot();
+            expect(contentCommon).toMatchSnapshot();
+        });
+
+        it("should be able to get spool content with empty encoding", async () => {
+            (ZosmfRestClient.getExpectString as any) = mockGetJobsStringData(GetJobsData.SAMPLE_JES_MSG_LG);
+            const encoding = "       ";
+
+            const content = await GetJobs.getSpoolContent(pretendSession, GetJobsData.SAMPLE_JOB_FILE, encoding);
+            const contentCommon = await GetJobs.getSpoolContentCommon(pretendSession, GetJobsData.SAMPLE_JOB_FILE, encoding);
+            expect(content).toMatchSnapshot();
+            expect(contentCommon).toMatchSnapshot();
+        });
+
         it("should return spool content from getSpoolContentById if z/OSMF response is mocked", async () => {
             (ZosmfRestClient.getExpectString as any) = mockGetJobsStringData(GetJobsData.SAMPLE_JES_MSG_LG);
             const content = await GetJobs.getSpoolContentById(pretendSession, "MYJOB1", "JOB0123", 1);
