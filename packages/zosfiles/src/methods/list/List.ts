@@ -100,7 +100,8 @@ export class List {
                     const memberNameEndIdx = data.indexOf('"', memberStartIdx + 1); // Find the end of the member name
                     if (memberNameEndIdx !== -1) {
                         const memberName = data.substring(memberStartIdx, memberNameEndIdx);
-                        const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd"); data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberNameEndIdx);
+                        const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
+                        data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberNameEndIdx);
                     }
                 }
                 // parse the modified data as JSON
