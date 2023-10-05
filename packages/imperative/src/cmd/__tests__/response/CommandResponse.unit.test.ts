@@ -651,7 +651,9 @@ describe("Command Response", () => {
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({ silent: true });
-
+        process.stdout.write = jest.fn((data) => {
+            stdoutMsg += data;
+        });
         process.stderr.write = jest.fn((data) => {
             stderrMsg += data;
             return true;
@@ -860,7 +862,7 @@ describe("Command Response", () => {
         });
         process.stderr.write = jest.fn((stderrData) => {
             stderrMsg += stderrData;
-            return true
+            return true;
         });
         const stdoutMessage: string = "hello from the tests - stdout";
         const stderrMessage: string = "hello from the tests - stderr";
