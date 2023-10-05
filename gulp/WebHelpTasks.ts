@@ -36,7 +36,7 @@ const bundleDocsCssFiles = [
 const genBundleJs = () => {
     return gulp.src(bundleJsFiles.map(relPath => __dirname + "/" + relPath))
         .pipe(require("gulp-concat")("bundle.js"))
-        .pipe(gulp.dest(__dirname + "/../web-help/dist/js"));
+        .pipe(gulp.dest(__dirname + "/../packages/imperative/web-help/dist/js"));
 };
 genBundleJs.displayName = "generate bundle.js";
 
@@ -46,21 +46,21 @@ const genBundleCss = () => {
     return gulp.src(bundleCssFiles.map(relPath => __dirname + "/" + relPath))
         .pipe(require("gulp-postcss")([postcssUrl]))
         .pipe(require("gulp-concat")("bundle.css"))
-        .pipe(gulp.dest(__dirname + "/../web-help/dist/css"));
+        .pipe(gulp.dest(__dirname + "/../packages/imperative/web-help/dist/css"));
 };
 genBundleCss.displayName = "generate bundle.css";
 
 const genBundleDocsJs = () => {
     return gulp.src(bundleDocsJsFiles.map(relPath => __dirname + "/" + relPath))
         .pipe(require("gulp-concat")("bundle-docs.js"))
-        .pipe(gulp.dest(__dirname + "/../web-help/dist/js"));
+        .pipe(gulp.dest(__dirname + "/../packages/imperative/web-help/dist/js"));
 };
 genBundleDocsJs.displayName = "generate bundle-docs.js";
 
 const genBundleDocsCss = () => {
     return gulp.src(bundleDocsCssFiles.map(relPath => __dirname + "/" + relPath))
         .pipe(require("gulp-concat")("bundle-docs.css"))
-        .pipe(gulp.dest(__dirname + "/../web-help/dist/css"));
+        .pipe(gulp.dest(__dirname + "/../packages/imperative/web-help/dist/css"));
 };
 genBundleDocsCss.displayName = "generate bundle-docs.css";
 

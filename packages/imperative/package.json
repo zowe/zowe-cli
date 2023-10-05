@@ -39,7 +39,7 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "build": "npm run build:packages && npm run build:webHelp",
     "build:packages": "tsc --pretty",
-    "watch": "gulp watchImperative",
+    "watch": "concurrently \"tsc --pretty --watch\" \"npm run watch:webHelp\"",
     "postbuild": "gulp build:install-all-cli-dependencies && gulp build:all-clis"
   },
   "dependencies": {
@@ -96,6 +96,7 @@
     "@zowe/secrets-for-zowe-sdk": "^7.18.4",
     "ansi-colors": "^4.1.1",
     "clear-require": "^2.0.0",
+    "concurrently": "^8.2.1",
     "cowsay": "^1.2.1",
     "deep-diff": "^0.3.8",
     "env-cmd": "^8.0.2",

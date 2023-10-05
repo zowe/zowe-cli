@@ -24,7 +24,7 @@ describe("LoggerConfigBuilder tests", () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
-    })
+    });
 
     it("Should get a basic log4js configuration from getDefaultIConfigLogging", () => {
         expect(LoggerConfigBuilder.getDefaultIConfigLogging()).toMatchSnapshot();

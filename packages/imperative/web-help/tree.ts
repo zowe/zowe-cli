@@ -30,6 +30,7 @@ let currentNodeId: string;
 let currentView: number = +(urlParams.get("v") === "1");
 let searchTimeout: number = 0;
 const htmlChunk = -5; // used to strip off ".html" from string
+let siteOrigin: string = "https://docs.zowe.org";
 
 /**
  * Generate flattened list of tree nodes
@@ -246,6 +247,7 @@ function onSearchTextChanged(noDelay: boolean = false) {
  * @param e - Event object sent by postMessage
  */
 function onDocsPageChanged(e: any) {
+    if (e.origin !== siteOrigin || typeof e.data !== "string") return;
     const tempNodeId = e.data.slice(e.data.lastIndexOf("/") + 1);
     updateCurrentNode(tempNodeId, false, false);
 }
@@ -258,6 +260,8 @@ function loadTree() {
     // Set header and footer strings
     $("#header-text").text(headerStr);
     $("#footer").text(footerStr);
+
+    siteOrigin = window.location.origin;
 
     // Change active tab if not loading default view
     if (currentView === 1) {
