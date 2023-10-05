@@ -124,7 +124,7 @@ export class Imperative {
      */
     public static init(config?: IImperativeConfig): Promise<void> {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise<void>(async (initializationComplete: () => void, initializationFailed: ImperativeReject) => {
+        return new Promise<void>(async (initializationComplete: () => void, initializationFailed: ImperativeReject): Promise<void> => {
             try {
 
                 const timingApi = PerfTiming.api;

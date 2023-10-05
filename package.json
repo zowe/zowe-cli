@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "gulp updateLicense && lerna run build && npm run checkTestsCompile && npm run circularDependencyCheck",
+    "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",

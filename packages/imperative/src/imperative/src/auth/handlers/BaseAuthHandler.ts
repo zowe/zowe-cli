@@ -60,7 +60,6 @@ export abstract class BaseAuthHandler implements ICommandHandler {
                 throw new ImperativeError({
                     msg: `The group name "${commandParameters.positionals[1]}" was passed to the BaseAuthHandler, but it is not valid.`
                 });
-                break;
         }
     }
 

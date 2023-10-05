@@ -96,7 +96,6 @@
     "@zowe/secrets-for-zowe-sdk": "^7.18.4",
     "ansi-colors": "^4.1.1",
     "clear-require": "^2.0.0",
-    "concurrently": "^8.2.1",
     "cowsay": "^1.2.1",
     "deep-diff": "^0.3.8",
     "env-cmd": "^8.0.2",

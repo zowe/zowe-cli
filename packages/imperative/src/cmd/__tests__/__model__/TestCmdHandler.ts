@@ -29,7 +29,7 @@ export default class TestCmdHandler implements ICommandHandler {
                 });
             }
             if (commandParameters.arguments.throwError) {
-                commandParameters.arguments.this.doesnt.exist;
+                throw commandParameters.arguments.this.doesnt.exist;
             }
 
             if (commandParameters.arguments.rejectWithMessage) {
