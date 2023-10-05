@@ -22,4 +22,6 @@ jobs:
         node-version: lts/*
 
     - name: Check Vulnerabilities
-      run: npm audit --production --audit-level=moderate
+      run: |
+        npm install --package-lock-only --ignore-scripts --no-audit --save-prod ./packages/imperative/web-help
+        npm audit --production --audit-level=moderate
