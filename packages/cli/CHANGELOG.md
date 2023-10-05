@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Bump Imperative to `5.18.2` to fix issues with normalizing newlines on file uploads [#1815](https://github.com/zowe/zowe-cli/issues/1815)
+
 ## `7.18.6`
 
 - BugFix: Bump Secrets SDK to `7.18.6` to use `core-foundation-rs` instead of the now-archived `security-framework` crate, and to include the edge-case bug fix for Linux.
