@@ -79,7 +79,7 @@ describe("Command Profile Loader", () => {
             commandDefinition: SAMPLE_COMMAND_NO_PROFILE,
             profileManagerFactory: new BasicProfileManagerFactory(TEST_PROFILES_DIR),
             logger: TestLogger.getTestLogger()
-        }).loadProfiles({_: undefined, $0: undefined});
+        }).loadProfiles({ _: undefined as any, $0: undefined as any });
         expect(loaded).toBeDefined();
     });
 
@@ -121,7 +121,7 @@ describe("Command Profile Loader", () => {
         try {
             const manager = new BasicProfileManagerFactory(TEST_PROFILES_DIR);
             CommandProfileLoader.loader({
-                commandDefinition: undefined,
+                commandDefinition: undefined as any,
                 profileManagerFactory: manager,
                 logger: TestLogger.getTestLogger()
             });
@@ -139,7 +139,7 @@ describe("Command Profile Loader", () => {
             const manager = new BasicProfileManagerFactory(TEST_PROFILES_DIR);
             CommandProfileLoader.loader({
                 commandDefinition: SAMPLE_COMMAND_NO_PROFILE,
-                profileManagerFactory: undefined,
+                profileManagerFactory: undefined as any,
                 logger: TestLogger.getTestLogger()
             });
         } catch (e) {
@@ -160,24 +160,21 @@ describe("Command Profile Loader", () => {
         manager.getManager = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
-            const loadResp: IProfileLoaded = {
-                message: "Profile Loaded",
-                type: PROFILE_BANANA_TYPE,
+        profManager.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
                 name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                }
-            };
-            return loadResp;
-        });
+                type: PROFILE_BANANA_TYPE,
+            }
+        }));
 
         // pretend that we have a team config
         ImperativeConfig.instance.config = {
             exists: true
-        };
+        } as any;
 
         const emptyProfileMap: Map<string, IProfile[]> = new Map<string, IProfile[]>();
         const emptyProfileMetaMap: Map<string, IProfileLoaded[]> = new Map<string, IProfileLoaded[]>();
@@ -188,14 +185,14 @@ describe("Command Profile Loader", () => {
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
-        }).loadProfiles({_: undefined, $0: undefined});
+        }).loadProfiles({ _: undefined as any, $0: undefined as any });
 
         expect(loadedCmdProfiles).toEqual(noProfilesLoaded);
 
         // restore to not having a team config for future tests
         ImperativeConfig.instance.config = {
             exists: false
-        };
+        } as any;
     });
 
     it("should allow us to load a required profile", async () => {
@@ -208,25 +205,22 @@ describe("Command Profile Loader", () => {
         manager.getManager = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
-            const loadResp: IProfileLoaded = {
-                message: "Profile Loaded",
-                type: PROFILE_BANANA_TYPE,
+        profManager.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
                 name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                }
-            };
-            return loadResp;
-        });
+                type: PROFILE_BANANA_TYPE,
+            }
+        }));
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
         })
-            .loadProfiles({_: undefined, $0: undefined});
+            .loadProfiles({ _: undefined as any, $0: undefined as any });
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
     });
 
@@ -250,7 +244,7 @@ describe("Command Profile Loader", () => {
                 profileManagerFactory: manager,
                 logger: TestLogger.getTestLogger()
             })
-                .loadProfiles({_: undefined, $0: undefined});
+                .loadProfiles({ _: undefined as any, $0: undefined as any });
         } catch (e) {
             error = e;
         }
@@ -269,9 +263,7 @@ describe("Command Profile Loader", () => {
         manager.getManager = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
-            return {};
-        });
+        profManager.load = jest.fn((parms) => Promise.resolve({} as any ));
         let error;
         try {
             const response = await CommandProfileLoader.loader({
@@ -279,7 +271,7 @@ describe("Command Profile Loader", () => {
                 profileManagerFactory: manager,
                 logger: TestLogger.getTestLogger()
             })
-                .loadProfiles({_: undefined, $0: undefined});
+                .loadProfiles({ _: undefined as any, $0: undefined as any });
         } catch (e) {
             error = e;
         }
@@ -298,9 +290,7 @@ describe("Command Profile Loader", () => {
         manager.getManager = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
-            return {};
-        });
+        profManager.load = jest.fn((parms) => Promise.resolve({} as any));
         let error;
         try {
             const response = await CommandProfileLoader.loader({
@@ -308,7 +298,7 @@ describe("Command Profile Loader", () => {
                 profileManagerFactory: manager,
                 logger: TestLogger.getTestLogger()
             })
-                .loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty"});
+                .loadProfiles({ "_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
         } catch (e) {
             error = e;
         }
@@ -327,25 +317,22 @@ describe("Command Profile Loader", () => {
         manager.getManager = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
-            const loadResp: IProfileLoaded = {
-                message: "Profile Loaded",
-                type: PROFILE_BANANA_TYPE,
+        profManager.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
                 name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                }
-            };
-            return loadResp;
-        });
+                type: PROFILE_BANANA_TYPE,
+            }
+        }));
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
         })
-            .loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty"});
+            .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
     });
 
@@ -359,38 +346,35 @@ describe("Command Profile Loader", () => {
         manager.getManager = jest.fn((type) => {
             return profManager;
         });
-        profManager.load = jest.fn((parms) => {
-            const loadResp: IProfileLoaded = {
-                message: "Profile Loaded",
-                type: PROFILE_BANANA_TYPE,
+        profManager.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
                 name: "tasty",
-                failNotFound: true,
-                profile: {
+                type: PROFILE_BANANA_TYPE,
+            },
+            dependenciesLoaded: true,
+            dependencyLoadResponses: [
+                {
+                    message: "Profile Loaded",
+                    type: STRAWBERRY_PROFILE_TYPE,
                     name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                },
-                dependenciesLoaded: true,
-                dependencyLoadResponses: [
-                    {
-                        message: "Profile Loaded",
+                    failNotFound: true,
+                    profile: {
+                        name: "red",
                         type: STRAWBERRY_PROFILE_TYPE,
-                        name: "tasty",
-                        failNotFound: true,
-                        profile: {
-                            name: "red",
-                            type: STRAWBERRY_PROFILE_TYPE,
-                        },
-                    }
-                ]
-            };
-            return loadResp;
-        });
+                    },
+                }
+            ]
+        }));
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
         })
-            .loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty"});
+            .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
         expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
     });
@@ -414,38 +398,34 @@ describe("Command Profile Loader", () => {
             if (type === STRAWBERRY_PROFILE_TYPE) {
                 return profManagerStrawberry;
             }
-            return undefined;
+            return undefined as any;
         });
-        profManagerBanana.load = jest.fn((parms) => {
-            return {
-                message: "Profile Loaded",
+        profManagerBanana.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
+                name: "tasty",
                 type: PROFILE_BANANA_TYPE,
-                name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                }
-            };
-        });
-        profManagerStrawberry.load = jest.fn((parms) => {
-            return {
-                message: "Profile Loaded",
+            }
+        }));
+        profManagerStrawberry.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: STRAWBERRY_PROFILE_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
+                name: "red",
                 type: STRAWBERRY_PROFILE_TYPE,
-                name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "red",
-                    type: STRAWBERRY_PROFILE_TYPE,
-                }
-            };
-        });
+            }
+        }));
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_TWO_PROFILE_TYPES,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
         })
-            .loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty", "strawberry-profile": "red"});
+            .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
         expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
     });
@@ -469,20 +449,18 @@ describe("Command Profile Loader", () => {
             if (type === STRAWBERRY_PROFILE_TYPE) {
                 return profManagerStrawberry;
             }
-            return undefined;
+            return undefined as any;
         });
-        profManagerBanana.load = jest.fn((parms) => {
-            return {
-                message: "Profile Loaded",
-                type: PROFILE_BANANA_TYPE,
+        profManagerBanana.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
                 name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                }
-            };
-        });
+                type: PROFILE_BANANA_TYPE,
+            }
+        }));
         profManagerStrawberry.load = jest.fn((parms) => {
             throw new ImperativeError({msg: `Not found`});
         });
@@ -493,7 +471,7 @@ describe("Command Profile Loader", () => {
                 profileManagerFactory: manager,
                 logger: TestLogger.getTestLogger()
             })
-                .loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty", "strawberry-profile": "red"});
+                .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
         } catch (e) {
             error = e;
         }
@@ -513,53 +491,50 @@ describe("Command Profile Loader", () => {
             if (type === PROFILE_BANANA_TYPE) {
                 return profManagerBanana;
             }
-            return undefined;
+            return undefined as any;
         });
-        profManagerBanana.load = jest.fn((parms) => {
-            const loadResponse: IProfileLoaded = {
-                message: "Profile Loaded",
-                type: PROFILE_BANANA_TYPE,
+        profManagerBanana.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
                 name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
+                type: PROFILE_BANANA_TYPE,
+            },
+            dependenciesLoaded: true,
+            dependencyLoadResponses: [
+                {
+                    message: "Profile Loaded",
                     type: PROFILE_BANANA_TYPE,
-                },
-                dependenciesLoaded: true,
-                dependencyLoadResponses: [
-                    {
-                        message: "Profile Loaded",
-                        type: PROFILE_BANANA_TYPE,
+                    name: "great",
+                    failNotFound: true,
+                    profile: {
                         name: "great",
-                        failNotFound: true,
-                        profile: {
-                            name: "great",
+                        type: PROFILE_BANANA_TYPE,
+                    },
+                    dependenciesLoaded: true,
+                    dependencyLoadResponses: [
+                        {
+                            message: "Profile Loaded",
                             type: PROFILE_BANANA_TYPE,
-                        },
-                        dependenciesLoaded: true,
-                        dependencyLoadResponses: [
-                            {
-                                message: "Profile Loaded",
-                                type: PROFILE_BANANA_TYPE,
+                            name: "awesome",
+                            failNotFound: true,
+                            profile: {
                                 name: "awesome",
-                                failNotFound: true,
-                                profile: {
-                                    name: "awesome",
-                                    type: PROFILE_BANANA_TYPE,
-                                },
-                            }
-                        ]
-                    }
-                ]
-            };
-            return loadResponse;
-        });
+                                type: PROFILE_BANANA_TYPE,
+                            },
+                        }
+                    ]
+                }
+            ]
+        }));
         // commandDefinition: SAMPLE_COMMAND_TWO_PROFILE_TYPES_ONE_OPTIONAL,
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager, logger:
         TestLogger.getTestLogger()
-        }).loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty"});
+        }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
         expect(response.getAll(PROFILE_BANANA_TYPE)[0]).toMatchSnapshot();
         expect(response.getAll(PROFILE_BANANA_TYPE)[1]).toMatchSnapshot();
         expect(response.getAll(PROFILE_BANANA_TYPE)[2]).toMatchSnapshot();
@@ -586,38 +561,34 @@ describe("Command Profile Loader", () => {
             if (type === STRAWBERRY_PROFILE_TYPE) {
                 return profManagerStrawberry;
             }
-            return undefined;
+            return undefined as any;
         });
-        profManagerBanana.load = jest.fn((parms) => {
-            return {
-                message: "Profile Loaded",
+        profManagerBanana.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: PROFILE_BANANA_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
+                name: "tasty",
                 type: PROFILE_BANANA_TYPE,
-                name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "tasty",
-                    type: PROFILE_BANANA_TYPE,
-                }
-            };
-        });
-        profManagerStrawberry.load = jest.fn((parms) => {
-            return {
-                message: "Profile Loaded",
+            }
+        }));
+        profManagerStrawberry.load = jest.fn((parms) => Promise.resolve({
+            message: "Profile Loaded",
+            type: STRAWBERRY_PROFILE_TYPE,
+            name: "tasty",
+            failNotFound: true,
+            profile: {
+                name: "red",
                 type: STRAWBERRY_PROFILE_TYPE,
-                name: "tasty",
-                failNotFound: true,
-                profile: {
-                    name: "red",
-                    type: STRAWBERRY_PROFILE_TYPE,
-                }
-            };
-        });
+            }
+        }));
 
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_TWO_PROFILE_TYPES_ONE_OPTIONAL,
             profileManagerFactory: manager, logger:
         TestLogger.getTestLogger()
-        }).loadProfiles({"_": undefined, "$0": undefined, "banana-profile": "tasty", "strawberry-profile": "red"});
+        }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
         expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
     });

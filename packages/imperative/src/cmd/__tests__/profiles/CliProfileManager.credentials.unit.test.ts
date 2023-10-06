@@ -108,7 +108,7 @@ describe("Cli Profile Manager", () => {
                     }
                 };
 
-                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile) => {
+                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile | any) => {
                     return {
                         overwritten: tParms.overwrite,
                         profile: tParms.profile
@@ -159,7 +159,7 @@ describe("Cli Profile Manager", () => {
                     }
                 };
 
-                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile) => {
+                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile | any) => {
                     return {
                         overwritten: tParms.overwrite,
                         profile: tParms.profile
@@ -212,7 +212,7 @@ describe("Cli Profile Manager", () => {
                 parms.args.flag = undefined;
                 parms.args.minime = undefined;
 
-                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile) => {
+                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile | any) => {
                     return {
                         overwritten: tParms.overwrite,
                         profile: tParms.profile
@@ -293,7 +293,7 @@ describe("Cli Profile Manager", () => {
                 dummyManager.save = jest.fn();
                 Object.defineProperty(CredentialManagerFactory, "manager", {get: jest.fn().mockReturnValue(dummyManager)});
 
-                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile) => {
+                jest.spyOn(BasicProfileManager.prototype, "saveProfile" as any).mockImplementation((tParms: ISaveProfile | any) => {
                     return {
                         overwritten: tParms.overwrite,
                         profile: tParms.profile
@@ -376,7 +376,7 @@ describe("Cli Profile Manager", () => {
             it("should load credentials from a profile with constant string values for secure properties", async () => {
                 const dummyManager = new DefaultCredentialManager("dummy");
                 dummyManager.load = jest.fn(async (propKey: string) => {
-                    let ret = null;
+                    let ret: any = null;
                     if (propKey.indexOf("myCode") >= 0) {
                         ret = code;
                     } else if (propKey.indexOf("myFlag") >= 0) {
@@ -429,7 +429,7 @@ describe("Cli Profile Manager", () => {
             it("should not load credentials from a profile if noSecure is specified", async () => {
                 const dummyManager = new DefaultCredentialManager("dummy");
                 dummyManager.load = jest.fn(async (propKey: string) => {
-                    let ret = null;
+                    let ret: any = null;
                     if (propKey.indexOf("myCode") >= 0) {
                         ret = code;
                     } else if (propKey.indexOf("myFlag") >= 0) {
@@ -480,7 +480,7 @@ describe("Cli Profile Manager", () => {
             it("should not attempt to load secure fields if no credential manager is present", async () => {
                 const dummyManager = new DefaultCredentialManager("dummy");
                 dummyManager.load = jest.fn(async (propKey: string) => {
-                    let ret = null;
+                    let ret: any = null;
                     if (propKey.indexOf("myCode") >= 0) {
                         ret = code;
                     } else if (propKey.indexOf("myFlag") >= 0) {
@@ -566,7 +566,7 @@ describe("Cli Profile Manager", () => {
                 Object.defineProperty(CredentialManagerFactory, "manager", {get: jest.fn().mockReturnValue(dummyManager)});
                 Object.defineProperty(CredentialManagerFactory, "initialized", {get: jest.fn().mockReturnValue(true)});
 
-                jest.spyOn(ProfileIO, "exists").mockReturnValue(true);
+                jest.spyOn(ProfileIO, "exists").mockReturnValue(true as any);
 
                 jest.spyOn(BasicProfileManager.prototype, "deleteProfileFromDisk" as any).mockImplementation(() => "dummy-path");
 
@@ -588,7 +588,7 @@ describe("Cli Profile Manager", () => {
                 Object.defineProperty(CredentialManagerFactory, "manager", {get: jest.fn().mockReturnValue(dummyManager)});
                 Object.defineProperty(CredentialManagerFactory, "initialized", {get: jest.fn().mockReturnValue(false)});
 
-                jest.spyOn(ProfileIO, "exists").mockReturnValue(true);
+                jest.spyOn(ProfileIO, "exists").mockReturnValue(true as any);
 
                 jest.spyOn(BasicProfileManager.prototype, "deleteProfileFromDisk" as any).mockImplementation(() => "dummy-path");
 
@@ -615,7 +615,7 @@ describe("Cli Profile Manager", () => {
                 Object.defineProperty(CredentialManagerFactory, "manager", {get: jest.fn().mockReturnValue(dummyManager)});
                 Object.defineProperty(CredentialManagerFactory, "initialized", {get: jest.fn().mockReturnValue(true)});
 
-                jest.spyOn(ProfileIO, "exists").mockReturnValue(true);
+                jest.spyOn(ProfileIO, "exists").mockReturnValue(true as any);
 
                 let errorMessage = "";
                 try {
