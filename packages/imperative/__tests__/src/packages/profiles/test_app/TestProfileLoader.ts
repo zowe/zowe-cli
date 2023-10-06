@@ -9,10 +9,10 @@
 *
 */
 
-import { Logger } from "../../../../../packages/logger/src/Logger";
-import { ProfileInfo } from "../../../../../packages/config/src/ProfileInfo";
+import { Logger } from "../../../../../src/logger/src/Logger";
+import { ProfileInfo } from "../../../../../src/config/src/ProfileInfo";
 import { Log4jsConfig } from "../src/constants/ProfileInfoConstants";
-import { IProfAttrs } from "../../../../../packages";
+import { IProfAttrs } from "../../../../../src";
 import * as path from "path";
 
 export class TestProfileLoader {
