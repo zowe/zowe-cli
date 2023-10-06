@@ -503,7 +503,7 @@ describe("Installing Plugins", () => {
     });
 
     describe("Injection Tests", () => {
-        let TEST_ENVIRONMENT;
+        let TEST_ENVIRONMENT: any;
         beforeEach(async () => {
             TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
                 cliHomeEnvVar: "PLUGINS_TEST_CLI_HOME",
