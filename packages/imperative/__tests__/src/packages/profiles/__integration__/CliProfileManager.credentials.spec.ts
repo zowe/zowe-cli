@@ -51,7 +51,7 @@ describe("Cli Profile Manager", () => {
                 }
             }
         };
-    });
+    }) as any;
     afterEach(() => {
         writtenProfile = undefined; // clear any saved profile to not pollute results across tests
     });
