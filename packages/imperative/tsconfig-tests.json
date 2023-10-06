@@ -33,6 +33,6 @@
     "**/__mocks__/*"
   ],
   "files": [
-    "./__types__/wontache.d.ts"
+    "../../__types__/wontache.d.ts"
   ]
 }

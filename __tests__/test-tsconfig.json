@@ -20,6 +20,9 @@
     "./**/*.ts",
     "../packages/**/__tests__/**/*.ts"
   ],
+  "files": [
+    "../__types__/wontache.d.ts"
+  ],
   "exclude": [
     "lib",
     "__results__/",
