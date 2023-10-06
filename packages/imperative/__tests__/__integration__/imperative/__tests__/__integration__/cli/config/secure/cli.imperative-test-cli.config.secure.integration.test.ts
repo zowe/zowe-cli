@@ -73,7 +73,7 @@ describe("imperative-test-cli config secure", () => {
         const configJson = JSON.parse(config);
         const securedValue = await keytar.getPassword(service, "secure_config_props");
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-        const expectedSecuredValueJson = {};
+        const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedProjectConfigLocation] = {
             "profiles.base.properties.secret": "anotherFakeValue"
         };
@@ -96,7 +96,7 @@ describe("imperative-test-cli config secure", () => {
         const configJson = JSON.parse(config);
         const securedValue = await keytar.getPassword(service, "secure_config_props");
         const securedValueJson = (securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString()));
-        const expectedSecuredValueJson = null;
+        const expectedSecuredValueJson: any = null;
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
@@ -116,7 +116,7 @@ describe("imperative-test-cli config secure", () => {
         const configJson = JSON.parse(config);
         const securedValue = await keytar.getPassword(service, "secure_config_props");
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-        const expectedSecuredValueJson = {};
+        const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedGlobalProjectConfigLocation] = {
             "profiles.base.properties.secret": "anotherFakeValue"
         };
@@ -139,7 +139,7 @@ describe("imperative-test-cli config secure", () => {
         const configJson = JSON.parse(config);
         const securedValue = await keytar.getPassword(service, "secure_config_props");
         const securedValueJson = (securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString()));
-        const expectedSecuredValueJson = null;
+        const expectedSecuredValueJson: any = null;
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
@@ -176,7 +176,7 @@ describe("imperative-test-cli config secure", () => {
         expectedJsonWithToken.profiles.base.properties.tokenValue = "(secure value)";
         const securedValue = await keytar.getPassword(service, "secure_config_props");
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-        const expectedSecuredValueJson = {};
+        const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedProjectConfigLocation] = {
             "profiles.base.properties.tokenValue": "fakeUser:anotherFakeValue@fakeToken"
         };
