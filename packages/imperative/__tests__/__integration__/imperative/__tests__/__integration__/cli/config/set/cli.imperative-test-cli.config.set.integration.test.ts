@@ -103,7 +103,7 @@ describe("imperative-test-cli config set", () => {
             const configJson = JSON.parse(config);
             const securedValue = await keytar.getPassword(service, "secure_config_props");
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedProjectConfigLocation] = {
                 "profiles.base.properties.secret": "fakeValue",
                 "profiles.secured.properties.info": "some_fake_information"
@@ -127,7 +127,7 @@ describe("imperative-test-cli config set", () => {
             const configJson = JSON.parse(config);
             const securedValue = await keytar.getPassword(service, "secure_config_props");
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedUserConfigLocation] = {
                 "profiles.secured.properties.info": "some_fake_information"
             };
@@ -150,7 +150,7 @@ describe("imperative-test-cli config set", () => {
             const configJson = JSON.parse(config);
             const securedValue = await keytar.getPassword(service, "secure_config_props");
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedGlobalProjectConfigLocation] = {
                 "profiles.base.properties.secret": "fakeValue",
                 "profiles.secured.properties.info": "some_fake_information"
@@ -174,7 +174,7 @@ describe("imperative-test-cli config set", () => {
             const configJson = JSON.parse(config);
             const securedValue = await keytar.getPassword(service, "secure_config_props");
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedGlobalUserConfigLocation] = {
                 "profiles.secured.properties.info": "some_fake_information"
             };
@@ -197,7 +197,7 @@ describe("imperative-test-cli config set", () => {
             const configJson = JSON.parse(config);
             const securedValue = await keytar.getPassword(service, "secure_config_props");
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedGlobalUserConfigLocation] = {
                 "profiles.secured.properties.info": {data: "fake"}
             };
@@ -226,7 +226,7 @@ describe("imperative-test-cli config set", () => {
             const fileContents = JSON.parse(fs.readFileSync(expectedProjectConfigLocation).toString());
             const securedValue = await keytar.getPassword(service, "secure_config_props");
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedProjectConfigLocation] = {
                 "profiles.base.properties.secret": "area51"
             };
@@ -241,7 +241,7 @@ describe("imperative-test-cli config set", () => {
         });
         it("should toggle the security of a property if requested", async () => {
             runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);
-            const expectedSecuredValueJson = {};
+            const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedUserConfigLocation] = {
                 "profiles.secured.properties.info": "some_fake_information"
             };
