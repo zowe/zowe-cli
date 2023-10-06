@@ -24,7 +24,8 @@ module.exports = {
                 "latest": ["zowe-v2-lts", "next"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
-            smokeTest: true
+            smokeTest: true,
+            versionIndependent: ["@zowe/imperative"]
         }],
         ["@octorelease/github", {
             checkPrLabels: true
