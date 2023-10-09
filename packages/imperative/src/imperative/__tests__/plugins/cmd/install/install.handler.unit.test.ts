@@ -51,8 +51,8 @@ import { TextUtils } from "../../../../../utilities";
 import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
 
-let expectedVal;
-let returnedVal;
+let expectedVal: unknown;
+let returnedVal: unknown;
 
 describe("Plugin Management Facility install handler", () => {
 

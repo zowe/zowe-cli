@@ -13,15 +13,10 @@ import { CompleteAutoInitCommandBuilder } from "../../../../src/config/cmd/auto-
 import { Logger } from "../../../../../logger";
 import { ICommandDefinition } from "../../../../../cmd";
 import { fakeAutoInitConfig } from "./__data__/SampleAutoInitConfig";
-import { IImperativeAutoInitCommandConfig } from "../../../../src/doc/IImperativeAutoInitCommandConfig";
-
-const autoInitCommandConfig: IImperativeAutoInitCommandConfig = {
-    autoInitConfig: fakeAutoInitConfig
-};
 
 describe("CompleteAutoInitCommandBuilder", () => {
     it("should create complete auth group given only an auto init config object", () => {
-        const cmdDef: ICommandDefinition = CompleteAutoInitCommandBuilder.getAutoInitCommand(autoInitCommandConfig.autoInitConfig,
+        const cmdDef: ICommandDefinition = CompleteAutoInitCommandBuilder.getAutoInitCommand(fakeAutoInitConfig,
             Logger.getImperativeLogger());
         expect(cmdDef).toMatchSnapshot();
     });

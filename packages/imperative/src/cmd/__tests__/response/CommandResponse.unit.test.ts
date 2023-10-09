@@ -653,6 +653,7 @@ describe("Command Response", () => {
         const response = new CommandResponse({ silent: true });
         process.stdout.write = jest.fn((data) => {
             stdoutMsg += data;
+            return true;
         });
         process.stderr.write = jest.fn((data) => {
             stderrMsg += data;

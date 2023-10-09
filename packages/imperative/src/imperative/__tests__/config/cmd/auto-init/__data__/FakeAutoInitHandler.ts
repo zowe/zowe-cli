@@ -15,12 +15,14 @@ import { ISession, AbstractSession } from "../../../../../../rest";
 
 export class FakeAutoInitHandler extends BaseAutoInitHandler {
     public mProfileType: string = "fruit";
+    public mServiceDescription: string = "This is the FakeAutoInitHandler";
+
 
     public createSessCfgFromArgs(args: ICommandArguments): ISession {
         return { hostname: "fakeHost", port: 3000 };
     }
 
-    protected async doAutoInit(session: AbstractSession): Promise<void> { /* Do nothing */ }
+    protected async doAutoInit(session: AbstractSession): Promise<any> { /* Do nothing */ }
 
     protected displayAutoInitChanges(response: IHandlerResponseApi): void { /* Do nothing */ }
 }

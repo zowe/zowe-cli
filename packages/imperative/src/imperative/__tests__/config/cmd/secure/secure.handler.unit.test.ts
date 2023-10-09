@@ -69,7 +69,7 @@ const fakeGblSchemaPath = path.join(__dirname, ".fakeapp", "fakeapp.schema.json"
 const fakeGblProjUserPath = path.join(__dirname, ".fakeapp", "fakeapp.config.user.json");
 const fakeUnrelatedPath = path.join(__dirname, "fakeapp.unrelated.config.json");
 
-const fakeSecureDataJson = {};
+const fakeSecureDataJson: any = {};
 fakeSecureDataJson[fakeProjPath] = {"profiles.base.properties.secure": "fakeSecureValue"};
 fakeSecureDataJson[fakeGblProjPath] = {"profiles.base.properties.secure": "fakeSecureValue"};
 fakeSecureDataJson[fakeUnrelatedPath] = {"profiles.base.properties.secure": "anotherFakeSecureValue"};

@@ -78,7 +78,7 @@ describe("Configuration Edit command handler", () => {
 
     it("should open config file that exists in editor", async () => {
         const handler = new EditHandler();
-        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockResolvedValueOnce();
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor");
         const params = getIHandlerParametersObject();
 
         await handler.process(params);

@@ -966,12 +966,12 @@ describe("Plugin Management Facility", () => {
             it("should record an error when a plugin command has a missing chained handler", () => {
                 // remove handler property from a command definition
                 const badPluginCmdDef: ICommandDefinition = JSON.parse(JSON.stringify(basePluginCmdDef));
-                delete badPluginCmdDef.children[0].handler;
+                delete badPluginCmdDef?.children?.[0].handler;
                 badPluginCmdDef.children[0].chainedHandlers = [
                     {
                         "handler": "./lib/sample-plugin/cmd/foo/foo.handler"
                     },
-                    {}
+                    {} as any
                 ];
 
                 // Ensure we get to the function that we want to validate
@@ -1538,9 +1538,9 @@ describe("Plugin Management Facility", () => {
         const testPluginCofig = {
             pluginName,
             npmPackageName: "firstPackageName",
-            impConfig: {name: "testImpConfig", profiles: []},
-            cliDependency: null,
-            impDependency: null
+            impConfig: { name: "testImpConfig", profiles: [] as unknown as ICommandProfileTypeConfiguration },
+            cliDependency: null as unknown,
+            impDependency: null as unknown
         };
 
         const realCombineAllCmdDefs = DefinitionTreeResolver.combineAllCmdDefs;
@@ -1604,7 +1604,7 @@ describe("Plugin Management Facility", () => {
 
         it("should record an error when addProfiles throws an exception", () => {
             // Ensure we get to the function that we want to test
-            testPluginCofig.impConfig.profiles = [{schema: "dummy1"}, {schema: "dummy2"}];
+            testPluginCofig.impConfig.profiles = [{ schema: "dummy1" }, { schema: "dummy2" }] as any;
             mockCombineAllCmdDefs.mockReturnValueOnce({});
             mockValidatePlugin.mockReturnValue(true);
             mockAddCmdGrpToResolvedCliCmdTree.mockReturnValue(true);
@@ -1624,7 +1624,7 @@ describe("Plugin Management Facility", () => {
 
         it("should call addCmdGrpToResolvedCliCmdTree and addProfiles with the proper parameters", () => {
             // Ensure we get to the function that we want to test
-            testPluginCofig.impConfig.profiles = [{schema: "dummy1"}];
+            testPluginCofig.impConfig.profiles = [{ schema: "dummy1" }] as any;
             mockCombineAllCmdDefs.mockReturnValueOnce({});
             mockValidatePlugin.mockReturnValue(true);
             mockAddCmdGrpToResolvedCliCmdTree.mockReturnValue(true);

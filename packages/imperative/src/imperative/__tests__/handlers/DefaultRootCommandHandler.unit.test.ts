@@ -113,12 +113,14 @@ describe("Default Root Command Handler", () => {
         await handler.process({
             response: cmdResp,
             arguments: {_: [], $0: ""},
-            definition: prepared.children[0].children[0],
+            definition: prepared.children?.[0].children?.[0] as any,
             fullDefinition: prepared,
-            profiles: undefined
+            profiles: undefined as any,
+            positionals: [],
+            stdin: process.stdin
         });
         TestLogger.info("Help Text: \n" + cmdResp.buildJsonResponse().stdout);
-        expect(cmdResp.buildJsonResponse().stdout.toString()).toMatchSnapshot();
+        expect(cmdResp.buildJsonResponse().stdout?.toString()).toMatchSnapshot();
     });
 
     it ("should display a list of available commands with --available-commands", async() => {
@@ -133,11 +135,13 @@ describe("Default Root Command Handler", () => {
             arguments: {_: [], $0: "", availableCommands: true},
             definition: MULTIPLE_GROUPS,
             fullDefinition: MULTIPLE_GROUPS,
-            profiles: undefined
+            profiles: undefined as any,
+            positionals: [],
+            stdin: process.stdin
         });
 
         expect(cmdResp.buildJsonResponse().data).toEqual(MOCKED_COMMAND_TREE);
-        expect(cmdResp.buildJsonResponse().stdout.toString()).toMatchSnapshot();
+        expect(cmdResp.buildJsonResponse().stdout?.toString()).toMatchSnapshot();
         expect(cmdResp.buildJsonResponse()).toMatchSnapshot();
     });
 
@@ -152,9 +156,11 @@ describe("Default Root Command Handler", () => {
         await handler.process({
             response: cmdResp,
             arguments: {_: [], $0: "", version: true},
-            definition: MULTIPLE_GROUPS.children[0].children[0],
+            definition: MULTIPLE_GROUPS.children?.[0].children?.[0] as any,
             fullDefinition: MULTIPLE_GROUPS,
-            profiles: undefined
+            profiles: undefined as any,
+            positionals: [],
+            stdin: process.stdin
         });
         TestLogger.info("Version Text: \n" + cmdResp.buildJsonResponse().stdout);
         expect(cmdResp.buildJsonResponse()).toMatchSnapshot();
