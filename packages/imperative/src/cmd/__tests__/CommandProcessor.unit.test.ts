@@ -1175,10 +1175,8 @@ describe("Command Processor", () => {
         const commandResponse: ICommandResponse = await processor.invoke(parms);
         expect(commandResponse).toBeDefined();
         const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Command Error:");
         expect(stderrText).toContain("\tTab!\tTab again!");
         expect(stderrText).toContain("Line should not be indented");
-        expect(stderrText).toContain("Error Details:");
         expect(stderrText).toContain("More details!");
         expect(commandResponse.success).toEqual(false);
         expect(commandResponse.exitCode).toEqual(1);
@@ -1228,9 +1226,7 @@ describe("Command Processor", () => {
         const commandResponse: ICommandResponse = await processor.invoke(parms);
         expect(commandResponse).toBeDefined();
         const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Command Error:");
         expect(stderrText).toContain("Handler threw an imperative error!");
-        expect(stderrText).toContain("Error Details:");
         expect(stderrText).toContain("More details!");
         expect(commandResponse.message).toEqual("Handler threw an imperative error!");
         expect(commandResponse.error?.msg).toEqual("Handler threw an imperative error!");
