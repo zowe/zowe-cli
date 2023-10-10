@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x, 20.x]
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
@@ -62,10 +62,6 @@ jobs:
     - name: Get NPM Version
       id: npm-version
       run: echo "number=$(npm --version)" >> $GITHUB_OUTPUT
-
-    - name: Use NPM v8
-      id: npm8
-      run: npm install -g npm@~8.3.2
 
     - name: Install Dependencies
       run: npm ci

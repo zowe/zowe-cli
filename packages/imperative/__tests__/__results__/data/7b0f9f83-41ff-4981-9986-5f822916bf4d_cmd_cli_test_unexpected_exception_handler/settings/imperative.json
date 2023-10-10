@@ -1,5 +1,0 @@
-{
-  "overrides": {
-    "CredentialManager": "cmd-sample-cli"
-  }
-}

@@ -34,7 +34,7 @@
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
-    "watch": "tsc --pretty --watch",
+    "watch": "concurrently \"tsc --pretty --watch\" \"npm run watch:webHelp\"",
     "build:webHelp": "cd web-help && npm run build",
     "watch:webHelp": "cd web-help && npm run watch",
     "typedoc": "typedoc --options ./typedoc.json ./src/",

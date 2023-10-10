@@ -1,8 +1,0 @@
-[2023/06/29 14:55:26.220] [WARN] [Imperative.js:462] Environmental setting for imperative log level ('IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL') was blank.
-[2023/06/29 14:55:26.221] [WARN] [Imperative.js:480] Environmental setting for app log level ('IMPERATIVE_TEST_CLI_APP_LOG_LEVEL') was blank.
-[2023/06/29 14:55:26.278] [WARN] [main.js:21] This is a warn message after init!
-[2023/06/29 14:55:26.278] [ERROR] [main.js:22] This is an error message after init!
-[2023/06/29 14:55:26.279] [FATAL] [main.js:23] This is a fatal message after init!
-[2023/06/29 14:55:26.366] [WARN] [Logging.handler.js:37] This is an imperative logger warn message from the test logging handler!
-[2023/06/29 14:55:26.367] [ERROR] [Logging.handler.js:38] This is an imperative logger error message from the test logging handler!
-[2023/06/29 14:55:26.369] [FATAL] [Logging.handler.js:39] This is an imperative logger fatal message from the test logging handler!

@@ -1,4 +1,0 @@
-[2023/06/29 15:08:28.807] [WARN] [Imperative.ts:551] Environmental setting for imperative log level ('example_with_profiles_IMPERATIVE_LOG_LEVEL') was blank.
-[2023/06/29 15:08:28.809] [WARN] [Imperative.ts:569] Environmental setting for app log level ('example_with_profiles_APP_LOG_LEVEL') was blank.
-[2023/06/29 15:08:30.743] [WARN] [Imperative.ts:551] Environmental setting for imperative log level ('example_with_profiles_IMPERATIVE_LOG_LEVEL') was blank.
-[2023/06/29 15:08:30.744] [WARN] [Imperative.ts:569] Environmental setting for app log level ('example_with_profiles_APP_LOG_LEVEL') was blank.

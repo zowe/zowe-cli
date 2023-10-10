@@ -164,13 +164,21 @@ describe("PluginRequireProvider", () => {
          * the tests to still function correctly without us mucking up node with
          * bogus test requires.
          */
+        type MockedRequire = {
+            (id: string): any;
+            resolve: (id: string) => string;
+            cache: NodeModule['require']['cache'];
+            extensions: NodeModule['require'];
+            main: NodeModule['require']['main'];
+        };
+
         return Module.prototype.require = jest.fn(function(...args: any[]) {
             if (args[1] === testRequireIndicator) {
                 return this;
             } else {
                 return originalRequire.apply(this, args);
             }
-        });
+        }) as any | MockedRequire;
     };
 
     // Gets a reference to the original require before each test

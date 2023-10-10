@@ -52,6 +52,14 @@ export class SetupTestEnvironment {
         // Set the home environment variable
         process.env[params.cliHomeEnvVar] = testDirectory;
 
+        // Ensure correct path separator for windows or linux like systems.
+        const separator = process.platform === "win32" ? ";" : ":";
+
+        process.env.PATH = [
+            nodePath.resolve(__dirname, "../../../../../.npm-global/bin"),
+            process.env.PATH
+        ].join(separator);
+
         // Return the working directory that the tests should be using
         return {
             workingDir: testDirectory

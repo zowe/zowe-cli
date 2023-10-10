@@ -1,5 +1,0 @@
-{
-  "overrides": {
-    "CredentialManager": "TestCLI"
-  }
-}

@@ -1,2 +1,0 @@
-[2023/06/29 15:32:46.780] [WARN] [Imperative.ts:551] Environmental setting for imperative log level ('@zowe/imperative_IMPERATIVE_LOG_LEVEL') was blank.
-[2023/06/29 15:32:46.781] [WARN] [Imperative.ts:569] Environmental setting for app log level ('@zowe/imperative_APP_LOG_LEVEL') was blank.
