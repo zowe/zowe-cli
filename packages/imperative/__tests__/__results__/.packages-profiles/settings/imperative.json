@@ -1,5 +1,0 @@
-{
-  "overrides": {
-    "CredentialManager": "test-cli-for-profiles"
-  }
-}
