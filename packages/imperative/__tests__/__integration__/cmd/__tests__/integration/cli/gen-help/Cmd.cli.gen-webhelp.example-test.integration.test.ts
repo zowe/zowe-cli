@@ -41,7 +41,7 @@ describe("cmd-cli gen-webhelp example-test", () => {
         fs.writeFileSync(instPluginsFileNm, "{}");
 
         // copy our webhelp distribution files to our test's src directory
-        fsExtra.copySync("./web-help/dist", "./__tests__/__integration__/cmd/lib/web-help/dist");
+        fsExtra.copySync("./packages/imperative/web-help/dist", "./__tests__/__integration__/cmd/lib/web-help/dist");
     });
 
     afterAll(async () => {

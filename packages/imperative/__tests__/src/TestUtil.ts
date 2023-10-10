@@ -48,7 +48,7 @@ export { resolve, basename, dirname } from "path";
 
 export const rimraf = (dir: string) => {
 
-    const rimrafExecutable = __dirname + "/../../node_modules/rimraf/bin.js";
+    const rimrafExecutable = __dirname + "/../../../../node_modules/rimraf/bin.js";
     const rimrafProcess = sync("node", [rimrafExecutable, dir]);
     if (rimrafProcess.status !== 0) {
         throw new Error("Error deleting directory with rimraf CLI: \n" + rimrafProcess.output.join(" "));
