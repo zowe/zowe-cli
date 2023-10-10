@@ -24,7 +24,7 @@ export class Config {
         return {
             // profiles: new ConfigProfiles(this),
             plugins: {
-                get: () => []
+                get: () => [] as any
             },
             // layers: new ConfigLayers(this),
             // secure: new ConfigSecure(this)

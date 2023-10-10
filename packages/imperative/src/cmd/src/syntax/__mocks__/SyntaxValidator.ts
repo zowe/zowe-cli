@@ -11,7 +11,7 @@
 
 import { CommandResponse } from "../../../src/response/CommandResponse";
 import { Arguments } from "yargs";
-import { ICommandValidatorResponse } from "../../../src/doc/response/ICommandValidatorResponse";
+import { ICommandValidatorResponse } from "../../../src/doc/response/response/ICommandValidatorResponse";
 
 export class SyntaxValidator {
     public validate(responseObject: CommandResponse, commandArguments: Arguments): Promise<ICommandValidatorResponse> {
@@ -19,7 +19,7 @@ export class SyntaxValidator {
             if (commandArguments.syntaxThrow === true) {
                 throw new Error("Syntax validation error!");
             } else {
-                validationComplete({ valid: (commandArguments.valid == null) ? false : commandArguments.valid });
+                validationComplete({ valid: (commandArguments.valid == null) ? false : commandArguments.valid as boolean });
             }
         });
     }
