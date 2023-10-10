@@ -966,11 +966,11 @@ describe("Command Processor", () => {
         expect(stderrText).toContain("Handler Instantiation Failed:");
         expect(stderrText).toContain("Could not instantiate the handler not_a_real_handler for command banana");
         expect(stderrText).toContain("Error Details:");
-        expect(stderrText).toContain("Cannot find module 'not_a_real_handler' from 'packages/cmd/src/CommandProcessor.ts'");
+        expect(stderrText).toContain("Cannot find module 'not_a_real_handler' from 'packages/imperative/src/cmd/src/CommandProcessor.ts'");
         expect(commandResponse.message).toEqual("Could not instantiate the handler not_a_real_handler for command banana");
         expect(commandResponse.error?.msg).toEqual("Could not instantiate the handler not_a_real_handler for command banana");
         expect(commandResponse.error?.additionalDetails).toEqual(
-            "Cannot find module 'not_a_real_handler' from 'packages/cmd/src/CommandProcessor.ts'"
+            "Cannot find module 'not_a_real_handler' from 'packages/imperative/src/cmd/src/CommandProcessor.ts'"
         );
     });
 
