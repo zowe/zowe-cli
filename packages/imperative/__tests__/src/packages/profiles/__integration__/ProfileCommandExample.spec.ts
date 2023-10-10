@@ -14,6 +14,7 @@ import { IImperativeConfig } from "../../../../../src/imperative";
 import * as yargs from "yargs";
 import { Constants } from "../../../../../src/constants";
 import { CommandProcessor, ICommandDefinition, ICommandProfileTypeConfiguration, ICommandResponse } from "../../../../../src/cmd";
+import { ICommandProcessorParms } from "../../../../../src/cmd/src/doc/processor/ICommandProcessorParms";
 import { isNullOrUndefined } from "util";
 import { TestLogger } from "../../../../src/TestLogger";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
@@ -96,9 +97,17 @@ describe("Imperative should allow CLI implementations to configure their own pro
             fullCommandTree: fakeParent,
             commandDefinition: SAMPLE_CONFIG.definitions[0]
         });
-        return new CommandProcessor(SAMPLE_CONFIG.definitions[0], fakeParent,
-            helpGenerator, new BasicProfileManagerFactory(T.createUniqueTestDataDir(),
-                PROFILE_CONFIGURATIONS)).invoke({arguments: options, responseFormat: "json"}).then(
+        const cmdProcessorParms: ICommandProcessorParms = {
+            definition: SAMPLE_CONFIG?.definitions?.[0] as ICommandDefinition,
+            helpGenerator: helpGenerator,
+            profileManagerFactory: new BasicProfileManagerFactory(T.createUniqueTestDataDir(), PROFILE_CONFIGURATIONS),
+            rootCommandName: "zoweCmdName",
+            commandLine: "/path/to/zoweCmdName",
+            envVariablePrefix: "ZOWE_CLI",
+            fullDefinition: fakeParent,
+            promptPhrase: "Any prompt will do:"
+        };
+        return new CommandProcessor(cmdProcessorParms).invoke({arguments: options, responseFormat: "json"}).then(
             (completedResponse: ICommandResponse) => {
                 logger.debug(JSON.stringify(completedResponse));
                 if (shouldSucceed) {
