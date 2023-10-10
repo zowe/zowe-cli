@@ -22,9 +22,14 @@ import { ExecUtils } from "../../utilities/src/ExecUtils";
 import { ProcessUtils, ISystemInfo } from "../../utilities";
 
 describe("IO tests", () => {
+    let existsSyncSpy: any;
 
     beforeEach(() => {
         jest.resetAllMocks();
+    });
+
+    afterEach(() => {
+        existsSyncSpy?.mockRestore();
     });
 
     it("should get an error for no input on isDir", () => {
@@ -85,18 +90,12 @@ describe("IO tests", () => {
     });
 
     it("should get true if file exists", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return true;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
         expect(IO.existsSync("pretend/exists")).toBe(true);
     });
 
     it("should get false if file doesn't exist", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return false;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         expect(IO.existsSync("pretend/no/exists")).toBe(false);
     });
 
@@ -111,10 +110,7 @@ describe("IO tests", () => {
     });
 
     it("should create a dir if file doesn't exist", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return false;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -124,16 +120,13 @@ describe("IO tests", () => {
     });
 
     it("should not create a dir if file exists", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return true;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
         IO.createDirSync("pretend/already/exists");
-        expect(fn).toBeCalled();
+        expect(existsSyncSpy).toBeCalled();
         expect(fnFm).not.toBeCalled();
     });
 
@@ -148,10 +141,7 @@ describe("IO tests", () => {
     });
 
     it("should create several dirs if dirs do not exist", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return false;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -167,10 +157,7 @@ describe("IO tests", () => {
     });
 
     it("should not create several dirs if dirs already exist", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return true;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -186,11 +173,12 @@ describe("IO tests", () => {
     });
 
     it("should only create dirs that do not exist", () => {
-        const fn = jest.mocked(fs.existsSync);
-        let data = 0;
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return (data++ % 2); // pretend every other dir exists
-        }) as any);
+        // pretend that only one of our directories exist
+        const willBeADir = ["pretend", "to", "create"];
+        existsSyncSpy = jest.spyOn(fs, "existsSync")
+            .mockReturnValue(false)
+            .mockReturnValueOnce(true);
+
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -199,17 +187,13 @@ describe("IO tests", () => {
         fnPr.mockImplementation((...pathSegments: any[]) => {
             return pathSegments[0];
         });
-        const willBeADir = ["pretend", "to", "create"];
         const dir = willBeADir.join(IO.FILE_DELIM);
         IO.createDirsSync(dir);
-        expect(fnFm).toHaveBeenCalledTimes(Math.ceil(willBeADir.length / 2));
+        expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 1);
     });
 
     it("should create several dirs if dirs do not exist from input file", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return false;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -231,10 +215,7 @@ describe("IO tests", () => {
     });
 
     it("should not create several dirs if dirs already exist from input file", () => {
-        const fn = jest.mocked(fs.existsSync);
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return true;
-        }) as any);
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -256,11 +237,12 @@ describe("IO tests", () => {
     });
 
     it("should only create dirs that do not exist from input file", () => {
-        const fn = jest.mocked(fs.existsSync);
-        let data = 0;
-        fn.mockImplementation(((file: fs.PathLike) => {
-            return (data++ % 2); // pretend every other dir exists
-        }) as any);
+        // pretend that only one of our three directories exist
+        const willBeADir = ["pretend", "to", "create", "test.txt"];
+        existsSyncSpy = jest.spyOn(fs, "existsSync")
+            .mockReturnValue(false)
+            .mockReturnValueOnce(true);
+
         const fnFm = jest.mocked(fs.mkdirSync);
         fnFm.mockImplementation(((file: fs.PathLike) => {
             return; // do nothing but pretend to write
@@ -275,10 +257,9 @@ describe("IO tests", () => {
             toDir.pop();
             return toDir.join(IO.FILE_DELIM);
         }) as any);
-        const willBeADir = ["pretend", "to", "create", "test.txt"];
         const dir = willBeADir.join(IO.FILE_DELIM);
         IO.createDirsSyncFromFilePath(dir);
-        expect(fnFm).toHaveBeenCalledTimes(Math.ceil(willBeADir.length / 2));
+        expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 2);
     });
 
     it("processNewLines should replace LF line endings with CRLF on Windows", () => {
