@@ -91,7 +91,7 @@ if (isInIframe && window.location.href.indexOf("/all.html") !== -1) {
     window.onscroll = (_: any) => {
         const cmdName = findCurrentCmdAnchor().getAttribute("name");
         if (cmdName != null && cmdName !== currentCmdName) {
-            window.parent.postMessage(cmdName + ".html", "*");
+            window.parent.postMessage(cmdName + ".html", window.location.origin);
             currentCmdName = cmdName;
         }
     };

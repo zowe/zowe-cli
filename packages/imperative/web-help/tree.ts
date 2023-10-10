@@ -259,6 +259,7 @@ function onSearchTextChanged(noDelay: boolean = false) {
  * @param e - Event object sent by postMessage
  */
 function onDocsPageChanged(e: any) {
+    if (e.origin !== window.location.origin || typeof e.data !== "string") return;
     const tempNodeId = e.data.slice(e.data.lastIndexOf("/") + 1);
     updateCurrentNode(tempNodeId, false, false);
 }
