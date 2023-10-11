@@ -90,10 +90,11 @@ describe("ImperativeConfig", () => {
             expect(ImperativeConfig.instance.profileDir).toBe(mockConfig.defaultHome + Constants.PROFILES_DIR + "/");
         });
 
+        // This is probably meaningless now that imperative is in the CLI repo
         it("should get callerPackageJson", async () => {
             const pkgJson = ImperativeConfig.instance.callerPackageJson;
             expect(pkgJson.name).toBe("@zowe/imperative");
-            expect(pkgJson.repository.url).toBe("https://github.com/zowe/imperative.git");
+            expect(pkgJson.repository.url).toBe("https://github.com/zowe/zowe-cli.git");
         });
     });
 
