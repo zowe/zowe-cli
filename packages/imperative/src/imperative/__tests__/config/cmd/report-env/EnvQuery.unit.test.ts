@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as os from "os";
+import * as path from "path";
 
 import { CommandResponse } from "../../../../../cmd/src/response/CommandResponse";
 import { IO } from "../../../../../io";
@@ -113,6 +114,15 @@ describe("Tests for EnvQuery module", () => {
 
     describe("test getEnvItemVal function", () => {
         it("should report the zowe version", async () => {
+            /* Force our search for version in package.json to start in the our cli package directory.
+             * callerLocation is a getter property, so mock the property.
+             */
+            Object.defineProperty(impCfg, "callerLocation", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return path.normalize(__dirname + "/../../../../../../../cli");
+                })
+            });
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_VER);
             expect(itemObj.itemVal).toMatch(/[0-9]+.[0-9]+.[0-9]+/);
             expect(itemObj.itemValMsg).toContain("Zowe CLI version =");
