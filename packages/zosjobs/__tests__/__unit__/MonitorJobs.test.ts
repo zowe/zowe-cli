@@ -132,7 +132,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForOutputStatus(new Session({hostname: "fake", port: 443}), "FAKE", "FAKE");
                 expect(response).toMatchSnapshot();
@@ -145,7 +145,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new ImperativeError({msg: ERROR_MSG});
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -167,7 +167,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new ImperativeError({msg: ERROR_MSG});
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 MonitorJobs.waitForOutputStatus(new Session({hostname: "fake", port: 443}), "FAKE", "FAKE").then((response) => {
                     done("Monitor jobs should not have fulfilled the promise because getJobs should have thrown and error");
@@ -189,7 +189,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 // "Mock" the attempts value
                 Object.defineProperty(MonitorJobs, "DEFAULT_ATTEMPTS", {value: attempts});
@@ -227,7 +227,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -253,7 +253,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -280,7 +280,7 @@ describe("Monitor Jobs", () => {
                         throw new ImperativeError({msg: ERROR_MSG});
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -308,7 +308,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: undefined};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -430,7 +430,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 // IJob requires more fields to be populated - fake it out with only the required here.
                 const iJobParms: any = {jobname: "FAKE", jobid: "FAKE"};
@@ -446,7 +446,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new ImperativeError({msg: ERROR_MSG});
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 const iJobParms: any = {jobname: "FAKE", jobid: "FAKE"};
                 MonitorJobs.waitForJobOutputStatus(new Session({hostname: "fake", port: 443}), iJobParms).then((response) => {
@@ -466,7 +466,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new ImperativeError({msg: ERROR_MSG});
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -492,7 +492,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 // "Mock" the attempts value
                 Object.defineProperty(MonitorJobs, "DEFAULT_ATTEMPTS", {value: attempts});
@@ -532,7 +532,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -560,7 +560,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -589,7 +589,7 @@ describe("Monitor Jobs", () => {
                         throw new ImperativeError({msg: ERROR_MSG});
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -619,7 +619,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: undefined};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -816,7 +816,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE"});
@@ -830,7 +830,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
@@ -844,7 +844,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
@@ -858,7 +858,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"});
@@ -872,7 +872,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"});
@@ -886,7 +886,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
@@ -900,7 +900,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobs = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobs;
+                GetJobs.getStatusCommon = mockedGetJobs as any;
 
                 const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
@@ -914,7 +914,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new ImperativeError({msg: ERROR_MSG});
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -937,7 +937,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new ImperativeError({msg: ERROR_MSG});
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"}).then((response) => {
@@ -958,7 +958,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     throw new Error(ERROR_MSG);
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
                     {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"}).then((response) => {
@@ -981,7 +981,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 try {
@@ -1003,7 +1003,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 try {
@@ -1025,7 +1025,7 @@ describe("Monitor Jobs", () => {
                 const mockedGetJobsCommon = jest.fn(async (args) => {
                     return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
 
@@ -1062,7 +1062,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -1089,7 +1089,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -1116,7 +1116,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -1144,7 +1144,7 @@ describe("Monitor Jobs", () => {
                         throw new ImperativeError({msg: ERROR_MSG});
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;
@@ -1173,7 +1173,7 @@ describe("Monitor Jobs", () => {
                         return {jobname: "FAKE", jobid: "FAKE", status: undefined};
                     }
                 });
-                GetJobs.getStatusCommon = mockedGetJobsCommon;
+                GetJobs.getStatusCommon = mockedGetJobsCommon as any;
 
                 let error;
                 let response;

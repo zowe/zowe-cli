@@ -10,8 +10,7 @@
 */
 
 import { ListDefinedSystems, ZosmfMessages } from "../../../../zosmf";
-import { Session, Imperative } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -43,7 +42,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(REAL_SESSION);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -61,7 +60,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(undefined);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -87,7 +86,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(badSession);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -113,7 +112,7 @@ describe("List Defined Systems Api", () => {
                 response = await ListDefinedSystems.listDefinedSystems(badSession);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();

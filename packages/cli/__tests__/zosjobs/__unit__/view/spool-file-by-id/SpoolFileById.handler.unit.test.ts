@@ -34,7 +34,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect((Buffer.isBuffer(setMsgArgs) ? setMsgArgs.toString() : setMsgArgs)).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect((Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs)).toMatchSnapshot();
             }),
@@ -43,11 +43,11 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect((Buffer.isBuffer(logs)) ? logs.toString() : logs).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -73,10 +73,10 @@ describe("zos-jobs view spool-file-by-id handler", () => {
     it("should be able to get the content of a spool file", async () => {
         GetJobs.getJob = jest.fn((session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
-        });
+        }) as any;
         GetJobs.getSpoolContentById = jest.fn((session, jobname, jobid, spoolId) => {
             return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
-        });
+        }) as any;
         const handler = new SpoolFileByIdHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.jobid = "j12345";
@@ -114,7 +114,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         let error;
         GetJobs.getJob = jest.fn((session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
-        });
+        }) as any;
         GetJobs.getSpoolContentById = jest.fn((session, jobname, jobid, spoolId) => {
             throw new ImperativeError({ msg: failMessage});
         });

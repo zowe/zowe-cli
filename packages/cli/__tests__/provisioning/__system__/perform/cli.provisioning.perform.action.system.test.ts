@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -42,7 +42,7 @@ describe("provisioning perform action", () => {
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
         instanceID = instance["object-id"];
         instanceName = instance["external-name"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Provisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should successfully perform checkStatus action", async () => {
@@ -90,7 +90,7 @@ describe("provisioning perform action", () => {
         instance = await ProvisioningTestUtils.waitInstanceState(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
             instanceID, ProvisioningTestUtils.STATE_DEPROV);
         instanceName = instance["external-name"];
-        Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
 
         // Delete deprovisioned instance
         await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);

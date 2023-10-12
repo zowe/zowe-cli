@@ -9,10 +9,9 @@
 *
 */
 
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import { IPingResponse, IZosmfPingResponse, noPingInput, PingTso } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { inspect } from "util";
 
 
 const ISSUE_HEADERS: any[] = [Headers.APPLICATION_JSON];
@@ -62,7 +61,7 @@ function expectZosmfResponseFailed(response: IPingResponse, error: ImperativeErr
 
 describe("PingTsoCommand Test", () => {
     it("should return ping response if a correct servlet key was provided", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -73,10 +72,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(PRETEND_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCES,
@@ -84,7 +83,7 @@ describe("PingTsoCommand Test", () => {
         expectZosmfResponseSucceeded(response, error);
     });
     it("should return response if an invalid servlet key was provided", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -95,10 +94,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(PRETEND_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCES,
@@ -111,10 +110,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(PRETEND_SESSION, null);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noPingInput.message);
     });

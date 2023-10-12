@@ -94,14 +94,14 @@ describe("TsoSend sendDataToTSOCollect - failing scenarios", () => {
 
 describe("TsoSend sendDataToTSOCollect", () => {
     it("should succeed", async () => {
-        (SendTso.sendDataToTSOCommon as any) = jest.fn<object>((): Promise<object> => {
+        (SendTso.sendDataToTSOCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
                 });
             });
         });
-        (SendTso.getAllResponses as any) = jest.fn<object>((): Promise<object> => {
+        (SendTso.getAllResponses as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(SEND_RESPONSE);
@@ -124,7 +124,7 @@ describe("TsoSend sendDataToTSOCollect", () => {
 
 describe("TsoSend getDataFromTSO", () => {
     it("should succeed", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve({});

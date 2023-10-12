@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli auto-format table should allow extraction of properties within each entry of an array 1`] = `
+"name         details            attributes.amount
+strawberries what a great fruit 1000             
+blueberries  super tasty        10               
+banana       amazing!           1                
+"
+`;

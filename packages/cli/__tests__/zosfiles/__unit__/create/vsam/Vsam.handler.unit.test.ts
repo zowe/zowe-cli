@@ -31,7 +31,7 @@ describe("Create VSAM data set handler", () => {
             let fakeSession = null;
 
             // Mock the vsam function
-            Create.vsam = jest.fn((session) => {
+            Create.vsam = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

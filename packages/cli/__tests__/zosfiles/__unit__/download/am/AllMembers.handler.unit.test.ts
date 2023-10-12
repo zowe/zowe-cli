@@ -28,7 +28,7 @@ describe("Download AllMembers handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.allMembers = jest.fn((session) => {
+            Download.allMembers = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -118,7 +118,7 @@ describe("Download AllMembers handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.allMembers = jest.fn((session) => {
+            Download.allMembers = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -210,7 +210,7 @@ describe("Download AllMembers handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Download.allMembers = jest.fn((session) => {
+            Download.allMembers = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

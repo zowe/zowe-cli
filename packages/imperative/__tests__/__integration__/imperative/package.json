@@ -1,0 +1,88 @@
+{
+  "name": "imperative-test-cli",
+  "version": "0.0.0",
+  "description": "Imperative Test CLI",
+  "license": "EPL 2.0",
+  "repository": "",
+  "bin": {
+    "imperative-test-cli": "./lib/main.js"
+  },
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/main.js",
+  "typings": "lib/main.d.ts",
+  "imperative": {
+    "configurationModule": "lib/imperative.js"
+  },
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "lint": "eslint \"src/**/*.ts\"",
+    "prebuild": "npm run clean && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc -b --pretty",
+    "pretest": "npm install -g",
+    "test": "jest",
+    "posttest": "npm uninstall -g",
+    "watch": "npm run build -- --watch"
+  },
+  "dependencies": {
+    "@zowe/imperative": "../../..",
+    "@zowe/secrets-for-zowe-sdk": "^7.18.4"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "disableSourceMapSupport": true
+      }
+    },
+    "watchPathIgnorePatterns": [
+      ".*jest-stare.*\\.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "__tests__/__snapshots__/"
+    ],
+    "setupFilesAfterEnv": [
+      "./__tests__/beforeTests.js"
+    ],
+    "testResultsProcessor": "jest-stare",
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "packages/**/*.ts",
+      "!**/__tests__/**",
+      "!packages/**/doc/I*.ts",
+      "!**/main.ts"
+    ],
+    "collectCoverage": false,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "cobertura"
+    ],
+    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
+  },
+  "jest-html-reporter": {
+    "pageTitle": "Sample \"imperative\" integration CLI Tests",
+    "outputPath": "../../__results__/integration/imperative/results.html",
+    "includeFailureMsg": true
+  }
+}

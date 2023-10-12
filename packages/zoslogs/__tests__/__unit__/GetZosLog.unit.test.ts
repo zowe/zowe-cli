@@ -9,9 +9,8 @@
 *
 */
 
-import { inspect } from "util";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import { IZosLogType, IZosLogParms, GetZosLog, noSessionMessage } from "../../src/";
 import { GetZosLogsData } from "../__resources__/GetZosLogData";
 const PRETEND_SESSION: Session = new Session({
@@ -59,7 +58,7 @@ describe("GetZosLog getResourcePath", () => {
 
 describe("GetZosLog getZosLog", () => {
     it("should succeed and return logs", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(GetZosLogsData.SAMPLE_RESP_DATA);
@@ -71,10 +70,10 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(PRETEND_SESSION, COMMAND_PARAMS_FULL);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledWith(PRETEND_SESSION, EXPECTED_PATH_FULL, [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
@@ -82,7 +81,7 @@ describe("GetZosLog getZosLog", () => {
     });
 
     it("should succeed and return unprocessed logs", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(GetZosLogsData.SAMPLE_RESP_DATA);
@@ -94,10 +93,10 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(PRETEND_SESSION, COMMAND_PARAMS_FULL_PR);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledWith(PRETEND_SESSION, EXPECTED_PATH_FULL, [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
@@ -109,10 +108,10 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(undefined, COMMAND_PARAMS_FULL);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionMessage.message);
     });

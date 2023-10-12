@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
@@ -41,7 +41,7 @@ describe("ListRegistryInstances (system)", () => {
             templateName);
         instanceName = instance["external-name"];
         instanceID = instance["object-id"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Provisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     afterAll(async () => {
@@ -55,10 +55,10 @@ describe("ListRegistryInstances (system)", () => {
 
         try {
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"]).toBeDefined();
@@ -71,10 +71,10 @@ describe("ListRegistryInstances (system)", () => {
         try {
             const cicsFilter = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, "CICS");
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, cicsFilter);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0].type).toEqual(TYPE);
@@ -84,13 +84,13 @@ describe("ListRegistryInstances (system)", () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
         try {
-            Imperative.console.info(`External name ${instanceName}`);
+            // Imperative.console.info(`External name ${instanceName}`);
             const cicsFilter = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, undefined, instanceName);
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, cicsFilter);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
@@ -100,14 +100,14 @@ describe("ListRegistryInstances (system)", () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
         try {
-            Imperative.console.info(`External name ${instanceName}`);
-            Imperative.console.info(`Type ${TYPE}`);
+            // Imperative.console.info(`External name ${instanceName}`);
+            // Imperative.console.info(`Type ${TYPE}`);
             const filteredInstance = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, TYPE, instanceName);
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, filteredInstance);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
@@ -119,10 +119,10 @@ describe("ListRegistryInstances (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListRegistryInstances.listRegistryCommon(undefined, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -132,10 +132,10 @@ describe("ListRegistryInstances (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, "");
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -145,10 +145,10 @@ describe("ListRegistryInstances (system)", () => {
         let error: ImperativeError;
         try {
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, undefined);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -159,10 +159,10 @@ describe("ListRegistryInstances (system)", () => {
         try {
             response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION,
                 ProvisioningConstants.ZOSMF_VERSION, TYPE, undefined);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
@@ -173,12 +173,12 @@ describe("ListRegistryInstances (system)", () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
         try {
-            Imperative.console.info(`External name ${instanceName}`);
+            // Imperative.console.info(`External name ${instanceName}`);
             response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                 undefined, instanceName);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
@@ -188,14 +188,14 @@ describe("ListRegistryInstances (system)", () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
         try {
-            Imperative.console.info(`External name ${instanceName}`);
-            Imperative.console.info(`Type ${TYPE}`);
+            // Imperative.console.info(`External name ${instanceName}`);
+            // Imperative.console.info(`Type ${TYPE}`);
             response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                 TYPE, instanceName);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
@@ -208,10 +208,10 @@ describe("ListRegistryInstances (system)", () => {
         try {
             response = await ListRegistryInstances.listFilteredRegistry(undefined, ProvisioningConstants.ZOSMF_VERSION,
                 undefined, undefined);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -223,10 +223,10 @@ describe("ListRegistryInstances (system)", () => {
         try {
             response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, undefined, undefined,
                 undefined);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -238,10 +238,10 @@ describe("ListRegistryInstances (system)", () => {
         try {
             response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, "", undefined,
                 undefined);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            // Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });

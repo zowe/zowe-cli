@@ -29,10 +29,10 @@ describe("Mount file system handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the zfs function
-            Mount.fs = jest.fn((session) => {
+            Mount.fs = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Session tests should fail to initialize without minimum data 1`] = `"Expect Error: Required parameter 'hostname' must be defined"`;
+
+exports[`Session tests should get user and password from an auth string 1`] = `"bXluYW1lOm15cGFzcw=="`;
+
+exports[`Session tests should initialize with basic type and required input data 1`] = `
+Object {
+  "base64EncodedAuth": "aWJtdXNlcjpteXBhc3M=",
+  "basePath": "",
+  "hostname": "localhost",
+  "password": "mypass",
+  "port": 443,
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "type": "basic",
+  "user": "ibmuser",
+}
+`;
+
+exports[`Session tests should match non-default port, protocol, secure protocol, and host 1`] = `
+Object {
+  "basePath": "",
+  "hostname": "localhost",
+  "port": "123",
+  "protocol": "http",
+  "rejectUnauthorized": true,
+  "secureProtocol": "somethingNew",
+  "strictSSL": true,
+  "type": "none",
+}
+`;
+
+exports[`Session tests should match other non-default values 1`] = `
+Object {
+  "basePath": "",
+  "checkServerIdentity": [Function],
+  "hostname": "localhost",
+  "port": 443,
+  "protocol": "https",
+  "rejectUnauthorized": false,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": false,
+  "type": "none",
+}
+`;
+
+exports[`Session tests should not allow cert for 'basic' type 1`] = `"Expect Error: Required parameter 'cert' must be undefined"`;
+
+exports[`Session tests should not allow cert for 'bearer' type 1`] = `"Expect Error: Required parameter 'cert' must be undefined"`;
+
+exports[`Session tests should not allow certKey for 'basic' type 1`] = `"Expect Error: Required parameter 'certKey' must be undefined"`;
+
+exports[`Session tests should not allow certKey for 'bearer' type 1`] = `"Expect Error: Required parameter 'certKey' must be undefined"`;
+
+exports[`Session tests should not allow password for 'bearer' type 1`] = `"Expect Error: Required parameter 'password' must be undefined"`;
+
+exports[`Session tests should not allow password for 'cert-pem' type 1`] = `"Expect Error: Required parameter 'password' must be undefined"`;
+
+exports[`Session tests should not allow tokenType for 'basic' type 1`] = `"Expect Error: Required parameter 'tokenType' must be undefined"`;
+
+exports[`Session tests should not allow tokenType for 'bearer' type 1`] = `"Expect Error: Required parameter 'tokenType' must be undefined"`;
+
+exports[`Session tests should not allow tokenValue for 'basic' type 1`] = `"Expect Error: Required parameter 'tokenValue' must be undefined"`;
+
+exports[`Session tests should not allow tokenValue for 'cert-pem' type for auth login 1`] = `"Expect Error: Required parameter 'tokenValue' must be undefined"`;
+
+exports[`Session tests should not allow user for 'bearer' type 1`] = `"Expect Error: Required parameter 'user' must be undefined"`;
+
+exports[`Session tests should not allow user for 'cert-pem' type 1`] = `"Expect Error: Required parameter 'user' must be undefined"`;
+
+exports[`Session tests should not fail to initialize with minimum data 1`] = `
+Object {
+  "basePath": "",
+  "hostname": "localhost",
+  "port": 443,
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "type": "none",
+}
+`;
+
+exports[`Session tests should not require user and password for 'bearer' type 1`] = `
+Object {
+  "basePath": "",
+  "hostname": "localhost",
+  "port": 443,
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "tokenValue": "blahblahblah",
+  "type": "bearer",
+}
+`;
+
+exports[`Session tests should not require user and password for 'token' type 1`] = `
+Object {
+  "basePath": "",
+  "hostname": "localhost",
+  "port": 443,
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "tokenType": "LtpaToken2",
+  "tokenValue": "blahblahblah",
+  "type": "token",
+}
+`;
+
+exports[`Session tests should require cert for 'cert-pem' type 1`] = `"Expect Error: Required parameter 'cert' must be defined"`;
+
+exports[`Session tests should require certKey for 'cert-pem' type 1`] = `"Expect Error: Required parameter 'certKey' must be defined"`;
+
+exports[`Session tests should require password for 'basic' type 1`] = `"Must have user & password OR base64 encoded credentials"`;
+
+exports[`Session tests should require password for 'tokenType' type 1`] = `"Expect Error: You must provide a token type to use cookie authentication"`;
+
+exports[`Session tests should require proper protocol 1`] = `"Expect Error: The required entry was NOT found within the input array: 'https','http'"`;
+
+exports[`Session tests should require proper type 1`] = `"Expect Error: The required entry was NOT found within the input array: 'none','basic','token','bearer','cert-pem'"`;
+
+exports[`Session tests should require token for 'bearer' type 1`] = `"Expect Error: Required parameter 'tokenValue' must be defined"`;
+
+exports[`Session tests should require user for 'basic' type 1`] = `"Must have user & password OR base64 encoded credentials"`;
+
+exports[`Session tests should store cookie token requested 1`] = `
+Object {
+  "base64EncodedAuth": "dXNlcjpwYXNzd29yZA==",
+  "basePath": "",
+  "hostname": "localhost",
+  "password": "password",
+  "port": 443,
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "tokenType": "LtpaToken2",
+  "tokenValue": "7KM/bf1sE4+4pE5mKgf+slWo9JO6laQF6OOi/POW0C+hRwscFOFjUijI2eWZrMY+jL4F9nl1ubUvcK0hPgWmKH4xCOf1EoNafu40XaiLoO8wZnCo/rHmP2/h7MzSJV1te8dP4VM6NFdQCruuxtcgddTiDXU8gYZERFTnvtYhUuvk1Nne8xwo++sDAmEFVwvJbyg6Z0zT1RAGPIXd6hx8YPNXydAifoQhqI9CaoyZNptByyx2H7uJ0vt0HTNqrdgZclOQkDNMm65ETpdo1u4U7Vd6HPoshHJEQo7p40T9jJfgv7PJ6Bxhp1dAqF5zEkqE",
+  "type": "token",
+  "user": "user",
+}
+`;

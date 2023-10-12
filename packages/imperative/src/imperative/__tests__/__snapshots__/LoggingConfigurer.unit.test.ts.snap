@@ -1,0 +1,448 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoggingConfigurer tests Should not be able to change api name for imperative or app 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/sample/logs/sample.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "DEBUG",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "DEBUG",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggingConfigurer tests Should reject configurations that don't contain a "name" field 1`] = `"Expect Error: Required parameter 'name' must be defined"`;
+
+exports[`LoggingConfigurer tests Should return a complete IConfigLogging object based on custom app log level and log file in IImperativeConfig input 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/different/location/log.txt",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "fatal",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "trace",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggingConfigurer tests Should return a complete IConfigLogging object based on custom app, imperative, and additional logging in IImperativeConfig input 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/different/location/log.txt",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "extraOne": Object {
+        "backups": 5,
+        "filename": "./someHome/extraOne/logs/extraOne.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "extraTwo": Object {
+        "backups": 5,
+        "filename": "./someHome/to/the/moon.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "fatal",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "extraOne": Object {
+        "appenders": Array [
+          "extraOne",
+        ],
+        "level": "DEBUG",
+      },
+      "extraTwo": Object {
+        "appenders": Array [
+          "extraTwo",
+        ],
+        "level": "info",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "trace",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggingConfigurer tests Should return a complete IConfigLogging object based on custom imperative log level in IImperativeConfig input 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/sample/logs/sample.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "DEBUG",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "trace",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggingConfigurer tests Should return a complete IConfigLogging object based on custom name in IImperativeConfig input 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/notSample/logs/notSample.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "DEBUG",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "DEBUG",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggingConfigurer tests Should return a complete IConfigLogging object based on no IImperativeConfig input 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/sample/logs/sample.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "DEBUG",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "DEBUG",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggingConfigurer tests Should return a complete IConfigLogging object based on no logging, but using logging keyword in IImperativeConfig input 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "app": Object {
+        "backups": 5,
+        "filename": "./someHome/sample/logs/sample.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "default": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "imperative": Object {
+        "backups": 5,
+        "filename": "./someHome/imperative/logs/imperative.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "app": Object {
+        "appenders": Array [
+          "app",
+        ],
+        "level": "DEBUG",
+      },
+      "default": Object {
+        "appenders": Array [
+          "default",
+        ],
+        "level": "DEBUG",
+      },
+      "imperative": Object {
+        "appenders": Array [
+          "imperative",
+        ],
+        "level": "DEBUG",
+      },
+    },
+  },
+}
+`;

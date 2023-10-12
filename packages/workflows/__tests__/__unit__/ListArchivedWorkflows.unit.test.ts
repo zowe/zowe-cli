@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
+import { Session, ImperativeError, Headers } from "@zowe/imperative";
 import { ListArchivedWorkflows } from "../../src/ListArchivedWorkflows";
 import { WorkflowConstants } from "../../src/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/doc/IWorkflowsInfo";
@@ -56,7 +56,7 @@ describe("List archived workflows", () => {
     // List all archived workflows - without any optional parameters
     it("Successful call without any optional parameters.", async () => {
 
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -68,10 +68,10 @@ describe("List archived workflows", () => {
         let response: any;
         try {
             response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [Headers.APPLICATION_JSON]);
@@ -85,10 +85,10 @@ describe("List archived workflows", () => {
             let response: any;
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });

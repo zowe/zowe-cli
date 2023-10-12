@@ -10,7 +10,7 @@
 */
 
 import * as Path from "path";
-import { Imperative, ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { IPropertiesInput, ProvisioningService, IProvisionOptionals } from "../../src";
 
 
@@ -32,10 +32,10 @@ describe("ProvisionService", () => {
         let error: ImperativeError;
         try {
             parsedObject = ProvisioningService.parseProperties(inputProperties);
-            Imperative.console.info(`Response ${parsedObject}`);
+            // Imperative.console.info(`Response ${parsedObject}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect(error).not.toBeDefined();
         expect(parsedObject).toBeDefined();
@@ -47,10 +47,10 @@ describe("ProvisionService", () => {
         let error: ImperativeError;
         try {
             parsedObject = ProvisioningService.parseProperties(badInputFormat);
-            Imperative.console.info(`Response ${parsedObject}`);
+            // Imperative.console.info(`Response ${parsedObject}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect(error).toBeDefined();
         expect(parsedObject).not.toBeDefined();
@@ -59,7 +59,7 @@ describe("ProvisionService", () => {
 
     it("readPropertiesFromYamlFile should read from yaml file, parse and return a parsed array of objects", () => {
         const parsedObject: IPropertiesInput[] = ProvisioningService.readPropertiesFromYamlFile(propertiesFilePath);
-        Imperative.console.info(`Response ${parsedObject}`);
+        // Imperative.console.info(`Response ${parsedObject}`);
 
         expect(parsedObject).toBeDefined();
         expect(parsedObject).toEqual(readFromFileProperties);
@@ -67,7 +67,7 @@ describe("ProvisionService", () => {
 
     it("readPropertiesFromYamlFile should read from empty yaml file, parse and return an empty array", () => {
         const parsedObject: IPropertiesInput[] = ProvisioningService.readPropertiesFromYamlFile(emptyPropertiesFilePath);
-        Imperative.console.info(`Response ${parsedObject}`);
+        // Imperative.console.info(`Response ${parsedObject}`);
 
         expect(parsedObject).toBeDefined();
         expect(parsedObject).toEqual([]);
@@ -75,7 +75,7 @@ describe("ProvisionService", () => {
 
     it("checkForPassedOptionalParms should parse passed optional parameters and return a parsed object", () => {
         const parsedObject: IProvisionOptionals = ProvisioningService.checkForPassedOptionalParms(inputProperties, null, domainName, tenantName);
-        Imperative.console.info(`Response ${parsedObject}`);
+        // Imperative.console.info(`Response ${parsedObject}`);
 
         expect(parsedObject).toBeDefined();
         expect(parsedObject["input-variables"]).toEqual(parsedArrayOfObjects);
@@ -86,7 +86,7 @@ describe("ProvisionService", () => {
 
     it("checkForPassedOptionalParms should return an object with null properties if no parameters were supplied", () => {
         const parsedObject: IProvisionOptionals = ProvisioningService.checkForPassedOptionalParms();
-        Imperative.console.info(`Response ${parsedObject}`);
+        // Imperative.console.info(`Response ${parsedObject}`);
 
         expect(parsedObject).toBeDefined();
         expect(parsedObject["input-variables"]).toBeNull();

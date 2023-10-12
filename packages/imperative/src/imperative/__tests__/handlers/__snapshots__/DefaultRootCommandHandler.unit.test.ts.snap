@@ -1,0 +1,304 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Default Root Command Handler should display a list of available commands with --available-commands 1`] = `
+"mock_command_name test-group test-command-one
+
+	test command one
+
+mock_command_name test-group test-command-two
+
+	test command two
+
+"
+`;
+
+exports[`Default Root Command Handler should display a list of available commands with --available-commands 2`] = `
+Object {
+  "data": Object {
+    "children": Array [
+      Object {
+        "description": "test command one",
+        "name": "test-command-one",
+        "options": Array [
+          Object {
+            "description": "the option",
+            "name": "test-option",
+            "type": "string",
+          },
+          Object {
+            "description": "the boolean option",
+            "name": "test-boolean",
+            "type": "boolean",
+          },
+        ],
+        "positionals": Array [
+          Object {
+            "description": "the positional option",
+            "name": "positional1",
+            "required": false,
+            "type": "string",
+          },
+        ],
+        "type": "command",
+      },
+      Object {
+        "description": "test command two",
+        "name": "test-command-two",
+        "options": Array [
+          Object {
+            "description": "the option",
+            "name": "test-option",
+            "type": "string",
+          },
+          Object {
+            "description": "the boolean option",
+            "name": "test-boolean",
+            "type": "boolean",
+          },
+        ],
+        "positionals": Array [
+          Object {
+            "description": "the positional option",
+            "name": "positional1",
+            "required": false,
+            "type": "string",
+          },
+        ],
+        "type": "command",
+      },
+    ],
+    "description": "a test group",
+    "name": "test-group",
+    "type": "group",
+  },
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      109,
+      111,
+      99,
+      107,
+      95,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      95,
+      110,
+      97,
+      109,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      45,
+      103,
+      114,
+      111,
+      117,
+      112,
+      32,
+      116,
+      101,
+      115,
+      116,
+      45,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      45,
+      111,
+      110,
+      101,
+      10,
+      10,
+      9,
+      116,
+      101,
+      115,
+      116,
+      32,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      111,
+      110,
+      101,
+      10,
+      10,
+      109,
+      111,
+      99,
+      107,
+      95,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      95,
+      110,
+      97,
+      109,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      45,
+      103,
+      114,
+      111,
+      117,
+      112,
+      32,
+      116,
+      101,
+      115,
+      116,
+      45,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      45,
+      116,
+      119,
+      111,
+      10,
+      10,
+      9,
+      116,
+      101,
+      115,
+      116,
+      32,
+      99,
+      111,
+      109,
+      109,
+      97,
+      110,
+      100,
+      32,
+      116,
+      119,
+      111,
+      10,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Default Root Command Handler should display the help if no options are specified 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   test-command
+
+ DESCRIPTION
+ -----------
+
+   my command
+
+ USAGE
+ -----
+
+   mock test-outer-group test-group test-command [positional1] [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   positional1		 (string)
+
+      the positional option
+
+ OPTIONS
+ -------
+
+   --test-option  (string)
+
+      the option
+
+   --test-boolean  (boolean)
+
+      the boolean option
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+"
+`;
+
+exports[`Default Root Command Handler should display the version if --version is specified 1`] = `
+Object {
+  "data": Object {
+    "version": 10000,
+  },
+  "error": undefined,
+  "exitCode": 0,
+  "message": "Version displayed",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      49,
+      48,
+      48,
+      48,
+      48,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;

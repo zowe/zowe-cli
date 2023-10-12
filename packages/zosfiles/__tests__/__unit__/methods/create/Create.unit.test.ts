@@ -24,7 +24,7 @@ describe("Create data set", () => {
     let mySpy: any;
 
     beforeEach(() => {
-        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockReturnValue("");
+        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockReturnValue("" as any);
     });
 
     afterEach(() => {
@@ -795,7 +795,7 @@ describe("Create data set", () => {
         it("should fail if passed an unexpected command type", async () => {
             let error;
             try {
-                await Create.dataSet(dummySession, -1, dataSetName, dsOptions);
+                await Create.dataSet(dummySession, -1 as any, dataSetName, dsOptions);
             } catch (err) {
                 error = err.message;
             }
@@ -807,7 +807,7 @@ describe("Create data set", () => {
         it("should fail if missing data set type", async () => {
             let error;
             try {
-                await Create.dataSet(dummySession, undefined, dataSetName, dsOptions);
+                await Create.dataSet(dummySession, undefined as any, dataSetName, dsOptions);
             } catch (err) {
                 error = err.message;
             }
@@ -819,7 +819,7 @@ describe("Create data set", () => {
         it("should fail if missing data set name", async () => {
             let error;
             try {
-                await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, undefined, dsOptions);
+                await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, undefined as any, dsOptions);
             } catch (err) {
                 error = err.message;
             }
@@ -997,7 +997,7 @@ describe("Create VSAM Data Set", () => {
     let mySpy: any;
 
     beforeEach(() => {
-        mySpy = jest.spyOn(Invoke, "ams").mockReturnValue("");
+        mySpy = jest.spyOn(Invoke, "ams").mockReturnValue("" as any);
         dsOptions = {};
     });
 
@@ -1165,7 +1165,7 @@ describe("Create VSAM Data Set", () => {
 
         it("should fail if data set name is not provided", async () => {
 
-            const dataSetNameLocal: string = undefined;
+            const dataSetNameLocal: any = undefined;
 
             let error;
             try {
@@ -1442,7 +1442,7 @@ describe("Create uss file or directory", () => {
     let mySpy: any;
 
     beforeEach(() => {
-        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockReturnValue("");
+        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockResolvedValue("");
     });
 
     afterEach(() => {

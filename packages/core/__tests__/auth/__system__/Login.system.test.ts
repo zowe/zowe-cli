@@ -11,7 +11,7 @@
 
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import { Login } from "../../../src/auth/Login";
 
 let testEnvironment: ITestEnvironment;
@@ -35,10 +35,10 @@ describe("Login system test", () => {
         try {
             response = await Login.apimlLogin(REAL_SESSION);
             REAL_SESSION.ISession.tokenValue = response;
-            Imperative.console.info(`Got token: ${response}`);
+            // Imperative.console.info(`Got token: ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();

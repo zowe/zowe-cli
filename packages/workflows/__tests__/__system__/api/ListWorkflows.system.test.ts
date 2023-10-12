@@ -10,12 +10,11 @@
 */
 
 import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../../src";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import { wrongString } from "../../../src/WorkflowConstants";
 import { IWorkflowsInfo } from "../../../src/doc/IWorkflowsInfo";
@@ -99,10 +98,10 @@ describe("List workflows", () => {
 
             try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -112,10 +111,10 @@ describe("List workflows", () => {
 
             try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined, wfName, category, system, owner, vendor, statusName);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -125,10 +124,10 @@ describe("List workflows", () => {
 
             try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -139,10 +138,10 @@ describe("List workflows", () => {
             let response: any;
             try {
                 response = await ListWorkflows.listWorkflows(undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -151,10 +150,10 @@ describe("List workflows", () => {
             let response: any;
             try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION, badString, badString1, badString, badString, badString);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, wrongString.message);
         });
@@ -163,10 +162,10 @@ describe("List workflows", () => {
             let response: any;
             try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
@@ -175,10 +174,10 @@ describe("List workflows", () => {
             let response: any;
             try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION, null);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

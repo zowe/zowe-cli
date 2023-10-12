@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli invalid profile-spec should fail the command if the profile property is not supplied and the handler requests a profile 1`] = `
+"Command Error:
+Internal Error: No profiles of type \\"blah\\" were loaded for this command.
+Error Details:
+This error can occur for one of two reasons:
+ - The \\"profile\\" property on the command definition document does NOT specify the requested profile type
+ - The profile type is marked \\"optional\\", no profiles of type \\"blah\\" have been created, and the command handler requested a profile of type \\"blah\\" with \\"failNotFound=true\\"
+"
+`;

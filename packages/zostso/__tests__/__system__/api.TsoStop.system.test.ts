@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import {
     IStartStopResponse,
     IStopTsoParms,
@@ -23,7 +23,6 @@ import {
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { inspect } from "util";
 
 /**
  * These tests runs on mainframe, with real credentials.
@@ -58,13 +57,13 @@ describe("StopCommand (system)", () => {
         let error: ImperativeError;
         const activeServletKey: string = (await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, undefined)).servletKey;
         STOP_PARMS.servletKey = activeServletKey;
-        Imperative.console.info(`Active servlet key ${activeServletKey}`);
+        // Imperative.console.info(`Active servlet key ${activeServletKey}`);
         try {
             response = await StopTso.stopCommon(REAL_SESSION, STOP_PARMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
@@ -77,13 +76,13 @@ describe("StopCommand (system)", () => {
         let error: ImperativeError;
         const activeServletKey: string = (await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, undefined)).servletKey;
         STOP_PARMS.servletKey = activeServletKey;
-        Imperative.console.info(`Active servlet key ${activeServletKey}`);
+        // Imperative.console.info(`Active servlet key ${activeServletKey}`);
         try {
             response = await StopTso.stopCommon(undefined, STOP_PARMS);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -95,10 +94,10 @@ describe("StopCommand (system)", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stopCommon(REAL_SESSION, undefined);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -110,10 +109,10 @@ describe("StopCommand (system)", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stopCommon(REAL_SESSION, {servletKey: undefined});
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -124,13 +123,13 @@ describe("StopCommand (system)", () => {
         let response: IStartStopResponse;
         let error: ImperativeError;
         const activeServletKey: string = (await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, undefined)).servletKey;
-        Imperative.console.info(`Active servlet key ${activeServletKey}`);
+        // Imperative.console.info(`Active servlet key ${activeServletKey}`);
         try {
             response = await StopTso.stop(REAL_SESSION, activeServletKey);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
@@ -143,13 +142,13 @@ describe("StopCommand (system)", () => {
         let response: IStartStopResponse;
         let error: ImperativeError;
         const activeServletKey: string = (await StartTso.start(REAL_SESSION, ACCOUNT_NUMBER, undefined)).servletKey;
-        Imperative.console.info(`Active servlet key ${activeServletKey}`);
+        // Imperative.console.info(`Active servlet key ${activeServletKey}`);
         try {
             response = await StopTso.stop(undefined, activeServletKey);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -161,10 +160,10 @@ describe("StopCommand (system)", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(REAL_SESSION, undefined);
-            Imperative.console.info(`Response ${response.servletKey}`);
+            // Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error.details.msg}`);
+            // Imperative.console.info(`Error ${error.details.msg}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -176,10 +175,10 @@ describe("StopCommand (system)", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(REAL_SESSION, "ZOSMFAD-SYS2-55-aaakaaac");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();

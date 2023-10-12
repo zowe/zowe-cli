@@ -10,7 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -35,12 +35,12 @@ describe("Get", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
-        Imperative.console.info("Using dsname:" + dsname);
+        // Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
         ussname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
     });
 
     afterAll(async () => {

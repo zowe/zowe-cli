@@ -8,16 +8,17 @@
     "module": "commonjs",
     "declaration": true,
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "preserveConstEnums": true,
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "experimentalDecorators": true
   },
   "exclude": [
     "lib",
-    "node_modules",
+    "**/node_modules/*",
     "**/__mocks__/*",
     "**/__tests__/*",
     "**/*.spec.ts",

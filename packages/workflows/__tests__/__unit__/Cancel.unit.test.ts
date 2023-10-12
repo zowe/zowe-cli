@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
+import { Session, ImperativeError, Headers } from "@zowe/imperative";
 import { CancelWorkflow, WorkflowConstants, noWorkflowKey } from "../../src";
 
 const wfKey = "1234567_abcde";
@@ -45,7 +45,7 @@ describe("Cancel workflow", () => {
     describe("Successful scenarios", () => {
         it("Successful call returns 204 - No Content.", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 
@@ -53,10 +53,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(PRETEND_SESSION, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
@@ -66,7 +66,7 @@ describe("Cancel workflow", () => {
         });
         it("Successful even with zOSMF version undefined (because of default value).", async () => {
 
-            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.putExpectString as any) = jest.fn(() => {
                 return "";
             });
 
@@ -74,10 +74,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(PRETEND_SESSION, wfKey, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
@@ -92,10 +92,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(undefined, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -104,10 +104,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(PRETEND_SESSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -116,10 +116,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(PRETEND_SESSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -128,10 +128,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(PRETEND_SESSION, wfKey, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

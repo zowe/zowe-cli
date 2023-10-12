@@ -1,3 +1,2 @@
 #!/bin/sh
-basedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
-node "$basedir/../../../packages/cli/lib/main.js" "$@"
+MSYS_NO_PATHCONV=1 exec node "../../../../packages/cli/lib/main.js" "$@"

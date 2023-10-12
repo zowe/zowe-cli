@@ -40,7 +40,7 @@ describe("Download USS File", () => {
             `${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`
         );
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
     });
 
     afterAll(async () => {

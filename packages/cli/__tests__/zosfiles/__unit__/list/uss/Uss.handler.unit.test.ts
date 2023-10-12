@@ -28,7 +28,7 @@ describe("USS file handler", () => {
             let fakeSession = null;
 
             // Mock the List.fileList function
-            List.fileList = jest.fn((session) => {
+            List.fileList = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,

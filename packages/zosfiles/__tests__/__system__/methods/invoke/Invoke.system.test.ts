@@ -10,8 +10,7 @@
 */
 
 import * as fs from "fs";
-import { Imperative, Session, TextUtils } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session, TextUtils } from "@zowe/imperative";
 
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -63,10 +62,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -84,10 +83,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -110,10 +109,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile, {responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -131,10 +130,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile, {responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -155,10 +154,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatement);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -172,10 +171,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatement);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -191,10 +190,10 @@ describe("Invoke AMS", () => {
 
         try {
             response = await Invoke.ams(REAL_SESSION, "");
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeTruthy();

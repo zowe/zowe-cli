@@ -9,13 +9,12 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowKey, WorkflowConstants } from "../../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { CreateWorkflow, DeleteWorkflow, PropertiesWorkflow, StartWorkflow } from "../../../src";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import { IWorkflowInfo } from "../../../src/doc/IWorkflowInfo";
 import { IStepInfo } from "../../../src/doc/IStepInfo";
@@ -68,10 +67,10 @@ describe("Start workflow", () => {
             let response;
             try {
                 response = await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error upload: " + inspect(error));
+                // Imperative.console.info("Error upload: " + inspect(error));
             }
         });
         afterAll(async () => {
@@ -92,10 +91,10 @@ describe("Start workflow", () => {
             let response;
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error create: " + inspect(error));
+                // Imperative.console.info("Error create: " + inspect(error));
             }
             wfKey = response.workflowKey;
         });
@@ -122,10 +121,10 @@ describe("Start workflow", () => {
 
             try {
                 response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -135,10 +134,10 @@ describe("Start workflow", () => {
 
             try {
                 response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, "outputFileValue", "echo", false);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             // when properties are ready, check if just wan step was run
             expectZosmfResponseSucceeded(response, error);
@@ -149,10 +148,10 @@ describe("Start workflow", () => {
 
             try {
                 response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, null, null, null, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -164,10 +163,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(undefined, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -176,10 +175,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(REAL_SESSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -188,10 +187,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(REAL_SESSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -200,10 +199,10 @@ describe("Start workflow", () => {
             let response: any;
             try {
                 response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, null, null, null, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

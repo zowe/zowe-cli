@@ -26,8 +26,9 @@ describe("z/OS Files - Download", () => {
     const ussname = "/a/user/test.txt";
     const arrOfUssPath: string[] = ussname.split("/");
     const localFileName = arrOfUssPath[arrOfUssPath.length - 1];
-    const ussFileContent = "Test data for unit test";
+    const ussFileContent: any = "Test data for unit test";
     const etagValue = "123ABC";
+    const testNull: any = null;
 
     const dummySession = new Session({
         user: "fake",
@@ -45,20 +46,20 @@ describe("z/OS Files - Download", () => {
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
         const fakeWriteStream: any = {fakeWriteStream: true};
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
-        const fakeResponseWithEtag = {data: ussFileContent, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag: any = {data: ussFileContent, response:{headers:{etag: etagValue}}};
 
         beforeEach(() => {
             zosmfStreamSpy.mockClear();
-            zosmfStreamSpy.mockImplementation(() => null);
+            zosmfStreamSpy.mockImplementation(() => testNull);
 
             zosmfGetFullSpy.mockClear();
-            zosmfGetFullSpy.mockImplementation(() => null);
+            zosmfGetFullSpy.mockImplementation(() => testNull);
 
             ioCreateDirSpy.mockClear();
-            ioCreateDirSpy.mockImplementation(() => null);
+            ioCreateDirSpy.mockImplementation(() => testNull);
 
             ioWriteFileSpy.mockClear();
-            ioWriteFileSpy.mockImplementation(() => null);
+            ioWriteFileSpy.mockImplementation(() => testNull);
 
             ioWriteStreamSpy.mockClear();
             ioWriteStreamSpy.mockImplementation(() => fakeWriteStream);
@@ -70,7 +71,7 @@ describe("z/OS Files - Download", () => {
 
             // Test for NULL
             try {
-                response = await Download.dataSet(dummySession, null);
+                response = await Download.dataSet(dummySession, testNull);
             } catch (e) {
                 caughtError = e;
             }
@@ -82,7 +83,7 @@ describe("z/OS Files - Download", () => {
             caughtError = undefined;
             // Test for UNDEFINED
             try {
-                response = await Download.dataSet(dummySession, undefined);
+                response = await Download.dataSet(dummySession, undefined as any);
             } catch (e) {
                 caughtError = e;
             }
@@ -538,7 +539,7 @@ describe("z/OS Files - Download", () => {
     });
 
     describe("allMembers", () => {
-        const listAllMembersSpy = jest.spyOn(List, "allMembers");
+        const listAllMembersSpy: any = jest.spyOn(List, "allMembers");
         const downloadDatasetSpy = jest.spyOn(Download, "dataSet");
 
         const listApiResponse = {
@@ -555,7 +556,7 @@ describe("z/OS Files - Download", () => {
             });
 
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockResolvedValue(null);
+            downloadDatasetSpy.mockResolvedValue(testNull);
         });
 
         it("should throw and error if the data set name is not specified", async () => {
@@ -564,7 +565,7 @@ describe("z/OS Files - Download", () => {
 
             // Test for NULL
             try {
-                response = await Download.allMembers(dummySession, null);
+                response = await Download.allMembers(dummySession, testNull);
             } catch (e) {
                 caughtError = e;
             }
@@ -576,7 +577,7 @@ describe("z/OS Files - Download", () => {
             caughtError = undefined;
             // Test for UNDEFINED
             try {
-                response = await Download.allMembers(dummySession, undefined);
+                response = await Download.allMembers(dummySession, undefined as any);
             } catch (e) {
                 caughtError = e;
             }
@@ -1000,13 +1001,13 @@ describe("z/OS Files - Download", () => {
 
         beforeEach(() => {
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockImplementation(() => null);
+            downloadDatasetSpy.mockImplementation(() => testNull);
 
             downloadAllMembersSpy.mockClear();
-            downloadAllMembersSpy.mockImplementation(() => null);
+            downloadAllMembersSpy.mockImplementation(() => testNull);
 
             listDataSetSpy.mockClear();
-            listDataSetSpy.mockImplementation(() => null);
+            listDataSetSpy.mockImplementation(() => testNull);
         });
 
     });
@@ -1018,7 +1019,7 @@ describe("z/OS Files - Download", () => {
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
         const fakeStream: any = {fakeStream: true};
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
-        const fakeResponseWithEtag = {data: ussFileContent, response:{headers:{etag: etagValue}}};
+        const fakeResponseWithEtag: any = {data: ussFileContent, response:{headers:{etag: etagValue}}};
 
         beforeEach(() => {
             zosmfStreamSpy.mockClear();
@@ -1031,7 +1032,7 @@ describe("z/OS Files - Download", () => {
             zosmfExpectBufferSpy.mockImplementation(() => ussFileContent);
 
             ioCreateDirSpy.mockClear();
-            ioCreateDirSpy.mockImplementation(() => null);
+            ioCreateDirSpy.mockImplementation(() => testNull);
 
             ioWriteStreamSpy.mockClear();
             ioWriteStreamSpy.mockImplementation(() => fakeStream);
@@ -1043,7 +1044,7 @@ describe("z/OS Files - Download", () => {
 
             // Test for NULL
             try {
-                response = await (Download as any).ussFile(dummySession, null);
+                response = await (Download as any).ussFile(dummySession, testNull);
             } catch (e) {
                 caughtError = e;
             }
@@ -1055,7 +1056,7 @@ describe("z/OS Files - Download", () => {
             caughtError = undefined;
             // Test for UNDEFINED
             try {
-                response = await (Download as any).ussFile(dummySession, undefined);
+                response = await (Download as any).ussFile(dummySession, undefined as any);
             } catch (e) {
                 caughtError = e;
             }
@@ -1112,7 +1113,7 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            // expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeStream, true, undefined);
+            // expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeStream, true, undefined as any);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
                 responseStream: fakeStream,

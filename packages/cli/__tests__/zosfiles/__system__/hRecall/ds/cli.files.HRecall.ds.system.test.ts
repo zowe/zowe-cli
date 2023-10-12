@@ -14,9 +14,8 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
-import { Session, Imperative } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions, IRecallOptions, HMigrate } from "@zowe/zos-files-for-zowe-sdk";
-import { inspect } from "util";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
@@ -59,7 +58,7 @@ describe("Recall Dataset", () => {
                 Delete.dataSet(REAL_SESSION, dataSetName2),
                 Delete.dataSet(REAL_SESSION, dataSetName3)]);
         } catch (err) {
-            Imperative.console.info(`Error: ${inspect(err)}`);
+            // Imperative.console.info(`Error: ${inspect(err)}`);
         }
     });
 
@@ -70,7 +69,7 @@ describe("Recall Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
                     await HMigrate.dataSet(REAL_SESSION, dataSetName1);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should recall a data set", async () => {
@@ -111,7 +110,7 @@ describe("Recall Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
                     await HMigrate.dataSet(REAL_SESSION, dataSetName3);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should recall a data set", async () => {
@@ -154,7 +153,7 @@ describe("Recall Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
                     await HMigrate.dataSet(REAL_SESSION, dataSetName3);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should throw an error if a missing data set name is selected", async () => {

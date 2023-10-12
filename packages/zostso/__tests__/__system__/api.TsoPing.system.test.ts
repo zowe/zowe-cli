@@ -9,9 +9,8 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { IPingResponse, noPingInput, PingTso, StopTso, StartTso, IStartTsoParms } from "../../src";
-import { inspect } from "util";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
@@ -69,10 +68,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(REAL_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response.success).toEqual(true);
@@ -82,10 +81,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(REAL_SESSION, servletKey);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response.success).toEqual(true);
@@ -96,10 +95,10 @@ describe("PingTsoCommand Test", () => {
         let response: IPingResponse;
         try {
             response = await PingTso.ping(REAL_SESSION, null);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noPingInput.message);
     });

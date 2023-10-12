@@ -30,8 +30,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        node-version: [18.x, 20.x]
+        os: [windows-2019, ubuntu-latest, macos-latest]
 
     env:
       OS: ${{ matrix.os }}
@@ -58,10 +58,6 @@ jobs:
         echo "::remove-matcher owner=eslint-compact::"
         echo "::remove-matcher owner=eslint-stylish::"
 
-    - name: Use NPM v8
-      id: npm8
-      run: npm install -g npm@~8.3.2
-
     - name: Install Dependencies
       id: install
       run: npm ci
@@ -79,6 +75,10 @@ jobs:
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit >> file.txt
+
+    - name: Unlock Keyring
+      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
+      uses: t1m0thyj/unlock-keyring@v1
 
     - name: Integration Tests
       if: ${{ always() && steps.build.outcome == 'success' }}

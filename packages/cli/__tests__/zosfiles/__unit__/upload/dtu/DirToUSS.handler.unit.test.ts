@@ -81,7 +81,7 @@ describe("Upload dir-to-uss handler", () => {
 
         beforeEach(() => {
 
-            Upload.dirToUSSDir = jest.fn((session) => {
+            Upload.dirToUSSDir = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,

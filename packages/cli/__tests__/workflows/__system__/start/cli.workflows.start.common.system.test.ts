@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { Session, Imperative } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -94,7 +94,7 @@ describe("Start workflow cli system tests", () => {
                 try {
                     await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
                 } catch (err) {
-                    Imperative.console.info(err);
+                    // Imperative.console.info(err);
                 }
             });
             it("Should start full workflow using wf key in zOSMF.", async () => {

@@ -12,7 +12,7 @@
 jest.mock("../../../../../../zosmf/lib/ListDefinedSystems");
 
 import { ListDefinedSystems } from "@zowe/zosmf-for-zowe-sdk";
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../../src/zosmf/list/systems/Systems.handler";
 import * as cmdDef from "../../../../../src/zosmf/list/systems/Systems.definition";
 import {
@@ -34,7 +34,7 @@ const goodCmdParms: IHandlerParameters = {
     profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
-let listSystemsHandler: ICommandHandler = null;
+let listSystemsHandler: any = null;
 
 describe("List systems behavior", () => {
     beforeEach(() => {
@@ -51,7 +51,7 @@ describe("List systems behavior", () => {
                     ]
                 };
             }
-        );
+        ) as any;
 
         listSystemsHandler = new CmdHandler();
     });
@@ -65,7 +65,7 @@ describe("List systems behavior", () => {
         parmsToUse.response.console.log = jest.fn((logs) => {
             expect(logs).toMatchSnapshot();
             expect(logs).toContain("Number of retreived system definitions:");
-        });
+        }) as any;
 
         await listSystemsHandler.process(parmsToUse);
         expect(ListDefinedSystems.listDefinedSystems).toHaveBeenCalledTimes(1);
@@ -91,11 +91,11 @@ describe("List systems behavior", () => {
             (session, servletKey) => {
                 throw new Error("Mock GetInfo Error");
             }
-        );
+        ) as any;
         parmsToUse.response.console.error = jest.fn((errors) => {
             expect(errors).toMatchSnapshot();
             expect(errors).toContain("Mock GetInfo Error");
-        });
+        }) as any;
 
         let error;
         try {

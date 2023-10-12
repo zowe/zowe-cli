@@ -1,0 +1,235 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Abstract Help Generator Unit Tests BuildHelp test 1`] = `"inherited_help"`;
+
+exports[`Abstract Help Generator Unit Tests FormatHelpHeader test 1`] = `"Null or empty header provided; could not be formatted."`;
+
+exports[`Abstract Help Generator Unit Tests FormatHelpHeader test 2`] = `"Null or empty header provided; could not be formatted."`;
+
+exports[`Abstract Help Generator Unit Tests FormatHelpHeader test 3`] = `
+" A HEADER
+ --------"
+`;
+
+exports[`Abstract Help Generator Unit Tests FormatHelpHeader test 4`] = `
+"	ANOTHER HEADER
+	--------------"
+`;
+
+exports[`Abstract Help Generator Unit Tests buildOptionMaps test 1`] = `
+InheritedHelpGenerator {
+  "groupToOption": Object {
+    "undefined": Array [
+      "--aReaLOption  (boolean)",
+      "--elmo  (boolean)",
+    ],
+  },
+  "mCommandDefinition": Object {
+    "description": "my command",
+    "name": "hello",
+    "options": Array [
+      Object {
+        "description": "Part of must specify one group",
+        "name": "aReaLOption",
+        "type": "boolean",
+      },
+      Object {
+        "description": "Part of must specify one group",
+        "implies": Array [
+          "implied-by-2",
+        ],
+        "name": "elmo",
+        "type": "boolean",
+      },
+    ],
+    "type": "command",
+  },
+  "mDefinitionTree": Object {
+    "children": Array [
+      Object {
+        "description": "my command",
+        "name": "hello",
+        "options": Array [
+          Object {
+            "description": "Part of must specify one group",
+            "name": "aReaLOption",
+            "type": "boolean",
+          },
+          Object {
+            "description": "Part of must specify one group",
+            "implies": Array [
+              "implied-by-2",
+            ],
+            "name": "elmo",
+            "type": "boolean",
+          },
+        ],
+        "type": "command",
+      },
+    ],
+    "description": "",
+    "name": "group_name",
+    "type": "group",
+  },
+  "mExperimentalCommandDescription": "Experimental commands are commands that are not ready for general availability. If you decide to use these commands, you might encounter bugs, incompatibilities with your system, or incomplete help text. ",
+  "mLog": Logger {
+    "category": "imperative",
+    "initStatus": false,
+    "mJsLogger": Logger {
+      "category": "imperative",
+      "context": Object {},
+      "parseCallStack": [Function],
+    },
+  },
+  "mPrimaryHighlightColor": "blue",
+  "mProduceMarkdown": false,
+  "mRootCommandName": "static_command_name",
+  "optionToDescription": Object {
+    "--aReaLOption  (boolean)": "Part of must specify one group",
+    "--elmo  (boolean)": "Part of must specify one group",
+  },
+}
+`;
+
+exports[`Abstract Help Generator Unit Tests buildOptionMaps test 2`] = `
+InheritedHelpGenerator {
+  "groupToOption": Object {},
+  "mCommandDefinition": Object {
+    "description": "my command",
+    "name": "hello",
+    "options": null,
+    "type": "command",
+  },
+  "mDefinitionTree": Object {
+    "children": Array [
+      Object {
+        "description": "my command",
+        "name": "hello",
+        "options": Array [
+          Object {
+            "description": "Part of must specify one group",
+            "name": "aReaLOption",
+            "type": "boolean",
+          },
+          Object {
+            "description": "Part of must specify one group",
+            "implies": Array [
+              "implied-by-2",
+            ],
+            "name": "elmo",
+            "type": "boolean",
+          },
+        ],
+        "type": "command",
+      },
+    ],
+    "description": "",
+    "name": "group_name",
+    "type": "group",
+  },
+  "mExperimentalCommandDescription": "Experimental commands are commands that are not ready for general availability. If you decide to use these commands, you might encounter bugs, incompatibilities with your system, or incomplete help text. ",
+  "mLog": Logger {
+    "category": "imperative",
+    "initStatus": false,
+    "mJsLogger": Logger {
+      "category": "imperative",
+      "context": Object {},
+      "parseCallStack": [Function],
+    },
+  },
+  "mPrimaryHighlightColor": "blue",
+  "mProduceMarkdown": false,
+  "mRootCommandName": "static_command_name",
+  "optionToDescription": Object {},
+}
+`;
+
+exports[`Abstract Help Generator Unit Tests buildOptionMaps with default/allowable test 1`] = `
+Object {
+  "--allowThis  (string)": "this option has default and allowed values
+
+Default value: allowed1
+Allowed values: allowed1, allowed2, allowed3",
+  "--defaultThis  (string)": "this option has only default
+
+Default value: myDefault",
+  "--whatever  (string)": "this option doesn't have any default/allowable",
+}
+`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 1`] = `"string"`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 2`] = `"number"`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 3`] = `"json"`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 4`] = `"local file path"`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 5`] = `"array"`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 6`] = `"boolean"`;
+
+exports[`Abstract Help Generator Unit Tests explainType test 7`] = `"count"`;
+
+exports[`Abstract Help Generator Unit Tests getCaseSensitiveFlagByOptionName test 1`] = `undefined`;
+
+exports[`Abstract Help Generator Unit Tests getCaseSensitiveFlagByOptionName test 2`] = `undefined`;
+
+exports[`Abstract Help Generator Unit Tests getCaseSensitiveFlagByOptionName test 3`] = `undefined`;
+
+exports[`Abstract Help Generator Unit Tests getCaseSensitiveFlagByOptionName test 4`] = `undefined`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Alias array empty strings [ "",""] 1`] = `"--my_option  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Alias array is a null element 1`] = `"--my_option  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Alias array with a blank as well as good elements 1`] = `"--my_option  | --ba | -m (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Alias array with a null inbetween good elements 1`] = `"--my_option  | --ma | -m (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Empty alias "" 1`] = `"--my_option  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Empty name 1`] = `"--  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Empty type 1`] = `"--good_name  ()"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Good Option, multiple alias 1`] = `"--my_option  | --my_opt | --m_o | -m (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Good option, multiple alias, required 1`] = `"--my_option  | --my_opt | --m_o | -m (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Good option, no alias present 1`] = `"--my_option  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Good option, single alias 1`] = `"--my_option  | --my_opt (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Good option, single char 1`] = `"-o  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Non-existent type 1`] = `"--good_name  (notexist)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Null name 1`] = `"--null  (string)"`;
+
+exports[`Abstract Help Generator Unit Tests getOptionAndAliasesString test: Null type 1`] = `"--good_name  (null)"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 1`] = `"basic help"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 2`] = `" indented help"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 3`] = `"  space help"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 4`] = `" italics"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 5`] = `" HEADER TEXT"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 6`] = `
+" bullet one 
+  bullet two"
+`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 7`] = `" code start "`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 8`] = `" code reverse {{codeStart}}"`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 9`] = `""`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 10`] = `""`;
+
+exports[`Abstract Help Generator Unit Tests renderHelp test 11`] = `"Help unable to be rendered - the supplied help text was null or undefined."`;

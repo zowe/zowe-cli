@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli respond with-data-array should construct a response object with the strings inputted and produce a JSON response 1`] = `
+"Array response built. Use --response-format-json to see the array.
+"
+`;
+
+exports[`cmd-cli respond with-data-array should construct a response object with the strings inputted and produce a JSON response 2`] = `
+Array [
+  "hello",
+  "world",
+  "!",
+]
+`;
+
+exports[`cmd-cli respond with-data-array should display a syntax error if no parms are specified 1`] = `
+"
+Syntax Error:
+Missing Required Option:
+--strings-for-array (--sfa)
+
+Option Description:
+An array of space delimited strings that will be placed in the output object
+array.
+
+Syntax Error:
+Missing Required Option:
+--message-for-response (--mfr)
+
+Option Description:
+The message that will be placed in the output object.
+
+Use \\"cmd-cli respond with-data-array --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli respond with-data-array should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   with-data-array
+
+ DESCRIPTION
+ -----------
+
+   Formulates a string array object to pass back when response format JSON is
+   specified.
+
+ USAGE
+ -----
+
+   cmd-cli respond with-data-array [options]
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --strings-for-array  | --sfa (array)
+
+      An array of space delimited strings that will be placed in the output object
+      array.
+
+   --message-for-response  | --mfr (string)
+
+      The message that will be placed in the output object.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: with-data-array.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-data-array\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Formulates a string array object to pass back when response format JSON is\\\\n   specified.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-data-array [options]\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --strings-for-array  | --sfa (array)\\\\n\\\\n      An array of space delimited strings that will be placed in the output object\\\\n      array.\\\\n\\\\n   --message-for-response  | --mfr (string)\\\\n\\\\n      The message that will be placed in the output object.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-data-array\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Formulates a string array object to pass back when response format JSON is\\\\n   specified.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-data-array [options]\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --strings-for-array  | --sfa (array)\\\\n\\\\n      An array of space delimited strings that will be placed in the output object\\\\n      array.\\\\n\\\\n   --message-for-response  | --mfr (string)\\\\n\\\\n      The message that will be placed in the output object.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

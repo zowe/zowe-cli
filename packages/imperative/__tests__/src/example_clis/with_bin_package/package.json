@@ -1,0 +1,32 @@
+{
+  "name": "profile-example-cli-with-bin",
+  "version": "0.0.0",
+  "description": "Test Imperative CLI with Profiles",
+  "license": "EPL 2.0",
+  "repository": "",
+  "bin": {
+    "sample-with-bin": "./ProfileBinExampleCLI.ts"
+  },
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}

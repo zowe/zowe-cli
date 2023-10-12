@@ -20,8 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../src";
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import { noConsoleInput, noConsoleName, noZosmfInput } from "../../src/ConsoleConstants";
 
 const PRETEND_SESSION = new Session({
@@ -177,7 +176,7 @@ describe("IssueCommand buildZosmfConsoleApiParameters", () => {
 describe("IssueCommand issueCommon", () => {
 
     it("with correct parameters should succeed.", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -189,10 +188,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, CUSTOM_CONSOLE, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
@@ -205,10 +204,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(undefined, ConsoleConstants.RES_DEF_CN, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noSession.message);
@@ -219,10 +218,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, undefined, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, noConsoleName.message);
     });
@@ -232,16 +231,16 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, ConsoleConstants.RES_DEF_CN, undefined);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, noZosmfInput.message);
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.putExpectJSON as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Issue error message"}, {suppressReport: false, tag: "some tag"});
         });
 
@@ -249,10 +248,10 @@ describe("IssueCommand issueCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, CUSTOM_CONSOLE, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, "Issue error message");
         expect(ZosmfRestClient.putExpectJSON as any).toHaveBeenCalledTimes(1);
@@ -262,7 +261,7 @@ describe("IssueCommand issueCommon", () => {
 describe("IssueCommand issueDefConsoleCommon", () => {
 
     it("with correct parameters should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -274,10 +273,10 @@ describe("IssueCommand issueDefConsoleCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await IssueCommand.issueDefConsoleCommon(PRETEND_SESSION, CMD_ZOSMF_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(error).not.toBeDefined();
@@ -294,17 +293,17 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, undefined);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectConsoleResponseFailed(response, error, noConsoleInput.message);
     });
 
 
     it("with correct parameters should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -316,10 +315,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -329,7 +328,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("with default console name should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -341,10 +340,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -352,7 +351,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("with custom console name should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -364,10 +363,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_CUSTOM_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -375,7 +374,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("with keyword should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_KEYWORD_RESPONSE);
@@ -387,10 +386,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_CUSTOM_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -398,7 +397,7 @@ describe("IssueCommand issue", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Test error message"}, {suppressReport: false, tag: "some tag"});
         });
 
@@ -406,10 +405,10 @@ describe("IssueCommand issue", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issue(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -420,7 +419,7 @@ describe("IssueCommand issue", () => {
 describe("IssueCommand issueSimple", () => {
 
     it("with correct parameters should succeed.", async () => {
-        (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issueCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -432,10 +431,10 @@ describe("IssueCommand issueSimple", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueSimple(PRETEND_SESSION, COMMAND_NAME);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issueCommon as any).toHaveBeenCalledTimes(1);
@@ -448,7 +447,7 @@ describe("IssueCommand issueSimple", () => {
 describe("IssueCommand issueAndCollect", () => {
 
     it("should succeed.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issue as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -456,7 +455,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<object> => {
+        (CollectCommand.collect as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -468,10 +467,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);
@@ -484,7 +483,7 @@ describe("IssueCommand issueAndCollect", () => {
     });
 
     it("should not call collect method if response key from issue is empty.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<IConsoleResponse> => {
+        (IssueCommand.issue as any) = jest.fn((): Promise<IConsoleResponse> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_NO_KEY_RESPONSE);
@@ -492,7 +491,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<IConsoleResponse> => {
+        (CollectCommand.collect as any) = jest.fn((): Promise<IConsoleResponse> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -504,10 +503,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);
@@ -516,7 +515,7 @@ describe("IssueCommand issueAndCollect", () => {
     });
 
     it("should not call collect if keyword was detected after issue.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issue as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_SOLICITED_RESPONSE);
@@ -524,7 +523,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<object> => {
+        (CollectCommand.collect as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -536,10 +535,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);
@@ -548,7 +547,7 @@ describe("IssueCommand issueAndCollect", () => {
     });
 
     it("should not call collect if issue call returns Imperative error.", async () => {
-        (IssueCommand.issue as any) = jest.fn<object>((): Promise<object> => {
+        (IssueCommand.issue as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(IMPERATIVE_ERROR_RESPONSE);
@@ -556,7 +555,7 @@ describe("IssueCommand issueAndCollect", () => {
             });
         });
 
-        (CollectCommand.collect as any) = jest.fn<object>((): Promise<object> => {
+        (CollectCommand.collect as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_CONSOLE_RESPONSE);
@@ -568,10 +567,10 @@ describe("IssueCommand issueAndCollect", () => {
         let response: IConsoleResponse;
         try {
             response = await IssueCommand.issueAndCollect(PRETEND_SESSION, CMD_DEF_CONSOLE_PARMS, FOLLOW_UP_2_PARAMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(IssueCommand.issue as any).toHaveBeenCalledTimes(1);

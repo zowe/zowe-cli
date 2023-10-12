@@ -20,9 +20,18 @@ gulp.task("lint", developmentTasks.lint);
 gulp.task("updateLicense", developmentTasks.license);
 gulp.task('doc', developmentTasks.doc);
 gulp.task('typedoc', developmentTasks.typedoc);
+gulp.task("buildImperative", developmentTasks.buildImperative);
+gulp.task("watchImperative", developmentTasks.watchImperative);
+gulp.task('build:all-clis', developmentTasks.buildAllClis);
+gulp.task('build:install-all-cli-dependencies', developmentTasks.installAllCliDependencies);
 
 /**
  * Cleanup related tasks
  */
 const cleanupTasks = require("./gulp/CleanupTasks");
 gulp.task('cleanTypedoc', cleanupTasks.cleanTypedoc);
+/**
+ * Web help related tasks
+ */
+const webHelpTasks = require("./gulp/WebHelpTasks");
+gulp.task("bundleWebHelp", webHelpTasks.bundle);

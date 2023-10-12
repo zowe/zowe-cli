@@ -29,13 +29,13 @@ describe("Start workflow common handler", () => {
             const workflowKey = "fake-workflow-key";
 
             // Mock the start function
-            StartWorkflow.startWorkflow = jest.fn((session) => {
+            StartWorkflow.startWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {
@@ -94,15 +94,15 @@ describe("Start workflow common handler", () => {
             const workflowName = "fake-workflow-name";
 
             // Mock the start function
-            StartWorkflow.startWorkflow = jest.fn((session) => {
+            StartWorkflow.startWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
-            ListWorkflows.getWfKey = jest.fn((session) => {
+            ListWorkflows.getWfKey = jest.fn(async (session) => {
                 fakeSession = session;
                 return workflowKey;
             });
@@ -166,13 +166,13 @@ describe("Start workflow common handler", () => {
             const workflowKey = "fake-workflow-key";
 
             // Mock the start function
-            StartWorkflow.startWorkflow = jest.fn((session) => {
+            StartWorkflow.startWorkflow = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {

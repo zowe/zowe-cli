@@ -8,7 +8,7 @@
     "module": "commonjs",
     "declaration": true,
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "outDir": "./lib",
     "preserveConstEnums": true,
     "removeComments": false,

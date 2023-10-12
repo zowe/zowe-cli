@@ -10,9 +10,7 @@
 */
 
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Imperative } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 // Test Environment populated in the beforeAll();
@@ -34,7 +32,7 @@ describe("zos-tso ping address-space", () => {
 
     it("should display the help", async () => {
         const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_help.sh", TEST_ENVIRONMENT);
-        Imperative.console.info(inspect(response));
+        // Imperative.console.info(inspect(response));
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();

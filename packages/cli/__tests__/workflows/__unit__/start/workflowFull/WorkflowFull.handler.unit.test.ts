@@ -35,7 +35,7 @@ describe("Start workflow common handler", () => {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {
@@ -100,12 +100,12 @@ describe("Start workflow common handler", () => {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             ListWorkflows.getWfKey = jest.fn((session) => {
                 fakeSession = session;
                 return workflowKey;
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {
@@ -170,7 +170,7 @@ describe("Start workflow common handler", () => {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {
@@ -237,7 +237,7 @@ describe("Start workflow common handler", () => {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
                 fakeSession = session;
@@ -247,7 +247,7 @@ describe("Start workflow common handler", () => {
                     },
                     statusName: "complete"
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {
@@ -312,7 +312,7 @@ describe("Start workflow common handler", () => {
                     success: true,
                     commandResponse: "Started."
                 };
-            });
+            }) as any;
 
             PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
                 fakeSession = session;
@@ -322,7 +322,7 @@ describe("Start workflow common handler", () => {
                     },
                     statusName: "in-progress"
                 };
-            });
+            }) as any;
 
             // Mocked function references
             const profFunc = jest.fn((args) => {

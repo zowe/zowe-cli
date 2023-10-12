@@ -21,7 +21,9 @@
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
+    "pretest:integration": "node scripts/sampleCliTool.js install",
     "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\\$\" --coverage false",
+    "posttest:integration": "node scripts/sampleCliTool.js uninstall",
     "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
     "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
     "watch": "lerna run --parallel watch",
@@ -32,22 +34,26 @@
     "typedoc": "typedoc",
     "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "prepare": "husky install"
+    "bundle:webHelp": "gulp bundleWebHelp",
+    "prepare": "husky install && npm run bundle:webHelp"
   },
   "dependencies": {
     "@zowe/imperative": "4.18.19",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
+    "@types/babel__traverse": "7.17.1",
     "@types/fs-extra": "^8.0.1",
-    "@types/jest": "^22.2.3",
-    "@types/node": "^12.12.24",
+    "@types/jest": "^24.9.1",
+    "@types/lodash": "4.14.175",
+    "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "ansi-colors": "^4.1.1",
     "chalk": "^4.1.0",
     "clear-require": "^2.0.0",
     "codepage": "^1.10.1",
+    "concurrently": "^7.5.0",
     "cross-env": "^5.1.4",
     "eslint": "^7.32.0",
     "eslint-plugin-jest": "^24.4.0",
@@ -70,7 +76,7 @@
     "jest-stare": "^2.2.0",
     "js-yaml": "^3.13.1",
     "jsonfile": "^4.0.0",
-    "lerna": "^3.22.1",
+    "lerna": "^5.4.3",
     "madge": "^4.0.1",
     "npm-lockfile": "^3.0.4",
     "rimraf": "^2.6.3",
@@ -101,6 +107,9 @@
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
+    "testPathIgnorePatterns": [
+      "./packages/imperative/__tests__/__system__/AbstractRestClient.system.test.ts"
+    ],
     "testResultsProcessor": "jest-stare",
     "transform": {
       "\\.ts$": "ts-jest"
@@ -115,7 +124,8 @@
       "packages/**/*.ts",
       "!**/__tests__/**",
       "!packages/**/doc/I*.ts",
-      "!**/main.ts"
+      "!**/main.ts",
+      "!packages/imperative/web-help/**"
     ],
     "collectCoverage": false,
     "coverageReporters": [

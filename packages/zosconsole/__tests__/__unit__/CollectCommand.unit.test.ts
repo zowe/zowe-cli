@@ -11,8 +11,7 @@
 
 import { CollectCommand, ConsoleConstants, ICollectParms, IConsoleResponse, IZosmfIssueResponse } from "../../src";
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { noCommandKey, noConsoleName } from "../../src/ConsoleConstants";
 
 const PRETEND_SESSION = new Session({
@@ -100,7 +99,7 @@ describe("CollectCommand collectCommon", () => {
      * Verify that ZosmfRestClient.getExpectJSON method has been called with proper parameters
      */
     it("should get response from custom console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -112,10 +111,10 @@ describe("CollectCommand collectCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, CUSTOM_CONSOLE, COMMAND_RESPONSE_KEY);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseSucceeded(response, error);
@@ -128,7 +127,7 @@ describe("CollectCommand collectCommon", () => {
      * Command should fail with incorrect parameters and
      */
     it("should fail if session is not provided.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -140,10 +139,10 @@ describe("CollectCommand collectCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await CollectCommand.collectCommon(undefined, CUSTOM_CONSOLE, COMMAND_RESPONSE_KEY);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noSession.message);
@@ -157,7 +156,7 @@ describe("CollectCommand collectCommon", () => {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, undefined, COMMAND_RESPONSE_KEY);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noConsoleName.message);
@@ -170,14 +169,14 @@ describe("CollectCommand collectCommon", () => {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, "console", undefined);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseFailed(response, error, noCommandKey.message);
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Collect error message"}, {suppressReport: false, tag: "some tag"});
         });
 
@@ -187,7 +186,7 @@ describe("CollectCommand collectCommon", () => {
             response = await CollectCommand.collectCommon(PRETEND_SESSION, "console", COMMAND_RESPONSE_KEY);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
         expectZosmfResponseFailed(response, error, "Collect error message");
     });
@@ -196,7 +195,7 @@ describe("CollectCommand collectCommon", () => {
 describe("CollectCommand collectDefConsoleCommon", () => {
 
     it("should get response from default console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(CMD_RESPONSE);
@@ -208,10 +207,10 @@ describe("CollectCommand collectDefConsoleCommon", () => {
         let response: IZosmfIssueResponse;
         try {
             response = await CollectCommand.collectDefConsoleCommon(PRETEND_SESSION, COMMAND_RESPONSE_KEY);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectZosmfResponseSucceeded(response, error);
@@ -223,24 +222,24 @@ describe("CollectCommand collectDefConsoleCommon", () => {
 describe("CollectCommand collect", () => {
 
     it("should get response from custom console.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_CUST_CONSOLE_COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectConsoleResponseSucceeded(response, error);
@@ -249,24 +248,24 @@ describe("CollectCommand collect", () => {
     });
 
     it("should get response (one chunk of data provided as a response).", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectConsoleResponseSucceeded(response, error);
@@ -275,28 +274,28 @@ describe("CollectCommand collect", () => {
     });
 
     it("should get response (two chunks of data with empty responses provided as a response).", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1)
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_EMPTY)
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE2)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1)
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_EMPTY)
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE2)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_COLLECT_FOLLOWUP2_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expectConsoleResponseSucceeded(response, error);
@@ -306,19 +305,19 @@ describe("CollectCommand collect", () => {
     });
 
     it("should handle Imperative error.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             throw new ImperativeError({msg: "Issue error message"}, {suppressReport: false, tag: "some tag"});
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1);
 
         let error: ImperativeError;
         let response: IConsoleResponse;
         try {
             response = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error " + inspect(error));
+            // Imperative.console.info("Error " + inspect(error));
         }
 
         expect(error).not.toBeDefined();
@@ -331,15 +330,15 @@ describe("CollectCommand collect", () => {
     });
 
     it("with non empty console response should collect all data.", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((reject) => {
                 process.nextTick(() => {
                     reject(FOLLOW_UP_RESPONSE1);
                 });
             });
         })
-            .mockReturnValueOnce(FOLLOW_UP_RESPONSE1)
-            .mockReturnValue(FOLLOW_UP_EMPTY);
+            .mockResolvedValueOnce(FOLLOW_UP_RESPONSE1)
+            .mockResolvedValue(FOLLOW_UP_EMPTY);
 
         const response: IConsoleResponse = await CollectCommand.collect(PRETEND_SESSION, CMD_DEF_CONSOLE_COLLECT_PARMS,
             FOLLOW_UP_CONSOLE_RESPONSE);

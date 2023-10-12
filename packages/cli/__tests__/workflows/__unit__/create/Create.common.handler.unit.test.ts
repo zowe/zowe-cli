@@ -59,7 +59,7 @@ describe("Create workflow common handler", () => {
                 return {
                     success: true,
                     commandResponse: "deleted"
-                };
+                } as any;
             });
 
             // Mock the get key function
@@ -67,7 +67,7 @@ describe("Create workflow common handler", () => {
                 fakeSession = session;
                 return {
                     workflowKey: "fake-workflow-key"
-                };
+                } as any;
             });
 
             // Mock the create function
@@ -75,7 +75,7 @@ describe("Create workflow common handler", () => {
                 fakeSession = session;
                 return {
                     success: true
-                };
+                } as any;
             });
 
             // Mocked function references
@@ -167,7 +167,7 @@ describe("Create workflow common handler", () => {
                 return {
                     success: true,
                     commandResponse: "deleted"
-                };
+                } as any;
             });
 
             // Mocked function references
@@ -258,7 +258,7 @@ describe("Create workflow common handler", () => {
                 return {
                     success: true,
                     commandResponse: "deleted"
-                };
+                } as any;
             });
 
             // Mocked function references
@@ -353,7 +353,7 @@ describe("Create workflow common handler", () => {
                 return {
                     success: true,
                     commandResponse: "deleted"
-                };
+                } as any;
             });
 
             // Mocked function references

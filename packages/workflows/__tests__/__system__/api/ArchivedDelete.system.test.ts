@@ -11,13 +11,12 @@
 
 import { ZosFilesConstants, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowKey } from "../../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ArchivedDeleteWorkflow, ArchiveWorkflow, CreateWorkflow } from "../../../src";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 
 
@@ -89,10 +88,10 @@ describe("Delete archived workflow", () => {
             let response;
             try {
                 response = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -102,10 +101,10 @@ describe("Delete archived workflow", () => {
 
             try {
                 response = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -117,10 +116,10 @@ describe("Delete archived workflow", () => {
             let response: any;
             try {
                 response = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(undefined, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -129,10 +128,10 @@ describe("Delete archived workflow", () => {
             let response: any;
             try {
                 response = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -141,10 +140,10 @@ describe("Delete archived workflow", () => {
             let response: any;
             try {
                 response = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -153,10 +152,10 @@ describe("Delete archived workflow", () => {
             let response: any;
             try {
                 response = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

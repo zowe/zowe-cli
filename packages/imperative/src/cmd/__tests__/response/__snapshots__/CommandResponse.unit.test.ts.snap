@@ -1,0 +1,1540 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Command Response format APIs error checking should detect missing format 1`] = `""`;
+
+exports[`Command Response format APIs error checking should detect missing format 2`] = `"Expect Error: Output format must be one of the following: table,list,object,string"`;
+
+exports[`Command Response format APIs error checking should detect missing output data 1`] = `""`;
+
+exports[`Command Response format APIs error checking should detect missing output data 2`] = `"Expect Error: No output data to format was supplied"`;
+
+exports[`Command Response format APIs error checking should detect missing parameters 1`] = `""`;
+
+exports[`Command Response format APIs error checking should detect missing parameters 2`] = `"Expect Error: No format parameters were supplied"`;
+
+exports[`Command Response format APIs error checking should give the extraction field name if data extraction changed the type 1`] = `
+"Non-formatted output data:
+{ name: 'banana',
+  details: 'A fruit that grows in a bunch',
+  colors: [ 'yellow', 'green', 'black' ] }
+"
+`;
+
+exports[`Command Response format APIs error checking should give the extraction field name if data extraction changed the type 2`] = `
+"The format type of \\"object\\" can only be applied to JSON objects or Arrays.
+The data being formatted is of type \\"string\\".
+Note that the data being formatted was extracted from property \\"name\\" because that field was specified as the single filter."
+`;
+
+exports[`Command Response format APIs error checking should handle an invalid format type and throw an error 1`] = `""`;
+
+exports[`Command Response format APIs error checking should handle an invalid format type and throw an error 2`] = `"Expect Error: Output format must be one of the following: table,list,object,string"`;
+
+exports[`Command Response format APIs error checking should not allow a boolean to be formatted as a list 1`] = `
+"Non-formatted output data:
+true
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow a boolean to be formatted as a list 2`] = `
+"The format type of \\"list\\" can only be applied to Arrays.
+The data being formatted is of type \\"boolean\\"."
+`;
+
+exports[`Command Response format APIs error checking should not allow a boolean to be formatted as a table 1`] = `
+"Non-formatted output data:
+false
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow a boolean to be formatted as a table 2`] = `
+"The format type of \\"table\\" can only be applied to JSON objects or Arrays.
+The data being formatted is of type \\"boolean\\"."
+`;
+
+exports[`Command Response format APIs error checking should not allow a boolean to be formatted as an object 1`] = `
+"Non-formatted output data:
+false
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow a boolean to be formatted as an object 2`] = `
+"The format type of \\"object\\" can only be applied to JSON objects or Arrays.
+The data being formatted is of type \\"boolean\\"."
+`;
+
+exports[`Command Response format APIs error checking should not allow a string to be formatted as a list 1`] = `
+"Non-formatted output data:
+'this is not a list'
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow a string to be formatted as a list 2`] = `
+"The format type of \\"list\\" can only be applied to Arrays.
+The data being formatted is of type \\"string\\"."
+`;
+
+exports[`Command Response format APIs error checking should not allow a string to be formatted as a table 1`] = `
+"Non-formatted output data:
+'this is not a table'
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow a string to be formatted as a table 2`] = `
+"The format type of \\"table\\" can only be applied to JSON objects or Arrays.
+The data being formatted is of type \\"string\\"."
+`;
+
+exports[`Command Response format APIs error checking should not allow a string to be formatted as an object 1`] = `
+"Non-formatted output data:
+'this is not a table'
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow a string to be formatted as an object 2`] = `
+"The format type of \\"object\\" can only be applied to JSON objects or Arrays.
+The data being formatted is of type \\"string\\"."
+`;
+
+exports[`Command Response format APIs error checking should not allow an object to be formatted as a list 1`] = `
+"Non-formatted output data:
+{ name: 'banana',
+  details: 'A fruit that grows in a bunch',
+  colors: [ 'yellow', 'green', 'black' ] }
+"
+`;
+
+exports[`Command Response format APIs error checking should not allow an object to be formatted as a list 2`] = `
+"The format type of \\"list\\" can only be applied to Arrays.
+The data being formatted is of type \\"object\\"."
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object and allow filtering 1`] = `
+"name:    banana
+details: A fruit that grows in a bunch
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object and allow filtering to a single property 1`] = `
+"banana
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object and format a table 1`] = `
+"banana A fruit that grows in a bunch yellow,green,black
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object and format a table with a header 1`] = `
+"name   details                       colors            
+banana A fruit that grows in a bunch yellow,green,black
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object and prettify 1`] = `
+"name:    banana
+details: A fruit that grows in a bunch
+colors: 
+  - yellow
+  - green
+  - black
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object and stringify 1`] = `
+"{\\"name\\":\\"banana\\",\\"details\\":\\"A fruit that grows in a bunch\\",\\"colors\\":[\\"yellow\\",\\"green\\",\\"black\\"]}
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object, filter to a single field (which is an array), and change to output a list 1`] = `
+"banana
+strawberry
+apple
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a JSON object, filter to a single field (which is an object), and change to output an object 1`] = `
+"details: more details
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a boolean and format a string 1`] = `
+"true
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a number and format a string 1`] = `
+"1000
+"
+`;
+
+exports[`Command Response format APIs formatting should accept a string and format a string 1`] = `
+"this is a string
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON object and allow filtering to a single field and format a string 1`] = `
+"[\\"banana\\",\\"strawberry\\",\\"apple\\"]
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON object and allow filtering to a single field and format an object 1`] = `
+"[\\"banana\\",\\"strawberry\\",\\"apple\\"]
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and allow filtering to a single property list 1`] = `
+"banana
+strawberry
+apple
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and format a list of prettified objects 1`] = `
+"- 
+  name:    banana
+  details: A fruit that grows in a bunch
+  colors: 
+    - yellow
+    - green
+    - black
+- 
+  name:    strawberry
+  details: A fruit that grows on vines
+  colors: 
+    - white
+    - red
+- 
+  name:    apple
+  details: A fruit that grows on trees
+  colors: 
+    - red
+    - green
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and format a string 1`] = `
+"[{\\"name\\":\\"banana\\",\\"details\\":\\"A fruit that grows in a bunch\\",\\"colors\\":[\\"yellow\\",\\"green\\",\\"black\\"]},{\\"name\\":\\"strawberry\\",\\"details\\":\\"A fruit that grows on vines\\",\\"colors\\":[\\"white\\",\\"red\\"]},{\\"name\\":\\"apple\\",\\"details\\":\\"A fruit that grows on trees\\",\\"colors\\":[\\"red\\",\\"green\\"]}]
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and format a stringified list 1`] = `
+"{\\"name\\":\\"banana\\",\\"details\\":\\"A fruit that grows in a bunch\\",\\"colors\\":[\\"yellow\\",\\"green\\",\\"black\\"]}
+{\\"name\\":\\"strawberry\\",\\"details\\":\\"A fruit that grows on vines\\",\\"colors\\":[\\"white\\",\\"red\\"]}
+{\\"name\\":\\"apple\\",\\"details\\":\\"A fruit that grows on trees\\",\\"colors\\":[\\"red\\",\\"green\\"]}
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and format a table 1`] = `
+"banana     A fruit that grows in a bunch yellow,green,black
+strawberry A fruit that grows on vines   white,red         
+apple      A fruit that grows on trees   red,green         
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and format a table with a header 1`] = `
+"name       details                       colors            
+banana     A fruit that grows in a bunch yellow,green,black
+strawberry A fruit that grows on vines   white,red         
+apple      A fruit that grows on trees   red,green         
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of JSON objects and format a table with a single column 1`] = `
+"name      
+banana    
+strawberry
+apple     
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of booleans and a filter and format a string of an array of nulls 1`] = `
+"[null,null,null]
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of booleans and format a list 1`] = `
+"true
+false
+true
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of numbers and format a list 1`] = `
+"0
+1
+2
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of numbers and format a string 1`] = `
+"[0,1,2]
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of objects and allow filtering for list output 1`] = `
+"{\\"name\\":\\"banana\\",\\"details\\":\\"A fruit that grows in a bunch\\"}
+{\\"name\\":\\"strawberry\\",\\"details\\":\\"A fruit that grows on vines\\"}
+{\\"name\\":\\"apple\\",\\"details\\":\\"A fruit that grows on trees\\"}
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of objects and allow filtering for object output 1`] = `
+"{\\"name\\":\\"banana\\",\\"details\\":\\"A fruit that grows in a bunch\\"}
+{\\"name\\":\\"strawberry\\",\\"details\\":\\"A fruit that grows on vines\\"}
+{\\"name\\":\\"apple\\",\\"details\\":\\"A fruit that grows on trees\\"}
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of objects and allow filtering for string output 1`] = `
+"[{\\"name\\":\\"banana\\",\\"details\\":\\"A fruit that grows in a bunch\\"},{\\"name\\":\\"strawberry\\",\\"details\\":\\"A fruit that grows on vines\\"},{\\"name\\":\\"apple\\",\\"details\\":\\"A fruit that grows on trees\\"}]
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of objects and allow filtering for table output 1`] = `
+"name       details                      
+banana     A fruit that grows in a bunch
+strawberry A fruit that grows on vines  
+apple      A fruit that grows on trees  
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of strings and format a list 1`] = `
+"banana
+strawberry
+apple
+"
+`;
+
+exports[`Command Response format APIs formatting should accept an array of strings and stringify 1`] = `
+"[\\"banana\\",\\"strawberry\\",\\"apple\\"]
+"
+`;
+
+exports[`Command Response format APIs formatting should allow extraction of multiple nested properties and consolidate for a table 1`] = `
+"description.full description.summary attributes.color attributes.rare
+a fruit          fruit               green            true           
+"
+`;
+
+exports[`Command Response format APIs formatting should allow extraction of multiple nested properties and keep the property structure 1`] = `
+"description: 
+  full:    a fruit
+  summary: fruit
+attributes: 
+  color: green
+  rare:  true
+"
+`;
+
+exports[`Command Response format APIs formatting should allow options to override the default for filter 1`] = `
+"name       details                       colors            
+banana     A fruit that grows in a bunch yellow,green,black
+strawberry A fruit that grows on vines   white,red         
+apple      A fruit that grows on trees   red,green         
+"
+`;
+
+exports[`Command Response format APIs formatting should allow options to override the default for format type 1`] = `
+"- 
+  name:    banana
+  details: A fruit that grows in a bunch
+  colors: 
+    - yellow
+    - green
+    - black
+- 
+  name:    strawberry
+  details: A fruit that grows on vines
+  colors: 
+    - white
+    - red
+- 
+  name:    apple
+  details: A fruit that grows on trees
+  colors: 
+    - red
+    - green
+"
+`;
+
+exports[`Command Response format APIs formatting should allow options to override the default for header 1`] = `
+"name       details                       colors            
+banana     A fruit that grows in a bunch yellow,green,black
+strawberry A fruit that grows on vines   white,red         
+apple      A fruit that grows on trees   red,green         
+"
+`;
+
+exports[`Command Response format APIs formatting should not attempt filtering on a boolean 1`] = `
+"true
+"
+`;
+
+exports[`Command Response format APIs formatting should not attempt filtering on a string 1`] = `
+"this is a string
+"
+`;
+
+exports[`Command Response should allow us to create a full/complex response and build the response 1`] = `
+"hello from the tests - stdout
+"
+`;
+
+exports[`Command Response should allow us to create a full/complex response and build the response 2`] = `
+"ERROR:
+hello from the tests - stderr
+"
+`;
+
+exports[`Command Response should allow us to create a full/complex response and build the response 3`] = `
+Object {
+  "data": Object {
+    "theData": "test data",
+  },
+  "error": Object {
+    "additionalDetails": "More details...",
+    "causeErrors": Object {
+      "this": "is ths cause",
+    },
+    "errorCode": "0",
+    "msg": "error occurred",
+    "stack": "The stack",
+  },
+  "exitCode": 1,
+  "message": "The JSON message",
+  "stderr": Object {
+    "data": Array [
+      69,
+      82,
+      82,
+      79,
+      82,
+      58,
+      10,
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      101,
+      114,
+      114,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      111,
+      117,
+      116,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Response should allow us to create a full/complex response and write the response 1`] = `
+"{
+  \\"success\\": false,
+  \\"exitCode\\": 1,
+  \\"message\\": \\"The JSON message\\",
+  \\"stdout\\": \\"hello from the tests - stdout\\\\n\\",
+  \\"stderr\\": \\"ERROR:\\\\nhello from the tests - stderr\\\\n\\",
+  \\"data\\": {
+    \\"theData\\": \\"test data\\"
+  },
+  \\"error\\": {
+    \\"msg\\": \\"error occurred\\",
+    \\"additionalDetails\\": \\"More details...\\",
+    \\"stack\\": \\"The stack\\",
+    \\"causeErrors\\": {
+      \\"this\\": \\"is ths cause\\"
+    },
+    \\"errorCode\\": \\"0\\"
+  }
+}"
+`;
+
+exports[`Command Response should allow us to create a full/complex response and write the response 2`] = `""`;
+
+exports[`Command Response should allow us to create a full/complex response and write the response 3`] = `
+Object {
+  "data": Object {
+    "theData": "test data",
+  },
+  "error": Object {
+    "additionalDetails": "More details...",
+    "causeErrors": Object {
+      "this": "is ths cause",
+    },
+    "errorCode": "0",
+    "msg": "error occurred",
+    "stack": "The stack",
+  },
+  "exitCode": 1,
+  "message": "The JSON message",
+  "stderr": Object {
+    "data": Array [
+      69,
+      82,
+      82,
+      79,
+      82,
+      58,
+      10,
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      101,
+      114,
+      114,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      111,
+      117,
+      116,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Response should allow us to create a full/complex response should not write if silent mode is enabled 1`] = `""`;
+
+exports[`Command Response should allow us to create a full/complex response should not write if silent mode is enabled 2`] = `""`;
+
+exports[`Command Response should allow us to create a full/complex response should not write if silent mode is enabled 3`] = `
+Object {
+  "data": Object {
+    "theData": "test data",
+  },
+  "error": Object {
+    "additionalDetails": "More details...",
+    "causeErrors": Object {
+      "this": "is ths cause",
+    },
+    "errorCode": "0",
+    "msg": "error occurred",
+    "stack": "The stack",
+  },
+  "exitCode": 1,
+  "message": "The JSON message",
+  "stderr": Object {
+    "data": Array [
+      69,
+      82,
+      82,
+      79,
+      82,
+      58,
+      10,
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      101,
+      114,
+      114,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      111,
+      117,
+      116,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Response should allow us to indicate that the command failed 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 1,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": false,
+}
+`;
+
+exports[`Command Response should allow us to indicate that the command succeeded 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to merge the data object in the response as an array 1`] = `
+Object {
+  "data": Object {
+    "moreData": "more test data",
+    "theData": "test data",
+  },
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to set a JSON message 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "JSON object message",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to set an error 1`] = `
+Object {
+  "data": Object {},
+  "error": Object {
+    "additionalDetails": "More details...",
+    "causeErrors": Object {
+      "this": "is ths cause",
+    },
+    "errorCode": "0",
+    "msg": "error occurred",
+    "stack": "The stack",
+  },
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to set the data object in the response as a string 1`] = `
+Object {
+  "data": "test data",
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to set the data object in the response as an array 1`] = `
+Object {
+  "data": Array [
+    Object {
+      "theData": "test data",
+    },
+  ],
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to set the data object in the response as an object 1`] = `
+Object {
+  "data": Object {
+    "theData": "test data",
+  },
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should allow us to set the message and the data 1`] = `
+Object {
+  "data": Object {
+    "theData": "test data",
+  },
+  "error": undefined,
+  "exitCode": 0,
+  "message": "The JSON message",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should detect invalid primary color 1`] = `"Expect Error: Command Response Error: The primary text color supplied is blank. Must provide a valid color."`;
+
+exports[`Command Response should detect invalid response format 1`] = `"Expect Error: Command Response Error: Response format invalid. Valid formats: \\"json,default\\""`;
+
+exports[`Command Response should format messages when using a format string to stderr 1`] = `
+"hello from the tests
+"
+`;
+
+exports[`Command Response should format messages when using a format string to stderr 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should format messages when using a format string to stdout 1`] = `
+"hello from the tests
+"
+`;
+
+exports[`Command Response should format messages when using a format string to stdout 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should indicate the command succeeded by default 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should not duplicate output when calling endBar 1`] = `
+"Message before progress bar
+Message during progress bar
+Message after progress bar
+"
+`;
+
+exports[`Command Response should not write an error header to stderr (but still buffer) if silent mode is enabled 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      69,
+      114,
+      114,
+      111,
+      114,
+      32,
+      72,
+      101,
+      97,
+      100,
+      101,
+      114,
+      33,
+      58,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should not write to both stdout and stderr (but still buffer) if silent mode is enabled 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      101,
+      114,
+      114,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      111,
+      117,
+      116,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should not write to stderr (but still buffer) if silent mode is enabled 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should not write to stdout (but still buffer) if silent mode is enabled 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should overwrite the first object if set obj is called again 1`] = `
+Object {
+  "data": Object {
+    "theData": "test data 2",
+  },
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should overwrite the message if set multiple times 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "JSON object message",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should write data to stderr (no newline) and buffer to the response object 1`] = `"hello from the tests"`;
+
+exports[`Command Response should write data to stderr (no newline) and buffer to the response object 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should write data to stdout (no newline) and buffer to the response object 1`] = `"hello from the tests"`;
+
+exports[`Command Response should write data to stdout (no newline) and buffer to the response object 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should write error header messages to stderr and invoke chalk to colorize in red 1`] = `
+"Error Header!:
+"
+`;
+
+exports[`Command Response should write error header messages to stderr and invoke chalk to colorize in red 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      69,
+      114,
+      114,
+      111,
+      114,
+      32,
+      72,
+      101,
+      97,
+      100,
+      101,
+      114,
+      33,
+      58,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should write to both stdout and stderr and buffer to both respectively 1`] = `
+"hello from the tests - stdout
+"
+`;
+
+exports[`Command Response should write to both stdout and stderr and buffer to both respectively 2`] = `
+"hello from the tests - stderr
+"
+`;
+
+exports[`Command Response should write to both stdout and stderr and buffer to both respectively 3`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      101,
+      114,
+      114,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      32,
+      45,
+      32,
+      115,
+      116,
+      100,
+      111,
+      117,
+      116,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should write to stderr (with newline) and buffer to the response object 1`] = `
+"hello from the tests
+"
+`;
+
+exports[`Command Response should write to stderr (with newline) and buffer to the response object 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;
+
+exports[`Command Response should write to stdout (with newline) and buffer to the response object 1`] = `
+"hello from the tests
+"
+`;
+
+exports[`Command Response should write to stdout (with newline) and buffer to the response object 2`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [
+      104,
+      101,
+      108,
+      108,
+      111,
+      32,
+      102,
+      114,
+      111,
+      109,
+      32,
+      116,
+      104,
+      101,
+      32,
+      116,
+      101,
+      115,
+      116,
+      115,
+      10,
+    ],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;

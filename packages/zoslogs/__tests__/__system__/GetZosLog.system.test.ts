@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { GetZosLog, IZosLogType, noSessionMessage, IZosLogParms } from "../../src";
@@ -40,11 +40,11 @@ describe("GetZosLog (system)", () => {
             let error: ImperativeError;
             try {
                 response = await GetZosLog.getZosLog(REAL_SESSION, COMMAND_PARAMS_FULL);
-                Imperative.console.info(`Response ${response}`);
-                Imperative.console.info(`Response.totalitems ${response.totalitems}`);
+                // Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response.totalitems ${response.totalitems}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ZosLogTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response.totalitems).toBeDefined();
@@ -59,11 +59,11 @@ describe("GetZosLog (system)", () => {
             let error: ImperativeError;
             try {
                 response = await GetZosLog.getZosLog(REAL_SESSION, {});
-                Imperative.console.info(`Response ${response}`);
-                Imperative.console.info(`Response.totalitems ${response.totalitems}`);
+                // Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response.totalitems ${response.totalitems}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             ZosLogTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response.totalitems).toBeDefined();
@@ -76,10 +76,10 @@ describe("GetZosLog (system)", () => {
         let error: ImperativeError;
         try {
             response = await GetZosLog.getZosLog(undefined, COMMAND_PARAMS_FULL);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ZosLogTestUtils.expectZosmfResponseFailed(response, error, noSessionMessage.message);
     });

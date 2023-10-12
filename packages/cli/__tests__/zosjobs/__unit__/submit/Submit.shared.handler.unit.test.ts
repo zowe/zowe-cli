@@ -44,7 +44,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -53,11 +53,11 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs.toString()).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -159,7 +159,7 @@ describe("submit shared handler", () => {
                     status: "INPUT",
                     retcode: "UNKNOWN"
                 };
-            });
+            }) as any;
 
             // The handler should fail
             const theDataSet = "DATA.SET";
@@ -196,7 +196,7 @@ describe("submit shared handler", () => {
                     status: "INPUT",
                     retcode: "UNKNOWN"
                 };
-            });
+            }) as any;
 
             const completedJob: any = {
                 jobname: "MYJOB",
@@ -210,7 +210,7 @@ describe("submit shared handler", () => {
                 return completedJob;
             });
 
-            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+            SubmitJobs.checkSubmitOptions = jest.fn((session, parms: any) => {
                 return MonitorJobs.waitForJobOutputStatus(session, parms);
             });
             // The handler should fail
@@ -251,7 +251,7 @@ describe("submit shared handler", () => {
                     status: "INPUT",
                     retcode: "UNKNOWN"
                 };
-            });
+            }) as any;
 
             const completedJob: any = {
                 jobname: "MYJOB",
@@ -265,7 +265,7 @@ describe("submit shared handler", () => {
                 return completedJob;
             });
 
-            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+            SubmitJobs.checkSubmitOptions = jest.fn((session, parms: any) => {
                 return MonitorJobs.waitForStatusCommon(session, parms);
             });
             // The handler should fail
@@ -309,7 +309,7 @@ describe("submit shared handler", () => {
                     status: "INPUT",
                     retcode: "UNKNOWN"
                 };
-            });
+            }) as any;
 
             // The handler should fail
             const badJCL: Buffer = Buffer.from("Bad JCL");

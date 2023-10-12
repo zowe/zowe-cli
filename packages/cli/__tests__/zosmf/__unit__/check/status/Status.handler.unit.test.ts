@@ -11,7 +11,7 @@
 
 jest.mock("../../../../../../zosmf/lib/CheckStatus");
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../../src/zosmf/check/status/Status.handler";
 import * as cmdDef from "../../../../../src/zosmf/check/status/Status.definition";
 import {
@@ -33,7 +33,7 @@ const goodCmdParms: IHandlerParameters = {
     profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
-let checkStatHandler: ICommandHandler = null;
+let checkStatHandler: any = null;
 
 describe("check status behavior", () => {
     beforeEach(() => {
@@ -48,7 +48,7 @@ describe("check status behavior", () => {
                 api_version: "apiV1",
                 plugins: []
             };
-        });
+        }) as any;
 
         checkStatHandler = new CmdHandler();
     });
@@ -62,7 +62,7 @@ describe("check status behavior", () => {
         parmsToUse.response.console.log = jest.fn((logs) => {
             expect(logs).toMatchSnapshot();
             expect(logs).toContain("successfully connected to z/OSMF");
-        });
+        }) as any;
 
         await checkStatHandler.process(parmsToUse);
         expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(1);
@@ -85,11 +85,11 @@ describe("check status behavior", () => {
         const parmsToUse = Object.assign({}, ...[goodCmdParms]);
         CheckStatus.getZosmfInfo = jest.fn((session, servletKey) => {
             throw new Error("Mock GetInfo Error");
-        });
+        }) as any;
         parmsToUse.response.console.error = jest.fn((errors) => {
             expect(errors).toMatchSnapshot();
             expect(errors).toContain("Mock GetInfo Error");
-        });
+        }) as any;
 
         let error;
         try {

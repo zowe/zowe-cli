@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli respond with-error-messages should display a syntax error if no parameters are specified 1`] = `
+"
+Syntax Error:
+Missing Required Option:
+--format-string 
+
+Option Description:
+A format string that will be used to create a message
+
+Syntax Error:
+Missing Required Option:
+--format-values 
+
+Option Description:
+The set of values to use in the format string.
+
+Use \\"cmd-cli respond with-error-messages --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli respond with-error-messages should display display a few error messages and allow format strings 1`] = `
+"Format String: I'm sorry, %s. I'm afraid I can't %s
+Values Array: Dave,do that.
+Formatted:
+I'm sorry, Dave. I'm afraid I can't do that.
+thesemessagesshoulddisplayonthesamelinewithnospaces"
+`;
+
+exports[`cmd-cli respond with-error-messages should display display a few error messages and allow format strings and produce a JSON response 1`] = `
+"Format String: I'm sorry, %s. I'm afraid I can't %s
+Values Array: Dave,do that.
+Formatted:
+I'm sorry, Dave. I'm afraid I can't do that.
+thesemessagesshoulddisplayonthesamelinewithnospaces"
+`;
+
+exports[`cmd-cli respond with-error-messages should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   with-error-messages
+
+ DESCRIPTION
+ -----------
+
+   Reponds with a few error messages.
+
+ USAGE
+ -----
+
+   cmd-cli respond with-error-messages [options]
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --format-string  (string)
+
+      A format string that will be used to create a message
+
+   --format-values  (array)
+
+      The set of values to use in the format string.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: with-error-messages.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-error-messages\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Reponds with a few error messages.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-error-messages [options]\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --format-string  (string)\\\\n\\\\n      A format string that will be used to create a message\\\\n\\\\n   --format-values  (array)\\\\n\\\\n      The set of values to use in the format string.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-error-messages\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Reponds with a few error messages.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-error-messages [options]\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --format-string  (string)\\\\n\\\\n      A format string that will be used to create a message\\\\n\\\\n   --format-values  (array)\\\\n\\\\n      The set of values to use in the format string.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

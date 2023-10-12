@@ -11,7 +11,7 @@
 
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import { Login } from "../../../src/auth/Login";
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
@@ -36,10 +36,10 @@ describe("Logout system test", () => {
                 throw new ImperativeError({msg: "Unable to retrieve token for test."});
             }
             REAL_SESSION.ISession.tokenValue = token;
-            Imperative.console.info(`Got token: ${token}`);
+            // Imperative.console.info(`Got token: ${token}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
             throw thrownError;
         }
     });
@@ -60,7 +60,7 @@ describe("Logout system test", () => {
             await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expect(client.response.statusCode).toEqual(200);
@@ -76,7 +76,7 @@ describe("Logout system test", () => {
             await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
 
         expect(client.response.statusCode).toEqual(401);

@@ -45,7 +45,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "devDependencies": {
-    "@types/node": "^12.12.24",
+    "@types/node": "^16.11.7",
     "@zowe/core-for-zowe-sdk": "6.40.20",
     "@zowe/imperative": "4.18.19",
     "eslint": "^7.32.0",

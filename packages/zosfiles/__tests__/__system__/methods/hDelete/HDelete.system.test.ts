@@ -10,8 +10,7 @@
 */
 
 import { Create, Delete, CreateDataSetTypeEnum, HDelete, HMigrate, IDeleteOptions, ZosFilesMessages } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -45,7 +44,7 @@ describe("Delete Migrated Dataset", () => {
                 Delete.dataSet(REAL_SESSION, dataSet2),
                 Delete.dataSet(REAL_SESSION, dataSet3)]);
         } catch (err) {
-            Imperative.console.info(`Error: ${inspect(err)}`);
+            // Imperative.console.info(`Error: ${inspect(err)}`);
         }
     });
     describe("Success Scenarios", () => {
@@ -55,7 +54,7 @@ describe("Delete Migrated Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
                     await HMigrate.dataSet(REAL_SESSION, dataSet1);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("should delete a migrated sequential data set", async () => {
@@ -64,10 +63,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet1);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -82,10 +81,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet1, {responseTimeout: 5});
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -101,10 +100,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet1, deleteOptions);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -120,10 +119,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet1, deleteOptions);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -139,7 +138,7 @@ describe("Delete Migrated Dataset", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSet2);
                     await HMigrate.dataSet(REAL_SESSION, dataSet2);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("should delete a migrated partitioned dataset", async () => {
@@ -148,10 +147,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet2);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -166,10 +165,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet2, {responseTimeout: 5});
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -185,10 +184,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet2, deleteOptions);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -204,10 +203,10 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet2, deleteOptions);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -224,7 +223,7 @@ describe("Delete Migrated Dataset", () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet3);
                 await HMigrate.dataSet(REAL_SESSION, dataSet3);
             } catch (err) {
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
         it("should throw an error if data set name is undefined", async () => {
@@ -233,10 +232,10 @@ describe("Delete Migrated Dataset", () => {
 
             try {
                 response = await HDelete.dataSet(REAL_SESSION, undefined);
-                Imperative.console.info(`Response: ${inspect(response)}`);
+                // Imperative.console.info(`Response: ${inspect(response)}`);
             } catch (err) {
                 error = err;
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
 
             expect(error).toBeTruthy();
@@ -250,10 +249,10 @@ describe("Delete Migrated Dataset", () => {
 
             try {
                 response = await HDelete.dataSet(REAL_SESSION, "");
-                Imperative.console.info(`Response: ${inspect(response)}`);
+                // Imperative.console.info(`Response: ${inspect(response)}`);
             } catch (err) {
                 error = err;
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
 
             expect(error).toBeTruthy();

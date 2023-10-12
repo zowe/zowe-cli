@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`environmental variable integration should be able to extract the values for the environment variables 1`] = `
+Object {
+  "appLogLevel": Object {
+    "key": "IMP_INTEGRATION_TESTING_APP_LOG_LEVEL",
+    "value": "THIS IS ANOTHER TEST",
+  },
+  "cliHome": Object {
+    "key": "IMP_INTEGRATION_TESTING_CLI_HOME",
+    "value": undefined,
+  },
+  "imperativeLogLevel": Object {
+    "key": "IMP_INTEGRATION_TESTING_IMPERATIVE_LOG_LEVEL",
+    "value": "THIS IS A TEST",
+  },
+  "promptPhrase": Object {
+    "key": "IMP_INTEGRATION_TESTING_PROMPT_PHRASE",
+    "value": undefined,
+  },
+}
+`;

@@ -23,7 +23,7 @@ describe("VsamHandler", () => {
 
     beforeEach(() => {
         deleteVsamDatasetSpy.mockClear();
-        deleteVsamDatasetSpy.mockImplementation(async () => defaultReturn);
+        deleteVsamDatasetSpy.mockImplementation(async () => defaultReturn as any);
     });
 
     it("should call Delete.vsam", async () => {

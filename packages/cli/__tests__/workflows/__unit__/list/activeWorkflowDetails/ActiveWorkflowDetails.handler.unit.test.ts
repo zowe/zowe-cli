@@ -42,12 +42,12 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
+            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "Some list details of WF"
-                };
+                } as any;
             });
 
             // Mocked function references
@@ -123,15 +123,15 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
+            PropertiesWorkflow.getWorkflowProperties = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
                     commandResponse: "Some list details of WF"
-                };
+                } as any;
             });
 
-            ListWorkflows.getWfKey = jest.fn((session) => {
+            ListWorkflows.getWfKey = jest.fn(async (session) => {
                 fakeSession = session;
                 return workflowKey;
             });

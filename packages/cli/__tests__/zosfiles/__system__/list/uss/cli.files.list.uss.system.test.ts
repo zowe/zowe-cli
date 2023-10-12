@@ -9,9 +9,8 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import * as path from "path";
-import { inspect } from "util";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
@@ -72,7 +71,7 @@ describe("List directory", () => {
                 response = await Create.uss(REAL_SESSION, `${ussname}/${testFile}`, "directory");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -80,7 +79,7 @@ describe("List directory", () => {
             try {
                 await Delete.ussFile(REAL_SESSION, ussname, true);
             } catch (err) {
-                Imperative.console.info("Error: " + inspect(err));
+                // Imperative.console.info("Error: " + inspect(err));
             }
         });
 
@@ -118,7 +117,7 @@ describe("List directory", () => {
                 response = await Create.uss(REAL_SESSION, `${ussname}/appendFile.txt`, "directory");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -126,7 +125,7 @@ describe("List directory", () => {
             try {
                 await Delete.ussFile(REAL_SESSION, ussname, true);
             } catch (err) {
-                Imperative.console.info("Error: " + inspect(err));
+                // Imperative.console.info("Error: " + inspect(err));
             }
         });
 

@@ -3,17 +3,17 @@ module.exports = {
         {
             name: "master",
             level: "minor",
-            dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+            dependencies: ["@zowe/perf-timing"]
         },
         {
             name: "zowe-v?-lts",
             level: "patch",
-            dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+            dependencies: ["@zowe/perf-timing"]
         }
         // {
         //     name: "next",
         //     prerelease: true,
-        //     dependencies: { "@zowe/perf-timing": "latest", "@zowe/imperative": "next" }
+        //     dependencies: { "@zowe/perf-timing": "latest" }
         // }
     ],
     plugins: [
@@ -24,7 +24,8 @@ module.exports = {
                 "latest": ["zowe-v2-lts", "next"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
-            smokeTest: true
+            smokeTest: true,
+            versionIndependent: ["@zowe/imperative"]
         }],
         ["@octorelease/github", {
             checkPrLabels: true

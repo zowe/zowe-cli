@@ -9,8 +9,7 @@
 *
 */
 
-import { inspect } from "util";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
@@ -42,10 +41,10 @@ describe("ListCatalogTemplates", () => {
         let error: ImperativeError;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${response["psc-list"]}`);
+            // Imperative.console.info(`Response ${response["psc-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["psc-list"]).toBeDefined();
@@ -57,10 +56,10 @@ describe("ListCatalogTemplates", () => {
         let error: ImperativeError;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(undefined, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${response["psc-list"]}`);
+            // Imperative.console.info(`Response ${response["psc-list"]}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -70,10 +69,10 @@ describe("ListCatalogTemplates", () => {
         let response: IPublishedTemplates;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -83,10 +82,10 @@ describe("ListCatalogTemplates", () => {
         let response: IPublishedTemplates;
         try {
             response = await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, "");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });

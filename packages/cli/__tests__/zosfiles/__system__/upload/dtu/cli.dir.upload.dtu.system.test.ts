@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 
 import * as path from "path";
 import * as fs from "fs";
@@ -46,7 +46,7 @@ describe("Upload directory to USS", () => {
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
-        Imperative.console.info("Using ussDir:" + ussname);
+        // Imperative.console.info("Using ussDir:" + ussname);
         binaryFile = "bin_file.pax";
         binaryFiles = "bin_file.pax,subdir_bin_file1.pax,subdir_bin_file2.pax.Z";
         asciiFile = "ascii_file.txt";
@@ -69,7 +69,7 @@ describe("Upload directory to USS", () => {
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
-            Imperative.console.info("Using ussDir:" + ussname);
+            // Imperative.console.info("Using ussDir:" + ussname);
         });
 
         afterEach(async () => {
@@ -364,7 +364,7 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
 
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/external.attributes");
-            testSuccessfulUpload(localDirName, ["--attributes", attributesPath]);
+            testSuccessfulUpload(localDirName, ["--attributes", path.relative(TEST_ENVIRONMENT.workingDir, attributesPath)]);
 
             let error: Error;
             try {
@@ -466,7 +466,7 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile");
             const attributesPath = path.join(__dirname, "__data__",
                 "command_upload_dtu_dir/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
-            testSuccessfulUpload(localDirName, ["--r --attributes", attributesPath]);
+            testSuccessfulUpload(localDirName, ["--r --attributes", path.relative(TEST_ENVIRONMENT.workingDir, attributesPath)]);
 
             let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
@@ -505,6 +505,6 @@ function testSuccessfulUpload(localDirName: string, additionalParameters?: strin
     }
 
     const response = runCliScript(shellScript, TEST_ENVIRONMENT, parms);
-    const stdoutText = response.stdout.toString();
-    expect(stdoutText).toContain("Directory uploaded successfully.");
+    expect(response.stderr.toString()).toBe("");
+    expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
 }

@@ -9,9 +9,8 @@
 *
 */
 
-import { inspect } from "util";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, ImperativeError, Session } from "@zowe/imperative";
 import {
     IStartStopResponse,
     IStopTsoParms,
@@ -97,10 +96,10 @@ describe("StopTso getResources", () => {
         let error: ImperativeError;
         try {
             queryResponse = StopTso.getResources(undefined);
-            Imperative.console.info(`Response ${inspect(queryResponse)}`);
+            // Imperative.console.info(`Response ${inspect(queryResponse)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(error).toBeDefined();
         expect(queryResponse).not.toBeDefined();
@@ -112,10 +111,10 @@ describe("StopTso getResources", () => {
         let error: ImperativeError;
         try {
             queryResponse = StopTso.getResources(undefined);
-            Imperative.console.info(`Response ${inspect(queryResponse)}`);
+            // Imperative.console.info(`Response ${inspect(queryResponse)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(error).toBeDefined();
         expect(queryResponse).not.toBeDefined();
@@ -127,7 +126,7 @@ describe("StopTso getResources", () => {
 describe("StopTso stopCommon", () => {
 
     it("should succeed with correct parameters", async () => {
-        (ZosmfRestClient.deleteExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.deleteExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -138,7 +137,7 @@ describe("StopTso stopCommon", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stopCommon(PRETEND_SESSION, STOP_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
         }
@@ -153,10 +152,10 @@ describe("StopTso stopCommon", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stopCommon(undefined, STOP_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionTso.message);
     });
@@ -166,10 +165,10 @@ describe("StopTso stopCommon", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stopCommon(undefined, STOP_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionTso.message);
     });
@@ -179,10 +178,10 @@ describe("StopTso stopCommon", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stopCommon(undefined, STOP_PARMS);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionTso.message);
     });
@@ -192,7 +191,7 @@ describe("StopTso stopCommon", () => {
 describe("StopTso stop", () => {
 
     it("should succeed with all correctly provided parameters", async () => {
-        (StopTso.stopCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StopTso.stopCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -203,7 +202,7 @@ describe("StopTso stop", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(PRETEND_SESSION, SERVLET_KEY);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
         }
@@ -220,10 +219,10 @@ describe("StopTso stop", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(undefined, SERVLET_KEY);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -235,10 +234,10 @@ describe("StopTso stop", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -250,10 +249,10 @@ describe("StopTso stop", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect(error).toBeDefined();
         expect(response).not.toBeDefined();
@@ -261,7 +260,7 @@ describe("StopTso stop", () => {
     });
 
     it("should throw an error if servlet key is inactive", async () => {
-        (StopTso.stopCommon as any) = jest.fn<object>((): Promise<object> => {
+        (StopTso.stopCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_BAD_ZOSMF_RESPONSE);
@@ -273,10 +272,10 @@ describe("StopTso stop", () => {
         let error: ImperativeError;
         try {
             response = await StopTso.stop(PRETEND_SESSION, SERVLET_KEY);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((StopTso.stopCommon as any)).toHaveBeenCalledTimes(1);
         expect((StopTso.stopCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, STOP_PARMS);

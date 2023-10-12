@@ -13,7 +13,7 @@ jest.mock("../../../../../../zostso/lib/StartTso");
 
 import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { CliUtils, CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/start/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/start/address-space/AddressSpace.definition";
 
@@ -64,7 +64,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -73,11 +73,11 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -105,17 +105,18 @@ describe("start address-space handler tests", () => {
             expect(startParms).toBeDefined();
             expect(startParms).toMatchSnapshot();
             return StartTsoData.SAMPLE_START_RESPONSE;
-        });
+        }) as any;
         const handler = new AddressSpaceHandler.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {...ZOSMF_PROF_OPTS, ...TSO_PROF_OPTS};
-        params = { ...params, arguments: args};
+        params = { ...params, arguments: args} as any;
 
         await handler.process(params);
         expect(StartTso.start).toHaveBeenCalledTimes(1);
     });
 
     it("should be able respond with error message, if required z/OSMF parameters were not passed", async () => {
+        (CliUtils.sleep as any) = jest.fn();
         const handler = new AddressSpaceHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.user = "FakeUser";
@@ -141,7 +142,7 @@ describe("start address-space handler tests", () => {
                     message: failure
                 }
             };
-        });
+        }) as any;
         const handler = new AddressSpaceHandler.default();
         let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         const args = {...ZOSMF_PROF_OPTS, ...TSO_PROF_OPTS};

@@ -11,7 +11,7 @@
 
 import { GetLogsData } from "../../../__resources__/GetLogsData";
 
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session, Imperative } from "@zowe/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
 import * as LogsHandler from "../../../../../src/zoslogs/list/logs/Logs.handler";
 import * as LogsDefinition from "../../../../../src/zoslogs/list/logs/Logs.definition";
 import { GetZosLog, IZosLogParms } from "@zowe/zos-logs-for-zowe-sdk";
@@ -47,7 +47,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
                 expect(setMsgArgs).toMatchSnapshot();
-            }),
+            }) as any,
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
             }),
@@ -56,11 +56,11 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         console: {
             log: jest.fn((logs) => {
                 expect(logs.toString()).toMatchSnapshot();
-            }),
+            }) as any,
             error: jest.fn((errors) => {
                 expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
+            }) as any,
+            errorHeader: jest.fn(() => undefined) as any
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -84,7 +84,7 @@ describe("get logs handler tests", () => {
             passedSession = session;
             passedParms = parms;
             return GetLogsData.SAMPLE_RESP_DATA;
-        });
+        }) as any;
         const handler = new LogsHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -100,7 +100,7 @@ describe("get logs handler tests", () => {
             passedSession = session;
             passedParms = parms;
             return GetLogsData.SAMPLE_RESP_DATA_EMPTY;
-        });
+        }) as any;
         const handler = new LogsHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -116,14 +116,14 @@ describe("get logs handler tests", () => {
             passedSession = session;
             passedParms = parms;
             return GetLogsData.SAMPLE_RESP_DATA;
-        });
+        }) as any;
         const handler = new LogsHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
         params.arguments.startTime = "1626912000000";
         params.arguments.range = "5m";
         params.arguments.direction = "backward";
-        Imperative.console.info(params.arguments);
+        // Imperative.console.info(params.arguments as any);
         await handler.process(params);
         expect(GetZosLog.getZosLog).toHaveBeenCalledTimes(1);
         expect(GetZosLog.getZosLog).toHaveBeenCalledWith(passedSession, passedParms);

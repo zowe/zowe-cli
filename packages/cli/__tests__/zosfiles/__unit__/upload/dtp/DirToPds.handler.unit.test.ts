@@ -26,10 +26,10 @@ describe("Upload dir-to-pds handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.dirToPds = jest.fn((session) => {
+            Upload.dirToPds = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -123,10 +123,10 @@ describe("Upload dir-to-pds handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.dirToPds = jest.fn((session) => {
+            Upload.dirToPds = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -222,10 +222,10 @@ describe("Upload dir-to-pds handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: any = null;
 
             // Mock the submit JCL function
-            Upload.dirToPds = jest.fn((session) => {
+            Upload.dirToPds = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: false,

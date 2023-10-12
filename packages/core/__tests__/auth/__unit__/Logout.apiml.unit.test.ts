@@ -52,7 +52,7 @@ const fakeSession: any = {
 describe("Auth Logout APIML unit tests", () => {
     describe("Positive tests", () => {
         it("should allow users to call apimlLogout with correct parameters", async () => {
-            ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            ZosmfRestClient.prototype.request = jest.fn(returnEmpty) as any;
             (ZosmfRestClient.prototype as any).mResponse = goodResponse;
             let caughtError;
             try {
@@ -66,7 +66,7 @@ describe("Auth Logout APIML unit tests", () => {
 
     describe("Error handling tests - HTTP 401", () => {
         it("should be able to raise an error with HTTP 401", async () => {
-            ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            ZosmfRestClient.prototype.request = jest.fn(returnEmpty) as any;
             (ZosmfRestClient.prototype as any).mResponse = badResponse401;
             let caughtError;
             try{
@@ -115,7 +115,7 @@ describe("Auth Logout APIML unit tests", () => {
             ZosmfRestClient.prototype.request = jest.fn(throwImperativeError);
             let caughtError;
             try {
-                await Logout.apimlLogout(null);
+                await Logout.apimlLogout(null as any);
             } catch (error) {
                 caughtError = error;
             }

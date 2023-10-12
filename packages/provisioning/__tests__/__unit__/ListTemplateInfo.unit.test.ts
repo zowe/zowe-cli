@@ -9,9 +9,8 @@
 *
 */
 
-import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { Session, Imperative, ImperativeError } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import { ListTemplateInfo, noSessionProvisioning,
     noTemplateName, ProvisioningConstants } from "../../src";
 
@@ -92,7 +91,7 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 describe("ListTemplateInfo getResourcesQuery", () => {
     it("should successfully generate a query from provided parameters", () => {
         const resourcesQuery = ListTemplateInfo.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, templateName);
-        Imperative.console.info(`Generated query: ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query: ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(RESOURCES_QUERY);
     });
@@ -100,7 +99,7 @@ describe("ListTemplateInfo getResourcesQuery", () => {
 
 describe("ListTemplateInfo listTemplateCommon", () => {
     it("should succeed with all correctly provided parameters", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_NO_PROMPT_VARS);
@@ -112,10 +111,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, RESOURCES_QUERY);
@@ -129,10 +128,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, templateName);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -142,10 +141,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, undefined, templateName);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -155,10 +154,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
@@ -168,10 +167,10 @@ describe("ListTemplateInfo listTemplateCommon", () => {
         let response;
         try {
             response = await ListTemplateInfo.listTemplateCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noTemplateName.message);
     });

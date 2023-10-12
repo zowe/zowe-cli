@@ -10,8 +10,7 @@
 */
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -47,7 +46,7 @@ describe("Copy", () => {
                 await Delete.dataSet(REAL_SESSION, fromDataSetName);
                 await Delete.dataSet(REAL_SESSION, toDataSetName);
             } catch (err) {
-                Imperative.console.info(`Error: ${inspect(err)}`);
+                // Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
         describe("Success Scenarios", () => {
@@ -58,7 +57,7 @@ describe("Copy", () => {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
                         await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), fromDataSetName);
                     } catch (err) {
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
                 it("Should copy a data set", async () => {
@@ -75,10 +74,10 @@ describe("Copy", () => {
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
-                        Imperative.console.info(`Response: ${inspect(response)}`);
+                        // Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
                     expect(error).toBeFalsy();
@@ -99,7 +98,7 @@ describe("Copy", () => {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
                         await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                     } catch (err) {
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
                 it("Should copy a data set", async () => {
@@ -116,10 +115,10 @@ describe("Copy", () => {
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
-                        Imperative.console.info(`Response: ${inspect(response)}`);
+                        // Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
                     expect(error).toBeFalsy();
@@ -140,7 +139,7 @@ describe("Copy", () => {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
                         await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), fromDataSetName);
                     } catch (err) {
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
                 it("Should copy a data set", async () => {
@@ -157,10 +156,10 @@ describe("Copy", () => {
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
-                        Imperative.console.info(`Response: ${inspect(response)}`);
+                        // Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
                     expect(error).toBeFalsy();
@@ -181,7 +180,7 @@ describe("Copy", () => {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
                         await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                     } catch (err) {
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
                 it("Should copy a data set", async () => {
@@ -198,10 +197,10 @@ describe("Copy", () => {
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
-                        Imperative.console.info(`Response: ${inspect(response)}`);
+                        // Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
-                        Imperative.console.info(`Error: ${inspect(err)}`);
+                        // Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
                     expect(error).toBeFalsy();
@@ -223,7 +222,7 @@ describe("Copy", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
                     await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should succeed with enq SHR", async () => {
@@ -243,10 +242,10 @@ describe("Copy", () => {
                     );
                     contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                     contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -272,10 +271,10 @@ describe("Copy", () => {
                             enq: "invalid"
                         }
                     );
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -294,7 +293,7 @@ describe("Copy", () => {
                         { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
                     );
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should result in error without replace option", async () => {
@@ -310,10 +309,10 @@ describe("Copy", () => {
                             replace: false
                         }
                     );
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeTruthy();
@@ -337,10 +336,10 @@ describe("Copy", () => {
                     );
                     contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                     contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();
@@ -361,7 +360,7 @@ describe("Copy", () => {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
                     await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                 } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
             it("Should succeed with responseTimeout option", async () => {
@@ -381,10 +380,10 @@ describe("Copy", () => {
                     );
                     contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                     contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
+                    // Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
+                    // Imperative.console.info(`Error: ${inspect(err)}`);
                 }
 
                 expect(error).toBeFalsy();

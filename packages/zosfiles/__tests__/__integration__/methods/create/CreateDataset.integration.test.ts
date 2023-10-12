@@ -10,9 +10,8 @@
 */
 
 import { ICreateDataSetOptions, ZosFilesConstants } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import * as http from "http";
-import { inspect } from "util";
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -37,12 +36,12 @@ describe("Create Dataset", () => {
                 "Content-Type": "application/json"
             }
         }, (res) => {
-            Imperative.console.info("Response: " + res.statusCode + " " + res.statusMessage);
+            // Imperative.console.info("Response: " + res.statusCode + " " + res.statusMessage);
             done();
         });
 
         req.on("error", (e) => {
-            Imperative.console.info("Error: " + inspect(e));
+            // Imperative.console.info("Error: " + inspect(e));
             done();
         });
 

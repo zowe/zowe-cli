@@ -10,7 +10,6 @@
 */
 
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
-import { posix } from "path";
 import { ZosmfConstants } from "./constants/Zosmf.constants";
 import { ZosmfMessages } from "./constants/Zosmf.messages";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -29,7 +28,7 @@ export class ListDefinedSystems {
      *                           the REST API call.
      */
     public static async listDefinedSystems(session: AbstractSession): Promise<IZosmfListDefinedSystemsResponse> {
-        const endpoint = posix.join(ZosmfConstants.RESOURCE, ZosmfConstants.TOPOLOGY, ZosmfConstants.SYSTEMS);
+        const endpoint = ZosmfConstants.RESOURCE + ZosmfConstants.TOPOLOGY + ZosmfConstants.SYSTEMS;
         ImperativeExpect.toNotBeNullOrUndefined(session, ZosmfMessages.missingSession.message);
         return ZosmfRestClient.getExpectJSON<IZosmfListDefinedSystemsResponse>(session, endpoint);
     }

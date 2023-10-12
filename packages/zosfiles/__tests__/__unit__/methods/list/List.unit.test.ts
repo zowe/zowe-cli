@@ -18,10 +18,10 @@ import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants"
 import { IListOptions } from "../../../../src";
 
 describe("z/OS Files - List", () => {
-    const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
+    const expectJsonSpy: any = jest.spyOn(ZosmfRestClient, "getExpectJSON");
     const dsname = "USER.DATA.SET";
     const path = "/u/myuser";
-    const listApiResponse = {
+    const listApiResponse: any = {
         items: [
             {member: "m1"},
             {member: "m2"}

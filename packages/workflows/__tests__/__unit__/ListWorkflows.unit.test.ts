@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/imperative";
 import { ListWorkflows } from "../../src";
 import { WorkflowConstants, wrongString, noWorkflowName } from "../../src/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/doc/IWorkflowsInfo";
@@ -96,7 +96,7 @@ describe("List workflows", () => {
     // List workflow that match all optional parameters
     it("Successful call with all optional parameters.", async () => {
 
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -108,10 +108,10 @@ describe("List workflows", () => {
         let response: any;
         try {
             response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, workflowName, category, system, owner, vendor, statusName );
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_URL);
@@ -121,7 +121,7 @@ describe("List workflows", () => {
     // List all workflows - without any optional parameters
     it("Successful call without any optional parameters.", async () => {
 
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -133,10 +133,10 @@ describe("List workflows", () => {
         let response: any;
         try {
             response = await ListWorkflows.listWorkflows(PRETEND_SESSION);
-            Imperative.console.info(`Response ${response}`);
+            // Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${error}`);
+            // Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY);
@@ -150,10 +150,10 @@ describe("List workflows", () => {
             let response: any;
             try {
                 response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, badString, badString1, badString, badString, badString);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, wrongString.message);
         });
@@ -162,10 +162,10 @@ describe("List workflows", () => {
             let response: any;
             try {
                 response = await ListWorkflows.listWorkflows(undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -175,7 +175,7 @@ describe("Get workflow key by name", () => {
     describe("Success scenarios", () => {
         it("Returns wf key if only one wf with requested name was found", async () => {
             const apiResponse = {workflows: [PRETEND_ZOSMF_RESPONSE]};
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(apiResponse);
@@ -186,17 +186,17 @@ describe("Get workflow key by name", () => {
             let response: any;
             try {
                 response = await ListWorkflows.getWfKey(PRETEND_SESSION, workflowName);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect(response).toBe(apiResponse.workflows[0].workflowKey);
             expect(error).toBe(undefined);
         });
 
         it("Returns null if no workflow with requested name was found", async () => {
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve({workflows: []});
@@ -207,10 +207,10 @@ describe("Get workflow key by name", () => {
             let response: any;
             try {
                 response = await ListWorkflows.getWfKey(PRETEND_SESSION, workflowName);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect(response).toBe(null);
             expect(error).toBe(undefined);
@@ -222,10 +222,10 @@ describe("Get workflow key by name", () => {
             let response: any;
             try {
                 response = await ListWorkflows.getWfKey(undefined, workflowName);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -234,15 +234,15 @@ describe("Get workflow key by name", () => {
             let response: any;
             try {
                 response = await ListWorkflows.getWfKey(PRETEND_SESSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowName.message);
         });
         it("Throws an error if multiple wf were found.", async () => {
-            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve(PRETEND_ZOSMF_RESPONSE_MULTIPLE_WF);
@@ -253,10 +253,10 @@ describe("Get workflow key by name", () => {
             let response: any;
             try {
                 response = await ListWorkflows.getWfKey(PRETEND_SESSION, "workflow.*");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, "More than one workflows found with name");
         });

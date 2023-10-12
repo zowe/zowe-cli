@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -45,7 +45,7 @@ describe("provisioning provision template", () => {
 
         // Get instanceID later delete that instance
         instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
-        Imperative.console.info(`Instance ID: ${instanceID}`);
+        // Imperative.console.info(`Instance ID: ${instanceID}`);
         // Delete the provisioned instance
         await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
 
@@ -79,7 +79,7 @@ describe("provisioning provision template", () => {
 
             // Get instanceID later delete that instance
             instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
-            Imperative.console.info(`Instance ID: ${instanceID}`);
+            // Imperative.console.info(`Instance ID: ${instanceID}`);
             // Delete the provisioned instance
             await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
 

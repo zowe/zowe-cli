@@ -9,14 +9,13 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ArchivedDeleteWorkflow, CreateWorkflow, ArchiveWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ArchivedDeleteWorkflow, ArchiveWorkflow, CreateWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
 let REAL_SESSION: Session;
@@ -36,7 +35,6 @@ describe("List archived workflow cli system tests", () => {
             tempProfileTypes: ["zosmf"],
             testName: "list_workflow_cli"
         });
-        //   systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
@@ -47,29 +45,7 @@ describe("List archived workflow cli system tests", () => {
     });
 
     afterAll(async () => {
-        let error;
-        let response;
-
-        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-        // deleting uploaded workflow file
-        try {
-            const wfEndpoint = endpoint + definitionFile;
-            response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-        } catch (err) {
-            error = err;
-        }
-        const URI = "/zosmf/workflow/rest/1.0/archivedworkflows?workflowName=" + wfName;
-        response =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION, URI);
-        response.workflows.forEach(async (element: any) => {
-            if(element.workflowName===wfName){
-                wfKey = element.workflowKey;
-                try {
-                    await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey);
-                } catch (err) {
-                    error = err;
-                }
-            }
-        });
+        await TestEnvironment.cleanUp(testEnvironment);
     });
     describe("Success Scenarios", () => {
         beforeAll(async () => {
@@ -77,17 +53,8 @@ describe("List archived workflow cli system tests", () => {
             await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
         });
         afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
             // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
+            await Delete.ussFile(REAL_SESSION, definitionFile);
         });
         beforeEach(async () =>{
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);

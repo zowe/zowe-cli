@@ -20,8 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../src";
 import * as fs from "fs";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
@@ -76,10 +75,10 @@ describe("IssueCommand (system)", () => {
 
         try {
             response = await IssueCommand.issue(REAL_SESSION, ISSUE_PARMS);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
@@ -96,10 +95,10 @@ describe("IssueCommand (system)", () => {
 
         try {
             response = await IssueCommand.issueCommon(PRETEND_SESSION, ConsoleConstants.RES_DEF_CN, ISSUE_PARMS as any);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         expect(response).not.toBeDefined();
         expect(error).toBeDefined();
@@ -115,12 +114,12 @@ describe("CollectCommand (integration)", () => {
 
         try {
             issueResponse = await IssueCommand.issueCommon(REAL_SESSION, ConsoleConstants.RES_DEF_CN, IPL_CMD_ZOSMF_PARMS);
-            Imperative.console.info("Issue response " + inspect(issueResponse));
+            // Imperative.console.info("Issue response " + inspect(issueResponse));
             collectResponse = await CollectCommand.collectCommon(REAL_SESSION, ConsoleConstants.RES_DEF_CN, issueResponse["cmd-response-key"]);
-            Imperative.console.info("Collect response: " + inspect(collectResponse));
+            // Imperative.console.info("Collect response: " + inspect(collectResponse));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         expect(collectResponse).toBeDefined();
         expect(error).not.toBeDefined();
@@ -134,12 +133,12 @@ describe("CollectCommand (integration)", () => {
 
         try {
             issueResponse = await IssueCommand.issueCommon(REAL_SESSION, ConsoleConstants.RES_DEF_CN, INCORRECT_PARMS as any);
-            Imperative.console.info("Issue response " + inspect(issueResponse));
+            // Imperative.console.info("Issue response " + inspect(issueResponse));
             collectResponse = await CollectCommand.collectCommon(PRETEND_SESSION, ConsoleConstants.RES_DEF_CN, issueResponse["cmd-response-key"]);
-            Imperative.console.info("Collect response " + inspect(collectResponse));
+            // Imperative.console.info("Collect response " + inspect(collectResponse));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         expect(collectResponse).not.toBeDefined();
         expect(error).toBeDefined();
@@ -152,17 +151,17 @@ describe("CollectCommand (integration)", () => {
 
         try {
             issueResponse = await IssueCommand.issue(REAL_SESSION, ISSUE_PARMS);
-            Imperative.console.info("Issue response " + inspect(issueResponse));
+            // Imperative.console.info("Issue response " + inspect(issueResponse));
             collectResponse = await CollectCommand.collect(REAL_SESSION,
                 {
                     commandResponseKey: issueResponse.lastResponseKey,
                     followUpAttempts: 1,
                     waitToCollect: 3
                 });
-            Imperative.console.info("Collect response " + inspect(collectResponse));
+            // Imperative.console.info("Collect response " + inspect(collectResponse));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         expect(collectResponse).toBeDefined();
         expect(error).not.toBeDefined();
@@ -177,10 +176,10 @@ describe("IssueAndCollect (integration)", () => {
 
         try {
             response = await IssueCommand.issueAndCollect(REAL_SESSION, ISSUE_PARMS, COLLECT_PARMS);
-            Imperative.console.info("Response " + inspect(response));
+            // Imperative.console.info("Response " + inspect(response));
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();

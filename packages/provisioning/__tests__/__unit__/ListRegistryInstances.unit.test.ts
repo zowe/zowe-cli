@@ -9,9 +9,8 @@
 *
 */
 
-import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, ProvisioningConstants } from "../../src";
 
 const type: string = "DB2";
@@ -117,28 +116,28 @@ describe("ListRegistryInstances getResourcesQuery", () => {
 
     it("should return query without filters", () => {
         const resourcesQuery = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION);
-        Imperative.console.info(`Generated query: ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query: ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(NO_FILTERS_QUERY);
     });
 
     it("should return query with 'type' filter", () => {
         const resourcesQuery = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, type);
-        Imperative.console.info(`Generated query: ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query: ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(FILTER_BY_TYPE_QUERY);
     });
 
     it("should return query with 'external-name' filter", () => {
         const resourcesQuery = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, undefined, externalName);
-        Imperative.console.info(`Generated query: ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query: ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(FILTER_BY_EXTERNAL_NAME);
     });
 
     it("should return query with 'external-name' and 'type' filters", () => {
         const resourcesQuery = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, type, externalName);
-        Imperative.console.info(`Generated query: ${resourcesQuery}`);
+        // Imperative.console.info(`Generated query: ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
         expect(resourcesQuery).toEqual(FILTER_BY_EXT_NAME_AND_TYPE);
     });
@@ -147,7 +146,7 @@ describe("ListRegistryInstances getResourcesQuery", () => {
 describe("ListRegistryInstances listRegistryCommon", () => {
 
     it("should succeed and return list of provisioned instances", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE);
@@ -159,10 +158,10 @@ describe("ListRegistryInstances listRegistryCommon", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listRegistryCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, null);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, NO_FILTERS_QUERY);
@@ -172,7 +171,7 @@ describe("ListRegistryInstances listRegistryCommon", () => {
     });
 
     it("should succeed and return list of instances filtered by DB2 type", async () => {
-        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_DB2_TYPE);
@@ -184,10 +183,10 @@ describe("ListRegistryInstances listRegistryCommon", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listRegistryCommon(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, FILTER_BY_TYPE_QUERY);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, FILTER_BY_TYPE_QUERY);
@@ -202,10 +201,10 @@ describe("ListRegistryInstances listRegistryCommon", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listRegistryCommon(undefined, ProvisioningConstants.ZOSMF_VERSION);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -215,10 +214,10 @@ describe("ListRegistryInstances listRegistryCommon", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listRegistryCommon(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -228,10 +227,10 @@ describe("ListRegistryInstances listRegistryCommon", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listRegistryCommon(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -240,7 +239,7 @@ describe("ListRegistryInstances listRegistryCommon", () => {
 describe("ListRegistryInstances listFilteredRegistry", () => {
 
     it("should succeed and return list of instances filtered by 'type'", async () => {
-        (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {
+        (ListRegistryInstances.listRegistryCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_DB2_TYPE);
@@ -252,10 +251,10 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listFilteredRegistry(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, type, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ListRegistryInstances.listRegistryCommon as any)).toHaveBeenCalledTimes(1);
         expect((ListRegistryInstances.listRegistryCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION,
@@ -267,7 +266,7 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
     });
 
     it("should succeed and return list of instances filtered by 'external-name'", async () => {
-        (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {
+        (ListRegistryInstances.listRegistryCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_DB2_TYPE);
@@ -279,10 +278,10 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listFilteredRegistry(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, type, undefined);
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ListRegistryInstances.listRegistryCommon as any)).toHaveBeenCalledTimes(1);
         expect((ListRegistryInstances.listRegistryCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION,
@@ -294,7 +293,7 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
     });
 
     it("should succeed and return list of templates filtered by 'type' and 'external-name'", async () => {
-        (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {
+        (ListRegistryInstances.listRegistryCommon as any) = jest.fn((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(ZOSMF_RESPONSE_CICS_TYPE);
@@ -306,10 +305,10 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listFilteredRegistry(PRETEND_SESSION, ProvisioningConstants.ZOSMF_VERSION, "CICS", "CICSFULL2");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expect((ListRegistryInstances.listRegistryCommon as any)).toHaveBeenCalledTimes(1);
         expect((ListRegistryInstances.listRegistryCommon as any))
@@ -326,10 +325,10 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listFilteredRegistry(undefined, ProvisioningConstants.ZOSMF_VERSION, "CICS", "CICSFULL2");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
@@ -339,10 +338,10 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listFilteredRegistry(PRETEND_SESSION, undefined, "CICS", "CICSFULL2");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
@@ -352,10 +351,10 @@ describe("ListRegistryInstances listFilteredRegistry", () => {
         let response: IProvisionedInstances;
         try {
             response = await ListRegistryInstances.listFilteredRegistry(PRETEND_SESSION, undefined, "CICS", "CICSFULL2");
-            Imperative.console.info(`Response ${inspect(response)}`);
+            // Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
-            Imperative.console.info(`Error ${inspect(error)}`);
+            // Imperative.console.info(`Error ${inspect(error)}`);
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });

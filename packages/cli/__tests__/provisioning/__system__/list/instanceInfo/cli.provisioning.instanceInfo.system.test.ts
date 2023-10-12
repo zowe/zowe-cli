@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { IProvisionedInstance, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 import { ProvisioningTestUtils } from "../../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
@@ -42,7 +42,7 @@ describe("provisioning list instance-info", () => {
         );
         instanceID = instance["object-id"];
         instanceName = instance["external-name"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        // Imperative.console.info(`Provisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it(

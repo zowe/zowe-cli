@@ -9,6 +9,7 @@
 *
 */
 
+import { CliConstants } from "./CliConstants";
 import { ICommandOptionDefinition, ICommandExampleDefinition, SessConstants } from "@zowe/imperative";
 
 /**
@@ -16,82 +17,7 @@ import { ICommandOptionDefinition, ICommandExampleDefinition, SessConstants } fr
  * @export
  * @class Constants
  */
-export class Constants {
-
-    /**
-     * Custom log location to prevent logging to default folder based on the package name
-     * @static
-     * @memberof Constants
-     */
-    public static readonly LOG_LOCATION = "zowe/logs/zowe.log";
-
-    /**
-     * Display name
-     * @static
-     * @memberof Constants
-     */
-    public static readonly DISPLAY_NAME = "Zowe CLI";
-
-    /**
-     * Binary executable name
-     * @static
-     * @memberof Constants
-     */
-    public static readonly BINARY_NAME = "zowe";
-
-    /**
-     *
-     * Documentation link for the CLI
-     * @static
-     * @memberof Constants
-     */
-    public static readonly DOCUMENTATION_LINK = "https://docs.zowe.org";
-
-    /**
-     *
-     * Support link for zowe
-     * @static
-     * @memberof Constants
-     */
-    public static readonly SUPPORT_LINK = "https://www.zowe.org";
-
-    /**
-     * Description of product
-     * @static
-     * @memberof Constants
-     */
-    public static readonly DESCRIPTION =
-    `Welcome to ${Constants.DISPLAY_NAME}!
-
-${Constants.DISPLAY_NAME} is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
-
-For additional ${Constants.DISPLAY_NAME} documentation, visit ${Constants.DOCUMENTATION_LINK}
-
-For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
-`;
-
-    /**
-     * Home environment variable
-     * @static
-     * @memberof Constants
-     */
-    public static readonly HOME_ENV_KEY = "ZOWE_CLI_HOME";
-
-
-    /**
-     * Prefix for environmental variable settings used by Imperative
-     * @static
-     * @memberof Constants
-     */
-    public static readonly ENV_PREFIX = "ZOWE";
-
-
-    /**
-     * Home directory
-     * @static
-     * @memberof Constants
-     */
-    public static readonly HOME_DIR = "~/.zowe";
+export class Constants extends CliConstants {
 
     public static BASE_CONNECTION_OPTION_GROUP = "Base Connection Options";
 

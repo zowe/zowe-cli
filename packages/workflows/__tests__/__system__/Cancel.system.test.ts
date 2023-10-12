@@ -10,11 +10,10 @@
 */
 
 import { CancelWorkflow, CreateWorkflow, DeleteWorkflow } from "../../src";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
 import { noWorkflowKey, WrongWorkflowKey } from "../../src/WorkflowConstants";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
@@ -92,10 +91,10 @@ describe("Cancel workflow", () => {
 
             try {
                 response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, wfKey);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -105,10 +104,10 @@ describe("Cancel workflow", () => {
 
             try {
                 response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, wfKey, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                // Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
@@ -120,10 +119,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(undefined, wfKey);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
@@ -132,10 +131,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, undefined);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -144,10 +143,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
         });
@@ -156,10 +155,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, "blabla");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, WrongWorkflowKey.message);
             // parse from message the workflow key
@@ -172,10 +171,10 @@ describe("Cancel workflow", () => {
             let response: any;
             try {
                 response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, wfKey, "");
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });

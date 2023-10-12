@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`imperative-test-cli test logging command default levels app logger should default to DEBUG 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command default levels imperative logger should default to DEBUG 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command error & invalid value handling app logger should default to DEBUG if a blank is specified 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command error & invalid value handling app logger should default to DEBUG if an invalid level is specified also warn user with the error 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command error & invalid value handling imperative logger should default to DEBUG if a blank is specified 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command error & invalid value handling imperative logger should default to DEBUG if an invalid level is specified and also warn user with the error 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging all loggers should only produce NO log messages if the level is OFF 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging all loggers should produce all for APP if TRACE and none for IMP if OFF 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging all loggers should produce all for IMP if TRACE and none for APP if OFF 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging all loggers should produce all message levels if TRACE is specified 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging all loggers should produce only INFO, WARN, ERROR, & FATAL if INFO is specified 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging all loggers should produce the correct levels if app is INFO and imperative is ERROR 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging app logger should only produce NO log messages if the level is OFF 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging app logger should produce all message levels if TRACE is specified 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging imperative logger should only produce NO log messages if the level is OFF 1`] = `
+"Test Log Command!
+"
+`;
+
+exports[`imperative-test-cli test logging command logging imperative logger should produce all message levels if TRACE is specified 1`] = `
+"Test Log Command!
+"
+`;

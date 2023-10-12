@@ -10,12 +10,11 @@
 */
 
 import { CreateWorkflow, DeleteWorkflow } from "../../../src";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
-import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import {
     noOwner,
@@ -104,10 +103,10 @@ describe("Create workflow", () => {
 
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -119,10 +118,10 @@ describe("Create workflow", () => {
 
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, inputFile);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -135,10 +134,10 @@ describe("Create workflow", () => {
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, null,
                     "GREETING=HELLO WORLD");
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -153,10 +152,10 @@ describe("Create workflow", () => {
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, inputFile,
                     "GREETING=HELLO WORLD", true, "Public", false, "1.0");
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -171,10 +170,10 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow.call(CreateWorkflow, ...args);
-                Imperative.console.info(`Response ${response}`);
+                // Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
-                Imperative.console.info(`Error ${error}`);
+                // Imperative.console.info(`Error ${error}`);
             }
             expect(response).toBeUndefined();
             expect(error).toBeDefined();
@@ -351,7 +350,7 @@ describe("Create workflow", () => {
                 await Delete.ussFile(REAL_SESSION, tempDefFile.slice(1));
                 await Delete.ussFile(REAL_SESSION, tempVarFile.slice(1));
             } catch (err) {
-                Imperative.console.info("Error: " + inspect(err));
+                // Imperative.console.info("Error: " + inspect(err));
             }
         });
         it("Should create workflow in zOSMF with variable input file.", async () => {
@@ -360,10 +359,10 @@ describe("Create workflow", () => {
 
             try {
                 response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -376,10 +375,10 @@ describe("Create workflow", () => {
             try {
                 response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars, null, false, null,
                     false, true);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(error).not.toBeDefined();
             expect(response).toBeDefined();

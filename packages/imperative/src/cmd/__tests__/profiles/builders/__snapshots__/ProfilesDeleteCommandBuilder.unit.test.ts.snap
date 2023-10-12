@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Delete Command Builder should provide a valid command definition for the profile delete command based on our test profile type 1`] = `
+Object {
+  "aliases": Array [
+    "type-a",
+  ],
+  "children": Array [],
+  "customize": Object {
+    "profileTypeIdentifier": "type-a",
+  },
+  "description": "Delete a type-a profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.",
+  "examples": Array [
+    Object {
+      "description": "Delete a type-a profile named profilename",
+      "options": "profilename",
+    },
+  ],
+  "name": "type-a-profile",
+  "options": Array [
+    Object {
+      "aliases": Array [],
+      "description": "Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.",
+      "name": "force",
+      "required": false,
+      "type": "boolean",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "Specifies the name of the type-a  profile to be deleted. You can also load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+      "name": "profileName",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "summary": "Delete a type-a profile.",
+  "type": "command",
+}
+`;

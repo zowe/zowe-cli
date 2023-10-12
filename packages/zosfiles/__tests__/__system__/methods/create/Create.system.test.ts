@@ -9,8 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../src/methods/create";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -62,7 +61,7 @@ describe("Create data set", () => {
         try {
             response = await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -71,7 +70,7 @@ describe("Create data set", () => {
         try {
             response = await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -83,10 +82,10 @@ describe("Create data set", () => {
 
         try {
             response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -104,10 +103,10 @@ describe("Create data set", () => {
 
         try {
             response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, tempOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -123,10 +122,10 @@ describe("Create data set", () => {
 
         try {
             response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -144,10 +143,10 @@ describe("Create data set", () => {
 
         try {
             response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, tempOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -190,7 +189,7 @@ describe("Allocate Like", () => {
         try {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -199,7 +198,7 @@ describe("Allocate Like", () => {
             await Delete.dataSet(REAL_SESSION, dsname);
             await Delete.dataSet(REAL_SESSION, dsnameLike);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -209,10 +208,10 @@ describe("Allocate Like", () => {
 
         try {
             response = await Create.dataSetLike(REAL_SESSION, dsnameLike, dsname);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -244,7 +243,7 @@ describe("Create VSAM", () => {
         try {
             response = await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -253,7 +252,7 @@ describe("Create VSAM", () => {
         try {
             response = await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -267,10 +266,10 @@ describe("Create VSAM", () => {
 
         try {
             response = await Create.vsam(REAL_SESSION, dsname, options);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -288,10 +287,10 @@ describe("Create VSAM", () => {
 
         try {
             response = await Create.vsam(REAL_SESSION, dsname, tempOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -327,7 +326,7 @@ describe("Create z/OS file system", () => {
             response = await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -337,7 +336,7 @@ describe("Create z/OS file system", () => {
             response = await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -359,10 +358,10 @@ describe("Create z/OS file system", () => {
 
         try {
             response = await Create.zfs(REAL_SESSION, fsname, options);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -380,10 +379,10 @@ describe("Create z/OS file system", () => {
 
         try {
             response = await Create.zfs(REAL_SESSION, fsname, tempOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeUndefined();
@@ -416,7 +415,7 @@ describe("Create uss file", () => {
         try {
             response = await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -425,7 +424,7 @@ describe("Create uss file", () => {
         try {
             response = await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -437,10 +436,10 @@ describe("Create uss file", () => {
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "file");
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -456,10 +455,10 @@ describe("Create uss file", () => {
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "file", undefined, {responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -493,7 +492,7 @@ describe("Create uss directory", () => {
         try {
             response = await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -502,7 +501,7 @@ describe("Create uss directory", () => {
         try {
             response = await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
     });
 
@@ -514,10 +513,10 @@ describe("Create uss directory", () => {
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "directory");
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();
@@ -533,10 +532,10 @@ describe("Create uss directory", () => {
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "directory", undefined, {responseTimeout: 5});
-            Imperative.console.info("Response: " + inspect(response));
+            // Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
-            Imperative.console.info("Error: " + inspect(error));
+            // Imperative.console.info("Error: " + inspect(error));
         }
 
         expect(error).toBeFalsy();

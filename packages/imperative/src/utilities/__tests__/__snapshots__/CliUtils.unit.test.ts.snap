@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CliUtils buildBaseArgs should preserve already set properties (that are not undefined) 1`] = `
+Object {
+  "$0": "test exe",
+  "_": Array [
+    "cmd1",
+    "cmd2",
+  ],
+  "test": true,
+}
+`;
+
+exports[`CliUtils buildBaseArgs should preserve the _ and $0 properties 1`] = `
+Object {
+  "$0": "test exe",
+  "_": Array [
+    "cmd1",
+    "cmd2",
+  ],
+}
+`;
+
+exports[`CliUtils buildBaseArgs should remove properties that are set to undefined 1`] = `
+Object {
+  "$0": "test exe",
+  "_": Array [
+    "cmd1",
+    "cmd2",
+  ],
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should accept the env prefix and options array and return an args object 1`] = `
+Object {
+  "fake-string-opt": "a test string set via env var",
+  "fakeStringOpt": "a test string set via env var",
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should accept the env prefix and options array and return an args object with aliases set 1`] = `
+Object {
+  "f": "a test string set via env var",
+  "fake-string-opt-with-aliases": "a test string set via env var",
+  "fakeStringOptWithAliases": "a test string set via env var",
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should not the env var string to a base 10 number if the option type is number 1`] = `
+Object {
+  "fake-number-opt": 10,
+  "fakeNumberOpt": 10,
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should not transform the env var string to a base 10 number if the value isn't a number (results in a syntax error later) 1`] = `
+Object {
+  "fake-number-opt": "not a number",
+  "fakeNumberOpt": "not a number",
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should not transform the env var string to a boolean if the value is not true/false (results in a syntax error later) 1`] = `
+Object {
+  "fake-bool-opt": "not a boolean",
+  "fakeBoolOpt": "not a boolean",
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should transform the env var string to a boolean (false) if the option type is boolean 1`] = `
+Object {
+  "fake-bool-opt": false,
+  "fakeBoolOpt": false,
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should transform the env var string to a boolean if the option type is boolean 1`] = `
+Object {
+  "fake-bool-opt": true,
+  "fakeBoolOpt": true,
+}
+`;
+
+exports[`CliUtils extractEnvForOptions should transform the env var value to an array if the type is array 1`] = `
+Object {
+  "fake-array-opt": Array [
+    "value 1",
+    "value ' 2",
+    "test1",
+    "test2",
+  ],
+  "fakeArrayOpt": Array [
+    "value 1",
+    "value ' 2",
+    "test1",
+    "test2",
+  ],
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should return args (from definitions with no hyphen in name) extracted from loaded profile 1`] = `
+Object {
+  "nohyphen": "specified in profile",
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should return args (with both cases) extracted from loaded profile, preferring the camel case 1`] = `
+Object {
+  "could-be-either": "should be me",
+  "couldBeEither": "should be me",
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should return args (with both cases) extracted from loaded profile, preferring the kebab case 1`] = `
+Object {
+  "fake-string-opt": "should be me",
+  "fakeStringOpt": "should be me",
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should return args with aliases if extracted option from a profile 1`] = `
+Object {
+  "w": "should have 'w' on args object too",
+  "with-alias": "should have 'w' on args object too",
+  "withAlias": "should have 'w' on args object too",
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should return args with both cases, if the option is camel and the profile is kebab 1`] = `
+Object {
+  "could-be-either": "should be me",
+  "couldBeEither": "should be me",
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should return args with both cases, if the option is kebab and the profile is camel 1`] = `
+Object {
+  "fake-string-opt": "should be me",
+  "fakeStringOpt": "should be me",
+}
+`;
+
+exports[`CliUtils getOptValueFromProfiles should throw an imperative error if a required profile is not present 1`] = `"Profile of type \\"banana\\" does not exist within the loaded profiles for the command and it is marked as required."`;
+
+exports[`CliUtils setOptionValue should include aliases in the returned args object 1`] = `
+Object {
+  "m": true,
+  "my-opt": true,
+  "myOpt": true,
+  "o": true,
+}
+`;
+
+exports[`CliUtils setOptionValue should return both the camel and kebab case with the value set 1`] = `
+Object {
+  "my-opt": true,
+  "myOpt": true,
+}
+`;
+
+exports[`CliUtils setOptionValue should return just the one property if it cannot be converted to camel/kebab 1`] = `
+Object {
+  "myopt": true,
+}
+`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 1`] = `"--some-option"`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 2`] = `"-s"`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 3`] = `"---some-option"`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 4`] = `"----some-option"`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 5`] = `"---s"`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 6`] = `"----s"`;
+
+exports[`CliUtils should be able to produce the --dash-form of any options 7`] = `"A null or blank option was supplied. Please correct the option definition."`;

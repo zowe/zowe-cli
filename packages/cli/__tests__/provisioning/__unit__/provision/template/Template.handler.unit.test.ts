@@ -44,7 +44,7 @@ describe("provision template handler tests", () => {
 
     it("should be able to provision a template", async () => {
         ProvisionPublishedTemplate.provisionTemplate = jest.fn(
-            (session, zOSMFVersion, templateName) => {
+            async (session, zOSMFVersion, templateName) => {
                 return ProvisionTemplateData.PROVISION_TEMPLATE_RESPONSE;
             }
         );

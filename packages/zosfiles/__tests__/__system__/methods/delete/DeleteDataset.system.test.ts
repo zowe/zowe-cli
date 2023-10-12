@@ -10,8 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, ZosFilesMessages } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -46,7 +45,7 @@ describe("Delete Dataset", () => {
                 response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
         });
 
@@ -56,10 +55,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, dsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -74,10 +73,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -94,10 +93,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, undefined);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();
@@ -112,10 +111,10 @@ describe("Delete Dataset", () => {
 
             try {
                 response = await Delete.dataSet(REAL_SESSION, nonExistDsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeTruthy();

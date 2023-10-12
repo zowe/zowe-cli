@@ -11,8 +11,7 @@
 
 import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse,
     Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -41,7 +40,7 @@ describe("Upload Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
-        Imperative.console.info("Using dsname:" + dsname);
+        // Imperative.console.info("Using dsname:" + dsname);
     });
 
     afterAll(async () => {
@@ -85,10 +84,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -104,10 +103,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname, {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -130,10 +129,10 @@ describe("Upload Data Set", () => {
                     uploadOptions.etag = downloadResponse.apiResponse.etag;
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION, __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
 
                 expect(error).toBeFalsy();
@@ -151,10 +150,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -171,10 +170,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         "./packages/zosfiles/__tests__/__system__/methods/upload/testfiles/upload.txt", dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -192,10 +191,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                         response = await Upload.fileToDataset(REAL_SESSION,
                             ".\\packages\\zosfiles\\__tests__\\__system__\\methods\\upload\\testfiles\\upload.txt", dsname);
-                        Imperative.console.info("Response: " + inspect(response));
+                        // Imperative.console.info("Response: " + inspect(response));
                     } catch (err) {
                         error = err;
-                        Imperative.console.info("Error: " + inspect(error));
+                        // Imperative.console.info("Error: " + inspect(error));
                     }
                     expect(error).toBeFalsy();
                     expect(response).toBeTruthy();
@@ -213,10 +212,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -235,10 +234,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -256,10 +255,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -274,10 +273,10 @@ describe("Upload Data Set", () => {
                 try {
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles", dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
@@ -317,10 +316,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname + "(member)");
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -336,10 +335,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname + "(member)", {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -355,10 +354,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         "./packages/zosfiles/__tests__/__system__/methods/upload/testfiles/upload.txt", dsname + "(member)");
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -376,10 +375,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                         response = await Upload.fileToDataset(REAL_SESSION,
                             ".\\packages\\zosfiles\\__tests__\\__system__\\methods\\upload\\testfiles\\upload.txt", dsname + "(member)");
-                        Imperative.console.info("Response: " + inspect(response));
+                        // Imperative.console.info("Response: " + inspect(response));
                     } catch (err) {
                         error = err;
-                        Imperative.console.info("Error: " + inspect(error));
+                        // Imperative.console.info("Error: " + inspect(error));
                     }
                     expect(error).toBeFalsy();
                     expect(response).toBeTruthy();
@@ -397,10 +396,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname + "(member)", uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -419,10 +418,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname + "(member)", uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -440,10 +439,10 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname + "(member)", uploadOptions);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -458,10 +457,10 @@ describe("Upload Data Set", () => {
                 try {
 
                     response = await Upload.dirToPds(REAL_SESSION, __dirname + "/testfiles", dsname);
-                    Imperative.console.info("Response: " + inspect(response));
+                    // Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    // Imperative.console.info("Error: " + inspect(error));
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
@@ -502,10 +501,10 @@ describe("Upload Data Set", () => {
             try {
                 response = await Upload.fileToDataset(REAL_SESSION,
                     __dirname + "/testfiles", dsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(response).toBeFalsy();
             expect(error).toBeTruthy();
@@ -519,10 +518,10 @@ describe("Upload Data Set", () => {
             try {
                 response = await Upload.fileToDataset(REAL_SESSION,
                     __dirname + "/testfiles/upload.text", "");
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(response).toBeFalsy();
             expect(error).toBeTruthy();
@@ -536,10 +535,10 @@ describe("Upload Data Set", () => {
             try {
                 response = await Upload.dirToPds(REAL_SESSION,
                     __dirname + "/testfiles/upload.txt", dsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(response).toBeFalsy();
             expect(error).toBeTruthy();
@@ -553,10 +552,10 @@ describe("Upload Data Set", () => {
             try {
                 response = await Upload.fileToDataset(REAL_SESSION,
                     __dirname + "/testfiles", dsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(response).toBeFalsy();
             expect(error).toBeTruthy();
@@ -571,10 +570,10 @@ describe("Upload Data Set", () => {
                 // packages/zosfiles/__tests__/__system__/api/methods/upload/
                 response = await Upload.dirToPds(REAL_SESSION,
                     __dirname + "/testfiles", dsname + "(member)");
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(response).toBeFalsy();
             expect(error).toBeTruthy();
@@ -588,10 +587,10 @@ describe("Upload Data Set", () => {
             try {
                 response = await Upload.fileToDataset(REAL_SESSION,
                     __dirname + "/testfiles//longline/longline.txt", dsname);
-                Imperative.console.info("Response: " + inspect(response));
+                // Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
             expect(response).toBeTruthy();
             expect(response.success).toBeFalsy();
@@ -613,7 +612,7 @@ describe("Upload USS file", () => {
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         ussname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
     });
 
     afterAll(async () => {
@@ -652,7 +651,7 @@ describe("Upload USS file", () => {
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -669,7 +668,7 @@ describe("Upload USS file", () => {
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -686,7 +685,7 @@ describe("Upload USS file", () => {
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -704,7 +703,7 @@ describe("Upload USS file", () => {
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -723,10 +722,10 @@ describe("Upload USS file", () => {
 
             try {
                 uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {etag: downloadResponse.apiResponse.etag});
-                Imperative.console.info("Response: " + inspect(uploadResponse));
+                // Imperative.console.info("Response: " + inspect(uploadResponse));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -744,7 +743,7 @@ describe("Upload USS file", () => {
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -770,7 +769,7 @@ describe("Upload a local directory to USS directory", () => {
             dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
             ussname = dsname.replace(/\./g, "");
             ussname = `${defaultSystem.unix.testdir}/${ussname}`;
-            Imperative.console.info("Using ussfile:" + ussname);
+            // Imperative.console.info("Using ussfile:" + ussname);
         });
 
         afterAll(async () => {
@@ -801,11 +800,11 @@ describe("Upload a local directory to USS directory", () => {
             let isDirectoryExist: boolean;
             try {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname);
-                Imperative.console.info(`THIS IS USS ${ussname}/testfiles`);
+                // Imperative.console.info(`THIS IS USS ${ussname}/testfiles`);
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -823,11 +822,11 @@ describe("Upload a local directory to USS directory", () => {
             try {
                 tempUssname = ussname + " space dir";
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDirWithSpaces, tempUssname);
-                Imperative.console.info(`THIS IS USS ${tempUssname}`);
+                // Imperative.console.info(`THIS IS USS ${tempUssname}`);
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, tempUssname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -846,7 +845,7 @@ describe("Upload a local directory to USS directory", () => {
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -867,7 +866,7 @@ describe("Upload a local directory to USS directory", () => {
                 getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: true});
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -894,7 +893,7 @@ describe("Upload a local directory to USS directory", () => {
                 }
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -929,7 +928,7 @@ describe("Upload a local directory to USS directory", () => {
                 }
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -966,7 +965,7 @@ describe("Upload a local directory to USS directory", () => {
                 }
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeFalsy();
@@ -989,7 +988,7 @@ describe("Upload a local directory to USS directory", () => {
 
             REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-            Imperative.console.info("Using ussfile:" + ussname);
+            // Imperative.console.info("Using ussfile:" + ussname);
         });
 
         afterAll(async () => {
@@ -1010,7 +1009,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, null, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -1025,7 +1024,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "", ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -1040,7 +1039,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "some/path", ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -1055,7 +1054,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, `${__dirname}/testfiles/file1.txt`, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -1070,7 +1069,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "some/path", null);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -1085,7 +1084,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "some/path", "");
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();
@@ -1100,7 +1099,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, `${__dirname}/failtestfiles`, ussname);
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                // Imperative.console.info("Error: " + inspect(error));
             }
 
             expect(error).toBeDefined();

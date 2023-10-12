@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
- zowe zos-jobs submit local-file "noFileHere"
- exit $?
+zowe zos-jobs submit local-file "noFileHere"
+exit $?

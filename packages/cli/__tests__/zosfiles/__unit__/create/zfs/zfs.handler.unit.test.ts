@@ -31,7 +31,7 @@ describe("Create z/OS file system handler", () => {
             let fakeSession = null;
 
             // Mock the zfs function
-            Create.zfs = jest.fn((session) => {
+            Create.zfs = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
