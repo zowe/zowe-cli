@@ -42,6 +42,13 @@ Destination: ./output"
 
 exports[`download output handler tests should download a job output with a specific extension 2`] = `Object {}`;
 
+exports[`download output handler tests should download a job output with encoding 1`] = `
+"Successfully downloaded the job output
+Destination: ./output"
+`;
+
+exports[`download output handler tests should download a job output with encoding 2`] = `Object {}`;
+
 exports[`download output handler tests should not transform an error from the DownloadJob class 1`] = `"You fail in DownloadJob"`;
 
 exports[`download output handler tests should not transform an error from the zosmf rest client 1`] = `"You fail in z/OSMF"`;

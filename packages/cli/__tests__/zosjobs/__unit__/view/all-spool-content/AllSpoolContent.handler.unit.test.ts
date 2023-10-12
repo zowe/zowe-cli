@@ -28,13 +28,14 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "view", "spool-file-by-id"],
     definition: AllSpoolContentDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    profiles: UNIT_TEST_PROFILES_ZOSMF,
 });
 
 describe("zos-jobs view all-spool-content handler", () => {
 
     afterEach(() => {
         jest.resetAllMocks();
+        DEFAULT_PARAMETERS.arguments.encoding = undefined; // Why is this needed? Where are things being set???
     });
 
     it("should be able to get the content of a spool file", async () => {
@@ -61,7 +62,35 @@ describe("zos-jobs view all-spool-content handler", () => {
         );
         const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile);
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, undefined);
+    });
+
+    it("should be able to get the content of a spool file with encoding", async () => {
+        const spoolContent = fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        GetJobs.getSpoolFilesForJob = jest.fn(async (session, jobid) => {
+            return GetJobsData.SAMPLE_SPOOL_FILES;
+        });
+        GetJobs.getSpoolContent = jest.fn(async (session, spoolFile) => {
+            return spoolContent.toString();
+        });
+        const handler = new AllSpoolContentHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments.jobid = "JOB65536";
+        params.arguments.encoding = "IBM-037";
+        await handler.process(params);
+        expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES.length);
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
+            DEFAULT_PARAMETERS.arguments
+        );
+        const fakeSession: Session = new Session(sessCfg);
+        const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, "IBM-037");
     });
 
     it("should be able to get the content of a spool file with procstep", async () => {
@@ -88,7 +117,7 @@ describe("zos-jobs view all-spool-content handler", () => {
         );
         const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP[GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile);
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, undefined);
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -164,7 +193,7 @@ describe("zos-jobs view all-spool-content handler", () => {
         );
         const fakeSession: Session = new Session(sessCfg);
         const firstSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[0];
-        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(fakeSession, firstSpoolFile);
+        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(fakeSession, firstSpoolFile, undefined);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
