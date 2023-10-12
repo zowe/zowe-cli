@@ -8,6 +8,7 @@ output/
 CCS141/
 .vscode
 .idea
+.npm-global
 src/brightside.iml
 package-lock.json
 /packages/cli/npm-shrinkwrap.json

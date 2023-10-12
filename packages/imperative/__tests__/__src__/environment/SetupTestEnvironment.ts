@@ -52,11 +52,14 @@ export class SetupTestEnvironment {
         // Set the home environment variable
         process.env[params.cliHomeEnvVar] = testDirectory;
 
-        // Ensure correct path separator for windows or linux like systems.
+        /* Ensure correct path separator for windows or linux like systems.
+         * Windows does not install into a "bin" directory.
+         */
         const separator = process.platform === "win32" ? ";" : ":";
+        const pkgCmdDir = process.platform === "win32" ? "" : "/bin";
 
         process.env.PATH = [
-            nodePath.resolve(__dirname, "../../../../../.npm-global/bin"),
+            nodePath.resolve(__dirname, "../../../../../.npm-global", pkgCmdDir),
             process.env.PATH
         ].join(separator);
 
