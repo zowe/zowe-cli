@@ -34,6 +34,7 @@ export default class OutputHandler extends ZosmfBaseHandler {
         const extension: string = this.mArguments.extension;
         const binary: boolean = this.mArguments.binary;
         const record: boolean = this.mArguments.record;
+        const encoding: string = this.mArguments.encoding;
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         const options: IDownloadAllSpoolContentParms = {
@@ -43,7 +44,8 @@ export default class OutputHandler extends ZosmfBaseHandler {
             omitJobidDirectory,
             extension,
             binary,
-            record
+            record,
+            encoding
         };
         // Download 'em all
         await DownloadJobs.downloadAllSpoolContentCommon(this.mSession, options);

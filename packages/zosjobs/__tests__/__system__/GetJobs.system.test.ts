@@ -903,6 +903,30 @@ describe("Get spool APIs", () => {
             expect(found).toBe(true);
         }, LONG_TIMEOUT);
 
+        it("Should get spool content from a job with encoding", async () => {
+            const idcams = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_content.jcl")).toString();
+            const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY";
+            const renderedJcl = TextUtils.renderWithMustache(idcams,
+                {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF, CONTENT: DATA_TO_CHECK});
+            const NUM_OF_SPOOL_FILES = 4;
+            const DD_WITH_CONTENT = "SYSTSPRT";
+            const job = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
+            const files = await GetJobs.getSpoolFilesForJob(REAL_SESSION, job);
+            expect(files.length).toBe(NUM_OF_SPOOL_FILES); // verify expected number of DDs
+            let found = false;
+
+            for (const file of files) {
+                if (file.ddname === DD_WITH_CONTENT) {
+                    const dataContent = await GetJobs.getSpoolContent(REAL_SESSION, file, "IBM-037");
+                    expect(dataContent).toContain("NUMBER OF RECORDS PROCESSED WAS 3");
+                    expect(dataContent).not.toContain("¬¬");
+                    expect(dataContent).toContain("^^");
+                    found = true;
+                }
+            }
+            expect(found).toBe(true);
+        }, LONG_TIMEOUT);
+
         it("Should get spool content for a single job", async () => {
             const idcams = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_content.jcl")).toString();
             const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY";
@@ -917,6 +941,27 @@ describe("Get spool APIs", () => {
                 if (file.ddname === DD_WITH_CONTENT) {
                     const content = await GetJobs.getSpoolContentById(REAL_SESSION, job.jobname, job.jobid, file.id);
                     expect(content).toContain("NUMBER OF RECORDS PROCESSED WAS 3");
+                    break;
+                }
+            }
+        }, LONG_TIMEOUT);
+
+        it("Should get spool content for a single job with encoding", async () => {
+            const idcams = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_content.jcl")).toString();
+            const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY";
+            const renderedJcl = TextUtils.renderWithMustache(idcams,
+                {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF, CONTENT: DATA_TO_CHECK});
+            const NUM_OF_SPOOL_FILES = 4;
+            const DD_WITH_CONTENT = "SYSTSPRT";
+            const job = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
+            const files = await GetJobs.getSpoolFilesForJob(REAL_SESSION, job);
+            expect(files.length).toBe(NUM_OF_SPOOL_FILES); // verify expected number of DDs
+            for (const file of files) {
+                if (file.ddname === DD_WITH_CONTENT) {
+                    const content = await GetJobs.getSpoolContentById(REAL_SESSION, job.jobname, job.jobid, file.id, "IBM-037");
+                    expect(content).toContain("NUMBER OF RECORDS PROCESSED WAS 3");
+                    expect(content).not.toContain("¬¬");
+                    expect(content).toContain("^^");
                     break;
                 }
             }
