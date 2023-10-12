@@ -177,6 +177,8 @@ export class EnvQuery {
         let cmdOutput: string = "";
         const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
         try {
+            // multiple npm commands fail hard when used with workspaces
+            args.push("--no-workspaces");
             const spawnResult = spawn.sync(cmdToRun, args, {
                 stdio: ioOpts,
                 shell: true
