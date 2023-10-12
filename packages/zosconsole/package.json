@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-console-for-zowe-sdk",
-  "version": "6.40.20",
+  "version": "6.40.21",
   "description": "Zowe SDK to interact with the z/OS console",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -46,8 +46,8 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.7",
-    "@zowe/core-for-zowe-sdk": "6.40.20",
-    "@zowe/imperative": "4.18.19",
+    "@zowe/core-for-zowe-sdk": "6.40.21",
+    "@zowe/imperative": "4.18.20",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
