@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "7.18.5",
+  "version": "7.18.7",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -57,18 +57,18 @@
     "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
   },
   "dependencies": {
-    "@zowe/core-for-zowe-sdk": "7.18.2",
+    "@zowe/core-for-zowe-sdk": "7.18.7",
     "@zowe/imperative": "5.18.2",
     "@zowe/perf-timing": "1.0.7",
-    "@zowe/provisioning-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-console-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-files-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-jobs-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-logs-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-tso-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-uss-for-zowe-sdk": "7.18.2",
-    "@zowe/zos-workflows-for-zowe-sdk": "7.18.2",
-    "@zowe/zosmf-for-zowe-sdk": "7.18.2",
+    "@zowe/provisioning-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-console-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-files-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-jobs-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-logs-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-tso-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-uss-for-zowe-sdk": "7.18.7",
+    "@zowe/zos-workflows-for-zowe-sdk": "7.18.7",
+    "@zowe/zosmf-for-zowe-sdk": "7.18.7",
     "find-process": "1.4.7",
     "get-stream": "6.0.1",
     "lodash": "4.17.21",
@@ -81,7 +81,7 @@
     "@types/node": "^14.18.28",
     "@types/tar": "^6.1.2",
     "@types/which": "^2.0.1",
-    "@zowe/cli-test-utils": "7.18.2",
+    "@zowe/cli-test-utils": "7.18.7",
     "comment-json": "^4.1.1",
     "eslint": "^8.22.0",
     "js-yaml": "^4.1.0",
@@ -93,7 +93,7 @@
     "which": "^2.0.2"
   },
   "optionalDependencies": {
-    "@zowe/secrets-for-zowe-sdk": "7.18.5"
+    "@zowe/secrets-for-zowe-sdk": "7.18.6"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -163,6 +163,17 @@ test.serial(
     }
 );
 
+test.serial("findCredentials works when only one credential is found", async (t) => {
+    await setPassword("TestKeyring2", "TestOneCred", "pass");
+
+    const creds = await findCredentials("TestKeyring2");
+    t.deepEqual(creds, [{
+        account: "TestOneCred",
+        password: "pass"
+    }]);
+    await deletePassword("TestKeyring2", "TestOneCred");
+});
+
 test.serial("findPassword for ASCII string", async (t) => {
     const pw = await findPassword("TestKeyring/TestASCII");
     t.is(pw, "ASCII string");
