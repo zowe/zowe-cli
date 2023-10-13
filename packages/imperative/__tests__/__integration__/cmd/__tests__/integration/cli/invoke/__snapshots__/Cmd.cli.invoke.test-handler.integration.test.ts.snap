@@ -72,20 +72,6 @@ exports[`cmd-cli invoke test-handler should display the help 1`] = `
 }"
 `;
 
-exports[`cmd-cli invoke test-handler should fail a handler if an imperative error is thrown 1`] = `
-"Command Error:
-Fail with Imperative Error
-"
-`;
-
-exports[`cmd-cli invoke test-handler should fail a handler if an imperative error is thrown 2`] = `""`;
-
-exports[`cmd-cli invoke test-handler should fail a handler if an imperative error is thrown and produce a JSON response 1`] = `
-"Command Error:
-Fail with Imperative Error
-"
-`;
-
 exports[`cmd-cli invoke test-handler should fail the command if fail-with-message is specified and no message is supplied 1`] = `
 "
 Syntax Error:

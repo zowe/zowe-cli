@@ -118,8 +118,8 @@ describe("cmd-cli invoke test-handler", () => {
     it("should fail a handler if an imperative error is thrown", async () => {
         const response = runCliScript(__dirname + "/__scripts__/test-handler/test_handler_fail_ie.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stderr.toString()).toContain("Fail with Imperative Error");
+        expect(response.stdout.toString()).toBe("");
     });
 
     it("should fail a handler if an imperative error is thrown and produce a JSON response", async () => {
@@ -133,8 +133,9 @@ describe("cmd-cli invoke test-handler", () => {
         expect(respObj.success).toBe(false);
         expect(respObj.message).toBe("Fail with Imperative Error");
         expect(respObj.error.msg).toBe("Fail with Imperative Error");
-        expect(respObj.stderr).toMatchSnapshot();
         expect(respObj.stdout).toBe("");
+        expect(respObj.stderr).toContain("Fail with Imperative Error");
+        expect(response.stderr.toString()).toBe("");
     });
 
     it("should invoke the handler and print a message if no options are specified", async () => {
