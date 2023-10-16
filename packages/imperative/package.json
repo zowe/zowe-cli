@@ -55,7 +55,7 @@
     "glob": "7.1.6",
     "js-yaml": "3.14.1",
     "jsonfile": "4.0.0",
-    "jsonschema": "1.1.1",
+    "jsonschema": "1.4.1",
     "lodash-deep": "2.0.0",
     "log4js": "6.4.0",
     "markdown-it": "12.3.2",
