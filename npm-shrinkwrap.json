@@ -21430,9 +21430,9 @@
       ]
     },
     "node_modules/jsonschema": {
-      "version": "1.1.1",
-      "resolved": "https://registry.npmjs.org/jsonschema/-/jsonschema-1.1.1.tgz",
-      "integrity": "sha512-kHyDK+K6ehb+0LmJYzsQSd3QkRPDEPoG/59uhNzFTLVb92J9jYPaonLkzJe+Z4angkIhDeurMmvhtmjAVrz9eA==",
+      "version": "1.4.1",
+      "resolved": "https://registry.npmjs.org/jsonschema/-/jsonschema-1.4.1.tgz",
+      "integrity": "sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==",
       "engines": {
         "node": "*"
       }
@@ -23820,9 +23820,9 @@
       }
     },
     "node_modules/mustache": {
-      "version": "2.3.0",
-      "resolved": "https://registry.npmjs.org/mustache/-/mustache-2.3.0.tgz",
-      "integrity": "sha512-IgZ/cCHtDG1ft0vdDV9wrlNz20SvbUu2ECoDF6dhk2ZtedLNy1Kehy4oFlzmHPxcUQmVZuXYS2j+d0NkaEjTXQ==",
+      "version": "2.3.2",
+      "resolved": "https://registry.npmjs.org/mustache/-/mustache-2.3.2.tgz",
+      "integrity": "sha512-KpMNwdQsYz3O/SBS1qJ/o3sqUJ5wSb8gb0pul8CO0S56b9Y2ALm8zCfsjPXsqGFfoNBkDwZuZIAjhsZI03gYVQ==",
       "bin": {
         "mustache": "bin/mustache"
       },
@@ -31467,11 +31467,11 @@
         "glob": "7.1.6",
         "js-yaml": "3.14.1",
         "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
+        "jsonschema": "1.4.1",
         "lodash-deep": "2.0.0",
         "log4js": "6.4.0",
         "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
+        "mustache": "2.3.2",
         "npm-package-arg": "8.1.1",
         "opener": "1.5.2",
         "pacote": "11.1.4",
