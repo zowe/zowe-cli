@@ -135,7 +135,7 @@ describe("PMF: Uninstall Interface", () => {
 
             const pluginJsonFile: IPluginJson = {
                 "imperative-sample-plugin": {
-                    package: "C:\\Users\\SWAWI03\\IdeaProjects\\imperative-plugins",
+                    package: "C:\\test\\imperative-plugins",
                     registry: packageRegistry,
                     version: "1.0.1"
                 },

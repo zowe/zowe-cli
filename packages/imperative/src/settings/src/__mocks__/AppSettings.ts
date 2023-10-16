@@ -33,7 +33,7 @@ function MockAppSettings() {
     ) => {
         this.settings.overrides[override] = value;
         return new Promise((resolve) => {
-            resolve();
+            resolve(undefined);
         });
     };
     this.set = jest.fn(setFn);

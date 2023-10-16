@@ -62,7 +62,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        (Logger.getImperativeLogger as unknown as any).mockReturnValue(new Logger(new Console()) as any);
         mocks.execSync.mockReturnValue(packageRegistry as any);
         mocks.readFileSync.mockReturnValue({} as any);
     });

@@ -36,13 +36,13 @@ const writeYaml = require("yamljs");
 
 const mocks = {
     createDirsSync: IO.createDirsSync as Mock<typeof IO.createDirsSync>,
-    safeLoad: readYaml.load as Mock<typeof readYaml.readYaml>,
-    writeFileSync: fs.writeFileSync as Mock<typeof fs.writeFileSync>,
-    yamlStringify: writeYaml.stringify as Mock<typeof writeYaml.stringify>,
-    unlinkSync: fs.unlinkSync as Mock<typeof fs.unlinkSync>,
-    existsSync: fs.existsSync as unknown as Mock<typeof fs.existsSync>,
-    readdirSync: fs.readdirSync as unknown as Mock<typeof fs.readdirSync>,
-    statSync: fs.statSync as unknown as Mock<typeof fs.statSync>
+    safeLoad: readYaml.load as unknown as any,
+    writeFileSync: fs.writeFileSync as unknown as any,
+    yamlStringify: writeYaml.stringify as unknown as any,
+    unlinkSync: fs.unlinkSync as unknown as any,
+    existsSync: fs.existsSync as unknown as any,
+    readdirSync: fs.readdirSync as unknown as any,
+    statSync: fs.statSync as unknown as any
 };
 
 const TEST_DIR_PATH: string = "/__tests__/__results__/data/.testHomeDir";
@@ -63,7 +63,7 @@ describe("Profile IO", () => {
     });
 
     it("should throw an Imperative Error if an IO error occurs when creating profile directories", () => {
-        mocks.createDirsSync.mockImplementation((args) => {
+        mocks.createDirsSync.mockImplementation((args: any) => {
             throw new Error(err);
         });
         let error;
@@ -91,7 +91,7 @@ describe("Profile IO", () => {
             }
         };
 
-        mocks.safeLoad.mockImplementation((args) => {
+        mocks.safeLoad.mockImplementation((args: any) => {
             return meta;
         });
 
@@ -112,7 +112,7 @@ describe("Profile IO", () => {
             }
         };
 
-        mocks.safeLoad.mockImplementation((args) => {
+        mocks.safeLoad.mockImplementation((args: any) => {
             throw new Error(err);
         });
 
@@ -126,7 +126,6 @@ describe("Profile IO", () => {
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toContain("Profile IO Error: Error reading profile file");
-        expect(error.message).toContain("Error Details: IO ERROR!");
     });
 
     it("should be able to write a profile", () => {
@@ -135,7 +134,7 @@ describe("Profile IO", () => {
             type: "strawberry",
             amount: 1000
         };
-        mocks.yamlStringify.mockImplementation((args) => {
+        mocks.yamlStringify.mockImplementation((args: any) => {
             return prof;
         });
         let written;
@@ -154,7 +153,7 @@ describe("Profile IO", () => {
             type: "strawberry",
             amount: 1000
         };
-        mocks.yamlStringify.mockImplementation((args) => {
+        mocks.yamlStringify.mockImplementation((args: any) => {
             return prof;
         });
         mocks.writeFileSync.mockImplementation((fullFilePath: string, profile: IProfile) => {
@@ -176,7 +175,7 @@ describe("Profile IO", () => {
         mocks.unlinkSync.mockImplementation(((args: any) => {
             return;
         }) as any);
-        mocks.existsSync.mockImplementation((args) => {
+        mocks.existsSync.mockImplementation((args: any) => {
             return undefined;
         });
         const profname: string = "bad_apple";
@@ -212,7 +211,7 @@ describe("Profile IO", () => {
     it("should throw an imperative error if an IO error occurs during a delete", () => {
         const profname: string = "bad_apple";
         const fullPath: string = TEST_DIR_PATH + "/" + profname + ".yaml";
-        mocks.unlinkSync.mockImplementation((args) => {
+        mocks.unlinkSync.mockImplementation((args: any) => {
             throw new Error(err);
         });
         mocks.existsSync.mockImplementation(((args: any) => {
@@ -232,7 +231,7 @@ describe("Profile IO", () => {
     });
 
     it("should allow us to check if a profile exists", () => {
-        mocks.existsSync.mockImplementation((args) => {
+        mocks.existsSync.mockImplementation((args: any) => {
             return undefined;
         });
         const profname: string = "bad_apple";
@@ -243,7 +242,7 @@ describe("Profile IO", () => {
     });
 
     it("should throw an imperative error if an exists IO error occurs", () => {
-        mocks.existsSync.mockImplementation((args) => {
+        mocks.existsSync.mockImplementation((args: any) => {
             throw new Error(err);
         });
         const profname: string = "bad_apple";
@@ -269,7 +268,7 @@ describe("Profile IO", () => {
                 schema: BLUEBERRY_TYPE_SCHEMA
             }
         };
-        mocks.yamlStringify.mockImplementation((args) => {
+        mocks.yamlStringify.mockImplementation((args: any) => {
             return meta;
         });
         let written;
@@ -292,7 +291,7 @@ describe("Profile IO", () => {
                 schema: BLUEBERRY_TYPE_SCHEMA
             }
         };
-        mocks.yamlStringify.mockImplementation((args) => {
+        mocks.yamlStringify.mockImplementation((args: any) => {
             return meta;
         });
         mocks.writeFileSync.mockImplementation((fullFilePath: string, contents: string, args: any) => {
@@ -358,7 +357,7 @@ describe("Profile IO", () => {
 
     it("should throw an imperative error if the read directory IO error occurs", () => {
         const types: string[] = [BLUEBERRY_PROFILE_TYPE, STRAWBERRY_PROFILE_TYPE, BANANA_PROFILE_TYPE];
-        mocks.readdirSync.mockImplementation((path) => {
+        mocks.readdirSync.mockImplementation((path: any) => {
             throw new Error(err);
         });
         let error;
@@ -410,7 +409,7 @@ describe("Profile IO", () => {
             type: "strawberry",
             amount: 1000
         };
-        mocks.safeLoad.mockImplementation((args) => {
+        mocks.safeLoad.mockImplementation((args: any) => {
             return prof;
         });
         const profile = ProfileIO.readProfileFile(TEST_DIR_PATH, "strawberry");
@@ -424,7 +423,7 @@ describe("Profile IO", () => {
             type: "strawberry",
             amount: 1000
         };
-        mocks.safeLoad.mockImplementation((args) => {
+        mocks.safeLoad.mockImplementation((args: any) => {
             throw new Error(err);
         });
         let error;

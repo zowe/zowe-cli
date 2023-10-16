@@ -24,7 +24,7 @@ exports[`Session tests should match non-default port, protocol, secure protocol,
 Object {
   "basePath": "",
   "hostname": "localhost",
-  "port": "123",
+  "port": 123,
   "protocol": "http",
   "rejectUnauthorized": true,
   "secureProtocol": "somethingNew",

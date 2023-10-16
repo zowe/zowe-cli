@@ -33,15 +33,15 @@ import { npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 
 describe("Plugin Management Facility update handler", () => {
 
-    const resolveVal = "Users/SWAWI03/IdeaProjects/imperative-plugins";
+    const resolveVal = "test/imperative-plugins";
 
     // Objects created so types are correct.
     const mocks = {
-        npmLogin: npmLogin as Mock<typeof  npmLogin>,
-        execSync: execSync as unknown as Mock<typeof execSync>,
-        readFileSync: readFileSync as Mock<typeof readFileSync>,
-        writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        update: update as unknown as Mock<typeof update>
+        npmLogin: npmLogin as unknown as any,
+        execSync: execSync as unknown as any,
+        readFileSync: readFileSync as unknown as any,
+        writeFileSync: writeFileSync as unknown as any,
+        update: update as unknown as any,
     };
 
     // two plugin set of values
