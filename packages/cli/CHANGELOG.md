@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Incorporate all source code from the zowe/imperative Github repository into the zowe/zowe-cli repository. This change should have no user impact.
+-
 ## `7.18.7`
 
 - BugFix: Bump Imperative to `5.18.2` to fix issues with normalizing newlines on file uploads [#1815](https://github.com/zowe/zowe-cli/issues/1815)
