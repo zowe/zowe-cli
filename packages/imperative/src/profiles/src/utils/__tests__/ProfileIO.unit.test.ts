@@ -172,10 +172,10 @@ describe("Profile IO", () => {
     });
 
     it("should allow a delete of a profile", () => {
-        mocks.unlinkSync.mockImplementation(((args: any) => {
+        mocks.unlinkSync.mockImplementation(((args: any): any => {
             return;
         }) as any);
-        mocks.existsSync.mockImplementation((args: any) => {
+        mocks.existsSync.mockImplementation((args: any): any => {
             return undefined;
         });
         const profname: string = "bad_apple";
@@ -231,7 +231,7 @@ describe("Profile IO", () => {
     });
 
     it("should allow us to check if a profile exists", () => {
-        mocks.existsSync.mockImplementation((args: any) => {
+        mocks.existsSync.mockImplementation((args: any): any => {
             return undefined;
         });
         const profname: string = "bad_apple";
