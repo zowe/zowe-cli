@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DsDefinition should use the correct object for strings 1`] = `
-Array [
-  Object {
+[
+  {
     "description": "Rename the data set named 'USER.BEFORE.SET' to 'USER.AFTER.SET.'",
-    "options": "\\"USER.BEFORE.SET\\" \\"USER.AFTER.SET\\"",
+    "options": ""USER.BEFORE.SET" "USER.AFTER.SET"",
   },
 ]
 `;

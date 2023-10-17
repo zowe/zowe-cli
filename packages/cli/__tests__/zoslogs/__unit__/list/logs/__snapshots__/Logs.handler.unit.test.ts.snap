@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`get logs handler tests should be able to get logs using all options 1`] = `
-Object {
-  "items": Array [
-    Object {
+{
+  "items": [
+    {
       "cart": "0",
       "color": "green",
       "jobName": "TCP342  ",
@@ -20,7 +20,7 @@ Object {
       "timestamp": 1628576195960,
       "type": "HARDCOPY",
     },
-    Object {
+    {
       "cart": "0",
       "color": "green",
       "jobName": "TCP342  ",
@@ -63,9 +63,9 @@ exports[`get logs handler tests should be able to get logs using all options 4`]
 `;
 
 exports[`get logs handler tests should be able to get logs using defaults 1`] = `
-Object {
-  "items": Array [
-    Object {
+{
+  "items": [
+    {
       "cart": "0",
       "color": "green",
       "jobName": "TCP342  ",
@@ -82,7 +82,7 @@ Object {
       "timestamp": 1628576195960,
       "type": "HARDCOPY",
     },
-    Object {
+    {
       "cart": "0",
       "color": "green",
       "jobName": "TCP342  ",

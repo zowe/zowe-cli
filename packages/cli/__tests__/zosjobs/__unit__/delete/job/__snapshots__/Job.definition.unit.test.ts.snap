@@ -1,38 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs delete job definition should not have changed 1`] = `
-Object {
+{
   "description": "Delete a single job by job ID",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Delete job with job ID JOB03456",
       "options": "JOB03456",
     },
-    Object {
+    {
       "description": "Delete job with job ID JOB03456 synchronously",
-      "options": "JOB03456 --modify-version \\"2.0\\"",
+      "options": "JOB03456 --modify-version "2.0"",
     },
   ],
   "name": "job",
-  "options": Array [
-    Object {
+  "options": [
+    {
       "defaultValue": "2.0",
-      "description": "Using this option to set X-IBM-Job-Modify-Version to \\"1.0\\" will make the delete job API aynchronous. Otherwise, it will be synchronous by default.",
+      "description": "Using this option to set X-IBM-Job-Modify-Version to "1.0" will make the delete job API aynchronous. Otherwise, it will be synchronous by default.",
       "name": "modify-version",
       "required": false,
       "type": "string",
     },
   ],
-  "positionals": Array [
-    Object {
-      "description": "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate the job ID if desired. You can use, for example \\"J123\\".",
+  "positionals": [
+    {
+      "description": "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate the job ID if desired. You can use, for example "J123".",
       "name": "jobid",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

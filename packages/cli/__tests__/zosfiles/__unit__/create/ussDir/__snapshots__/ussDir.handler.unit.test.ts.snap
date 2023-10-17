@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Create USS Directory process method should create a USS directory if requested 1`] = `
-Object {
+{
   "commandResponse": "created",
   "success": true,
 }

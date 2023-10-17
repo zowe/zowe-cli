@@ -1,33 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs view job-status-by-jobid definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "jsbj",
   ],
-  "description": "View status details of a single z/OS job on spool/JES queues. The command does not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF Jobs REST endpoints (expect for \\"no jobs found\\").",
-  "examples": Array [
-    Object {
+  "description": "View status details of a single z/OS job on spool/JES queues. The command does not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF Jobs REST endpoints (expect for "no jobs found").",
+  "examples": [
+    {
       "description": "View status and other details of the job with the job ID JOB00123",
       "options": "j123",
     },
-    Object {
-      "description": "Print only the status (for example, \\"OUTPUT\\" or \\"ACTIVE\\") of the job with the job ID JOB00123",
+    {
+      "description": "Print only the status (for example, "OUTPUT" or "ACTIVE") of the job with the job ID JOB00123",
       "options": "j123 --rff status --rft string",
     },
   ],
   "name": "job-status-by-jobid",
   "outputFormatOptions": true,
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is performed.",
       "name": "jobid",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

@@ -1,57 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs list jobs definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "js",
   ],
-  "description": "List jobs on JES spool/queues. By default, the command lists jobs owned (owner) by the user specified in your z/OSMF profile. The default for prefix is \\"*\\". The command does not prevalidate your user ID. The command surfaces errors verbatim from the z/OSMF Jobs REST endpoints.",
-  "examples": Array [
-    Object {
+  "description": "List jobs on JES spool/queues. By default, the command lists jobs owned (owner) by the user specified in your z/OSMF profile. The default for prefix is "*". The command does not prevalidate your user ID. The command surfaces errors verbatim from the z/OSMF Jobs REST endpoints.",
+  "examples": [
+    {
       "description": "List all jobs with default settings. The command returns jobs owned by your user ID with any job name",
       "options": "",
     },
-    Object {
+    {
       "description": "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo'",
-      "options": "-o \\"ibmu*\\" -p \\"myjo*\\"",
+      "options": "-o "ibmu*" -p "myjo*"",
     },
-    Object {
+    {
       "description": "List all jobs with default owner and prefix settings, displaying only the job ID of each job",
       "options": "--rff jobid --rft table",
     },
-    Object {
+    {
       "description": "List all jobs and return job execution data along with the default information",
       "options": "--exec-data",
     },
-    Object {
+    {
       "description": "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information",
-      "options": "-o \\"ibmu*\\" --exec-data",
+      "options": "-o "ibmu*" --exec-data",
     },
-    Object {
+    {
       "description": "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and                             return job execution data along with the default information",
-      "options": "-o \\"ibmu*\\" -p \\"myjo*\\" --exec-data",
+      "options": "-o "ibmu*" -p "myjo*" --exec-data",
     },
   ],
   "name": "jobs",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "o",
       ],
-      "description": "Specify the owner of the jobs you want to list. The owner is the individual/user who submitted the job OR the user ID assigned to the job. The command does not prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, which is usually in the form \\"USER*\\".",
+      "description": "Specify the owner of the jobs you want to list. The owner is the individual/user who submitted the job OR the user ID assigned to the job. The command does not prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, which is usually in the form "USER*".",
       "name": "owner",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "p",
       ],
-      "description": "Specify the job name prefix of the jobs you want to list. The command does not prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, which is usually in the form \\"JOB*\\".",
+      "description": "Specify the job name prefix of the jobs you want to list. The command does not prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, which is usually in the form "JOB*".",
       "name": "prefix",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "ed",
       ],
       "default": false,
@@ -61,8 +61,8 @@ Object {
     },
   ],
   "outputFormatOptions": true,
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

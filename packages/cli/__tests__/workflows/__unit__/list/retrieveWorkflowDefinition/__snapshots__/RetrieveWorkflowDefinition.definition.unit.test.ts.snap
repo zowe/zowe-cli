@@ -1,25 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows list definition-file-details should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "dfd",
   ],
   "description": "Retrieve the contents of a z/OSMF workflow definition from a z/OS system.",
-  "examples": Array [
-    Object {
-      "description": "To list the contents of a workflow definition stored in the UNIX file \\"/user/dir/workflow.xml\\" including its steps and variables",
-      "options": "\\"/user/dir/workflow.xml\\" --list-steps --list-variables",
+  "examples": [
+    {
+      "description": "To list the contents of a workflow definition stored in the UNIX file "/user/dir/workflow.xml" including its steps and variables",
+      "options": ""/user/dir/workflow.xml" --list-steps --list-variables",
     },
-    Object {
-      "description": "To list the contents of a workflow definition stored in the z/OS data set \\"USER.DATA.SET.XML\\" including its steps and variables",
-      "options": "\\"USER.DATA.SET.XML\\" --list-steps --list-variables",
+    {
+      "description": "To list the contents of a workflow definition stored in the z/OS data set "USER.DATA.SET.XML" including its steps and variables",
+      "options": ""USER.DATA.SET.XML" --list-steps --list-variables",
     },
   ],
   "name": "definition-file-details",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "ls",
       ],
       "description": "Optional parameter for listing steps and their properties.",
@@ -27,8 +27,8 @@ Object {
       "required": false,
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "lv",
       ],
       "description": "Optional parameter for listing variables and their properties.",
@@ -37,16 +37,16 @@ Object {
       "type": "boolean",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
       "name": "definitionFilePath",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

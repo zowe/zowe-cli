@@ -11,8 +11,8 @@ exports[`GetJobs tests getJcl APIs should error for missing jobname in callback 
 exports[`GetJobs tests getJcl APIs should have proper URI when getting JCL 1`] = `"/zosmf/restjobs/jobs/fakeJob/fakeId/files/JCL/records"`;
 
 exports[`GetJobs tests getJobs APIs should allow getting jobs by common method with max jobs 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -27,7 +27,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -46,8 +46,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should allow getting jobs by common method with status 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -62,7 +62,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -81,8 +81,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and getJobsCommon 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -97,7 +97,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -116,8 +116,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and getJobsCommon 2`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -132,7 +132,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -151,8 +151,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -167,7 +167,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -186,8 +186,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data with maxJobs param 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -202,7 +202,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -221,8 +221,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data with multiple other params 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -237,7 +237,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -256,8 +256,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data with owner and maxJobs params 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -272,7 +272,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -291,8 +291,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get jobs by owner 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -307,7 +307,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -326,8 +326,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get jobs by owner and prefix 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -342,7 +342,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -361,8 +361,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobs APIs should get jobs by prefix 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -377,7 +377,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -414,7 +414,7 @@ exports[`GetJobs tests getJobs APIs should have proper URI when using prefix 1`]
 exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`] = `"/zosmf/restjobs/jobs?status=active"`;
 
 exports[`GetJobs tests getJobs APIs should locate a job by jobid 1`] = `
-Object {
+{
   "class": "A",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
@@ -446,8 +446,8 @@ exports[`GetJobs tests getJobs APIs should throw an error if more than one job i
 exports[`GetJobs tests getJobs APIs should throw an error if zero jobs are returned when getting jobs by ID 1`] = `"Obtaining job info for a single job id TSUxxx on Test:443 failed: Job not found"`;
 
 exports[`GetJobs tests getJobsByParameters should get jobs even when no params are passed in 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -462,7 +462,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -481,8 +481,8 @@ Array [
 `;
 
 exports[`GetJobs tests getJobsByParameters should get jobs when any of the valid parameters are passed in 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -497,7 +497,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
@@ -524,8 +524,8 @@ exports[`GetJobs tests getSpoolContent APIs should error for missing jobname in 
 exports[`GetJobs tests getSpoolContent APIs should have proper URI when getting spool content 1`] = `"/zosmf/restjobs/jobs/RUNMAIN/JOB07172/files/2/records"`;
 
 exports[`GetJobs tests getSpoolFiles APIs should be able to get spool files 1`] = `
-Array [
-  Object {
+[
+  {
     "byte-count": 1297,
     "class": "Z",
     "ddname": "JESMSGLG",
@@ -541,7 +541,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 223,
     "class": "Z",
     "ddname": "JESJCL",
@@ -557,7 +557,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 3195,
     "class": "Z",
     "ddname": "JESYSMSG",
@@ -577,8 +577,8 @@ Array [
 `;
 
 exports[`GetJobs tests getSpoolFiles APIs should be able to get spool files 2`] = `
-Array [
-  Object {
+[
+  {
     "byte-count": 1297,
     "class": "Z",
     "ddname": "JESMSGLG",
@@ -594,7 +594,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 223,
     "class": "Z",
     "ddname": "JESJCL",
@@ -610,7 +610,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 3195,
     "class": "Z",
     "ddname": "JESYSMSG",
@@ -630,8 +630,8 @@ Array [
 `;
 
 exports[`GetJobs tests getSpoolFiles APIs should be able to get spool files 3`] = `
-Array [
-  Object {
+[
+  {
     "byte-count": 1297,
     "class": "Z",
     "ddname": "JESMSGLG",
@@ -647,7 +647,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 223,
     "class": "Z",
     "ddname": "JESJCL",
@@ -663,7 +663,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 3195,
     "class": "Z",
     "ddname": "JESYSMSG",
@@ -687,7 +687,7 @@ exports[`GetJobs tests getSpoolFiles APIs should error for missing jobname in ca
 exports[`GetJobs tests getSpoolFiles APIs should have proper URI when getting spool files 1`] = `"/zosmf/restjobs/jobs/fakeJob/fakeId/files"`;
 
 exports[`GetJobs tests getStatus APIs should get a job via getStatus and getStatusCommon 1`] = `
-Object {
+{
   "class": "A",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
@@ -705,7 +705,7 @@ Object {
 `;
 
 exports[`GetJobs tests getStatus APIs should get a job via getStatus and getStatusCommon 2`] = `
-Object {
+{
   "class": "A",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
@@ -734,4 +734,4 @@ exports[`GetJobs tests getStatus APIs should get an error for missing jobname on
 
 exports[`GetJobs tests getStatus APIs should reject the promise when the server gets an error http code 1`] = `"Rest API failure with HTTP(S) status 500"`;
 
-exports[`GetJobs tests getStatus APIs should reject the promise when the server gets an error http code 2`] = `"{\\"rc\\":4,\\"reason\\":7,\\"stack\\":\\"JesException: CATEGORY_SERVICE rc=4 reason=7 message=No match for method GET and pathInfo='/owner=TCPIP*'\\\\n\\\\tat com.ibm.zoszmf.restjobs.util.JesException.serviceException(JesException.java:183)\\\\n\\\\tat com.ibm.zoszmf.restjobs.servlet.JesServlet.doGet(JesServlet.java:270)\\\\n\\\\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:575)\\\\n\\\\tat com.ibm.zoszmf.restjobs.servlet.JesServlet.service(JesServlet.java:168)\\\\n\\\\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:668)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.service(ServletWrapper.java:1255)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:743)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:440)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.invokeTarget(WebAppFilterChain.java:147)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:89)\\\\n\\\\tat com.ibm.zoszmf.util.data.ActivityFilter.doFilter(ActivityFilter.java:100)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.FilterInstanceWrapper.doFilter(FilterInstanceWrapper.java:201)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:86)\\\\n\\\\tat com.ibm.zoszmf.util.auth.CSRFwithWLFilter.doFilter(CSRFwithWLFilter.java:192)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.FilterInstanceWrapper.doFilter(FilterInstanceWrapper.java:201)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:86)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.doFilter(WebAppFilterManager.java:995)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1124)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1004)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.CacheServletWrapper.handleRequest(CacheServletWrapper.java:76)\\\\n\\\\tat com.ibm.ws.webcontainer.WebContainer.handleRequest(WebContainer.java:921)\\\\n\\\\tat com.ibm.ws.webcontainer.osgi.DynamicVirtualHost$2.run(DynamicVirtualHost.java:281)\\\\n\\\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink$TaskWrapper.run(HttpDispatcherLink.java:960)\\\\n\\\\tat com.ibm.ws.zos.wlm.internal.WlmHttpWorkClassifier$WlmExecutor.wlmRunWork(WlmHttpWorkClassifier.java:309)\\\\n\\\\tat com.ibm.ws.zos.wlm.internal.WlmHttpWorkClassifier$WlmExecutor.execute(WlmHttpWorkClassifier.java:299)\\\\n\\\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.wrapHandlerAndExecute(HttpDispatcherLink.java:357)\\\\n\\\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.ready(HttpDispatcherLink.java:321)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.handleDiscrimination(HttpInboundLink.java:499)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.handleNewRequest(HttpInboundLink.java:433)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.processRequest(HttpInboundLink.java:313)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.ready(HttpInboundLink.java:284)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink.determineNextChannel(SSLConnectionLink.java:1029)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink.readyInboundPostHandshake(SSLConnectionLink.java:695)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink$MyHandshakeCompletedCallback.complete(SSLConnectionLink.java:383)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLUtils.handleHandshake(SSLUtils.java:947)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLHandshakeIOCallback.complete(SSLHandshakeIOCallback.java:85)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.requestComplete(WorkQueueManager.java:503)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.attemptIO(WorkQueueManager.java:573)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.workerRun(WorkQueueManager.java:928)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager$Worker.run(WorkQueueManager.java:1017)\\\\n\\\\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1160)\\\\n\\\\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)\\\\n\\\\tat java.lang.Thread.run(Thread.java:811)\\\\n\\",\\"category\\":6,\\"message\\":\\"No match for method GET and pathInfo='/owner=TCPIP*'\\"}"`;
+exports[`GetJobs tests getStatus APIs should reject the promise when the server gets an error http code 2`] = `"{"rc":4,"reason":7,"stack":"JesException: CATEGORY_SERVICE rc=4 reason=7 message=No match for method GET and pathInfo='/owner=TCPIP*'\\n\\tat com.ibm.zoszmf.restjobs.util.JesException.serviceException(JesException.java:183)\\n\\tat com.ibm.zoszmf.restjobs.servlet.JesServlet.doGet(JesServlet.java:270)\\n\\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:575)\\n\\tat com.ibm.zoszmf.restjobs.servlet.JesServlet.service(JesServlet.java:168)\\n\\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:668)\\n\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.service(ServletWrapper.java:1255)\\n\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:743)\\n\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:440)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.invokeTarget(WebAppFilterChain.java:147)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:89)\\n\\tat com.ibm.zoszmf.util.data.ActivityFilter.doFilter(ActivityFilter.java:100)\\n\\tat com.ibm.ws.webcontainer.filter.FilterInstanceWrapper.doFilter(FilterInstanceWrapper.java:201)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:86)\\n\\tat com.ibm.zoszmf.util.auth.CSRFwithWLFilter.doFilter(CSRFwithWLFilter.java:192)\\n\\tat com.ibm.ws.webcontainer.filter.FilterInstanceWrapper.doFilter(FilterInstanceWrapper.java:201)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:86)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.doFilter(WebAppFilterManager.java:995)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1124)\\n\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1004)\\n\\tat com.ibm.ws.webcontainer.servlet.CacheServletWrapper.handleRequest(CacheServletWrapper.java:76)\\n\\tat com.ibm.ws.webcontainer.WebContainer.handleRequest(WebContainer.java:921)\\n\\tat com.ibm.ws.webcontainer.osgi.DynamicVirtualHost$2.run(DynamicVirtualHost.java:281)\\n\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink$TaskWrapper.run(HttpDispatcherLink.java:960)\\n\\tat com.ibm.ws.zos.wlm.internal.WlmHttpWorkClassifier$WlmExecutor.wlmRunWork(WlmHttpWorkClassifier.java:309)\\n\\tat com.ibm.ws.zos.wlm.internal.WlmHttpWorkClassifier$WlmExecutor.execute(WlmHttpWorkClassifier.java:299)\\n\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.wrapHandlerAndExecute(HttpDispatcherLink.java:357)\\n\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.ready(HttpDispatcherLink.java:321)\\n\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.handleDiscrimination(HttpInboundLink.java:499)\\n\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.handleNewRequest(HttpInboundLink.java:433)\\n\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.processRequest(HttpInboundLink.java:313)\\n\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.ready(HttpInboundLink.java:284)\\n\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink.determineNextChannel(SSLConnectionLink.java:1029)\\n\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink.readyInboundPostHandshake(SSLConnectionLink.java:695)\\n\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink$MyHandshakeCompletedCallback.complete(SSLConnectionLink.java:383)\\n\\tat com.ibm.ws.channel.ssl.internal.SSLUtils.handleHandshake(SSLUtils.java:947)\\n\\tat com.ibm.ws.channel.ssl.internal.SSLHandshakeIOCallback.complete(SSLHandshakeIOCallback.java:85)\\n\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.requestComplete(WorkQueueManager.java:503)\\n\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.attemptIO(WorkQueueManager.java:573)\\n\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.workerRun(WorkQueueManager.java:928)\\n\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager$Worker.run(WorkQueueManager.java:1017)\\n\\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1160)\\n\\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)\\n\\tat java.lang.Thread.run(Thread.java:811)\\n","category":6,"message":"No match for method GET and pathInfo='/owner=TCPIP*'"}"`;

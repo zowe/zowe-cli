@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`send address-space handler tests should be able respond with error message 1`] = `
-"IZUG1126E: z/OSMF cannot correlate the request for key \\"ZOSMFAD-SYS2-55-aaakaaac\\"
+"IZUG1126E: z/OSMF cannot correlate the request for key "ZOSMFAD-SYS2-55-aaakaaac"
 with an active z/OS application session."
 `;
 
 exports[`send address-space handler tests should be able to send data to address-space 1`] = `"READY"`;
 
 exports[`send address-space handler tests should be able to send data to address-space 2`] = `
-Object {
+{
   "commandResponse": "READY",
   "success": true,
-  "zosmfResponse": Array [
-    Object {
+  "zosmfResponse": [
+    {
       "reused": false,
       "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
       "timeout": false,

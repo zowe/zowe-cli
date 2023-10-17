@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows delete archived-workflow definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "arw",
   ],
   "description": "Delete an archived workflow from z/OSMF",
-  "examples": Array [
-    Object {
-      "description": "To delete an archived workflow from z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
-      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+  "examples": [
+    {
+      "description": "To delete an archived workflow from z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
+      "options": "--workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
     },
-    Object {
-      "description": "To delete an archived workflow from z/OSMF with workflow name \\"testWorkflow\\"",
-      "options": "--workflow-name \\"testWorkflow\\"",
+    {
+      "description": "To delete an archived workflow from z/OSMF with workflow name "testWorkflow"",
+      "options": "--workflow-name "testWorkflow"",
     },
-    Object {
-      "description": "To delete multiple archived workflows from z/OSMF with names beginnig with \\"test\\"",
-      "options": "--workflow-name \\"test.*\\"",
+    {
+      "description": "To delete multiple archived workflows from z/OSMF with names beginnig with "test"",
+      "options": "--workflow-name "test.*"",
     },
   ],
   "name": "archived-workflow",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "wk",
       ],
       "description": "Delete an archived workflow by specified workflow key",
@@ -31,14 +31,14 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "absenceImplications": Array [
+    {
+      "absenceImplications": [
         "workflow-key",
       ],
-      "aliases": Array [
+      "aliases": [
         "wn",
       ],
-      "conflictsWith": Array [
+      "conflictsWith": [
         "workflow-key",
       ],
       "description": "Delete an archived workflow by specified workflow name",
@@ -47,8 +47,8 @@ Object {
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

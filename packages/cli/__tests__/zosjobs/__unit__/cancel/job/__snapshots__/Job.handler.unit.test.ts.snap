@@ -5,7 +5,7 @@ exports[`cancel job handler tests should be able to cancel a job by job id 1`] =
 exports[`cancel job handler tests should be able to cancel a job by job id 2`] = `"Successfully submitted request to cancel job IBMUSER$ (TSUxxx)"`;
 
 exports[`cancel job handler tests should be able to cancel a job by job id 3`] = `
-Object {
+{
   "class": "A",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
@@ -27,7 +27,7 @@ exports[`cancel job handler tests should be able to cancel a job by job id versi
 exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 2`] = `"Successfully canceled job IBMUSER$ (TSUxxx)"`;
 
 exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 3`] = `
-Object {
+{
   "class": "A",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",

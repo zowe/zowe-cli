@@ -8,4 +8,4 @@ exports[`list registry instances handler tests should be able to list registry 2
 "
 `;
 
-exports[`list registry instances handler tests should be able to list registry 3`] = `Object {}`;
+exports[`list registry instances handler tests should be able to list registry 3`] = `{}`;

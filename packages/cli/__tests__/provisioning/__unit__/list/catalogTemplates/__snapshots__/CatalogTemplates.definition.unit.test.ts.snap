@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`provisioning list catalog templates definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "ct",
   ],
   "description": "Lists the z/OSMF service catalog published templates.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "List all published templates in the z/OSMF service catalog (with full detail)",
       "options": "--all-info",
     },
   ],
   "name": "catalog-templates",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "ai",
       ],
       "description": "Display information about published z/OSMF service catalog templates (summary information is printed by default).",
@@ -23,8 +23,8 @@ Object {
       "type": "boolean",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

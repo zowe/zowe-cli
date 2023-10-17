@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 1`] = `
-Array [
-  Object {
+[
+  {
     "byte-count": 1297,
     "class": "Z",
     "ddname": "JESMSGLG",
@@ -18,7 +18,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 223,
     "class": "Z",
     "ddname": "JESJCL",
@@ -34,7 +34,7 @@ Array [
     "stepname": "JES2",
     "subsystem": "JES2",
   },
-  Object {
+  {
     "byte-count": 3195,
     "class": "Z",
     "ddname": "JESYSMSG",
@@ -53,19 +53,19 @@ Array [
 ]
 `;
 
-exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 2`] = `"\\"3\\" spool files obtained for job \\"IBMUSER$(TSUxxx)\\""`;
+exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 2`] = `""3" spool files obtained for job "IBMUSER$(TSUxxx)""`;
 
 exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 3`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "id",
     "ddname",
     "procstep",
     "stepname",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "byte-count": 1297,
       "class": "Z",
       "ddname": "JESMSGLG",
@@ -81,7 +81,7 @@ Object {
       "stepname": "JES2",
       "subsystem": "JES2",
     },
-    Object {
+    {
       "byte-count": 223,
       "class": "Z",
       "ddname": "JESJCL",
@@ -97,7 +97,7 @@ Object {
       "stepname": "JES2",
       "subsystem": "JES2",
     },
-    Object {
+    {
       "byte-count": 3195,
       "class": "Z",
       "ddname": "JESYSMSG",

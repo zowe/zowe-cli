@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`List archived workflows common handler process method should list all archived workflows 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "workflowName",
     "workflowKey",
   ],
   "format": "table",
   "header": true,
-  "output": Array [
-    Object {
+  "output": [
+    {
       "workflowKey": "fake-workflow-key",
       "workflowName": "fake-name",
     },

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`list instance variables handler tests should be able to list instance vars 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "name",
     "value",
     "visibility",

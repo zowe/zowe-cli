@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`View USS file handler process method should view uss file 1`] = `
-Object {
-  "apiResponse": Object {},
+{
+  "apiResponse": {},
   "commandResponse": "Retrieved",
   "success": true,
 }

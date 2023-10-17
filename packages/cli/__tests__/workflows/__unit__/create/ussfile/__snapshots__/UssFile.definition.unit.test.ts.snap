@@ -1,33 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows create uss-file definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "wfuf",
   ],
   "description": "Create a workflow instance in z/OSMF using a USS file",
-  "examples": Array [
-    Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"OTHERID\\" and delete workflow with the same name if it already exist in z/OSMF",
-      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\" --owner \\"OTHERID\\" --overwrite",
+  "examples": [
+    {
+      "description": "Create a workflow with name "testworkflow" using uss file "/path/workflow.xml" containing workflow definition, on system "TESTM1" with owner "OTHERID" and delete workflow with the same name if it already exist in z/OSMF",
+      "options": ""testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1" --owner "OTHERID" --overwrite",
     },
-    Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and delete successfully completed jobs",
-      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\" --owner \\"MYSYSID\\" --delete-completed",
+    {
+      "description": "Create a workflow with name "testworkflow" using uss file "/path/workflow.xml" containing workflow definition, on system "TESTM1" with owner "MYSYSID" and delete successfully completed jobs",
+      "options": ""testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1" --owner "MYSYSID" --delete-completed",
     },
-    Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and with variable values in the member PROPERTIES of data set TESTID.DATA",
-      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\" --owner \\"MYSYSID\\" --variables-input-file TESTID.DATA(PROPERTIES)",
+    {
+      "description": "Create a workflow with name "testworkflow" using uss file "/path/workflow.xml" containing workflow definition, on system "TESTM1" with owner "MYSYSID" and with variable values in the member PROPERTIES of data set TESTID.DATA",
+      "options": ""testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1" --owner "MYSYSID" --variables-input-file TESTID.DATA(PROPERTIES)",
     },
-    Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and with variables VAR1 and VAR2 with values DUMMYVAL1 and DUMMYVAL2, and assign it to the owner",
-      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\"--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 --owner \\"MYSYSID\\" --assign-to-owner",
+    {
+      "description": "Create a workflow with name "testworkflow" using uss file "/path/workflow.xml" containing workflow definition, on system "TESTM1" with owner "MYSYSID" and with variables VAR1 and VAR2 with values DUMMYVAL1 and DUMMYVAL2, and assign it to the owner",
+      "options": ""testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1"--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 --owner "MYSYSID" --assign-to-owner",
     },
   ],
   "name": "workflow-from-uss-file",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "uf",
       ],
       "description": "Uss file that contains workflow definiton.",
@@ -35,8 +35,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "sn",
       ],
       "description": "z/OS system to execute the workflow.",
@@ -44,8 +44,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "ow",
       ],
       "description": "User ID of the workflow owner. This user can perform the workflow steps or delegate the steps to other users.",
@@ -53,8 +53,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "vif",
       ],
       "description": "Specifies an optional properties file that you can use to pre-specify values for one or more of the variables that are defined in the workflow definition file.",
@@ -62,8 +62,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "vs",
       ],
       "description": "Includes a list of variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file. Make sure the value meets all regular expression requirements set for the corresponding variable.",
@@ -71,8 +71,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "ato",
       ],
       "description": "Indicates whether the workflow steps are assigned to the workflow owner.",
@@ -80,13 +80,13 @@ Object {
       "required": false,
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "at",
       ],
-      "allowableValues": Object {
+      "allowableValues": {
         "caseSensitive": true,
-        "values": Array [
+        "values": [
           "Public",
           "Restricted",
           "Private",
@@ -97,8 +97,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "dc",
       ],
       "description": "Whether the successfully completed jobs to be deleted from the JES spool.",
@@ -106,8 +106,8 @@ Object {
       "required": false,
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "ov",
       ],
       "description": "Replaces an existing workflow with a new workflow. ",
@@ -117,16 +117,16 @@ Object {
     },
   ],
   "outputFormatOptions": true,
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "Name of the workflow instance to create",
       "name": "workflowName",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

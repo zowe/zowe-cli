@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs download definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "dl",
   ],
   "description": "Download the output of a job as separate files.",

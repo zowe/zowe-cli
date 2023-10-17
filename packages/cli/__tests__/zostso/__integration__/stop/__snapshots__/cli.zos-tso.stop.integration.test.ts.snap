@@ -40,12 +40,12 @@ exports[`zos-tso stop should display the help 1`] = `
       Display HTML help in browser
 
 {
-  \\"success\\": true,
-  \\"exitCode\\": 0,
-  \\"message\\": \\"The help was constructed for command: stop.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Stop TSO/E address space.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso stop <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Stop a TSO address space, from which you previously started\\\\n                      and received a token (a.k.a 'servlet-key').                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
-  \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Stop TSO/E address space.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso stop <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Stop a TSO address space, from which you previously started\\\\n                      and received a token (a.k.a 'servlet-key').                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: stop.",
+  "stdout": "\\n DESCRIPTION\\n -----------\\n\\n   Stop TSO/E address space.\\n\\n USAGE\\n -----\\n\\n   zowe zos-tso stop <command>\\n\\n   Where <command> is one of the following:\\n\\n COMMANDS\\n --------\\n\\n   address-space | as Stop a TSO address space, from which you previously started\\n                      and received a token (a.k.a 'servlet-key').                \\n\\n GLOBAL OPTIONS\\n --------------\\n\\n   --help-examples (boolean)\\n\\n      Display examples for all the commands in a group\\n\\n   --response-format-json | --rfj (boolean)\\n\\n      Produce JSON formatted data from a command\\n\\n   --help | -h (boolean)\\n\\n      Display help text\\n\\n   --help-web | --hw (boolean)\\n\\n      Display HTML help in browser\\n\\n",
+  "stderr": "",
+  "data": "\\n DESCRIPTION\\n -----------\\n\\n   Stop TSO/E address space.\\n\\n USAGE\\n -----\\n\\n   zowe zos-tso stop <command>\\n\\n   Where <command> is one of the following:\\n\\n COMMANDS\\n --------\\n\\n   address-space | as Stop a TSO address space, from which you previously started\\n                      and received a token (a.k.a 'servlet-key').                \\n\\n GLOBAL OPTIONS\\n --------------\\n\\n   --help-examples (boolean)\\n\\n      Display examples for all the commands in a group\\n\\n   --response-format-json | --rfj (boolean)\\n\\n      Produce JSON formatted data from a command\\n\\n   --help | -h (boolean)\\n\\n      Display help text\\n\\n   --help-web | --hw (boolean)\\n\\n      Display HTML help in browser\\n\\n"
 }"
 `;
 
@@ -53,9 +53,9 @@ exports[`zos-tso stop should fail with invalid option 1`] = `
 "Command Error:
 Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
-Command entered: \\"zos-tso start as --foo-bar\\"
-Available commands are \\"address-space\\".
-Use \\"zowe zos-tso start --help\\" to view groups, commands, and options.
+Command entered: "zos-tso start as --foo-bar"
+Available commands are "address-space".
+Use "zowe zos-tso start --help" to view groups, commands, and options.
 Error Details:
 Unknown arguments: foo-bar, fooBar
 "
@@ -72,9 +72,9 @@ Unknown argument: foobar
 Command failed due to improper syntax
 Did you mean: zos-tso stop as?
 
-Command entered: \\"zos-tso stop foobar\\"
-Available commands are \\"address-space\\".
-Use \\"zowe zos-tso stop --help\\" to view groups, commands, and options.
+Command entered: "zos-tso stop foobar"
+Available commands are "address-space".
+Use "zowe zos-tso stop --help" to view groups, commands, and options.
 Error Details:
 Unknown argument: foobar
 "

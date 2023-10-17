@@ -1,39 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows start workflow-full definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "wf",
   ],
   "description": "Will run workflow from the beginning to the end or to the first manual step.",
-  "examples": Array [
-    Object {
-      "description": "To start a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
-      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+  "examples": [
+    {
+      "description": "To start a workflow instance in z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
+      "options": "--workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
     },
-    Object {
-      "description": "To start a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" and wait forit to be finished",
-      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --wait",
+    {
+      "description": "To start a workflow instance in z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" and wait forit to be finished",
+      "options": "--workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --wait",
     },
-    Object {
-      "description": "To start a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"and if there is a conflict in variable's value use the value that is in output file",
-      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --resolve-conflict-by \\"outputFileValue\\"",
+    {
+      "description": "To start a workflow instance in z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"and if there is a conflict in variable's value use the value that is in output file",
+      "options": "--workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --resolve-conflict-by "outputFileValue"",
     },
-    Object {
-      "description": "To start a workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
-      "options": "--workflow-name \\"testWorkflow\\"",
+    {
+      "description": "To start a workflow instance in z/OSMF with workflow name "testWorkflow"",
+      "options": "--workflow-name "testWorkflow"",
     },
   ],
   "name": "workflow-full",
-  "options": Array [
-    Object {
-      "absenceImplications": Array [
+  "options": [
+    {
+      "absenceImplications": [
         "workflow-name",
       ],
-      "aliases": Array [
+      "aliases": [
         "wk",
       ],
-      "conflictsWith": Array [
+      "conflictsWith": [
         "workflow-name",
       ],
       "description": "Workflow key of workflow instance to be started",
@@ -41,21 +41,21 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "wn",
       ],
       "description": "Workflow name of workflow instance to be started",
       "name": "workflow-name",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "rcb",
       ],
-      "allowableValues": Object {
+      "allowableValues": {
         "caseSensitive": true,
-        "values": Array [
+        "values": [
           "outputFileValue",
           "existingValue",
           "leaveConflict",
@@ -71,8 +71,8 @@ leaveConflict: Automation is stopped. The user must resolve the conflict manuall
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "w",
       ],
       "description": "Identifies whether to wait for workflow instance to finish.",
@@ -81,8 +81,8 @@ leaveConflict: Automation is stopped. The user must resolve the conflict manuall
       "type": "boolean",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

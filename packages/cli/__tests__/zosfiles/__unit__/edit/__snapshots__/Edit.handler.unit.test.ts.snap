@@ -5,7 +5,7 @@ exports[`Files Edit Group Handler process method should correctly determine file
 exports[`Files Edit Group Handler process method should correctly determine fileType upon initial creation of lfFile 2`] = `"Successfully uploaded edits to mainframe."`;
 
 exports[`Files Edit Group Handler process method should correctly determine fileType upon initial creation of lfFile 3`] = `
-Object {
+{
   "commandResponse": "[32mSuccessfully uploaded edits to mainframe.[39m",
   "success": true,
 }
@@ -16,7 +16,7 @@ exports[`Files Edit Group Handler process method should make and upload edits su
 exports[`Files Edit Group Handler process method should make and upload edits successfully 2`] = `"Successfully uploaded edits to mainframe."`;
 
 exports[`Files Edit Group Handler process method should make and upload edits successfully 3`] = `
-Object {
+{
   "commandResponse": "[32mSuccessfully uploaded edits to mainframe.[39m",
   "success": true,
 }
@@ -27,7 +27,7 @@ exports[`Files Edit Group Handler process method should upload edits unsuccessfu
 exports[`Files Edit Group Handler process method should upload edits unsuccessfully 2`] = `"Exiting now. Temp file persists for editing."`;
 
 exports[`Files Edit Group Handler process method should upload edits unsuccessfully 3`] = `
-Object {
+{
   "commandResponse": "[32mExiting now. Temp file persists for editing.[39m",
   "success": true,
 }

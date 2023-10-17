@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -17,7 +17,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -35,19 +35,19 @@ Array [
 ]
 `;
 
-exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 2`] = `"List of jobs returned for prefix \\"*\\" and owner \\"TESTOWN\\""`;
+exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 2`] = `"List of jobs returned for prefix "*" and owner "TESTOWN""`;
 
 exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 3`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobid",
     "retcode",
     "jobname",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -62,7 +62,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -82,8 +82,8 @@ Object {
 `;
 
 exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -98,7 +98,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -116,19 +116,19 @@ Array [
 ]
 `;
 
-exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 2`] = `"List of jobs returned for prefix \\"TESTPRFX\\" and owner \\"null\\""`;
+exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 2`] = `"List of jobs returned for prefix "TESTPRFX" and owner "null""`;
 
 exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 3`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobid",
     "retcode",
     "jobname",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -143,7 +143,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -163,8 +163,8 @@ Object {
 `;
 
 exports[`list jobs handler tests should be able to get a list of jobs using defaults 1`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -179,7 +179,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -197,19 +197,19 @@ Array [
 ]
 `;
 
-exports[`list jobs handler tests should be able to get a list of jobs using defaults 2`] = `"List of jobs returned for prefix \\"*\\" and owner \\"null\\""`;
+exports[`list jobs handler tests should be able to get a list of jobs using defaults 2`] = `"List of jobs returned for prefix "*" and owner "null""`;
 
 exports[`list jobs handler tests should be able to get a list of jobs using defaults 3`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobid",
     "retcode",
     "jobname",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -224,7 +224,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",

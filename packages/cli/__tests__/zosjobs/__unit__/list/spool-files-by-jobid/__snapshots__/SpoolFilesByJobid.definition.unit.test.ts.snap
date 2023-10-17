@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs list spool-files-by-jobid definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "sfbj",
   ],
   "description": "Given a z/OS job JOBID, list the spool files (DDs) for a z/OS job on the JES/spool queues. The command does not pre-validate the JOBID. The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "List the spool files of the job with JOBID JOB00123",
       "options": "job00123",
     },
   ],
   "name": "spool-files-by-jobid",
   "outputFormatOptions": true,
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The z/OS JOBID of the job with the spool files you want to list. No pre-validation of the JOBID is performed.",
       "name": "jobid",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

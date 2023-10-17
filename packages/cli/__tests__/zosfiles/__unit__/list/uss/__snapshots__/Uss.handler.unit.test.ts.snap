@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`USS file handler process method should list files if requested 1`] = `
-Object {
-  "apiResponse": Object {
-    "items": Array [
+{
+  "apiResponse": {
+    "items": [
       "test-items",
     ],
   },
@@ -12,6 +12,6 @@ Object {
 }
 `;
 
-exports[`USS file handler process method should list files if requested 2`] = `"Returned list of UNIX files and directories in path \\"testing\\""`;
+exports[`USS file handler process method should list files if requested 2`] = `"Returned list of UNIX files and directories in path "testing""`;
 
 exports[`USS file handler process method should list files if requested 3`] = `""`;

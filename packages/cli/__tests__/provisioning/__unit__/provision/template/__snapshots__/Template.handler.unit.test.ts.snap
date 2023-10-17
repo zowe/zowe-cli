@@ -18,8 +18,8 @@ exports[`provision template handler tests should be able to provision a template
 `;
 
 exports[`provision template handler tests should be able to provision a template 2`] = `
-Object {
-  "registry-info": Object {
+{
+  "registry-info": {
     "external-name": "some_name1",
     "object-id": "objidunique1",
     "object-name": "obj_name1",
@@ -27,7 +27,7 @@ Object {
     "system-nickname": "DUMBNODE",
   },
   "system-nickname": "DUMBNODE",
-  "workflow-info": Object {
+  "workflow-info": {
     "vendor": "IBM",
     "workflowDescription": "Procedure to provision a MQ for zOS Queue Manager",
     "workflowID": "ProvisionQueueManager",

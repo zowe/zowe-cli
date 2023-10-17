@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Create workflow common handler process method should create a workflow using a dataset 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "workflowKey",
     "workflowDescription",
   ],
   "format": "object",
-  "output": Object {
+  "output": {
     "commandResponse": "deleted",
     "success": true,
   },
@@ -15,14 +15,14 @@ Object {
 `;
 
 exports[`Create workflow common handler process method should create a workflow using a local file 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "workflowKey",
     "workflowDescription",
     "",
   ],
   "format": "object",
-  "output": Object {
+  "output": {
     "commandResponse": "deleted",
     "success": true,
   },
@@ -30,13 +30,13 @@ Object {
 `;
 
 exports[`Create workflow common handler process method should create a workflow using a uss file 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "workflowKey",
     "workflowDescription",
   ],
   "format": "object",
-  "output": Object {
+  "output": {
     "commandResponse": "deleted",
     "success": true,
   },

@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`List workflow details handler process method should list workflow details using wf key 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "workflowName",
     "workflowKey",
     "automationStatus",
   ],
   "format": "object",
-  "output": Object {
+  "output": {
     "commandResponse": "Some list details of WF",
     "success": true,
   },
@@ -16,14 +16,14 @@ Object {
 `;
 
 exports[`List workflow details handler process method should list workflow details using wf name 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "workflowName",
     "workflowKey",
     "automationStatus",
   ],
   "format": "object",
-  "output": Object {
+  "output": {
     "commandResponse": "Some list details of WF",
     "success": true,
   },

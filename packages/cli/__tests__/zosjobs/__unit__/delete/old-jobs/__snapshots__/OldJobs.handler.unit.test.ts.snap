@@ -3,15 +3,15 @@
 exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 1`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 2`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobname",
     "jobid",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -26,7 +26,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -48,8 +48,8 @@ Object {
 exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 3`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete all jobs using defaults in parallel 4`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -64,7 +64,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -85,15 +85,15 @@ Array [
 exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 1`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 2`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobname",
     "jobid",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -108,7 +108,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -130,8 +130,8 @@ Object {
 exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 3`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete all jobs using defaults sequentially 4`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -146,7 +146,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -167,15 +167,15 @@ Array [
 exports[`delete old-jobs handler tests should delete jobs with a specific prefix 1`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete jobs with a specific prefix 2`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobname",
     "jobid",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -190,7 +190,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -212,8 +212,8 @@ Object {
 exports[`delete old-jobs handler tests should delete jobs with a specific prefix 3`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete jobs with a specific prefix 4`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -228,7 +228,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -249,15 +249,15 @@ Array [
 exports[`delete old-jobs handler tests should delete jobs with modifyVersion 2.0 1`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete jobs with modifyVersion 2.0 2`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "jobname",
     "jobid",
     "status",
   ],
   "format": "table",
-  "output": Array [
-    Object {
+  "output": [
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -272,7 +272,7 @@ Object {
       "type": "job",
       "url": "www.nowhere.com/restjobs/jobs",
     },
-    Object {
+    {
       "class": "A",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
@@ -294,8 +294,8 @@ Object {
 exports[`delete old-jobs handler tests should delete jobs with modifyVersion 2.0 3`] = `"Successfully deleted 2 jobs"`;
 
 exports[`delete old-jobs handler tests should delete jobs with modifyVersion 2.0 4`] = `
-Array [
-  Object {
+[
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
@@ -310,7 +310,7 @@ Array [
     "type": "job",
     "url": "www.nowhere.com/restjobs/jobs",
   },
-  Object {
+  {
     "class": "A",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",

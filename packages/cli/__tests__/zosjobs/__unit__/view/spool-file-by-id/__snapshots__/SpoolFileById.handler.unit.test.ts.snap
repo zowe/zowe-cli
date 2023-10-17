@@ -22,7 +22,7 @@ exports[`zos-jobs view spool-file-by-id handler should be able to get the conten
 -         0.00 MINUTES EXECUTION TIME"
 `;
 
-exports[`zos-jobs view spool-file-by-id handler should be able to get the content of a spool file 2`] = `"Spool file \\"2\\" content obtained for job \\"IBMUSER$(TSUxxx)\\""`;
+exports[`zos-jobs view spool-file-by-id handler should be able to get the content of a spool file 2`] = `"Spool file "2" content obtained for job "IBMUSER$(TSUxxx)""`;
 
 exports[`zos-jobs view spool-file-by-id handler should be able to get the content of a spool file 3`] = `
 "1                   J E S 2  J O B  L O G  --  S Y S T E M  B L A H  --  N O D E  S E C R E T

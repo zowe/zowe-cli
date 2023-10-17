@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`modify job handler tests successful response should be able to modify class of job 1`] = `
-Object {
+{
   "class": "C",
   "fakeJobName": "FAKEJBNM",
 }

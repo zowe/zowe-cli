@@ -1,26 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-uss group definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "ssh",
     "zos-uss",
     "uss",
   ],
   "description": "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",
   "name": "zos-ssh",
-  "passOn": Array [
-    Object {
-      "ignoreNodes": Array [
-        Object {
+  "passOn": [
+    {
+      "ignoreNodes": [
+        {
           "type": "group",
         },
       ],
       "merge": true,
       "property": "options",
-      "value": Array [
-        Object {
-          "aliases": Array [
+      "value": [
+        {
+          "aliases": [
             "H",
           ],
           "description": "The z/OS SSH server host name.",
@@ -29,8 +29,8 @@ Object {
           "required": false,
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "P",
           ],
           "defaultValue": 22,
@@ -39,8 +39,8 @@ Object {
           "name": "port",
           "type": "number",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "u",
           ],
           "description": "Mainframe user name, which can be the same as your TSO login.",
@@ -49,8 +49,8 @@ Object {
           "required": false,
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "pass",
             "pw",
           ],
@@ -59,8 +59,8 @@ Object {
           "name": "password",
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "key",
             "pk",
           ],
@@ -69,8 +69,8 @@ Object {
           "name": "privateKey",
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "passphrase",
             "kp",
           ],
@@ -79,8 +79,8 @@ Object {
           "name": "keyPassphrase",
           "type": "string",
         },
-        Object {
-          "aliases": Array [
+        {
+          "aliases": [
             "timeout",
             "to",
           ],

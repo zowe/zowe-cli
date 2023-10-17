@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-console issue group definition should not have changed 1`] = `
-Object {
+{
   "description": "Issue z/OS console commands and optionally collect responses.",
   "name": "issue",
   "summary": "Issue z/OS console commands",

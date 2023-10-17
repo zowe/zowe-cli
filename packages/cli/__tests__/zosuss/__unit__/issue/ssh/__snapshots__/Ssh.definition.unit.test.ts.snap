@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-uss issue ssh command definition should not have changed 1`] = `
-Array [
-  Object {
+[
+  {
     "description": "Working directory in which to execute the command",
     "name": "cwd",
     "type": "string",
@@ -11,10 +11,10 @@ Array [
 `;
 
 exports[`zos-uss issue ssh command definition should not have changed 2`] = `
-Array [
-  Object {
+[
+  {
     "description": "Issue a simple command, giving the working directory",
-    "options": "\\"npm install express\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp ",
+    "options": ""npm install express" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp ",
   },
 ]
 `;

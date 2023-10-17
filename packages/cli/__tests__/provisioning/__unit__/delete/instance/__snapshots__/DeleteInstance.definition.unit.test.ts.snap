@@ -1,28 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`provisioning delete instance command definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "i",
   ],
   "description": "Deletes selected deprovisioned instance.",
-  "examples": Array [
-    Object {
-      "description": "Delete deprovisioned instance \\"instance1\\"",
+  "examples": [
+    {
+      "description": "Delete deprovisioned instance "instance1"",
       "options": "instance1",
     },
   ],
   "name": "instance",
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "Deprovisioned Instance name.",
       "name": "name",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

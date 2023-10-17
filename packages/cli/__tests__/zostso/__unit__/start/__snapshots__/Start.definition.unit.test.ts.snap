@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso start group definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "st",
   ],
   "description": "Start TSO/E address space.",

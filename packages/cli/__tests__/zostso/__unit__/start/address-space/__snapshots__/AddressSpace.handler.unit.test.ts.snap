@@ -3,7 +3,7 @@
 exports[`start address-space handler tests should be able to respond with error message, if required z/OSMF parameters were not passed 1`] = `"Expect Error: Imperative API Error No account number was supplied."`;
 
 exports[`start address-space handler tests should be able to start address-space 1`] = `
-Object {
+{
   "account": "DEFAULT",
   "characterSet": "697",
   "codePage": "1047",
@@ -15,20 +15,20 @@ Object {
 `;
 
 exports[`start address-space handler tests should be able to start address-space 2`] = `
-Object {
-  "collectedResponses": Array [],
+{
+  "collectedResponses": [],
   "messages": "READY",
   "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
   "success": true,
-  "zosmfTsoResponse": Object {
+  "zosmfTsoResponse": {
     "queueID": "4",
     "reused": false,
     "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
     "sessionID": "0x37",
     "timeout": false,
-    "tsoData": Array [
-      Object {
-        "TSO MESSAGE": Object {
+    "tsoData": [
+      {
+        "TSO MESSAGE": {
           "DATA": "ZOSMFAD LOGON IN PROGRESS AT 01:12:04 ON JULY 17, 2017",
           "VERSION": "0100",
         },
@@ -47,8 +47,8 @@ exports[`start address-space handler tests should be able to start address-space
 exports[`start address-space handler tests should be able to start address-space 4`] = `"READY"`;
 
 exports[`start address-space handler tests should throw an error if the response is not successful 1`] = `
-Object {
-  "failureResponse": Object {
+{
+  "failureResponse": {
     "message": "failed to start the address space",
   },
   "success": false,

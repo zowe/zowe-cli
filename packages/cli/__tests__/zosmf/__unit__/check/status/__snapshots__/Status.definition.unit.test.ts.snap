@@ -1,26 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zosmf check status definition should not have changed 1`] = `
-Object {
+{
   "description": "Confirm that z/OSMF is running on a system specified in your profile and gather information about the z/OSMF server for diagnostic purposes. The command outputs properties of the z/OSMF server such as version, hostname, and installed plug-ins.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Report the status of the z/OSMF server that you specified in your default z/OSMF profile",
       "options": "",
     },
-    Object {
+    {
       "description": "Report the status of the z/OSMF server that you specified in a supplied z/OSMF profile",
       "options": "--zosmf-profile SomeZosmfProfileName",
     },
-    Object {
+    {
       "description": "Report the status of the z/OSMF server that you specified manually via command line",
       "options": "--host myhost --port 443 --user myuser --password mypass",
     },
   ],
   "name": "status",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "H",
       ],
       "description": "The z/OSMF server host name.",
@@ -29,8 +29,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "P",
       ],
       "defaultValue": 443,
@@ -39,8 +39,8 @@ Object {
       "name": "port",
       "type": "number",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "u",
       ],
       "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
@@ -49,8 +49,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "pass",
         "pw",
       ],
@@ -60,8 +60,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "ru",
       ],
       "defaultValue": true,
@@ -70,8 +70,8 @@ Object {
       "name": "reject-unauthorized",
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "bp",
       ],
       "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
@@ -79,10 +79,10 @@ Object {
       "name": "base-path",
       "type": "string",
     },
-    Object {
-      "allowableValues": Object {
+    {
+      "allowableValues": {
         "caseSensitive": false,
-        "values": Array [
+        "values": [
           "http",
           "https",
         ],
@@ -93,21 +93,21 @@ Object {
       "name": "protocol",
       "type": "string",
     },
-    Object {
+    {
       "description": "The file path to a certificate file to use for authentication",
       "group": "Zosmf Connection Options",
       "name": "cert-file",
       "type": "existingLocalFile",
     },
-    Object {
+    {
       "description": "The file path to a certificate key file to use for authentication",
       "group": "Zosmf Connection Options",
       "name": "cert-key-file",
       "type": "existingLocalFile",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

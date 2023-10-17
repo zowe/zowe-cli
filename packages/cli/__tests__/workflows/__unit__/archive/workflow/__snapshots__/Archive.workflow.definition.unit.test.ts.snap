@@ -1,35 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows list active workflows definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "aw",
   ],
   "description": "Archive an active workflow instance in z/OSMF.",
-  "examples": Array [
-    Object {
-      "description": "Archive a workflow with workflow name \\"testworkflow\\"",
-      "options": "--wn \\"testworkflow\\" ",
+  "examples": [
+    {
+      "description": "Archive a workflow with workflow name "testworkflow"",
+      "options": "--wn "testworkflow" ",
     },
-    Object {
-      "description": "Archive multiple workflows with workflow names starting with \\"test\\"",
-      "options": "--wn \\"test.*\\" ",
+    {
+      "description": "Archive multiple workflows with workflow names starting with "test"",
+      "options": "--wn "test.*" ",
     },
-    Object {
-      "description": "Archive a workflow with workflow key \\"123-456-abv-xyz\\"",
-      "options": "--wk \\"123-456-abv-xyz\\" ",
+    {
+      "description": "Archive a workflow with workflow key "123-456-abv-xyz"",
+      "options": "--wk "123-456-abv-xyz" ",
     },
   ],
   "name": "active-workflow",
-  "options": Array [
-    Object {
-      "absenceImplications": Array [
+  "options": [
+    {
+      "absenceImplications": [
         "workflow-key",
       ],
-      "aliases": Array [
+      "aliases": [
         "wn",
       ],
-      "conflictsWith": Array [
+      "conflictsWith": [
         "workflow-key",
       ],
       "description": "The name of the workflow to be archived.",
@@ -37,8 +37,8 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "wk",
       ],
       "description": "The workflow key of the workflow to be archived.",
@@ -48,8 +48,8 @@ Object {
     },
   ],
   "outputFormatOptions": true,
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

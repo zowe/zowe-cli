@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows list archived workflows definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "arw",
   ],
   "description": "List the archived z/OSMF workflows for a system or sysplex.",
   "name": "archived-workflows",
   "outputFormatOptions": true,
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

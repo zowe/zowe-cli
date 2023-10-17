@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`provisioning delete command group definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "del",
   ],
   "description": "Deletes instance previously provisioned with z/OSMF cloud provisioning services.",

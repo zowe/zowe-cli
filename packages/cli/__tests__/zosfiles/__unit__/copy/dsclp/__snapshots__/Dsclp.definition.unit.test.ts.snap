@@ -1,89 +1,89 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DsDefinition should use the correct object for strings 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "rep",
     ],
     "description": "Specify this option as true if you wish to replace the target dataset if it already exists",
     "name": "replace",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tdc",
     ],
     "description": "The SMS data class to use for the allocation of the target data set.",
     "name": "target-data-class",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "th",
     ],
     "description": "The target z/OSMF server host name.",
     "name": "target-host",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tmc",
     ],
     "description": "The SMS management class to use for the allocation of the target data set.",
     "name": "target-management-class",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tpw",
     ],
     "description": "The target z/OSMF password, which can be the same as your TSO password.",
     "name": "target-password",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tp",
     ],
     "description": "The target z/OSMF server port.",
     "name": "target-port",
     "type": "number",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tsc",
     ],
     "description": "The SMS storage class to use for the allocation of the target data set.",
     "name": "target-storage-class",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ttt",
     ],
     "description": "The value of the token to pass to the API for the target system.",
     "name": "target-token-type",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ttv",
     ],
     "description": "The type of token to get and use for the API for the target system.",
     "name": "target-token-value",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tu",
     ],
     "description": "The target z/OSMF user name, which can be the same as your TSO login.",
     "name": "target-user",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "tvs",
       "target-volser",
     ],
@@ -91,8 +91,8 @@ Array [
     "name": "target-volume-serial",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "t-zosmf-p",
       "target-zosmf-p",
     ],
@@ -100,7 +100,7 @@ Array [
     "name": "target-zosmf-profile",
     "type": "string",
   },
-  Object {
+  {
     "description": "Session configuration for target z/OSMF profile",
     "hidden": true,
     "name": "target-zosmf-session",
@@ -110,22 +110,22 @@ Array [
 `;
 
 exports[`DsDefinition should use the correct object for strings 2`] = `
-Array [
-  Object {
+[
+  {
     "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' using the --target-zosmf-p option to specify the target host using a zosmf profile",
-    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --target-zosmf-p SYS1",
+    "options": ""USER.FROM.SET" "USER.TO.SET" --target-zosmf-p SYS1",
   },
-  Object {
+  {
     "description": "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
-    "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET(mem2)\\" --target-zosmf-p SYS1",
+    "options": ""USER.FROM.SET(mem1)" "USER.TO.SET(mem2)" --target-zosmf-p SYS1",
   },
-  Object {
+  {
     "description": "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
-    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET(mem2)\\" --target-zosmf-p SYS1",
+    "options": ""USER.FROM.SET" "USER.TO.SET(mem2)" --target-zosmf-p SYS1",
   },
-  Object {
+  {
     "description": "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET' using the --target-host, --target-user, and --target-password options",
-    "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET\\" --target-host sys1.com --target-user user1 --target-password pass1",
+    "options": ""USER.FROM.SET(mem1)" "USER.TO.SET" --target-host sys1.com --target-user user1 --target-password pass1",
   },
 ]
 `;

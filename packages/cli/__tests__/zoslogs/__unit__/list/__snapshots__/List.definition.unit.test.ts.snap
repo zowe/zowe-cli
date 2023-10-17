@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-logs list group definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "ls",
   ],
   "description": "List z/OS logs by invoking z/OSMF REST API.",

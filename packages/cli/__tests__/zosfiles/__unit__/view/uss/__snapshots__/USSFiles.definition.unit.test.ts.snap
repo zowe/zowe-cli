@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files view uss file command definition should not have changed 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "b",
     ],
     "description": "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
     "name": "binary",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ec",
     ],
-    "conflictsWith": Array [
+    "conflictsWith": [
       "binary",
       "record",
     ],
@@ -22,8 +22,8 @@ Array [
     "name": "encoding",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "R",
     ],
     "description": "The range of records to return in either \`SSS-EEE\` or \`SSS,NNN\` format. SSS identifies the start record, EEE identifies the end record, and NNN identifies the number of retrieved records.",
@@ -34,14 +34,14 @@ Array [
 `;
 
 exports[`zos-files view uss file command definition should not have changed 2`] = `
-Array [
-  Object {
-    "description": "View the contents of the USS file \\"/a/ibmuser/my_text.txt\\"",
-    "options": "\\"/a/ibmuser/my_text.txt\\"",
+[
+  {
+    "description": "View the contents of the USS file "/a/ibmuser/my_text.txt"",
+    "options": ""/a/ibmuser/my_text.txt"",
   },
-  Object {
-    "description": "View the contents of the USS file \\"/a/ibmuser/MyJavaClass.class\\" in binary mode",
-    "options": "\\"/a/ibmuser/MyJavaClass.class\\" --binary",
+  {
+    "description": "View the contents of the USS file "/a/ibmuser/MyJavaClass.class" in binary mode",
+    "options": ""/a/ibmuser/MyJavaClass.class" --binary",
   },
 ]
 `;

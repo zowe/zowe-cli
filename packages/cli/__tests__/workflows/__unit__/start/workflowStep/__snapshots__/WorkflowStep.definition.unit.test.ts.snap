@@ -1,39 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows start workflow-step definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "ws",
   ],
   "description": "Will run given step of workflow instance plus following steps if specified by --perform-following-steps option.",
-  "examples": Array [
-    Object {
-      "description": "To start step \\"Step1\\" only in a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
-      "options": "\\"Step1\\" --workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+  "examples": [
+    {
+      "description": "To start step "Step1" only in a workflow instance in z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
+      "options": ""Step1" --workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
     },
-    Object {
-      "description": "To start a workflow instance in z/OSMF from step \\"Step1\\" with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
-      "options": "\\"Step1\\" --workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --perform-following-steps",
+    {
+      "description": "To start a workflow instance in z/OSMF from step "Step1" with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
+      "options": ""Step1" --workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --perform-following-steps",
     },
-    Object {
-      "description": "To start step \\"Step1\\" only in a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"and if there is a conflict in variable's value use the value that is in output file",
-      "options": "\\"Step1\\" --workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --resolve-conflict-by \\"outputFileValue\\"",
+    {
+      "description": "To start step "Step1" only in a workflow instance in z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"and if there is a conflict in variable's value use the value that is in output file",
+      "options": ""Step1" --workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --resolve-conflict-by "outputFileValue"",
     },
-    Object {
-      "description": "To start step \\"Step1\\" only in a workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
-      "options": "\\"Step1\\" --workflow-name \\"testWorkflow\\"",
+    {
+      "description": "To start step "Step1" only in a workflow instance in z/OSMF with workflow name "testWorkflow"",
+      "options": ""Step1" --workflow-name "testWorkflow"",
     },
   ],
   "name": "workflow-step",
-  "options": Array [
-    Object {
-      "absenceImplications": Array [
+  "options": [
+    {
+      "absenceImplications": [
         "workflow-name",
       ],
-      "aliases": Array [
+      "aliases": [
         "wk",
       ],
-      "conflictsWith": Array [
+      "conflictsWith": [
         "workflow-name",
       ],
       "description": "Workflow key of workflow instance to be started",
@@ -41,21 +41,21 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "wn",
       ],
       "description": "Workflow name of workflow instance to be started",
       "name": "workflow-name",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "rcb",
       ],
-      "allowableValues": Object {
+      "allowableValues": {
         "caseSensitive": true,
-        "values": Array [
+        "values": [
           "outputFileValue",
           "existingValue",
           "leaveConflict",
@@ -71,8 +71,8 @@ leaveConflict: Automation is stopped. The user must resolve the conflict manuall
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "pfs",
       ],
       "defaultValue": false,
@@ -82,16 +82,16 @@ leaveConflict: Automation is stopped. The user must resolve the conflict manuall
       "type": "boolean",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "Specifies the step name that will be run.",
       "name": "stepName",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

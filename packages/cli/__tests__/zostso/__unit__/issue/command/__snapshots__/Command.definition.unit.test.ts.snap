@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso issue command definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "cmd",
   ],
   "description": "Creates a TSO address space, issues a TSO command through the newly created address space, waits for the READY prompt to print the response, and terminates the TSO address space. All response data are returned to the user up to (but not including) the TSO 'READY' prompt.",
-  "examples": Array [
-    Object {
-      "description": "Issue the TSO command \\"status\\" to display information about jobs for your user ID.",
-      "options": "\\"status\\"",
+  "examples": [
+    {
+      "description": "Issue the TSO command "status" to display information about jobs for your user ID.",
+      "options": ""status"",
     },
   ],
   "name": "command",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "ssm",
       ],
       "description": "Suppress console messages from start of address space.",
       "name": "suppress-startup-messages",
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "a",
       ],
       "description": "Your z/OS TSO/E accounting information.",
@@ -32,8 +32,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cs",
       ],
       "defaultValue": "697",
@@ -42,8 +42,8 @@ Object {
       "name": "character-set",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cp",
       ],
       "defaultValue": "1047",
@@ -52,8 +52,8 @@ Object {
       "name": "code-page",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cols",
       ],
       "defaultValue": 80,
@@ -62,8 +62,8 @@ Object {
       "name": "columns",
       "type": "number",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "l",
       ],
       "defaultValue": "IZUFPROC",
@@ -72,8 +72,8 @@ Object {
       "name": "logon-procedure",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "rs",
       ],
       "defaultValue": 4096,
@@ -82,7 +82,7 @@ Object {
       "name": "region-size",
       "type": "number",
     },
-    Object {
+    {
       "defaultValue": 24,
       "description": "The number of rows on a screen.",
       "group": "TSO ADDRESS SPACE OPTIONS",
@@ -90,16 +90,16 @@ Object {
       "type": "number",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The TSO command to issue.",
       "name": "commandText",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
       "tso",
     ],

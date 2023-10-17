@@ -1,36 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MonitorJobs Private Methods checkStatus error handling should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status \\"undefined\\" was received."`;
+exports[`MonitorJobs Private Methods checkStatus error handling should throw an error when an invalid status is present 1`] = `"Error Details: An unknown status "undefined" was received."`;
 
-exports[`MonitorJobs Private Methods checkStatus error handling should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status \\"something-invalid\\" was received."`;
+exports[`MonitorJobs Private Methods checkStatus error handling should throw an error when an invalid status is present 2`] = `"Error Details: An unknown status "something-invalid" was received."`;
 
 exports[`MonitorJobs Private Methods pollForStatus error handling should produce a 'wrapped' error message if a follow-up poll does not return a status 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus error handling should produce a 'wrapped' error message if a follow-up poll throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 ERROR GETTING JOBS!"
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus expects should expire after the max attempts and the total time should exceed the attempts multiplied by the delay 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"4\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "4""
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus expects should expire after the specified number of max attempts 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"10\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "10""
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus expects should expire after the specified number of max attempts and use the default watch delay 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: Reached max poll attempts of \\"2\\""
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: Reached max poll attempts of "2""
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus expects should return after the status has changed from ACTIVE to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -38,7 +38,7 @@ Object {
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus expects should return after the status has changed from INPUT to ACTIVE 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "ACTIVE",
@@ -46,7 +46,7 @@ Object {
 `;
 
 exports[`MonitorJobs Private Methods pollForStatus expects should return after the status has changed from INPUT to OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -72,32 +72,32 @@ exports[`MonitorJobs Public Methods waitForOutputStatus expects should error if 
 exports[`MonitorJobs Public Methods waitForOutputStatus expects should error if missing session 1`] = `"Expect Error: Session must be defined"`;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should produce a 'wrapped' error message if getJobs throws an error - then/catch 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should produce a 'wrapped' error message if getJobs throws an error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
-Error Details: An unknown status \\"undefined\\" was received."
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
+Error Details: An unknown status "undefined" was received."
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws a normal error 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 THIS IS A NORMAL ERROR"
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon error handling should throw the proper error if pollForStatus throws an ImperativeError 1`] = `
-"Error obtaining status for jobname \\"FAKE\\" jobid \\"FAKE\\".
+"Error obtaining status for jobname "FAKE" jobid "FAKE".
 EXPECT THIS ERROR TO BE THROWN"
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is ACTIVE and the expected status is ACTIVE 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "ACTIVE",
@@ -105,7 +105,7 @@ Object {
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is ACTIVE and the expected status is INPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "ACTIVE",
@@ -113,7 +113,7 @@ Object {
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is INPUT and the expected status is INPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "INPUT",
@@ -121,7 +121,7 @@ Object {
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is OUTPUT and the expected status is ACTIVE 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -129,7 +129,7 @@ Object {
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is OUTPUT and the expected status is INPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",
@@ -137,7 +137,7 @@ Object {
 `;
 
 exports[`MonitorJobs Public Methods waitForStatusCommon expects should return immediately if the initial status is the expected status, ie: OUTPUT/ OUTPUT 1`] = `
-Object {
+{
   "jobid": "FAKE",
   "jobname": "FAKE",
   "status": "OUTPUT",

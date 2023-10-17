@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`daemon enable definition should not have changed 1`] = `
-Object {
+{
   "description": "Enables daemon-mode operation of the Zowe CLI. You only need to run the enable command once after each new installation of the Zowe CLI. Afterwards, any zowe command will automatically start a daemon as needed.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Enable daemon-mode",
       "options": "",
     },

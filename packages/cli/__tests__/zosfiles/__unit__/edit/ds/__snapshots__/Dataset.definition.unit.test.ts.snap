@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DatasetDefinition should use the correct object for strings 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "ed",
     ],
-    "description": "Set the default editor that you wish to use for editing. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
+    "description": "Set the default editor that you wish to use for editing. Set the option to the editor's executable file location or the program's name: ie "--editor notepad"",
     "name": "editor",
     "required": false,
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ext",
     ],
-    "description": "Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ie \\"--extension jcl\\"",
+    "description": "Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ie "--extension jcl"",
     "name": "extension",
     "required": false,
     "type": "string",
@@ -24,17 +24,17 @@ Array [
 `;
 
 exports[`DatasetDefinition should use the correct object for strings 2`] = `
-Array [
-  Object {
-    "description": "Edit the contents of the data set member \\"ibmuser.cntl(iefbr14)\\"",
+[
+  {
+    "description": "Edit the contents of the data set member "ibmuser.cntl(iefbr14)"",
     "options": "ibmuser.cntl(iefbr14) --editor notepad",
   },
-  Object {
-    "description": "Edit the contents of the data set member \\"ibmuser.cntl(iefbr14)\\"",
-    "options": "ibmuser.cntl(iefbr14) --editor C:\\\\Windows\\\\System32\\\\Notepad.exe",
+  {
+    "description": "Edit the contents of the data set member "ibmuser.cntl(iefbr14)"",
+    "options": "ibmuser.cntl(iefbr14) --editor C:\\Windows\\System32\\Notepad.exe",
   },
-  Object {
-    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_jcl.jcl\\" in notepad and set extension as \\"jcl\\"",
+  {
+    "description": "Edit the contents of the USS file "/a/ibmuser/my_jcl.jcl" in notepad and set extension as "jcl"",
     "options": "ibmuser.jcl(iefbr14) --editor notepad --extension jcl",
   },
 ]

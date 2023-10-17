@@ -16,9 +16,9 @@ exports[`list catalog templates handler tests should be able to list catalog 1`]
 `;
 
 exports[`list catalog templates handler tests should be able to list catalog 2`] = `
-Object {
-  "psc-list": Array [
-    Object {
+{
+  "psc-list": [
+    {
       "description": "Provision a CICS TS V5.3 MOCKUP",
       "domain-name": "TeaCoffeeDomain",
       "generated-name": "cics_empty_wait.3.TeaCoffeeDomain",

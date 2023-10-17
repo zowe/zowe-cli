@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso start address-space definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "as",
   ],
   "description": "Start a TSO address space, from which you will receive a token (a.k.a 'servlet-key') for further address space interaction (e.g. termination).",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Start TSO/E address space",
       "options": "",
     },
-    Object {
+    {
       "description": "Start TSO/E address space, and receive response in JSON format",
       "options": "--rfj",
     },
-    Object {
+    {
       "description": "Start TSO/E address space, and print only the servlet key",
       "options": "--sko",
     },
   ],
   "name": "address-space",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "a",
       ],
       "description": "Your z/OS TSO/E accounting information.",
@@ -32,8 +32,8 @@ Object {
       "required": true,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cs",
       ],
       "defaultValue": "697",
@@ -42,8 +42,8 @@ Object {
       "name": "character-set",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cp",
       ],
       "defaultValue": "1047",
@@ -52,8 +52,8 @@ Object {
       "name": "code-page",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "cols",
       ],
       "defaultValue": 80,
@@ -62,8 +62,8 @@ Object {
       "name": "columns",
       "type": "number",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "l",
       ],
       "defaultValue": "IZUFPROC",
@@ -72,8 +72,8 @@ Object {
       "name": "logon-procedure",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "rs",
       ],
       "defaultValue": 4096,
@@ -82,15 +82,15 @@ Object {
       "name": "region-size",
       "type": "number",
     },
-    Object {
+    {
       "defaultValue": 24,
       "description": "The number of rows on a screen.",
       "group": "TSO ADDRESS SPACE OPTIONS",
       "name": "rows",
       "type": "number",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "sko",
       ],
       "description": "Specify this option to print only the servlet key",
@@ -98,8 +98,8 @@ Object {
       "type": "boolean",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
       "tso",
     ],

@@ -9,7 +9,7 @@ listed
 exports[`Download DataSetMatching handler should download matching datasets if requested 2`] = `"downloaded"`;
 
 exports[`Download DataSetMatching handler should download matching datasets if requested 3`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -24,7 +24,7 @@ listed
 exports[`Download DataSetMatching handler should handle generation of an exclusion list 2`] = `"downloaded"`;
 
 exports[`Download DataSetMatching handler should handle generation of an exclusion list 3`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }
@@ -39,7 +39,7 @@ listed
 exports[`Download DataSetMatching handler should handle generation of an extension map 2`] = `"downloaded"`;
 
 exports[`Download DataSetMatching handler should handle generation of an extension map 3`] = `
-Object {
+{
   "commandResponse": "downloaded",
   "success": true,
 }

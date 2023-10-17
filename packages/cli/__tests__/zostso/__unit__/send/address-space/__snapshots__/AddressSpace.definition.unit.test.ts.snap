@@ -1,36 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso send address-space definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "as",
   ],
   "description": "Send data to the TSO address space, from which you previously started and received a token (a.k.a 'servlet-key').",
-  "examples": Array [
-    Object {
-      "description": "\\"Send the TIME TSO command to the TSO address space identified by IBMUSER-329-aafkaaoc\\"",
-      "options": "IBMUSER-329-aafkaaoc --data \\"TIME\\"",
+  "examples": [
+    {
+      "description": ""Send the TIME TSO command to the TSO address space identified by IBMUSER-329-aafkaaoc"",
+      "options": "IBMUSER-329-aafkaaoc --data "TIME"",
     },
   ],
   "name": "address-space",
-  "options": Array [
-    Object {
+  "options": [
+    {
       "description": "The data to which we want to send to the TSO address space represented by the servlet key.",
       "name": "data",
       "required": true,
       "type": "string",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The servlet key from a previously started TSO address space.",
       "name": "servletKey",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

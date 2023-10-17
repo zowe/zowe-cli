@@ -5,42 +5,42 @@ exports[`download output handler tests should download a job output in binary mo
 Destination: ./output"
 `;
 
-exports[`download output handler tests should download a job output in binary mode 2`] = `Object {}`;
+exports[`download output handler tests should download a job output in binary mode 2`] = `{}`;
 
 exports[`download output handler tests should download a job output in record mode 1`] = `
 "Successfully downloaded the job output
 Destination: ./output"
 `;
 
-exports[`download output handler tests should download a job output in record mode 2`] = `Object {}`;
+exports[`download output handler tests should download a job output in record mode 2`] = `{}`;
 
 exports[`download output handler tests should download a job output omitting the output directory 1`] = `
 "Successfully downloaded the job output
 Destination: ./output"
 `;
 
-exports[`download output handler tests should download a job output omitting the output directory 2`] = `Object {}`;
+exports[`download output handler tests should download a job output omitting the output directory 2`] = `{}`;
 
 exports[`download output handler tests should download a job output to a specific directory 1`] = `
 "Successfully downloaded the job output
 Destination: output-dir"
 `;
 
-exports[`download output handler tests should download a job output to a specific directory 2`] = `Object {}`;
+exports[`download output handler tests should download a job output to a specific directory 2`] = `{}`;
 
 exports[`download output handler tests should download a job output using defaults 1`] = `
 "Successfully downloaded the job output
 Destination: ./output"
 `;
 
-exports[`download output handler tests should download a job output using defaults 2`] = `Object {}`;
+exports[`download output handler tests should download a job output using defaults 2`] = `{}`;
 
 exports[`download output handler tests should download a job output with a specific extension 1`] = `
 "Successfully downloaded the job output
 Destination: ./output"
 `;
 
-exports[`download output handler tests should download a job output with a specific extension 2`] = `Object {}`;
+exports[`download output handler tests should download a job output with a specific extension 2`] = `{}`;
 
 exports[`download output handler tests should not transform an error from the DownloadJob class 1`] = `"You fail in DownloadJob"`;
 

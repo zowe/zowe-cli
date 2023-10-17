@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`List systems behavior should display system properties 1`] = `
-Object {
-  "fields": Array [
+{
+  "fields": [
     "systemNickName",
     "systemName",
     "url",
@@ -10,8 +10,8 @@ Object {
   ],
   "format": "table",
   "header": true,
-  "output": Array [
-    Object {
+  "output": [
+    {
       "systemName": "SYS1_001",
       "systemNickName": "SYS1",
       "url": "some.zosmf.url",
@@ -21,9 +21,9 @@ Object {
 `;
 
 exports[`List systems behavior should display system properties 2`] = `
-Object {
-  "items": Array [
-    Object {
+{
+  "items": [
+    {
       "systemName": "SYS1_001",
       "systemNickName": "SYS1",
       "url": "some.zosmf.url",
@@ -36,9 +36,9 @@ Object {
 exports[`List systems behavior should pass the rest client error to the command processor (no transformation) 1`] = `"Mock GetInfo Error"`;
 
 exports[`List systems behavior should return a json object with the right properties 1`] = `
-Object {
-  "items": Array [
-    Object {
+{
+  "items": [
+    {
       "systemName": "SYS1_001",
       "systemNickName": "SYS1",
       "url": "some.zosmf.url",

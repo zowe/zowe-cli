@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DsDefinition should use the correct object for strings 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "rep",
     ],
     "description": "Specify this option as true if you wish to replace like-named members in the target dataset",
@@ -14,26 +14,26 @@ Array [
 `;
 
 exports[`DsDefinition should use the correct object for strings 2`] = `
-Array [
-  Object {
+[
+  {
     "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
-    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\"",
+    "options": ""USER.FROM.SET" "USER.TO.SET"",
   },
-  Object {
+  {
     "description": "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
-    "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET(mem2)\\"",
+    "options": ""USER.FROM.SET(mem1)" "USER.TO.SET(mem2)"",
   },
-  Object {
+  {
     "description": "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
-    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET(mem2)\\"",
+    "options": ""USER.FROM.SET" "USER.TO.SET(mem2)"",
   },
-  Object {
+  {
     "description": "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
-    "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET\\"",
+    "options": ""USER.FROM.SET(mem1)" "USER.TO.SET"",
   },
-  Object {
+  {
     "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
-    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --replace",
+    "options": ""USER.FROM.SET" "USER.TO.SET" --replace",
   },
 ]
 `;

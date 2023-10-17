@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zosmf group definition should have the right command content 1`] = `
-Object {
+{
   "description": "Retrieve and show the properties of a z/OSMF web server.",
   "name": "zosmf",
   "summary": "Interact with z/OSMF",

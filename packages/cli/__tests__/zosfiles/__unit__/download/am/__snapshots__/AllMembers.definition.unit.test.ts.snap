@@ -1,41 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-files download am command definition should not have changed 1`] = `
-Array [
-  Object {
-    "aliases": Array [
+[
+  {
+    "aliases": [
       "b",
     ],
     "description": "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process returns each line as-is, without translation. No delimiters are added between records.",
     "name": "binary",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "d",
     ],
     "description": "The directory to where you want to save the members. The command creates the directory for you when it does not already exist. By default, the command creates a folder structure based on the data set qualifiers. For example, the data set ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).",
     "name": "directory",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ec",
     ],
     "description": "Download the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
     "name": "encoding",
     "type": "string",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "e",
     ],
-    "description": "Save the local files with a specified file extension. For example, .txt. Or \\"\\" for no extension. When no extension is specified, .txt is used as the default file extension.",
+    "description": "Save the local files with a specified file extension. For example, .txt. Or "" for no extension. When no extension is specified, .txt is used as the default file extension.",
     "name": "extension",
     "type": "stringOrEmpty",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "ff",
     ],
     "defaultValue": true,
@@ -43,22 +43,22 @@ Array [
     "name": "fail-fast",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "mcr",
     ],
     "defaultValue": 1,
     "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to download members. Increasing the value results in faster downloads. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests. If the download process encounters an error, the following message displays:
 The maximum number of TSO address spaces have been created. When you specify 0, Zowe CLI attempts to download all members at once without a maximum number of concurrent requests. ",
     "name": "max-concurrent-requests",
-    "numericValueRange": Array [
+    "numericValueRange": [
       0,
       99999,
     ],
     "type": "number",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "po",
     ],
     "defaultValue": false,
@@ -66,19 +66,19 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "name": "preserve-original-letter-case",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "r",
     ],
-    "conflictsWith": Array [
+    "conflictsWith": [
       "binary",
     ],
     "description": "Download the file content in record mode, which means that no data conversion is performed and the record length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records. Conflicts with binary.",
     "name": "record",
     "type": "boolean",
   },
-  Object {
-    "aliases": Array [
+  {
+    "aliases": [
       "vs",
     ],
     "description": "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
@@ -89,14 +89,14 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
 `;
 
 exports[`zos-files download am command definition should not have changed 2`] = `
-Array [
-  Object {
-    "description": "Download the members of the data set \\"ibmuser.loadlib\\" in binary mode to the directory \\"loadlib/\\"",
-    "options": "\\"ibmuser.loadlib\\" -b -d loadlib",
+[
+  {
+    "description": "Download the members of the data set "ibmuser.loadlib" in binary mode to the directory "loadlib/"",
+    "options": ""ibmuser.loadlib" -b -d loadlib",
   },
-  Object {
-    "description": "Download the members of the data set \\"ibmuser.cntl\\" in text mode to the directory \\"jcl/\\"",
-    "options": "\\"ibmuser.cntl\\" -d jcl",
+  {
+    "description": "Download the members of the data set "ibmuser.cntl" in text mode to the directory "jcl/"",
+    "options": ""ibmuser.cntl" -d jcl",
   },
 ]
 `;

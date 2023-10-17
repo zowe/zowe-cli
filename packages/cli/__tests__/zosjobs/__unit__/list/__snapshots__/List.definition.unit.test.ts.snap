@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs list definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "ls",
   ],
   "description": "List z/OS jobs and list the spool files (DDs) for a z/OS job on the JES/spool queues.",

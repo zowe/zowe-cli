@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs download output definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "o",
   ],
   "description": "Download all job output to a local directory. Each spool DD will be downloaded to its own file in the directory.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Download all the output of the job with job ID JOB00234 to an automatically generated directory.",
       "options": "JOB00234",
     },
   ],
   "name": "output",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "d",
         "dir",
       ],
@@ -23,35 +23,35 @@ Object {
       "name": "directory",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "e",
       ],
       "description": "A file extension to save the job output with. Defaults to '.txt'.",
       "name": "extension",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "ojd",
       ],
       "description": "If specified, job output will be saved directly to the specified directory rather than creating a subdirectory named after the ID of the job.",
       "name": "omit-jobid-directory",
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "b",
       ],
       "description": "If specified, job output will be downloaded in binary format instead of performing text conversion. Conflicts with record.",
       "name": "binary",
       "type": "boolean",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "r",
       ],
-      "conflictsWith": Array [
+      "conflictsWith": [
         "binary",
       ],
       "description": "If specified, job output will be downloaded in record format instead of performing text conversion. Conflicts with binary.",
@@ -59,16 +59,16 @@ Object {
       "type": "boolean",
     },
   ],
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "The z/OS JOBID of the job containing the spool files you want to view. No pre-validation of the JOBID is performed.",
       "name": "jobid",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

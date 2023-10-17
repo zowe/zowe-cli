@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-workflows delete active-workflow definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "aw",
   ],
   "description": "Delete an active workflow instance in z/OSMF",
-  "examples": Array [
-    Object {
-      "description": "To delete a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
-      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+  "examples": [
+    {
+      "description": "To delete a workflow instance in z/OSMF with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
+      "options": "--workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"",
     },
-    Object {
-      "description": "To delete a workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
-      "options": "--workflow-name \\"testWorkflow\\"",
+    {
+      "description": "To delete a workflow instance in z/OSMF with workflow name "testWorkflow"",
+      "options": "--workflow-name "testWorkflow"",
     },
-    Object {
-      "description": "To delete multiple workflow instances in z/OSMF with names starting with \\"test\\"",
-      "options": "--workflow-name \\"test.*\\"",
+    {
+      "description": "To delete multiple workflow instances in z/OSMF with names starting with "test"",
+      "options": "--workflow-name "test.*"",
     },
   ],
   "name": "active-workflow",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "wk",
       ],
       "description": "Delete active workflow by specified workflow key",
@@ -31,14 +31,14 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "absenceImplications": Array [
+    {
+      "absenceImplications": [
         "workflow-key",
       ],
-      "aliases": Array [
+      "aliases": [
         "wn",
       ],
-      "conflictsWith": Array [
+      "conflictsWith": [
         "workflow-key",
       ],
       "description": "Delete active workflow by specified workflow name",
@@ -47,8 +47,8 @@ Object {
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

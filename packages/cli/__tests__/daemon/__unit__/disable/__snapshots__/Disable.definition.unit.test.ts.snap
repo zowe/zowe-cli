@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`daemon disable definition should not have changed 1`] = `
-Object {
+{
   "description": "Disables daemon-mode operation of the Zowe CLI.",
-  "examples": Array [
-    Object {
+  "examples": [
+    {
       "description": "Disable daemon-mode",
       "options": "",
     },

@@ -39,12 +39,12 @@ exports[`provisioning delete should display the help 1`] = `
       Display HTML help in browser
 
 {
-  \\"success\\": true,
-  \\"exitCode\\": 0,
-  \\"message\\": \\"The help was constructed for command: delete.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Deletes instance previously provisioned with z/OSMF cloud provisioning services.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning delete <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   instance | i Deletes instance.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
-  \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Deletes instance previously provisioned with z/OSMF cloud provisioning services.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning delete <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   instance | i Deletes instance.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+  "success": true,
+  "exitCode": 0,
+  "message": "The help was constructed for command: delete.",
+  "stdout": "\\n DESCRIPTION\\n -----------\\n\\n   Deletes instance previously provisioned with z/OSMF cloud provisioning services.\\n\\n USAGE\\n -----\\n\\n   zowe provisioning delete <command>\\n\\n   Where <command> is one of the following:\\n\\n COMMANDS\\n --------\\n\\n   instance | i Deletes instance.\\n\\n GLOBAL OPTIONS\\n --------------\\n\\n   --help-examples (boolean)\\n\\n      Display examples for all the commands in a group\\n\\n   --response-format-json | --rfj (boolean)\\n\\n      Produce JSON formatted data from a command\\n\\n   --help | -h (boolean)\\n\\n      Display help text\\n\\n   --help-web | --hw (boolean)\\n\\n      Display HTML help in browser\\n\\n",
+  "stderr": "",
+  "data": "\\n DESCRIPTION\\n -----------\\n\\n   Deletes instance previously provisioned with z/OSMF cloud provisioning services.\\n\\n USAGE\\n -----\\n\\n   zowe provisioning delete <command>\\n\\n   Where <command> is one of the following:\\n\\n COMMANDS\\n --------\\n\\n   instance | i Deletes instance.\\n\\n GLOBAL OPTIONS\\n --------------\\n\\n   --help-examples (boolean)\\n\\n      Display examples for all the commands in a group\\n\\n   --response-format-json | --rfj (boolean)\\n\\n      Produce JSON formatted data from a command\\n\\n   --help | -h (boolean)\\n\\n      Display help text\\n\\n   --help-web | --hw (boolean)\\n\\n      Display HTML help in browser\\n\\n"
 }"
 `;
 
@@ -52,9 +52,9 @@ exports[`provisioning delete should fail with invalid option 1`] = `
 "Command Error:
 Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
-Command entered: \\"provisioning delete instance --foo-bar\\"
-Available commands are \\"instance\\".
-Use \\"zowe provisioning delete --help\\" to view groups, commands, and options.
+Command entered: "provisioning delete instance --foo-bar"
+Available commands are "instance".
+Use "zowe provisioning delete --help" to view groups, commands, and options.
 Error Details:
 Unknown arguments: foo-bar, fooBar
 "
@@ -68,9 +68,9 @@ Unknown argument: foobar
 Command failed due to improper syntax
 Did you mean: provisioning delete i?
 
-Command entered: \\"provisioning delete foobar\\"
-Available commands are \\"instance\\".
-Use \\"zowe provisioning delete --help\\" to view groups, commands, and options.
+Command entered: "provisioning delete foobar"
+Available commands are "instance".
+Use "zowe provisioning delete --help" to view groups, commands, and options.
 Error Details:
 Unknown argument: foobar
 "

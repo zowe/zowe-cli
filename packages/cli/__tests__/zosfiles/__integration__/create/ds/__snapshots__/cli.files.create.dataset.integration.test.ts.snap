@@ -66,7 +66,7 @@ exports[`Create  Data Set should display the help 1`] = `
 
    --record-format | --rf | --recfm (string)
 
-      The record format for the data set (for example, FB for \\"Fixed Block\\")
+      The record format for the data set (for example, FB for "Fixed Block")
 
    --record-length | --rl | --lrecl (number)
 

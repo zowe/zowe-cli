@@ -1,39 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`provisioning perform action command definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "act",
   ],
   "description": "Perform actions on instances previously provisioned with z/OSMF cloud
    provisioning services. To view the list of provisioned instances, use the
-   \\"zowe provisioning list registry-instances\\" command. Once you have
-   obtained an instance name you can use the \\"zowe provisioning list
-   instance-info <name>\\" command to view the available instance actions.",
-  "examples": Array [
-    Object {
-      "description": "Perform the \\"start\\" action on the provisioned instance \\"instance1\\"",
+   "zowe provisioning list registry-instances" command. Once you have
+   obtained an instance name you can use the "zowe provisioning list
+   instance-info <name>" command to view the available instance actions.",
+  "examples": [
+    {
+      "description": "Perform the "start" action on the provisioned instance "instance1"",
       "options": "instance1 start",
     },
   ],
   "name": "action",
-  "positionals": Array [
-    Object {
+  "positionals": [
+    {
       "description": "Provisioned Instance name.",
       "name": "name",
       "required": true,
       "type": "string",
     },
-    Object {
-      "description": "The action name. Use the \\"zowe provisioning list instance-info <name>\\"
+    {
+      "description": "The action name. Use the "zowe provisioning list instance-info <name>"
       command to view available instance actions.",
       "name": "actionname",
       "required": true,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },

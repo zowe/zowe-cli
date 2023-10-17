@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zosmf list group definition should have the right command content 1`] = `
-Object {
+{
   "description": "Obtain a list of systems that are defined to a z/OSMF instance.",
   "name": "list",
   "type": "group",

@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-jobs delete old-jobs definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
+{
+  "aliases": [
     "oj",
   ],
   "description": "Delete (purge) jobs in OUTPUT status. Defaults to deleting all jobs owned by your user ID that are in output status.",
-  "examples": Array [
-    Object {
-      "description": "Delete all of your jobs in output status with a job name starting with \\"ibmuser\\"",
-      "options": "-p \\"ibmuser*\\"",
+  "examples": [
+    {
+      "description": "Delete all of your jobs in output status with a job name starting with "ibmuser"",
+      "options": "-p "ibmuser*"",
     },
   ],
   "name": "old-jobs",
-  "options": Array [
-    Object {
-      "aliases": Array [
+  "options": [
+    {
+      "aliases": [
         "p",
       ],
       "description": "Only delete jobs with job names that match this prefix. Defaults to deleting all jobs owned by your user ID that are in output status.",
       "name": "prefix",
       "type": "string",
     },
-    Object {
-      "aliases": Array [
+    {
+      "aliases": [
         "mcr",
       ],
       "defaultValue": 1,
@@ -31,16 +31,16 @@ Object {
       "name": "max-concurrent-requests",
       "type": "number",
     },
-    Object {
+    {
       "defaultValue": "2.0",
-      "description": "Using this option to set X-IBM-Job-Modify-Version to \\"1.0\\" will make the delete job API aynchronous. Otherwise, it will be synchronous by default.",
+      "description": "Using this option to set X-IBM-Job-Modify-Version to "1.0" will make the delete job API aynchronous. Otherwise, it will be synchronous by default.",
       "name": "modify-version",
       "required": false,
       "type": "string",
     },
   ],
-  "profile": Object {
-    "optional": Array [
+  "profile": {
+    "optional": [
       "zosmf",
     ],
   },
