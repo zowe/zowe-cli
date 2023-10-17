@@ -71,7 +71,7 @@ typings/
 /config/
 **/docs/typedoc/
 __tests__/__results__/
-packages/zosunix/__tests__/__results__/
+packages/**/__tests__/__results__/
 /__tests__/tmpproj/
 /__tests__/src/locales
 /.nyc_output
