@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "preserveConstEnums": true,
+    "experimentalDecorators": true,
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,

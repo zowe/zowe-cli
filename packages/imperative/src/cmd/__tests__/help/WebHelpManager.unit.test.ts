@@ -119,7 +119,7 @@ describe("WebHelpManager", () => {
                 fs.writeFileSync(instPluginsFileNm, "{}");
 
                 // copy our webhelp distribution files to our test's src directory
-                fsExtra.copySync("./web-help/dist", webHelpDirNm + "/dist");
+                fsExtra.copySync("./packages/imperative/web-help/dist", webHelpDirNm + "/dist");
 
                 /* When jenkins machine runs this test as an integration test,
                 * it needs the path to docs to exist, even though Windows does not care.

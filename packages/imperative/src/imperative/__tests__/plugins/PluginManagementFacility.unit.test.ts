@@ -16,7 +16,7 @@ jest.mock("jsonfile");
 jest.mock("../../src/plugins/utilities/PMFConstants");
 jest.mock("../../src/plugins/PluginRequireProvider");
 
-import { existsSync } from "fs";
+import * as fs from "fs";
 import { AppSettings } from "../../../settings";
 import { ICommandDefinition } from "../../../../src/cmd";
 import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
@@ -27,7 +27,7 @@ import { IssueSeverity, PluginIssues } from "../../src/plugins/utilities/PluginI
 import { join, resolve } from "path";
 import { PluginManagementFacility } from "../../src/plugins/PluginManagementFacility";
 import { PMFConstants } from "../../src/plugins/utilities/PMFConstants";
-import { readFileSync, writeFileSync } from "jsonfile";
+import * as jsonfile from "jsonfile";
 import { ConfigurationLoader } from "../../src/ConfigurationLoader";
 import { ConfigurationValidator } from "../../src/ConfigurationValidator";
 import { ICommandProfileTypeConfiguration } from "../../../cmd";
@@ -41,9 +41,9 @@ import { CredentialManagerOverride } from "../../../security/src/CredentialManag
 // NOTE: Several tests for CredentialManager override are currently disabled
 describe("Plugin Management Facility", () => {
     const mocks = {
-        existsSync: existsSync as Mock<typeof existsSync>,
-        writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        readFileSync: readFileSync as Mock<typeof readFileSync>,
+        existsSync: jest.spyOn(fs, "existsSync"),
+        writeFileSync: jest.spyOn(jsonfile, "writeFileSync"),
+        readFileSync: jest.spyOn(jsonfile, "readFileSync"),
         mkdirp: jest.spyOn(IO, "mkdirp")
     };
 
@@ -205,6 +205,8 @@ describe("Plugin Management Facility", () => {
         expect((PluginManagementFacility.instance as any).wasInitCalled).toBe(true);
 
         // Validate that the module loader was called.
+        // const createPluginHooksSpy = jest.spyOn(PluginRequireProvider, "createPluginHooks");
+        // expect(createPluginHooksSpy).toHaveBeenCalledWith(
         expect(PluginRequireProvider.createPluginHooks).toHaveBeenCalledWith(
             [ PMFConstants.instance.IMPERATIVE_PKG_NAME, PMFConstants.instance.CLI_CORE_PKG_NAME ]
         );
