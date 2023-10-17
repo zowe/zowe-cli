@@ -313,7 +313,7 @@ describe("Profile IO", () => {
 
     it("should be able to return the profile name from a file name", () => {
         const path = TEST_DIR_PATH + "/" + BLUEBERRY_PROFILE_TYPE + ".yaml";
-        const name: string = ProfileIO.fileToProfileName(path, ".yaml");
+        const name: string = ProfileIO.fileToProfileName(path as any, ".yaml");
         expect(name).toBe(BLUEBERRY_PROFILE_TYPE);
     });
 
@@ -387,7 +387,7 @@ describe("Profile IO", () => {
     it("should throw an imperative error if an IO error occurs getting profile names", () => {
         const fileNames: string[] = ["rotten.yaml", "fresh.yaml", "apple_meta.yaml"];
         const names: string[] = ["rotten", "fresh"];
-        mocks.readdirSync.mockImplementation((path) => {
+        mocks.readdirSync.mockImplementation((path: any) => {
             throw new Error(err);
         });
         let error;

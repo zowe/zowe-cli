@@ -22,26 +22,25 @@ jest.mock("../../../../src/plugins/utilities/NpmFunctions");
 
 import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
-import { execSync } from "child_process";
-import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { Logger } from "../../../../../logger";
 import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
-import { update } from "../../../../src/plugins/utilities/npm-interface";
 import UpdateHandler from "../../../../src/plugins/cmd/update/update.handler";
-import { npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
+import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
+import * as ChildProcesses from "child_process";
+import * as JsonFile from "jsonfile";
+import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
 
 describe("Plugin Management Facility update handler", () => {
 
     const resolveVal = "test/imperative-plugins";
 
-    // Objects created so types are correct.
     const mocks = {
-        npmLogin: npmLogin as unknown as any,
-        execSync: execSync as unknown as any,
-        readFileSync: readFileSync as unknown as any,
-        writeFileSync: writeFileSync as unknown as any,
-        update: update as unknown as any,
+        npmLoginSpy: jest.spyOn(NpmFunctions, 'npmLogin') as jest.SpyInstance,
+        execSyncSpy: jest.spyOn(ChildProcesses, 'execSync') as jest.SpyInstance,
+        readFileSyncSpy: jest.spyOn(JsonFile, 'readFileSync') as jest.SpyInstance,
+        writeFileSyncSpy: jest.spyOn(JsonFile, 'writeFileSync') as jest.SpyInstance,
+        updateSpy: jest.spyOn(NpmInterface, 'update') as jest.SpyInstance,
     };
 
     // two plugin set of values
@@ -61,9 +60,9 @@ describe("Plugin Management Facility update handler", () => {
 
         // This needs to be mocked before running process function of update handler
         (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
-        mocks.execSync.mockReturnValue(packageRegistry as any);
-        mocks.readFileSync.mockReturnValue({} as any);
-        npmLogin(packageRegistry);
+        mocks.execSyncSpy.mockReturnValue(packageRegistry as any);
+        mocks.readFileSyncSpy.mockReturnValue({} as any);
+        NpmFunctions.npmLogin(packageRegistry);
     });
 
     /**
@@ -95,7 +94,7 @@ describe("Plugin Management Facility update handler", () => {
         packageNameParm: string,
         registry: string
     ) => {
-        expect(mocks.update).toHaveBeenCalledWith(
+        expect(mocks.updateSpy).toHaveBeenCalledWith(
             packageNameParm, registry
         );
     };
@@ -115,7 +114,7 @@ describe("Plugin Management Facility update handler", () => {
      * when login needed based on the parameters passed.
      */
     const wasNpmLoginCallValid = (registry: string) => {
-        expect(mocks.npmLogin).toHaveBeenCalledWith(registry);
+        expect(mocks.npmLoginSpy).toHaveBeenCalledWith(registry);
     };
 
     /**
@@ -126,7 +125,7 @@ describe("Plugin Management Facility update handler", () => {
      * @param (IPluginJson) fileJson The contents to be written to the file
      */
     const wasWriteFileSyncValid = (location: string, fileJson: IPluginJson) => {
-        expect(mocks.writeFileSync).toHaveBeenCalledWith(
+        expect(mocks.writeFileSyncSpy).toHaveBeenCalledWith(
             location, fileJson, {spaces: 2}
         );
     };
@@ -148,7 +147,7 @@ describe("Plugin Management Facility update handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
 
         const handler = new UpdateHandler();
 
@@ -179,7 +178,7 @@ describe("Plugin Management Facility update handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
 
         const handler = new UpdateHandler();
 

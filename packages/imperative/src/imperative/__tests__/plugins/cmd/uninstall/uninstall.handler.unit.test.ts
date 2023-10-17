@@ -24,28 +24,27 @@ import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { CredentialManagerOverride } from "../../../../../security";
-import { execSync } from "child_process";
 import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
 import { AbstractPluginLifeCycle } from "../../../../src/plugins/AbstractPluginLifeCycle";
 import { ImperativeError } from "../../../../../error";
 import { Logger } from "../../../../../logger";
-import { readFileSync, writeFileSync } from "jsonfile";
 import { TextUtils } from "../../../../../utilities";
-import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 import UninstallHandler from "../../../../src/plugins/cmd/uninstall/uninstall.handler";
-
+import * as ChildProcesses from "child_process";
+import * as JsonFile from "jsonfile";
+import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
 import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
 
 describe("Plugin Management Facility uninstall handler", () => {
 
     // Objects created so types are correct.
     const mocks = {
-        execSync: execSync as unknown as Mock<typeof execSync>,
-        readFileSync: readFileSync as Mock<typeof readFileSync>,
-        writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        uninstall: uninstall as Mock<typeof uninstall>
+        execSyncSpy: jest.spyOn(ChildProcesses, 'execSync') as jest.SpyInstance,
+        readFileSyncSpy: jest.spyOn(JsonFile, 'readFileSync') as jest.SpyInstance,
+        writeFileSyncSpy: jest.spyOn(JsonFile, 'writeFileSync') as jest.SpyInstance,
+        uninstallSpy: jest.spyOn(NpmInterface, 'uninstall') as jest.SpyInstance,
     };
 
     // two plugin set of values
@@ -63,8 +62,8 @@ describe("Plugin Management Facility uninstall handler", () => {
 
         // This needs to be mocked before running process function of uninstall handler
         (Logger.getImperativeLogger as unknown as any).mockReturnValue(new Logger(new Console()) as any);
-        mocks.execSync.mockReturnValue(packageRegistry as any);
-        mocks.readFileSync.mockReturnValue({} as any);
+        mocks.execSyncSpy.mockReturnValue(packageRegistry as any);
+        mocks.readFileSyncSpy.mockReturnValue({} as any);
     });
 
     /**
@@ -94,7 +93,7 @@ describe("Plugin Management Facility uninstall handler", () => {
     const wasUninstallCallValid = (
         packageNameParm: string
     ) => {
-        expect(mocks.uninstall).toHaveBeenCalledWith(
+        expect(mocks.uninstallSpy).toHaveBeenCalledWith(
             packageNameParm
         );
     };
@@ -125,7 +124,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
 
         const handler = new UninstallHandler();
 
