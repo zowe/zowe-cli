@@ -153,3 +153,17 @@ exports[`Download uss dir handler process method should download a uss dir if re
 "
 downloaded"
 `;
+
+exports[`Download uss dir handler process method should download a uss dir in an encoding 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download uss dir handler process method should download a uss dir in an encoding 2`] = `""`;
+
+exports[`Download uss dir handler process method should download a uss dir in an encoding 3`] = `
+"
+downloaded"
+`;
