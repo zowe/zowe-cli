@@ -13,6 +13,7 @@ import { IHandlerResponseApi } from "../../../src/doc/response/api/handler/IHand
 import { IHandlerResponseConsoleApi } from "../../doc/response/api/handler/IHandlerResponseConsoleApi";
 import { IHandlerResponseDataApi } from "../../doc/response/api/handler/IHandlerResponseDataApi";
 import { IHandlerProgressApi } from "../../doc/response/api/handler/IHandlerProgressApi";
+import { IHandlerFormatOutputApi } from "../../doc/response/api/handler/IHandlerFormatOutputApi";
 
 export class HandlerResponse implements IHandlerResponseApi {
     public console: IHandlerResponseConsoleApi = {
@@ -24,8 +25,10 @@ export class HandlerResponse implements IHandlerResponseApi {
         }),
         errorHeader: jest.fn((message: string, delimeter?: string) => {
             return message + ":\n";
-        })
+        }),
+        prompt: jest.fn(),
     };
+    public format: IHandlerFormatOutputApi;
     public data: IHandlerResponseDataApi = undefined;
     public progress: IHandlerProgressApi = undefined;
 }
