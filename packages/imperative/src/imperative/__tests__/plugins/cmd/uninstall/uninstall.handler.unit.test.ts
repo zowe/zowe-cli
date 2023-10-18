@@ -37,7 +37,6 @@ import * as ChildProcesses from "child_process";
 import * as JsonFile from "jsonfile";
 import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
 import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 
 describe("Plugin Management Facility uninstall handler", () => {
 
