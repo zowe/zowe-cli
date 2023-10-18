@@ -21,6 +21,7 @@ jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
 jest.mock("../../../../../logger");
 
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { CredentialManagerOverride } from "../../../../../security";

@@ -14,6 +14,7 @@ import Mock = jest.Mock;
 jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeConfig } from "../../../../../utilities/src/ImperativeConfig";
 import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
 import { resolve } from "path";

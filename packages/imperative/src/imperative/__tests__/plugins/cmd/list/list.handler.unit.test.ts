@@ -18,6 +18,7 @@ jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../../logger");
 
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import ListHandler from "../../../../src/plugins/cmd/list/list.handler";
