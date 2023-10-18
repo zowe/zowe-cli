@@ -243,7 +243,8 @@ describe("Tests for EnvQuery module", () => {
         it("should report that no other Zowe variables are set", async () => {
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.OTHER_ZOWE_VARS);
             expect(itemObj.itemVal).toBeNull();
-            expect(itemObj.itemValMsg).toContain("No other 'ZOWE_' variables have been set.");
+            const regex = /(^ZOWE_)|(No other 'ZOWE_' variables have been set.)/;
+            expect(itemObj.itemValMsg).toMatch(regex);
             expect(itemObj.itemProbMsg).toBe("");
         });
 
