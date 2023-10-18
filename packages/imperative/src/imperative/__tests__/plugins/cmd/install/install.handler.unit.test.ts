@@ -37,7 +37,7 @@ jest.doMock("path", () => {
     };
 });
 
-import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
+import { CommandResponse, HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
 import { install } from "../../../../src/plugins/utilities/npm-interface";
@@ -102,7 +102,7 @@ describe("Plugin Management Facility install handler", () => {
      */
     const getIHandlerParametersObject = (): IHandlerParameters => {
         const x: any = {
-            response: new (CommandResponse as any)(),
+            response: new (HandlerResponse as any)(),
             arguments: {
                 package: [],
                 file: undefined

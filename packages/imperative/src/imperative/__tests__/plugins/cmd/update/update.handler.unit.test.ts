@@ -17,10 +17,11 @@ jest.mock("../../../../src/plugins/utilities/npm-interface/update");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
 jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
 jest.mock("../../../../../cmd/src/response/CommandResponse");
+jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../../logger");
 jest.mock("../../../../src/plugins/utilities/NpmFunctions");
 
-import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { Logger } from "../../../../../logger";
@@ -72,7 +73,7 @@ describe("Plugin Management Facility update handler", () => {
      */
     const getIHandlerParametersObject = (): IHandlerParameters => {
         const x: any = {
-            response: new (CommandResponse as any)(),
+            response: new (HandlerResponse as any)(),
             arguments: {
                 plugin: undefined
             },

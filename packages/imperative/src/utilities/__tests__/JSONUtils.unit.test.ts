@@ -36,7 +36,8 @@ describe("JSONUtils tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(error.message).toMatchSnapshot();
+        const regex = /(Unexpected token f in JSON at position 2)|(Expected property name or '}' in JSON at position 2)/;
+        expect(error.message).toMatch(regex);
     });
 
     it("should give a message for a failed JSON object with custom fail message", () => {
@@ -47,7 +48,8 @@ describe("JSONUtils tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(error.message).toMatchSnapshot();
+        const regex = /(Unexpected token f in JSON at position 2)|(Expected property name or '}' in JSON at position 2)/;
+        expect(error.message).toMatch(regex);
     });
 
     it("should give an error message for an undefined input", () => {
@@ -57,6 +59,7 @@ describe("JSONUtils tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(error.message).toMatchSnapshot();
+        const regex = /(Unexpected token u in JSON at position 0)|("undefined" is not valid JSON)/;
+        expect(error.message).toMatch(regex);
     });
 });

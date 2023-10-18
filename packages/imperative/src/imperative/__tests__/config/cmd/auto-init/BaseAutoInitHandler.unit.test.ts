@@ -271,7 +271,7 @@ describe("BaseAutoInitHandler", () => {
             }
         };
         const diffSpy = jest.spyOn(jestDiff, "diff");
-        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor");
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
 
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             config: {
@@ -323,7 +323,7 @@ describe("BaseAutoInitHandler", () => {
         const mockSave = jest.fn();
         const mockSetSchema = jest.fn();
         const displayAutoInitChangesSpy = jest.spyOn(handler as any, "displayAutoInitChanges");
-        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor");
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
 
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             config: {

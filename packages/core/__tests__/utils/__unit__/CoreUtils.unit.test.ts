@@ -306,7 +306,7 @@ describe("CoreUtils", () => {
         it("should sleep the default amount", async () => {
             const defaultSleepTime = 1000;
 
-            jest.useFakeTimers();
+            jest.useFakeTimers({legacyFakeTimers: true});
             jest.spyOn(global, "setTimeout");
 
             const waitForSleep = CoreUtils.sleep();
@@ -324,7 +324,7 @@ describe("CoreUtils", () => {
         it("should sleep for the specified amount", async () => {
             const specifiedTime = 5000;
 
-            jest.useFakeTimers();
+            jest.useFakeTimers({legacyFakeTimers: true});
             jest.spyOn(global, "setTimeout");
 
             const waitForSleep = CoreUtils.sleep(specifiedTime);

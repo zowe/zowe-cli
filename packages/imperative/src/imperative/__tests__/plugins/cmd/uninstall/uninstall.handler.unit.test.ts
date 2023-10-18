@@ -17,10 +17,11 @@ jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/npm-interface/uninstall");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
 jest.mock("../../../../../cmd/src/response/CommandResponse");
+jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
 jest.mock("../../../../../logger");
 
-import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
+import { CommandResponse, HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { CredentialManagerOverride } from "../../../../../security";
@@ -73,7 +74,7 @@ describe("Plugin Management Facility uninstall handler", () => {
      */
     const getIHandlerParametersObject = (): IHandlerParameters => {
         const x: any = {
-            response: new (CommandResponse as any)(),
+            response: new (HandlerResponse as any)(),
             arguments: {
                 package: undefined
             },
