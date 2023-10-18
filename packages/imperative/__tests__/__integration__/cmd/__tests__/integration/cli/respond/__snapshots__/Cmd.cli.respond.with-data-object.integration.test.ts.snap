@@ -31,22 +31,6 @@ Use \\"cmd-cli respond with-data-object --help\\" to view command description, u
 "
 `;
 
-exports[`cmd-cli respond with-data-object should display a syntax error if the JSON object passed is not valid 1`] = `
-"
-Syntax Error:
-Invalid JSON string supplied for the following option:
---data-object
-
-You specified:
-invalid json!
-
-JSON parsing failed with the following error:
-Unexpected token i in JSON at position 0
-
-Use \\"cmd-cli respond with-data-object --help\\" to view command description, usage, and options.
-"
-`;
-
 exports[`cmd-cli respond with-data-object should display the help 1`] = `
 "
  COMMAND NAME

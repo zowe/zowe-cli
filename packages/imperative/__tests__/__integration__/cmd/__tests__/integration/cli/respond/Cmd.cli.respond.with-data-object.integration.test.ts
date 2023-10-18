@@ -45,7 +45,8 @@ describe("cmd-cli respond with-data-object", () => {
             TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(1);
         expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
+        const regex = /(Unexpected token i in JSON at position 0)|(Unexpected token 'i', "invalid json!" is not valid JSON)/;
+        expect(response.stderr.toString()).toMatch(regex);
     });
 
     it("should allow us to formulate a response object with a data object and produce JSON", async () => {
