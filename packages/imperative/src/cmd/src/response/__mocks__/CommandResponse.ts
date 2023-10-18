@@ -9,9 +9,6 @@
 *
 */
 
-import { IHandlerResponseConsoleApi } from "../../doc/response/api/handler/IHandlerResponseConsoleApi";
-import { IHandlerResponseDataApi } from "../../doc/response/api/handler/IHandlerResponseDataApi";
-import { IHandlerProgressApi } from "../../doc/response/api/handler/IHandlerProgressApi";
 import { ICommandResponseApi } from "../../doc/response/api/processor/ICommandResponseApi";
 import { ICommandResponse } from "../../../src/doc/response/response/ICommandResponse";
 import { IImperativeError } from "../../../../error";

@@ -37,7 +37,6 @@ jest.doMock("path", () => {
     };
 });
 
-import { CommandResponse, HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
 import { install } from "../../../../src/plugins/utilities/npm-interface";
