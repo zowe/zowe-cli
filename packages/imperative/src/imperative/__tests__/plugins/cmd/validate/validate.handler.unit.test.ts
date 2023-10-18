@@ -14,7 +14,7 @@ import Mock = jest.Mock;
 jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 
-import { CommandResponse, IHandlerParameters } from "../../../../../cmd";
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeConfig } from "../../../../../utilities/src/ImperativeConfig";
 import { IssueSeverity, PluginIssues } from "../../../../src/plugins/utilities/PluginIssues";
 import { resolve } from "path";
@@ -54,7 +54,7 @@ describe("Plugin validate command handler", () => {
      */
     const getIHandlerParametersObject = (): IHandlerParameters => {
         const x: any = {
-            response: new (CommandResponse as any)(),
+            response: new (HandlerResponse as any)(),
             arguments: {
                 plugin: null
             }

@@ -49,6 +49,7 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
 import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 
 let expectedVal: unknown;
 let returnedVal: unknown;

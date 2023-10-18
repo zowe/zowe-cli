@@ -122,6 +122,8 @@ jobs:
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit
+      env:
+        NODE_OPTIONS: --max_old_space_size=8192
 
     - name: Unlock Keyring
       id: unlock-keyring

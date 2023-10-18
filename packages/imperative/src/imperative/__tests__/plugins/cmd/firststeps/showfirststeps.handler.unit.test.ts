@@ -22,6 +22,7 @@ import FirststepsHandler from "../../../../src/plugins/cmd/showfirststeps/showfi
 import { ImperativeError } from "../../../../../error/src/ImperativeError";
 import { IPluginCfgProps } from "../../../../src/plugins/doc/IPluginCfgProps";
 import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 
 describe("Plugin first steps command handler", () => {
 
