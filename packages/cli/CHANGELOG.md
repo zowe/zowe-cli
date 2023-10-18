@@ -6,6 +6,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Incorporate all source code from the zowe/imperative Github repository into the zowe/zowe-cli repository. This change should have no user impact.
 -
+- BugFix: Fix bug where encoding is not passed to the Download USS Directory API [#1825](https://github.com/zowe/zowe-cli/issues/1825)
+
 ## `7.18.7`
 
 - BugFix: Bump Imperative to `5.18.2` to fix issues with normalizing newlines on file uploads [#1815](https://github.com/zowe/zowe-cli/issues/1815)
