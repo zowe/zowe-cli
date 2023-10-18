@@ -100,6 +100,14 @@
       "\\.ts$": "ts-jest"
     },
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
+    "transformIgnorePatterns": ["^.+\\.js$", "^.+\\.json$"],
+    "reporters": [
+        ["github-actions", {"silent": false}],
+        "default",
+        "jest-junit"
+    ],
+    "globalSetup": "./__tests__/setup.js",
+    "globalTeardown": "./__tests__/teardown.js",
     "moduleFileExtensions": [
       "ts",
       "js"
