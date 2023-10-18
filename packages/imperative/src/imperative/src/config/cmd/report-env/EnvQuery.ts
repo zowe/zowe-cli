@@ -177,8 +177,6 @@ export class EnvQuery {
         let cmdOutput: string = "";
         const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
         try {
-            // multiple npm commands fail hard when used with workspaces
-            args.push("--no-workspaces");
             const spawnResult = spawn.sync(cmdToRun, args, {
                 stdio: ioOpts,
                 shell: true
@@ -448,7 +446,9 @@ export class EnvQuery {
         npmProgress.statusMessage = "Retrieving current shell";
         npmProgress.percentComplete += percentIncr;
         await EnvQuery.updateProgressBar(doesProgBarExist);
-        getResult.itemValMsg += `${os.EOL}Shell = ` + EnvQuery.getCmdOutput("npm", ["config", "get", "shell"]);
+
+        // `npm config` commands fail hard when used with workspaces
+        getResult.itemValMsg += `${os.EOL}Shell = ` + EnvQuery.getCmdOutput("npm", ["config", "get", "shell", "--no-workspaces"]);
 
         npmProgress.statusMessage = "Retrieving NPM global prefix";
         npmProgress.percentComplete += percentIncr;
@@ -464,7 +464,9 @@ export class EnvQuery {
         npmProgress.statusMessage = "Retrieving NPM global config";
         npmProgress.percentComplete += percentIncr;
         await EnvQuery.updateProgressBar(doesProgBarExist);
-        getResult.itemValMsg += `${os.EOL}Global config = ` + EnvQuery.getCmdOutput("npm", ["config", "get", "globalconfig"]);
+
+        // `npm config` commands fail hard when used with workspaces
+        getResult.itemValMsg += `${os.EOL}Global config = ` + EnvQuery.getCmdOutput("npm", ["config", "get", "globalconfig", "--no-workspaces"]);
 
         npmProgress.statusMessage = "Retrieving NPM local prefix";
         npmProgress.percentComplete += percentIncr;
@@ -479,7 +481,9 @@ export class EnvQuery {
         npmProgress.statusMessage = "Retrieving NPM user config";
         npmProgress.percentComplete += percentIncr;
         await EnvQuery.updateProgressBar(doesProgBarExist);
-        getResult.itemValMsg += `${os.EOL}User config = ` + EnvQuery.getCmdOutput("npm", ["config", "get", "userconfig"]);
+
+        // `npm config` commands fail hard when used with workspaces
+        getResult.itemValMsg += `${os.EOL}User config = ` + EnvQuery.getCmdOutput("npm", ["config", "get", "userconfig", "--no-workspaces"]);
 
         npmProgress.statusMessage = "Retrieving NPM registry info";
         npmProgress.percentComplete += percentIncr;
@@ -487,7 +491,9 @@ export class EnvQuery {
 
         // Filter the output of "npm config list" command to only include lines we are interested in.
         // Also remove "; " prefix from lines where it was added by npm and is not a user-added comment.
-        getResult.itemValMsg += os.EOL + os.EOL + EnvQuery.getCmdOutput("npm", ["config", "list"])
+
+        // `npm config` commands fail hard when used with workspaces
+        getResult.itemValMsg += os.EOL + os.EOL + EnvQuery.getCmdOutput("npm", ["config", "list", "--no-workspaces"])
             .split(EnvQuery.allEolRegex)
             .filter(line => /registry =|"project"|node bin location =|cwd =|HOME =/.test(line))
             .map(line => line.includes("registry =") ? line : line.replace(/^; /, ""))

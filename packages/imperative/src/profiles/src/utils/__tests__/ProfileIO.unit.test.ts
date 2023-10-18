@@ -35,14 +35,15 @@ const readYaml = require("js-yaml");
 const writeYaml = require("yamljs");
 
 const mocks = {
-    createDirsSync: IO.createDirsSync as Mock<typeof IO.createDirsSync>,
-    safeLoad: readYaml.load as unknown as any,
-    writeFileSync: fs.writeFileSync as unknown as any,
-    yamlStringify: writeYaml.stringify as unknown as any,
-    unlinkSync: fs.unlinkSync as unknown as any,
-    existsSync: fs.existsSync as unknown as any,
-    readdirSync: fs.readdirSync as unknown as any,
-    statSync: fs.statSync as unknown as any
+    createDirsSync: jest.spyOn(IO, "createDirsSync"),
+    safeLoad: jest.spyOn(readYaml, "load"),
+    writeFileSync: jest.spyOn(fs, "writeFileSync"),
+    yamlStringify: jest.spyOn(writeYaml, "stringify"),
+    unlinkSync: jest.spyOn(fs, "unlinkSync"),
+    existsSync: jest.spyOn(fs, "existsSync"),
+    readdirSync: jest.spyOn(fs, "readdirSync"),
+    readFileSync: jest.spyOn(fs, "readFileSync"),
+    statSync: jest.spyOn(fs, "statSync")
 };
 
 const TEST_DIR_PATH: string = "/__tests__/__results__/data/.testHomeDir";
@@ -156,9 +157,9 @@ describe("Profile IO", () => {
         mocks.yamlStringify.mockImplementation((args: any) => {
             return prof;
         });
-        mocks.writeFileSync.mockImplementation((fullFilePath: string, profile: IProfile) => {
+        mocks.writeFileSync.mockImplementation(((fullFilePath: string, profile: IProfile) => {
             throw new Error(err);
-        });
+        })as never);
         let error;
         try {
             ProfileIO.writeProfile(TEST_DIR_PATH, prof);
