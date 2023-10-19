@@ -9,7 +9,6 @@
 *
 */
 
-import { PerfTiming } from "@zowe/perf-timing";
 import { ICommandDefinition } from "./doc/ICommandDefinition";
 import { CommandUtils } from "./utils/CommandUtils";
 import { Arguments } from "yargs";
@@ -290,13 +289,6 @@ export class CommandProcessor {
      */
     public async invoke(params: IInvokeCommandParms): Promise<ICommandResponse> {
 
-        const timingApi = PerfTiming.api;
-
-        if (PerfTiming.isEnabled) {
-            // Marks point START
-            timingApi.mark("START_CMD_INVOKE");
-        }
-
         // Ensure parameters are correct
         ImperativeExpect.toNotBeNullOrUndefined(params,
             `${CommandProcessor.ERROR_TAG} invoke(): No parameters supplied.`);
@@ -570,12 +562,6 @@ export class CommandProcessor {
             response.succeeded();
             response.endProgressBar();
 
-            if (PerfTiming.isEnabled) {
-                // Marks point END
-                timingApi.mark("END_CMD_INVOKE");
-                timingApi.measure("Command executed: " + this.commandLine, "START_CMD_INVOKE", "END_CMD_INVOKE");
-            }
-
             // Return the response to the caller
             return this.finishResponse(response);
 
@@ -644,12 +630,6 @@ export class CommandProcessor {
             this.log.info(`Chained handlers for command "${this.definition.name}" succeeded.`);
             response.succeeded();
             response.endProgressBar();
-
-            if (PerfTiming.isEnabled) {
-                // Marks point END
-                timingApi.mark("END_CMD_INVOKE");
-                timingApi.measure("Command executed: " + this.commandLine, "START_CMD_INVOKE", "END_CMD_INVOKE");
-            }
 
             // Return the response to the caller
             return this.finishResponse(chainedResponse);

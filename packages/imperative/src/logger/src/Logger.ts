@@ -9,7 +9,6 @@
 *
 */
 
-import { PerfTiming } from "@zowe/perf-timing";
 import { format, inspect, isNullOrUndefined } from "util";
 import { ImperativeError } from "../../error";
 import * as StackTrace from "stack-trace";
@@ -403,13 +402,4 @@ export class Logger {
     private set logService(service: log4js.Logger | Console) {
         this.mJsLogger = service;
     }
-}
-
-if (PerfTiming.isEnabled) {
-    Logger.prototype.debug = PerfTiming.api.watch(Logger.prototype.debug);
-    Logger.prototype.error = PerfTiming.api.watch(Logger.prototype.error);
-    Logger.prototype.info = PerfTiming.api.watch(Logger.prototype.info);
-    Logger.prototype.fatal = PerfTiming.api.watch(Logger.prototype.fatal);
-    Logger.prototype.trace = PerfTiming.api.watch(Logger.prototype.trace);
-    Logger.prototype.warn = PerfTiming.api.watch(Logger.prototype.warn);
 }

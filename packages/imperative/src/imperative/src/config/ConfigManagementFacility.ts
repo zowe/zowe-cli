@@ -9,7 +9,6 @@
 *
 */
 
-import { PerfTiming } from "@zowe/perf-timing";
 import { UpdateImpConfig } from "../UpdateImpConfig";
 import { Logger } from "../../../logger";
 
@@ -57,13 +56,6 @@ export class ConfigManagementFacility {
      */
     public init(): void {
 
-        const timingApi = PerfTiming.api;
-
-        if (PerfTiming.isEnabled) {
-            // Marks point START
-            timingApi.mark("START_CONFIG_INIT");
-        }
-
         this.impLogger.debug("ConfigManagementFacility.init() - Start");
 
         // Add the config group and related commands.
@@ -82,11 +74,5 @@ export class ConfigManagementFacility {
         });
 
         this.impLogger.debug("ConfigManagementFacility.init() - Success");
-
-        if (PerfTiming.isEnabled) {
-            // Marks point END
-            timingApi.mark("END_CONFIG_INIT");
-            timingApi.measure("ConfigManagementFacility.init()", "START_CONFIG_INIT", "END_CONFIG_INIT");
-        }
     }
 }

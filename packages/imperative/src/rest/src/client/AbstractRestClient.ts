@@ -26,7 +26,6 @@ import { Session } from "../session/Session";
 import * as path from "path";
 import { IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
-import { PerfTiming } from "@zowe/perf-timing";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
@@ -243,13 +242,6 @@ export abstract class AbstractRestClient {
     public request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
 
-            const timingApi = PerfTiming.api;
-
-            if (PerfTiming.isEnabled) {
-                // Marks point START
-                timingApi.mark("START_PERFORM_REST");
-            }
-
             // save for logging
             this.mResource = options.resource;
             this.mRequest = options.request;
@@ -375,12 +367,6 @@ export abstract class AbstractRestClient {
                 // otherwise we're done with the request
                 clientRequest.end();
             }
-            if (PerfTiming.isEnabled) {
-                // Marks point END
-                timingApi.mark("END_PERFORM_REST");
-                timingApi.measure("performRest: $resource", "START_PERFORM_REST", "END_PERFORM_REST");
-            }
-
         });
     }
 

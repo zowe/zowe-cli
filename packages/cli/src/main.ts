@@ -10,12 +10,6 @@
 *
 */
 
-import { PerfTiming } from "@zowe/perf-timing";
-
-const timingApi = PerfTiming.api;
-
-timingApi.mark("PRE_IMPORT_IMPERATIVE");
-
 import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
@@ -26,21 +20,10 @@ const config: IImperativeConfig = {
 };
 
 (async () => {
-    timingApi.mark("POST_IMPORT_IMPERATIVE");
-    timingApi.measure("time to get into main function", "PRE_IMPORT_IMPERATIVE", "POST_IMPORT_IMPERATIVE");
-
     try {
-        timingApi.mark("BEFORE_INIT");
         await Imperative.init(config);
-        timingApi.mark("AFTER_INIT");
-        timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");
-
         Imperative.api.appLogger.trace("Init was successful");
-
-        timingApi.mark("BEFORE_PARSE");
         Imperative.parse();
-        timingApi.mark("AFTER_PARSE");
-        timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
     } catch (initErr) {
         Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
             ":\n "
