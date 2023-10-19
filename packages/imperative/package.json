@@ -44,7 +44,6 @@
   },
   "dependencies": {
     "@types/yargs": "13.0.4",
-    "@zowe/perf-timing": "1.0.7",
     "chalk": "2.4.2",
     "cli-table3": "0.6.2",
     "comment-json": "4.1.1",
