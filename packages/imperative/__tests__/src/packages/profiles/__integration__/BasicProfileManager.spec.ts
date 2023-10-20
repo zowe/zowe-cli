@@ -19,9 +19,9 @@ describe("Imperative should allow CLI implementations to configure their own pro
     const mainModule = process.mainModule;
     const loadChangingDependencies = () => {
         return {
-            Imperative: require("../../../../../packages/imperative/src/Imperative").Imperative,
-            ImperativeConfig: require("../../../../../packages/utilities/src/ImperativeConfig").ImperativeConfig,
-            ImperativeError: require("../../../../../packages/error/src/ImperativeError").ImperativeError
+            Imperative: require("../../../../../src/imperative/src/Imperative").Imperative,
+            ImperativeConfig: require("../../../../../src/utilities/src/ImperativeConfig").ImperativeConfig,
+            ImperativeError: require("../../../../../src/error/src/ImperativeError").ImperativeError
         };
     };
 
