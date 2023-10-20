@@ -729,6 +729,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating invalid characters in file name
+     * @type {IMessageDefinition}
+     */
+    invalidFileName: {
+        message: "Invalid file name. Please check the file name for typos."
+    },
+
+    /**
      * Message to be used when throwing an imperative error during data set creation
      * @type {IMessageDefinition}
      */
