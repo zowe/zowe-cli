@@ -42,6 +42,12 @@ jobs:
       cancel-in-progress: true
 
     steps:
+    - name: Create 4GB Page File
+      if: ${{ always() && matrix.os == 'windows-latest' }}
+      run: |
+        wmic pagefileset create name="D:\\pagefile.sys"
+        wmic pagefileset where name="D:\\pagefile.sys" set InitialSize=4096,MaximumSize=4096
+
     - name: Checkout
       uses: actions/checkout@v3
 
