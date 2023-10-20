@@ -45,7 +45,7 @@ jobs:
     - name: Create 4GB Page File
       if: ${{ always() && matrix.os == 'windows-latest' }}
       run: |
-        wmic pagefileset where name="D:\\pagefile.sys" set InitialSize=4096,MaximumSize=4096
+        wmic pagefile list /format:list
 
     - name: Checkout
       uses: actions/checkout@v3
