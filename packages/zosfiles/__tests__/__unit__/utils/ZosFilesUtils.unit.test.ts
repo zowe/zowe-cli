@@ -13,6 +13,8 @@ import * as path from "path";
 import * as fs from "fs";
 import { IO } from "@zowe/imperative";
 import { ZosFilesUtils } from "../../../src/utils/ZosFilesUtils";
+import { ZosFilesConstants } from "../../../src/constants/ZosFiles.constants";
+import { ZosFilesMessages } from "../../../src/constants/ZosFiles.messages";
 
 jest.mock("fs");
 
@@ -25,6 +27,12 @@ describe("ZosFilesUtils", () => {
             // Default file extension
             expect(ZosFilesUtils.DEFAULT_FILE_EXTENSION).toEqual("txt");
         });
+
+        it('should check if constant files are loaded and exist', () => {
+            expect(ZosFilesConstants).toBeDefined();
+            expect(ZosFilesMessages).toBeDefined();
+        });
+
     });
 
     describe("getDirsFromDataSet", () => {
