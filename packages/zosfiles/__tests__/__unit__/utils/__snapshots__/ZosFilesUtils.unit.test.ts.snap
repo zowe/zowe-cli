@@ -1,0 +1,334 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ZosFilesUtils CONSTANTS should check if constant files have the expected constants loaded 1`] = `
+Object {
+  "MAX_ALLOC_QUANTITY": 16777215,
+  "MAX_AMS_BUFFER": 2,
+  "MAX_AMS_LINE": 255,
+  "MAX_RETAIN_DAYS": 93000,
+  "MIN_RETAIN_DAYS": 0,
+  "RESOURCE": "/zosmf/restfiles",
+  "RES_AMS": "/ams",
+  "RES_DEPTH": "depth",
+  "RES_DS_FILES": "/ds",
+  "RES_DS_LEVEL": "dslevel",
+  "RES_DS_MEMBERS": "/member",
+  "RES_FILESYS": "filesys",
+  "RES_FSNAME": "fsname",
+  "RES_GROUP": "group",
+  "RES_MFS": "/mfs",
+  "RES_MTIME": "mtime",
+  "RES_NAME": "name",
+  "RES_PATH": "path",
+  "RES_PERM": "perm",
+  "RES_SIZE": "size",
+  "RES_SYMLINKS": "symlinks",
+  "RES_TYPE": "type",
+  "RES_USER": "user",
+  "RES_USS_FILES": "/fs",
+  "RES_ZFS_FILES": "/mfs/zfs",
+  "VSAM_ALCUNIT_CHOICES": Array [
+    "CYL",
+    "TRK",
+    "MB",
+    "KB",
+    "REC",
+  ],
+  "VSAM_DSORG_CHOICES": Array [
+    "INDEXED",
+    "IXD",
+    "LINEAR",
+    "LIN",
+    "NONINDEXED",
+    "NIXD",
+    "NUMBERED",
+    "NUMD",
+    "ZFS",
+  ],
+}
+`;
+
+exports[`ZosFilesUtils CONSTANTS should check if constant files have the expected constants loaded 2`] = `
+Object {
+  "allDataSetsArchived": Object {
+    "message": "All data sets matching the selected pattern(s) were archived.",
+  },
+  "amsCommandExecutedSuccessfully": Object {
+    "message": "AMS command executed successfully.",
+  },
+  "attributeTitle": Object {
+    "message": "The following attributes are used during creation:
+",
+  },
+  "attributesFileNotFound": Object {
+    "message": "Attributes file {{file}} does not exist",
+  },
+  "commonFor": Object {
+    "message": "for",
+  },
+  "commonWithValue": Object {
+    "message": "with value",
+  },
+  "dataSetCreatedSuccessfully": Object {
+    "message": "Data set created successfully.",
+  },
+  "dataSetRenamedSuccessfully": Object {
+    "message": "Data set renamed successfully.",
+  },
+  "dataSetUploadedSuccessfully": Object {
+    "message": "Data set uploaded successfully.",
+  },
+  "dataSetsMatchedPattern": Object {
+    "message": "%d data set(s) were found matching pattern.",
+  },
+  "datasetCopiedAborted": Object {
+    "message": "Data set copied aborted. The existing target data set was not overwritten.",
+  },
+  "datasetCopiedAbortedNoPDS": Object {
+    "message": "Data set copied aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option.",
+  },
+  "datasetCopiedAbortedNoTargetDS": Object {
+    "message": "Data set copied aborted. The source data set was not found.",
+  },
+  "datasetCopiedAbortedTargetNotPDSMember": Object {
+    "message": "Data set copied aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option.",
+  },
+  "datasetCopiedSuccessfully": Object {
+    "message": "Data set copied successfully.",
+  },
+  "datasetDeletedSuccessfully": Object {
+    "message": "Data set deleted successfully.",
+  },
+  "datasetDeletionRequested": Object {
+    "message": "Data set deletion requested.",
+  },
+  "datasetDownloadFailed": Object {
+    "message": "Failed to download the following data sets: 
+",
+  },
+  "datasetDownloadedSuccessfully": Object {
+    "message": "Data set downloaded successfully.",
+  },
+  "datasetDownloadedWithDestination": Object {
+    "message": "Data set downloaded successfully.
+Destination: %s",
+  },
+  "datasetMemberCopiedAborted": Object {
+    "message": "Data set copied aborted. The existing target data set member was not overwritten.",
+  },
+  "datasetMigrationRequested": Object {
+    "message": "Data set migration requested.",
+  },
+  "datasetRecallRequested": Object {
+    "message": "Data set recall requested.",
+  },
+  "datasetRecalledSuccessfully": Object {
+    "message": "Data set recall requested.",
+  },
+  "datasetsDownloadedSuccessfully": Object {
+    "message": "Data sets matching pattern downloaded successfully.
+Destination: %s",
+  },
+  "errorParsingAttributesFile": Object {
+    "message": "Error parsing attributes file {{file}}: {{message}}",
+  },
+  "errorReadingAttributesFile": Object {
+    "message": "Could not read attributes file {{file}}: {{message}}",
+  },
+  "failedToDownloadDataSets": Object {
+    "message": "Failed to download data sets",
+  },
+  "fsMountedSuccessfully": Object {
+    "message": "File system mounted successfully.",
+  },
+  "fsUnmountedSuccessfully": Object {
+    "message": "File system unmounted successfully.",
+  },
+  "invalidAlcunitOption": Object {
+    "message": "Invalid zos-files create command 'alcunit' option: ",
+  },
+  "invalidAttributesSyntax": Object {
+    "message": "Syntax error on line {{lineNumber}} - expected <pattern> <local encoding> <remote encoding>.",
+  },
+  "invalidDsntypeOption": Object {
+    "message": "Invalid zos-files create command 'dsntype' option: ",
+  },
+  "invalidDsorgOption": Object {
+    "message": "Invalid zos-files create command 'dsorg' option: ",
+  },
+  "invalidFileName": Object {
+    "message": "Invalid file name. Please check the file name for typos.",
+  },
+  "invalidFilesCreateOption": Object {
+    "message": "Invalid zos-files create command option: ",
+  },
+  "invalidFilesMountOption": Object {
+    "message": "Invalid zos-files mount command option: ",
+  },
+  "invalidMountModeOption": Object {
+    "message": "Invalid zos-files mount command 'mode' value: ",
+  },
+  "invalidPODsorgDirblkCombination": Object {
+    "message": "'PO' data set organization (dsorg) specified and the directory blocks (dirblk) is zero.",
+  },
+  "invalidPSDsorgDirblkCombination": Object {
+    "message": "'PS' data set organization (dsorg) specified and the directory blocks (dirblk) is not zero.",
+  },
+  "invalidPermsOption": Object {
+    "message": "Invalid zos-files create command 'perms' option: ",
+  },
+  "invalidRecfmOption": Object {
+    "message": "Invalid zos-files create command 'recfm' option: ",
+  },
+  "longAmsStatement": Object {
+    "message": "Line %d is longer than %d characters (maximum allowed length)
+%s",
+  },
+  "maximumAllocationQuantityExceeded": Object {
+    "message": "Maximum allocation quantity of 16777215 exceeded",
+  },
+  "memberDownloadFailed": Object {
+    "message": "Failed to download the following members: 
+",
+  },
+  "missingDataSets": Object {
+    "message": "No list of data sets to download was passed.",
+  },
+  "missingDatasetLikeName": Object {
+    "message": "Specify the name of the data set to \\"allocate like\\" from.",
+  },
+  "missingDatasetName": Object {
+    "message": "Specify the data set name.",
+  },
+  "missingDatasetType": Object {
+    "message": "Specify the data set type.",
+  },
+  "missingFileSystemName": Object {
+    "message": "Specify the file system name.",
+  },
+  "missingFilesCreateOptions": Object {
+    "message": "No zos-files create command options.",
+  },
+  "missingFilesMountOptions": Object {
+    "message": "No zos-files mount command options.",
+  },
+  "missingFsOption": Object {
+    "message": "To mount a file system, the following option must be supplied: ",
+  },
+  "missingInputDir": Object {
+    "message": "Specify the input directory path.",
+  },
+  "missingInputDirectory": Object {
+    "message": "Specify directory path, to upload.",
+  },
+  "missingInputFile": Object {
+    "message": "Specify the input file and, if needed, the path.",
+  },
+  "missingMountPoint": Object {
+    "message": "Specify the mount point.",
+  },
+  "missingPatterns": Object {
+    "message": "No pattern to match data sets passed.",
+  },
+  "missingPayload": Object {
+    "message": "Specify the payload.",
+  },
+  "missingPrimary": Object {
+    "message": "Specify the primary allocation (primary) to create a data set.",
+  },
+  "missingRecordLength": Object {
+    "message": "Specify the record length (lrecl) to create a data set.",
+  },
+  "missingRequestType": Object {
+    "message": "Specify request type, file or directory.",
+  },
+  "missingRequiredTableParameters": Object {
+    "message": "Options 'depth', 'filesys', and 'symlinks' require a 'group', 'user', 'name', 'size', 'mtime', 'perm', or 'type' option to be specified.",
+  },
+  "missingStatements": Object {
+    "message": "Missing AMS statements to be submitted.",
+  },
+  "missingUSSDirName": Object {
+    "message": "Specify the USS directory name.",
+  },
+  "missingUSSDirectoryName": Object {
+    "message": "Specify the USS directory name.",
+  },
+  "missingUSSFileName": Object {
+    "message": "Specify the USS file name.",
+  },
+  "missingVsamOption": Object {
+    "message": "To create a VSAM cluster, the following option must be supplied: ",
+  },
+  "missingZfsOption": Object {
+    "message": "To create a z/OS file system, the following option must be supplied: ",
+  },
+  "noDataSetsInList": Object {
+    "message": "No data sets left after excluded pattern(s) were filtered out.",
+  },
+  "noDataSetsMatchingPattern": Object {
+    "message": "There are no data sets that match the provided pattern(s).",
+  },
+  "noDataSetsMatchingPatternRemain": Object {
+    "message": "After filtering out the archived files and files that match the exclusion-parameters, no data sets matching the supported organization type remain.",
+  },
+  "noMembersFound": Object {
+    "message": "No members found!",
+  },
+  "nodeJsFsError": Object {
+    "message": "Node.js File System API error",
+  },
+  "onlyEmptyPartitionedDataSets": Object {
+    "message": "Only empty partitioned data sets match the provided patterns.",
+  },
+  "pathIsNotDirectory": Object {
+    "message": "%s is not a directory",
+  },
+  "someDownloadsFailed": Object {
+    "message": "Some downloads failed, see error details above",
+  },
+  "unsupportedDataType": Object {
+    "message": "Unsupported data type 'record' specified for USS file operation.",
+  },
+  "unsupportedDatasetType": Object {
+    "message": "Unsupported data set type.",
+  },
+  "unsupportedMaskingInDataSetName": Object {
+    "message": "Unsupported masking character found in data set name.",
+  },
+  "uploadDirectoryToDatasetMember": Object {
+    "message": "Upload a directory to a data set member is not permitted",
+  },
+  "uploadDirectoryToPhysicalSequentialDataSet": Object {
+    "message": "Upload a directory with multiple files to a physical sequential data set is not permitted",
+  },
+  "ussCreatedSuccessfully": Object {
+    "message": "USS file or directory created successfully.",
+  },
+  "ussDirUploadedSuccessfully": Object {
+    "message": "Directory uploaded successfully.",
+  },
+  "ussFileDeletedSuccessfully": Object {
+    "message": "USS File or directory deleted successfully.",
+  },
+  "ussFileDownloadedSuccessfully": Object {
+    "message": "USS file downloaded successfully.",
+  },
+  "ussFileDownloadedWithDestination": Object {
+    "message": "USS file downloaded successfully.
+Destination: %s",
+  },
+  "ussFileUploadedSuccessfully": Object {
+    "message": "USS file uploaded successfully.",
+  },
+  "valueOutOfBounds": Object {
+    "message": "The {{optionName}} value = '{{value}}' must be between {{minValue}} and {{maxValue}}.",
+  },
+  "zfsCreatedSuccessfully": Object {
+    "message": "z/OS file system created successfully.",
+  },
+  "zfsDeletedSuccessfully": Object {
+    "message": "z/OS file system deleted successfully.",
+  },
+}
+`;

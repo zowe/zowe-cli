@@ -28,9 +28,9 @@ describe("ZosFilesUtils", () => {
             expect(ZosFilesUtils.DEFAULT_FILE_EXTENSION).toEqual("txt");
         });
 
-        it('should check if constant files are loaded and exist', () => {
-            expect(ZosFilesConstants).toBeDefined();
-            expect(ZosFilesMessages).toBeDefined();
+        it('should check if constant files have the expected constants loaded', () => {
+            expect(ZosFilesConstants).toMatchSnapshot();
+            expect(ZosFilesMessages).toMatchSnapshot();
         });
 
     });
