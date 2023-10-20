@@ -46,7 +46,8 @@ jobs:
       if: ${{ always() && matrix.os == 'windows-latest' }}
       run: |
         wmic computersystem set AutomaticManagedPagefile=False
-        wmic.exe pagefileset set InitialSize=4096,MaximumSize=4096
+        wmic pagefileset set InitialSize=4096,MaximumSize=4096
+        wmic pagefileset list /format:list
 
     - name: Checkout
       uses: actions/checkout@v3
