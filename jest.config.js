@@ -406,5 +406,13 @@ module.exports = {
         "text",
         "cobertura"
     ],
-    "coverageDirectory": "__tests__/__results__/unit/coverage"
+    "coverageDirectory": "__tests__/__results__/unit/coverage",
+    "collectCoverageFrom": [
+        "packages/**/*.ts",
+        "!**/packages/imperative/web-help/**/*.ts",
+        "!**/packages/**/__tests__/**/*.ts",
+        "__tests__/__packages__/*.ts",
+        "!**/node_modules/**",
+        "!**/lib/**"
+    ]
 }

@@ -403,7 +403,7 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
 export function createUniqueTestDataDir(append = ""): string {
     const app = uuidv4() + "/" + append + "/";
     const path = nodePath.resolve(TEST_RESULT_DIR + "/data/" + app);
-    mkdirpSync(path);
+    if (!fs.existsSync(path)) { fs.mkdirSync(path, {recursive: true}); }
     return path;
 }
 
