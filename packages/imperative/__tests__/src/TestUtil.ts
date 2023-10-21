@@ -24,6 +24,7 @@ import { ICommandResponse } from "../../src/cmd";
 import { ICompareParms } from "./doc/ICompareParms";
 import { TestLogger } from "./TestLogger";
 import * as nodePath from "path";
+import { mkdirpSync } from "fs-extra";
 import * as fs from "fs";
 import { randomBytes } from "crypto";
 import * as os from "os";
@@ -402,7 +403,7 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
 export function createUniqueTestDataDir(append = ""): string {
     const app = uuidv4() + "/" + append + "/";
     const path = nodePath.resolve(TEST_RESULT_DIR + "/data/" + app);
-    if (!fs.existsSync(path)) { fs.mkdirSync(path, {recursive: true}); }
+    mkdirpSync(path);
     return path;
 }
 

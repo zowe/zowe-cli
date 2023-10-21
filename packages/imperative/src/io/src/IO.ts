@@ -18,6 +18,7 @@ import { ImperativeExpect } from "../../expect";
 // use complete path to ExecUtils to avoid circular dependency that results from utilities/index
 import { ExecUtils } from "../../utilities/src/ExecUtils";
 import { Readable, Writable } from "stream";
+import { mkdirpSync } from "fs-extra";
 
 /**
  * This class will handle common sequences of node I/O and issue messages /
@@ -196,14 +197,14 @@ export class IO {
     }
 
     /**
-     * create a directory (and all subdirectories)
+     * Uses the fs-extra package to create a directory (and all subdirectories)
      * @static
      * @param {string} dir - the directory (do not include a file name)
      * @memberof IO
      */
     public static mkdirp(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        if (!fs.existsSync(dir)){ fs.mkdirSync(dir, {recursive: true}); }
+        mkdirpSync(dir);
     }
 
     /**

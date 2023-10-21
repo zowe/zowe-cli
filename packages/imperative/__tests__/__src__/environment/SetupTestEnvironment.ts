@@ -13,8 +13,8 @@ import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ImperativeExpect } from "../../../src";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
+import { mkdirpSync } from "fs-extra";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { mkdirSync, existsSync } from "fs";
 const uuidv4 = require("uuid/v4");
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -79,7 +79,7 @@ export class SetupTestEnvironment {
     public static createUniqueTestDataDir(testName: string): string {
         const app = uuidv4() + "_" + testName + "/";
         const path = nodePath.resolve(TEST_RESULT_DATA_DIR + "/" + app);
-        if (!existsSync(path)) { mkdirSync(path, {recursive: true}); }
+        mkdirpSync(path);
         return path;
     }
 }
