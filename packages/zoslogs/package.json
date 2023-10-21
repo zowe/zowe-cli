@@ -40,6 +40,7 @@
     "lint:packages": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
+    "test:unit": "cd ../../ && npm run test:unit:all -- --selectProjects 'z/OS Logs SDK'",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "prepack": "node ../../scripts/prepareLicenses.js"
