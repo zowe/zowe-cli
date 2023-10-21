@@ -32,8 +32,7 @@
     "clean": "rimraf lib",
     "lint": "npm run lint:packages",
     "lint:packages": "eslint \"src/**/*.ts\"",
-    "prepack": "node ../../../scripts/prepareLicenses.js",
-    "test:unit": "echo 'Test SDK has no tests'"
+    "prepack": "node ../../../scripts/prepareLicenses.js"
   },
   "dependencies": {
     "find-up": "^5.0.0",

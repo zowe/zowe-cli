@@ -17,7 +17,6 @@ const sharedConfig = {
         "escapeString": true,
         "printBasicPrototype": true
     },
-    "maxWorkers": "50%",
     "workerIdleMemoryLimit": "2GB",
     "transform": {
         "\\.ts$": ["ts-jest", { "disableSourceMapSupport": true }]
@@ -27,7 +26,10 @@ const sharedConfig = {
         "ts",
         "js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+        "node_modules"
+    ]
 }
 
 const projectConfig = {
@@ -35,352 +37,72 @@ const projectConfig = {
         {
             "displayName": "Test SDK",
             ...sharedConfig,
-            "testPathIgnorePatterns": [
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["__tests__/__packages__/cli-test-utils", "mocks"],
         },
         {
             "displayName": "Zowe CLI",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/cli/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ],
-            "modulePathIgnorePatterns": [
-                "__tests__/__snapshots__/",
-                ".*/node_modules/.*",
-                ".*/lib/.*"
-            ]
+            "roots": ["packages/cli", "mocks"],
         },
         {
             "displayName": "Imperative",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/imperative/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/imperative", "mocks"],
         },
         {
             "displayName": "Core SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/core/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/core", "mocks"],
         },
         {
             "displayName": "Provisioning SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/provisioning/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/provisioning", "mocks"],
         },
         {
             "displayName": "Secrets SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/secrets/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/secrets", "mocks"],
         },
         {
             "displayName": "Workflows SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/workflows/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/workflows", "mocks"],
         },
         {
             "displayName": "z/OS Console SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zosconsole/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/zosconsole", "mocks"],
         },
         {
             "displayName": "z/OS Files SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zosfiles/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/zosfiles", "mocks"],
         },
         {
             "displayName": "z/OS Jobs SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zosjobs/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/zosjobs", "mocks"],
         },
         {
             "displayName": "z/OS Logs SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zoslogs/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/zoslogs", "mocks"],
         },
         {
             "displayName": "z/OSMF SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zosmf/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zostso",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/zosmf", "mocks"],
         },
         {
             "displayName": "z/OS TSO SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zostso/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zosuss",
-                "node_modules"
-            ]
+            "roots": ["packages/zostso", "mocks"],
         },
         {
             "displayName": "z/OS USS SDK",
             ...sharedConfig,
-            "collectCoverageFrom": [
-                "packages/zosuss/src/**/*.ts",
-                "!packages/*/src/**/doc/I*.ts",
-                "!packages/cli/src/main.ts"
-            ],
-            "testPathIgnorePatterns": [
-                "<rootDir>/__tests__",
-                "<rootDir>/packages/cli",
-                "<rootDir>/packages/core",
-                "<rootDir>/packages/imperative",
-                "<rootDir>/packages/provisioning",
-                "<rootDir>/packages/secrets",
-                "<rootDir>/packages/workflows",
-                "<rootDir>/packages/zosconsole",
-                "<rootDir>/packages/zosfiles",
-                "<rootDir>/packages/zosjobs",
-                "<rootDir>/packages/zoslogs",
-                "<rootDir>/packages/zosmf",
-                "<rootDir>/packages/zostso",
-                "node_modules"
-            ]
+            "roots": ["packages/zosuss", "mocks"],
         }
     ]
 }
@@ -414,5 +136,6 @@ module.exports = {
         "__tests__/__packages__/*.ts",
         "!**/node_modules/**",
         "!**/lib/**"
-    ]
+    ],
+    "maxWorkers": "50%",
 }

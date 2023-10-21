@@ -37,7 +37,6 @@
     "watch": "concurrently \"tsc --pretty --watch\" \"npm run watch:webHelp\"",
     "build:webHelp": "cd web-help && npm run build",
     "watch:webHelp": "cd web-help && npm run watch",
-    "test:unit": "cd ../../ && npm run test:unit:all -- --selectProjects 'Imperative'",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "prepack": "node ../../scripts/prepareLicenses.js",

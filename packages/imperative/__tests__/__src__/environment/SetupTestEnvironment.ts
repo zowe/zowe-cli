@@ -14,7 +14,7 @@ import { ImperativeExpect } from "../../../src";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { fstat, mkdirSync, existsSync } from "fs";
+import { mkdirSync, existsSync } from "fs";
 const uuidv4 = require("uuid/v4");
 /**
  * Use the utility methods here to setup the test environment for running APIs
