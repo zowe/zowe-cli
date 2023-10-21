@@ -56,7 +56,7 @@
     "fast-glob": "3.2.7",
     "fastest-levenshtein": "1.0.12",
     "find-up": "4.1.0",
-    "fs-extra": "8.1.0",
+    "fs-extra": "11.1.0",
     "jest-diff": "27.0.6",
     "js-yaml": "4.1.0",
     "jsonfile": "4.0.0",
