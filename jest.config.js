@@ -1,6 +1,5 @@
 const sharedConfig = {
-    "globalSetup": "./__tests__/setup.js",
-    "globalTeardown": "./__tests__/teardown.js",
+    "globalTeardown": "<rootDir>/__tests__/teardown.js",
     "watchPathIgnorePatterns": [
         ".*jest-stare.*\\.js"
     ],
@@ -10,7 +9,7 @@ const sharedConfig = {
         ".*/lib/.*"
     ],
     "setupFilesAfterEnv": [
-        "./__tests__/beforeTests.js"
+        "<rootDir>/__tests__/beforeTests.js"
     ],
     "transformIgnorePatterns": [ "^.+\\.js$", "^.+\\.json$" ],
     "snapshotFormat": {

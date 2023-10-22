@@ -10,3 +10,7 @@
 */
 
 jest.setTimeout(60000);
+
+beforeAll(() => {
+    require('events').EventEmitter.defaultMaxListeners = Infinity;
+});
