@@ -49,11 +49,9 @@ describe("Plugin Management Facility", () => {
     });
 
     require("../plugins/suites/InstallingPlugins");
-    /* zzz
     require("../plugins/suites/ValidatePlugin");
     require("../plugins/suites/UsingPlugins");
     require("../plugins/suites/UninstallPlugins");
     require("../plugins/suites/ListPlugins");
     require("../plugins/suites/UpdatePlugins");
-    zzz */
 });
