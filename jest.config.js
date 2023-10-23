@@ -42,66 +42,79 @@ const projectConfig = {
             "displayName": "Zowe CLI",
             ...sharedConfig,
             "roots": ["packages/cli", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!cli)"]
         },
         {
             "displayName": "Imperative",
             ...sharedConfig,
             "roots": ["packages/imperative", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!imperative)"]
         },
         {
             "displayName": "Core SDK",
             ...sharedConfig,
             "roots": ["packages/core", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!core)"]
         },
         {
             "displayName": "Provisioning SDK",
             ...sharedConfig,
             "roots": ["packages/provisioning", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!provisioning)"]
         },
         {
             "displayName": "Secrets SDK",
             ...sharedConfig,
             "roots": ["packages/secrets", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!secrets)"]
         },
         {
             "displayName": "Workflows SDK",
             ...sharedConfig,
             "roots": ["packages/workflows", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!workflows)"]
         },
         {
             "displayName": "z/OS Console SDK",
             ...sharedConfig,
             "roots": ["packages/zosconsole", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zosconsole)"]
         },
         {
             "displayName": "z/OS Files SDK",
             ...sharedConfig,
             "roots": ["packages/zosfiles", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zosfiles)"]
         },
         {
             "displayName": "z/OS Jobs SDK",
             ...sharedConfig,
             "roots": ["packages/zosjobs", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zosjobs)"]
         },
         {
             "displayName": "z/OS Logs SDK",
             ...sharedConfig,
             "roots": ["packages/zoslogs", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zoslogs)"]
         },
         {
             "displayName": "z/OSMF SDK",
             ...sharedConfig,
             "roots": ["packages/zosmf", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zosmf)"]
         },
         {
             "displayName": "z/OS TSO SDK",
             ...sharedConfig,
             "roots": ["packages/zostso", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zostso)"]
         },
         {
             "displayName": "z/OS USS SDK",
             ...sharedConfig,
             "roots": ["packages/zosuss", "mocks"],
+            "coveragePathIgnorePatterns": ["packages/(?!zosuss)"]
         }
     ]
 }
