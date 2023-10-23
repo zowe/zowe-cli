@@ -26,6 +26,7 @@
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
     "pretest:integration": "node scripts/sampleCliTool.js install",
     "test:integration": "npm-run-all test:integration:main test:integration:imperative test:integration:combine --continue-on-error",
+    "test:integration:inband": "npm run pretest:integration && env-cmd -f __tests__/__resources__/env/integration.env --no-override jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts$\" --coverage false --runInBand && npm run posttest:integration",
     "test:integration:main": "env-cmd -f __tests__/__resources__/env/integration.env --no-override jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts$\" --coverage false --ignoreProjects 'Imperative'",
     "test:integration:imperative": "env-cmd -f __tests__/__resources__/env/integration-imperative.env --no-override jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts$\" --coverage false --runInBand --selectProjects 'Imperative'",
     "test:integration:combine": "jrm '__tests__/__results__/integration/junit.xml' '__tests__/__results__/integration/*.xml'",
