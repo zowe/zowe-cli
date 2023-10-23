@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "imperative";
+import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 export default class FooHandler implements ICommandHandler {
     public process(params: IHandlerParameters): Promise<void>;
 }

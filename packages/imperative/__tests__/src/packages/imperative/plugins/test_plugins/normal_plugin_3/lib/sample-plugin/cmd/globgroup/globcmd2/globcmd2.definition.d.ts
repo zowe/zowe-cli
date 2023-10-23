@@ -9,5 +9,5 @@
 *
 */
 
-import { ICommandDefinition } from "imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 export declare const GlobCmd2Definition: ICommandDefinition;

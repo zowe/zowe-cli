@@ -9,5 +9,5 @@
 *
 */
 
-import { ICommandProfileTypeConfiguration } from "imperative";
+import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
 export declare const FooProfileConfig: ICommandProfileTypeConfiguration;

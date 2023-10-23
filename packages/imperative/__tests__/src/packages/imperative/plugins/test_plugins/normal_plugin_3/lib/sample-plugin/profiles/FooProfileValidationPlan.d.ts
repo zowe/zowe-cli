@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfileValidationPlan, IProfileValidationTask } from "imperative";
+import { IProfileValidationPlan, IProfileValidationTask } from "@zowe/imperative";
 declare class FooProfileValidationPlan implements IProfileValidationPlan {
     public readonly tasks: IProfileValidationTask[];
     public readonly failureSuggestions: string;
