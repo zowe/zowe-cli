@@ -11,6 +11,10 @@
 
 jest.setTimeout(60000);
 
+// Set this to be true always in case someone runs npx jest
+process.env.CLI_TEST_UTILS_USE_PROJECT_ROOT_DIR = true;
+
 beforeAll(() => {
+    // If the worker runs out of memory, this needs to be reset
     require('events').EventEmitter.defaultMaxListeners = Infinity;
 });

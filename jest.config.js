@@ -34,9 +34,9 @@ const sharedConfig = {
 const projectConfig = {
     "projects": [
         {
-            "displayName": "Test SDK",
+            "displayName": "Global Tests",
             ...sharedConfig,
-            "roots": ["__tests__/__packages__/cli-test-utils", "mocks"],
+            "roots": ["__tests__", "mocks"],
         },
         {
             "displayName": "Zowe CLI",
@@ -136,5 +136,5 @@ module.exports = {
         "!**/node_modules/**",
         "!**/lib/**"
     ],
-    "maxWorkers": "50%",
+    "maxWorkers": "67%", // You may need to specify maxWorkers if you run out of RAM
 }
