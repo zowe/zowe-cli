@@ -66,20 +66,27 @@ describe("We should provide auto-generated profile commands for convenience, " +
     it("If we turn off  auto-generating profile commands, " +
         "commands should NOT be generated for each profile type", () => {
         const cliBinNoCommands = __dirname + "/../ProfileExampleCLINoAutoGen.ts";
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "--help"], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "--help"],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
         // validate commands have been generated for each type of profile
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "create"], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "create"],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "create", profileTypeA], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "create", profileTypeA],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "set"], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "set"],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "list"], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "list"],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "delete"], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "delete"],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
-        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "update"], ["Error"],
+        T.findExpectedOutputInCommand(cliBinNoCommands, ["profiles", "update"],
+            ["Command failed due to improper syntax", "Unknown group: profiles"],
             "stderr", false, this);
     });
 
