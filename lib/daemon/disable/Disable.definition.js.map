@@ -1,1 +1,0 @@
-{"version":3,"file":"Disable.definition.js","sourceRoot":"","sources":["../../../src/daemon/disable/Disable.definition.ts"],"names":[],"mappings":";AAAA;;;;;;;;;EASE;;;AAIW,QAAA,cAAc,GAAuB;IAC9C,IAAI,EAAE,SAAS;IACf,WAAW,EAAE,iDAAiD;IAC9D,IAAI,EAAE,SAAS;IACf,OAAO,EAAE,SAAS,GAAG,kBAAkB;IACvC,QAAQ,EAAE;QACN;YACI,WAAW,EAAE,qBAAqB;YAClC,OAAO,EAAE,EAAE;SACd;KACJ;CACJ,CAAC"}

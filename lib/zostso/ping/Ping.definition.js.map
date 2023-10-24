@@ -1,1 +1,0 @@
-{"version":3,"file":"Ping.definition.js","sourceRoot":"","sources":["../../../src/zostso/ping/Ping.definition.ts"],"names":[],"mappings":";AAAA;;;;;;;;;EASE;;;AAGF,6FAAgG;AAEnF,QAAA,WAAW,GAAuB;IAC3C,IAAI,EAAE,MAAM;IACZ,OAAO,EAAE,EAAE;IACX,IAAI,EAAE,OAAO;IACb,OAAO,EAAE,0BAA0B;IACnC,WAAW,EAAE,uCAAuC;QACpD,qEAAqE;IACrE,QAAQ,EAAE;QACN,+DAAiC;KACpC;CACJ,CAAC"}
