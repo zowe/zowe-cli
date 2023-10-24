@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.18.8`
 
 - BugFix: Fix bug where encoding is not passed to the Download USS Directory API [#1825](https://github.com/zowe/zowe-cli/issues/1825)
 

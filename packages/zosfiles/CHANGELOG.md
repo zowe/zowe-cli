@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.18.8`
 - Enhancement: Patch that adds invalidFileName to ZosFilesMessages
 
 ## `7.18.0`
