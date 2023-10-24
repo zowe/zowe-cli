@@ -1,0 +1,1 @@
+{"version":3,"file":"Start.definition.js","sourceRoot":"","sources":["../../../src/workflows/start/Start.definition.ts"],"names":[],"mappings":";AAAA;;;;;;;;;EASE;;;AAGF,oFAAsE;AACtE,oFAAsE;AAGtE;;;;;GAKG;AACU,QAAA,eAAe,GAAuB;IAC/C,IAAI,EAAE,OAAO;IACb,OAAO,EAAE,CAAC,KAAK,CAAC;IAChB,IAAI,EAAE,OAAO;IACb,WAAW,EAAE,2CAA2C;IACxD,QAAQ,EAAE;QACN,sCAAY;QACZ,sCAAY;KACf;CACJ,CAAC"}

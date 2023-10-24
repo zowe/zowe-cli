@@ -1,0 +1,1 @@
+{"version":3,"file":"Collect.definition.js","sourceRoot":"","sources":["../../../src/zosconsole/collect/Collect.definition.ts"],"names":[],"mappings":";AAAA;;;;;;;;;EASE;;;AAGF,wEAA+E;AAElE,QAAA,cAAc,GAAuB;IAC9C,IAAI,EAAE,SAAS;IACf,IAAI,EAAE,OAAO;IACb,OAAO,EAAE,wCAAwC;IACjD,WAAW,EAAE,sGAAsG;QACnH,uEAAuE;IACvE,QAAQ,EAAE;QACN,mDAA6B;KAChC;CACJ,CAAC"}

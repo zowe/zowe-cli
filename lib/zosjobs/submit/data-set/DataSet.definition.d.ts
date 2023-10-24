@@ -1,0 +1,2 @@
+import { ICommandDefinition } from "@zowe/imperative";
+export declare const DataSetDefinition: ICommandDefinition;
