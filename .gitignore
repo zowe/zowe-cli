@@ -96,9 +96,7 @@ imperative_debug.log
 *.bat
 
 # we do not commit lib files
-/__tests__/__packages__/cli-test-utils/lib/
-/packages/*/lib/
-/packages/imperative/__tests__/**/lib/
+**/lib/
 # we DO commit pre-compiled plugin test modules
 !/packages/imperative/__tests__/src/packages/imperative/plugins/test_plugins/*/lib/
 
