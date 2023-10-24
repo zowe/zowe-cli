@@ -30,6 +30,8 @@ describe("cmd-cli respond with-syntax-errors", () => {
             TEST_ENVIRONMENT.workingDir);
         expect(response.stdout.toString()).toBe("");
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
+
+        const regex = /(Unexpected token d in JSON at position 1)|(Expected property name or '}' in JSON at position 1)/;
+        expect(response.stderr.toString()).toMatch(regex);
     });
 });

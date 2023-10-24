@@ -58,11 +58,9 @@
     "glob": "^7.1.6",
     "husky": "^6.0.0",
     "jest": "^28.1.3",
-    "jest-cli": "^29.0.0",
     "jest-environment-node": "^28.0.0",
     "jest-environment-node-debug": "^2.0.0",
     "jest-junit": "^12.0.0",
-    "jest-sonar-reporter": "^2.0.0",
     "jest-stare": "^2.2.0",
     "js-yaml": "^4.1.0",
     "jsonfile": "^4.0.0",
@@ -84,6 +82,8 @@
         "disableSourceMapSupport": true
       }
     },
+    "globalSetup": "./__tests__/setup.js",
+    "globalTeardown": "./__tests__/teardown.js",
     "watchPathIgnorePatterns": [
       ".*jest-stare.*\\.js"
     ],
@@ -95,7 +95,19 @@
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
-    "testResultsProcessor": "jest-stare",
+    "transformIgnorePatterns": [ "^.+\\.js$", "^.+\\.json$" ],
+    "reporters": [
+      "default",
+      ["jest-junit", {
+        "outputDirectory": "__tests__/__results__",
+        "reportTestSuiteErrors": true
+      }],
+      ["jest-stare", {
+        "resultDir": "__tests__/__results__/jest-stare",
+        "coverageLink": "../unit/coverage/lcov-report/index.html"
+      }],
+      ["github-actions", { "silent": false } ]
+    ],
     "transform": {
       "\\.ts$": "ts-jest"
     },
@@ -106,33 +118,16 @@
     ],
     "testEnvironment": "node",
     "collectCoverageFrom": [
-      "packages/**/*.ts",
-      "!**/__tests__/**",
-      "!packages/**/doc/I*.ts",
-      "!**/main.ts"
+      "packages/*/src/**/*.ts",
+      "!packages/*/src/**/doc/I*.ts",
+      "!packages/cli/src/main.ts"
     ],
-    "collectCoverage": false,
     "coverageReporters": [
       "json",
       "lcov",
       "text",
       "cobertura"
     ],
-    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
-  },
-  "jestSonar": {
-    "reportPath": "__tests__/__results__/jest-sonar"
-  },
-  "jest-stare": {
-    "resultDir": "__tests__/__results__/jest-stare",
-    "coverageLink": "../unit/coverage/lcov-report/index.html",
-    "additionalResultsProcessors": [
-      "jest-junit",
-      "jest-sonar-reporter"
-    ]
-  },
-  "jest-junit": {
-    "outputDirectory": "__tests__/__results__",
-    "reportTestSuiteErrors": true
+    "coverageDirectory": "__tests__/__results__/unit/coverage"
   }
 }

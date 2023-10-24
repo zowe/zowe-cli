@@ -64,15 +64,14 @@ fabric.properties
 !/.idea/artifacts/
 /.idea/dictionaries/
 /gui/BrightSide-win32-x64/
-**/lib/
 typings/
 /gui/BrightSide-linux-x64/
 /gui/BrightSide-darwin-x64/
 /brightside.iml
 /config/
 **/docs/typedoc/
-**/__tests__/__results__/
-packages/zosunix/__tests__/__results__/
+__tests__/__results__/
+packages/**/__tests__/__results__/
 /__tests__/tmpproj/
 /__tests__/src/locales
 /.nyc_output
@@ -96,7 +95,13 @@ imperative_debug.log
 
 *.bat
 
-/packages/cli/lib
+# we do not commit lib files
+/__tests__/__packages__/cli-test-utils/lib/
+/packages/*/lib/
+/packages/imperative/__tests__/**/lib/
+# we DO commit pre-compiled plugin test modules
+!/packages/imperative/__tests__/src/packages/imperative/plugins/test_plugins/*/lib/
+
 /packages/cli/__tests__/__results__
 /packages/cli/prebuilds
 zowe.config.json

@@ -699,6 +699,10 @@ export abstract class AbstractRestClient {
                 causeErrors: this.dataString,
                 source: "http"
             }));
+        } else if (this.mResponseStream != null && this.mResponseStream.writableEnded) {
+            // This will correct any instances where the finished event does not get emitted
+            // even though the stream processing has ended.
+            this.mResolve(this.dataString);
         } else if (this.mResponseStream != null && !this.mResponseStream.writableFinished) {
             this.mResponseStream.on("finish", () => this.mResolve(this.dataString));
         } else {

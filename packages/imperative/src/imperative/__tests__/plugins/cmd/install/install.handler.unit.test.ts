@@ -37,6 +37,7 @@ jest.doMock("path", () => {
     };
 });
 
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
 import { install } from "../../../../src/plugins/utilities/npm-interface";
@@ -49,7 +50,6 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
 import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 
 let expectedVal: unknown;
 let returnedVal: unknown;

@@ -34,5 +34,6 @@
   ],
   "files": [
     "../../__types__/wontache.d.ts"
-  ]
+  ],
+  "allowJs": true
 }

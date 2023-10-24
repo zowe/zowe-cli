@@ -14,6 +14,7 @@ import Mock = jest.Mock;
 jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeConfig } from "../../../../../utilities/src/ImperativeConfig";
 import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
 import { resolve } from "path";
@@ -22,7 +23,6 @@ import FirststepsHandler from "../../../../src/plugins/cmd/showfirststeps/showfi
 import { ImperativeError } from "../../../../../error/src/ImperativeError";
 import { IPluginCfgProps } from "../../../../src/plugins/doc/IPluginCfgProps";
 import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 
 describe("Plugin first steps command handler", () => {
 

@@ -21,6 +21,7 @@ jest.mock("../../../../../cmd/src/response/HandlerResponse");
 jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
 jest.mock("../../../../../logger");
 
+import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { CredentialManagerOverride } from "../../../../../security";
@@ -36,7 +37,6 @@ import * as ChildProcesses from "child_process";
 import * as JsonFile from "jsonfile";
 import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
 import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 
 describe("Plugin Management Facility uninstall handler", () => {
 
