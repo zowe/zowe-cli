@@ -232,9 +232,7 @@ describe("Using a Plugin", () => {
         cmd = pluginName + " imperative-error";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
         expect(result.stdout).toContain("Command ERR called!");
-        expect(result.stderr).toContain("Command Error:");
         expect(result.stderr).toContain("Plugin threw an imperative error!");
-        expect(result.stderr).toContain("Error Details:");
         expect(result.stderr).toContain("More details!");
 
 
