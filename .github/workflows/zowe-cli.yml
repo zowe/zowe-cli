@@ -35,7 +35,7 @@ jobs:
       NODE: ${{ matrix.node-version }}
       NODE_OPTIONS: --max_old_space_size=4096
 
-    timeout-minutes: 60
+    timeout-minutes: 75
 
     concurrency:
       group: ${{ matrix.os }}-node-${{ matrix.node-version }}-ci-${{ github.ref }}
@@ -122,8 +122,6 @@ jobs:
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit
-      env:
-        NODE_OPTIONS: --max_old_space_size=8192
 
     - name: Unlock Keyring
       id: unlock-keyring
@@ -141,7 +139,7 @@ jobs:
 
     - name: Integration Tests (Daemon)
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: npm run test:integration -- --runInBand
+      run: npm run test:integration:inband
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}

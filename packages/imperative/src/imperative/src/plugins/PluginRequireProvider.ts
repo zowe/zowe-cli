@@ -11,7 +11,6 @@
 
 import Module = require("module");
 
-import { PerfTiming } from "@zowe/perf-timing";
 import { ImperativeConfig } from "../../../utilities";
 import * as path from "path";
 import * as findUp from "find-up";
@@ -127,17 +126,6 @@ export class PluginRequireProvider {
      * @param modules The modules that should be injected from the runtime instance
      */
     private constructor(private readonly modules: string[]) {
-        if (PerfTiming.isEnabled) {
-            // Stop tracking time of module imports before the module loader was created.
-            // Effectively we are renaming the timer so we will have 2 metrics:
-            //      All imports that happened before the module loader initialized
-            //      All imports after the module loader initialized.
-            Module.prototype.require = PerfTiming.api.unwatch(Module.prototype.require);
-            Module.prototype.require = PerfTiming.api.watch(
-                Module.prototype.require,
-                `${Module.prototype.require.name} injected from module loader`
-            );
-        }
 
         const hostPackageRoot = path.join(
             findUp.sync("package.json", {cwd: ImperativeConfig.instance.callerLocation}),
@@ -175,7 +163,7 @@ export class PluginRequireProvider {
 
         // Timerify the function if needed
         // Gave it a name so that we can more easily track it
-        Module.prototype.require = PerfTiming.api.watch<any>(function PluginModuleLoader(...args: any[]) {
+        Module.prototype.require = function PluginModuleLoader(...args: any[]) {
             // Check to see if the module should be injected
             const request: string = args[0];
             const doesUseOverrides = request.match(regex);
@@ -197,6 +185,6 @@ export class PluginRequireProvider {
                 // Otherwise use the package dependencies
                 return origRequire.apply(this, args);
             }
-        });
+        } as any;
     }
 }
