@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Patch that adds invalidFileName to ZosFilesMessages
+
 ## `7.18.0`
 
 - BugFix: Fixed error when listing data set members that include double quote in the name.
