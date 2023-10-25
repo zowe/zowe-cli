@@ -2,13 +2,11 @@ module.exports = {
     branches: [
         {
             name: "master",
-            level: "minor",
-            dependencies: ["@zowe/perf-timing"]
+            level: "minor"
         },
         {
             name: "zowe-v?-lts",
-            level: "patch",
-            dependencies: ["@zowe/perf-timing"]
+            level: "patch"
         }
         // {
         //     name: "next",
