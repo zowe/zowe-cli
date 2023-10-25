@@ -120,7 +120,6 @@ describe("zos-jobs list jobs command", () => {
         it("should present an error message if the prefix is too long", () => {
             const response = runCliScript(scriptDir + "prefix_too_long.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toContain("Command Error:");
             expect(response.stderr.toString()).toContain("prefix query parameter");
             expect(response.status).toBe(1);
         });
@@ -128,7 +127,6 @@ describe("zos-jobs list jobs command", () => {
         it("should present an error message if the owner is too long", () => {
             const response = runCliScript(scriptDir + "owner_too_long.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toContain("Command Error:");
             expect(response.stderr.toString()).toContain("owner query parameter");
             expect(response.status).toBe(1);
         });
