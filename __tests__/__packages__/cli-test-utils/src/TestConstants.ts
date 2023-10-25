@@ -60,6 +60,8 @@ function projectRootDir() {
     };
 
     const testRootDir = getTestRootDir(finalProjectRootDir);
+
+    if (process.env.CLI_TEST_UTILS_USE_PROJECT_ROOT_DIR && lernaTestDirExists) { return finalProjectRootDir; }
     // lernaTestDirExists == true XOR (finalProjectRootDir == testRootDir)
     TEST_USING_WORKSPACE = lernaTestDirExists ? finalProjectRootDir != testRootDir : finalProjectRootDir == testRootDir;
     return TEST_USING_WORKSPACE ? testRootDir : finalProjectRootDir;

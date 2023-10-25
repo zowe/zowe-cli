@@ -9,7 +9,6 @@
 *
 */
 
-import { PerfTiming } from "@zowe/perf-timing";
 import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
 import { UpdateImpConfig } from "../../src/UpdateImpConfig";
 import { isAbsolute, join } from "path";
@@ -389,13 +388,6 @@ export class PluginManagementFacility {
      */
     private addPluginToHostCli(pluginCfgProps: IPluginCfgProps): void {
 
-        const timingApi = PerfTiming.api;
-
-        if (PerfTiming.isEnabled) {
-            // Marks point START
-            timingApi.mark("START_ADD_PLUGIN");
-        }
-
         /* Form a top-level command group for this plugin.
          * Resolve all means of command definition into the pluginCmdGroup.children
          */
@@ -474,13 +466,6 @@ export class PluginManagementFacility {
                 this.removeCmdGrpFromResolvedCliCmdTree(pluginCmdGroup);
             }
         }
-
-        if (PerfTiming.isEnabled) {
-            // Marks point END
-            timingApi.mark("END_ADD_PLUGIN");
-            timingApi.measure("Add plugin completed: " + pluginCfgProps.impConfig.name, "START_ADD_PLUGIN", "END_ADD_PLUGIN");
-        }
-
     }
 
     // __________________________________________________________________________
@@ -853,13 +838,6 @@ export class PluginManagementFacility {
 
         // use the core imperative loader because it will load config modules
 
-        const timingApi = PerfTiming.api;
-
-        if (PerfTiming.isEnabled) {
-            // Marks point START
-            timingApi.mark("START_LOAD_PLUGIN");
-        }
-
         let pluginConfig: IImperativeConfig;
         try {
             pluginConfig = ConfigurationLoader.load(
@@ -873,12 +851,6 @@ export class PluginManagementFacility {
                 "\nReason = " + impError.message
             );
             return null;
-        }
-
-        if (PerfTiming.isEnabled) {
-            // Marks point END
-            timingApi.mark("END_LOAD_PLUGIN");
-            timingApi.measure("Load plugin completed", "START_LOAD_PLUGIN", "END_LOAD_PLUGIN");
         }
 
         pluginCfgProps.impConfig = pluginConfig;
