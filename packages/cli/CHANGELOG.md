@@ -5,8 +5,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Incorporate all source code from the zowe/imperative Github repository into the zowe/zowe-cli repository. This change should have no user impact.
-- BugFix: Fix bug where encoding is not passed to the Download USS Directory API [#1825](https://github.com/zowe/zowe-cli/issues/1825)
 - BugFix: Removed out of date `Perf-Timing` performance timing package.
+
+## `7.18.8`
+
+- BugFix: Fix bug where encoding is not passed to the Download USS Directory API [#1825](https://github.com/zowe/zowe-cli/issues/1825)
 
 ## `7.18.7`
 
