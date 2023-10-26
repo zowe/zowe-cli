@@ -63,12 +63,6 @@ jobs:
     - name: Install Dependencies
       run: npm ci
 
-    - name: Update Dependencies
-      id: npm-update
-      uses: zowe-actions/octorelease/script@v1
-      with:
-        script: npmUpdate
-
     - name: Use Original NPM Version
       id: original-npm-version
       run: npm install -g npm@${{ steps.npm-version.outputs.number || '9' }}
@@ -175,15 +169,6 @@ jobs:
 
     - name: Install Dependencies
       run: npm ci
-
-    - name: Update Dependencies
-      uses: zowe-actions/octorelease/script@v1
-      env:
-        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
-        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
-        NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
-      with:
-        script: npmUpdate
 
     - name: Build Source
       run: npm run build
