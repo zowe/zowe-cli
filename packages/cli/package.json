@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.18.8",
-    "@zowe/imperative": "7.18.9",
+    "@zowe/imperative": "5.18.2",
     "@zowe/provisioning-for-zowe-sdk": "7.18.8",
     "@zowe/zos-console-for-zowe-sdk": "7.18.8",
     "@zowe/zos-files-for-zowe-sdk": "7.18.9",
