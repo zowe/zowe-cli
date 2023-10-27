@@ -1,0 +1,23 @@
+{
+    "$schema": "./test.schema.good.modified.json",
+    "profiles": {
+        "secured": {
+            "type": "secured",
+            "properties": {},
+            "secure": []
+        },
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "fakeHost",
+                "port": 1234
+            },
+            "secure": [
+                "user",
+                "password",
+                "tokenType"
+            ]
+        }
+    },
+    "defaults": {}
+}

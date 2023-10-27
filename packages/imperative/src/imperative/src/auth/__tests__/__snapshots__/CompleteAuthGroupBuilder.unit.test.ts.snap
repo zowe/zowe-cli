@@ -1,0 +1,388 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompleteAuthGroupBuilder should create complete auth group given an auth config object and an auth group config object 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "aliases": Array [
+        "li",
+      ],
+      "children": Array [
+        Object {
+          "customize": Object {},
+          "description": "Fake login command",
+          "examples": Array [
+            Object {
+              "description": "Fake login example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "st",
+              ],
+              "description": "Show the token when login is successful. If specified, does not save the token to a profile.",
+              "name": "show-token",
+              "type": "boolean",
+            },
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log in to fakeService authentication service",
+          "type": "command",
+        },
+        Object {
+          "customize": Object {},
+          "description": "Fake login command",
+          "examples": Array [
+            Object {
+              "description": "Fake login example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "st",
+              ],
+              "description": "Show the token when login is successful. If specified, does not save the token to a profile.",
+              "name": "show-token",
+              "type": "boolean",
+            },
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log in to fakeService authentication service",
+          "type": "command",
+        },
+      ],
+      "description": "Log in to an authentication service.",
+      "name": "login",
+      "summary": "Log in to an authentication service",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "lo",
+      ],
+      "children": Array [
+        Object {
+          "customize": Object {},
+          "description": "Fake logout command",
+          "examples": Array [
+            Object {
+              "description": "Fake logout example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log out of fakeService authentication service",
+          "type": "command",
+        },
+        Object {
+          "customize": Object {},
+          "description": "Fake logout command",
+          "examples": Array [
+            Object {
+              "description": "Fake logout example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log out of fakeService authentication service",
+          "type": "command",
+        },
+      ],
+      "description": "Log out of an authentication service.",
+      "name": "logout",
+      "summary": "Log out of an authentication service",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "li",
+      ],
+      "children": Array [
+        Object {
+          "customize": Object {},
+          "description": "Fake login command",
+          "examples": Array [
+            Object {
+              "description": "Fake login example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "st",
+              ],
+              "description": "Show the token when login is successful. If specified, does not save the token to a profile.",
+              "name": "show-token",
+              "type": "boolean",
+            },
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log in to fakeService authentication service",
+          "type": "command",
+        },
+        Object {
+          "customize": Object {},
+          "description": "Fake login command",
+          "examples": Array [
+            Object {
+              "description": "Fake login example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "st",
+              ],
+              "description": "Show the token when login is successful. If specified, does not save the token to a profile.",
+              "name": "show-token",
+              "type": "boolean",
+            },
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log in to fakeService authentication service",
+          "type": "command",
+        },
+      ],
+      "description": "Log in to an authentication service.",
+      "name": "login",
+      "summary": "Fake login group summary",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "lo",
+      ],
+      "children": Array [
+        Object {
+          "customize": Object {},
+          "description": "Fake logout command",
+          "examples": Array [
+            Object {
+              "description": "Fake logout example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log out of fakeService authentication service",
+          "type": "command",
+        },
+        Object {
+          "customize": Object {},
+          "description": "Fake logout command",
+          "examples": Array [
+            Object {
+              "description": "Fake logout example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log out of fakeService authentication service",
+          "type": "command",
+        },
+      ],
+      "description": "Log out of an authentication service.",
+      "name": "logout",
+      "summary": "Fake logout group summary",
+      "type": "group",
+    },
+  ],
+  "description": "Connect to token-based authentication services",
+  "name": "auth",
+  "summary": "Fake auth group summary",
+  "type": "group",
+}
+`;
+
+exports[`CompleteAuthGroupBuilder should create complete auth group given only an auth config object 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "aliases": Array [
+        "li",
+      ],
+      "children": Array [
+        Object {
+          "customize": Object {},
+          "description": "Fake login command",
+          "examples": Array [
+            Object {
+              "description": "Fake login example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "st",
+              ],
+              "description": "Show the token when login is successful. If specified, does not save the token to a profile.",
+              "name": "show-token",
+              "type": "boolean",
+            },
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log in to fakeService authentication service",
+          "type": "command",
+        },
+      ],
+      "description": "Log in to an authentication service.",
+      "name": "login",
+      "summary": "Log in to an authentication service",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "lo",
+      ],
+      "children": Array [
+        Object {
+          "customize": Object {},
+          "description": "Fake logout command",
+          "examples": Array [
+            Object {
+              "description": "Fake logout example",
+              "options": "",
+            },
+          ],
+          "handler": "fakeHandler",
+          "name": "fakeService",
+          "options": Array [
+            Object {
+              "description": "Fake command option",
+              "name": "fake",
+              "type": "string",
+            },
+          ],
+          "profile": Object {
+            "optional": Array [
+              "base",
+            ],
+          },
+          "summary": "Log out of fakeService authentication service",
+          "type": "command",
+        },
+      ],
+      "description": "Log out of an authentication service.",
+      "name": "logout",
+      "summary": "Log out of an authentication service",
+      "type": "group",
+    },
+  ],
+  "description": "Connect to token-based authentication services",
+  "name": "auth",
+  "type": "group",
+}
+`;

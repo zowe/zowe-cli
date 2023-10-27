@@ -1,0 +1,32 @@
+defaultProfile: myv1profile
+configuration:
+    type: v1profile
+    schema:
+        type: object
+        title: 'Profile with v1 property names'
+        description: 'Profile with v1 property names'
+        properties:
+            hostname:
+                type: string
+                includeInTemplate: true
+                optionDefinition:
+                    name: hostname
+                    description: 'hostname should be converted to host.'
+                    type: string
+                    required: true
+            username:
+                type: string
+                includeInTemplate: true
+                optionDefinition:
+                    name: username
+                    description: 'username should be converted to user.'
+                    type: string
+                    required: true
+            pass:
+                type: string
+                includeInTemplate: true
+                optionDefinition:
+                    name: pass
+                    description: 'pass should be converted to password.'
+                    type: string
+                    required: true

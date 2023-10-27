@@ -128,7 +128,7 @@ describe("Utilities.putUSSPayload", () => {
 
     const payload = {request:"chtag", action:"list"};
     const filename = "/u/myhlq/aFile.txt";
-    const content = new Buffer(JSON.stringify({stdout:["m ISO8859-1   T=off /tmp/file"]}));
+    const content = Buffer.from(JSON.stringify({stdout:["m ISO8859-1   T=off /tmp/file"]}));
 
     describe("putUSSPayload", () => {
         const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer");
@@ -288,7 +288,7 @@ describe("Utilities.putUSSPayload", () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = new Buffer(JSON.stringify({stdout:["m UTF-8   T=off /tmp/file"]}));
+            const content1 = Buffer.from(JSON.stringify({stdout:["m UTF-8   T=off /tmp/file"]}));
             zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -309,7 +309,7 @@ describe("Utilities.putUSSPayload", () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = new Buffer(JSON.stringify({stdout:["b binary  T=on /tmp/file"]}));
+            const content1 = Buffer.from(JSON.stringify({stdout:["b binary  T=on /tmp/file"]}));
             zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -330,7 +330,7 @@ describe("Utilities.putUSSPayload", () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = new Buffer(JSON.stringify({stdout:["- untagged  T=on /tmp/file"]}));
+            const content1 = Buffer.from(JSON.stringify({stdout:["- untagged  T=on /tmp/file"]}));
             zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -351,7 +351,7 @@ describe("Utilities.putUSSPayload", () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = new Buffer(JSON.stringify({}));
+            const content1 = Buffer.from(JSON.stringify({}));
             zosmfExpectSecondSpy.mockImplementation(async () => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);

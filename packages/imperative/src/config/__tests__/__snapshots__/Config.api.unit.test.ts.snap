@@ -1,0 +1,333 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Config API tests layers get should get the active layer 1`] = `
+Object {
+  "exists": true,
+  "global": false,
+  "path": "project.config.user.json",
+  "properties": Object {
+    "autoStore": false,
+    "defaults": Object {
+      "fruit": "fruit.apple",
+    },
+    "plugins": CommentArray [
+      "@zowe/fruit-for-imperative",
+    ],
+    "profiles": Object {
+      "fruit": Object {
+        "profiles": Object {
+          "apple": Object {
+            "properties": Object {
+              "color": "red",
+            },
+            "type": "fruit",
+          },
+          "orange": Object {
+            "properties": Object {
+              "color": "orange",
+            },
+            "type": "fruit",
+          },
+        },
+        "properties": Object {
+          "origin": "California",
+        },
+        "secure": CommentArray [],
+      },
+    },
+  },
+  "user": true,
+}
+`;
+
+exports[`Config API tests layers merge - dry run should merge config layers with correct priority 1`] = `
+Object {
+  "autoStore": false,
+  "defaults": Object {
+    "fruit": "fruit.apple",
+  },
+  "plugins": CommentArray [
+    "@zowe/fruit-for-imperative",
+    "@zowe/vegetable-for-imperative",
+  ],
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "grape": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "orange": Object {
+          "properties": Object {
+            "color": "orange",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+        "shipDate": "2000-01-01",
+      },
+      "secure": CommentArray [
+        "secret",
+      ],
+    },
+  },
+}
+`;
+
+exports[`Config API tests layers merge should merge config layers with correct priority 1`] = `
+Object {
+  "autoStore": false,
+  "defaults": Object {
+    "fruit": "fruit.apple",
+  },
+  "plugins": CommentArray [
+    "@zowe/fruit-for-imperative",
+    "@zowe/vegetable-for-imperative",
+  ],
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "grape": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "orange": Object {
+          "properties": Object {
+            "color": "orange",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+        "shipDate": "2000-01-01",
+      },
+      "secure": CommentArray [
+        "secret",
+      ],
+    },
+  },
+}
+`;
+
+exports[`Config API tests layers set should set the current layer 1`] = `
+Object {
+  "$schema": "fake",
+  "defaults": Object {},
+  "profiles": Object {
+    "vegetable": Object {
+      "properties": Object {
+        "color": "brown",
+        "origin": "California",
+      },
+    },
+  },
+}
+`;
+
+exports[`Config API tests layers set should set the current layer when nothing is provided 1`] = `
+Object {
+  "defaults": Object {},
+  "profiles": Object {},
+}
+`;
+
+exports[`Config API tests layers write should save the active config layer 1`] = `
+"{
+    \\"profiles\\": {
+        \\"fruit\\": {
+            \\"properties\\": {
+                \\"origin\\": \\"California\\"
+            },
+            \\"profiles\\": {
+                \\"apple\\": {
+                    \\"type\\": \\"fruit\\",
+                    \\"properties\\": {
+                        \\"color\\": \\"red\\"
+                    }
+                },
+                \\"orange\\": {
+                    \\"type\\": \\"fruit\\",
+                    \\"properties\\": {
+                        \\"color\\": \\"orange\\"
+                    }
+                }
+            },
+            \\"secure\\": []
+        }
+    },
+    \\"defaults\\": {
+        \\"fruit\\": \\"fruit.apple\\"
+    },
+    \\"plugins\\": [
+        \\"@zowe/fruit-for-imperative\\"
+    ],
+    \\"autoStore\\": false
+}"
+`;
+
+exports[`Config API tests layers write should save the active config layer with comments 1`] = `
+"{
+    /* block-comment */
+    // line-comment
+    \\"$schema\\": /* block-comment */ null, // line-comment
+    /* block-comment */
+    // line-comment
+    \\"profiles\\": {
+        /* block-comment */
+        // line-comment
+        \\"fruit\\": {
+            /* block-comment */
+            // line-comment
+            \\"properties\\": {
+                /* block-comment */
+                // line-comment
+                \\"origin\\": /* block-comment */ \\"California\\", // line-comment
+                /* block-comment */
+                // line-comment
+                \\"tags\\": [
+                    /* block-comment */
+                    // line-comment
+                ]
+            },
+            /* block-comment */
+            // line-comment
+            \\"profiles\\": {
+                /* block-comment */
+                // line-comment
+                \\"apple\\": {
+                    /* block-comment */
+                    // line-comment
+                    \\"type\\": /* block-comment */ \\"fruit\\", // line-comment
+                    /* block-comment */
+                    // line-comment
+                    \\"properties\\": {
+                        /* block-comment */
+                        // line-comment
+                        \\"color\\": /* block-comment */ \\"red\\", // line-comment
+                        /* block-comment */
+                        // line-comment
+                        \\"ripe\\": /* block-comment */ null, // line-comment
+                        /* block-comment */
+                        // line-comment
+                        \\"price\\": /* block-comment */ null, // line-comment
+                        /* block-comment */
+                        // line-comment
+                        \\"secret\\": /* block-comment */ null // line-comment
+                    }
+                },
+                /* block-comment */
+                // line-comment
+                \\"orange\\": {
+                    /* block-comment */
+                    // line-comment
+                    \\"type\\": /* block-comment */ \\"fruit\\", // line-comment
+                    /* block-comment */
+                    // line-comment
+                    \\"properties\\": {
+                        /* block-comment */
+                        // line-comment
+                        \\"color\\": /* block-comment */ \\"orange\\" // line-comment
+                    }
+                }
+            },
+            /* block-comment */
+            // line-comment
+            \\"secure\\": [
+                /* block-comment */
+                // line-comment
+            ]
+        }
+    },
+    /* block-comment */
+    // line-comment
+    \\"defaults\\": {
+        /* block-comment */
+        // line-comment
+        \\"fruit\\": /* block-comment */ \\"fruit.apple\\" // line-comment
+    },
+    /* block-comment */
+    // line-comment
+    \\"plugins\\": [
+        /* block-comment */
+        // line-comment
+        /* block-comment */
+        \\"@zowe/fruit-for-imperative\\" // line-comment
+    ]
+}"
+`;
+
+exports[`Config API tests plugins get should get the plugins 1`] = `
+Array [
+  "@zowe/fruit-for-imperative",
+]
+`;
+
+exports[`Config API tests profiles defaultGet should get the default profile 1`] = `
+Object {
+  "color": "red",
+  "origin": "California",
+}
+`;
+
+exports[`Config API tests profiles get should get a first level profile 1`] = `
+Object {
+  "origin": "California",
+}
+`;
+
+exports[`Config API tests profiles get should get a second level profile 1`] = `
+Object {
+  "color": "red",
+  "origin": "California",
+}
+`;
+
+exports[`Config API tests profiles set should set a first level profile 1`] = `
+Object {
+  "color": "green",
+}
+`;
+
+exports[`Config API tests profiles set should set a second level profile 1`] = `
+Object {
+  "origin": "California",
+}
+`;
+
+exports[`Config API tests profiles set should set a second level profile 2`] = `
+Object {
+  "color": "green",
+  "origin": "California",
+}
+`;
+
+exports[`Config API tests profiles set should set a second level profile to a first level profile that doesn't exist 1`] = `
+Object {
+  "color": "brown",
+}
+`;
+
+exports[`Config API tests profiles set should set a second level profile to a first level profile that doesn't exist 2`] = `
+Object {
+  "color": "brown",
+}
+`;

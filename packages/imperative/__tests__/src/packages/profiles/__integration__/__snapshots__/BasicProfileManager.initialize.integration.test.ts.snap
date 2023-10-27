@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Basic Profile Manager Initialize Should allow us to initialize the environment and create a profile manager 1`] = `
+"defaultProfile: null
+configuration:
+    type: banana
+    schema:
+        type: object
+        title: 'The Banana command profile schema'
+        description: 'The Banana command profile schema'
+        properties:
+            age:
+                optionDefinition:
+                    description: 'The age of the Banana'
+                    type: number
+                    name: age
+                    aliases:
+                        - a
+                    required: true
+                type: number
+        required:
+            - age
+"
+`;
+
+exports[`Basic Profile Manager Initialize Should allow us to initialize the environment and create a profile manager 2`] = `
+"defaultProfile: null
+configuration:
+    type: secure_orange
+    schema:
+        type: object
+        title: 'The secure_orange command profile schema'
+        description: 'The secure_orange command profile schema'
+        properties:
+            username:
+                optionDefinition:
+                    description: 'The username of the secure_orange'
+                    type: string
+                    name: username
+                type: string
+            password:
+                optionDefinition:
+                    description: 'The password of the secure_orange'
+                    type: string
+                    name: password
+                type: string
+        required: []
+"
+`;
+
+exports[`Basic Profile Manager Initialize Should allow us to initialize the environment and create a profile manager 3`] = `
+"defaultProfile: null
+configuration:
+    type: strawberry
+    schema:
+        type: object
+        title: 'The strawberry command profile schema'
+        description: 'The strawberry command profile schema'
+        properties:
+            age:
+                optionDefinition:
+                    description: 'The age of the strawberry'
+                    type: number
+                    name: age
+                    aliases:
+                        - a
+                    required: true
+                type: number
+        required:
+            - age
+"
+`;

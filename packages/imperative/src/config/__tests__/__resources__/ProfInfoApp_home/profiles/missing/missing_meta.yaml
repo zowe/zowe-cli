@@ -1,0 +1,8 @@
+defaultProfile: null
+configuration:
+    type: missing
+    schema:
+        type: object
+        title: 'Missing Profile'
+        description: 'A profile meta file that exists by itself without any corresponding profiles.'
+        properties: {}

@@ -1,0 +1,108 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$version": "1.0",
+    "type": "object",
+    "description": "Zowe configuration",
+    "properties": {
+        "profiles": {
+            "type": "object",
+            "description": "Mapping of profile types to default profile names",
+            "patternProperties": {
+                "^\\S*$": {
+                    "type": "object",
+                    "description": "Profile configuration object",
+                    "properties": {
+                        "type": {
+                            "description": "Profile type",
+                            "type": "string",
+                            "enum": [
+                                "zosmf"
+                            ]
+                        },
+                        "properties": {
+                            "description": "Profile properties object",
+                            "type": "object"
+                        },
+                        "profiles": {
+                            "description": "Optional subprofile configurations",
+                            "type": "object",
+                            "$ref": "#/properties/profiles"
+                        },
+                        "secure": {
+                            "description": "Secure property names",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        }
+                    },
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": false
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "title": "Missing profile type"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "zosmf"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "z/OSMF Profile",
+                                        "description": "z/OSMF Profile",
+                                        "properties": {
+                                            "port": {
+                                                "type": "number",
+                                                "description": "The z/OSMF server port.",
+                                                "default": 1
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "defaults": {
+            "type": "object",
+            "description": "Mapping of profile types to default profile names",
+            "properties": {
+                "zosmf": {
+                    "description": "Default zosmf profile",
+                    "type": "string"
+                }
+            }
+        },
+        "autoStore": {
+            "type": "boolean",
+            "description": "If true, values you enter when prompted are stored for future use"
+        }
+    }
+}

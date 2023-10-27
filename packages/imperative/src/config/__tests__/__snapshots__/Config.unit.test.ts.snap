@@ -1,0 +1,252 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Config tests load should load a config and populate missing defaults 1`] = `
+Object {
+  "defaults": Object {},
+  "profiles": Object {},
+}
+`;
+
+exports[`Config tests load should load global config 1`] = `
+Object {
+  "autoStore": true,
+  "defaults": Object {
+    "fruit": "fruit.banana",
+    "vegetable": "vegetable.artichoke",
+  },
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "green",
+          },
+          "type": "fruit",
+        },
+        "banana": Object {
+          "properties": Object {
+            "color": "yellow",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+      },
+      "secure": Array [],
+    },
+    "vegetable": Object {
+      "profiles": Object {
+        "artichoke": Object {
+          "properties": Object {
+            "color": "green",
+          },
+          "type": "vegetable",
+        },
+      },
+      "properties": Object {
+        "origin": "China",
+      },
+    },
+  },
+}
+`;
+
+exports[`Config tests load should load project config 1`] = `
+Object {
+  "autoStore": true,
+  "defaults": Object {
+    "fruit": "fruit.orange",
+  },
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "green",
+          },
+          "type": "fruit",
+        },
+        "orange": Object {
+          "properties": Object {
+            "color": "orange",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+      },
+      "secure": Array [
+        "secret",
+      ],
+    },
+  },
+}
+`;
+
+exports[`Config tests load should load project user config 1`] = `
+Object {
+  "autoStore": false,
+  "defaults": Object {
+    "fruit": "fruit.apple",
+  },
+  "plugins": Array [
+    "@zowe/fruit-for-imperative",
+  ],
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "orange": Object {
+          "properties": Object {
+            "color": "orange",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+      },
+      "secure": Array [],
+    },
+  },
+}
+`;
+
+exports[`Config tests load should load user config 1`] = `
+Object {
+  "autoStore": true,
+  "defaults": Object {
+    "fruit": "fruit.apple",
+    "vegetable": "vegetable.artichoke",
+  },
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "banana": Object {
+          "properties": Object {
+            "color": "yellow",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+      },
+      "secure": Array [],
+    },
+    "vegetable": Object {
+      "profiles": Object {
+        "artichoke": Object {
+          "properties": Object {
+            "color": "green",
+          },
+          "type": "vegetable",
+        },
+      },
+      "properties": Object {
+        "origin": "Mexico",
+      },
+    },
+  },
+}
+`;
+
+exports[`Config tests load should merge multiple config files 1`] = `
+Object {
+  "autoStore": false,
+  "defaults": Object {
+    "fruit": "fruit.apple",
+    "vegetable": "vegetable.artichoke",
+  },
+  "plugins": Array [
+    "@zowe/fruit-for-imperative",
+  ],
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "type": "fruit",
+        },
+        "orange": Object {
+          "properties": Object {
+            "color": "orange",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+      },
+      "secure": CommentArray [
+        "secret",
+      ],
+    },
+    "vegetable": Object {
+      "profiles": Object {
+        "artichoke": Object {
+          "properties": Object {
+            "color": "green",
+          },
+          "type": "vegetable",
+        },
+      },
+      "properties": Object {
+        "origin": "Mexico",
+      },
+    },
+  },
+}
+`;
+
+exports[`Config tests load should not actually load config that seems to exist but is malformed when noLoad specified 1`] = `
+Object {
+  "defaults": Object {},
+  "profiles": Object {},
+}
+`;
+
+exports[`Config tests set should add a new layer when one is specified in the set 1`] = `
+Object {
+  "fruit": Object {
+    "profiles": Object {
+      "apple": Object {
+        "properties": Object {
+          "color": "red",
+        },
+        "type": "fruit",
+      },
+      "mango": Object {
+        "properties": Object {
+          "color": "orange",
+        },
+      },
+      "orange": Object {
+        "properties": Object {
+          "color": "orange",
+        },
+        "type": "fruit",
+      },
+    },
+    "properties": Object {
+      "origin": "California",
+    },
+    "secure": Array [],
+  },
+}
+`;

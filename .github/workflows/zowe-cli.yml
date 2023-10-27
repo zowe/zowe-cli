@@ -16,9 +16,6 @@ on:
         description: Specify whether to run tests using the `binary` or regular `nodejs` executable
         default: binary
         required: false
-      imperative-branch:
-        description: Specify name of Imperative branch to checkout and build from source
-        required: false
 
 jobs:
   test:
@@ -38,7 +35,7 @@ jobs:
       NODE: ${{ matrix.node-version }}
       NODE_OPTIONS: --max_old_space_size=4096
 
-    timeout-minutes: 60
+    timeout-minutes: 75
 
     concurrency:
       group: ${{ matrix.os }}-node-${{ matrix.node-version }}-ci-${{ github.ref }}
@@ -63,18 +60,8 @@ jobs:
       id: npm-version
       run: echo "number=$(npm --version)" >> $GITHUB_OUTPUT
 
-    - name: Use NPM v8
-      id: npm8
-      run: npm install -g npm@~8.3.2
-
     - name: Install Dependencies
       run: npm ci
-
-    - name: Update Dependencies
-      id: npm-update
-      uses: zowe-actions/octorelease/script@v1
-      with:
-        script: npmUpdate
 
     - name: Use Original NPM Version
       id: original-npm-version
@@ -84,14 +71,6 @@ jobs:
       id: install-rust
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       uses: dtolnay/rust-toolchain@stable
-
-    - name: Checkout Imperative
-      id: checkout-imperative
-      if: github.event_name == 'workflow_dispatch' && github.event.inputs.imperative-branch != ''
-      run: |
-        cd node_modules/@zowe && npx rimraf imperative
-        git clone --branch ${{ github.event.inputs.imperative-branch }} --depth 1 https://github.com/zowe/imperative.git
-        cd imperative && npm ci --ignore-scripts && npx tsc
 
     - name: Build Source
       id: build
@@ -154,7 +133,7 @@ jobs:
 
     - name: Integration Tests (Daemon)
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: npm run test:integration -- --runInBand
+      run: npm run test:integration:inband
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
@@ -182,22 +161,14 @@ jobs:
         persist-credentials: false
         ref: ${{ github.ref }}
 
-    - name: Use Node.js 18
+    # Use Node 20. Currently the latest.
+    - name: Use Node.js 20
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Install Dependencies
       run: npm ci
-
-    - name: Update Dependencies
-      uses: zowe-actions/octorelease/script@v1
-      env:
-        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
-        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
-        NPM_RESOLUTIONS: ${{ needs.test.outputs.npm-resolutions }}
-      with:
-        script: npmUpdate
 
     - name: Build Source
       run: npm run build

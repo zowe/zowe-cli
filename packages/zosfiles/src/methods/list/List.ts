@@ -82,15 +82,29 @@ export class List {
             try {
                 response = JSONUtils.parse(data);
             } catch {
-                // Escape invalid JSON characters in encrypted member names
-                for (const match of Array.from(data.matchAll(/"member":\s*"/g)).reverse()) {
-                    const memberStartIdx = match.index + match[0].length;
-                    const memberNameLength = data.substring(memberStartIdx,
-                        memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
-                    const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
-                    const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
-                    data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberStartIdx + memberNameLength);
+                const regex = /"member":\s*"/g;
+                let match;
+                const matches = [];
+
+                while ((match = regex.exec(data)) !== null) {
+                    matches.push({
+                        matchString: match[0],
+                        startIndex: match.index
+                    });
                 }
+
+                // Iterate through matches in reverse order
+                for (let i = matches.length - 1; i >= 0; i--) {
+                    const match = matches[i];
+                    const memberStartIdx = match.startIndex + match.matchString.length;
+                    const memberNameEndIdx = data.indexOf('"', memberStartIdx + 1); // Find the end of the member name
+                    if (memberNameEndIdx !== -1) {
+                        const memberName = data.substring(memberStartIdx, memberNameEndIdx);
+                        const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
+                        data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberNameEndIdx);
+                    }
+                }
+                // parse the modified data as JSON
                 response = JSONUtils.parse(data);
             }
 

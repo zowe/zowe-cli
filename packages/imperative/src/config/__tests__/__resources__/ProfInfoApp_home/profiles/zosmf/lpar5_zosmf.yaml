@@ -1,0 +1,7 @@
+host: lpar5.fakehost.com
+port: 443
+user: someUser
+password: somePassword
+rejectUnauthorized: false
+encoding: 0
+responseTimeout: 0

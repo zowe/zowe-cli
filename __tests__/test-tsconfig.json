@@ -4,9 +4,6 @@
       "node",
       "jest"
     ],
-    "lib": [
-      "esnext"
-    ],
     "target": "es2015",
     "module": "commonjs",
     "declaration": true,
@@ -22,6 +19,9 @@
   "include": [
     "./**/*.ts",
     "../packages/**/__tests__/**/*.ts"
+  ],
+  "files": [
+    "../__types__/wontache.d.ts"
   ],
   "exclude": [
     "lib",

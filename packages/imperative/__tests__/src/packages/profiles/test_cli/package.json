@@ -1,0 +1,6 @@
+{
+    "name": "test-cli-for-profiles",
+    "dependencies": {
+        "@zowe/secrets-for-zowe-sdk": "plaintext"
+    }
+}

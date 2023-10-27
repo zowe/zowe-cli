@@ -1,0 +1,153 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$version": "1.0",
+    "type": "object",
+    "description": "Zowe configuration",
+    "properties": {
+        "profiles": {
+            "type": "object",
+            "description": "Mapping of profile types to default profile names",
+            "patternProperties": {
+                "^\\S*$": {
+                    "type": "object",
+                    "description": "Profile configuration object",
+                    "properties": {
+                        "type": {
+                            "description": "Profile type",
+                            "type": "string",
+                            "enum": [
+                                "fruit",
+                                "vegetable"
+                            ]
+                        },
+                        "properties": {
+                            "description": "Profile properties object",
+                            "type": "object"
+                        },
+                        "profiles": {
+                            "description": "Optional subprofile configurations",
+                            "type": "object",
+                            "$ref": "#/properties/profiles"
+                        },
+                        "secure": {
+                            "description": "Secure property names",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        }
+                    },
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": false
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "title": "Missing profile type"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "fruit"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "Fruit Profile",
+                                        "description": "Fruit Profile",
+                                        "properties": {
+                                            "origin": {
+                                                "type": "string",
+                                                "description": "The Fruit origin."
+                                            },
+                                            "color": {
+                                                "type": "number",
+                                                "description": "The Fruit color."
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "vegetable"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "Vegetable Profile",
+                                        "description": "Vegetable User Profile",
+                                        "properties": {
+                                            "origin": {
+                                                "type": "string",
+                                                "description": "The Vegetable origin."
+                                            },
+                                            "color": {
+                                                "type": "string",
+                                                "description": "The Vegetable Color."
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "defaults": {
+            "type": "object",
+            "description": "Mapping of profile types to default profile names",
+            "properties": {
+                "fruit": {
+                    "description": "Default fruit profile",
+                    "type": "string"
+                },
+                "vegetable": {
+                    "description": "Default vegetable profile",
+                    "type": "string"
+                }
+            }
+        },
+        "autoStore": {
+            "type": "boolean",
+            "description": "If true, values you enter when prompted are stored for future use"
+        }
+    }
+}
