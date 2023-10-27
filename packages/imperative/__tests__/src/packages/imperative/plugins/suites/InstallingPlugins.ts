@@ -18,7 +18,7 @@ import * as T from "../../../../../src/TestUtil";
 import { TEST_REGISTRY } from "../../../../../__src__/TestConstants";
 import { execSync, SpawnSyncReturns } from "child_process";
 
-import { config, cliBin, pluginGroup } from "../PluginManagementFacility.spec";
+import { config, cliBin, pluginGroup } from "../PluginManagementFacility.integration.spec";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginJson } from "../../../../../../src/imperative/src/plugins/doc/IPluginJson";
 import { existsSync } from "fs";

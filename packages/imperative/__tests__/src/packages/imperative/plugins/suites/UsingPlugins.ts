@@ -15,7 +15,7 @@
  */
 
 import * as T from "../../../../../src/TestUtil";
-import { cliBin, config } from "../PluginManagementFacility.spec";
+import { cliBin, config } from "../PluginManagementFacility.integration.spec";
 import { join, resolve } from "path";
 import { readFileSync, writeFileSync } from "fs";
 import { execSync } from "child_process";
