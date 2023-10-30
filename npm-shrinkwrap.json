@@ -29,6 +29,7 @@
         "jest-environment-node": "^29.0.0",
         "jest-environment-node-debug": "^2.0.0",
         "jest-junit": "^12.0.0",
+        "jest-sonar-reporter": "^2.0.0",
         "jest-stare": "^2.2.0",
         "js-yaml": "^4.1.0",
         "jsonfile": "^4.0.0",
