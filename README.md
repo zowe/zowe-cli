@@ -49,7 +49,7 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 <br/>
 
 ## **Building Zowe CLI From Source**
-Zowe CLI requires NPM version 7 and Cargo version 1.72.0 (or newer) to build from source. Before proceeding, check your NPM version with `npm --version` and if it's older than 7.x, update with `npm install -g npm`. To check your version of Cargo, run `cargo --version`. Cargo can be installed using rustup: [https://rustup.rs/](https://rustup.rs/). To update Cargo, run the `rustup update` command.
+Zowe CLI requires NPM version 8 and Cargo version 1.72.0 (or newer) to build from source. Before proceeding, check your NPM version with `npm --version` and if it's older than 8.x, update with `npm install -g npm`. To check your version of Cargo, run `cargo --version`. Cargo can be installed using rustup: [https://rustup.rs/](https://rustup.rs/). To update Cargo, run the `rustup update` command.
 
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
