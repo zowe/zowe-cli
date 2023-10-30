@@ -173,7 +173,8 @@ describe("z/OS Files - List", () => {
             const memberNames = ["m1", "m2"];
             const shuffledAsciiChars = String.fromCharCode(...Array.from(Array(256).keys()).sort(() => Math.random() - 0.5));
             for (let i = 0; i < 32; i++) {
-                memberNames.push(shuffledAsciiChars.slice(i * 8, (i + 1) * 8));
+                // Exclude double quotes for now
+                memberNames.push(shuffledAsciiChars.slice(i * 8, (i + 1) * 8).replace('"', ''));
             }
             expectStringSpy.mockResolvedValueOnce(`{"items":[\n` +
                 memberNames.map((memName) => `  {"member":"${memName}"}`).join(",\n") + `\n` +

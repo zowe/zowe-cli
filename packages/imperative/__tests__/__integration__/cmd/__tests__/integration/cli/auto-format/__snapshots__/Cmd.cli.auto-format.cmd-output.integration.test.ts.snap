@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli auto-format cmd-output should allow the user to format the output as a list 1`] = `
+"{\\"name\\":\\"Banana\\",\\"details\\":\\"Tasty\\"}
+{\\"name\\":\\"Strawberry\\",\\"details\\":\\"Unripe\\"}
+"
+`;
+
+exports[`cmd-cli auto-format cmd-output should allow the user to format the output as a objects 1`] = `
+"- 
+  name:    Banana
+  details: Tasty
+- 
+  name:    Strawberry
+  details: Unripe
+"
+`;
+
+exports[`cmd-cli auto-format cmd-output should allow the user to format the output as a string 1`] = `
+"[{\\"name\\":\\"Banana\\",\\"details\\":\\"Tasty\\"},{\\"name\\":\\"Strawberry\\",\\"details\\":\\"Unripe\\"}]
+"
+`;
+
+exports[`cmd-cli auto-format cmd-output should use the defaults coded in the handler to output a table with a header 1`] = `
+"name       details
+Banana     Tasty  
+Strawberry Unripe 
+"
+`;
+
+exports[`cmd-cli auto-format cmd-output should use the defaults coded in the handler to output a table with no header 1`] = `
+"Banana     Tasty 
+Strawberry Unripe
+"
+`;

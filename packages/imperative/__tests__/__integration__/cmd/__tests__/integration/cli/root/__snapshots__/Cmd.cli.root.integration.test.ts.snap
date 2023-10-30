@@ -1,0 +1,453 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli should display the help 1`] = `
+"================ISSUING HELP NO OPTIONS===============
+
+ DESCRIPTION
+ -----------
+
+   A test CLI for the 'cmd' imperative package
+
+ USAGE
+ -----
+
+   cmd-cli <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   auth        Connect to token-based authentication services        
+   auto-format Invoke handlers to test auto-format                   
+   chained     chained handler test commands                         
+   gen-help    Commands to test help generator                       
+   invalid     Invalid definitions                                   
+   invoke      Invoke handlers to test promise reject/fulfill        
+   nested      Test a complex structure                              
+   profile     Validate profile mapping                              
+   profiles    Create and manage configuration profiles. (deprecated)
+   read        Read some profiles                                    
+   respond     Invoke handlers that will produce messages            
+   validate    Validate syntax checking                              
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Cmd Package CLI
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+================ISSUING HELP WITH OPTION==============
+
+ DESCRIPTION
+ -----------
+
+   A test CLI for the 'cmd' imperative package
+
+ USAGE
+ -----
+
+   cmd-cli <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   auth        Connect to token-based authentication services        
+   auto-format Invoke handlers to test auto-format                   
+   chained     chained handler test commands                         
+   gen-help    Commands to test help generator                       
+   invalid     Invalid definitions                                   
+   invoke      Invoke handlers to test promise reject/fulfill        
+   nested      Test a complex structure                              
+   profile     Validate profile mapping                              
+   profiles    Create and manage configuration profiles. (deprecated)
+   read        Read some profiles                                    
+   respond     Invoke handlers that will produce messages            
+   validate    Validate syntax checking                              
+
+ OPTIONS
+ -------
+
+   --version | -V (boolean)
+
+      Display the current version of Cmd Package CLI
+
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+================ISSUING HELP WITH RFJ=================
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth        Connect to token-based authentication services        \\\\n   auto-format Invoke handlers to test auto-format                   \\\\n   chained     chained handler test commands                         \\\\n   gen-help    Commands to test help generator                       \\\\n   invalid     Invalid definitions                                   \\\\n   invoke      Invoke handlers to test promise reject/fulfill        \\\\n   nested      Test a complex structure                              \\\\n   profile     Validate profile mapping                              \\\\n   profiles    Create and manage configuration profiles. (deprecated)\\\\n   read        Read some profiles                                    \\\\n   respond     Invoke handlers that will produce messages            \\\\n   validate    Validate syntax checking                              \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": {}
+}"
+`;
+
+exports[`cmd-cli should display the version 1`] = `
+"================ISSUING VERSION===============
+0.0.0
+"
+`;
+
+exports[`cmd-cli should flag an invalid group and give a close suggestion 1`] = `
+"================ISSUING CMD WITH INVALID GROUP===============
+"
+`;
+
+exports[`cmd-cli should flag an invalid group and give a close suggestion 2`] = `
+"Command Error:
+Command failed due to improper syntax
+Unknown group: NOT_REAL
+Did you mean: auth?
+
+Command entered: \\"NOT_REAL\\"
+Use \\"cmd-cli --help\\" to view groups, commands, and options.
+"
+`;
+
+exports[`cmd-cli should show a list of available commands 1`] = `
+"================ISSUING HELP NO OPTIONS===============
+cmd-cli auth login fruit
+
+	Log in to fruit authentication service
+
+cmd-cli auth logout fruit
+
+	Log out of fruit authentication service
+
+cmd-cli auto-format cmd-output
+
+	Allows the user to specify the output format.
+
+cmd-cli auto-format object
+
+	Returns an object.
+
+cmd-cli auto-format table
+
+	Format a table
+
+cmd-cli chained fail-response-mapping
+
+	try to map a non-existent response field, not optional - fail
+
+cmd-cli chained handler-chain-failure
+
+	a handler mid-chain throws an error
+
+cmd-cli chained many-handlers
+
+	many handlers with argument mappings
+
+cmd-cli chained mapping-notexist
+
+	try to map a non-existent response field, optional - succeed
+
+cmd-cli chained optional-response-mapping
+
+	try to map a non-existent response field, optional - succeed
+
+cmd-cli chained print-animals
+
+	print three animal names
+
+cmd-cli chained print-cheetah
+
+	three handlers, but the first two are silent. only prints 'cheetah'
+
+cmd-cli gen-help allowable-options
+
+	Displays allowable options in the help!
+
+cmd-cli gen-help example-test
+
+	Displays example inputs in the help!
+
+cmd-cli invalid invalid-handler
+
+	Test async handler command tests tests a fulfill/reject from an asynchronous
+	handler.
+
+cmd-cli invalid no-handler
+
+	This will never get invoked. No handler specified on this definition.
+
+cmd-cli invalid profile-spec
+
+	Command handler attempts to load a profile that wasn't specified on the command
+	definition
+
+cmd-cli invoke exit-143
+
+	Test handler that exits with status code 143
+
+cmd-cli invoke test-async-handler
+
+	Test async handler command tests tests a fulfill/reject from an asynchronous
+	handler.
+
+cmd-cli invoke test-handler
+
+	Test handler that returns a promise. Tests rejecting and fulfilling the promise
+	via the methods.
+
+cmd-cli invoke unexpected-exception-handler
+
+	The unexpected exception handler attempts to perform an operation that will
+	result in an exception.
+
+cmd-cli nested first-group first-group-command-one
+
+	A command in the first group
+
+cmd-cli nested first-group first-group-command-two
+
+	A command in the first group
+
+cmd-cli nested first-group second-group second-group-command-one
+
+	A command in the second group
+
+cmd-cli nested first-group second-group second-group-command-two
+
+	A command in the second group
+
+cmd-cli nested first-group third-group third-group-command-one
+
+	A command in the third group
+
+cmd-cli nested nested-group-command
+
+	A command in the nested group
+
+cmd-cli profile mapping
+
+	Tests Imperative's profile to CLI mapping capabilities.
+
+cmd-cli profile mapping-base
+
+	Tests handling of options across base and service profiles.
+
+cmd-cli profile mapping-name-type
+
+	Tests that --type and --name are not filled in from profiles.
+
+cmd-cli profile mapping-positional
+
+	Tests Imperative's profile to CLI mapping capabilities.
+
+cmd-cli profiles create banana-profile
+
+	Banana Profile
+
+cmd-cli profiles create base-profile
+
+	Fruit Profile
+
+cmd-cli profiles create insecure-profile
+
+	Test Secured Fields
+
+cmd-cli profiles create kiwi-profile
+
+	Kiwi Profile
+
+cmd-cli profiles create strawberry-profile
+
+	Strawberry Profile
+
+cmd-cli profiles delete banana-profile
+
+	Delete a banana profile. You must specify a profile name to be deleted. To find
+	a list of available profiles for deletion, issue the profiles list command. By
+	default, you will be prompted to confirm the profile removal.
+
+cmd-cli profiles delete base-profile
+
+	Delete a base profile. You must specify a profile name to be deleted. To find a
+	list of available profiles for deletion, issue the profiles list command. By
+	default, you will be prompted to confirm the profile removal.
+
+cmd-cli profiles delete insecure-profile
+
+	Delete a insecure profile. You must specify a profile name to be deleted. To
+	find a list of available profiles for deletion, issue the profiles list command.
+	By default, you will be prompted to confirm the profile removal.
+
+cmd-cli profiles delete kiwi-profile
+
+	Delete a kiwi profile. You must specify a profile name to be deleted. To find a
+	list of available profiles for deletion, issue the profiles list command. By
+	default, you will be prompted to confirm the profile removal.
+
+cmd-cli profiles delete strawberry-profile
+
+	Delete a strawberry profile. You must specify a profile name to be deleted. To
+	find a list of available profiles for deletion, issue the profiles list command.
+	By default, you will be prompted to confirm the profile removal.
+
+cmd-cli profiles list banana-profiles
+
+	Banana Profile
+
+cmd-cli profiles list base-profiles
+
+	Fruit Profile
+
+cmd-cli profiles list insecure-profiles
+
+	Test Secured Fields
+
+cmd-cli profiles list kiwi-profiles
+
+	Kiwi Profile
+
+cmd-cli profiles list strawberry-profiles
+
+	Strawberry Profile
+
+cmd-cli profiles set-default banana-profile
+
+	The banana set default-profiles command allows you to set the default profiles
+	for this command group. When a banana command is issued and no profile override
+	options are specified, the default profiles for the command group are
+	automatically loaded for the command based on the commands profile requirements.
+
+cmd-cli profiles set-default base-profile
+
+	The base set default-profiles command allows you to set the default profiles for
+	this command group. When a base command is issued and no profile override
+	options are specified, the default profiles for the command group are
+	automatically loaded for the command based on the commands profile requirements.
+
+cmd-cli profiles set-default insecure-profile
+
+	The insecure set default-profiles command allows you to set the default profiles
+	for this command group. When a insecure command is issued and no profile
+	override options are specified, the default profiles for the command group are
+	automatically loaded for the command based on the commands profile requirements.
+
+cmd-cli profiles set-default kiwi-profile
+
+	The kiwi set default-profiles command allows you to set the default profiles for
+	this command group. When a kiwi command is issued and no profile override
+	options are specified, the default profiles for the command group are
+	automatically loaded for the command based on the commands profile requirements.
+
+cmd-cli profiles set-default strawberry-profile
+
+	The strawberry set default-profiles command allows you to set the default
+	profiles for this command group. When a strawberry command is issued and no
+	profile override options are specified, the default profiles for the command
+	group are automatically loaded for the command based on the commands profile
+	requirements.
+
+cmd-cli profiles update banana-profile
+
+	Banana Profile
+
+cmd-cli profiles update base-profile
+
+	Fruit Profile
+
+cmd-cli profiles update insecure-profile
+
+	Test Secured Fields
+
+cmd-cli profiles update kiwi-profile
+
+	Kiwi Profile
+
+cmd-cli profiles update strawberry-profile
+
+	Strawberry Profile
+
+cmd-cli read profile
+
+	Read some profiles
+
+cmd-cli respond with-data-array
+
+	Formulates a string array object to pass back when response format JSON is
+	specified.
+
+cmd-cli respond with-data-object
+
+	Formulates a JSON object to pass back when response format JSON is specified.
+
+cmd-cli respond with-error-headers
+
+	Responds with a few error headers (colorized in red).
+
+cmd-cli respond with-error-messages
+
+	Reponds with a few error messages.
+
+cmd-cli respond with-log-messages
+
+	Reponds with a few log messages.
+
+cmd-cli respond with-mixed-responses
+
+	Responds with error, headers, messages, data, etc. (all handler response APIs,
+	except progress)
+
+cmd-cli respond with-syntax-errors
+
+	Responds with syntax errors
+
+cmd-cli respond with-wrapped-text
+
+	Responds with wrapped text and non wrapped text
+
+cmd-cli validate string-or-empty
+
+	Test string or empty option.
+
+cmd-cli validate syntax
+
+	Tests Imperatives syntax validation capabilities.
+
+"
+`;

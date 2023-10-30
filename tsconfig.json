@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "preserveConstEnums": true,
+    "experimentalDecorators": true,
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
@@ -26,5 +27,8 @@
     "**/*.spec.ts",
     "**/*-spec.ts",
     "**/*.test.ts"
+  ],
+  "files": [
+    "./__types__/wontache.d.ts"
   ]
 }

@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli invoke test-handler should display the help 1`] = `
+"========================TEST-HANDLER HELP================================
+
+ COMMAND NAME
+ ------------
+
+   test-handler
+
+ DESCRIPTION
+ -----------
+
+   Test handler that returns a promise. Tests rejecting and fulfilling the promise
+   via the methods.
+
+ USAGE
+ -----
+
+   cmd-cli invoke test-handler [options]
+
+ OPTIONS
+ -------
+
+   --fail (boolean)
+
+      Fail the handler by invoking the reject method.
+
+   --fail-with-message (string)
+
+      Fail the handler by invoking the reject method with a message.
+
+   --fail-with-error (boolean)
+
+      Fail the handler by throwning a generic 'Error'.
+
+   --fail-with-imperative-error (boolean)
+
+      Fail the handler by throwning an 'Imperative Error'.
+
+   --fulfill-promise (boolean)
+
+      Fail the handler by throwning an 'Imperative Error'.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+========================TEST-HANDLER HELP RFJ============================
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: test-handler.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   test-handler\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test handler that returns a promise. Tests rejecting and fulfilling the promise\\\\n   via the methods.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke test-handler [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --fail (boolean)\\\\n\\\\n      Fail the handler by invoking the reject method.\\\\n\\\\n   --fail-with-message (string)\\\\n\\\\n      Fail the handler by invoking the reject method with a message.\\\\n\\\\n   --fail-with-error (boolean)\\\\n\\\\n      Fail the handler by throwning a generic 'Error'.\\\\n\\\\n   --fail-with-imperative-error (boolean)\\\\n\\\\n      Fail the handler by throwning an 'Imperative Error'.\\\\n\\\\n   --fulfill-promise (boolean)\\\\n\\\\n      Fail the handler by throwning an 'Imperative Error'.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   test-handler\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test handler that returns a promise. Tests rejecting and fulfilling the promise\\\\n   via the methods.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke test-handler [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --fail (boolean)\\\\n\\\\n      Fail the handler by invoking the reject method.\\\\n\\\\n   --fail-with-message (string)\\\\n\\\\n      Fail the handler by invoking the reject method with a message.\\\\n\\\\n   --fail-with-error (boolean)\\\\n\\\\n      Fail the handler by throwning a generic 'Error'.\\\\n\\\\n   --fail-with-imperative-error (boolean)\\\\n\\\\n      Fail the handler by throwning an 'Imperative Error'.\\\\n\\\\n   --fulfill-promise (boolean)\\\\n\\\\n      Fail the handler by throwning an 'Imperative Error'.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;
+
+exports[`cmd-cli invoke test-handler should fail the command if fail-with-message is specified and no message is supplied 1`] = `
+"
+Syntax Error:
+No value specified for option:
+--fail-with-message
+
+This option requires a value of type:
+string
+
+Option Description:
+Fail the handler by invoking the reject method with a message.
+
+Use \\"cmd-cli invoke test-handler --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli invoke test-handler should fail the command if fail-with-message is specified with a message 1`] = `
+"Command Error:
+Failure message from option!
+"
+`;
+
+exports[`cmd-cli invoke test-handler should fail the command if fail-with-message is specified with a message and produce a JSON response 1`] = `
+"Command Error:
+Failure message from option!
+"
+`;
+
+exports[`cmd-cli invoke test-handler should fail the command if fail-with-message is specified with a message and produce a JSON response 2`] = `"Failure message from option!"`;
+
+exports[`cmd-cli invoke test-handler should fulfill the promise and complete the command successfully 1`] = `
+"Fulfilling the promise...
+"
+`;
+
+exports[`cmd-cli invoke test-handler should fulfill the promise and complete the command successfully with a JSON response 1`] = `
+"Fulfilling the promise...
+"
+`;
+
+exports[`cmd-cli invoke test-handler should invoke the handler and print a message if no options are specified 1`] = `
+"No options specified, will not invoke anything!
+"
+`;

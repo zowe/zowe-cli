@@ -2,18 +2,16 @@ module.exports = {
     branches: [
         {
             name: "master",
-            level: "minor",
-            dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+            level: "minor"
         },
         {
             name: "zowe-v?-lts",
-            level: "patch",
-            dependencies: ["@zowe/perf-timing", "@zowe/imperative"]
+            level: "patch"
         }
         // {
         //     name: "next",
         //     prerelease: true,
-        //     dependencies: { "@zowe/perf-timing": "latest", "@zowe/imperative": "next" }
+        //     dependencies: { "@zowe/perf-timing": "latest" }
         // }
     ],
     plugins: [
@@ -21,6 +19,7 @@ module.exports = {
             "displayNames": {
                 "cli": "Zowe CLI",
                 "core": "Core SDK",
+                "imperative": "imperative",
                 "zosconsole": "z/OS Console SDK",
                 "zosfiles": "z/OS Files SDK",
                 "zosjobs": "z/OS Jobs SDK",

@@ -1,0 +1,58 @@
+{
+  "name": "cmd-sample-cli",
+  "version": "0.0.0",
+  "description": "Command Sample CLI",
+  "license": "EPL-2.0",
+  "repository": "",
+  "bin": {
+    "cmd-cli": "./lib/index.js"
+  },
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "imperative": {
+    "configurationModule": "lib/imperative/config.js"
+  },
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "lint": "eslint \"src/**/*.ts\"",
+    "prebuild": "npm run clean && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc -b --pretty",
+    "pretest": "npm install -g",
+    "test": "jest",
+    "posttest": "npm uninstall -g",
+    "watch": "npm run build -- --watch"
+  },
+  "dependencies": {
+    "@zowe/imperative": "../../.."
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "jest": {
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "testRegex": "(test|spec)\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node"
+  },
+  "jest-html-reporter": {
+    "pageTitle": "Sample \"cmd\" integration CLI Tests",
+    "outputPath": "../../__results__/__integration__/cmd/results.html",
+    "includeFailureMsg": true
+  }
+}

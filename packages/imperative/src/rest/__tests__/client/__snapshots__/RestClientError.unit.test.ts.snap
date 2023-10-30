@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RestClientError tests should have connection details available 1`] = `
+Object {
+  "additionalDetails": "This is an error message",
+  "basePath": "base/path",
+  "headers": Array [
+    "header",
+  ],
+  "host": "blah",
+  "httpStatus": 200,
+  "msg": "This is a rest client error",
+  "payload": "the payload",
+  "port": 1234,
+  "request": "GET",
+  "resource": "/the/resource",
+  "source": "client",
+}
+`;

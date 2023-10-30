@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImperativeExpect tests Should throw an error for a blank field 1`] = `"Expect Error: Required parameter 'blank' must not be blank"`;
+
+exports[`ImperativeExpect tests Should throw an error for a defined key that is blank 1`] = `"Expect Error: Required parameter 'blank' must not be blank"`;
+
+exports[`ImperativeExpect tests Should throw an error for a defined key when the last one is undefined 1`] = `"Expect Error: Required parameter 'notReal' must be defined"`;
+
+exports[`ImperativeExpect tests Should throw an error for an undefined key when we expect it to be defined 1`] = `"Expect Error: Required parameter 'noExist' must be defined"`;
+
+exports[`ImperativeExpect tests Should throw an error for defined key that is last in a list of undefined keys 1`] = `"Expect Error: Required parameter 'data' must be undefined"`;
+
+exports[`ImperativeExpect tests Should throw an error for defined key that we want to be undefined 1`] = `"Expect Error: Required parameter 'data' must be undefined"`;
+
+exports[`ImperativeExpect tests should allow a custom error message 1`] = `"Expect Error: This is custom"`;
+
+exports[`ImperativeExpect tests should allow an expect failure to be transformed 1`] = `"The values weren't equal!!!"`;
+
+exports[`ImperativeExpect tests should throw an error if the entry is NOT found 1`] = `"Expect Error: The required entry was NOT found within the input array: 'hello'"`;
+
+exports[`ImperativeExpect tests should throw an error if the type is incorrect 1`] = `"Expect Error: Object key 'data' must be of type 'boolean'"`;
+
+exports[`ImperativeExpect tests should throw an error if the values are equal and we're expected them to not be equal 1`] = `[Error: Expect Error: Values specified are equal ("this")]`;
+
+exports[`ImperativeExpect tests should throw error if the input array is of length 0 1`] = `"Expect Error: Required parameter 'nest.theZeroLengthArray' must be an array with at least 1 entry."`;
+
+exports[`ImperativeExpect tests should throw error if the input is not an array and an array is expected 1`] = `"Expect Error: Required parameter 'false' must be an array."`;
+
+exports[`ImperativeExpect tests should throw error if the type is not correct of a nested property 1`] = `"Expect Error: Object key 'nest.prop2' must be of type 'string'"`;

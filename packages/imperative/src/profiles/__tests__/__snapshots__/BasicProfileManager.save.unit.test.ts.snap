@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Basic Profile Manager Save should allow us to save a profile with a dependency 1`] = `
+Object {
+  "amount": 10000,
+  "dependencies": Array [
+    Object {
+      "name": "tasty_apples",
+      "type": "apple",
+    },
+  ],
+  "description": "Strawberries covered in chocolate.",
+  "type": "strawberry",
+}
+`;
+
+exports[`Basic Profile Manager Save should allow us to save a well-formed profile 1`] = `
+Object {
+  "age": 1,
+  "description": "A tasty apple",
+  "rotten": false,
+}
+`;
+
+exports[`Basic Profile Manager Save should detect a blank name when creating a profile 1`] = `"Expect Error: Required parameter 'name' must not be blank"`;
+
+exports[`Basic Profile Manager Save should detect a missing name when creating a profile 1`] = `"Expect Error: A request was made to save a profile of type \\"apple\\", but no name was supplied."`;
+
+exports[`Basic Profile Manager Save should detect a type mismatch from the schema for booleans 1`] = `
+"Errors located in profile \\"bad_apple\\" of type \\"apple\\":
+rotten is not of a type(s) boolean
+"
+`;
+
+exports[`Basic Profile Manager Save should detect a type mismatch from the schema for strings 1`] = `
+"Errors located in profile \\"bad_apple\\" of type \\"apple\\":
+description is not of a type(s) string
+"
+`;
+
+exports[`Basic Profile Manager Save should detect all missing required fields on the schema 1`] = `
+"Errors located in profile \\"bad_strawberry\\" of type \\"strawberry\\":
+profile requires property \\"description\\"
+profile requires property \\"amount\\"
+"
+`;
+
+exports[`Basic Profile Manager Save should detect if the meta name was specified as the profile name 1`] = `"Expect Error: You cannot specify \\"apple_meta\\" as a profile name. This profile name is reserved for internal Imperative usage."`;
+
+exports[`Basic Profile Manager Save should detect missing parameters 1`] = `"Expect Error: A request was made to save a profile of type \\"apple\\", but no parameters were supplied."`;
+
+exports[`Basic Profile Manager Save should detect missing profile 1`] = `"Expect Error: A request was made to save a profile of type \\"apple\\", but no profile was supplied."`;
+
+exports[`Basic Profile Manager Save should detect that a profile requires a dependency of a certain type 1`] = `"Profile type \\"strawberry\\" specifies a required dependency of type \\"apple\\" on the \\"strawberry\\" profile type configuration document. A dependency of type \\"apple\\" was NOT listed on the input profile."`;
+
+exports[`Basic Profile Manager Save should detect that the dependencies are not an array 1`] = `"Expect Error: The profile passed (name \\"bad_apple\\" of type \\"apple\\") has dependencies as a property, but it is NOT an array (ill-formed)"`;
+
+exports[`Basic Profile Manager Save should detect that the dependencies are present, but name is missing 1`] = `"Expect Error: The profile passed (name \\"bad_apple\\" of type \\"apple\\") has dependencies as a property, but an entry does not contain \\"name\\"."`;
+
+exports[`Basic Profile Manager Save should detect that the dependencies are present, but type is missing 1`] = `"Expect Error: The profile passed (name \\"bad_apple\\" of type \\"apple\\") has dependencies as a property, but an entry does not contain \\"type\\"."`;
+
+exports[`Basic Profile Manager Save should fail a save request if a profile has more properties than defined on the schema 1`] = `
+"Errors located in profile \\"tasty_apple\\" of type \\"apple\\":
+profile additionalProperty \\"seedless\\" exists in instance when not allowed
+"
+`;
+
+exports[`Basic Profile Manager Save should fail a save request if an error is thrown by write file 1`] = `"Write file unexpected failure"`;
+
+exports[`Basic Profile Manager Save should fail a save request if the file already exists and overwrite is false 1`] = `"Profile \\"old_apple\\" of type \\"apple\\" already exists and overwrite was NOT specified."`;
+
+exports[`Basic Profile Manager Save should fail a save request if there is an error writing the meta file 1`] = `"Error writing the meta file"`;
+
+exports[`Basic Profile Manager Save should not allow a save with a circular dependency 1`] = `
+"Could not save the profile, because one or more dependencies is invalid or does not exist.
+Load Error Details: An error occurred while loading the dependencies of profile \\"apple_with_two_req_dep_circular\\" of type \\"apple\\". Dependency load list: 
+Type: \\"strawberry\\" Name: \\"chocolate_covered\\"
+Type: \\"banana\\" Name: \\"banana_with_grape_dep\\"
+
+Error Details: An error occurred while loading the dependencies of profile \\"banana_with_grape_dep\\" of type \\"banana\\". Dependency load list: 
+Type: \\"grape\\" Name: \\"grape_with_banana_circular_dep\\"
+
+Error Details: An error occurred while loading the dependencies of profile \\"grape_with_banana_circular_dep\\" of type \\"grape\\". Dependency load list: 
+Type: \\"banana\\" Name: \\"banana_with_grape_dep\\"
+
+Error Details: A circular profile dependency was detected. Profile \\"banana_with_grape_dep\\" of type \\"banana\\" either points directly to itself OR a dependency of this profile points to this profile."
+`;
+
+exports[`Basic Profile Manager Save should not allow a save with no contents 1`] = `"The profile passed (name \\"no_apple_core\\" of type \\"apple\\") does not contain any content."`;
+
+exports[`Basic Profile Manager Save should not allow us to overwrite a profile if overwrite false (or not specified) 1`] = `"Profile \\"good_apple\\" of type \\"apple\\" already exists and overwrite was NOT specified."`;

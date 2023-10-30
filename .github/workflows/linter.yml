@@ -24,10 +24,6 @@ jobs:
       with:
         node-version: lts/*
 
-    - name: Use NPM v8
-      id: npm8
-      run: npm install -g npm@^8
-
     - name: Install Node Package Dependencies
       run: npm ci
 

@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli StringOrBlank type option should allow user to input blank as input 1`] = `
+"================ISSUING CMD WITH INVALID POSITIONAL ARGUMENT===============
+Validation passed
+"
+`;
+
+exports[`cmd-cli StringOrBlank type option should allow user to input valid string as input 1`] = `
+"================ISSUING CMD WITH INVALID POSITIONAL ARGUMENT===============
+Validation passed
+"
+`;
+
+exports[`cmd-cli StringOrBlank type option should display proper help message when value is missing 1`] = `
+"
+Syntax Error:
+No value specified for option:
+--string-or-empty
+
+This option requires a value of type:
+stringOrEmpty
+
+Option Description:
+value should be string or empty
+
+Use \\"cmd-cli validate string-or-empty --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli StringOrBlank type option should display proper help message when value is missing 2`] = `
+"================ISSUING CMD WITH INVALID POSITIONAL ARGUMENT===============
+"
+`;
+
+exports[`cmd-cli should display proper messages when missing positional parameter 1`] = `
+"
+Syntax Error:
+You must specify one of the following options for this command:
+[--option-to-specify-1, --option-to-specify-2, --option-to-specify-3, --option-to-specify-4]
+
+Syntax Error:
+If you do not specify the following option:
+--absence-implies
+
+You must specify one of these options:
+[--implied-by-absence]
+
+Example:
+
+ - example 1:
+
+      $ cmd-cli validate syntax \\"position1\\" \\"testposition\\"
+
+Use \\"cmd-cli validate syntax --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli should display proper messages when missing positional parameter 2`] = `
+"================ISSUING CMD WITH INVALID POSITIONAL ARGUMENT===============
+"
+`;

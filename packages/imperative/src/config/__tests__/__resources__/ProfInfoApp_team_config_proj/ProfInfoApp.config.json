@@ -1,0 +1,83 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "base_glob": {
+            "type": "base",
+            "properties": {
+                "user": "userNameBase",
+                "password": "passwordBase",
+                "rejectUnauthorized": false
+            }
+        },
+        "LPAR1": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR1.your.domain.net",
+                "port": 1234,
+                "responseFormatHeader": true
+            },
+            "profiles": {
+                "tsoProfName": {
+                    "type": "tso",
+                    "properties": {
+                        "account": "12345678",
+                        "characterSet": "697",
+                        "codePage": "1047",
+                        "columns": 80,
+                        "logonProcedure": "LOGPROC",
+                        "regionSize": 4096,
+                        "rows": 24
+                    },
+                    "profiles": {
+                        "tsoSubProfName": {
+                            "type": "tso",
+                            "properties": {
+                                "account": "IZUACCT"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "LPAR2": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR2.your.domain.net",
+                "port": 6789,
+                "responseFormatHeader": true
+            }
+        },
+        "LPAR3": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR3.your.domain.net",
+                "port": 456
+            }
+        },
+        "LPAR4": {
+            "type": "dummy",
+            "properties": {
+                "host": "LPAR4.your.domain.net",
+                "responseFormatHeader": true
+            }
+        },
+        "LPAR5": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR4.your.domain.net",
+                "port": 1234,
+                "responseFormatHeader": true,
+                "fakeOffSchemaArg": "fakeArg"
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "LPAR1",
+        "tso": "LPAR1.tsoProfName",
+        "base": "base_glob",
+        "dummy": "LPAR4"
+    },
+    "plugins": [],
+    "secure": [],
+    "autoStore": true
+}

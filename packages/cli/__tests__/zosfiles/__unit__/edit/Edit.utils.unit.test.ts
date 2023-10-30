@@ -343,7 +343,7 @@ describe("Files Edit Utilities", () => {
         const localFile = cloneDeep(localFileUSS);
         localFile.tempPath = 'randomTempPath';
         it("should open in editor if one specified, otherwise skip to prompting", async () => {
-            const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor");
+            const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
             await EditUtilities.makeEdits(localFile, 'editorPath');
             expect(openInEditorSpy).toBeCalledTimes(1);
         });

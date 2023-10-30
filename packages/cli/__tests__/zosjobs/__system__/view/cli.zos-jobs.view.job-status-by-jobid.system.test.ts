@@ -135,9 +135,14 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                 TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             expect(response.status).toBe(1);
+            // TODO:V3_ERR_FORMAT - In V3 remove the following lines
             expect(response.stderr.toString()).toContain("Command Error:");
             expect(response.stderr.toString()).toContain("Obtaining job info for a single job id J0 on");
             expect(response.stderr.toString()).toContain("failed: Job not found");
+            /* TODO:V3_ERR_FORMAT - Use the following lines instead
+            expect(response.stderr.toString()).toContain("Cannot obtain job info for job id = J0");
+            expect(response.stderr.toString()).toContain("Zero jobs were returned");
+            */
         });
     });
 });

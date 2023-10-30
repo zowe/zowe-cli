@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.18.9`
+
+- Enhancement: Incorporate all source code from the zowe/imperative Github repository into the zowe/zowe-cli repository. This change should have no user impact.
+- BugFix: Removed out of date `Perf-Timing` performance timing package.
+- BugFix: Fix behavior where a specified directory was being lowercased on non-PDS datasets when downloading all datasets [#1722](https://github.com/zowe/zowe-cli/issues/1722)
+
 ## `7.18.8`
 
 - BugFix: Fix bug where encoding is not passed to the Download USS Directory API [#1825](https://github.com/zowe/zowe-cli/issues/1825)

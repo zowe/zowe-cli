@@ -32,7 +32,6 @@ describe("ZosFilesUtils", () => {
             expect(ZosFilesConstants).toMatchSnapshot();
             expect(ZosFilesMessages).toMatchSnapshot();
         });
-
     });
 
     describe("getDirsFromDataSet", () => {
