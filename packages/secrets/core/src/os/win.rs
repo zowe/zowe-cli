@@ -22,10 +22,10 @@ impl From<WIN32_ERROR> for KeyringError {
 
 ///
 /// Helper function to convert the last Win32 error into a human-readable error message.
-/// 
-/// Returns: 
+///
+/// Returns:
 /// A `String` object containing the error message
-/// 
+///
 fn win32_error_as_string(error: WIN32_ERROR) -> String {
     let buffer: PWSTR = std::ptr::null_mut();
 
@@ -62,22 +62,22 @@ fn win32_error_as_string(error: WIN32_ERROR) -> String {
 
 ///
 /// Helper function to encode a string as a null-terminated UTF-16 string for use w/ credential APIs.
-/// 
+///
 /// Returns:
 /// - `Some(val)` if the string was successfully converted to UTF-16, or `None` otherwise.
-/// 
+///
 fn encode_utf16(str: &str) -> Vec<u16> {
     let mut chars: Vec<u16> = str.encode_utf16().collect();
     chars.push(0);
     chars
 }
 
-/// 
+///
 /// Attempts to set a password for a given service and account.
-/// 
+///
 /// - `service`: The service name for the new credential
 /// - `account`: The account name for the new credential
-/// 
+///
 /// Returns:
 /// - `true` if the credential was stored successfully
 /// - A `KeyringError` if there were any issues interacting with the credential vault
@@ -85,7 +85,7 @@ fn encode_utf16(str: &str) -> Vec<u16> {
 pub fn set_password(
     service: &String,
     account: &String,
-    password: &mut String,
+    password: &String,
 ) -> Result<bool, KeyringError> {
     // Build WinAPI strings and object parameters from arguments
     let target_bytes = encode_utf16(format!("{}/{}", service, account).as_str());
@@ -120,16 +120,16 @@ pub fn set_password(
     Ok(true)
 }
 
-/// 
+///
 /// Returns a password contained in the given service and account, if found.
-/// 
+///
 /// - `service`: The service name that matches the credential of interest
 /// - `account`: The account name that matches the credential of interest
-/// 
+///
 /// Returns:
 /// - `Some(password)` if a matching credential was found; `None` otherwise
 /// - A `KeyringError` if there were any issues interacting with the credential vault
-/// 
+///
 pub fn get_password(service: &String, account: &String) -> Result<Option<String>, KeyringError> {
     let mut cred: *mut CREDENTIALW = std::ptr::null_mut::<CREDENTIALW>();
     let target_name = encode_utf16(format!("{}/{}", service, account).as_str());
@@ -173,16 +173,16 @@ pub fn get_password(service: &String, account: &String) -> Result<Option<String>
     }
 }
 
-/// 
+///
 /// Attempts to delete the password associated with a given service and account.
-/// 
+///
 /// - `service`: The service name of the credential to delete
 /// - `account`: The account name of the credential to delete
-/// 
+///
 /// Returns:
 /// - `true` if a matching credential was deleted; `false` otherwise
 /// - A `KeyringError` if there were any issues interacting with the credential vault
-/// 
+///
 pub fn delete_password(service: &String, account: &String) -> Result<bool, KeyringError> {
     let target_name = encode_utf16(format!("{}/{}", service, account).as_str());
 
@@ -204,15 +204,15 @@ pub fn delete_password(service: &String, account: &String) -> Result<bool, Keyri
     Ok(true)
 }
 
-/// 
+///
 /// Returns the first password (if any) that matches the given service pattern.
-/// 
+///
 /// - `service`: The service pattern that matches the credential of interest
-/// 
+///
 /// Returns:
 /// - `Some(password)` if a matching credential was found; `None` otherwise
 /// - A `KeyringError` if there were any issues interacting with the credential vault
-/// 
+///
 pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
     let filter = encode_utf16(format!("{}*", service).as_str());
 
@@ -257,16 +257,16 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
     }
 }
 
-/// 
+///
 /// Builds a vector of all credentials matching the given service pattern.
-/// 
+///
 /// - `service`: The service pattern that matches the credential(s) of interest
-/// - `credentials`: The vector consisting of (username, password) pairs for each credential that matches 
-/// 
+/// - `credentials`: The vector consisting of (username, password) pairs for each credential that matches
+///
 /// Returns:
 /// - `true` if at least 1 credential was found, `false` otherwise
 /// - A `KeyringError` if there were any issues interacting with the credential vault
-/// 
+///
 pub fn find_credentials(
     service: &String,
     credentials: &mut Vec<(String, String)>,
