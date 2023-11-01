@@ -36247,36 +36247,6 @@
         "which": "^2.0.2"
       },
       "dependencies": {
-        "@zowe/provisioning-for-zowe-sdk": {
-          "version": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/provisioning-for-zowe-sdk/-/@zowe/provisioning-for-zowe-sdk-7.18.8.tgz",
-          "integrity": "sha512-w1HhlBDlC+eEJaGEAW7sb+FBnh3Uti3aV4I4oZ2Wi5U2Z27snUHauJveJxlZciabgZ/nMcF+AwLnuEmTHZ6Vaw==",
-          "requires": {
-            "js-yaml": "4.1.0"
-          }
-        },
-        "@zowe/zos-console-for-zowe-sdk": {
-          "version": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/zos-console-for-zowe-sdk/-/@zowe/zos-console-for-zowe-sdk-7.18.8.tgz",
-          "integrity": "sha512-H2Kp4u2ESIDo5RwRexB0I68P5fCGCk4Zb1Yj3q7D/7qXceih7xXDmfF4W8ZWb99FXQr0F0oq1ryNn6QVAAlB/Q==",
-          "requires": {}
-        },
-        "@zowe/zos-logs-for-zowe-sdk": {
-          "version": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/zos-logs-for-zowe-sdk/-/@zowe/zos-logs-for-zowe-sdk-7.18.8.tgz",
-          "integrity": "sha512-Y7wwMsBh+qYbN6YUA8FuMmi9CNJFrTdjK/cn0jlo8VaTDEMuDV0vMRQVrhzMou8SsKdjSMLdza7R+6kUq9Zgaw==",
-          "requires": {}
-        },
-        "@zowe/zos-tso-for-zowe-sdk": {
-          "version": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/zos-tso-for-zowe-sdk/-/@zowe/zos-tso-for-zowe-sdk-7.18.8.tgz",
-          "integrity": "sha512-tRAwEhHccBqGI4Ee9H4U1hcfU3q1c1uM7ULGNJX2iYiuR90B61WzgB3o249Wn8AYPQ7FQ7xeUICnOGK8jZ/9bQ==",
-          "requires": {
-            "@zowe/zosmf-for-zowe-sdk": "7.18.8"
-          }
-        },
-        "@zowe/zosmf-for-zowe-sdk": {
-          "version": "7.18.8",
-          "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/zosmf-for-zowe-sdk/-/@zowe/zosmf-for-zowe-sdk-7.18.8.tgz",
-          "integrity": "sha512-BjkuTFKCpXL2w0E1seygg7l2yjr0xCaOc6sjdRtkJL/pfH79MFwyBFfLdTKkh6VJDURVfXdgNa9O9GkVLewEdw==",
-          "requires": {}
-        },
         "brace-expansion": {
           "version": "2.0.1",
           "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.0.1.tgz",
