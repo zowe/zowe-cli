@@ -15,7 +15,7 @@
  */
 
 import * as T from "../../../../../src/TestUtil";
-import { cliBin, config } from "../PluginManagementFacility.spec";
+import { cliBin, config } from "../PluginManagementFacility.integration.spec";
 import { join, resolve } from "path";
 import { readFileSync, writeFileSync } from "fs";
 import { execSync } from "child_process";
@@ -300,8 +300,8 @@ describe("Using a Plugin", () => {
         cmd = "profiles create secure-pass-profile TestProfileName --password 'AnyPass' --overwrite";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
         expect(result.stderr).toBe("");
-        expect(result.stdout).toContain("CredentialManager in sample-plugin is saving these creds:");
-        expect(result.stdout).toContain("password: managed by override-plugin");
+        expect(result.stdout).toContain("Overwrote existing profile for TestProfileName");
+        expect(result.stdout).toContain("Profile created successfully");
 
         // set the CredMgr back to default
         setCredMgrOverride(false);

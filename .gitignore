@@ -62,7 +62,6 @@ fabric.properties
 !/.idea/artifacts/
 /.idea/dictionaries/
 /gui/BrightSide-win32-x64/
-**/lib/
 typings/
 /gui/BrightSide-linux-x64/
 /gui/BrightSide-darwin-x64/
@@ -96,7 +95,11 @@ imperative_debug.log
 
 *.bat
 
-/packages/cli/lib
+# we do not commit lib files
+**/lib/
+# we DO commit pre-compiled plugin test modules
+!/packages/imperative/__tests__/src/packages/imperative/plugins/test_plugins/*/lib/
+
 /packages/cli/npm-shrinkwrap.json
 
 # Licenses in package folders (managed with build scripts)
