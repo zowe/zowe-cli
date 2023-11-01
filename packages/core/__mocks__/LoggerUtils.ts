@@ -1,0 +1,24 @@
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
+const LoggerUtils: any =
+    (jest.genMockFromModule("../src/logger/LoggerUtils") as any).LoggerUtils;
+
+const loggerUtilsRequire = (jest as any).requireActual("../src/logger/LoggerUtils").LoggerUtils;
+
+LoggerUtils.censorRawData.mockImplementation((data: string, category: string = "") => {
+    return data;
+});
+
+LoggerUtils.censorCLIArgs = loggerUtilsRequire.censorCLIArgs;
+LoggerUtils.censorYargsArguments = loggerUtilsRequire.censorYargsArguments;
+
+exports.LoggerUtils = LoggerUtils;

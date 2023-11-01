@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+
 import { IImperativeError, Logger, TextUtils } from "@zowe/imperative";
 
 const stringWidth = require("string-width");

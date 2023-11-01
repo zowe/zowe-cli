@@ -46,7 +46,20 @@
   },
   "dependencies": {
     "comment-json": "4.1.1",
-    "string-width": "4.2.3"
+    "cross-spawn": "7.0.3",
+    "deepmerge": "4.2.2",
+    "diff": "5.1.0",
+    "diff2html": "3.4.20-usewontache.1.60e7a2e",
+    "find-up": "4.1.0",
+    "fs-extra": "8.1.0",
+    "jest-diff": "27.0.6",
+    "jsonfile": "4.0.0",
+    "lodash": "4.17.21",
+    "log4js": "6.4.6",
+    "readline-sync": "1.4.10",
+    "stack-trace": "0.0.10",
+    "string-width": "4.2.3",
+    "yargs": "15.3.1"
   },
   "devDependencies": {
     "@types/node": "^14.18.28",
