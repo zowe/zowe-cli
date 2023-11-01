@@ -134,6 +134,7 @@ module.exports = {
         }],
         ["github-actions", { "silent": false } ]
     ],
+    "testResultsProcessor": "jest-sonar-reporter",
     "coverageReporters": [
         "json",
         "lcov",
