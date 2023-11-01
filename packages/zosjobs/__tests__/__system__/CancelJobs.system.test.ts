@@ -31,14 +31,7 @@ describe("CancelJobs System tests", () => {
         });
         systemProps = testEnvironment.systemTestProperties;
 
-        REAL_SESSION = new Session({
-            user: systemProps.zosmf.user,
-            password: systemProps.zosmf.password,
-            hostname: systemProps.zosmf.host,
-            port: systemProps.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: systemProps.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer

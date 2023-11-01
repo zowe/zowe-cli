@@ -18,9 +18,6 @@ import * as fs from "fs";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
-// Expected length constants
-const FOLLOW_UP_ATTEMPTS: number = 3;
-
 describe("zos-logs list logs", () => {
     // Create the unique test environment with zosmf profiles
     beforeAll(async () => {
@@ -81,12 +78,6 @@ describe("zos-logs list logs", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
         it("should execute zos-logs get and get the response", async () => {
-            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
-            // if API Mediation layer is being used (basePath has a value) then
-            // set an ENVIRONMENT variable to be used by zowe.
-            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
-                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
-            }
             const response = runCliScript(__dirname + "/__scripts__/logs/list_logs_fully_qualified.sh", TEST_ENVIRONMENT_NO_PROF, [
                 DEFAULT_SYSTEM_PROPS.zosmf.host,
                 DEFAULT_SYSTEM_PROPS.zosmf.port,
