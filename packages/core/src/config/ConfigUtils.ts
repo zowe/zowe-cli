@@ -12,7 +12,7 @@
 import { CredentialManagerFactory } from "../security/CredentialManagerFactory";
 import { ImperativeConfig } from "../utils/ImperativeConfig";
 import { ImperativeError } from "../error/ImperativeError";
-import { ICommandArguments } from "../cmd";
+import { ICommandArguments } from "../cmd/doc/args/ICommandArguments";
 
 /**
  * Coeerces string property value to a boolean or number type.

@@ -22,4 +22,5 @@ export * from "./ProfileInfo";
 export * from "./ProfInfoErr";
 
 // TODO(zFernand0): convert this to a class and deprecate old methods
+// TODO(zFernand0): do a search/replace for import * as ConfigUtils
 export * as ConfigUtils from "./ConfigUtils";

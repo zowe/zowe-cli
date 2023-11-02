@@ -9,6 +9,8 @@
 *
 */
 
-export * from "./doc/IHeaderContent";
+export * from "./client";
+export * from "./session";
+
 export * from "./ZosmfHeaders";
 export * from "./ZosmfRestClient";

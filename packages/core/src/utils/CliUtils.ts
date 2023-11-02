@@ -19,7 +19,7 @@ import { TextUtils } from "./TextUtils";
 import { IOptionFormat } from "./doc/IOptionFormat";
 import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition, ICommandProfile, IHandlerParameters } from "../cmd";
 import { ICommandArguments } from "../cmd/doc/args/ICommandArguments";
-import { IProfile } from "../profiles";
+import { IProfile } from "../profiles/doc/definition/IProfile";
 import { IPromptOptions } from "../cmd/doc/response/api/handler/IPromptOptions";
 
 /**

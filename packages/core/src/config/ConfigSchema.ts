@@ -19,8 +19,8 @@ import { ImperativeError } from "../error/ImperativeError";
 import { Logger } from "../logger/Logger";
 import { IExplanationMap, TextUtils } from "../utils/TextUtils";
 import { ImperativeConfig } from "../utils/ImperativeConfig";
-import { ICommandProfileProperty } from "../cmd";
-import { IProfileProperty, IProfileSchema, IProfileTypeConfiguration } from "../profiles";
+import { ICommandProfileProperty } from "../cmd/doc/profiles/definition/ICommandProfileProperty";
+import { IProfileProperty, IProfileSchema, IProfileTypeConfiguration } from "../profiles/doc";
 
 export class ConfigSchema {
     /**

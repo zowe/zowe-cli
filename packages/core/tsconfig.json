@@ -5,5 +5,5 @@
   },
   "include": [
     "./src"
-, "__tests__/operations/__integration__", "__tests__/operations/__resources__"  ]
+, "__mocks__/HandlerResponse.ts", "__tests__/cmd/__unit__/handlers", "__tests__/cmd/__resources__", "__tests__/cmd/__unit__/__model__", "__mocks__/SyntaxValidator.ts", "__tests__/cmd/__unit__/help", "__tests__/cmd/__unit__/process", "__tests__/cmd/__unit__/profiles", "__tests__/cmd/__unit__/response", "__tests__/cmd/__unit__/yargs", "__tests__/cmd/__unit__/Chaine, "__tests__/cmd/__unit__/CommandProcessor.unit.test.ts"dHandlerUtils.unit.test.ts", "__tests__/cmd/__unit__/utils", "__tests__/cmd/__unit__/syntax/SyntaxValidator.unit.test.ts"  ]
 }

@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfileProperty } from "../../profiles";
+import { IProfileProperty } from "../../profiles/doc/definition/IProfileProperty";
 
 export interface IConfigBuilderOpts {
     /**

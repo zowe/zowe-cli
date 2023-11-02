@@ -9,8 +9,10 @@
 *
 */
 
-import { ICommandExampleDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration, TOKEN_TYPE_APIML, ALL_TOKEN_TYPES } from "@zowe/imperative";
-
+import { ICommandExampleDefinition } from "./cmd/doc/ICommandExampleDefinition";
+import { ICommandOptionDefinition } from "./cmd/doc/option/ICommandOptionDefinition";
+import { ICommandProfileTypeConfiguration } from "./cmd/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import { TOKEN_TYPE_APIML, ALL_TOKEN_TYPES } from "./rest/session/SessConstants";
 
 /**
  * Class containing the various profile related constants
@@ -312,8 +314,7 @@ export class ProfileConstants {
     public static readonly APIML_LOGOUT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
         ...ProfileConstants.BASE_OPTION_TOKEN_TYPE,
         allowableValues: {
-            values: SessConstants.ALL_TOKEN_TYPES
-                .map(tk => tk.indexOf(SessConstants.TOKEN_TYPE_APIML) >= 0 ? `^${SessConstants.TOKEN_TYPE_APIML}.*` : tk)
+            values: ALL_TOKEN_TYPES.map(tk => tk.indexOf(TOKEN_TYPE_APIML) >= 0 ? `^${TOKEN_TYPE_APIML}.*` : tk)
         }
     };
 

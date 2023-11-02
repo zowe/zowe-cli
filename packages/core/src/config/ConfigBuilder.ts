@@ -17,7 +17,7 @@ import { IConfigBuilderOpts } from "./doc/IConfigBuilderOpts";
 import { IConfigConvertResult } from "./doc/IConfigConvertResult";
 import { Config } from "./Config";
 import { CredentialManagerFactory } from "../security/CredentialManagerFactory";
-import { IImperativeConfig } from "../imperative";
+import { IImperativeConfig } from "../imperative/doc/IImperativeConfig";
 import { ProfileIO, ProfilesConstants, ProfileUtils } from "../profiles";
 
 export class ConfigBuilder {

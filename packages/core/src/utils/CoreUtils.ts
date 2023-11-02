@@ -11,7 +11,9 @@
 
 import * as fs from "fs";
 
-import { IImperativeError, Logger, TextUtils } from "@zowe/imperative";
+import { Logger} from "../logger/Logger";
+import { TextUtils } from "./TextUtils";
+import { IImperativeError } from "../error/doc/IImperativeError";
 
 const stringWidth = require("string-width");
 
