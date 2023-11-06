@@ -60,7 +60,7 @@ const summaryMsg = [
     `Number of files with changed imports = ${g_modifiedFileCnt}`,
     `Number of files that require manual changes = ${g_manualChangeFileCnt}\n`,
     `In each file requiring a manual change, we inserted a comment and`,
-    `and a forced compile error to enable you to find the identified issues.`,
+    `forced a compile error to enable you to find the identified issues.`,
     `For TypeScript files, you can quickly find each such issue by simply`,
     `recompiling your TypeScript app. Otherwise, you can search your source`,
     `for the string '${ g_cmdName}'. `
@@ -101,8 +101,9 @@ function changeAllSrcFiles(dir) {
  */
 function changeImpToCore(fileToChange) {
     let weModified = false;
-    let linesOfFile;
     g_totalFileCnt++;
+    let linesOfFile;
+
     let fileContents = fs.readFileSync(fileToChange, {"encoding": g_encoding});
     if (fileContents && fileContents.includes("/imperative")) {
         /* We must do multiple pattern matches. Split file into lines to
@@ -128,6 +129,8 @@ function changeImpToCore(fileToChange) {
         // find and react to each imperative import
         for (let lineInx = 0; lineInx < linesOfFile.length; lineInx++) {
             let commentsToInsert;
+            let lineBeforeChange = linesOfFile[lineInx];
+
             if (linesOfFile[lineInx].match(/(?:from|require).*"@zowe\/imperative\/[a-z0-9]+/i)) {
                 // this line imported a path name underneath imperative
                 commentsToInsert = [
@@ -147,7 +150,6 @@ function changeImpToCore(fileToChange) {
                 ];
                 linesOfFile[lineInx] = linesOfFile[lineInx].replace(/@zowe\/imperative/i, "@zowe/core-sdk");
                 lineInx = insertLinesIntoFile(fileToChange, linesOfFile, lineInx, commentsToInsert)
-                weModified = true;
 
             } else if (linesOfFile[lineInx].match(/(?:from|require).*"@zowe\/imperative"/i)) {
                 // this line specified just an imperative module import
@@ -207,11 +209,9 @@ function changeImpToCore(fileToChange) {
                     }
 
                     lineInx = insertLinesIntoFile(fileToChange, linesOfFile, lineInx, commentsToInsert)
-                    weModified = true;
                 } else {
                     // The current line did not import imperative as anything. We know how to change just a scoped reference.
                     linesOfFile[lineInx] = linesOfFile[lineInx].replace(/@zowe\/imperative/i, "@zowe/core-sdk");
-                    weModified = true;
                 }
 
             } else if (linesOfFile[lineInx].match(/(?:from|require).*\/imperative/)) {
@@ -224,6 +224,9 @@ function changeImpToCore(fileToChange) {
                  */
                 linesOfFile[lineInx] = linesOfFile[lineInx].replace(/packages\/imperative/i, "packages/core");
                 linesOfFile[lineInx] = linesOfFile[lineInx].replace(/imperative\/src\/imperative/i, "core/src/imperative");
+            }
+
+            if (lineBeforeChange !== linesOfFile[lineInx]) {
                 weModified = true;
             }
         } // end for each line
