@@ -7,7 +7,7 @@ Contains APIs to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
 **Cancel a job**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { CancelJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 (async () => {
@@ -33,7 +33,7 @@ import { CancelJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 **Download a job's output**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/zos-jobs-for-zowe-sdk";
 
 (async () => {
@@ -63,7 +63,7 @@ import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/zos-jobs-for-
 **Get jobs by owner**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 (async () => {
@@ -88,7 +88,7 @@ import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 **Submit a job**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 (async () => {

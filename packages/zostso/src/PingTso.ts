@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers } from "@zowe/imperative";
+import { AbstractSession, Headers } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { TsoValidator } from "./TsoValidator";
 import { noPingInput, TsoConstants } from "./TsoConstants";

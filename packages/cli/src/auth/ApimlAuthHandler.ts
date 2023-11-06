@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/imperative";
+import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/core-for-zowe-sdk";
 import { Logout, Login } from "@zowe/core-for-zowe-sdk";
 
 /**

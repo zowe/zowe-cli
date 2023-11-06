@@ -10,7 +10,7 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import {
     IProvisionedInstance,
     ListRegistryInstances,

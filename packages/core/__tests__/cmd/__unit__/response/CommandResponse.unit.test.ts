@@ -12,13 +12,12 @@
 import { ITaskWithStatus, TaskStage } from "../../../../src/operations";
 
 jest.mock("chalk");
-import { CommandResponse } from "../../src/response/CommandResponse";
 import { ImperativeError } from "../../../../src/error";
 import { inspect } from "util";
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { IO } from "../../../../src/io";
-import { OUTPUT_FORMAT } from "../../../../src/cmd";
-import { CliUtils, IDaemonResponse } from "../../../utilities";
+import { CommandResponse, OUTPUT_FORMAT } from "../../../../src/cmd";
+import { IDaemonResponse, CliUtils } from "../../../../src";
+import { TestLogger } from "../../../__resources__/src/TestLogger";
 
 const beforeForceColor = process.env.FORCE_COLOR;
 

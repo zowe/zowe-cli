@@ -9,9 +9,8 @@
 *
 */
 
-import * as ConfigUtils from "../../config/src/ConfigUtils";
-import { CredentialManagerFactory } from "../../security";
-import { ImperativeConfig } from "../../utilities";
+import * as ConfigUtils from "../../../src/config/ConfigUtils";
+import { CredentialManagerFactory, ImperativeConfig } from "../../../src";
 
 describe("Config Utils", () => {
     describe("coercePropValue", () => {

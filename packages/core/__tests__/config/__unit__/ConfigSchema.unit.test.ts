@@ -9,12 +9,12 @@
 *
 */
 
-import { IProfileTypeConfiguration } from "../../profiles";
-import { ConfigSchema } from "../src/ConfigSchema";
 import { cloneDeep } from "lodash";
-import { ICommandProfileTypeConfiguration, ImperativeConfig, Logger } from "../../../src";
-import { Config, IConfig, IConfigLayer, IConfigUpdateSchemaHelperOptions } from "../../../src/config";
 import * as path from "path";
+
+import { IProfileTypeConfiguration } from "../../../src/profiles";
+import { ICommandProfileTypeConfiguration, ImperativeConfig, Logger,ConfigSchema } from "../../../src";
+import { Config, IConfig, IConfigLayer, IConfigUpdateSchemaHelperOptions } from "../../../src/config";
 
 describe("Config Schema", () => {
     const schema = ConfigSchema;

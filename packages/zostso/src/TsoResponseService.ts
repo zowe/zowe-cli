@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { IStartStopResponse } from "./doc/IStartStopResponse";
 import { TsoValidator } from "./TsoValidator";

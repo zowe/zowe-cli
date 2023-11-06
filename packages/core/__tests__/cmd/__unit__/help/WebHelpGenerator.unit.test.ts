@@ -11,15 +11,10 @@
 
 import * as fs from "fs";
 import * as path from "path";
-
-import { Imperative } from "../../../imperative/src/Imperative";
-import { WebHelpGenerator } from "../../src/help/WebHelpGenerator";
-import { WebHelpManager } from "../../src/help/WebHelpManager";
-import { CommandResponse } from "../../src/response/CommandResponse";
-import { IImperativeConfig } from "../../../imperative/src/doc/IImperativeConfig";
-import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
-import { IO } from "../../../io";
-import { ICommandDefinition } from "../../../cmd/src/doc/ICommandDefinition";
+import {
+    IImperativeConfig, ICommandDefinition, Imperative, CommandResponse, IO, WebHelpGenerator,
+    WebHelpManager, ImperativeConfig
+} from "../../../../src";
 
 describe("WebHelpGenerator", () => {
     describe("buildHelp", () => {

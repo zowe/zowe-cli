@@ -13,7 +13,7 @@ jest.mock("fs");
 jest.mock("@zowe/core-for-zowe-sdk");
 
 
-import { Headers, Session } from "@zowe/imperative";
+import { Headers, Session } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 import { Invoke, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";

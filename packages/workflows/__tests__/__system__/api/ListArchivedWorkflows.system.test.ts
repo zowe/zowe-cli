@@ -13,7 +13,7 @@ import { CreateWorkflow } from "../../../src/Create";
 import { ArchivedDeleteWorkflow } from "../../../src/ArchivedDelete";
 import { ListArchivedWorkflows } from "../../../src/ListArchivedWorkflows";
 import { ArchiveWorkflow } from "../../../src/ArchiveWorkflow";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { ITestEnvironment } from "@zowe/cli-test-utils";

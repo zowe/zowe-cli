@@ -12,7 +12,7 @@
 import * as nodeJsPath from "path";
 import * as os from "os";
 
-import { ImperativeConfig, ImperativeError, IO, Logger, ProcessUtils, ISystemInfo } from "@zowe/imperative";
+import { ImperativeConfig, ImperativeError, IO, Logger, ProcessUtils, ISystemInfo } from "@zowe/core-for-zowe-sdk";
 
 import DisableDaemonHandler from "../../../../src/daemon/disable/Disable.handler";
 

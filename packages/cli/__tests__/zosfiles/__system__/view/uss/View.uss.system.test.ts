@@ -10,7 +10,7 @@
 */
 
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
 import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders } from "@zowe/cli";
 import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";

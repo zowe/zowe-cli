@@ -10,14 +10,11 @@
 */
 
 import * as path from "path";
-import { ProfileInfo } from "../src/ProfileInfo";
-import { IProfAttrs } from "../src/doc/IProfAttrs";
-import { IProfOpts } from "../src/doc/IProfOpts";
-import { ProfInfoErr } from "../src/ProfInfoErr";
-import { ProfLocType } from "../src/doc/IProfLoc";
-import { IProfileSchema, ProfileIO } from "../../profiles";
-import { ImperativeError } from "../../error";
-import { IProfArgAttrs } from "../src/doc/IProfArgAttrs";
+
+import {
+    IProfOpts, ProfileInfo, IProfAttrs, ProfLocType, IProfileSchema, ProfInfoErr, ImperativeError,
+    ProfileIO, IProfArgAttrs
+} from "../../../src";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();

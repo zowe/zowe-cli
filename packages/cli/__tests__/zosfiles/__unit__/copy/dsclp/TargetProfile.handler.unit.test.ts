@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeConfig, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeConfig, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import TargetProfileHandler from "../../../../../src/zosfiles/copy/dsclp/TargetProfile.handler";
 import { DsclpDefinition } from "../../../../../src/zosfiles/copy/dsclp/Dsclp.definition";
 import {

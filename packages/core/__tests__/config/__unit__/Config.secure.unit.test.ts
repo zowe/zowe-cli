@@ -12,12 +12,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as lodash from "lodash";
-import { CredentialManagerFactory } from "../../security";
-import { ImperativeError } from "../../error/src/ImperativeError";
-import { Config } from "../src/Config";
-import { IConfig } from "../src/doc/IConfig";
-import { IConfigSecure } from "../src/doc/IConfigSecure";
-import { IConfigVault } from "../src/doc/IConfigVault";
+
+import { IConfigSecure, IConfigVault, Config, ImperativeError, IConfig, CredentialManagerFactory } from "../../../src";
 
 const MY_APP = "my_app";
 

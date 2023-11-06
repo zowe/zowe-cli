@@ -9,7 +9,8 @@
 *
 */
 
-import { RestStandAloneUtils } from "../../src/client/RestStandAloneUtils";
+import { RestStandAloneUtils } from "../../../../src";
+
 
 const IN_USER = "shadyside";
 const IN_PASSWORD = "darkside";

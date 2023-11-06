@@ -14,7 +14,7 @@ import i18nTypings from "../../-strings-/en";
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).SUBMIT.ACTIONS;
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/core-for-zowe-sdk";
 
 export const StdinDefinition: ICommandDefinition = {
     name: "stdin",

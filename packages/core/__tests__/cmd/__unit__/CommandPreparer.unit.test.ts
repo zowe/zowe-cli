@@ -9,9 +9,6 @@
 *
 */
 
-import { ICommandDefinition } from "../src/doc/ICommandDefinition";
-import { CommandPreparer } from "../src/CommandPreparer";
-import { TestLogger } from "../../../../imperative/__tests__/src/TestLogger";
 import { inspect } from "util";
 import {
     MULTIPLE_GROUPS,
@@ -23,7 +20,8 @@ import {
     VALID_COMMANDS_WITH_PROFILES,
     SAMPLE_BASE_PROFILE
 } from "../__resources__/CommandDefinitions";
-import { ImperativeError } from "../../error/src/ImperativeError";
+import { ICommandDefinition, CommandPreparer, ImperativeError } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 
 // UnitTestUtils.replaceIt();
 

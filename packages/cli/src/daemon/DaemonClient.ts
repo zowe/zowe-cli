@@ -12,7 +12,7 @@
 import * as net from "net";
 import * as path from "path";
 import { PassThrough, Readable } from "stream";
-import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
+import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/core-for-zowe-sdk";
 import { DaemonUtil } from "./DaemonUtil";
 
 /**

@@ -10,7 +10,7 @@
 */
 
 
-import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import {
     WorkflowConstants,

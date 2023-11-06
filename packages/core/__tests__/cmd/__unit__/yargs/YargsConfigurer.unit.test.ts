@@ -9,11 +9,10 @@
 *
 */
 
-import { CommandProcessor } from "../../src/CommandProcessor";
-import { Constants, ImperativeConfig, YargsConfigurer } from "../../../../src";
+import { Constants, ImperativeConfig, YargsConfigurer, CommandProcessor } from "../../../../src";
 
 jest.mock("yargs");
-jest.mock("../../src/CommandProcessor");
+jest.mock("../../../../src/cmd/CommandProcessor");
 
 describe("YargsConfigurer tests", () => {
     it("should build a failure message", () => {

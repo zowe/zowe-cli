@@ -11,7 +11,7 @@
 
 import * as path from "path";
 
-import { IImperativeConfig } from "@zowe/imperative";
+import { IImperativeConfig } from "@zowe/core-for-zowe-sdk";
 import { Constants } from "./Constants";
 
 import { ZosmfProfile } from "@zowe/zosmf-for-zowe-sdk";

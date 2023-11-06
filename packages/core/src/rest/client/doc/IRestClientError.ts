@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeError } from "../../../../error";
+import { IImperativeError } from "../../../error/doc/IImperativeError";
 
 export type RestErrorSource = "client" | "http";
 

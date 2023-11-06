@@ -9,12 +9,11 @@
 *
 */
 
-jest.mock("../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../../src/utils/ImperativeConfig");
 
-import { ImperativeConfig } from "../../../../utilities";
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { CompleteProfilesGroupBuilder } from "../../../../imperative/src/profiles/builders/CompleteProfilesGroupBuilder";
+import { TestLogger } from "../../../../../__tests__/__resources__/src/TestLogger";
+import { ImperativeConfig, CompleteProfilesGroupBuilder } from "../../../../../src";
 
 describe("Complete Profiles Group Builder", () => {
     const logger = TestLogger.getTestLogger();

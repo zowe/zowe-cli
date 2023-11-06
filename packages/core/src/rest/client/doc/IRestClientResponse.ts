@@ -11,7 +11,7 @@
 */
 
 import { Session } from "../../session/Session";
-import { Logger } from "../../../../logger";
+import { Logger } from "../../../logger/Logger";
 
 /**
  * Interface to map client's REST call response

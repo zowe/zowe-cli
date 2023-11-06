@@ -9,7 +9,7 @@
 *
 */
 
-import { apiErrorHeader, IMessageDefinition } from "@zowe/imperative";
+import { apiErrorHeader, IMessageDefinition } from "@zowe/core-for-zowe-sdk";
 
 export class ConsoleConstants {
     public static readonly CLASS: string = "Consoles";

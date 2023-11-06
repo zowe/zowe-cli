@@ -10,13 +10,14 @@
 */
 
 import * as fs from "fs";
-import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerInit } from "../../security";
-import { ConfigSecure } from "../src/api/ConfigSecure";
-import { ProfileCredentials } from "../src/ProfileCredentials";
 
-jest.mock("../../security/src/CredentialManagerFactory");
-jest.mock("../../security/src/DefaultCredentialManager");
-jest.mock("../../utilities/src/ImperativeConfig");
+import {
+    ConfigSecure, ProfileCredentials, CredentialManagerFactory, ICredentialManagerInit, DefaultCredentialManager
+} from "../../../src";
+
+jest.mock("../../../src/security/CredentialManagerFactory");
+jest.mock("../../../src/security/DefaultCredentialManager");
+jest.mock("../../../src/utils/ImperativeConfig");
 
 function mockConfigApi(secureApi: Partial<ConfigSecure>): any {
     return {

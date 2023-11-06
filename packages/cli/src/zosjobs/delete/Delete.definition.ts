@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { JobDefinition } from "./job/Job.definition";
 import { OldJobsDefinition } from "./old-jobs/OldJobs.definition";
 

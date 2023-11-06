@@ -15,7 +15,7 @@ import * as which from "which";
 import { exec } from "child_process";
 
 
-import { IO, ISystemInfo, ProcessUtils } from "@zowe/imperative";
+import { IO, ISystemInfo, ProcessUtils } from "@zowe/core-for-zowe-sdk";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";

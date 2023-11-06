@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError, Imperative } from "@zowe/core-for-zowe-sdk";
 import { ProvisionPublishedTemplate, IProvisionTemplateResponse, noSessionProvisioning, noTemplateName,
     ProvisioningConstants, IProvisionOptionals, ProvisioningService, noAccountInfo } from "../../src";
 

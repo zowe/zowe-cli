@@ -10,7 +10,7 @@
 */
 
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 
 export abstract class ZosTsoBaseHandler extends ZosmfBaseHandler {

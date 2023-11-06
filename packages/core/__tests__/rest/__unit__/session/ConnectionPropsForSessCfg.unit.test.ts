@@ -9,17 +9,15 @@
 *
 */
 
-jest.mock("../../../logger/src/LoggerUtils");
-import { ConnectionPropsForSessCfg } from "../../src/session/ConnectionPropsForSessCfg";
-import { CliUtils } from "../../../utilities/src/CliUtils";
-import { ImperativeError } from "../../../error";
-import * as SessConstants from "../../src/session/SessConstants";
-import { ISession } from "../../src/session/doc/ISession";
-import { Logger } from "../../../logger";
+jest.mock("../../../../src/logger/LoggerUtils");
+import { Logger } from "log4js";
 import { join } from "path";
-import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
-import { setupConfigToLoad } from "../../../../__tests__/src/TestUtil";
-import { IOverridePromptConnProps } from "../../src/session/doc/IOverridePromptConnProps";
+import {
+    ISession, ConnectionPropsForSessCfg, SessConstants, IOverridePromptConnProps,
+    CliUtils, ConfigAutoStore, ImperativeError
+} from "../../../../src";
+import { setupConfigToLoad } from "../../../__resources__/src/TestUtil";
+
 
 const certFilePath = join(__dirname, "..", "..", "..", "..", "__tests__", "__integration__", "cmd",
     "__tests__", "integration", "cli", "auth", "__resources__", "fakeCert.cert");

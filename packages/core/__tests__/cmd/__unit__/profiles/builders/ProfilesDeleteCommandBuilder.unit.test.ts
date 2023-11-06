@@ -9,12 +9,11 @@
 *
 */
 
-jest.mock("../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../../utils/ImperativeConfig");
 
+import { ImperativeConfig, ProfilesDeleteCommandBuilder } from "../../../../../src";
+import { TestLogger } from "../../../../__resources__/src/TestLogger";
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { ProfilesDeleteCommandBuilder } from "../../../../imperative/src/profiles/builders/ProfilesDeleteCommandBuilder";
-import { ImperativeConfig } from "../../../../utilities";
 
 describe("Profile Delete Command Builder", () => {
     const logger = TestLogger.getTestLogger();

@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, ImperativeError } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 
 import { error } from "console";

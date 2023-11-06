@@ -13,7 +13,7 @@ import { IGetJobsParms, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import * as JobsHandler from "../../../../../src/zosjobs/list/jobs/Jobs.handler";
 import * as JobsDefinition from "../../../../../src/zosjobs/list/jobs/Jobs.definition";
 import {

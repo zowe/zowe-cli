@@ -13,7 +13,7 @@ import { posix } from "path";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { AbstractSession, Imperative, IO } from "@zowe/imperative";
+import { AbstractSession, Imperative, IO } from "@zowe/core-for-zowe-sdk";
 import { Utilities, Tag, Upload, Create, Download, Delete } from "../../../../src";
 import { getUniqueDatasetName, getTag } from "../../../../../../__tests__/__src__/TestUtils";
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Logger, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Logger, TextUtils } from "@zowe/core-for-zowe-sdk";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { isNullOrUndefined } from "util";

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { CancelJobs, IJob } from "../../src";
 import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 

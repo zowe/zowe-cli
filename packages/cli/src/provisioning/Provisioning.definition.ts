@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { ListCommand } from "./list/List.definition";
 import { ProvisionCommand } from "./provision/Provision.definition";
 import { PerformCommand } from "./perform/Perform.definition";

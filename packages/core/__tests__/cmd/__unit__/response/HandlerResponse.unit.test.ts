@@ -9,9 +9,7 @@
 *
 */
 
-import { HandlerResponse } from "../../src/response/HandlerResponse";
-import { CommandResponse } from "../../src/response/CommandResponse";
-import { IHandlerResponseApi } from "../../src/doc/response/api/handler/IHandlerResponseApi";
+import { IHandlerResponseApi, HandlerResponse, CommandResponse } from "../../../../src";
 
 describe("Handler Response", () => {
     it("Handler Response", () => {

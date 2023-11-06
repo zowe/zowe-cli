@@ -23,7 +23,7 @@ import {
     IImperativeError,
     ImperativeError,
     ConnectionPropsForSessCfg
-} from "@zowe/imperative";
+} from "@zowe/core-for-zowe-sdk";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
 

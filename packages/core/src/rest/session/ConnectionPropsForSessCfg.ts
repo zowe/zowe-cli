@@ -9,17 +9,17 @@
 *
 */
 
-import { CliUtils, ImperativeConfig } from "../../../utilities";
-import { ICommandArguments, IHandlerParameters } from "../../../cmd";
-import { ImperativeError } from "../../../error";
+import { CliUtils, ImperativeConfig } from "../../utils";
+import { ICommandArguments, IHandlerParameters } from "../../cmd";
+import { ImperativeError } from "../../error/ImperativeError";
 import { IOptionsForAddConnProps } from "./doc/IOptionsForAddConnProps";
-import { Logger } from "../../../logger";
+import { Logger } from "../../logger";
 import * as SessConstants from "./SessConstants";
-import { IPromptOptions } from "../../../cmd/src/doc/response/api/handler/IPromptOptions";
+import { IPromptOptions } from "../../cmd/doc/response/api/handler/IPromptOptions";
 import { ISession } from "./doc/ISession";
-import { IProfileProperty } from "../../../profiles";
-import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
-import * as ConfigUtils from "../../../config/src/ConfigUtils";
+import { IProfileProperty } from "../../profiles/doc";
+import { ConfigAutoStore } from "../../config/ConfigAutoStore";
+import * as ConfigUtils from "../../config/ConfigUtils";
 
 /**
  * Extend options for IPromptOptions for internal wrapper method

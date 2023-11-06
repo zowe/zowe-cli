@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { IO } from "@zowe/imperative";
+import { IO } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Class containing daemon utility functions.

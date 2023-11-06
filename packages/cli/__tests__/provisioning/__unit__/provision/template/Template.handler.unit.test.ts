@@ -15,7 +15,7 @@ import {
     ProvisionPublishedTemplate
 } from "@zowe/provisioning-for-zowe-sdk";
 import { ProvisionTemplateData } from "../../../__resources__/ProvisionTemplateData";
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as TemplateHandler from "../../../../../src/provisioning/provision/template/Template.handler";
 import * as TemplateDefinition from "../../../../../src/provisioning/provision/template/Template.definition";
 import {

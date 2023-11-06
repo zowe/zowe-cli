@@ -20,7 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../src";
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { noConsoleInput, noConsoleName, noZosmfInput } from "../../src/ConsoleConstants";
 

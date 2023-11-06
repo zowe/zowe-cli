@@ -9,8 +9,7 @@
 *
 */
 
-import { Imperative } from "../../../imperative/src/Imperative";
-import { CommandResponse } from "../../";
+import { Imperative, CommandResponse } from "../../../../src";
 
 export const JSON_WRITE_ERROR_MESSAGE_ONE: string = "Hello from Command Response JSON Process Message 1 (stderr)";
 export const JSON_WRITE_ERROR_MESSAGE_TWO: string = "Hello from Command Response JSON Process Message 2 (stderr)";

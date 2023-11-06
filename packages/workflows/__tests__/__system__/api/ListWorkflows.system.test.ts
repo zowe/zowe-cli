@@ -10,7 +10,7 @@
 */
 
 import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../../src";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";

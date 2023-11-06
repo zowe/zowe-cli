@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, ImperativeError } from "@zowe/imperative";
+import { Session, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 import { Rename, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";

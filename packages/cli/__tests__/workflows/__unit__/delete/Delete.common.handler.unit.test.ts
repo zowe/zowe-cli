@@ -10,7 +10,7 @@
 */
 
 import { DeleteWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-import { AbstractSession, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeError } from "@zowe/core-for-zowe-sdk";
 
 
 describe("Delete workflow common handler", () => {

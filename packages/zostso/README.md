@@ -7,7 +7,7 @@ Contains APIs to interact with TSO on z/OS (using z/OSMF TSO REST endpoints).
 **Issue the TSO command "status" to display info about jobs for your user ID**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
 
 (async () => {
@@ -42,7 +42,7 @@ import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
 **Demonstrate starting, pinging, and stopping a TSO address space**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { PingTso, StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
 
 (async () => {

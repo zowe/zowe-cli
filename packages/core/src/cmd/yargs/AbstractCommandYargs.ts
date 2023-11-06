@@ -250,7 +250,11 @@ export abstract class AbstractCommandYargs {
      * @return {IYargsResponse}
      * @deprecated Please use getZoweYargsResponse
      */
-    protected getBrightYargsResponse(successful: boolean, responseMessage: string, action: ImperativeYargsCommandAction, responses?: ICommandResponse[]): IYargsResponse {
+    protected getBrightYargsResponse(
+        successful: boolean,
+        responseMessage: string,
+        action: ImperativeYargsCommandAction,
+        responses?: ICommandResponse[]): IYargsResponse {
         return this.getZoweYargsResponse(successful, responseMessage, action, responses);
     }
 
@@ -262,7 +266,11 @@ export abstract class AbstractCommandYargs {
      * @param {ICommandResponse[]} responses
      * @return {IYargsResponse}
      */
-    protected getZoweYargsResponse(successful: boolean, responseMessage: string, action: ImperativeYargsCommandAction, responses?: ICommandResponse[]): IYargsResponse {
+    protected getZoweYargsResponse(
+        successful: boolean,
+        responseMessage: string,
+        action: ImperativeYargsCommandAction,
+        responses?: ICommandResponse[]): IYargsResponse {
         let exitCode: number;
         if (responses != null && responses.length > 0) {
             for (const response of responses) {
@@ -358,28 +366,28 @@ export abstract class AbstractCommandYargs {
         }
 
         lodashDeep.deepMapValues(this.definition.children, ((value: any, path: any) => {
-            if(path.endsWith("name") && (path.includes("options") || path.includes("positionals"))) {
+            if (path.endsWith("name") && (path.includes("options") || path.includes("positionals"))) {
                 /* Do nothing */
-            } else if(path.endsWith("name") && path.includes("children")) {
+            } else if (path.endsWith("name") && path.includes("children")) {
                 completeName = `${topLevelName} ${value}`;
-            } else if(path.endsWith("name")) {
+            } else if (path.endsWith("name")) {
                 topLevelName = value;
             }
 
-            if(path.includes("examples.0.")) {
+            if (path.includes("examples.0.")) {
                 const tmp = path.split("examples.0.");
                 pathToArr = `${tmp[0]}examples`;
             }
 
-            if(path.includes(pathToArr)) {
+            if (path.includes(pathToArr)) {
                 if (path.endsWith("description")) {
                     tempDescPath = path.substring(0, path.length - "description".length);
-                    tempDesc= value;
+                    tempDesc = value;
                 } else if (path.endsWith("options")) {
                     tempOpPath = path.substring(0, path.length - "options".length);
                     if (completeName) {
                         tempOp = `${completeName} ${value}`;
-                    } else if(topLevelName && !completeName) {
+                    } else if (topLevelName && !completeName) {
                         tempOp = `${topLevelName} ${value}`;
                     } else {
                         tempOp = value;
@@ -391,12 +399,12 @@ export abstract class AbstractCommandYargs {
                     tempPrePath = undefined;
                 }
 
-                if(tempDescPath === tempOpPath ) {
+                if (tempDescPath === tempOpPath) {
                     let commandExamples: ICommandExampleDefinition;
                     (tempPre && (tempDescPath === tempPrePath)) ?
                         commandDefinition.examples[commandDefinition.examples.length - 1].prefix = tempPre
-                        :commandExamples = {description: tempDesc, options: tempOp};
-                    if(commandExamples) {commandDefinition.examples.push(commandExamples);}
+                        : commandExamples = { description: tempDesc, options: tempOp };
+                    if (commandExamples) { commandDefinition.examples.push(commandExamples); }
                 }
             }
         }));

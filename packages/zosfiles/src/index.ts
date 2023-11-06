@@ -13,12 +13,9 @@ export * from "./constants/ZosFiles.constants";
 export * from "./constants/ZosFiles.messages";
 
 export * from "./doc/types/ZosmfMigratedRecallOptions";
-export * from "./doc/types/ZosmfRestClientProperties";
 
 export * from "./doc/IDataSet";
 export * from "./doc/IOptions";
-export * from "./doc/IOptionsFullResponse";
-export * from "./doc/IRestClientResponse";
 export * from "./doc/IUSSFileListResponse";
 export * from "./doc/IZosFilesOptions";
 export * from "./doc/IZosFilesResponse";
@@ -42,7 +39,4 @@ export * from "./methods/utilities";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
-export * from "./doc/IOptionsFullResponse";
-export * from "./doc/IRestClientResponse";
 export * from "./doc/IOptions";
-export * from "./doc/types/ZosmfRestClientProperties";

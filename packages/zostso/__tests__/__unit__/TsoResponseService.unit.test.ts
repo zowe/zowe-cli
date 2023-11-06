@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { IPingResponse, IStartStopResponse, IZosmfPingResponse, IZosmfTsoResponse, noZosmfResponse, TsoResponseService } from "../../src";
 
 const PRETEND_ZOSMF_RESPONSE: IZosmfTsoResponse = {

@@ -10,7 +10,7 @@
 */
 
 import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src";
-import { Session, Headers } from "@zowe/imperative";
+import { Session, Headers } from "@zowe/core-for-zowe-sdk";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 

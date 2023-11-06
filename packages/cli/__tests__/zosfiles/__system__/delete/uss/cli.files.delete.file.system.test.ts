@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/core-for-zowe-sdk";
 import { Create } from "@zowe/zos-files-for-zowe-sdk";
 import { inspect } from "util";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";

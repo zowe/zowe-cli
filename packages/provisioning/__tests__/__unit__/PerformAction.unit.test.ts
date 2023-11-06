@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
+import { Session, ImperativeError, Imperative, Headers } from "@zowe/core-for-zowe-sdk";
 import { IPerformActionResponse, noActionName, noInstanceId, noSessionProvisioning,
     PerformAction, ProvisioningConstants } from "../../src";
 

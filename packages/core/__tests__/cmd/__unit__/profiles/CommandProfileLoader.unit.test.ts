@@ -9,18 +9,16 @@
 *
 */
 
-jest.mock("../../../profiles/src/BasicProfileManager");
-jest.mock("../../../profiles/src/BasicProfileManagerFactory");
-jest.mock("../../../utilities/src/ImperativeConfig");
-jest.mock("../../../logger/src/LoggerUtils");
-import { CommandProfileLoader } from "../../src/profiles/CommandProfileLoader";
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
-import { BasicProfileManager } from "../../../profiles/src/BasicProfileManager";
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
-import { CommandProfiles } from "../../src/profiles/CommandProfiles";
-import { ImperativeError } from "../../../error";
-import { BasicProfileManagerFactory, IProfile, IProfileLoaded } from "../../../profiles";
-import { ImperativeConfig } from "../../../utilities";
+jest.mock("../../../../src/profiles/BasicProfileManager");
+jest.mock("../../../../src/profiles/BasicProfileManagerFactory");
+jest.mock("../../../../src/utils/ImperativeConfig");
+jest.mock("../../../../src/logger/LoggerUtils");
+
+import { TestLogger } from "../../../../__tests__/__resources__/src/TestLogger";
+import {
+    ICommandDefinition, CommandProfileLoader, BasicProfileManagerFactory, CommandProfiles, ImperativeError,
+    BasicProfileManager, ImperativeConfig, IProfile, IProfileLoaded
+} from "../../../../src";
 
 const TEST_PROFILES_DIR = "/test/data/profiles/fake";
 

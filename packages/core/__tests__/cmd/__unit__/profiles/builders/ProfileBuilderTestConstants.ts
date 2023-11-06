@@ -9,8 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../../src/doc/ICommandDefinition";
-import { ICommandProfileTypeConfiguration } from "../../../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import { ICommandProfileTypeConfiguration, ICommandDefinition } from "../../../../../src";
 
 export const testBuilderProfiles: ICommandProfileTypeConfiguration[] = [
     {

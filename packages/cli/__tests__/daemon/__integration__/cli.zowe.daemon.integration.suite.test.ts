@@ -18,7 +18,7 @@
 
 import * as nodeJsPath from "path";
 import * as tar from "tar";
-import { IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
+import { IO, ProcessUtils, ISystemInfo } from "@zowe/core-for-zowe-sdk";
 
 describe("Zowe daemon suite", () => {
     const rimrafSync = require("rimraf").sync;

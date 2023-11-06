@@ -11,7 +11,7 @@
 
 import { PassThrough } from "stream";
 import getStream = require("get-stream");
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { Download } from "../download/Download";
 import { IGetOptions } from "./doc/IGetOptions";

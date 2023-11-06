@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, IO } from "@zowe/core-for-zowe-sdk";
 import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Writable } from "stream";

@@ -10,7 +10,7 @@
 */
 
 import { URL } from "url";
-import { Session } from "../../src/session/Session";
+import { Session } from "../../../../src/rest/session/Session";
 
 describe("Session tests", () => {
 

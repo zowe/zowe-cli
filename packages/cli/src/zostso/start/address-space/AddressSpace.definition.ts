@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 
 export const AddressSpaceDefinition: ICommandDefinition = {

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 import { ZosmfConstants } from "./constants/Zosmf.constants";
 import { ZosmfMessages } from "./constants/Zosmf.messages";

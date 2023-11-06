@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import * as fs from "fs";
 import { StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { Session } from "@zowe/imperative";
+import { Session } from "@zowe/core-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;

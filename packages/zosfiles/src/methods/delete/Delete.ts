@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger } from "@zowe/core-for-zowe-sdk";
 
 import { posix } from "path";
 

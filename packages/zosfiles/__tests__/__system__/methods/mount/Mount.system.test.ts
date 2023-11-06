@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { Create } from "../../../../src/methods/create";
 import { Mount, IMountFsOptions } from "../../../../src/methods/mount";

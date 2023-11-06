@@ -11,7 +11,7 @@
 
 import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, ProvisioningConstants } from "../../src";
 
 const type: string = "DB2";

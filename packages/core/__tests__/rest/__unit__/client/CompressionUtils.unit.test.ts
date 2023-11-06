@@ -13,7 +13,7 @@ import * as os from "os";
 import { PassThrough } from "stream";
 import * as zlib from "zlib";
 import * as streamToString from "stream-to-string";
-import { CompressionUtils } from "../../src/client/CompressionUtils";
+import { CompressionUtils } from "../../../../src";
 
 const responseText = "Request failed successfully";
 const rawBuffer = Buffer.from(responseText);

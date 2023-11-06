@@ -10,8 +10,10 @@
 */
 
 import { Writable, Readable } from "stream";
-import { ITaskWithStatus } from "../../../operations";
-import { CLIENT_PROPERTY } from "../src/client/types/AbstractRestClientProperties";
+
+import { ITaskWithStatus } from "../../../operations/doc/ITaskWithStatus";
+import { CLIENT_PROPERTY } from "../types/AbstractRestClientProperties";
+
 /**
  * Interface to define input options for RestClient GET|POST|PUT|DELETE ExpectFullResponse methods
  * @export

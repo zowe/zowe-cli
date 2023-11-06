@@ -11,8 +11,9 @@
 
 import { Duplex, Transform, Writable } from "stream";
 import * as zlib from "zlib";
-import { ImperativeError } from "../../../error";
-import { IO } from "../../../io";
+
+import { ImperativeError } from "../../error/ImperativeError";
+import { IO } from "../../io/IO";
 import { ContentEncoding, Headers } from "./Headers";
 
 export class CompressionUtils {

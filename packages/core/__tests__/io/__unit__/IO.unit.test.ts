@@ -16,10 +16,8 @@ jest.mock("path");
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { IO } from "../../io";
+import { IO, ISystemInfo, ProcessUtils, ExecUtils } from "../../../src";
 // use complete path to ExecUtils to avoid circular dependency that results from utilities/index
-import { ExecUtils } from "../../utilities/src/ExecUtils";
-import { ProcessUtils, ISystemInfo } from "../../utilities";
 
 describe("IO tests", () => {
     let existsSyncSpy: any;

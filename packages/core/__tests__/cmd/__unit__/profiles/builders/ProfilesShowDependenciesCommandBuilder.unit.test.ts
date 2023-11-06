@@ -9,9 +9,9 @@
 *
 */
 
+import { ProfilesShowDependenciesCommandBuilder } from "../../../../../src";
+import { TestLogger } from "../../../../__resources__/src/TestLogger";
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { ProfilesShowDependenciesCommandBuilder } from "../../../../imperative/src/profiles/builders/ProfilesShowDependenciesCommandBuilder";
 
 describe("Profile Show Dependencies Command Builder", () => {
     const logger = TestLogger.getTestLogger();

@@ -9,14 +9,14 @@
 *
 */
 
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
-import { CommandPreparer } from "../../src/CommandPreparer";
-import { ICommandOptionDefinition } from "../../src/doc/option/ICommandOptionDefinition";
+
 import { COMPLEX_COMMAND, COMPLEX_COMMAND_WITH_ALIASES, MULTIPLE_GROUPS } from "../../__resources__/CommandDefinitions";
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { inspect } from "util";
-import { CommandUtils, ICommandTreeEntry } from "../../../../src/cmd";
+import {
+    CommandPreparer, CommandUtils, ICommandDefinition, ICommandOptionDefinition, ICommandTreeEntry
+} from "../../../../src/cmd";
 import { cloneDeep } from "lodash";
+import { TestLogger } from "../../../__resources__/src/TestLogger";
 // UnitTestUtils.replaceIt();
 
 describe("Command Utils", () => {

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, NextVerFeatures, RestClient } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, NextVerFeatures, RestClient } from "@zowe/core-for-zowe-sdk";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "./";

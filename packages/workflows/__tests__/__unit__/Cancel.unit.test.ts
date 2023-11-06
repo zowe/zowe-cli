@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
+import { Session, ImperativeError, Imperative, Headers } from "@zowe/core-for-zowe-sdk";
 import { CancelWorkflow, WorkflowConstants, noWorkflowKey } from "../../src";
 
 const wfKey = "1234567_abcde";

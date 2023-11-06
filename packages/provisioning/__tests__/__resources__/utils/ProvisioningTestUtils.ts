@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Imperative, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, Imperative, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import {
     DeleteInstance,
     IProvisionedInstance,

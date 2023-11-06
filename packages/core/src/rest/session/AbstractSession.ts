@@ -10,9 +10,9 @@
 */
 
 import { ISession } from "./doc/ISession";
-import { Logger } from "../../../logger";
-import { ImperativeError } from "../../../error";
-import { ImperativeExpect } from "../../../expect";
+import { Logger } from "../../logger/Logger";
+import { ImperativeError } from "../../error/ImperativeError";
+import { ImperativeExpect } from "../../expect/ImperativeExpect";
 import * as SessConstants from "./SessConstants";
 
 /**

@@ -12,10 +12,10 @@
 import Mock = jest.Mock;
 
 jest.mock("fs");
-jest.mock("../../../../io/src/IO");
+jest.mock("../../../../src/io/IO");
 jest.mock("js-yaml");
 jest.mock("yamljs");
-jest.mock("../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../src/utils/ImperativeConfig");
 
 import * as fs from "fs";
 

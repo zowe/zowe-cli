@@ -9,7 +9,7 @@
 *
 */
 
-import { apiErrorHeader, IMessageDefinition } from "@zowe/imperative";
+import { apiErrorHeader, IMessageDefinition } from "@zowe/core-for-zowe-sdk";
 
 export class ZosLogConstants {
     public static readonly RESOURCE: string = "/zosmf/restconsoles/v1/log?";

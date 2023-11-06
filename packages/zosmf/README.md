@@ -7,7 +7,7 @@ Contains APIs to interact with the z/OS Management Facility (using z/OSMF REST e
 **Check z/OSMF status**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 
 (async () => {
@@ -30,7 +30,7 @@ import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 **List systems defined to z/OSMF**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { ListDefinedSystems } from "@zowe/zosmf-for-zowe-sdk";
 
 (async () => {

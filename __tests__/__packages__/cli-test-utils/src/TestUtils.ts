@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
-import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Execute a CLI script

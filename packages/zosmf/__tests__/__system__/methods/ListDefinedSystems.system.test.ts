@@ -10,7 +10,7 @@
 */
 
 import { ListDefinedSystems, ZosmfMessages } from "../../../../zosmf";
-import { Session, Imperative } from "@zowe/imperative";
+import { Session, Imperative } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";

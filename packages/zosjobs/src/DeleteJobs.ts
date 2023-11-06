@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/core-for-zowe-sdk";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";

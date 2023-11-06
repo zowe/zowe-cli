@@ -12,7 +12,7 @@
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IO, Session } from "@zowe/imperative";
+import { IO, Session } from "@zowe/core-for-zowe-sdk";
 import { Get } from "../../../../../../zosfiles/src/methods/get";
 
 

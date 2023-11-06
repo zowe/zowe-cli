@@ -21,7 +21,7 @@
 */
 
 import { ArchiveWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 
 
 describe("Archive workflow details handler", () => {

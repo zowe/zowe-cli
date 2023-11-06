@@ -10,7 +10,7 @@
 */
 
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
-import { DiffUtils, ImperativeError } from "@zowe/imperative";
+import { DiffUtils, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 
 describe("Compare Base Helper", () => {

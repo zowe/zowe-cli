@@ -11,7 +11,7 @@
 
 import { CollectCommand, ConsoleConstants, ICollectParms, IConsoleResponse, IZosmfIssueResponse } from "../../src";
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { noCommandKey, noConsoleName } from "../../src/ConsoleConstants";
 

@@ -10,7 +10,7 @@
 *
 */
 
-import { IImperativeConfig, Imperative } from "@zowe/imperative";
+import { IImperativeConfig, Imperative } from "@zowe/core-for-zowe-sdk";
 import { Constants } from "./Constants";
 import { inspect } from "util";
 import { DaemonDecider } from "./daemon/DaemonDecider";

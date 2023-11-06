@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters, TextUtils } from "@zowe/core-for-zowe-sdk";
 import {
     explainActionResponse,
     PerformAction,

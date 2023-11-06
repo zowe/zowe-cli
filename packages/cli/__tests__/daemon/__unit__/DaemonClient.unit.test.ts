@@ -15,7 +15,7 @@ import * as net from "net";
 import * as stream from "stream";
 import getStream = require("get-stream");
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
-import { IDaemonResponse, Imperative, IO } from "@zowe/imperative";
+import { IDaemonResponse, Imperative, IO } from "@zowe/core-for-zowe-sdk";
 
 describe("DaemonClient tests", () => {
 

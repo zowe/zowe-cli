@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { ListDefinedSystems, ZosmfConstants, IZosmfListDefinedSystemsResponse } from "../../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 

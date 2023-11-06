@@ -10,10 +10,8 @@
 */
 
 
-jest.mock("../src/utils/ProfileIO");
-import { BasicProfileManager } from "../src/BasicProfileManager";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { IProfileDeleted } from "../src/doc/response/IProfileDeleted";
+jest.mock("../../../src/profiles/utils/ProfileIO");
+
 import { inspect } from "util";
 import {
     APPLE_PROFILE_TYPE,
@@ -21,6 +19,8 @@ import {
     STRAWBERRY_WITH_REQUIRED_APPLE_DEPENDENCY,
     TEST_PROFILE_ROOT_DIR
 } from "../__resources__/TestConstants";
+import { BasicProfileManager, IProfileDeleted } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 
 
 describe("Basic Profile Manager Delete", () => {

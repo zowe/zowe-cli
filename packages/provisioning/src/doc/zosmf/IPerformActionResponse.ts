@@ -9,7 +9,7 @@
 *
 */
 
-import { IExplanationMap } from "@zowe/imperative";
+import { IExplanationMap } from "@zowe/core-for-zowe-sdk";
 
 /**
  * z/OSMF response when to perform an action on a provisioned instance.

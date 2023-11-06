@@ -9,15 +9,12 @@
 *
 */
 
-import { CommandResponse, ICommandResponse } from "../../../../src/cmd";
-import { ICommandHandler } from "../../src/doc/handler/ICommandHandler";
-
 import { inspect } from "util";
-import { MULTIPLE_GROUPS } from "../../__resources__/CommandDefinitions";
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
-import { ICommandHandlerRequire } from "../../src/doc/handler/ICommandHandlerRequire";
 
-jest.mock("../../../imperative/src/Imperative");
+import { CommandResponse, ICommandHandler, ICommandHandlerRequire, ICommandResponse } from "../../../../src";
+import { MULTIPLE_GROUPS } from "../../__resources__/CommandDefinitions";
+
+jest.mock("../../../../src/imperative");
 
 describe("Failed Command Handler", () => {
     it("We should be able to get proper error messages on a non syntax failure", async () => {

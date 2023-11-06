@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/core-for-zowe-sdk";
 import { startT, ListWorkflows, StartWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 
 

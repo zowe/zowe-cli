@@ -9,7 +9,7 @@
 *
 */
 
-import { IApimlSvcAttrs } from "@zowe/imperative";
+import { IApimlSvcAttrs } from "../../imperative/doc/IApimlSvcAttrs";
 
 /**
  * Once getPluginApimlConfigs() has processed the loaded ImperativeConfig,

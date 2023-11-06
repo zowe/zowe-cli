@@ -11,7 +11,7 @@
 
 import { TEST_RESOURCES_DIR } from "./../__src__/ZosJobsTestConstants";
 import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
-import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Session, TextUtils } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";

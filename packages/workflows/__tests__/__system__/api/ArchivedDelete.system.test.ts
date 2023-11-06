@@ -10,8 +10,7 @@
 */
 
 import { ZosFilesConstants, Upload } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ZosmfRestClient, nozOSMFVersion, noSession, Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { noWorkflowKey } from "../../../src/WorkflowConstants";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";

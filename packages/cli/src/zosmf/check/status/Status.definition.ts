@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 export const StatusDefinition: ICommandDefinition = {

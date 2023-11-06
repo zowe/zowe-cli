@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
 import * as fs from "fs";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
@@ -17,7 +17,6 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, getTag } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Get, ZosFilesConstants, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();

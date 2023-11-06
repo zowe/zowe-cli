@@ -9,7 +9,7 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
+import { Session } from "@zowe/core-for-zowe-sdk";
 import { Create, Delete, CreateDataSetTypeEnum } from "@zowe/cli";
 import * as path from "path";
 import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";

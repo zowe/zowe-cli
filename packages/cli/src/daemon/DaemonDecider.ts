@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
-import { Console, Imperative, IO } from "@zowe/imperative";
+import { Console, Imperative, IO } from "@zowe/core-for-zowe-sdk";
 import { DaemonClient } from "./DaemonClient";
 import { DaemonUtil } from "./DaemonUtil";
 import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";

@@ -10,7 +10,7 @@
 */
 
 import ApimlAuthHandler from "../../../src/auth/ApimlAuthHandler";
-import { SessConstants } from "@zowe/imperative";
+import { SessConstants } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { Login, Logout } from "@zowe/core-for-zowe-sdk";
 

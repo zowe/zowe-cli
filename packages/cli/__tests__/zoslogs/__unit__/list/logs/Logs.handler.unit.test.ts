@@ -11,7 +11,7 @@
 
 import { GetLogsData } from "../../../__resources__/GetLogsData";
 
-import { IHandlerParameters, ImperativeError, Session, Imperative } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, Session, Imperative } from "@zowe/core-for-zowe-sdk";
 import * as LogsHandler from "../../../../../src/zoslogs/list/logs/Logs.handler";
 import * as LogsDefinition from "../../../../../src/zoslogs/list/logs/Logs.definition";
 import { GetZosLog, IZosLogParms } from "@zowe/zos-logs-for-zowe-sdk";

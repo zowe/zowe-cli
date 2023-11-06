@@ -11,7 +11,7 @@
 
 import { inspect } from "util";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session, ImperativeError, Imperative } from "@zowe/core-for-zowe-sdk";
 import { IZosLogType, IZosLogParms, GetZosLog, noSessionMessage } from "../../src/";
 import { GetZosLogsData } from "../__resources__/GetZosLogData";
 const PRETEND_SESSION: Session = new Session({

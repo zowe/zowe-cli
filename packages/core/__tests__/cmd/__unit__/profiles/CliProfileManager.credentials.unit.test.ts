@@ -9,21 +9,19 @@
 *
 */
 
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
-import { ProfileIO } from "../../../profiles/src/utils/ProfileIO";
-import { CliProfileManager } from "../../src/profiles/CliProfileManager";
-import { IProfile } from "../../../profiles/src/doc/definition/IProfile";
+import { TestLogger } from "../../../../__tests__/__resources__/src/TestLogger";
 import {
     ONLY_ORANGE_WITH_CREDENTIALS,
     SECURE_ORANGE_PROFILE_TYPE,
     TEST_PROFILE_ROOT_DIR
-} from "../../../profiles/__tests__/TestConstants";
-import { CredentialManagerFactory, DefaultCredentialManager } from "../../../../src/security";
-import { BasicProfileManager } from "../../../profiles/src/BasicProfileManager";
-import { ProfilesConstants, ISaveProfile, IProfileSaved } from "../../../../src/profiles";
+} from "../../../profiles/__resources__/TestConstants";
+import { CliProfileManager, CredentialManagerFactory, DefaultCredentialManager } from "../../../../src";
+import {
+    ProfilesConstants, ISaveProfile, IProfileSaved, BasicProfileManager, IProfile, ProfileIO
+} from "../../../../src/profiles";
 
-jest.mock("../../../profiles/src/utils/ProfileIO");
-jest.mock("../../../security/src/DefaultCredentialManager");
+jest.mock("../../../../src/profiles/utils/ProfileIO");
+jest.mock("../../../../src/security/DefaultCredentialManager");
 
 // TODO: Some of these tests are not completely isolated, some may cause others to fail depending on mocks
 

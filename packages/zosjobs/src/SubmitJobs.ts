@@ -10,7 +10,7 @@
 */
 
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/core-for-zowe-sdk";
 import {
     IJob,
     ISubmitJclNotifyParm,

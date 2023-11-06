@@ -10,15 +10,14 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import { TextUtils } from "../../../../utilities";
 
 jest.mock("../../../../imperative/src/Imperative");
-import { inspect, isNullOrUndefined } from "util";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
+import { inspect } from "util";
 import { CommandResponse, ICommandDefinition, ICommandValidatorResponse } from "../../../../src/cmd";
-import { ValidationTestCommand } from "../../../../../__tests__/src/packages/cmd/ValidationTestCommand";
 import { SyntaxValidator } from "../../../../src/cmd/syntax/SyntaxValidator";
 import { Constants } from "../../../../src/constants";
+import { TextUtils } from "../../../../src";
+import { TestLogger } from "../../../__resources__/src/TestLogger";
 
 
 describe("Imperative should provide advanced syntax validation rules", () => {
@@ -52,7 +51,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
                     } else {
                         expect(validationResponse.valid).toEqual(false);
                     }
-                    if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                    if (expectedText?.length > 0) {
                         const fullText = response.buildJsonResponse().stdout.toString() + response.buildJsonResponse().stderr.toString();
                         for (const text of expectedText) {
                             expect(fullText).toContain(text);

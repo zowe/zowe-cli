@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { GetJobs, DeleteJobs, IJobFeedback } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import * as JobHandler from "../../../../../src/zosjobs/delete/job/Job.handler";

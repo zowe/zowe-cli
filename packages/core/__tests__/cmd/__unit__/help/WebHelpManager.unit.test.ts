@@ -13,14 +13,10 @@ import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 import * as path from "path";
 import * as rimraf from "rimraf";
-
-import { IO } from "../../../io/src/IO";
-import { Imperative } from "../../../imperative/src/Imperative";
-import { WebHelpManager } from "../../src/help/WebHelpManager";
-import { CommandResponse } from "../../src/response/CommandResponse";
-import { ImperativeConfig, GuiResult, ProcessUtils } from "../../../utilities";
-import { WebHelpGenerator } from "../..";
-import { IImperativeConfig } from "../../../imperative/src/doc/IImperativeConfig";
+import {
+    IImperativeConfig, ImperativeConfig, CommandResponse, Imperative, WebHelpGenerator,
+    ProcessUtils, GuiResult, WebHelpManager, IO
+} from "../../../../src";
 
 describe("WebHelpManager", () => {
     describe("buildHelp", () => {

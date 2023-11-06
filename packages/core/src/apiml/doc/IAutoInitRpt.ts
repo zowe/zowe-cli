@@ -9,7 +9,7 @@
 *
 */
 
-import { IConfigLayer } from "@zowe/imperative";
+import { IConfigLayer } from "../../config/doc/IConfigLayer";
 import { IProfileRpt } from "./IProfileRpt";
 
 /**

@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../../../../packages/provisioning/src/ProvisionPublishedTemplate");
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import * as DeleteInstanceHandler from "../../../../../src/provisioning/delete/instance/DeleteInstance.handler";
 import * as DeleteInstanceDefinition from "../../../../../src/provisioning/delete/instance/DeleteInstance.definition";
 import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";

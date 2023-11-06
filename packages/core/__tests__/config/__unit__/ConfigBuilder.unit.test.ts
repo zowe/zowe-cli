@@ -9,11 +9,10 @@
 *
 */
 
-import { CredentialManagerFactory, IImperativeConfig } from "../..";
-import { Config, ConfigBuilder, IConfig } from "../";
-import { ProfileIO } from "../../profiles";
-import * as config from "../../../__tests__/__integration__/imperative/src/imperative";
 import * as lodash from "lodash";
+
+import { CredentialManagerFactory, ProfileIO, IImperativeConfig, Config, ConfigBuilder, IConfig } from "../../../src/";
+import * as config from "../../../__tests__/__integration__/imperative/src/imperative";
 
 const expectedConfigObject: IConfig = {
     autoStore: true,

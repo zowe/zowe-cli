@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { PingAddressSpaceCommandDefinition } from "./address_space/PingAddressSpace.definition";
 
 export const PingCommand: ICommandDefinition = {

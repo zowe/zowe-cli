@@ -11,7 +11,7 @@
 
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ImperativeError, NextVerFeatures, RestConstants } from "@zowe/imperative";
+import { ImperativeError, NextVerFeatures, RestConstants } from "@zowe/core-for-zowe-sdk";
 
 const goodResponse: any = {
     statusCode: RestConstants.HTTP_STATUS_204

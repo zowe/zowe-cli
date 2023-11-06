@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { StartTso, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**

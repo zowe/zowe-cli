@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { DeleteJobs, IJobFeedback, SubmitJobs } from "../../src";
 import { IJob } from "../../src/doc/response/IJob";
 import { ITestEnvironment } from "@zowe/cli-test-utils";

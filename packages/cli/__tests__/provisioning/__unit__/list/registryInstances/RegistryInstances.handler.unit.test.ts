@@ -10,7 +10,7 @@
 */
 
 import { ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import * as Handler from "../../../../../src/provisioning/list/registry/RegistryInstances.handler";
 import { registryInstances } from "../../../../../src/provisioning/list/registry/RegistryInstances.definition";
 import {

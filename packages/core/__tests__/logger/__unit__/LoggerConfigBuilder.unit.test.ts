@@ -9,7 +9,7 @@
 *
 */
 
-import { LoggerConfigBuilder } from "../../logger";
+import { LoggerConfigBuilder } from "../../../src/logger";
 
 import * as os from "os";
 import * as path from "path";

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 
 export const JobStatusByJobidDefinition: ICommandDefinition = {
     name: "job-status-by-jobid",

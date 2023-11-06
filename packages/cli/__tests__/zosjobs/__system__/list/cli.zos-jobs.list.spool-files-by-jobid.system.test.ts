@@ -13,7 +13,7 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import * as fs from "fs";
-import { Session, TextUtils } from "@zowe/imperative";
+import { Session, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
 import { join } from "path";

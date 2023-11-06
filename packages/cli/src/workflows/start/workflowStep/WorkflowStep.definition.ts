@@ -10,7 +10,7 @@
 */
 
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { join } from "path";
 import { StartCommonOptions } from "../Start.common.options";
 

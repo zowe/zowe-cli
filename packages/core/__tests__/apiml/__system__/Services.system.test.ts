@@ -9,10 +9,11 @@
 *
 */
 
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../__tests__/__packages__/cli-test-utils/src/environment/doc";
+
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
+import { Session } from "../../../src/rest/session/Session";
 import { Services } from "../../../src/apiml/Services";
 import { IApimlSvcAttrsLoaded } from "../../../src/apiml/doc/IApimlSvcAttrsLoaded";
 import { IApimlProfileInfo } from "../../../src/apiml/doc/IApimlProfileInfo";

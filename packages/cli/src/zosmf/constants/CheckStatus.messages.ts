@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition } from "@zowe/imperative";
+import { IMessageDefinition } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Messages displayed by the zosmf check status command

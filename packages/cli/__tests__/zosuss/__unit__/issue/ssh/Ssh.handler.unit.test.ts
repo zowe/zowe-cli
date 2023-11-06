@@ -11,7 +11,7 @@
 
 jest.mock("../../../../../../zosuss/lib/Shell");
 
-import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative";
+import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/core-for-zowe-sdk";
 import * as SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
 import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";

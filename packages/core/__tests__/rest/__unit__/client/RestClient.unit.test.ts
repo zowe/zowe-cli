@@ -12,17 +12,12 @@
 jest.mock("path");
 import * as path from "path";
 import * as https from "https";
-import { Session } from "../../src/session/Session";
 import { EventEmitter } from "events";
-import { NextVerFeatures, ProcessUtils } from "../../../utilities";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { CustomRestClient } from "./__model__/CustomRestClient";
 import { CustomRestClientWithProcessError, EXPECTED_REST_ERROR } from "./__model__/CustomRestClientWithProcessError";
-import { getRandomBytes } from "../../../../__tests__/src/TestUtil";
-import { RestClientError } from "../../src/client/RestClientError";
-import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
-import { IRestClientResponse } from "../../src/client/doc/IRestClientResponse";
-import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
+import { NextVerFeatures, ProcessUtils, Session, RestClientError, IRestClientResponse, IOptionsFullResponse, CLIENT_PROPERTY } from "../../../../src";
+import { getRandomBytes } from "../../../__resources__/src/TestUtil";
 
 /**
  * RestClient is already tested vie the AbstractRestClient test, so we will extend RestClient

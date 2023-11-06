@@ -12,7 +12,7 @@
 jest.mock("../../../../../../zosmf/lib/ListDefinedSystems");
 
 import { ListDefinedSystems } from "@zowe/zosmf-for-zowe-sdk";
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { ICommandHandler, IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import CmdHandler from "../../../../../src/zosmf/list/systems/Systems.handler";
 import * as cmdDef from "../../../../../src/zosmf/list/systems/Systems.definition";
 import {

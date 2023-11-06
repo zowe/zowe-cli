@@ -13,11 +13,10 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as findUp from "find-up";
-import { ImperativeError } from "../../error/src/ImperativeError";
-import { Config } from "../src/Config";
-import { ConfigConstants } from "../src/ConfigConstants";
 import * as JSONC from "comment-json";
-import { ConfigLayers, ConfigSecure } from "../src/api";
+
+import { ImperativeError } from "../../../src/error/ImperativeError";
+import { ConfigLayers, ConfigSecure, Config, ConfigConstants } from "../../../src/config";
 
 const MY_APP = "my_app";
 

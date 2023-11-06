@@ -9,9 +9,8 @@
 *
 */
 
-import { IProfile, IProfileLoaded } from "../../../profiles";
-import { CommandProfiles } from "../../src/profiles/CommandProfiles";
-import { ImperativeError } from "../../../error";
+import { CommandProfiles, IProfile, ImperativeError, IProfileLoaded } from "../../../../src";
+
 
 const BANANA_PROFILE_TYPE: string = "banana";
 const STRAWBERRY_PROFILE_TYPE: string = "strawberry";
