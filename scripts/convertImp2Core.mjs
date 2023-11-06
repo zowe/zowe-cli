@@ -105,7 +105,7 @@ function changeImpToCore(fileToChange) {
     let linesOfFile;
 
     let fileContents = fs.readFileSync(fileToChange, {"encoding": g_encoding});
-    if (fileContents && fileContents.includes("/imperative")) {
+    if (fileContents && fileContents.includes("imperative")) {
         /* We must do multiple pattern matches. Split file into lines to
          * limit how much text each pattern will try to search.
          */
@@ -129,10 +129,11 @@ function changeImpToCore(fileToChange) {
         // find and react to each imperative import
         for (let lineInx = 0; lineInx < linesOfFile.length; lineInx++) {
             let commentsToInsert;
-            let lineBeforeChange = linesOfFile[lineInx];
+            const origLineInx = lineInx;
+            const lineBeforeChange = linesOfFile[lineInx];
 
+            // Does this line import a path name underneath @zowe/imperative?
             if (linesOfFile[lineInx].match(/(?:from|require).*"@zowe\/imperative\/[a-z0-9]+/i)) {
-                // this line imported a path name underneath imperative
                 commentsToInsert = [
                     `/* A change is required that ${g_cmdName} should *NOT* decide for you.`,
                     ` * The 'imperative' module is now part of 'core-sdk'.`,
@@ -151,13 +152,11 @@ function changeImpToCore(fileToChange) {
                 linesOfFile[lineInx] = linesOfFile[lineInx].replace(/@zowe\/imperative/i, "@zowe/core-sdk");
                 lineInx = insertLinesIntoFile(fileToChange, linesOfFile, lineInx, commentsToInsert)
 
+            // Does this line specify just an @zowe/imperative module import?
             } else if (linesOfFile[lineInx].match(/(?:from|require).*"@zowe\/imperative"/i)) {
-                // this line specified just an imperative module import
+                // Does the current line import imperative "as something"?
                 const regexMatch = linesOfFile[lineInx].match(/as +["']([^"']+)["']/)
                 if (regexMatch?.[1]) {
-                    /* The current line imports imperative "as something". We will insert a block of lines
-                     * into the source file before the line causing our conflict.
-                     */
                     const asImperName = regexMatch[1];
 
                     const WARNING_ABOUT_AS = [
@@ -165,19 +164,20 @@ function changeImpToCore(fileToChange) {
                         ` * The 'imperative' module is now part of 'core-sdk'.`,
                         ` * We automatically changed @zowe/imperative to @zowe/core-sdk for you.`,
                         ` * However, you are importing 'as ${asImperName}'. Continuing to use references`,
-                        ` * like '${asImperName}.XXX' throughout this file could be misleading, but will work ok.`,
-                        ` * You could decide to change your import from 'as imperative' to 'as core' and change`,
-                        ` * all occurrences of '${asImperName}.XXX' to 'core.XXX'.`,
+                        ` * like '${asImperName}.XXX' could be confusing, but they will work ok.`,
+                        ` * The recommended approach would be to change your import from 'as imperative'`,
+                        ` * to 'as core' and change all occurrences of '${asImperName}.XXX' to 'core.XXX'.`,
                         ` * We are forcing a compile error below, so that you do not overlook this consideration.`,
-                        ` * After you decide whether to change such references, you can remove this block comment,`,
+                        ` * After you decide whether to change your references, you can remove this block comment,`,
                         ` * and remove the forced compile error below.`,
                         ` */`,
                         `ForceCompileError;`
                     ];
 
+                    // Does this file also import core?
                     if (importsCore) {
+                        // Does it import core 'as something'?
                         if (asCoreName.length > 0) {
-                            // this file also imports 'as core'
                             commentsToInsert = [
                                 `/* A change is required that ${g_cmdName} should *NOT* decide for you.`,
                                 ` * The 'imperative' module is now part of 'core-sdk'.`,
@@ -186,14 +186,14 @@ function changeImpToCore(fileToChange) {
                                 ` * 'as ${asImperName}' import, use a single 'as ${asCoreName}' import, and change`,
                                 ` * all occurrences of '${asImperName}.XXX' to '${asCoreName}.XXX' throughout this file.`,
                                 ` * We are forcing a compile error below, so that you do not overlook this consideration.`,
-                                ` * After you make your changes to fix this conflict, you can remove this block comment,`,
+                                ` * After you decide whether to change your references, you can remove this block comment,`,
                                 ` * and remove the forced compile error below.`,
                                 ` */`,
                                 `ForceCompileError;`
                             ];
                         } else {
-                            /* The file does NOT import core 'as something', but the
-                             * current line DOES import imperative 'as something'.
+                            /* The file import core, but NOT 'as something'.
+                             * The current line DOES import imperative 'as something'.
                              * We cannot reliably change all references to something.XXX.
                              */
                             commentsToInsert = WARNING_ABOUT_AS;
@@ -208,25 +208,51 @@ function changeImpToCore(fileToChange) {
                         linesOfFile[lineInx] = linesOfFile[lineInx].replace(/@zowe\/imperative/i, "@zowe/core-sdk");
                     }
 
+                    // insert the comment for the imperative 'as' clause that we detected
                     lineInx = insertLinesIntoFile(fileToChange, linesOfFile, lineInx, commentsToInsert)
                 } else {
-                    // The current line did not import imperative as anything. We know how to change just a scoped reference.
+                    /* The current line did NOT use an 'as' clause when importing imperative.
+                     * We know how to change just a scoped reference.
+                     */
                     linesOfFile[lineInx] = linesOfFile[lineInx].replace(/@zowe\/imperative/i, "@zowe/core-sdk");
                 }
 
+            // Does the current line import imperative as a namespace from @zowe/cli?
+            } else if (linesOfFile[lineInx].match(/imperative.*from +"@zowe\/cli"/i)) {
+                commentsToInsert = [
+                    `/* A change is required that ${g_cmdName} should *NOT* decide for you.`,
+                    ` * The 'imperative' module is now part of 'core-sdk'.`,
+                    ` * You are importing 'imperative' as a namespace from @zowe/cli. The 'imperative'`,
+                    ` * namespace no longer exists in @zowe/cli. Your most intuitive approach will be`,
+                    ` * to replace your import with a line like this:`,
+                    ` *     import { core } from "@zowe/cli";`,
+                    ` * and replace all references to 'imperative.XXX' with 'core.XXX'.`,
+                    ` * A less intuitive approach would be to replace the import with a line like this:`,
+                    ` *     import { core as imperative } from "@zowe/cli";`,
+                    ` * Your references to 'imperative.XXX' will not have to change. Those expressions`,
+                    ` * may be confusing, but they will work ok.`,
+                    ` * We are forcing a compile error below, so that you do not overlook this consideration.`,
+                    ` * After you decide how to replace this import, you can remove this block comment,`,
+                    ` * and remove the forced compile error below.`,
+                    ` */`,
+                    `ForceCompileError;`
+                ];
+                lineInx = insertLinesIntoFile(fileToChange, linesOfFile, lineInx, commentsToInsert);
+
+            /* Does the current line import imperative through a file path,
+             * (like a test that imports ../../imperative/something).
+             */
             } else if (linesOfFile[lineInx].match(/(?:from|require).*\/imperative/)) {
-                /* The current line imports imperative through a file path,
-                 * (like a test that imports ../../imperative/something).
-                 * We expect that this will only occur in CLI source.
-                 * We cannot replace every "/imperative" reference since even after we move
+                /* We expect that this will only occur in CLI source.
+                 * We cannot replace every "/imperative" reference, since even after we move
                  * imperative into the core package, we still have a source subdirectory
-                 * named "imperative".
+                 * named "imperative". Thus, we only replace imperative in certain contexts.
                  */
                 linesOfFile[lineInx] = linesOfFile[lineInx].replace(/packages\/imperative/i, "packages/core");
                 linesOfFile[lineInx] = linesOfFile[lineInx].replace(/imperative\/src\/imperative/i, "core/src/imperative");
             }
 
-            if (lineBeforeChange !== linesOfFile[lineInx]) {
+            if (lineInx !== origLineInx || lineBeforeChange !== linesOfFile[lineInx]) {
                 weModified = true;
             }
         } // end for each line
