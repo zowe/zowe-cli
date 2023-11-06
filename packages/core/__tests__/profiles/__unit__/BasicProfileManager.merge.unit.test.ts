@@ -9,10 +9,10 @@
 *
 */
 
-jest.mock("../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 
-import { PROFILE_TYPE } from "../../../__tests__/src/packages/profiles/src/constants/BasicProfileManagerTestConstants";
-import { BasicProfileManager } from "../src/BasicProfileManager";
+import { BasicProfileManager, IProfile, ProfileIO } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 import {
     APPLE_PROFILE_TYPE,
     GRAPE_PROFILE_TYPE,
@@ -20,8 +20,6 @@ import {
     STRAWBERRY_WITH_REQUIRED_APPLE_DEPENDENCY,
     TEST_PROFILE_ROOT_DIR
 } from "../__resources__/TestConstants";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { IProfile, ProfileIO } from "../";
 import { inspect } from "util";
 
 // UnitTestUtils.replaceIt();

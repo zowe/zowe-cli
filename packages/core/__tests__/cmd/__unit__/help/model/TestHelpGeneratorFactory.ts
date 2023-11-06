@@ -9,9 +9,7 @@
 *
 */
 
-import { AbstractHelpGeneratorFactory } from "../../../src/help/abstract/AbstractHelpGeneratorFactory";
-import { IHelpGeneratorParms } from "../../../src/help/doc/IHelpGeneratorParms";
-import { IHelpGenerator } from "../../../src/help/doc/IHelpGenerator";
+import { AbstractHelpGeneratorFactory, IHelpGenerator, IHelpGeneratorParms } from "../../../../../src";
 import { InheritedHelpGenerator } from "./InheritedHelpGenerator";
 /**
  * Test implementation for the abstract help generator factory

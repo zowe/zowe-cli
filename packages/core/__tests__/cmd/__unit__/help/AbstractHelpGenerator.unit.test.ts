@@ -9,10 +9,8 @@
 *
 */
 
+import { IHelpGeneratorFactoryParms, ICommandDefinition, ICommandOptionDefinition } from "../../../../src";
 import { InheritedHelpGenerator } from "./model/InheritedHelpGenerator";
-import { IHelpGeneratorFactoryParms } from "../../../cmd/src/help/doc/IHelpGeneratorFactoryParms";
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
-import { ICommandOptionDefinition } from "../../src/doc/option/ICommandOptionDefinition";
 
 const chalkColor: string = "blue";
 const oldForceColorOption = process.env.FORCE_COLOR;

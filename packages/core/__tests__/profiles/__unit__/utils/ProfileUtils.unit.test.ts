@@ -9,12 +9,12 @@
 *
 */
 
+import { ProfileUtils, IProfileLoaded } from "../../../../src";
+import { APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE_ONE_REQ_DEP, BLUEBERRY_PROFILE_TYPE } from "../../__resources__/TestConstants";
 import Mock = jest.Mock;
 jest.mock("path");
-import { ProfileUtils } from "../ProfileUtils";
 import * as path from "path";
-import { IProfileLoaded } from "../../../../index";
-import { APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE_ONE_REQ_DEP, BLUEBERRY_PROFILE_TYPE } from "../../../__tests__/TestConstants";
+
 
 const mocks = {
     normalize: path.normalize as unknown as Mock<typeof path.normalize>

@@ -10,7 +10,7 @@
 */
 
 import { inspect } from "util";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
+import { TestLogger } from "../../../__resources__/src/TestLogger";
 import { IProfile } from "../../../../src/profiles/doc/definition/IProfile";
 import { IProfileValidationPlan } from "../../../../src/profiles/validation/doc/IProfileValidationPlan";
 import { IProfileValidationReport } from "../../../../src/profiles/validation/doc/IProfileValidationReport";
@@ -18,7 +18,7 @@ import { IProfileValidationTaskResult } from "../../../../src/profiles/validatio
 import { ProfileValidator } from "../../../../src/profiles/validation/api/ProfileValidator";
 import { IProfileValidationTask } from "../../../../src";
 
-jest.mock("../../../../imperative/src/Imperative");
+jest.mock("../../../../src/imperative/Imperative");
 
 
 const oldForceColorOption = process.env.FORCE_COLOR;

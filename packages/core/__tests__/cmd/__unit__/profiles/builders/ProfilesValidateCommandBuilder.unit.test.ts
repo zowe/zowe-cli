@@ -9,13 +9,11 @@
 *
 */
 
-jest.mock("../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../../src/utils/ImperativeConfig");
 
+import { ImperativeConfig, ProfilesValidateCommandBuilder } from "../../../../../src";
+import { TestLogger } from "../../../../__resources__/src/TestLogger";
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { ProfilesValidateCommandBuilder } from "../../../../imperative/src/profiles/builders/ProfilesValidateCommandBuilder";
-import { ImperativeConfig } from "../../../../utilities";
-
 describe("Profile Validate Command Builder", () => {
     const logger = TestLogger.getTestLogger();
 

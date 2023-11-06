@@ -9,10 +9,9 @@
 *
 */
 
-jest.mock("../src/utils/ProfileIO");
-import { ImperativeError } from "../../error/src/ImperativeError";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { IProfileLoaded } from "../../profiles/src/doc/response/IProfileLoaded";
+jest.mock("../../../src/profiles/utils/ProfileIO");
+import { BasicProfileManager, ImperativeError, IProfileLoaded } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 import {
     APPLE_PROFILE_TYPE,
     APPLE_TWO_REQ_DEP_BANANA_AND_STRAWBERRIES,
@@ -24,7 +23,6 @@ import {
     STRAWBERRY_AND_APPLE_NO_DEP,
     TEST_PROFILE_ROOT_DIR
 } from "../__resources__/TestConstants";
-import { BasicProfileManager } from "../src/BasicProfileManager";
 // UnitTestUtils.replaceIt();
 
 describe("Basic Profile Manager", () => {

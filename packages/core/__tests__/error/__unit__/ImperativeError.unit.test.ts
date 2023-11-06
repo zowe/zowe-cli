@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "../src/ImperativeError";
+import { ImperativeError } from "../../../src";
 
 describe("ImperativeError", () => {
     it("should not throw any deprecation warnings", () => {

@@ -11,7 +11,7 @@
 
 import { TestOperations1 } from "./TestOperations1";
 import { TestSubOpDiverge } from "./subops/TestSubOpDiverge";
-import { Operations } from "../../../index";
+import { Operations } from "../../../src/index";
 
 export class TestOperation5 extends Operations<any> {
 

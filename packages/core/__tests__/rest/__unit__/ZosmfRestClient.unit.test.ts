@@ -10,8 +10,9 @@
 */
 
 import { ZosmfHeaders } from "../../../src/rest/ZosmfHeaders";
-import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { IImperativeError, NextVerFeatures, RestConstants, SessConstants, Session } from "@zowe/core-for-zowe-sdk";
+import {
+    ZosmfRestClient, IImperativeError, NextVerFeatures, RestConstants, SessConstants, Session
+} from "@zowe/core-for-zowe-sdk";
 
 describe("ZosmfRestClient tests", () => {
 

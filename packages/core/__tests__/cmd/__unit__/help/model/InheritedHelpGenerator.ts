@@ -9,11 +9,9 @@
 *
 */
 
-import { AbstractHelpGenerator } from "../../../src/help/abstract/AbstractHelpGenerator";
-import { CommandOptionType } from "../../../src/doc/option/ICommandOptionDefinition";
+import { AbstractHelpGenerator, CommandOptionType } from "../../../../../src";
 
 export class InheritedHelpGenerator extends AbstractHelpGenerator {
-
     public buildFullCommandHelpText(includeGlobalOptions: boolean): string {
         throw new Error("Method not implemented.");
     }

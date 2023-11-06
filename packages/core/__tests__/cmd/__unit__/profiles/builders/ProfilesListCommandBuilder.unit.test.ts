@@ -9,9 +9,9 @@
 *
 */
 
+import { ProfilesListCommandBuilder } from "../../../../../src";
+import { TestLogger } from "../../../../__resources__/src/TestLogger";
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { ProfilesListCommandBuilder } from "../../../../imperative/src/profiles/builders/ProfilesListCommandBuilder";
 
 
 describe("Profile List Command Builder", () => {

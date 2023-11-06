@@ -9,9 +9,8 @@
 *
 */
 
-import { BasicProfileManager } from "../src/BasicProfileManager";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { IProfileValidated } from "../src/doc/response/IProfileValidated";
+import { BasicProfileManager, ImperativeError, IProfileValidated } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 import {
     APPLE_PROFILE_TYPE,
     ONLY_APPLE,
@@ -19,7 +18,6 @@ import {
     STRAWBERRY_WITH_REQUIRED_APPLE_DEPENDENCY,
     TEST_PROFILE_ROOT_DIR
 } from "../__resources__/TestConstants";
-import { ImperativeError } from "../../error/src/ImperativeError";
 
 jest.mock("../src/utils/ProfileIO");
 

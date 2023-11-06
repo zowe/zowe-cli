@@ -9,21 +9,20 @@
 *
 */
 
+export * from "./api";
+export * from "./auth";
+export * from "./config/cmd/auto-init";
+export * from "./doc";
 export * from "./env/EnvironmentalVariableSettings";
-export * from "./doc/IApimlSvcAttrs";
-export * from "./doc/IDaemonContext";
-export * from "./doc/IImperativeEnvironmentalVariableSetting";
-export * from "./doc/IImperativeEnvironmentalVariableSettings";
-export * from "./doc/IImperativeConfig";
-export * from "./doc/IImperativeLoggingConfig";
+export * from "./handlers/DefaultRootCommandHandler";
+export * from "./help/ImperativeHelpGeneratorFactory";
+export * from "./plugins";
+export * from "./profiles";
+
 export * from "./ConfigurationLoader";
 export * from "./ConfigurationValidator";
 export * from "./DefinitionTreeResolver";
 export * from "./Imperative";
 export * from "./LoggingConfigurer";
-export * from "./plugins/AbstractPluginLifeCycle";
-export * from "./plugins/PluginManagementFacility";
-export * from "./auth/doc/IAuthHandlerApi";
-export * from "./auth/handlers/AbstractAuthHandler";
-export * from "./auth/handlers/BaseAuthHandler";
-export * from "./config/cmd/auto-init/handlers/BaseAutoInitHandler";
+export * from "./OverridesLoader";
+export * from "./UpdateImpConfig";

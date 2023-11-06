@@ -10,9 +10,8 @@
 */
 
 import { TestHelpGeneratorFactory } from "./model/TestHelpGeneratorFactory";
-import { ImperativeError } from "../../../index";
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
 import { InheritedHelpGenerator } from "./model/InheritedHelpGenerator";
+import { ICommandDefinition, ImperativeError } from "../../../../src";
 
 const SAMPLE_COMMAND: ICommandDefinition = {
     name: "banana",

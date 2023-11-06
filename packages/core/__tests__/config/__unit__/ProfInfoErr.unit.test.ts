@@ -9,7 +9,7 @@
 *
 */
 
-import { ProfInfoErr } from "../src/ProfInfoErr";
+import { ProfInfoErr } from "../../../src";
 
 describe("ProfInfoErr tests", () => {
     it("should throw error with only impErrDetails", async () => {

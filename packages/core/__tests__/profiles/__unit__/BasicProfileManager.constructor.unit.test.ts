@@ -9,9 +9,8 @@
 *
 */
 
-jest.mock("../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 import { ImperativeError } from "../../../src/error/ImperativeError";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
 import {
     APPLE_PROFILE_TYPE,
     FRUIT_BASKET_BAD_DIR,
@@ -22,6 +21,7 @@ import {
 } from "../__resources__/TestConstants";
 import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";
 import { IProfileTypeConfiguration } from "../../../src/profiles/doc/config/IProfileTypeConfiguration";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 
 // UnitTestUtils.replaceIt();
 

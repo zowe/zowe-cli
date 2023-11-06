@@ -16,7 +16,7 @@ import { TestOperations4 } from "../__resources__/TestOperations4";
 import { TestOperations3 } from "../__resources__/TestOperations3";
 
 import { IOperationResult, Operation, Operations } from "../../../src/operations/index";
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 
 const logger = TestLogger.getTestLogger();
 

@@ -9,8 +9,8 @@
 *
 */
 
-import { RestClientError } from "../../src/client/RestClientError";
-import { ImperativeError } from "../../../error";
+import { RestClientError, ImperativeError } from "../../../../src";
+
 
 describe("RestClientError tests", () => {
     it("should be an instance of ImperativeError", async () => {

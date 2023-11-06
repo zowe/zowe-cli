@@ -12,12 +12,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as JSONC from "comment-json";
-import { ConfigSecure } from "../src/api";
-import { Config } from "../src/Config";
-import { ConfigConstants } from "../src/ConfigConstants";
-import { IConfig } from "../src/doc/IConfig";
-import { IConfigLayer } from "../src/doc/IConfigLayer";
-import { IConfigProfile } from "../src/doc/IConfigProfile";
+
+import { IConfig, Config, ConfigSecure, IConfigProfile, IConfigLayer, ConfigConstants } from "../../../src";
 
 const MY_APP = "my_app";
 

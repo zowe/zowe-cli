@@ -9,27 +9,18 @@
 *
 */
 
-import { IInvokeCommandParms } from "../src/doc/parms/IInvokeCommandParms";
-import { ICommandDefinition } from "../src/doc/ICommandDefinition";
-import { CommandProcessor } from "../src/CommandProcessor";
-import { ICommandResponse } from "../src/doc/response/response/ICommandResponse";
-import { CommandResponse } from "../src/response/CommandResponse";
-import { IHelpGenerator } from "../src/help/doc/IHelpGenerator";
-import { BasicProfileManager, IProfileManagerFactory, IProfileTypeConfiguration } from "../../../src/profiles";
-import { ImperativeError } from "../../../src/error";
-import { ICommandValidatorResponse } from "../src/doc/response/response/ICommandValidatorResponse";
-import { SharedOptions } from "../src/utils/SharedOptions";
-import { CommandProfileLoader } from "../src/profiles/CommandProfileLoader";
-import { CliUtils } from "../../utilities/src/CliUtils";
-import { WebHelpManager } from "../src/help/WebHelpManager";
-import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
-import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
-import { EnvFileUtils, NextVerFeatures } from "../../utilities";
 import { join } from "path";
+import {
+    ICommandDefinition, IProfileManagerFactory, IProfileTypeConfiguration, BasicProfileManager, IHelpGenerator,
+    CommandProcessor, ImperativeError, ICommandResponse, CommandResponse, WebHelpManager,
+    ICommandValidatorResponse, SharedOptions, CommandProfileLoader, NextVerFeatures, CliUtils, ImperativeConfig,
+    EnvFileUtils, IInvokeCommandParms
+} from "../../../src";
+import { setupConfigToLoad } from "../../__resources__/src/TestUtil";
 
-jest.mock("../src/syntax/SyntaxValidator");
-jest.mock("../src/utils/SharedOptions");
-jest.mock("../../utilities/src/ImperativeConfig");
+jest.mock("../../../src/syntax/SyntaxValidator");
+jest.mock("../../.../src/utils/SharedOptions");
+jest.mock("../../../../src/utils/ImperativeConfig");
 
 // Persist the original definitions of process.write
 const ORIGINAL_STDOUT_WRITE = process.stdout.write;

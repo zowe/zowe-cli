@@ -9,12 +9,8 @@
 *
 */
 
-jest.mock("../src/utils/ProfileIO");
-import { ImperativeError } from "../../error/src/ImperativeError";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { ISaveProfile } from "../src/doc/parms/ISaveProfile";
+jest.mock("../../../src/profiles/utils/ProfileIO");
 import { inspect } from "util";
-import { IProfileSaved } from "../src/doc/response/IProfileSaved";
 import {
     APPLE_BAN_UNKNOWN,
     APPLE_PROFILE_TYPE,
@@ -27,7 +23,8 @@ import {
     STRAWBERRY_WITH_REQUIRED_APPLE_DEPENDENCY,
     TEST_PROFILE_ROOT_DIR
 } from "../__resources__/TestConstants";
-import { BasicProfileManager } from "../src/BasicProfileManager";
+import { ISaveProfile, BasicProfileManager, ImperativeError, IProfileSaved } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 
 const BAD_SAMPLE_SAVE_PARMS: ISaveProfile = {
     name: "bad_apple",

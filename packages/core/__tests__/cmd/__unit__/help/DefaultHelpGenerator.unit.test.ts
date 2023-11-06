@@ -12,12 +12,10 @@
 jest.mock("../../../imperative/src/Imperative");
 jest.mock("../../../utilities/src/ImperativeConfig");
 
-import { IHelpGeneratorFactoryParms } from "../../../cmd/src/help/doc/IHelpGeneratorFactoryParms";
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
-import { DefaultHelpGenerator } from "../../src/help/DefaultHelpGenerator";
-import { ICommandOptionDefinition } from "../../../../src/cmd";
-import { ImperativeError } from "../../../../src";
-import { ImperativeConfig } from "../../../utilities";
+import {
+    DefaultHelpGenerator, ICommandDefinition, ICommandOptionDefinition, IHelpGeneratorFactoryParms,
+    ImperativeConfig, ImperativeError
+} from "../../../../src";
 
 const chalkColor: string = "blue";
 const oldForceColorOption = process.env.FORCE_COLOR;

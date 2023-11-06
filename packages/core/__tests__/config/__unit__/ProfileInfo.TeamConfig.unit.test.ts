@@ -12,19 +12,11 @@
 import * as path from "path";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
-import { ProfileInfo } from "../src/ProfileInfo";
-import { IProfAttrs } from "../src/doc/IProfAttrs";
-import { IProfArgAttrs } from "../src/doc/IProfArgAttrs";
-import { IProfOpts } from "../src/doc/IProfOpts";
-import { ProfInfoErr } from "../src/ProfInfoErr";
-import { Config } from "../src/Config";
-import { IConfigOpts } from "../src/doc/IConfigOpts";
-import { ProfLocType } from "../src/doc/IProfLoc";
-import { IProfileSchema } from "../../profiles";
-import { AbstractSession, SessConstants } from "../../../src/rest";
-import { ConfigAutoStore } from "../src/ConfigAutoStore";
-import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
-import { ImperativeError } from "../../../src/error";
+
+import {
+    AbstractSession, Config, ConfigAutoStore, IConfigOpts, IProfArgAttrs, IProfAttrs, IProfOpts,
+    IProfileSchema, ImperativeConfig, ImperativeError, ProfInfoErr, ProfLocType, ProfileInfo, SessConstants
+} from "../../../src";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -95,13 +87,13 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(profLoaded.message).toBe("");
                 expect(profLoaded.failNotFound).toBe(false);
 
-                expect(profLoaded.profile.profName).toBe(profAttrs.profName);
-                expect(profLoaded.profile.profType).toBe(profAttrs.profType);
-                expect(profLoaded.profile.profLoc.locType).toBe(profAttrs.profLoc.locType);
-                expect(profLoaded.profile.profLoc.osLoc[0]).toBe(profAttrs.profLoc.osLoc[0]);
-                expect(profLoaded.profile.profLoc.osLoc[1]).toBe(profAttrs.profLoc.osLoc[1]);
-                expect(profLoaded.profile.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
-                expect(profLoaded.profile.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
+                expect(profLoaded.profile?.profName).toBe(profAttrs.profName);
+                expect(profLoaded.profile?.profType).toBe(profAttrs.profType);
+                expect(profLoaded.profile?.profLoc.locType).toBe(profAttrs.profLoc.locType);
+                expect(profLoaded.profile?.profLoc.osLoc[0]).toBe(profAttrs.profLoc.osLoc?.[0]);
+                expect(profLoaded.profile?.profLoc.osLoc[1]).toBe(profAttrs.profLoc.osLoc?.[1]);
+                expect(profLoaded.profile?.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
+                expect(profLoaded.profile?.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
             });
 
             it("should copy using dfltProfLoadedVals", async () => {
@@ -119,13 +111,13 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(profLoaded.referencedBy).toBe(dfltProfLoadedVals.referencedBy);
                 expect(profLoaded.dependenciesLoaded).toBe(dfltProfLoadedVals.dependenciesLoaded);
 
-                expect(profLoaded.profile.profName).toBe(profAttrs.profName);
-                expect(profLoaded.profile.profType).toBe(profAttrs.profType);
-                expect(profLoaded.profile.profLoc.locType).toBe(profAttrs.profLoc.locType);
-                expect(profLoaded.profile.profLoc.osLoc[0]).toBe(profAttrs.profLoc.osLoc[0]);
-                expect(profLoaded.profile.profLoc.osLoc[1]).toBe(profAttrs.profLoc.osLoc[1]);
-                expect(profLoaded.profile.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
-                expect(profLoaded.profile.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
+                expect(profLoaded.profile?.profName).toBe(profAttrs.profName);
+                expect(profLoaded.profile?.profType).toBe(profAttrs.profType);
+                expect(profLoaded.profile?.profLoc.locType).toBe(profAttrs.profLoc.locType);
+                expect(profLoaded.profile?.profLoc.osLoc[0]).toBe(profAttrs.profLoc.osLoc?.[0]);
+                expect(profLoaded.profile?.profLoc.osLoc[1]).toBe(profAttrs.profLoc.osLoc?.[1]);
+                expect(profLoaded.profile?.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
+                expect(profLoaded.profile?.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
             });
         });
 

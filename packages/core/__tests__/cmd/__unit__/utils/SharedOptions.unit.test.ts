@@ -10,14 +10,11 @@
 */
 
 // jest.mock("process");
-import { SharedOptions } from "../../src/utils/SharedOptions";
-import { Constants } from "../../../constants/src/Constants";
-
 import { Socket } from "net";
-import { ImperativeError } from "../../../error";
-import { CommandResponse } from "../../src/response/CommandResponse";
+import { CommandResponse, SharedOptions, Constants, ImperativeError } from "../../../../src";
 
-jest.mock("../../src/response/CommandResponse");
+
+jest.mock("../../../../src/response/CommandResponse");
 
 const intervalNum = 1000;
 describe("Shared Options", () => {

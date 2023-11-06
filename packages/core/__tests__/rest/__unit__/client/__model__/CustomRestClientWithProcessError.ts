@@ -9,10 +9,7 @@
 *
 */
 
-import { RestClient } from "../../../src/client/RestClient";
-import { IImperativeError } from "../../../../error";
-import { JSONUtils } from "../../../../utilities";
-import { AbstractSession } from "../../../src/session/AbstractSession";
+import { IImperativeError, RestClient, AbstractSession, JSONUtils } from "../../../../../src";
 
 export const EXPECTED_REST_ERROR: IImperativeError = {
     msg: "This is our custom error that we're throwing"

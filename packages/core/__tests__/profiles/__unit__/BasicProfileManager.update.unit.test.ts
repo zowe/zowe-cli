@@ -9,12 +9,11 @@
 *
 */
 
-import { BasicProfileManager } from "../src/BasicProfileManager";
+import { BasicProfileManager, IProfileUpdated } from "../../../src";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 import { APPLE_PROFILE_TYPE, ONLY_APPLE, TEST_PROFILE_ROOT_DIR } from "../__resources__/TestConstants";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { IProfileUpdated } from "../src/doc/response/IProfileUpdated";
 
-jest.mock("../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 
 
 describe("Basic Profile Manager Update", () => {

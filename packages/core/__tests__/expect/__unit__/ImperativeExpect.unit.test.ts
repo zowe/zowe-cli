@@ -11,7 +11,7 @@
 
 import { ImperativeExpect } from "../../../src/expect";
 import { ImperativeError } from "../../../src/error";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 // UnitTestUtils.replaceIt();
 
 const obj = {

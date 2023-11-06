@@ -9,10 +9,9 @@
 *
 */
 
-import { ChainedHandlerService } from "../src/ChainedHandlerUtils";
-import { IChainedHandlerEntry } from "../../../src/cmd";
-import { TestLogger } from "../../../__tests__/src/TestLogger";
+import { ChainedHandlerService, IChainedHandlerEntry } from "../../../src/cmd";
 import * as yargs from "yargs";
+import { TestLogger } from "../../__resources__/src/TestLogger";
 
 const testLogger = TestLogger.getTestLogger();
 describe("Chained Handler Service", () => {

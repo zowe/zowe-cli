@@ -10,9 +10,9 @@
 */
 
 import { randomBytes } from "crypto";
+
 import { ZosFilesConstants } from "../../packages/zosfiles/src";
-import { Imperative, Headers, AbstractSession } from "@zowe/core-for-zowe-sdk";
-import { ZosmfRestClient } from "../../packages/core/src";
+import { Imperative, Headers, AbstractSession, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 /**
  * This function strips any new lines out of the string passed.
@@ -75,7 +75,7 @@ export function getUniqueDatasetName(hlq: string, encoded = false): string {
  */
 export function getRandomBytes(dataSize: number): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-        randomBytes(dataSize, (randomErr: Error, randomData: Buffer) => {
+        randomBytes(dataSize, (randomErr: Error | null, randomData: Buffer) => {
             if (randomErr != null) {
                 reject(randomErr);
                 return;

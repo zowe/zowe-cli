@@ -11,22 +11,17 @@
 
 import * as https from "https";
 import * as http from "http";
-import { Session } from "../../src/session/Session";
-import { RestClient } from "../../src/client/RestClient";
-import { Headers } from "../../src/client/Headers";
-import { NextVerFeatures, ProcessUtils } from "../../../utilities";
-import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { EventEmitter } from "events";
-import { ImperativeError } from "../../../error";
-import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
-import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
 import { PassThrough } from "stream";
 import * as zlib from "zlib";
 import * as streamToString from "stream-to-string";
-import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 import * as os from "os";
 import { join } from "path";
-import { IO } from "../../../io";
+import {
+    NextVerFeatures, RestClient, Session, ProcessUtils, ImperativeError, IOptionsFullResponse,
+    CLIENT_PROPERTY, IO, AbstractRestClient
+} from "../../../../src";
+import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which

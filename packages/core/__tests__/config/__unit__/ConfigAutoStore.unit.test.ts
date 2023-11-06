@@ -9,12 +9,9 @@
 *
 */
 
-jest.mock("../../logger/src/LoggerUtils");
-import { AbstractAuthHandler } from "../../imperative";
-import { SessConstants } from "../../../src/rest";
-import { ImperativeConfig } from "../../utilities";
-import { ConfigAutoStore } from "../src/ConfigAutoStore";
-import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
+jest.mock("../.././src/logger/LoggerUtils");
+import { setupConfigToLoad } from "../../../__tests__/__resources__/src/TestUtil";
+import { AbstractAuthHandler, ImperativeConfig, ConfigAutoStore, SessConstants } from "../../../src";
 
 describe("ConfigAutoStore tests", () => {
     beforeAll(() => {
