@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, Imperative } from "@zowe/imperative";
+import { Session, Imperative } from "@zowe/core-for-zowe-sdk";
 import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../../src";
 import { WorkflowConstants } from "../../src/WorkflowConstants";

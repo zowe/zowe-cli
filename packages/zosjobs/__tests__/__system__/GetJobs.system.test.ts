@@ -10,7 +10,7 @@
 */
 
 import { JOB_STATUS } from "./../../src/types/JobStatus";
-import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Session, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../src";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";

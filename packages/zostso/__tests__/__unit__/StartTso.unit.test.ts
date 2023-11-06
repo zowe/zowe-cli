@@ -22,7 +22,7 @@ import {
     TsoConstants,
     SendTso
 } from "../../src";
-import { Headers, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient } from "../../../core/lib/rest/ZosmfRestClient";
 
 const START_HEADERS: any[] = [Headers.APPLICATION_JSON];

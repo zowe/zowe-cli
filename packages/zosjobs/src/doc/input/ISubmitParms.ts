@@ -9,7 +9,7 @@
 *
 */
 
-import { ITaskWithStatus } from "@zowe/imperative";
+import { ITaskWithStatus } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Interface for submit job API

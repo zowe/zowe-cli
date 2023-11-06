@@ -11,7 +11,7 @@
 
 import { ICollectParms, IIssueParms } from "./";
 import { IZosmfIssueParms } from "./doc/zosmf/IZosmfIssueParms";
-import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { noSession } from "@zowe/core-for-zowe-sdk";
 import { noCollectParameters, noCommandKey, noConsoleInput, noConsoleName, noZosmfInput } from "./ConsoleConstants";
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { GuiResult, IHandlerParameters, ImperativeError, ProcessUtils, RestConstants, TextUtils } from "@zowe/imperative";
+import { GuiResult, IHandlerParameters, ImperativeError, ProcessUtils, RestConstants, TextUtils } from "@zowe/core-for-zowe-sdk";
 import {ILocalFile,
     EditUtilities} from "../../../../src/zosfiles/edit/Edit.utils";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";

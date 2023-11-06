@@ -13,7 +13,7 @@ jest.mock("fs");
 
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
+import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 
 describe("Compare localfile-spooldd handler", () => {

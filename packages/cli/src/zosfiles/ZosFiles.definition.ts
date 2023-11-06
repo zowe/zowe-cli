@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { CompareDefinition } from "./compare/Compare.definition";
 import { CopyDefinition } from "./copy/Copy.definition";

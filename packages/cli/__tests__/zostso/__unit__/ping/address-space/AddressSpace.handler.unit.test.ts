@@ -13,7 +13,7 @@ jest.mock("../../../../../../zostso/lib/PingTso");
 
 import { PingTsoData } from "../../../__resources__/PingTsoData";
 import { PingTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as PingAddressSpaceHandler from "../../../../../src/zostso/ping/address_space/PingAddressSpace.handler";
 import { PingAddressSpaceCommandDefinition } from "../../../../../src/zostso/ping/address_space/PingAddressSpace.definition";
 import {

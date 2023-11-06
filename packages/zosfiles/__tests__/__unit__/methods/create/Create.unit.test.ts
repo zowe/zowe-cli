@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, TextUtils } from "@zowe/imperative";
+import { ImperativeError, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";

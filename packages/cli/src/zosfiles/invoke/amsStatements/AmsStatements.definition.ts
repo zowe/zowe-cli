@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { join } from "path";
 import i18nTypings from "../../-strings-/en";
 

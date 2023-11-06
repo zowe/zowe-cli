@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ICommandArguments, IHandlerParameters, TaskStage } from "@zowe/imperative";
+import { AbstractSession, ICommandArguments, IHandlerParameters, TaskStage } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../ZosFilesBase.handler";
 import { CompareBaseHelper } from "./CompareBaseHelper";

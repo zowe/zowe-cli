@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, GuiResult, IHandlerParameters,
-    ITaskWithStatus, ImperativeError, ProcessUtils, RestConstants, TaskStage, TextUtils } from "@zowe/imperative";
+    ITaskWithStatus, ImperativeError, ProcessUtils, RestConstants, TaskStage, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../ZosFilesBase.handler";
 import { EditUtilities as Utils, Prompt, ILocalFile } from "../edit/Edit.utils";

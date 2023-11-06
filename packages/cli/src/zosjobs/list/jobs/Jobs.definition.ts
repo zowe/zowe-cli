@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/core-for-zowe-sdk";
 
 export const JobsDefinition: ICommandDefinition = {
     name: "jobs",

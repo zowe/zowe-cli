@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import * as JobStatusByJobidHandler from "../../../../../src/zosjobs/view/job-status-by-jobid/JobStatusByJobid.handler";

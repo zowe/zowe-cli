@@ -10,7 +10,7 @@
 */
 
 import { ICommandProfileSchema } from "./ICommandProfileSchema";
-import { IProfileTypeConfiguration } from "../../../../imperative/doc/";
+import { IProfileTypeConfiguration } from "../../../../profiles/doc";
 import { ICommandExampleDefinition } from "../../ICommandExampleDefinition";
 import { ICommandProfileAuthConfig } from "./ICommandProfileAuthConfig";
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
+import { ImperativeError, Session, RestClientError } from "@zowe/core-for-zowe-sdk";
 import { CancelJobs, SubmitJobs, IJob } from "../../src";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";

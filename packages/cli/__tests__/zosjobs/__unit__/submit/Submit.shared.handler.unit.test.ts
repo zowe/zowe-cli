@@ -11,7 +11,7 @@
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { MonitorJobs, SubmitJobs, ISubmitJobUSSParms, ISubmitJobParms } from "@zowe/zos-jobs-for-zowe-sdk";
-import { IHandlerParameters, ImperativeError, IO } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, IO } from "@zowe/core-for-zowe-sdk";
 import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { ModifyJobs } from "../../src";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");

@@ -17,7 +17,7 @@ import {
     PerformAction,
     ProvisioningConstants
 } from "@zowe/provisioning-for-zowe-sdk";
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import * as ActionHandler from "../../../../../src/provisioning/perform/action/Action.handler";
 import * as ActionDefinition from "../../../../../src/provisioning/perform/action/Action.definition";
 import {

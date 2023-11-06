@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { AddressSpaceDefinition } from "./address-space/AddressSpace.definition";
 
 export const StartCommand: ICommandDefinition = {

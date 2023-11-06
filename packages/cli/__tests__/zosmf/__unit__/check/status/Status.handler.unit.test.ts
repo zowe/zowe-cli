@@ -11,7 +11,7 @@
 
 jest.mock("../../../../../../zosmf/lib/CheckStatus");
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { ICommandHandler, IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import CmdHandler from "../../../../../src/zosmf/check/status/Status.handler";
 import * as cmdDef from "../../../../../src/zosmf/check/status/Status.definition";
 import {

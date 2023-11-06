@@ -11,7 +11,7 @@
 
 import { join } from "path";
 import { CliUtils, IChainedHandlerArgumentMapping, ICommandDefinition, ICommandOptionDefinition,
-    ICommandPositionalDefinition } from "@zowe/imperative";
+    ICommandPositionalDefinition } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosFilesOptionDefinitions } from "../../ZosFiles.options";
 

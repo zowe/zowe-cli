@@ -10,7 +10,7 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters, TextUtils } from "@zowe/core-for-zowe-sdk";
 import {
     explainProvisionTemplateResponse,
     IProvisionOptionals,

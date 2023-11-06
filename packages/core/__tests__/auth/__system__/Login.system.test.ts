@@ -9,10 +9,13 @@
 *
 */
 
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../__tests__/__packages__/cli-test-utils/src/environment/doc";
+
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Session } from "../../../src/rest/session/Session";
+import { ImperativeError } from "../../../src/error/ImperativeError";
+import { Imperative } from "../../../src/imperative/Imperative";
 import { Login } from "../../../src/auth/Login";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

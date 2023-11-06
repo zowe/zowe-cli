@@ -11,7 +11,7 @@
 
 import { randomBytes } from "crypto";
 import { ZosFilesConstants } from "../../packages/zosfiles/src";
-import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
+import { Imperative, Headers, AbstractSession } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient } from "../../packages/core/src";
 
 /**

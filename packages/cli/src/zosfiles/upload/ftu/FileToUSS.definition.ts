@@ -10,7 +10,7 @@
 */
 
 import * as path from "path";
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { UploadOptions } from "../Upload.options";
 
 import i18nTypings from "../../-strings-/en";

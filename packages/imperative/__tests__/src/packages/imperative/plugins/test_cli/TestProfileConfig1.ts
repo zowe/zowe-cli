@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
+import { ICommandProfileTypeConfiguration } from "@zowe/core-for-zowe-sdk";
 
 export const TestProfileConfig1: ICommandProfileTypeConfiguration = {
     type: "TestProfile1",

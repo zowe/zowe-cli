@@ -11,7 +11,7 @@
 
 import { IOptions } from "../../doc/IOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Headers } from "@zowe/core-for-zowe-sdk";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";

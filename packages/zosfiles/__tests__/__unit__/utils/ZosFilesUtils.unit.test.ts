@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO } from "@zowe/imperative";
+import { IO } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesUtils } from "../../../src/utils/ZosFilesUtils";
 import { ZosFilesConstants } from "../../../src/constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../../src/constants/ZosFiles.messages";

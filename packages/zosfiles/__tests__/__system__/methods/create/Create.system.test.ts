@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../src/methods/create";
 import { ITestEnvironment } from "@zowe/cli-test-utils";

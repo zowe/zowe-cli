@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { ZfsCreateOptions } from "./zfs.options";
 import { ZosFilesCreateOptions } from "../Create.options";
 import i18nTypings from "../../-strings-/en";

@@ -9,13 +9,13 @@
 *
 */
 
-function getImperative() {
+function getTextUtils() {
     try {
-        return require("@zowe/imperative");
+        return require("@zowe/core-for-zowe-sdk");
     } catch (err) {
         if (err.code === "ERR_MODULE_NOT_FOUND" || err.code === "MODULE_NOT_FOUND") {
             require("ts-node/register");
-            return require(require("path").resolve(__dirname, "../../imperative/src/utilities/src/TextUtils"));
+            return require(require("path").resolve(__dirname, "../../core/src/utils/TextUtils"));
         } else {
             throw err;
         }
@@ -23,13 +23,13 @@ function getImperative() {
 }
 
 function printSuccessMessage() {
-    const imperative = getImperative();
+    const core = getTextUtils();
 
     const installSuccessMessage = "Zowe CLI has been successfully installed. " +
     "You can safely ignore all non-plug-in related errors and warnings. " +
     "Please check above for any plug-in related issues.";
 
-    const table = imperative.TextUtils.getTable([[installSuccessMessage]], "yellow", undefined, false, true, true);
+    const table = core.TextUtils.getTable([[installSuccessMessage]], "yellow", undefined, false, true, true);
     console.log("\n" + table + "\n");
 }
 

@@ -11,7 +11,7 @@
 
 import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/core-for-zowe-sdk";
 import * as AddressSpaceHandler from "../../../../../src/zostso/start/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/start/address-space/AddressSpace.definition";
 import {

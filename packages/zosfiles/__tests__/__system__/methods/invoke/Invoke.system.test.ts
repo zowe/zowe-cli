@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { Imperative, Session, TextUtils } from "@zowe/imperative";
+import { Imperative, Session, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 
 import { ITestEnvironment } from "@zowe/cli-test-utils";

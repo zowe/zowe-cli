@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, IProfile, Session } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../../src/zosfiles/ZosFilesBase.handler";
 

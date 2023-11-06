@@ -17,7 +17,7 @@ import { spawnSync, StdioOptions } from "child_process";
 import {
     CliUtils, ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
     IO, ISystemInfo, ProcessUtils
-} from "@zowe/imperative";
+} from "@zowe/core-for-zowe-sdk";
 
 import { IDaemonEnableQuestions } from "../doc/IDaemonEnableQuestions";
 

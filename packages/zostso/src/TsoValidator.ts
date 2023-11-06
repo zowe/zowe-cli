@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { noSessionTso, noTsoIssueInput, noTsoStartInput, noTsoStopInput, noZosmfResponse } from "./TsoConstants";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { IStopTsoParms } from "./doc/input/IStopTsoParms";

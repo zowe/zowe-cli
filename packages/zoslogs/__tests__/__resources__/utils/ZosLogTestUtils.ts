@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Class for ZosLog test utils.

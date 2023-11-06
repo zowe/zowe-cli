@@ -10,7 +10,7 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig, ConfigUtils, Config } from "@zowe/imperative";
+import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig, ConfigUtils, Config } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 import * as lodash from "lodash";

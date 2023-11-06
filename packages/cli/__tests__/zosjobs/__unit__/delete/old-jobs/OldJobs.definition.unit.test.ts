@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 
 describe("zos-jobs delete old-jobs definition", () => {
     it ("should not have changed", () => {

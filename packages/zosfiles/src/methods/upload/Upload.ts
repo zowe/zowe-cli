@@ -9,11 +9,14 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import {
+    AbstractSession, CLIENT_PROPERTY, Headers, ImperativeError, ImperativeExpect,
+    IO, IOptionsFullResponse, IRestClientResponse, Logger, TaskProgress,
+    IHeaderContent, ZosmfHeaders, ZosmfRestClient, asyncPool
+} from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 import * as path from "path";
 
-import { IHeaderContent, ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
@@ -27,9 +30,6 @@ import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
-import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
-import { IRestClientResponse } from "../../doc/IRestClientResponse";
-import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
 
 
@@ -326,7 +326,7 @@ export class Upload {
 
         // Retrieve the information on the input data set name to determine if it is a
         // sequential data set or PDS.
-        const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName, recall: "wait"});
+        const listResponse = await List.dataSet(session, dataSetName, { attributes: true, maxLength: 1, start: dataSetName, recall: "wait" });
         if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
             // Look for the index of the data set in the response from the List API
             const dsnameIndex = listResponse.apiResponse.returnedRows === 0 ? -1 :
@@ -341,7 +341,7 @@ export class Upload {
                         isUploadToPds = true;
                         break;
                     default:
-                    // if loading to a physical sequential data set and multiple files found then error
+                        // if loading to a physical sequential data set and multiple files found then error
                         if (uploadFileList.length > 1) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
@@ -946,7 +946,7 @@ export class Upload {
                 }
                 reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {
-                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                    reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
                 }
                 break;
             default: {
@@ -981,7 +981,7 @@ export class Upload {
         }
 
         if (options.etag) {
-            reqHeaders.push({"If-Match" : options.etag});
+            reqHeaders.push({ "If-Match": options.etag });
         }
 
         if (options.returnEtag) {

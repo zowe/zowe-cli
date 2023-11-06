@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, JSONUtils, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, JSONUtils, Logger, TaskProgress } from "@zowe/core-for-zowe-sdk";
 
 import { posix } from "path";
 import * as util from "util";

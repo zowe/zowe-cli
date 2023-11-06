@@ -25,7 +25,7 @@ import {
     ISession,
     Session,
     ConnectionPropsForSessCfg
-} from "@zowe/imperative";
+} from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "./ZosmfSession";
 
 /**

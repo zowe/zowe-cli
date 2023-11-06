@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { DataSet } from "./dataset/Dataset.definition";
 import { UssFile } from "./ussfile/UssFile.definition";
 import { LocalFile } from "./localfile/LocalFile.definition";

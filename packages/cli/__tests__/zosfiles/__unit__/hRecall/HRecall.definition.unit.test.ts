@@ -11,7 +11,7 @@
 
 import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
 import { HRecallDefinition } from "../../../../src/zosfiles/hRecall/HRecall.definition";
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 
 describe("zos-files recall group definition", () => {
     it ("should not have changed", () => {

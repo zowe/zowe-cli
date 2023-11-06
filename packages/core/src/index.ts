@@ -13,15 +13,18 @@ export * from "./constants";
 
 export * from "./apiml";
 export * from "./auth";
+export * from "./cmd";
 export * from "./console";
 export * from "./config";
 export * from "./error";
 export * from "./expect";
+export * from "./imperative";
 export * from "./interfaces";
 export * from "./io";
 export * from "./logger";
 export * from "./messages";
 export * from "./operations";
+export * from "./profiles";
 export * from "./rest";
 export * from "./security";
 export * from "./settings";

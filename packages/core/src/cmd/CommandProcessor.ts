@@ -51,9 +51,8 @@ import { ICommandProfile } from "./doc/profiles/definition/ICommandProfile";
 import { Config } from "../config/Config";
 import { getActiveProfileName } from "../config/ConfigUtils";
 import { ConfigConstants } from "../config/ConfigConstants";
-import { IDaemonContext } from "../../../imperative/src/imperative/src/doc/IDaemonContext";
-import { IHandlerResponseApi } from "../imperative/doc";
-
+import { IDaemonContext } from "../imperative/doc/IDaemonContext";
+import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
 
 /**
  * Internal interface for the command processor that is used by the CLI for `--show-inputs-only`

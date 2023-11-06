@@ -10,7 +10,7 @@
 */
 
 import { ConsoleValidator, ICollectParms, IIssueParms, IZosmfIssueParms } from "../../src";
-import { Session } from "@zowe/imperative";
+import { Session } from "@zowe/core-for-zowe-sdk";
 
 const CONSOLE_NAME: string = "CN12345";
 const RESPONSE_KEY: string = "C9876543";

@@ -12,7 +12,7 @@
 import { ListRegistryInstances, ListInstanceVariables } from "@zowe/provisioning-for-zowe-sdk";
 
 jest.mock("@zowe/provisioning-for-zowe-sdk");
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import * as Handler from "../../../../../src/provisioning/list/instanceVariables/InstanceVariables.handler";
 import { instanceVariables } from "../../../../../src/provisioning/list/instanceVariables/InstanceVariables.definition";
 import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";

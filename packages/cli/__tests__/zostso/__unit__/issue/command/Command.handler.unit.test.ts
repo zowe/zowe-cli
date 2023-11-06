@@ -11,7 +11,7 @@
 
 jest.mock("../../../../../../zostso/lib/IssueTso");
 import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as Command from "../../../../../src/zostso/issue/command/Command.handler";
 import { CommandDefinition } from "../../../../../src/zostso/issue/command/Command.definition";
 import { StartTsoData } from "../../../__resources__/StartTsoData";

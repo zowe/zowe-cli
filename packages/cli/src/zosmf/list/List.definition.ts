@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { SystemsDefinition } from "./systems/Systems.definition";
 
 export const ListCommand: ICommandDefinition = {

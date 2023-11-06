@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../../src/ZosmfSession";
-import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments } from "@zowe/core-for-zowe-sdk";
 
 describe("zosmf utils", () => {
     it("should create a session config from cmd args",  () => {

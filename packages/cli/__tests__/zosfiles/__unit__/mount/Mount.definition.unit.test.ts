@@ -11,7 +11,7 @@
 
 import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
 import { MountDefinition } from "../../../../src/zosfiles/mount/Mount.definition";
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 
 describe("zos-files mount group definition", () => {
     it ("should not have changed", () => {

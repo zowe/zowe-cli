@@ -9,7 +9,7 @@
 *
 */
 
-import { Logger, ImperativeError } from "@zowe/imperative";
+import { Logger, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { ClientChannel, Client } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";

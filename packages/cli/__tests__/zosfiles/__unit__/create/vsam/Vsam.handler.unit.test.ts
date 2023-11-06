@@ -10,7 +10,7 @@
 */
 
 import { Create } from "@zowe/zos-files-for-zowe-sdk";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const message: string = "Dummy error message";

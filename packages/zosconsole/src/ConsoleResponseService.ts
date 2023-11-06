@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Logger, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { inspect, isNullOrUndefined } from "util";
 import { IZosmfIssueResponse } from "./doc/zosmf/IZosmfIssueResponse";
 import { IConsoleResponse } from "./doc/IConsoleResponse";

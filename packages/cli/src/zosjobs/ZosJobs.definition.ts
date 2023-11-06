@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { SubmitDefinition } from "./submit/Submit.definition";
 import { ViewDefinition } from "./view/View.definition";
 import { ListDefinition } from "./list/List.definition";

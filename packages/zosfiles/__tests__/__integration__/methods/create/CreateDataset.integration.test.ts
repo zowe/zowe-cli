@@ -10,7 +10,7 @@
 */
 
 import { ICreateDataSetOptions, ZosFilesConstants } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/core-for-zowe-sdk";
 import * as http from "http";
 import { inspect } from "util";
 

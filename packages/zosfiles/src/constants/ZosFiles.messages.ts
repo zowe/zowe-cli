@@ -10,7 +10,7 @@
 */
 
 import { ZosFilesConstants } from "./ZosFiles.constants";
-import { IMessageDefinition } from "@zowe/imperative";
+import { IMessageDefinition } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Messages to be used as command responses for different scenarios

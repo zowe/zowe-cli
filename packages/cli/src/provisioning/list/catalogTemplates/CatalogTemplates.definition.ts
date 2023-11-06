@@ -10,7 +10,7 @@
 */
 
 import * as path from "path";
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 
 export const catalogTemplates: ICommandDefinition = {
     name: "catalog-templates",

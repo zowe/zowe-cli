@@ -10,7 +10,7 @@
 */
 
 import * as Path from "path";
-import { Imperative, ImperativeError } from "@zowe/imperative";
+import { Imperative, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { IPropertiesInput, ProvisioningService, IProvisionOptionals } from "../../src";
 
 

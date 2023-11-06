@@ -7,7 +7,7 @@ z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log
 **List z/OS logs**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { GetZosLog, IZosLogParms } from "@zowe/zos-logs-for-zowe-sdk";
 
 (async () => {

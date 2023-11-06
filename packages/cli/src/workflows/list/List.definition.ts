@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { ActiveWorkflows } from "./activeWorkflows/ActiveWorkflows.definition";
 import { ActiveWorkflowDetails } from "./activeWorkflowDetails/ActiveWorkflowDetails.definition";
 import { RetrieveWorkflowDefinition } from "./retrieveWorkflowDefinition/RetrieveWorkflowDefinition.definition";

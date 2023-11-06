@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfile, CommandProfiles } from "@zowe/imperative";
+import { IProfile, CommandProfiles } from "@zowe/core-for-zowe-sdk";
 // Some test constants that are needed by multiple packages for unit tests
 
 // Mocked profile options to be added to args

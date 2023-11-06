@@ -1,5 +1,0 @@
-{
-    "out": "./docs/typedoc/",
-    "exclude": "**/__tests__/**",
-    "cleanOutputDir": true
-}

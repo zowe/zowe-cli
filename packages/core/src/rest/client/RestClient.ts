@@ -13,11 +13,11 @@ import { AbstractSession } from "../session/AbstractSession";
 import { RestConstants } from "./RestConstants";
 import { HTTP_VERB } from "./types/HTTPVerb";
 import { AbstractRestClient } from "./AbstractRestClient";
-import { JSONUtils } from "../../../utilities";
+import { JSONUtils } from "../../utils";
 import { Readable, Writable } from "stream";
-import { ITaskWithStatus } from "../../../operations";
+import { ITaskWithStatus } from "../../operations/doc/ITaskWithStatus";
 import { IRestClientResponse } from "./doc/IRestClientResponse";
-import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
+import { IOptionsFullResponse } from "./doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "./types/AbstractRestClientProperties";
 import { IRestOptions } from "./doc/IRestOptions";
 

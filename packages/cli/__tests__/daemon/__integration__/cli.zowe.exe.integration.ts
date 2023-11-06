@@ -11,7 +11,7 @@
 
 import * as nodeJsPath from "path";
 
-import { IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
+import { IO, ProcessUtils, ISystemInfo } from "@zowe/core-for-zowe-sdk";
 
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";

@@ -15,7 +15,7 @@ import * as os from "os";
 import {
     ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
     IO, ISystemInfo, Logger, ProcessUtils
-} from "@zowe/imperative";
+} from "@zowe/core-for-zowe-sdk";
 
 /**
  * Handler to disable daemon mode.

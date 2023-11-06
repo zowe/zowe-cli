@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";

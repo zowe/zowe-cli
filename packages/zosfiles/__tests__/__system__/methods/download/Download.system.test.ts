@@ -27,7 +27,7 @@ import {
     Unmount,
     IUSSListOptions
 } from "../../../../src";
-import { Imperative, IO, Session } from "@zowe/imperative";
+import { Imperative, IO, Session } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";

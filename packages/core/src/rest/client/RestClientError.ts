@@ -9,9 +9,9 @@
 *
 */
 
-import { ImperativeError } from "../../../error";
+import { ImperativeError } from "../../error/ImperativeError";
 import { IRestClientError } from "./doc/IRestClientError";
-import { IImperativeErrorParms } from "../../../error/src/doc/IImperativeErrorParms";
+import { IImperativeErrorParms } from "../../error/doc/IImperativeErrorParms";
 
 export class RestClientError extends ImperativeError {
     /**

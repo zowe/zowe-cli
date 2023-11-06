@@ -19,7 +19,7 @@ import * as net from "net";
 import * as os from "os";
 import * as path from "path";
 import Mock = jest.Mock;
-import { Imperative, IO } from "@zowe/imperative";  // eslint-disable-line unused-imports/no-unused-imports
+import { Imperative, IO } from "@zowe/core-for-zowe-sdk";  // eslint-disable-line unused-imports/no-unused-imports
 import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
 
 jest.mock("../../../src/daemon/DaemonClient");

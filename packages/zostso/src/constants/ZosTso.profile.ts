@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
+import { ICommandProfileTypeConfiguration } from "@zowe/core-for-zowe-sdk";
 import { TsoProfileConstants } from "./ZosTso.constants";
 
 /**

@@ -7,7 +7,7 @@ Contains APIs to interact with the z/OS workflows APIs
 **List Active Workflow Instance(s) in z/OSMF**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { IActiveWorkflows, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 (async () => {

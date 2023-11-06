@@ -11,7 +11,7 @@
 
 jest.mock("@zowe/provisioning-for-zowe-sdk");
 import { ListTemplateInfo } from "@zowe/provisioning-for-zowe-sdk";
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import * as Handler from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.handler";
 import { templateInfo } from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.definition";
 import {

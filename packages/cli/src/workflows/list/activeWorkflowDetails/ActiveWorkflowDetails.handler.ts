@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { ListWorkflows, IWorkflowInfo, IStepSummary, PropertiesWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 

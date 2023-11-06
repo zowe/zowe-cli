@@ -12,7 +12,7 @@
 jest.mock("../../../../../../zostso/lib/StopTso");
 import { StopTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StopTsoData } from "../../../__resources__/StopTsoData";
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as AddressSpaceHandler from "../../../../../src/zostso/stop/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/stop/address-space/AddressSpace.definition";
 import {

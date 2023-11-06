@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { noAccountNumber, noCommandInput } from "./TsoConstants";
 import { SendTso } from "./SendTso";

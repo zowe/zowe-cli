@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { IPingResponse, noPingInput, PingTso, StopTso, StartTso, IStartTsoParms } from "../../src";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";

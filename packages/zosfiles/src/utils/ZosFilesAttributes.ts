@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import * as minimatch from "minimatch";
-import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Logger, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import * as pathUtils from "path";
 import { Tag } from "../methods/utilities";

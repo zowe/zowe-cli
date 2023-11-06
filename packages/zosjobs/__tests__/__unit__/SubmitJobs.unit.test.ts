@@ -14,7 +14,7 @@
 import { DownloadJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { IJobFile, ISpoolFile, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IHeaderContent, ImperativeError, ITaskWithStatus, TaskStage} from "@zowe/imperative";
+import { IHeaderContent, ImperativeError, ITaskWithStatus, TaskStage} from "@zowe/core-for-zowe-sdk";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/MonitorJobs");

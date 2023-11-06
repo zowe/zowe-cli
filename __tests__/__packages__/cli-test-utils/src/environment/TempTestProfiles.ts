@@ -16,7 +16,7 @@
 import * as fs from "fs";
 
 import { v4 as uuidv4 } from "uuid";
-import { Config, ImperativeError, IO } from "@zowe/imperative";
+import { Config, ImperativeError, IO } from "@zowe/core-for-zowe-sdk";
 
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { runCliScript, stripProfileDeprecationMessages } from "../TestUtils";

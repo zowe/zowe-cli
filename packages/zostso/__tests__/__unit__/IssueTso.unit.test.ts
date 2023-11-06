@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
     StartTso, StopTso } from "../../src";
 

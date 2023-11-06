@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { IssueCommand } from "./issue/Issue.definition";
 import { SshSession } from "@zowe/zos-uss-for-zowe-sdk";
 

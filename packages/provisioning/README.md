@@ -7,7 +7,7 @@ Contains APIs to interact with the z/OS provisioning APIs
 **List z/OSMF Published Catalog Templates**
 
 ```typescript
-import { ProfileInfo, TextUtils } from "@zowe/imperative";
+import { ProfileInfo, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCatalogTemplates,
     ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 
@@ -37,7 +37,7 @@ import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCa
 **Provision a Published Software Service Template**
 
 ```typescript
-import { ProfileInfo, TextUtils } from "@zowe/imperative";
+import { ProfileInfo, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { ProvisioningConstants, explainProvisionTemplateResponse,
     ProvisionPublishedTemplate } from "@zowe/provisioning-for-zowe-sdk";
 
@@ -64,7 +64,7 @@ import { ProvisioningConstants, explainProvisionTemplateResponse,
 **List Provisioned Instances and Perform an Action to the Matching Instance**
 
 ```typescript
-import { ProfileInfo, TextUtils } from "@zowe/imperative";
+import { ProfileInfo, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { explainActionResponse, IProvisionedInstance, ListRegistryInstances, PerformAction,
     ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 

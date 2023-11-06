@@ -20,4 +20,6 @@ export * from "@zowe/zos-tso-for-zowe-sdk";
 export * from "@zowe/zos-uss-for-zowe-sdk";
 export * from "@zowe/zos-workflows-for-zowe-sdk";
 export * from "@zowe/zosmf-for-zowe-sdk";
-export * as imperative from "@zowe/imperative";
+
+// For backwards compatibility purposes
+export * as imperative from "@zowe/core-for-zowe-sdk";

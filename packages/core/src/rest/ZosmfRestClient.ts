@@ -9,10 +9,12 @@
 *
 */
 
-import {
-    IImperativeError, Logger, NextVerFeatures, RestClient, TextUtils,
-    RestConstants, SessConstants
-} from "@zowe/imperative";
+import { Logger } from "../logger/Logger";
+import { RestClient, RestConstants } from "./client";
+import { SessConstants } from "./session";
+import { NextVerFeatures } from "../utils/NextVerFeatures";
+import { TextUtils } from "../utils/TextUtils";
+import { IImperativeError } from "../error/doc/IImperativeError";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
 /**

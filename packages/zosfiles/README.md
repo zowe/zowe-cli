@@ -7,7 +7,7 @@ Contains APIs to interact with files and data sets on z/OS (using z/OSMF files R
 **Create a dataset**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "@zowe/zos-files-for-zowe-sdk";
 
 (async () => {
@@ -38,7 +38,7 @@ import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "@zowe/zos-
 **Download all datasets in a partitioned dataset**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { Download, IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
 
 (async () => {
@@ -63,7 +63,7 @@ import { Download, IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
 **List datasets on z/OS**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { IListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 
 (async () => {
@@ -90,7 +90,7 @@ import { IListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 **Upload a file to Unix System Services**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "@zowe/core-for-zowe-sdk";
 import { IUploadOptions, Upload } from "@zowe/zos-files-for-zowe-sdk";
 
 (async () => {

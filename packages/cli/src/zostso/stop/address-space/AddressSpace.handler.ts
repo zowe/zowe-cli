@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 import { StopTso, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 export default class Handler extends ZosTsoBaseHandler {

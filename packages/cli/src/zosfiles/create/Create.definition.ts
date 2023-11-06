@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { BinaryPDSDefinition } from "./binaryPds/BinaryPDS.definition";
 import { ClassicPDSDefinition } from "./classicPds/ClassicPDS.definition";
 import { CPDSDefinition } from "./cPds/CPDS.definition";

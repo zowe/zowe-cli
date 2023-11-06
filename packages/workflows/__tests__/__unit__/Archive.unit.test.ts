@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Session, Imperative, Headers, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, Session, Imperative, Headers, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
 import { ArchiveWorkflow, WorkflowConstants } from "../../src";

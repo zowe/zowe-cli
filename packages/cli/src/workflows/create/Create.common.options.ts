@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Object containing all extra options to be used by the create workflow commands.

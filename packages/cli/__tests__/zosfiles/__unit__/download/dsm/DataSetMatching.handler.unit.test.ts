@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, Session } from "@zowe/imperative";
+import { IHandlerParameters, Session } from "@zowe/core-for-zowe-sdk";
 import { Download, IDownloadOptions, IDsmListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 import * as DataSetMatchingDefinition from "../../../../../src/zosfiles/download/dsm/DataSetMatching.definition";
 import * as DataSetMatchingHandler from "../../../../../src/zosfiles/download/dsm/DataSetMatching.handler";

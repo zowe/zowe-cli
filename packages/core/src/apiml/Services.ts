@@ -9,8 +9,15 @@
 *
 */
 
-import { AbstractSession, ConfigConstants, IConfig, IConfigProfile, ImperativeConfig, ImperativeExpect, Logger,
-    PluginManagementFacility, RestClient } from "@zowe/imperative";
+import { ConfigConstants } from "../config/ConfigConstants";
+import { IConfig } from "../config/doc/IConfig";
+import { IConfigProfile } from "../config/doc/IConfigProfile";
+import { ImperativeExpect } from "../expect/ImperativeExpect";
+import { PluginManagementFacility } from "../imperative/plugins/PluginManagementFacility";
+import { Logger } from "../logger/Logger";
+import { RestClient } from "../rest/client/RestClient";
+import { AbstractSession } from "../rest/session/AbstractSession";
+import { ImperativeConfig } from "../utils/ImperativeConfig";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
 import { IApimlService } from "./doc/IApimlService";

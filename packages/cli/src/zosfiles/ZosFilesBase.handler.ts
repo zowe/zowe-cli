@@ -18,7 +18,7 @@ import {
     ConnectionPropsForSessCfg,
     ISession,
     Session
-} from "@zowe/imperative";
+} from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 

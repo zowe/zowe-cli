@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { AllMembersDefinition } from "./am/AllMembers.definition";
 import { DataSetDefinition } from "./ds/DataSet.definition";
 import { USSFileDefinition } from "./uss/UssFile.definition";

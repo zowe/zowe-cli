@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
 import { IIssueResponse, IIssueTsoParms, IssueTso, IStartTsoParms } from "../../src";
 import * as fs from "fs";
 import { ITestEnvironment } from "@zowe/cli-test-utils";

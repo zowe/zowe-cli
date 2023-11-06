@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { StatusDefinition } from "./status/Status.definition";
 
 export const CheckCommand: ICommandDefinition = {

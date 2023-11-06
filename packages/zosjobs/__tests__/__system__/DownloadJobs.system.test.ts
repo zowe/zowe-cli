@@ -10,7 +10,7 @@
 */
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../src";
-import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
+import { ImperativeError, IO, Session, TextUtils } from "@zowe/core-for-zowe-sdk";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";

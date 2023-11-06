@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDeleteOptions } from "./doc/IDeleteOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";

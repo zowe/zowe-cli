@@ -14,7 +14,7 @@ import {
     ICommandOptionDefinition,
     Logger,
     ISession
-} from "@zowe/imperative";
+} from "@zowe/core-for-zowe-sdk";
 
 /**
  * Utility Methods for Brightside

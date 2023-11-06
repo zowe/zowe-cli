@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { ImperativeError, IO, Session } from "@zowe/imperative";
+import { ImperativeError, IO, Session } from "@zowe/core-for-zowe-sdk";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";

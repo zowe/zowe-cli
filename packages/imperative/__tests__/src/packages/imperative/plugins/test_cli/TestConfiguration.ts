@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "@zowe/imperative";
+import { IImperativeConfig } from "@zowe/core-for-zowe-sdk";
 import { join } from "path";
 import { TestProfileConfig1 } from "./TestProfileConfig1";
 import { TestProfileConfig2 } from "./TestProfileConfig2";

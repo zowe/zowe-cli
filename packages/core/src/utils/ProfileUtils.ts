@@ -9,9 +9,14 @@
 *
 */
 
-import { ImperativeConfig, IProfileLoaded, CliProfileManager, IProfile, Logger, ImperativeError } from "@zowe/imperative";
 import * as path from "path";
 import * as os from "os";
+
+import { IProfileLoaded, IProfile } from "../profiles";
+import { ImperativeError } from "../error/ImperativeError";
+import { Logger} from "../logger/Logger";
+import { ImperativeConfig } from "./ImperativeConfig";
+import { CliProfileManager } from "../cmd/profiles/CliProfileManager";
 
 /**
  * Retrieves the Zowe CLI home directory. In the situation Imperative has

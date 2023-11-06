@@ -10,7 +10,7 @@
 */
 
 import { ArchivedDeleteWorkflow, ListArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/core-for-zowe-sdk";
 
 
 describe("Delete workflow common handler", () => {

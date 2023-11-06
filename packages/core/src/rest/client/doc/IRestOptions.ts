@@ -9,9 +9,10 @@
 *
 */
 
-import { HTTP_VERB } from "../types/HTTPVerb";
 import { Writable, Readable } from "stream";
-import { ITaskWithStatus } from "../../../../operations";
+
+import { HTTP_VERB } from "../types/HTTPVerb";
+import { ITaskWithStatus } from "../../../operations/doc/ITaskWithStatus";
 
 /**
  * Interface to define input for AbstractRestClient.request method

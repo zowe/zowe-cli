@@ -11,7 +11,7 @@
 
 import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
 import { UnmountDefinition } from "../../../../src/zosfiles/unmount/Unmount.definition";
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 
 describe("zos-files unmount group definition", () => {
     it("should not have changed", () => {

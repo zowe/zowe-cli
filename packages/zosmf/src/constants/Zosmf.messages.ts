@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition } from "@zowe/imperative";
+import { IMessageDefinition } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Messages to be used as detail display error message when gathering z/OSMF information

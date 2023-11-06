@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import i18nTypings from "../-strings-/en";
 import { DsDefinition } from "./ds/Ds.definition";
 import { VsamDefinition } from "./vsam/Vsam.definition";

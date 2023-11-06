@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
-    TaskStage } from "@zowe/imperative";
+    TaskStage } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";

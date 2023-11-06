@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { ZosJobsOptions } from "../../ZosJobs.options";
 
 import i18nTypings from "../../-strings-/en";

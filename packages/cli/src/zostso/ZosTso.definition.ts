@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/core-for-zowe-sdk";
 import { StartCommand } from "./start/Start.definition";
 import { SendCommand } from "./send/Send.definition";
 import { StopCommand } from "./stop/Stop.definition";

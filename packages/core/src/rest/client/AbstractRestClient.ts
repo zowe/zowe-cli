@@ -10,26 +10,27 @@
 */
 
 import { inspect } from "util";
-import { Logger } from "../../../logger";
-import { IImperativeError, ImperativeError } from "../../../error";
-import { AbstractSession } from "../session/AbstractSession";
 import * as https from "https";
 import * as http from "http";
 import { readFileSync } from "fs";
+import * as path from "path";
+
+import { Logger } from "../../logger/Logger";
+import { IImperativeError, ImperativeError } from "../../error";
+import { AbstractSession } from "../session/AbstractSession";
 import { ContentEncoding, Headers } from "./Headers";
 import { RestConstants } from "./RestConstants";
-import { ImperativeReject } from "../../../interfaces";
-import { IHTTPSOptions } from "../../doc/IHTTPSOptions";
+import { ImperativeReject } from "../../interfaces";
+import { IHTTPSOptions } from "./doc/IHTTPSOptions";
 import { HTTP_VERB } from "./types/HTTPVerb";
-import { ImperativeExpect } from "../../../expect";
+import { ImperativeExpect } from "../../expect/ImperativeExpect";
 import { Session } from "../session/Session";
-import * as path from "path";
 import { IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
-import { IO } from "../../../io";
-import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
-import { NextVerFeatures, TextUtils } from "../../../utilities";
+import { IO } from "../../io/IO";
+import { ITaskWithStatus, TaskProgress, TaskStage } from "../../operations";
+import { NextVerFeatures, TextUtils } from "../../utils";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";

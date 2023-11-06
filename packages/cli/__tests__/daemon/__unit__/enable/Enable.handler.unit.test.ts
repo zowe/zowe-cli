@@ -11,7 +11,7 @@
 
 jest.mock("child_process"); // using child_process from the __mocks__ directory
 
-import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
+import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/core-for-zowe-sdk";
 
 import { IDaemonEnableQuestions } from "../../../../src/daemon/doc/IDaemonEnableQuestions";
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";

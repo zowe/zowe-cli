@@ -21,7 +21,7 @@ import {
     noZosmfResponse,
     TsoValidator
 } from "../../src";
-import { Session } from "@zowe/imperative";
+import { Session } from "@zowe/core-for-zowe-sdk";
 
 const PRETEND_SESSION = new Session({
     user: "usr",

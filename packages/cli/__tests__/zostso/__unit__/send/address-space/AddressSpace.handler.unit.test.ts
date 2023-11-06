@@ -13,7 +13,7 @@ import { SendTsoData } from "../../../__resources__/SendTsoData";
 
 jest.mock("../../../../../../zostso/lib/SendTso");
 import { SendTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/core-for-zowe-sdk";
 import * as SendToAddressSpace from "../../../../../src/zostso/send/address_space/SendToAddressSpace.handler";
 import { SendToAddressSpaceCommandDefinition } from "../../../../../src/zostso/send/address_space/SendToAddressSpace.definition";
 import {

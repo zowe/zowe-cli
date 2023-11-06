@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, ImperativeError, NextVerFeatures, ProcessUtils, Session } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, NextVerFeatures, ProcessUtils, Session } from "@zowe/core-for-zowe-sdk";
 import { GetJobs } from "../../src";
 import { GetJobsData } from "../__resources__/api/GetJobsData";
 
