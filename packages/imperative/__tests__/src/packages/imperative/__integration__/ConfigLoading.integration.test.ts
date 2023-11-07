@@ -10,12 +10,25 @@
 */
 
 import * as T from "../../../TestUtil";
-import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
-import { ImperativeConfig } from "../../../../../src/utilities";
+import { IImperativeConfig } from "../../../../../src/imperative";
 
 describe("Imperative should validate config provided by the consumer", function () {
     const packageJsonPath = __dirname + "/package.json";
     const mainModule = process.mainModule;
+    const loadChangingDependencies = () => {
+        return {
+            Imperative: require("../../../../../src/imperative/src/Imperative").Imperative,
+            ImperativeConfig: require("../../../../../src/utilities/src/ImperativeConfig").ImperativeConfig
+        };
+    };
+
+    let {Imperative, ImperativeConfig} = loadChangingDependencies();
+
+    // Initialize imperative before each test
+    beforeEach(() => {
+        jest.resetModules();
+        ({Imperative, ImperativeConfig} = loadChangingDependencies());
+    });
 
     beforeAll(() => {
         // Temporarily change the main module filename so that the test can work.
