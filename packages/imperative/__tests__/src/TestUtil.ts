@@ -471,7 +471,6 @@ export async function setupConfigToLoad(properties?: IConfig, opts: IConfigOpts 
     }
 
     const fakeConfig = await Config.load("fakeapp", opts);
-    jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(fakeConfig);
-
+    tempMocks.push(jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(fakeConfig));
     tempMocks.forEach(mock => mock.mockRestore()); // Reset all mocks
 }

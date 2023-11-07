@@ -57,6 +57,7 @@ describe("Imperative should validate config provided by the consumer", function 
             rootCommandDescription: "My Product CLI"
         };
         T.writeFileSync(packageJsonPath, JSON.stringify({imperative: config, name: "sample"}));
+        expect(T.existsSync(packageJsonPath)).toEqual(true); // If the file isn't created, something has gone wrong
         return Imperative.init().then(() => {
             // "Display name should have matched our config"
             expect(ImperativeConfig.instance.loadedConfig.productDisplayName)
