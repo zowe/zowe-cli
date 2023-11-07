@@ -10,7 +10,7 @@
 */
 
 import * as ProfileUtils from "../../../src/utils/ProfileUtils";
-import { ImperativeConfig, EnvironmentalVariableSettings, CliProfileManager, ImperativeError } from "@zowe/core-for-zowe-sdk";
+import { ImperativeConfig, EnvironmentalVariableSettings, CliProfileManager, ImperativeError } from "../../../src";
 import * as os from "os";
 import * as path from "path";
 

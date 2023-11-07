@@ -94,7 +94,7 @@ export abstract class ProfilesCommandBuilder implements AbstractCommandBuilder {
             };
             findAndAddOptions(properties, propName);
         }
-        if (this.mProfileConfig.dependencies !== null) {
+        if (this.mProfileConfig.dependencies != null) {
             for (const dependency of this.mProfileConfig.dependencies) {
                 const description = dependency.description ||
                     "The name of a " + dependency.type + " profile to associate with this profile.";

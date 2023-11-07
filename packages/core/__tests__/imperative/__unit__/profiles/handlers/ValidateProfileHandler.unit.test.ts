@@ -167,7 +167,7 @@ describe("validate endevor profile handler", () => {
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedOk, configurable: true });
             const parms = Object.assign({}, ...[validateProfileParms]);
-            const handlerReq = require("../../../src/profiles/handlers/ValidateProfileHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/ValidateProfileHandler");
             const handler = new handlerReq.default();
 
             await handler.process(validateProfileParms);
@@ -191,7 +191,7 @@ describe("validate endevor profile handler", () => {
             });
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedCrash, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/ValidateProfileHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/ValidateProfileHandler");
             const handler = new handlerReq.default();
             await handler.process(validateProfileParms);
             expect(errorText).toContain("An error occurred trying to validate a profile");

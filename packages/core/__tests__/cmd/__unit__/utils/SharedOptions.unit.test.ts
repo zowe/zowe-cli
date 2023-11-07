@@ -14,7 +14,7 @@ import { Socket } from "net";
 import { CommandResponse, SharedOptions, Constants, ImperativeError } from "../../../../src";
 
 
-jest.mock("../../../../src/response/CommandResponse");
+jest.mock("../../../../src/cmd/response/CommandResponse");
 
 const intervalNum = 1000;
 describe("Shared Options", () => {

@@ -107,7 +107,7 @@ describe("Default Root Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/DefaultRootCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/imperative//handlers/DefaultRootCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
 
         await handler.process({
@@ -128,7 +128,7 @@ describe("Default Root Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/DefaultRootCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/imperative/handlers/DefaultRootCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
         await handler.process({
             response: cmdResp,
@@ -150,7 +150,7 @@ describe("Default Root Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/DefaultRootCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/imperative/handlers/DefaultRootCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
 
         await handler.process({

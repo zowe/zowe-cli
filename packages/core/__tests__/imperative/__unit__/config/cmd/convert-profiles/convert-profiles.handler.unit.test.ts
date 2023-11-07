@@ -19,8 +19,8 @@ import {
     Config, ConfigBuilder, ConfigSchema, IHandlerParameters, ProfileIO, AppSettings, ImperativeConfig, PluginIssues
 } from "../../../../../../src";
 
-jest.mock("../../../../src/plugins/utilities/npm-interface");
-jest.mock("../../../../../imperative/src/OverridesLoader");
+jest.mock("../../../../../../src/imperative/plugins/utilities/npm-interface");
+jest.mock("../../../../../../src/imperative/OverridesLoader");
 
 let stdout: string;
 let stderr: string;

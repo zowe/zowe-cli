@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../../src/utils/ImperativeConfig");
+jest.mock("../../../../../../src/utils/ImperativeConfig");
 
 import { ImperativeConfig, IProfileTypeConfiguration, ConfigSchema } from "../../../../../../src";
 import UpdateSchemasHandler from "../../../../../../src/imperative/config/cmd/update-schemas/update-schemas.handler";

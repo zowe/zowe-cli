@@ -14,7 +14,7 @@ jest.mock("fs");
 const fs = require("fs");
 
 jest.mock("net");
-jest.mock("@zowe/imperative");
+jest.mock("@zowe/core-for-zowe-sdk");
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";

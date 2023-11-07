@@ -15,7 +15,7 @@ import { join } from "path";
 describe("ICredentialManagerNameMap", () => {
     it("should have the right interface definition", () => {
         const nameMap: string = fs.readFileSync(
-            join(__dirname, "../../src/doc/ICredentialManagerNameMap.ts"),
+            join(__dirname, "../../../../src/security/doc/ICredentialManagerNameMap.ts"),
             "utf8"
         );
         expect(nameMap).toContain("credMgrDisplayName: string;");

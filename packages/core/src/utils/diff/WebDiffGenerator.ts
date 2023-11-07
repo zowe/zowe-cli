@@ -60,7 +60,7 @@ export default class WebDiffGenerator implements IWebDiffGenerator {
         }
 
         // getting the template directory for web-diff in the root of project
-        const templateWebDiffDir: string = path.join(__dirname, "../../../../web-diff");
+        const templateWebDiffDir: string = path.join(__dirname, "../../../web-diff");
         if (!fs.existsSync(templateWebDiffDir)) {
             throw new ImperativeError({
                 msg: `The web-diff distribution directory does not exist:\n    "${templateWebDiffDir}"`

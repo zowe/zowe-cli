@@ -168,7 +168,7 @@ export class ImperativeConfig {
      */
     public get imperativePackageName(): string {
         if (!this.mImperativePackageName) {
-            this.mImperativePackageName = require(join(__dirname, "../../../package.json")).name;
+            this.mImperativePackageName = require(join(__dirname, "../../package.json")).name;
         }
 
         return this.mImperativePackageName;

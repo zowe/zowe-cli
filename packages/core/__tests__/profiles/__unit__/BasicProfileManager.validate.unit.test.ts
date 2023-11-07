@@ -19,7 +19,7 @@ import {
     TEST_PROFILE_ROOT_DIR
 } from "../__resources__/TestConstants";
 
-jest.mock("../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 
 describe("Basic Profile Manager Validate", () => {
     it("should detect undefined parms", async () => {

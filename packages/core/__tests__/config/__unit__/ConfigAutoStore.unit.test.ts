@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../.././src/logger/LoggerUtils");
+jest.mock("../../../src/logger/LoggerUtils");
 import { setupConfigToLoad } from "../../../__tests__/__resources__/src/TestUtil";
 import { AbstractAuthHandler, ImperativeConfig, ConfigAutoStore, SessConstants } from "../../../src";
 
@@ -19,7 +19,7 @@ describe("ConfigAutoStore tests", () => {
             type: "base",
             authConfig: [
                 {
-                    handler: __dirname + "/../../imperative/src/auth/__tests__/__data__/FakeAuthHandler"
+                    handler: __dirname + "/../../imperative/__unit__/auth/__data__/FakeAuthHandler"
                 }
             ],
             schema: {

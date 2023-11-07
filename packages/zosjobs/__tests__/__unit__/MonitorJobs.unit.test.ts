@@ -12,9 +12,8 @@
 jest.mock("@zowe/core-for-zowe-sdk");
 jest.mock("../../src/GetJobs");
 
-import { ImperativeError, Session } from "@zowe/core-for-zowe-sdk";
+import { ImperativeError, Session, sleep } from "@zowe/core-for-zowe-sdk";
 import { JOB_STATUS, MonitorJobs, GetJobs } from "../../src";
-import { sleep } from "@zowe/core-for-zowe-sdk";
 import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
 import { IJob } from "../../src/doc/response/IJob";
 
@@ -1088,8 +1087,8 @@ describe("MonitorJobs", () => {
                     } catch (e) {
                         error = e;
                     }
-                    expect(error).toBeInstanceOf(ImperativeError);
                     expect(error.message).toMatchSnapshot();
+                    expect(error).toBeInstanceOf(ImperativeError);
 
                     error = undefined;
                     job.status = "something-invalid";

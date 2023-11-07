@@ -32,7 +32,7 @@ describe("behavior of main.ts", () => {
 
             const mainTs = resolve(__dirname, '../lib/main');
 
-            const realImperative = require("@zowe/imperative").Imperative;
+            const realImperative = require("@zowe/core-for-zowe-sdk").Imperative;
             const imperativeMock = jest.spyOn(realImperative, "init");
             const fatalLogMock = jest.spyOn(realImperative.console, "fatal");
 

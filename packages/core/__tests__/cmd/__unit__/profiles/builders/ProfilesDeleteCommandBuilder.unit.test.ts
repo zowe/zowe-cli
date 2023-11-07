@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../../utils/ImperativeConfig");
+jest.mock("../../../../../src/utils/ImperativeConfig");
 
 import { ImperativeConfig, ProfilesDeleteCommandBuilder } from "../../../../../src";
 import { TestLogger } from "../../../../__resources__/src/TestLogger";

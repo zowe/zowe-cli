@@ -23,7 +23,7 @@ describe("Failed Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/FailedCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/cmd/handlers/FailedCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
         try {
             await handler.process({
@@ -48,7 +48,7 @@ describe("Failed Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/FailedCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/cmd/handlers/FailedCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
         try {
             await handler.process({

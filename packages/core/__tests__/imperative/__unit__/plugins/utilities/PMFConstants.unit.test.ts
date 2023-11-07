@@ -16,9 +16,9 @@ jest.mock("../../../../../src/utils/ImperativeConfig");
 import Mock = jest.Mock;
 
 describe("PMFConstants", () => {
-    let {PMFConstants} = require("../../../src/plugins/utilities/PMFConstants");
-    let {ImperativeConfig} = require("../../../../utilities/src/ImperativeConfig");
-    let {EnvironmentalVariableSettings} = require("../../../src/env/EnvironmentalVariableSettings");
+    let {PMFConstants} = require("../../../../../src/imperative/plugins/utilities/PMFConstants");
+    let {ImperativeConfig} = require("../../../../../src/utils/ImperativeConfig");
+    let {EnvironmentalVariableSettings} = require("../../../../../src/imperative/env/EnvironmentalVariableSettings");
     let {join} = require("path");
 
     const cliInstallDir = "installed";

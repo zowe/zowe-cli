@@ -69,7 +69,7 @@ export default class ValidateProfileHandler implements ICommandHandler {
             plan = new (plan as any)();
         } catch (e) {
             const planLoadErr: IImperativeError = {
-                msg: "An error was encountered trying to load the plan to validate the Brightside profile.",
+                msg: "An error was encountered trying to load the plan to validate the Zowe profile.",
                 additionalDetails: e.message,
                 causeErrors: e
             };
