@@ -9,7 +9,7 @@
 *
 */
 
-import { MockMethod } from "../../../../../__tests__/__src__/decorators/MockMethod";
+import { MockMethod } from "../../../../__tests__/__resources__/__src__/decorators/MockMethod";
 
 /**
  * This class mocks the real plugin require hook so that we don't have to

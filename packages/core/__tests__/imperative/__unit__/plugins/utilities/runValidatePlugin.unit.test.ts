@@ -12,7 +12,8 @@
 import { sync } from "cross-spawn";
 import Mock = jest.Mock;
 
-import { runValidatePlugin, Imperative } from "../../../../../src";
+import { Imperative } from "../../../../../src/imperative/Imperative";
+import { runValidatePlugin } from "../../../../../src/imperative/plugins/utilities/runValidatePlugin";
 
 jest.mock("cross-spawn");
 jest.mock("../../../../../src/imperative/plugins/utilities/PMFConstants");

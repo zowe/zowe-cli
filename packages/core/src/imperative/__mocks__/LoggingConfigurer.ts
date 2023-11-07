@@ -9,12 +9,12 @@
 *
 */
 
-import { IConfigLogging } from "../src/logger/doc/IConfigLogging";
+import { IConfigLogging } from "../../logger/doc/IConfigLogging";
 
 const LoggingConfigurer: any =
-    (jest.genMockFromModule("../src/logger/LoggingConfigurer") as any).LoggingConfigurer;
+    (jest.genMockFromModule("../../logger/LoggingConfigurer") as any).LoggingConfigurer;
 
-const {Logger} = (jest as any).requireActual("../src/logger");
+const {Logger} = (jest as any).requireActual("../../logger");
 
 LoggingConfigurer.configureLogger.mockImplementation((): IConfigLogging => {
     return {

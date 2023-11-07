@@ -51,7 +51,7 @@ describe("Plugin Management Facility", () => {
     const mockCfgValidator = jest.fn();
     let realCfgValidator: any;
 
-    let { PluginRequireProvider } = require("../../src/plugins/PluginRequireProvider");
+    let { PluginRequireProvider } = require("../../../../src/imperative/plugins/PluginRequireProvider");
 
     const pluginName = "sample-plugin";
     const PMF = PluginManagementFacility.instance as any;

@@ -11,7 +11,8 @@
 
 /* eslint-disable jest/expect-expect */
 
-jest.mock("../../../../imperative/src/Imperative");
+jest.mock("../../../../src/imperative/Imperative");
+
 import { inspect } from "util";
 import { CommandResponse, ICommandDefinition, ICommandValidatorResponse } from "../../../../src/cmd";
 import { SyntaxValidator } from "../../../../src/cmd/syntax/SyntaxValidator";

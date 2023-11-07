@@ -10,4 +10,11 @@
 */
 
 export * from "./cmd";
-export * from "./ConfigManagementFacility";
+
+/**
+ * Note: The following packages were never exported before
+ * If a developer requests them, we will be forced to do either of the following actions:
+ *   - Make requested source more independent from Imperative init-like operation
+ *   - Mock requested source in the `beforeTest.js` file so that it aplies to all
+ */
+// export * from "./ConfigManagementFacility";

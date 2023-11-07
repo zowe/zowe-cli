@@ -10,12 +10,12 @@
 */
 
 import Mock = jest.Mock;
-import { IImperativeEnvironmentalVariableSettings } from "../src/imperative/doc/IImperativeEnvironmentalVariableSettings";
+import { IImperativeEnvironmentalVariableSettings } from "../../doc/IImperativeEnvironmentalVariableSettings";
 
-const envActual = (jest as any).requireActual("../src/imperative/env/EnvironmentalVariableSettings").EnvironmentalVariableSettings;
+const envActual = (jest as any).requireActual("../EnvironmentalVariableSettings").EnvironmentalVariableSettings;
 
 const EnvironmentalVariableSettings: any =
-    (jest.genMockFromModule("../src/imperative/env/EnvironmentalVariableSettings") as any).EnvironmentalVariableSettings;
+    (jest.genMockFromModule("../EnvironmentalVariableSettings") as any).EnvironmentalVariableSettings;
 
 (EnvironmentalVariableSettings.IMPERATIVE_LOG_LEVEL_KEY_SUFFIX as any) = envActual.IMPERATIVE_LOG_LEVEL_KEY_SUFFIX;
 (EnvironmentalVariableSettings.APP_LOG_LEVEL_KEY_SUFFIX as any) = envActual.APP_LOG_LEVEL_KEY_SUFFIX;

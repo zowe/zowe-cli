@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractCredentialManager } from "../src/security/abstract/AbstractCredentialManager";
+import { AbstractCredentialManager } from "../abstract/AbstractCredentialManager";
 
 // Generate the mock
 const DefaultCredentialManager: any =
-    (jest.genMockFromModule("../src/security/DefaultCredentialManager") as any).DefaultCredentialManager;
+    (jest.genMockFromModule("../DefaultCredentialManager") as any).DefaultCredentialManager;
 
 // Preserve inheritance
 DefaultCredentialManager.prototype = new (AbstractCredentialManager as any)("dummy", "dummy manager");

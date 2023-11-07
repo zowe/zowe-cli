@@ -41,10 +41,12 @@ import { readFileSync, writeFileSync } from "jsonfile";
 import * as spawn from "cross-spawn";
 
 import {
-    install, runValidatePlugin, PMFConstants, getRegistry, npmLogin, ImperativeError, TextUtils,
-    HandlerResponse, IHandlerParameters, Console, IPluginJson, Logger
+    PMFConstants, ImperativeError, TextUtils, HandlerResponse, IHandlerParameters, Console, IPluginJson, Logger
 } from "../../../../../../src";
 import InstallHandler from "../../../../../../src/imperative/plugins/cmd/install/install.handler";
+import { install } from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import { getRegistry, npmLogin } from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
+import { runValidatePlugin } from "../../../../../../src/imperative/plugins/utilities/runValidatePlugin";
 
 let expectedVal: unknown;
 let returnedVal: unknown;

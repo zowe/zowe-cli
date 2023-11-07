@@ -9,8 +9,8 @@
 *
 */
 
-import { ISettingsFile } from "../src/settings/doc/ISettingsFile";
-import * as AppSettingsModule from "../src/settings/AppSettings";
+import { ISettingsFile } from "../doc/ISettingsFile";
+import * as AppSettingsModule from "../AppSettings";
 
 /*
  * This file mocks the AppSettings class and tries to keep some of the logic in tact.

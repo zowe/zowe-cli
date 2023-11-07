@@ -10,7 +10,7 @@
 */
 
 const PluginManagementFacility: any =
-    (jest.genMockFromModule("../src/imperative/plugins/PluginManagementFacility") as any).PluginManagementFacility;
+    (jest.genMockFromModule("../PluginManagementFacility") as any).PluginManagementFacility;
 
 PluginManagementFacility.instance = new PluginManagementFacility();
 

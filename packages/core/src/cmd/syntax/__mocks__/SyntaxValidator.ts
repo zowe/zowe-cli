@@ -11,8 +11,8 @@
 
 import { Arguments } from "yargs";
 
-import { CommandResponse } from "../src/cmd/response/CommandResponse";
-import { ICommandValidatorResponse } from "../src/cmd/doc/response/response/ICommandValidatorResponse";
+import { CommandResponse } from "../../response/CommandResponse";
+import { ICommandValidatorResponse } from "../../doc/response/response/ICommandValidatorResponse";
 
 export class SyntaxValidator {
     public validate(responseObject: CommandResponse, commandArguments: Arguments): Promise<ICommandValidatorResponse> {

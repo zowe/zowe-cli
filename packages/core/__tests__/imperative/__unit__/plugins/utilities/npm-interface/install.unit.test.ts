@@ -20,7 +20,7 @@ jest.mock("find-up");
 jest.mock("../../../../../../src/imperative/plugins/utilities/NpmFunctions");
 jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
 jest.mock("../../../../../../src/imperative/plugins/PluginManagementFacility");
-jest.mock("../../../../../../src/impertive/ConfigurationLoader");
+jest.mock("../../../../../../src/imperative/ConfigurationLoader");
 jest.mock("../../../../../../src/imperative/UpdateImpConfig");
 jest.mock("../../../../../../src/config/ConfigSchema");
 jest.mock("../../../../../../src/logger");
@@ -45,10 +45,11 @@ import { sync } from "find-up";
 import * as fs from "fs";
 import * as path from "path";
 
+import { install } from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import { getPackageInfo, installPackages } from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
 import {
-    Console, ImperativeError, IImperativeConfig, install, IPluginJson, IPluginJsonObject, Logger, PMFConstants,
-    getPackageInfo, installPackages, ConfigSchema, PluginManagementFacility, AbstractPluginLifeCycle,
-    ConfigurationLoader, UpdateImpConfig
+    Console, ImperativeError, IImperativeConfig, IPluginJson, IPluginJsonObject, Logger, PMFConstants,
+    ConfigSchema, PluginManagementFacility, AbstractPluginLifeCycle, ConfigurationLoader, UpdateImpConfig
 } from "../../../../../../src";
 
 function setResolve(toResolve: string, resolveTo?: string) {

@@ -9,8 +9,8 @@
 *
 */
 
-import { IConfigOpts } from "../src/config";
-import { IConfigLayer } from "../src/config/doc/IConfigLayer";
+import { IConfigOpts } from "../doc/IConfigOpts";
+import { IConfigLayer } from "../doc/IConfigLayer";
 
 export class Config {
     private mLayers: IConfigLayer[];

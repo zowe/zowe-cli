@@ -9,11 +9,11 @@
 *
 */
 
-import { IHandlerResponseApi } from "../src/cmd/doc/response/api/handler/IHandlerResponseApi";
-import { IHandlerResponseConsoleApi } from "../src/cmd/doc/response/api/handler/IHandlerResponseConsoleApi";
-import { IHandlerResponseDataApi } from "../src/cmd/doc/response/api/handler/IHandlerResponseDataApi";
-import { IHandlerProgressApi } from "../src/cmd/doc/response/api/handler/IHandlerProgressApi";
-import { IHandlerFormatOutputApi } from "../src/cmd/doc/response/api/handler/IHandlerFormatOutputApi";
+import { IHandlerResponseApi } from "../../doc/response/api/handler/IHandlerResponseApi";
+import { IHandlerResponseConsoleApi } from "../../doc/response/api/handler/IHandlerResponseConsoleApi";
+import { IHandlerResponseDataApi } from "../../doc/response/api/handler/IHandlerResponseDataApi";
+import { IHandlerProgressApi } from "../../doc/response/api/handler/IHandlerProgressApi";
+import { IHandlerFormatOutputApi } from "../../doc/response/api/handler/IHandlerFormatOutputApi";
 
 export class HandlerResponse implements IHandlerResponseApi {
     public console: IHandlerResponseConsoleApi = {

@@ -238,8 +238,8 @@ describe("Delete Jobs unit tests", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobname");
+            expect(err instanceof ImperativeError).toEqual(true);
         });
 
         it("should reject calls to deleteJob that omit jobid", async () => {
@@ -251,8 +251,8 @@ describe("Delete Jobs unit tests", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
+            expect(err instanceof ImperativeError).toEqual(true);
         });
 
         it("should reject calls to deleteJobForJob that omit jobname", async () => {
@@ -266,8 +266,8 @@ describe("Delete Jobs unit tests", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobname");
+            expect(err instanceof ImperativeError).toEqual(true);
         });
 
         it("should reject calls to deleteJobForJob that omit jobid", async () => {
@@ -281,8 +281,8 @@ describe("Delete Jobs unit tests", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
+            expect(err instanceof ImperativeError).toEqual(true);
         });
 
         it("should reject calls to deleteJobCommon that omit jobname from the parms object", async () => {
@@ -297,8 +297,8 @@ describe("Delete Jobs unit tests", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobname");
+            expect(err instanceof ImperativeError).toEqual(true);
         });
 
         it("should reject calls to deleteJobCommon that omit jobid from the parms object", async () => {
@@ -313,8 +313,8 @@ describe("Delete Jobs unit tests", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
+            expect(err instanceof ImperativeError).toEqual(true);
         });
     });
 

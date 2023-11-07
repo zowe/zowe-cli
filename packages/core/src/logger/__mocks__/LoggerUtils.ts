@@ -10,9 +10,9 @@
 */
 
 const LoggerUtils: any =
-    (jest.genMockFromModule("../src/logger/LoggerUtils") as any).LoggerUtils;
+    (jest.genMockFromModule("../LoggerUtils") as any).LoggerUtils;
 
-const loggerUtilsRequire = (jest as any).requireActual("../src/logger/LoggerUtils").LoggerUtils;
+const loggerUtilsRequire = (jest as any).requireActual("../LoggerUtils").LoggerUtils;
 
 LoggerUtils.censorRawData.mockImplementation((data: string, category: string = "") => {
     return data;

@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandResponseApi } from "../src/cmd/doc/response/api/processor/ICommandResponseApi";
-import { ICommandResponse } from "../src/cmd/doc/response/response/ICommandResponse";
-import { IImperativeError } from "../src/error/doc/IImperativeError";
+import { ICommandResponseApi } from "../../doc/response/api/processor/ICommandResponseApi";
+import { ICommandResponse } from "../../doc/response/response/ICommandResponse";
+import { IImperativeError } from "../../../error/doc/IImperativeError";
 
 export class CommandResponse implements ICommandResponseApi {
     public responseFormat: "json" | "default";

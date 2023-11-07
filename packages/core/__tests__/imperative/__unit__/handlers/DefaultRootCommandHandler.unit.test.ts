@@ -18,7 +18,7 @@ import { ICommandHandlerRequire } from "../../../../src/cmd/doc/handler/ICommand
 import { ImperativeConfig } from "../../../../src/utils/ImperativeConfig";
 
 /* eslint-disable-next-line jest/no-mocks-import */
-import { MOCKED_COMMAND_TREE } from "../../../../__mocks__/Imperative";
+import { MOCKED_COMMAND_TREE } from "../../../../src/imperative/__mocks__/Imperative";
 
 (CommandResponse as any).spinnerChars = "-oO0)|(0Oo-";
 const beforeForceColor = process.env.FORCE_COLOR;

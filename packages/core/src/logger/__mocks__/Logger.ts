@@ -9,12 +9,12 @@
 *
 */
 
-import { Console } from "../src/console/Console";
+import { Console } from "../../console/Console";
 
 const Logger: any =
-    (jest.genMockFromModule("../src/logger/Logger") as any).Logger;
+    (jest.genMockFromModule("../Logger") as any).Logger;
 
-const loggerRequire = (jest as any).requireActual("../src/logger/Logger").Logger;
+const loggerRequire = (jest as any).requireActual("../Logger").Logger;
 
 Logger.getLoggerCategory.mockImplementation((category: string) => {
     return new Logger(new Console(), category);

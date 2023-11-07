@@ -21,9 +21,9 @@ jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 
 import { readFileSync } from "jsonfile";
 
-import {
-    Console, IPluginJson, Logger, PMFConstants, update, getPackageInfo, installPackages
-} from "../../../../../../src";
+import { update } from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import { getPackageInfo, installPackages } from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
+import { Console, IPluginJson, Logger, PMFConstants } from "../../../../../../src";
 
 describe("PMF: update Interface", () => {
     // Objects created so types are correct.

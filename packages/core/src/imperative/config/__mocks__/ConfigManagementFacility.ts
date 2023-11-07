@@ -10,7 +10,7 @@
 */
 
 const ConfigManagementFacility: any =
-    (jest.genMockFromModule("../src/imperative/config/ConfigManagementFacility") as any).ConfigManagementFacility;
+    (jest.genMockFromModule("../ConfigManagementFacility") as any).ConfigManagementFacility;
 
 ConfigManagementFacility.instance = new ConfigManagementFacility();
 

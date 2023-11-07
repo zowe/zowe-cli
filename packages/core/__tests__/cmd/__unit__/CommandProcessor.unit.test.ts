@@ -18,9 +18,9 @@ import {
 } from "../../../src";
 import { setupConfigToLoad } from "../../__resources__/src/TestUtil";
 
-jest.mock("../../../src/syntax/SyntaxValidator");
-jest.mock("../../.../src/utils/SharedOptions");
-jest.mock("../../../../src/utils/ImperativeConfig");
+jest.mock("../../../src/cmd/syntax/SyntaxValidator");
+// jest.mock("../../../src/utils/SharedOptions");
+jest.mock("../../../src/utils/ImperativeConfig");
 
 // Persist the original definitions of process.write
 const ORIGINAL_STDOUT_WRITE = process.stdout.write;

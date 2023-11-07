@@ -22,10 +22,9 @@ jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 import * as fs from "fs";
 import { sync } from "cross-spawn";
 import { readFileSync, writeFileSync } from "jsonfile";
-import {
-    ImperativeError, findNpmOnPath, uninstall,
-    Console, IPluginJson, Logger, PMFConstants,
-} from "../../../../../../src";
+import { ImperativeError, Console, IPluginJson, Logger, PMFConstants } from "../../../../../../src";
+import { uninstall } from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import { findNpmOnPath } from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
 
 describe("PMF: Uninstall Interface", () => {
     // Objects created so types are correct.

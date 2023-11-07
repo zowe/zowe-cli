@@ -12,7 +12,6 @@
 export * from "./doc";
 export * from "./errors";
 export * from "./utilities";
-
 export * from "./AbstractPluginLifeCycle";
 export * from "./PluginManagementFacility";
 export * from "./PluginRequireProvider";

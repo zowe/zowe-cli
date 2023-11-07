@@ -10,8 +10,8 @@
 */
 
 
-import { Config } from "./Config";
-import { IImperativeConfig } from "../src/imperative/doc/IImperativeConfig";
+import { Config } from "../../config/__mocks__/Config";
+import { IImperativeConfig } from "../../imperative/doc/IImperativeConfig";
 
 export class ImperativeConfig {
     private static mInstance: ImperativeConfig = null;
