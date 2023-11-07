@@ -35,7 +35,7 @@ jobs:
       NODE: ${{ matrix.node-version }}
       NODE_OPTIONS: --max_old_space_size=4096
 
-    timeout-minutes: 75
+    timeout-minutes: 90
 
     concurrency:
       group: ${{ matrix.os }}-node-${{ matrix.node-version }}-ci-${{ github.ref }}
