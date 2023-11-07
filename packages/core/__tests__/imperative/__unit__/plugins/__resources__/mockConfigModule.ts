@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../src/doc/IImperativeConfig";
+import { IImperativeConfig } from "../../../../../src/imperative/doc/IImperativeConfig";
 
 const config: IImperativeConfig = {
     definitions: [

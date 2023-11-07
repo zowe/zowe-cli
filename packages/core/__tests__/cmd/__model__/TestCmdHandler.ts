@@ -9,9 +9,7 @@
 *
 */
 
-import { ICommandHandler } from "../../src/doc/handler/ICommandHandler";
-import { IHandlerParameters } from "../../src/doc/handler/IHandlerParameters";
-import { ImperativeError } from "../../../error";
+import { ICommandHandler, IHandlerParameters, ImperativeError } from "../../../src";
 
 export default class TestCmdHandler implements ICommandHandler {
     public process(commandParameters: IHandlerParameters): Promise<void> {

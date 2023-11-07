@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { Imperative } from "../../../../../src/imperative";
+import { ICommandHandler, IHandlerParameters } from "../../../../../../src/cmd";
+import { Imperative } from "../../../../../../src/imperative";
 
 
 export default class ProduceLogMessagesHandler implements ICommandHandler {

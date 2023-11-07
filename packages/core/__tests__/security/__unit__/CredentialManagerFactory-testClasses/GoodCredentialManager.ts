@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractCredentialManager, SecureCredential } from "../..";
+import { AbstractCredentialManager, SecureCredential } from "../../../../src";
 
 /**
  * This class is used to test the Credential Manager Factory load class method

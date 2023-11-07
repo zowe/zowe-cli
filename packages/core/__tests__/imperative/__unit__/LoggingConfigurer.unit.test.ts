@@ -9,9 +9,9 @@
 *
 */
 
-import { LoggingConfigurer } from "../src/LoggingConfigurer";
 import * as os from "os";
 import * as path from "path";
+import { LoggingConfigurer } from "../../../src";
 
 jest.mock("path");
 

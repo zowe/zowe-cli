@@ -13,17 +13,16 @@
 import Mock = jest.Mock;
 
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../../logger");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/logger");
 
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
-import { Console } from "../../../../../console";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import ListHandler from "../../../../src/plugins/cmd/list/list.handler";
-import { Logger } from "../../../../../logger/";
 import { readFileSync } from "jsonfile";
+import {
+    HandlerResponse, IHandlerParameters, Console,IPluginJson, Logger
+} from "../../../../../../src";
+import ListHandler from "../../../../../../src/imperative/plugins/cmd/list/list.handler";
 
 const stripAnsi = require("strip-ansi");
 

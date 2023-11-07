@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { ICommandHandler, IHandlerParameters } from "../../../../../../src/cmd";
 
 export default class AddTwoNumbersHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {

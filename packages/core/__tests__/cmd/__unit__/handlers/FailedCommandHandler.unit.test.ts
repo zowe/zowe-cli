@@ -13,6 +13,7 @@ import { inspect } from "util";
 
 import { CommandResponse, ICommandHandler, ICommandHandlerRequire, ICommandResponse } from "../../../../src";
 import { MULTIPLE_GROUPS } from "../../__resources__/CommandDefinitions";
+import { TestLogger } from "../../../__resources__/src/TestLogger";
 
 jest.mock("../../../../src/imperative");
 

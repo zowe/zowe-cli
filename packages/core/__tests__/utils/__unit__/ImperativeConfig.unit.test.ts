@@ -9,10 +9,10 @@
 *
 */
 
-import { Constants } from "../../constants";
+import { Constants } from "../../../src/constants";
 
 describe("ImperativeConfig", () => {
-    const {ImperativeConfig} = require("../../utilities/src/ImperativeConfig");
+    const {ImperativeConfig} = require("../../../src/utils/ImperativeConfig");
 
     const mockConfig = {
         name: "test-cli",
@@ -62,11 +62,11 @@ describe("ImperativeConfig", () => {
         });
 
         it("should get hostPackageName", async () => {
-            expect(ImperativeConfig.instance.hostPackageName).toBe("@zowe/imperative");
+            expect(ImperativeConfig.instance.hostPackageName).toBe("@zowe/core-for-zowe-sdk");
         });
 
         it("should get imperativePackageName", async () => {
-            expect(ImperativeConfig.instance.imperativePackageName).toBe("@zowe/imperative");
+            expect(ImperativeConfig.instance.imperativePackageName).toBe("@zowe/core-for-zowe-sdk");
         });
 
         it("should get envVariablePrefix", async () => {
@@ -93,7 +93,7 @@ describe("ImperativeConfig", () => {
         // This is probably meaningless now that imperative is in the CLI repo
         it("should get callerPackageJson", async () => {
             const pkgJson = ImperativeConfig.instance.callerPackageJson;
-            expect(pkgJson.name).toBe("@zowe/imperative");
+            expect(pkgJson.name).toBe("@zowe/core-for-zowe-sdk");
             expect(pkgJson.repository.url).toBe("https://github.com/zowe/zowe-cli.git");
         });
     });

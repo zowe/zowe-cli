@@ -14,14 +14,14 @@ import * as path from "path";
 import * as url from "url";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
-import ImportHandler from "../../../../src/config/cmd/import/import.handler";
-import { IHandlerParameters } from "../../../../../cmd";
-import { Config, ConfigConstants, IConfig } from "../../../../../config";
-import { ISession, RestClient } from "../../../../../rest";
-import { ImperativeConfig } from "../../../../..";
+
+import ImportHandler from "../../../../../../src/imperative/config/cmd/import/import.handler";
 import { expectedConfigObject, expectedSchemaObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import { NextVerFeatures } from "../../../../../utilities";
+    "../../../../../../__tests__/__integration__/imperative/__tests__/__resources__/expectedObjects";
+
+import {
+    IHandlerParameters , Config, ConfigConstants, IConfig , ISession, RestClient , ImperativeConfig , NextVerFeatures
+} from "../../../../../../src";
 
 jest.mock("fs");
 

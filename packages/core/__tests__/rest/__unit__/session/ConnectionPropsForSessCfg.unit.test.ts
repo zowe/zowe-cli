@@ -10,11 +10,10 @@
 */
 
 jest.mock("../../../../src/logger/LoggerUtils");
-import { Logger } from "log4js";
 import { join } from "path";
 import {
     ISession, ConnectionPropsForSessCfg, SessConstants, IOverridePromptConnProps,
-    CliUtils, ConfigAutoStore, ImperativeError
+    CliUtils, ConfigAutoStore, ImperativeError, Logger
 } from "../../../../src";
 import { setupConfigToLoad } from "../../../__resources__/src/TestUtil";
 

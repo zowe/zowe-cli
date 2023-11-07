@@ -9,8 +9,7 @@
 *
 */
 
-import { ICommandProfileAuthConfig } from "../../../../../cmd/src/doc/profiles/definition/ICommandProfileAuthConfig";
-import { ICommandOptionDefinition } from "../../../../../cmd";
+import { ICommandProfileAuthConfig, ICommandOptionDefinition } from "../../../../../src/cmd";
 
 const fakeOption: ICommandOptionDefinition = {
     name: "fake",

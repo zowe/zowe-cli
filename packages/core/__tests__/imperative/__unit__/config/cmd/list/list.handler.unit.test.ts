@@ -9,12 +9,13 @@
 *
 */
 
-jest.mock("../../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../../../src/utils/ImperativeConfig");
 
-import { Config, ConfigConstants, IConfig, IConfigLayer } from "../../../../../config";
-import { ImperativeConfig } from "../../../../../utilities";
 import { cloneDeep } from "lodash";
-import ListHandler from "../../../../src/config/cmd/list/list.handler";
+
+import { Config, ConfigConstants, IConfig, IConfigLayer } from "../../../../../../src/config";
+import { ImperativeConfig } from "../../../../../../src/utils";
+import ListHandler from "../../../../../../src/imperative/config/cmd/list/list.handler";
 
 let dataObj: any;
 let formatObj: any;

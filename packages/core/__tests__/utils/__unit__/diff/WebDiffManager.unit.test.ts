@@ -11,14 +11,10 @@
 
 import * as  fs from 'fs';
 import * as path from 'path';
-
-import { WebDiffManager } from "../../src/diff/WebDiffManager";
 import * as diff2html from "diff2html";
-import { ImperativeConfig } from "../../src/ImperativeConfig";
-import WebDiffGenerator from "../../src/diff/WebDiffGenerator";
-import { IImperativeConfig } from '../../../imperative';
-import { Imperative } from '../../../imperative/src/Imperative';
-import { ProcessUtils, GuiResult } from '../../src/ProcessUtils';
+
+import WebDiffGenerator from "../../../../src/utils/diff/WebDiffGenerator";
+import { IImperativeConfig, Imperative, ProcessUtils, GuiResult, ImperativeConfig, WebDiffManager } from "../../../../src";
 
 describe("WebDiffManager", () => {
 

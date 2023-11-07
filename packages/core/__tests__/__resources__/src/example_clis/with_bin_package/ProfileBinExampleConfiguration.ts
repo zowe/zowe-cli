@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../src/imperative";
+import { IImperativeConfig } from "../../../../../src/imperative";
 
 const binConfig: IImperativeConfig = {
     commandModuleGlobs: ["definitions/*/*Definition.ts"],

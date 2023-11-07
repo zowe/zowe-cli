@@ -9,11 +9,11 @@
 *
 */
 
-jest.mock("../../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../../../src/utils/ImperativeConfig");
 
-import { IConfig } from "../../../../../config";
-import { ImperativeConfig } from "../../../../../utilities";
-import ProfilesHandler from "../../../../src/config/cmd/profiles/profiles.handler";
+import { IConfig } from "../../../../../../src/config";
+import { ImperativeConfig } from "../../../../../../src/utils";
+import ProfilesHandler from "../../../../../../src/imperative/config/cmd/profiles/profiles.handler";
 
 let dataObj: any;
 let formatObj: any;

@@ -9,9 +9,11 @@
 *
 */
 
-import { CompleteAutoInitCommandBuilder } from "../../../../src/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder";
-import { Logger } from "../../../../../logger";
-import { ICommandDefinition } from "../../../../../cmd";
+import {
+    CompleteAutoInitCommandBuilder
+} from "../../../../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder";
+import { Logger } from "../../../../../../src/logger";
+import { ICommandDefinition } from "../../../../../../src/cmd";
 import { fakeAutoInitConfig } from "./__data__/SampleAutoInitConfig";
 
 describe("CompleteAutoInitCommandBuilder", () => {

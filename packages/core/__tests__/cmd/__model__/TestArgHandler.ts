@@ -9,8 +9,7 @@
 *
 */
 
-import { ICommandHandler } from "../../src/doc/handler/ICommandHandler";
-import { IHandlerParameters } from "../../src/doc/handler/IHandlerParameters";
+import { ICommandHandler, IHandlerParameters } from "../../../src";
 
 export default class TestCmdHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {

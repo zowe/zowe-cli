@@ -9,16 +9,16 @@
 *
 */
 
-jest.mock("../../../utilities/src/ImperativeConfig");
-jest.mock("../../../imperative/src/Imperative");
+jest.mock("../../../../src/utils/ImperativeConfig");
+jest.mock("../../../../src/imperative/Imperative");
 
-import { TestLogger } from "../../../../__tests__/src/TestLogger";
-import { ICommandDefinition, CommandResponse, CommandPreparer, ICommandHandler } from "../../../cmd";
-import { ICommandHandlerRequire } from "../../../cmd/src/doc/handler/ICommandHandlerRequire";
-import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
+import { TestLogger } from "../../../../__tests__/__resources__/src/TestLogger";
+import { ICommandDefinition, CommandResponse, CommandPreparer, ICommandHandler } from "../../../../src/cmd";
+import { ICommandHandlerRequire } from "../../../../src/cmd/doc/handler/ICommandHandlerRequire";
+import { ImperativeConfig } from "../../../../src/utils/ImperativeConfig";
 
 /* eslint-disable-next-line jest/no-mocks-import */
-import { MOCKED_COMMAND_TREE } from "../../../imperative/src/__mocks__/Imperative";
+import { MOCKED_COMMAND_TREE } from "../../../../__mocks__/Imperative";
 
 (CommandResponse as any).spinnerChars = "-oO0)|(0Oo-";
 const beforeForceColor = process.env.FORCE_COLOR;

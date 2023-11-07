@@ -13,19 +13,17 @@ import Mock = jest.Mock;
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../logger");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/logger");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 
-import { Console } from "../../../../../console";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { Logger } from "../../../../../logger";
-import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { readFileSync } from "jsonfile";
-import { update } from "../../../../src/plugins/utilities/npm-interface";
-import { getPackageInfo, installPackages } from "../../../../src/plugins/utilities/NpmFunctions";
+
+import {
+    Console, IPluginJson, Logger, PMFConstants, update, getPackageInfo, installPackages
+} from "../../../../../../src";
 
 describe("PMF: update Interface", () => {
     // Objects created so types are correct.

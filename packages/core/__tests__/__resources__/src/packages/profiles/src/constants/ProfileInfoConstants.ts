@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig, IConfigLogging, IConfig, IConfigSchema } from "../../../../../../src";
+import { IImperativeConfig, IConfigLogging, IConfig, IConfigSchema } from "../../../../../../../src";
 
 export const Log4jsConfig: IConfigLogging = {
     "log4jsConfig": {

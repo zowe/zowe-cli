@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../../src/imperative";
+import { IImperativeConfig } from "../../../../../../src/imperative";
 import { CustomCredentialManagerClass } from "./customCredential/CustomCredentialManagerClass";
 import * as path from "path";
 

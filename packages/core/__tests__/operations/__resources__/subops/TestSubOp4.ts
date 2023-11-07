@@ -10,7 +10,7 @@
 */
 
 import { IOperationCompleted, IOperationUndoCompleted, Operation } from "../../../../src/index";
-import { TestLogger } from "../../../../../__tests__/src/TestLogger";
+import { TestLogger } from "../../../../__tests__/__resources__/src/TestLogger";
 
 const logger = TestLogger.getTestLogger();
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../../src/imperative";
+import { IImperativeConfig } from "../../../../../../src/imperative";
 import * as T from "../../../TestUtil";
 
 describe("We should provide the ability to define commands through Javascript objects passed through the config " +

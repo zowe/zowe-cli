@@ -9,11 +9,10 @@
 *
 */
 
-import { ConfigurationLoader } from "..";
-import { IImperativeOverrides } from "../src/doc/IImperativeOverrides";
-import { IApimlSvcAttrs } from "../src/doc/IApimlSvcAttrs";
 import { homedir } from "os";
 import * as path from "path";
+
+import { ConfigurationLoader, IImperativeOverrides, IApimlSvcAttrs } from "../../../src";
 
 function getCallerFile(file: string) {
     return require(file);

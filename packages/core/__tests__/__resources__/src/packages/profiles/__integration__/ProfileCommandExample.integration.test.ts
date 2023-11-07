@@ -9,17 +9,15 @@
 *
 */
 
-import * as T from "../../../TestUtil";
-import { IImperativeConfig } from "../../../../../src/imperative";
 import * as yargs from "yargs";
-import { Constants } from "../../../../../src/constants";
-import { CommandProcessor, ICommandDefinition, ICommandProfileTypeConfiguration, ICommandResponse } from "../../../../../src/cmd";
-import { ICommandProcessorParms } from "../../../../../src/cmd/src/doc/processor/ICommandProcessorParms";
-import { isNullOrUndefined } from "util";
+
+import * as T from "../../../TestUtil";
 import { TestLogger } from "../../../../src/TestLogger";
-import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
-import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { BasicProfileManagerFactory } from "../../../../../src/index";
+
+import {
+    IImperativeConfig, Constants, CommandProcessor, ICommandDefinition, ICommandProfileTypeConfiguration,
+    ICommandResponse, ICommandProcessorParms, AbstractHelpGenerator, DefaultHelpGenerator, BasicProfileManagerFactory
+} from "../../../../../../src";
 
 const logger = TestLogger.getTestLogger();
 const PROFILE_CONFIGURATIONS: ICommandProfileTypeConfiguration[] = [{
@@ -117,7 +115,7 @@ describe("Imperative should allow CLI implementations to configure their own pro
                     // "Command should have failed"
                     expect(completedResponse.success).toEqual(false);
                 }
-                if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                if (expectedText?.length > 0) {
                     const fullText = completedResponse.stdout.toString() +
                         completedResponse.stderr.toString();
                     for (const text of expectedText) {

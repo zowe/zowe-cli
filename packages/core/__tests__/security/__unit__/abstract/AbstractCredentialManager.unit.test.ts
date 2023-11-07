@@ -11,7 +11,7 @@
 
 import { AbstractCredentialManager, DefaultCredentialManager } from "../../../../src/security";
 import { ImperativeError } from "../../../../src/error";
-import { UnitTestUtils } from "../../../../__tests__/src/UnitTestUtils";
+import { UnitTestUtils } from "../../../../__tests__/__resources__/src/UnitTestUtils";
 
 describe("AbstractCredentialManager", () => {
     // Constructor parameters for the manager

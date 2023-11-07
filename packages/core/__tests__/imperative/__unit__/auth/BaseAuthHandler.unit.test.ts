@@ -9,9 +9,9 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../cmd";
+import { IHandlerParameters } from "../../../../src/cmd/doc";
 import { Imperative } from "../../../../src/imperative/Imperative";
-import { ImperativeConfig } from "../../../..";
+import { ImperativeConfig } from "../../../../src/utils/ImperativeConfig";
 import FakeAuthHandler from "./__data__/FakeAuthHandler";
 
 describe("BaseAuthHandler", () => {

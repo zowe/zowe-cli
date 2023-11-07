@@ -10,12 +10,11 @@
 */
 
 import * as diff from "diff";
-import { DiffUtils } from "../../src/diff/DiffUtils";
-import { IDiffOptions } from "../../src/diff/doc/IDiffOptions";
-import { IDiffNameOptions } from "../../src/diff/doc/IDiffNameOptions";
-import { WebDiffManager } from "../../src/diff/WebDiffManager";
 import * as jestDiff from "jest-diff";
 import * as diff2html from "diff2html";
+
+import { DiffUtils, IDiffOptions, IDiffNameOptions, WebDiffManager } from "../../../../src";
+
 jest.mock("diff");
 
 describe("DiffUtils", () => {

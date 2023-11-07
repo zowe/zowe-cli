@@ -9,21 +9,21 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../..";
-import { Config } from "../../../../../config/src/Config";
-import { ConfigConstants } from "../../../../../config/src/ConfigConstants";
-import { ImperativeConfig, ProcessUtils } from "../../../../../utilities";
-import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
-import { expectedSchemaObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import InitHandler from "../../../../src/config/cmd/init/init.handler";
-import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
 import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
-import { CredentialManagerFactory } from "../../../../../security";
-import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
-import { OverridesLoader } from "../../../../src/OverridesLoader";
+
+import {
+    IHandlerParameters, Config, ConfigConstants, ImperativeConfig, ProcessUtils, IImperativeConfig,
+    CredentialManagerFactory, OverridesLoader
+} from "../../../../../../src";
+
+import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
+import { setupConfigToLoad } from "../../../../../../__tests__/__resources__/src/TestUtil";
+import {
+    expectedSchemaObject
+} from "../../../../../../__tests__/__integration__/imperative/__tests__/__resources__/expectedObjects";
+import InitHandler from "../../../../../../src/imperative/config/cmd/init/init.handler";
 
 jest.mock("fs");
 

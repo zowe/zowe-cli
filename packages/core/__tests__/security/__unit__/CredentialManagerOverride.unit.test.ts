@@ -12,11 +12,9 @@
 import * as fsExtra from "fs-extra";
 import * as path from "path";
 
-import { CredentialManagerOverride } from "../src/CredentialManagerOverride";
-import { ICredentialManagerNameMap } from "../src/doc/ICredentialManagerNameMap";
-import { ImperativeConfig } from "../../utilities";
-import { ImperativeError } from "../../../src/error";
-import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
+import {
+    CredentialManagerOverride, ICredentialManagerNameMap, ImperativeConfig, ISettingsFile, ImperativeError
+} from "../../../src";
 
 describe("CredentialManagerOverride", () => {
     let mockImpConfig: any;

@@ -9,7 +9,7 @@
 *
 */
 
-import { JSONUtils } from "../../utilities";
+import { JSONUtils } from "../../../src";
 
 interface ITestObj {
     name: string;

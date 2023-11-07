@@ -14,29 +14,25 @@ import Mock = jest.Mock;
 
 jest.mock("child_process");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/npm-interface/uninstall");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
-jest.mock("../../../../../logger");
+jest.mock("../../../../../../src/imperative/plugins/utilities/npm-interface/uninstall");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/cmd/doc/handler/IHandlerParameters");
+jest.mock("../../../../../../src/logger");
 
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
-import { Console } from "../../../../../console";
-import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
-import { CredentialManagerOverride } from "../../../../../security";
-import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
-import { AbstractPluginLifeCycle } from "../../../../src/plugins/AbstractPluginLifeCycle";
-import { ImperativeError } from "../../../../../error";
-import { Logger } from "../../../../../logger";
-import { TextUtils } from "../../../../../utilities";
-import UninstallHandler from "../../../../src/plugins/cmd/uninstall/uninstall.handler";
+import {
+    ConfigurationLoader, CredentialManagerOverride, IImperativeConfig, PluginManagementFacility,
+    AbstractPluginLifeCycle, ImperativeError, TextUtils, HandlerResponse, IHandlerParameters, Console,
+    IPluginJson, Logger
+} from "../../../../../../src";
+
 import * as ChildProcesses from "child_process";
 import * as JsonFile from "jsonfile";
-import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
-import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
+import * as NpmFunctions from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
+import * as NpmInterface from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import UninstallHandler from "../../../../../../src/imperative/plugins/cmd/uninstall/uninstall.handler";
+
 
 describe("Plugin Management Facility uninstall handler", () => {
 

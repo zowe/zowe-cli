@@ -11,6 +11,9 @@
 
 import { inspect } from "util";
 import { TestLogger } from "../../../../__tests__/__resources__/src/TestLogger";
+import {
+    PROFILE_TYPE
+} from "../../../../__tests__/__resources__/src/packages/profiles/src/constants/BasicProfileManagerTestConstants";
 import { TEST_PROFILE_ROOT_DIR } from "../../../profiles/__resources__/TestConstants";
 import {
     CliProfileManager, ProfileIO, IProfile, ICommandProfileTypeConfiguration, IProfileLoaded, ProfileUtils,

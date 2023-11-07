@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../src";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src";
 
 export default class ValidationTestCommand implements ICommandHandler {
     public static readonly SUCCESS_MESSAGE = "Validation passed";

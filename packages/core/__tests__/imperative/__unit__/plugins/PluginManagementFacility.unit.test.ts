@@ -13,30 +13,20 @@ import Mock = jest.MockedFunction;
 
 jest.mock("fs");
 jest.mock("jsonfile");
-jest.mock("../../src/plugins/utilities/PMFConstants");
-jest.mock("../../src/plugins/PluginRequireProvider");
+jest.mock("../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../src/imperative/plugins/PluginRequireProvider");
 
-import * as fs from "fs";
-import { AppSettings } from "../../../settings";
-import { ICommandDefinition } from "../../../../src/cmd";
-import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
-import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
-import { UpdateImpConfig } from "../../src/UpdateImpConfig";
-import { IPluginJson } from "../../src/plugins/doc/IPluginJson";
-import { IssueSeverity, PluginIssues } from "../../src/plugins/utilities/PluginIssues";
 import { join, resolve } from "path";
-import { PluginManagementFacility } from "../../src/plugins/PluginManagementFacility";
-import { PMFConstants } from "../../src/plugins/utilities/PMFConstants";
 import * as jsonfile from "jsonfile";
-import { ConfigurationLoader } from "../../src/ConfigurationLoader";
-import { ConfigurationValidator } from "../../src/ConfigurationValidator";
-import { ICommandProfileTypeConfiguration } from "../../../cmd";
-import { DefinitionTreeResolver } from "../../src/DefinitionTreeResolver";
-import { IPluginCfgProps } from "../../src/plugins/doc/IPluginCfgProps";
-import { Logger } from "../../../logger";
-import { IO } from "../../../io";
-import { ISettingsFile } from "../../../settings/src/doc/ISettingsFile";
-import { CredentialManagerOverride } from "../../../security/src/CredentialManagerOverride";
+import * as fs from "fs";
+
+import {
+    AppSettings, IImperativeConfig, ImperativeConfig, UpdateImpConfig, IPluginJson, IssueSeverity,
+    PluginIssues, PluginManagementFacility, PMFConstants, ConfigurationLoader, ConfigurationValidator,
+    ICommandProfileTypeConfiguration, DefinitionTreeResolver, IPluginCfgProps, Logger, IO, ISettingsFile,
+    CredentialManagerOverride, ICommandDefinition
+} from "../../../../src";
+
 
 // NOTE: Several tests for CredentialManager override are currently disabled
 describe("Plugin Management Facility", () => {

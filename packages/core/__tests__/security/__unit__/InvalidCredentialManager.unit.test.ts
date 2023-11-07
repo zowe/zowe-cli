@@ -9,8 +9,7 @@
 *
 */
 
-import { InvalidCredentialManager } from "../src/InvalidCredentialManager";
-import { BadCredentialManagerError } from "../../../src/security";
+import { InvalidCredentialManager, BadCredentialManagerError } from "../../../src/security";
 
 describe("InvalidCredentialMangager", () => {
     it("should throw an error for every available method on the class", async () => {

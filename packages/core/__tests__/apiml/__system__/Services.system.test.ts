@@ -26,7 +26,7 @@ describe("APIML Services system test", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "apiml_services"
         });
-        REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment) as any;
         REAL_SESSION.ISession.type = "basic";
     });
 

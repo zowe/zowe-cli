@@ -9,12 +9,8 @@
 *
 */
 
-import { AuthLoginCommandBuilder } from "../../../../src/imperative/auth/builders/AuthLoginCommandBuilder";
-import { Logger } from "../../../../logger";
-import { Constants } from "../../../../constants";
 import { minimalAuthConfig } from "./__data__/SampleAuthConfig";
-import { ICommandDefinition } from "../../../../cmd";
-
+import { AuthLoginCommandBuilder, Logger, Constants, ICommandDefinition } from "../../../../src";
 
 describe("AuthLoginCommandBuilder", () => {
     it("should build command successfully if valid auth config supplied", () => {

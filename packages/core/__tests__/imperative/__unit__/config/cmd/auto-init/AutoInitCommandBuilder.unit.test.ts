@@ -9,11 +9,11 @@
 *
 */
 
-import { AutoInitCommandBuilder } from "../../../../src/config/cmd/auto-init/builders/AutoInitCommandBuilder";
-import { Logger } from "../../../../../logger";
-import { Constants } from "../../../../../constants";
 import { minimalAutoInitConfig } from "./__data__/SampleAutoInitConfig";
-import { ICommandDefinition } from "../../../../../cmd";
+import { AutoInitCommandBuilder } from "../../../../../../src/imperative/config/cmd/auto-init/builders/AutoInitCommandBuilder";
+import { Logger } from "../../../../../../src/logger";
+import { Constants } from "../../../../../../src/constants";
+import { ICommandDefinition } from "../../../../../../src/cmd";
 
 describe("AutoInitCommandBuilder", () => {
     it("should build command successfully if valid auto init config supplied with buildFull", () => {

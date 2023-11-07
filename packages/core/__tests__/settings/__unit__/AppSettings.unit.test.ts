@@ -14,13 +14,13 @@ import Mock = jest.Mock;
 jest.mock("fs");
 jest.mock("jsonfile");
 
-import { AppSettings } from "../../../src/settings";
 import { existsSync } from "fs";
-import { SettingsAlreadyInitialized, SettingsNotInitialized } from "../src/errors";
 import { readFileSync, writeFile, writeFileSync } from "jsonfile";
-import { ISettingsFile } from "../src/doc/ISettingsFile";
 import * as DeepMerge from "deepmerge";
-import { JSONSettingsFilePersistence } from "../src/persistance/JSONSettingsFilePersistence";
+
+import {
+    ISettingsFile, JSONSettingsFilePersistence, AppSettings, SettingsAlreadyInitialized, SettingsNotInitialized
+} from "../../../src";
 
 /**
  * Type of all the keys in the app settings class

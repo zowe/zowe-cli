@@ -18,6 +18,7 @@ import { SyntaxValidator } from "../../../../src/cmd/syntax/SyntaxValidator";
 import { Constants } from "../../../../src/constants";
 import { TextUtils } from "../../../../src";
 import { TestLogger } from "../../../__resources__/src/TestLogger";
+import { ValidationTestCommand } from "../../../__resources__/src/packages/cmd/ValidationTestCommand";
 
 
 describe("Imperative should provide advanced syntax validation rules", () => {

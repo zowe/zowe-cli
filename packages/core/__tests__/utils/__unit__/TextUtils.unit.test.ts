@@ -9,14 +9,14 @@
 *
 */
 
+
+import { TextUtils } from "../../../src";
+
 const tableObjects = [
     { header1: "value1", 2: "value2", header3: "value3" },
     { header1: "value1", 2: "value2", header3: "value3" },
     { header1: "value1", 2: "value2", header3: "value3" },
 ];
-
-import { TextUtils } from "../src/TextUtils";
-
 const beforeForceColor = process.env.FORCE_COLOR;
 
 describe("TextUtils", () => {

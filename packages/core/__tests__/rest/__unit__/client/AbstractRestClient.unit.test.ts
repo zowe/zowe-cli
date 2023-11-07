@@ -19,7 +19,7 @@ import * as os from "os";
 import { join } from "path";
 import {
     NextVerFeatures, RestClient, Session, ProcessUtils, ImperativeError, IOptionsFullResponse,
-    CLIENT_PROPERTY, IO, AbstractRestClient
+    CLIENT_PROPERTY, IO, AbstractRestClient, Headers
 } from "../../../../src";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 

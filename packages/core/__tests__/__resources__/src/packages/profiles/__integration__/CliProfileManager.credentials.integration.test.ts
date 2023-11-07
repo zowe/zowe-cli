@@ -12,10 +12,8 @@
 import * as T from "../../../TestUtil";
 import * as path from "path";
 import * as fs from "fs";
-import { IImperativeConfig } from "../../../../../src/imperative";
-import { CliProfileManager } from "../../../../../src/cmd";
-import { ProfileIO } from "../../../../../src/profiles/src/utils";
-import { IProfile } from "../../../../../src/profiles/src/doc/definition";
+
+import { IImperativeConfig, CliProfileManager, ProfileIO, IProfile } from "../../../../../../src";
 
 describe("Cli Profile Manager", () => {
     let writtenProfile: any;

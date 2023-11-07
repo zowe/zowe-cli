@@ -12,14 +12,12 @@
 import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
-import { Config, ConfigBuilder, ConfigSchema } from "../../../../../config";
-import { IHandlerParameters } from "../../../../../cmd";
-import { ProfileIO } from "../../../../../profiles";
-import { AppSettings } from "../../../../../settings";
-import { ImperativeConfig } from "../../../../../utilities";
-import * as npmInterface from "../../../../src/plugins/utilities/npm-interface";
-import { PluginIssues } from "../../../../src/plugins/utilities/PluginIssues";
-import ConvertProfilesHandler from "../../../../src/config/cmd/convert-profiles/convert-profiles.handler";
+import * as npmInterface from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import ConvertProfilesHandler from "../../../../../../src/imperative/config/cmd/convert-profiles/convert-profiles.handler";
+
+import {
+    Config, ConfigBuilder, ConfigSchema, IHandlerParameters, ProfileIO, AppSettings, ImperativeConfig, PluginIssues
+} from "../../../../../../src";
 
 jest.mock("../../../../src/plugins/utilities/npm-interface");
 jest.mock("../../../../../imperative/src/OverridesLoader");

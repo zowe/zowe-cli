@@ -9,9 +9,9 @@
 *
 */
 
-import ReportEnvHandler from "../../../../src/config/cmd/report-env/Report-env.handler";
-import { EnvQuery, IGetItemVal } from "../../../../src/config/cmd/report-env/EnvQuery";
-import { ItemId } from "../../../../src/config/cmd/report-env/EnvItems";
+import ReportEnvHandler from "../../../../../../src/imperative/config/cmd/report-env/Report-env.handler";
+import { EnvQuery, IGetItemVal } from "../../../../../../src/imperative/config/cmd/report-env/EnvQuery";
+import { ItemId } from "../../../../../../src/imperative/config/cmd/report-env/EnvItems";
 
 describe("Handler for config report-env", () => {
 

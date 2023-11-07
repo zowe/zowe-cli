@@ -9,11 +9,11 @@
 *
 */
 
-jest.mock("../../../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../../../src/utils/ImperativeConfig");
 
-import { ImperativeConfig } from "../../../../../utilities";
-import { IProfileTypeConfiguration } from "../../../../../profiles";
-import SchemaHandler from "../../../../src/config/cmd/schema/schema.handler";
+import { ImperativeConfig } from "../../../../../../src/utils";
+import { IProfileTypeConfiguration } from "../../../../../../src/profiles";
+import SchemaHandler from "../../../../../../src/imperative/config/cmd/schema/schema.handler";
 
 let dataObj: any;
 let errorText: string;

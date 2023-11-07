@@ -10,7 +10,8 @@
 */
 
 import * as spawn from "cross-spawn";
-import { ExecUtils } from "../../utilities";
+
+import { ExecUtils } from "../../../src/utils/ExecUtils";
 
 jest.mock("cross-spawn");
 jest.mock("opener");

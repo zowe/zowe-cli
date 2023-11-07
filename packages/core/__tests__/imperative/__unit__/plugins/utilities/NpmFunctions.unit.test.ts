@@ -13,8 +13,8 @@ import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
-import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
-import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
+import * as npmFunctions from "../../../../../src/imperative/plugins/utilities/NpmFunctions";
+import { PMFConstants } from "../../../../../src/imperative/plugins/utilities/PMFConstants";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -68,7 +68,7 @@ describe("NpmFunctions", () => {
     });
 
     describe("getPackageInfo", () => {
-        const expectedInfo = { name: "@zowe/imperative", version: "latest" };
+        const expectedInfo = { name: "@zowe/core-for-zowe-sdk", version: "latest" };
 
         beforeAll(() => {
             jest.spyOn(jsonfile, "readFileSync").mockResolvedValue(expectedInfo);
@@ -76,7 +76,7 @@ describe("NpmFunctions", () => {
         });
 
         it("should fetch info for package installed from registry", async () => {
-            const pkgSpec = "@zowe/imperative";
+            const pkgSpec = "@zowe/core-for-zowe-sdk";
             expect(npmPackageArg(pkgSpec).type).toEqual("tag");
 
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({

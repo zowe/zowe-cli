@@ -10,8 +10,8 @@
 */
 
 import { BaseAuthHandler } from "../../../../../src/imperative/auth/handlers/BaseAuthHandler";
-import { ICommandArguments } from "../../../../../cmd";
-import { ISession, AbstractSession, SessConstants } from "../../../../../rest";
+import { ICommandArguments } from "../../../../../src/cmd";
+import { ISession, AbstractSession, SessConstants } from "../../../../../src/rest";
 
 export default class FakeAuthHandler extends BaseAuthHandler {
     public mProfileType: string = "fruit";

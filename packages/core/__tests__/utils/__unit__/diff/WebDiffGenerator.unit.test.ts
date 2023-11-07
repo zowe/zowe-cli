@@ -12,9 +12,8 @@
 import * as  fs from 'fs';
 import * as path from 'path';
 
-import WebDiffGenerator from "../../src/diff/WebDiffGenerator";
-import { ImperativeConfig } from "../../src/ImperativeConfig";
-import { IO } from '../../../io/';
+import WebDiffGenerator from "../../../../src/utils/diff/WebDiffGenerator";
+import { IO, ImperativeConfig } from "../../../../src";
 
 describe("WebDiffGenerator", () => {
     // setting up fake cli home and web diff dir for testing
@@ -43,6 +42,4 @@ describe("WebDiffGenerator", () => {
             expect(fs.existsSync(`${webDiffDir}/index.html`)).toBeTruthy();
         });
     });
-
-
 });

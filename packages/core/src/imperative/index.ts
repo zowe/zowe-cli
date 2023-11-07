@@ -11,7 +11,7 @@
 
 export * from "./api";
 export * from "./auth";
-export * from "./config/cmd/auto-init";
+export * from "./config";
 export * from "./doc";
 export * from "./env/EnvironmentalVariableSettings";
 export * from "./handlers/DefaultRootCommandHandler";

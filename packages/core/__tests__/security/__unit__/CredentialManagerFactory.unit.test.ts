@@ -9,18 +9,20 @@
 *
 */
 
-import { UnitTestUtils } from "../../../__tests__/src/UnitTestUtils";
 import { resolve } from "path";
-import { generateRandomAlphaNumericString } from "../../../__tests__/src/TestUtil";
+
+import { UnitTestUtils } from "../../../__tests__/__resources__/src/UnitTestUtils";
+import { generateRandomAlphaNumericString } from "../../../__tests__/__resources__/src/TestUtil";
 
 const ORIG_ERR = process.stderr.write;
 
 describe("CredentialManagerFactory", () => {
     const testClassDir = "CredentialManagerFactory-testClasses";
 
-    jest.doMock("../src/DefaultCredentialManager");
-    let { CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError } = require("..");
-    let { InvalidCredentialManager } = require("../src/InvalidCredentialManager");
+    jest.doMock("../../../src/security/DefaultCredentialManager");
+    let {
+        CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError, InvalidCredentialManager
+    } = require("../../../src/security/");
 
 
     afterEach(async () => {
@@ -28,8 +30,9 @@ describe("CredentialManagerFactory", () => {
         // reload our modules. So we will clear the module registry and import again
         jest.resetModules();
         jest.doMock("../src/DefaultCredentialManager");
-        ({ CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError } = await import("../../../src/security"));
-        ({ InvalidCredentialManager } = await import("../src/InvalidCredentialManager"));
+        ({
+            CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError, InvalidCredentialManager
+        } = await import("../../../src/security"));
     });
 
     it("should throw an error if no service name was provided", () => {

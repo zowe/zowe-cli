@@ -9,11 +9,8 @@
 *
 */
 
-import { AuthLogoutCommandBuilder } from "../builders/AuthLogoutCommandBuilder";
-import { Logger } from "../../../../logger";
-import { Constants } from "../../../../constants";
 import { minimalAuthConfig } from "./__data__/SampleAuthConfig";
-import { ICommandDefinition } from "../../../../cmd";
+import { AuthLogoutCommandBuilder, Logger, Constants, ICommandDefinition } from "../../../../src";
 
 describe("AuthLogoutCommandBuilder", () => {
     it("should build command successfully if valid auth config supplied", () => {

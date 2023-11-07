@@ -17,15 +17,15 @@ let returnedVal: any;
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("find-up");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../src/plugins/PluginManagementFacility");
-jest.mock("../../../../src/ConfigurationLoader");
-jest.mock("../../../../src/UpdateImpConfig");
-jest.mock("../../../../../config/src/ConfigSchema");
-jest.mock("../../../../../logger");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/imperative/plugins/PluginManagementFacility");
+jest.mock("../../../../../../src/impertive/ConfigurationLoader");
+jest.mock("../../../../../../src/imperative/UpdateImpConfig");
+jest.mock("../../../../../../src/config/ConfigSchema");
+jest.mock("../../../../../../src/logger");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 jest.doMock("path", () => {
     const originalPath = jest.requireActual("path");
     return {
@@ -40,25 +40,16 @@ jest.doMock("path", () => {
     };
 });
 
-import { Console } from "../../../../../console";
-import { ImperativeError } from "../../../../../error";
-import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
-import { install } from "../../../../src/plugins/utilities/npm-interface";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { IPluginJsonObject } from "../../../../src/plugins/doc/IPluginJsonObject";
-import { Logger } from "../../../../../logger";
-import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { sync } from "find-up";
-import { getPackageInfo, installPackages } from "../../../../src/plugins/utilities/NpmFunctions";
-import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
-import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
-import { AbstractPluginLifeCycle } from "../../../../src/plugins/AbstractPluginLifeCycle";
-import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
-import { UpdateImpConfig } from "../../../../src/UpdateImpConfig";
 import * as fs from "fs";
 import * as path from "path";
 
+import {
+    Console, ImperativeError, IImperativeConfig, install, IPluginJson, IPluginJsonObject, Logger, PMFConstants,
+    getPackageInfo, installPackages, ConfigSchema, PluginManagementFacility, AbstractPluginLifeCycle,
+    ConfigurationLoader, UpdateImpConfig
+} from "../../../../../../src";
 
 function setResolve(toResolve: string, resolveTo?: string) {
     expectedVal = toResolve;

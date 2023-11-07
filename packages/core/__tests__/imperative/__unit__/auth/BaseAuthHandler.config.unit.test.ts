@@ -9,18 +9,17 @@
 *
 */
 
-jest.mock("../../../../logger/src/LoggerUtils");
+jest.mock("../../../../src/logger/LoggerUtils");
+
 import * as fs from "fs";
 import * as path from "path";
 import * as lodash from "lodash";
-import { IHandlerParameters } from "../../../../cmd";
-import { SessConstants } from "../../../../rest";
-import { ImperativeConfig } from "../../../../utilities";
-import { Config } from "../../../../config";
-import { IConfigSecure } from "../../../../config/src/doc/IConfigSecure";
 import FakeAuthHandler from "./__data__/FakeAuthHandler";
-import { CredentialManagerFactory } from "../../../../security";
-import { ImperativeError } from "../../../..";
+
+import {
+    IHandlerParameters, SessConstants, ImperativeConfig, Config, CredentialManagerFactory,
+    ImperativeError, IConfigSecure
+} from "../../../../src";
 
 const MY_APP = "my_app";
 

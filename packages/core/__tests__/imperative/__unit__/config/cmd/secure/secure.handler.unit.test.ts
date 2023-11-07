@@ -9,23 +9,22 @@
 *
 */
 
-import { IHandlerParameters, Logger } from "../../../../..";
-import { Config } from "../../../../../config/src/Config";
-import { IConfig, IConfigOpts, IConfigProfile } from "../../../../../config";
-import { ImperativeConfig } from "../../../../../utilities";
-import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
-import { ICredentialManagerInit } from "../../../../../security/src/doc/ICredentialManagerInit";
-import { CredentialManagerFactory } from "../../../../../security";
-import { expectedConfigObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import SecureHandler from "../../../../src/config/cmd/secure/secure.handler";
-import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
-import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
-import { SessConstants } from "../../../../../rest";
-import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
+import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
+
+import {
+    expectedConfigObject
+} from "../../../../../__integration__/imperative/__tests__/__resources__/expectedObjects";
+import {
+    IHandlerParameters, Logger, Config, IConfig, IConfigOpts, IConfigProfile, ImperativeConfig,
+    IImperativeConfig, ICredentialManagerInit, CredentialManagerFactory, SessConstants
+} from "../../../../../../src";
+import SecureHandler from "../../../../../../src/imperative/config/cmd/secure/secure.handler";
+
+import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
+import { setupConfigToLoad } from "../../../../../../__tests__/__resources__/src/TestUtil";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {

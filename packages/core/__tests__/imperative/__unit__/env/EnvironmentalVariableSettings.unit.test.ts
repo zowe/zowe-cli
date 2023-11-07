@@ -9,11 +9,10 @@
 *
 */
 
-import { EnvironmentalVariableSettings } from "../../src/env/EnvironmentalVariableSettings";
-import { IImperativeEnvironmentalVariableSettings } from "../../src/doc/IImperativeEnvironmentalVariableSettings";
-import { IImperativeEnvironmentalVariableSetting } from "../../src/doc/IImperativeEnvironmentalVariableSetting";
-import { ImperativeError } from "../../../error/src/ImperativeError";
-import { Constants } from "../../../constants/src/Constants";
+import {
+    EnvironmentalVariableSettings, IImperativeEnvironmentalVariableSettings, IImperativeEnvironmentalVariableSetting,
+    ImperativeError, Constants
+} from "../../../../src";
 
 // save env so we can screw it up later
 const nodeEnv = process.env;

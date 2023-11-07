@@ -9,16 +9,15 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../../cmd";
-import { ImperativeConfig, ProcessUtils } from "../../../../../utilities";
 import { FakeAutoInitHandler } from "./__data__/FakeAutoInitHandler";
 import * as lodash from "lodash";
 import * as jestDiff from "jest-diff";
 import stripAnsi = require("strip-ansi");
-import { ConfigSchema } from "../../../../../config";
-import { CredentialManagerFactory } from "../../../../../security";
-import { SessConstants, Session } from "../../../../../rest";
-import { OverridesLoader } from "../../../../src/OverridesLoader";
+// import stripAnsi from "strip-ansi"; // if the above fails... maybe use this?
+import {
+    IHandlerParameters, ImperativeConfig, ProcessUtils, ConfigSchema, CredentialManagerFactory, SessConstants,
+    Session, OverridesLoader
+} from "../../../../../../src";
 
 jest.mock("strip-ansi");
 

@@ -10,11 +10,9 @@
 */
 
 import * as stream from "stream";
-import { CliUtils } from "../src/CliUtils";
-import { CommandProfiles, ICommandOptionDefinition } from "../../cmd";
-import { IProfile } from "../../profiles";
-import { ImperativeError } from "../../error";
 import * as prompt from "readline-sync";
+
+import { CliUtils, IProfile, ImperativeError, CommandProfiles, ICommandOptionDefinition } from "../../../src";
 
 jest.mock("readline-sync");
 

@@ -26,7 +26,7 @@ describe("Login system test", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "auth_login"
         });
-        REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment) as any;
     });
 
     afterAll(async () => {

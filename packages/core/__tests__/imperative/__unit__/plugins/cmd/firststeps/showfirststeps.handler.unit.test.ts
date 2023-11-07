@@ -11,18 +11,16 @@
 
 import Mock = jest.Mock;
 
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
-import { ImperativeConfig } from "../../../../../utilities/src/ImperativeConfig";
-import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
 import { resolve } from "path";
-import { TextUtils } from "../../../../../utilities";
-import FirststepsHandler from "../../../../src/plugins/cmd/showfirststeps/showfirststeps.handler";
-import { ImperativeError } from "../../../../../error/src/ImperativeError";
-import { IPluginCfgProps } from "../../../../src/plugins/doc/IPluginCfgProps";
-import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
+
+import {
+    ImperativeConfig, IImperativeConfig, IPluginCfgProps, PluginManagementFacility, ImperativeError, TextUtils,
+    HandlerResponse, IHandlerParameters
+} from "../../../../../../src";
+import FirststepsHandler from "../../../../../../src/imperative/plugins/cmd/showfirststeps/showfirststeps.handler";
 
 describe("Plugin first steps command handler", () => {
 

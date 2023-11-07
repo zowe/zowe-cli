@@ -9,9 +9,9 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../../../src/index";
+import { IImperativeConfig } from "../../../../../../../src/imperative";
 import * as TestUtils from "../../../../TestUtil";
-import { ICommandProfileTypeConfiguration } from "../../../../../../src/cmd";
+import { ICommandProfileTypeConfiguration } from "../../../../../../../src/cmd";
 
 /**
  * Get a config and set the home directory.

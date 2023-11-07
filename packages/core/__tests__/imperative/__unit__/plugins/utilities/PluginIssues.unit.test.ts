@@ -9,7 +9,7 @@
 *
 */
 
-import { IssueSeverity, PluginIssues } from "../../../src/plugins/utilities/PluginIssues";
+import { IssueSeverity, PluginIssues } from "../../../../../src/imperative/plugins/utilities/PluginIssues";
 
 describe("PluginIssues", () => {
 

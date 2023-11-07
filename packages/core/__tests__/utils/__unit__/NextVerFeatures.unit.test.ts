@@ -9,8 +9,7 @@
 *
 */
 
-import { ImperativeConfig } from "../src/ImperativeConfig";
-import { NextVerFeatures } from "../src/NextVerFeatures";
+import { ImperativeConfig, NextVerFeatures } from "../../../src";
 
 describe("NextVerFeatures", () => {
     const impCfg: ImperativeConfig = ImperativeConfig.instance;

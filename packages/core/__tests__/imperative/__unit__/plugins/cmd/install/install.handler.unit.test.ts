@@ -14,15 +14,15 @@ import Mock = jest.Mock;
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/npm-interface/install");
-jest.mock("../../../../src/plugins/utilities/runValidatePlugin");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
-jest.mock("../../../../../logger");
-jest.mock("../../../../src/Imperative");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/npm-interface/install");
+jest.mock("../../../../../../src/imperative/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/imperative/plugins/utilities/runValidatePlugin");
+jest.mock("../../../../../../src/imperative/Imperative");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/cmd/doc/handler/IHandlerParameters");
+jest.mock("../../../../../../src/logger");
 jest.doMock("path", () => {
     const originalPath = jest.requireActual("path");
     return {
@@ -37,19 +37,14 @@ jest.doMock("path", () => {
     };
 });
 
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
-import { Console } from "../../../../../console";
-import { ImperativeError } from "../../../../../error";
-import { install } from "../../../../src/plugins/utilities/npm-interface";
-import { runValidatePlugin } from "../../../../src/plugins/utilities/runValidatePlugin";
-import InstallHandler from "../../../../src/plugins/cmd/install/install.handler";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { Logger } from "../../../../../logger";
 import { readFileSync, writeFileSync } from "jsonfile";
-import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
-import { TextUtils } from "../../../../../utilities";
-import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
+
+import {
+    install, runValidatePlugin, PMFConstants, getRegistry, npmLogin, ImperativeError, TextUtils,
+    HandlerResponse, IHandlerParameters, Console, IPluginJson, Logger
+} from "../../../../../../src";
+import InstallHandler from "../../../../../../src/imperative/plugins/cmd/install/install.handler";
 
 let expectedVal: unknown;
 let returnedVal: unknown;

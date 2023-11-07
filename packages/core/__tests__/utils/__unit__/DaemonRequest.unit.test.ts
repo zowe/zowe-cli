@@ -9,8 +9,7 @@
 *
 */
 
-import { DaemonRequest } from "../src/DaemonRequest";
-import { IDaemonRequest } from "../src/doc/IDaemonRequest";
+import { DaemonRequest, IDaemonRequest } from "../../../src";
 
 describe("DaemonRequest tests", () => {
     it("should add stdout to JSON request", () => {

@@ -9,20 +9,19 @@
 *
 */
 
-import { getMockWrapper } from "../../../../__tests__/__src__/types/MockWrapper";
 
-jest.mock("../../../utilities/src/ImperativeConfig");
+jest.mock("../../../../src/utils/ImperativeConfig");
 jest.mock("find-up");
 jest.mock("path");
 
 import * as Module from "module";
 import * as findUp from "find-up";
-import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
-import { PluginRequireProvider } from "../../src/plugins/PluginRequireProvider";
-import { PluginRequireAlreadyCreatedError } from "../../src/plugins/errors/PluginRequireAlreadyCreatedError";
-import { PluginRequireNotCreatedError } from "../../src/plugins/errors/PluginRequireNotCreatedError";
 import * as path from "path";
-import { generateRandomAlphaNumericString } from "../../../../__tests__/src/TestUtil";
+import {
+    PluginRequireProvider, PluginRequireAlreadyCreatedError, PluginRequireNotCreatedError, ImperativeConfig
+} from "../../../../src";
+import { getMockWrapper } from "../../../../__tests__/__resources__/__src__/types/MockWrapper";
+import { generateRandomAlphaNumericString } from "../../../../__tests__/__resources__/src/TestUtil";
 
 describe("PluginRequireProvider", () => {
     /**

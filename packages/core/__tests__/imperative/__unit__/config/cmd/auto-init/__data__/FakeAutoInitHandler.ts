@@ -9,9 +9,9 @@
 *
 */
 
-import { BaseAutoInitHandler } from "../../../../../src/config/cmd/auto-init/handlers/BaseAutoInitHandler";
-import { ICommandArguments, IHandlerResponseApi } from "../../../../../../cmd";
-import { ISession, AbstractSession } from "../../../../../../rest";
+import { BaseAutoInitHandler } from "../../../../../../../src/imperative/config/cmd/auto-init/handlers/BaseAutoInitHandler";
+import { ICommandArguments, IHandlerResponseApi } from "../../../../../../../src/cmd";
+import { ISession, AbstractSession } from "../../../../../../../src/rest";
 
 export class FakeAutoInitHandler extends BaseAutoInitHandler {
     public mProfileType: string = "fruit";

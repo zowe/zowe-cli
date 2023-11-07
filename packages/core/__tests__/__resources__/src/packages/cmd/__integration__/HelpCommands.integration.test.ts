@@ -10,7 +10,7 @@
 */
 
 import * as T from "../../../TestUtil";
-import { IImperativeConfig } from "../../../../../src/imperative/index";
+import { IImperativeConfig } from "../../../../../../src/imperative/index";
 
 describe("Imperative help should be available for a range of definitions", function () {
     const withBinPackageCliBin = __dirname + "/../../../example_clis/with_bin_package/ProfileBinExampleCLI";

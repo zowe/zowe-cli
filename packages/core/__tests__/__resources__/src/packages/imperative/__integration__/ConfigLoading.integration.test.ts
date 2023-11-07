@@ -10,8 +10,8 @@
 */
 
 import * as T from "../../../TestUtil";
-import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
-import { ImperativeConfig } from "../../../../../src/utilities";
+import { IImperativeConfig, Imperative } from "../../../../../../src/imperative";
+import { ImperativeConfig } from "../../../../../../src/utils";
 
 describe("Imperative should validate config provided by the consumer", function () {
     const packageJsonPath = __dirname + "/package.json";

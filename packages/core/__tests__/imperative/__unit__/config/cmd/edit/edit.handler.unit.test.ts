@@ -9,9 +9,9 @@
 *
 */
 
-import EditHandler from "../../../../src/config/cmd/edit/edit.handler";
-import { IHandlerParameters } from "../../../../../cmd";
-import { ImperativeConfig, ProcessUtils } from "../../../../../utilities";
+import EditHandler from "../../../../../../src/imperative/config/cmd/edit/edit.handler";
+import { IHandlerParameters } from "../../../../../../src/cmd";
+import { ImperativeConfig, ProcessUtils } from "../../../../../../src/utils";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {

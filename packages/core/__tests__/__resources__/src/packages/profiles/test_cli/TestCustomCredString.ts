@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative } from "../../../../../src/imperative";
+import { Imperative } from "../../../../../../src/imperative";
 import * as path from "path";
 
 

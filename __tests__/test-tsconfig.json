@@ -24,9 +24,10 @@
     "../__types__/wontache.d.ts"
   ],
   "exclude": [
-    "lib",
+    "**/lib",
     "__results__/",
     "__snapshots__",
-    "node_modules"
+    "node_modules",
+    "../packages/*/__tests__/**/*.d.ts"
   ]
 }

@@ -12,7 +12,8 @@
 import * as fs from "fs";
 import { homedir } from "os";
 import { join } from "path";
-import { EnvFileUtils } from "../../utilities";
+
+import { EnvFileUtils } from "../../../src/utils/EnvFileUtils";
 
 describe("EnvFileUtils tests", () => {
     afterEach(() => {

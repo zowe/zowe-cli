@@ -9,9 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
-import { ICommandOptionDefinition } from "../../src/doc/option/ICommandOptionDefinition";
-import { ICommandProfileTypeConfiguration } from "../../src/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import { ICommandDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration } from "../../../src";
 
 export const COMPLEX_COMMAND: ICommandDefinition = {
     name: "test-group",

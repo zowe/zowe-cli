@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../__tests__/__packages__/cli-test
 
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session, ImperativeError, Imperative } from "../../../";
+import { Session, ImperativeError, Imperative } from "../../../src";
 import { Login } from "../../../src/auth/Login";
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
@@ -30,7 +30,7 @@ describe("Logout system test", () => {
             testName: "auth_logout"
         });
 
-        REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment) as any;
 
         try {
             token = await Login.apimlLogin(REAL_SESSION);

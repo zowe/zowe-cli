@@ -9,11 +9,7 @@
 *
 */
 
-import { DefinitionTreeResolver } from "../src/DefinitionTreeResolver";
-import { ImperativeError } from "../../error";
-import { Logger } from "../../logger";
-import { Console } from "../../console";
-import { ICommandDefinition } from "../../cmd";
+import { DefinitionTreeResolver, ImperativeError, Logger, Console, ICommandDefinition } from "../../../src";
 
 const fakeDefinition: ICommandDefinition = {
     name: "users",

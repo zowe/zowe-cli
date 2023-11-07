@@ -10,7 +10,8 @@
 */
 
 import * as spawn from "cross-spawn";
-import { ExecUtils, GuiResult, ImperativeConfig, ProcessUtils } from "../../utilities";
+
+import { ExecUtils, GuiResult, ImperativeConfig, ProcessUtils } from "../../../src";
 
 jest.mock("cross-spawn");
 jest.mock("opener");

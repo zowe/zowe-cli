@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative } from "../../../../../../lib";
+import { Imperative } from "../../../../../../../lib";
 import { join } from "path";
 
 

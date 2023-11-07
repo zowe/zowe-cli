@@ -9,7 +9,7 @@
 *
 */
 
-import { JsUtils } from "../src/JsUtils";
+import { JsUtils } from "../../../src";
 
 describe("JsUtils", () => {
 

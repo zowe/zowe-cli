@@ -9,13 +9,13 @@
 *
 */
 
-import { runValidatePlugin } from "../../../src/plugins/utilities/runValidatePlugin";
 import { sync } from "cross-spawn";
-import { Imperative } from "../../..";
 import Mock = jest.Mock;
 
+import { runValidatePlugin, Imperative } from "../../../../../src";
+
 jest.mock("cross-spawn");
-jest.mock("../../../src/plugins/utilities/PMFConstants");
+jest.mock("../../../../../src/imperative/plugins/utilities/PMFConstants");
 
 const pluginName = "fakePluginName";
 const cmdOutputJson = {
