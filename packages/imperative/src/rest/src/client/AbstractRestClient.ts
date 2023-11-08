@@ -308,16 +308,8 @@ export abstract class AbstractRestClient {
              * Invoke any onError method whenever an error occurs on writing
              */
             clientRequest.on("error", (errorResponse: any) => {
-                let errMsg: string;
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (NextVerFeatures.useV3ErrFormat()) {
-                    errMsg = "Failed to send an HTTP request.";
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                    errMsg = "http(s) request error event called";
-                }
-
                 reject(this.populateError({
-                    msg: errMsg,
+                    msg: "Failed to send an HTTP request.",
                     causeErrors: errorResponse,
                     source: "client"
                 }));
@@ -756,41 +748,21 @@ export abstract class AbstractRestClient {
                 `HTTP(S) client encountered an error. Request could not be initiated to host.\n` +
                 `Review connection details (host, port) and ensure correctness.`;
         } else {
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                detailMessage =
-                    `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;
-            } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                detailMessage =
-                    `HTTP(S) error status "${finalError.httpStatus}" received.\n` +
-                    `Review request details (resource, base path, credentials, payload) and ensure correctness.`;
-            }
+            detailMessage =
+                `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;
         }
 
-        // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-        if (NextVerFeatures.useV3ErrFormat()) {
-            detailMessage += "\n" +
-            "\nProtocol:          " + finalError.protocol +
-            "\nHost:              " + finalError.host +
-            "\nPort:              " + finalError.port +
-            "\nBase Path:         " + finalError.basePath +
-            "\nResource:          " + finalError.resource +
-            "\nRequest:           " + finalError.request +
-            "\nHeaders:           " + headerDetails +
-            "\nPayload:           " + payloadDetails +
-            "\nAuth type:         " + this.mSession.ISession.type +
-            "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
-        } else { // TODO:V3_ERR_FORMAT - Remove in V3
-            detailMessage += "\n" +
-            "\nProtocol:  " + finalError.protocol +
-            "\nHost:      " + finalError.host +
-            "\nPort:      " + finalError.port +
-            "\nBase Path: " + finalError.basePath +
-            "\nResource:  " + finalError.resource +
-            "\nRequest:   " + finalError.request +
-            "\nHeaders:   " + headerDetails +
-            "\nPayload:   " + payloadDetails;
-        }
+        detailMessage += "\n" +
+        "\nProtocol:          " + finalError.protocol +
+        "\nHost:              " + finalError.host +
+        "\nPort:              " + finalError.port +
+        "\nBase Path:         " + finalError.basePath +
+        "\nResource:          " + finalError.resource +
+        "\nRequest:           " + finalError.request +
+        "\nHeaders:           " + headerDetails +
+        "\nPayload:           " + payloadDetails +
+        "\nAuth type:         " + this.mSession.ISession.type +
+        "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
         finalError.additionalDetails = detailMessage;
 
         // Allow implementation to modify the error as necessary
