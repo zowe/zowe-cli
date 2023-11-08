@@ -435,7 +435,7 @@ describe("PMF: Install Interface", () => {
                 });
 
             // gain access to the non-exported callPluginPostInstall function
-            installModule = require("../../../../src/plugins/utilities/npm-interface/install");
+            installModule = require("../../../../../../src/imperative/plugins/utilities/npm-interface/install");
             callPluginPostInstall = installModule.onlyForTesting.callPluginPostInstall;
         });
 

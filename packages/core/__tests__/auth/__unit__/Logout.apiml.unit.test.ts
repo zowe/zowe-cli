@@ -9,9 +9,7 @@
 *
 */
 
-import { Logout } from "../../../src/auth/Logout";
-import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ImperativeError, NextVerFeatures, RestConstants } from "@zowe/core-for-zowe-sdk";
+import { Logout, ZosmfRestClient, ImperativeError, NextVerFeatures, RestConstants } from "../../../src";
 
 const goodResponse: any = {
     statusCode: RestConstants.HTTP_STATUS_204
@@ -94,7 +92,7 @@ describe("Auth Logout APIML unit tests", () => {
                 }
                 expect(caughtError).toBeDefined();
                 expect(caughtError.message).toContain(realErrorText);
-                expect(caughtError instanceof ImperativeError).toEqual(true);
+                expect(caughtError).toBeInstanceOf(ImperativeError);
                 return caughtError;
             };
             // Token is invalid (logged out but not expired)
@@ -164,8 +162,8 @@ describe("Auth Logout APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toContain("session");
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
 
         it("should reject calls to apimlLogout that omit token type in session", async () => {
@@ -181,8 +179,8 @@ describe("Auth Logout APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toContain("apimlAuthenticationToken");
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
 
         it("should reject calls to apimlLogout that omit token value in session", async () => {
@@ -198,8 +196,8 @@ describe("Auth Logout APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toContain("token");
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
     });
 });

@@ -9,24 +9,31 @@
 *
 */
 
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ImperativeError } from "@zowe/core-for-zowe-sdk";
+import {
+    ZosmfHeaders, ZosmfRestClient, ImperativeError as _ImperativeError, Logger as _Logger,
+    ImperativeExpect as _ImperativeExpect
+} from "@zowe/core-for-zowe-sdk";
 import { DeleteJobs, IJob } from "../../src";
 import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnDeleteJobsDataAsync = async (): Promise<any> => {
-    return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
-};
-
-const mockErrorText = "My fake error for unit tests has this text - Delete Jobs unit tests";
-const throwImperativeError = async () => {
-    throw new ImperativeError({msg: mockErrorText});
-};
-const fakeSession: any = {};
-
 describe("Delete Jobs unit tests", () => {
+    const { ImperativeError, ImperativeExpect } = jest.requireActual('@zowe/core-for-zowe-sdk');
+    jest.mocked(_ImperativeError).mockImplementation((parms: any) => new ImperativeError(parms));
+    const mockedLogger: any = {trace: jest.fn(), info: jest.fn(), error: jest.fn(), debug: jest.fn()};
+    jest.spyOn(_Logger, "getAppLogger").mockReturnValue(mockedLogger);
+    jest.spyOn(_ImperativeExpect, "keysToBeDefinedAndNonBlank").mockImplementation(ImperativeExpect.keysToBeDefinedAndNonBlank);
+
+    const returnDeleteJobsDataAsync = async (): Promise<any> => {
+        return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
+    };
+
+    const mockErrorText = "My fake error for unit tests has this text - Delete Jobs unit tests";
+    const throwImperativeError = async () => {
+        throw new ImperativeError({msg: mockErrorText});
+    };
+    const fakeSession: any = {};
 
     const fakeJob: IJob = {
         "jobid": "JOB00001",
@@ -142,7 +149,7 @@ describe("Delete Jobs unit tests", () => {
     describe("Error handling tests - async/await", () => {
         it("should be able to catch errors from deleteJob with async/await syntax", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB0000");
             } catch (e) {
@@ -155,7 +162,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should be able to catch errors from deleteJobForJob with async/await syntax", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
             } catch (e) {
@@ -168,7 +175,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should be able to catch errors from deleteJobCommon with async/await syntax", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {
                     jobname: "MYJOB1",
@@ -231,7 +238,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should reject calls to deleteJob that omit jobname", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, undefined, "JOB0000");
             } catch (e) {
@@ -244,7 +251,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should reject calls to deleteJob that omit jobid", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, "MYJOB1", undefined);
             } catch (e) {
@@ -257,7 +264,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should reject calls to deleteJobForJob that omit jobname", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             const badJob: IJob = JSON.parse(JSON.stringify(fakeJob));
             delete badJob.jobname;
             try {
@@ -272,7 +279,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should reject calls to deleteJobForJob that omit jobid", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             const badJob: IJob = JSON.parse(JSON.stringify(fakeJob));
             delete badJob.jobid;
             try {
@@ -287,7 +294,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should reject calls to deleteJobCommon that omit jobname from the parms object", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {
                     jobname: undefined,
@@ -303,7 +310,7 @@ describe("Delete Jobs unit tests", () => {
 
         it("should reject calls to deleteJobCommon that omit jobid from the parms object", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
-            let err: Error | ImperativeError;
+            let err: Error | _ImperativeError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {
                     jobname: "MYJOB1",

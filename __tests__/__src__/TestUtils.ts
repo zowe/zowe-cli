@@ -20,9 +20,7 @@ import { Imperative, Headers, AbstractSession, ZosmfRestClient } from "@zowe/cor
  * @returns {string} A string without new lines
  */
 export function stripNewLines(str: string): string {
-    return str
-        .replace(/\n+/g, " ")
-        .trim();
+    return str?.replace(/\n+/g, " ").trim();
     // .replace(/\S\S+/g, " "); // Strips out areas of more than one space
 }
 

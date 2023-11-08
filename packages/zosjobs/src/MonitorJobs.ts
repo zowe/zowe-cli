@@ -9,11 +9,10 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/core-for-zowe-sdk";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger, sleep } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { GetJobs } from "./GetJobs";
 import { JOB_STATUS, JOB_STATUS_ORDER } from "./types/JobStatus";
-import { sleep } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { IMonitorJobWaitForParms } from "./doc/input/IMonitorJobWaitForParms";
 

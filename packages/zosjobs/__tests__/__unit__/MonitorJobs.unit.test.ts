@@ -12,12 +12,24 @@
 jest.mock("@zowe/core-for-zowe-sdk");
 jest.mock("../../src/GetJobs");
 
-import { ImperativeError, Session, sleep } from "@zowe/core-for-zowe-sdk";
+import {
+    Session, sleep, ImperativeError as _ImperativeError, Logger as _Logger,
+    ImperativeExpect as _ImperativeExpect
+} from "@zowe/core-for-zowe-sdk";
 import { JOB_STATUS, MonitorJobs, GetJobs } from "../../src";
 import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
 import { IJob } from "../../src/doc/response/IJob";
 
 describe("MonitorJobs", () => {
+    const { ImperativeError, ImperativeExpect } = jest.requireActual('@zowe/core-for-zowe-sdk');
+    jest.mocked(_ImperativeError).mockImplementation((parms: any) => new ImperativeError(parms));
+    const mockedLogger: any = {trace: jest.fn(), info: jest.fn(), error: jest.fn(), debug: jest.fn()};
+    jest.spyOn(_Logger, "getAppLogger").mockReturnValue(mockedLogger);
+    jest.spyOn(_ImperativeExpect, "keysToBeDefinedAndNonBlank").mockImplementation(ImperativeExpect.keysToBeDefinedAndNonBlank);
+    jest.spyOn(_ImperativeExpect, "toBeOneOf").mockImplementation(ImperativeExpect.toBeOneOf);
+    jest.spyOn(_ImperativeExpect, "keysToBeOfType").mockImplementation(ImperativeExpect.keysToBeOfType);
+    jest.spyOn(_ImperativeExpect, "toNotBeNullOrUndefined").mockImplementation(ImperativeExpect.toNotBeNullOrUndefined);
+
     const privateMonitorJobs = MonitorJobs as any;
     const session = new Session({hostname: "FAKE", port: 443}) as any;
     const LONGER_TIMEOUT = 20000;

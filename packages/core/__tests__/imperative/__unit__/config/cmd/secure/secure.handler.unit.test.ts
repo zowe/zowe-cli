@@ -516,7 +516,7 @@ describe("Configuration Secure command handler", () => {
             }
         };
 
-        const authHandlerPath = __dirname + "/../../../../src/auth/handlers/AbstractAuthHandler";
+        const authHandlerPath = __dirname + "/../../../../../../src/imperative/auth/handlers/AbstractAuthHandler";
         const handler = new SecureHandler();
         const params = getIHandlerParametersObject();
         let mockAuthHandlerApi: any;

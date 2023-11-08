@@ -11,7 +11,7 @@
 
 import { Services } from "../../../src/apiml/Services";
 import { ConfigConstants, ImperativeConfig, ImperativeError, PluginManagementFacility, RestClient,
-    Session } from "@zowe/core-for-zowe-sdk";
+    Session } from "../../../src";
 import { IApimlProfileInfo } from "../../../src/apiml/doc/IApimlProfileInfo";
 import * as JSONC from "comment-json";
 import { IApimlService } from "../../../src/apiml/doc/IApimlService";

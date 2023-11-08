@@ -143,7 +143,7 @@ export class ProfileValidator {
                             // mark the validation failed if any task fails
                             report.overallResult = "Failed";
                         }
-                        if (currentTask.dependentTasks !== null) {
+                        if (currentTask.dependentTasks != null) {
                             if (result.outcome === "Failed" || result.outcome === "Warning") {
                                 log.warn("Parent task %s failed, skipping dependent tasks",
                                     currentTask.name);

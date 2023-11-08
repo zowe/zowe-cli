@@ -130,7 +130,7 @@ describe("list profiles handler", () => {
         it("should not transform errors from the profile manager", async () => {
             // "Mock" with the object here
             Object.defineProperty(Imperative, "api", { value: MockedImperativeAPIError, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/ListProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/ListProfilesHandler");
             const handler = new handlerReq.default();
             const parms = Object.assign({}, ...[HANDLER_PARAMETERS]);
             let error;
@@ -188,7 +188,7 @@ describe("list profiles handler", () => {
                 }
             });
 
-            const handlerReq = require("../../../src/profiles/handlers/ListProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/ListProfilesHandler");
             const handler = new handlerReq.default();
             await handler.process(listProfileParms);
             expect(errorText).toContain("An error occurred trying to list profiles");
@@ -200,7 +200,7 @@ describe("list profiles handler", () => {
         it("should load all profiles and display just the names", async () => {
             // "Mock" with the object here
             Object.defineProperty(Imperative, "api", { value: MockedImperativeAPI, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/ListProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/ListProfilesHandler");
             const handler = new handlerReq.default();
             const parms = Object.assign({}, ...[HANDLER_PARAMETERS]);
             parms.response.format.output = jest.fn((args) => {
@@ -220,7 +220,7 @@ describe("list profiles handler", () => {
         it("should load all profiles and display all contents", async () => {
             // "Mock" with the object here
             Object.defineProperty(Imperative, "api", { value: MockedImperativeAPI, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/ListProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/ListProfilesHandler");
             const handler = new handlerReq.default();
             const parms = Object.assign({}, ...[HANDLER_PARAMETERS]);
             parms.arguments.showContents = true;

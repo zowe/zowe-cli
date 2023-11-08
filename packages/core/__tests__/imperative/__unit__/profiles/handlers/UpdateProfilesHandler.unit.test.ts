@@ -142,7 +142,7 @@ describe("update profile handler", () => {
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedOk, configurable: true });
             const parms = Object.assign({}, ...[updateProfileParms]);
-            const handlerReq = require("../../../src/profiles/handlers/UpdateProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/UpdateProfilesHandler");
             const handler = new handlerReq.default();
 
             await handler.process(updateProfileParms);
@@ -166,7 +166,7 @@ describe("update profile handler", () => {
             });
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedCrash, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/UpdateProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/UpdateProfilesHandler");
             const handler = new handlerReq.default();
             await handler.process(updateProfileParms);
             expect(errorText).toContain("An error occurred trying to update a profile");

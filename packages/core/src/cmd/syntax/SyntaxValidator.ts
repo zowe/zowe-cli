@@ -497,7 +497,7 @@ export class SyntaxValidator {
 
         if (!isPositional) {
             const def = optionDefinition as ICommandOptionDefinition;
-            aliasString = def.aliases?.length <= 0 ? "" : "(" + def.aliases.map((alias: string) => {
+            aliasString = (def.aliases?.length ?? -1) <= 0 ? "" : "(" + def.aliases.map((alias: string) => {
                 return this.getDashFormOfOption(alias);
             }).join(",") + ")";
         } else {

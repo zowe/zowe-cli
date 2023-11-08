@@ -12,17 +12,24 @@
 jest.mock("fs");
 jest.mock("@zowe/core-for-zowe-sdk");
 
-
-import { Headers, Session } from "@zowe/core-for-zowe-sdk";
+import {
+    Headers, Session, ZosmfRestClient, getErrorContext, ZosmfHeaders,
+    Logger as _Logger, ImperativeError as _ImperativeError, ImperativeExpect as _ImperativeExpect
+} from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 import { Invoke, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient, getErrorContext, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 const fs = require("fs");
 
 describe("Invoke", () => {
+    const { ImperativeError, ImperativeExpect } = jest.requireActual('@zowe/core-for-zowe-sdk');
+    jest.mocked(_ImperativeError).mockImplementation((parms: any) => new ImperativeError(parms));
+    jest.spyOn(_Logger, "getAppLogger").mockReturnValue({error: jest.fn(), debug: jest.fn()} as any);
+    jest.spyOn(_ImperativeExpect, "toNotBeNullOrUndefined").mockImplementation(ImperativeExpect.toNotBeNullOrUndefined);
+    jest.spyOn(_ImperativeExpect, "toNotBeEqual").mockImplementation(ImperativeExpect.toNotBeEqual);
+
     const invokeExpectJsonSpy = jest.spyOn(ZosmfRestClient, "putExpectJSON");
     const dummyFileName = "./path/to/dummyFile";
     const statements = "test statement\nwith multiple lines\r\nand a special line break too";

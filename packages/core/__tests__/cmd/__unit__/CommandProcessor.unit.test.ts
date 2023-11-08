@@ -19,7 +19,7 @@ import {
 import { setupConfigToLoad } from "../../__resources__/src/TestUtil";
 
 jest.mock("../../../src/cmd/syntax/SyntaxValidator");
-// jest.mock("../../../src/utils/SharedOptions");
+jest.mock("../../../src/cmd/utils/SharedOptions");
 jest.mock("../../../src/utils/ImperativeConfig");
 
 // Persist the original definitions of process.write
@@ -73,14 +73,14 @@ const SAMPLE_COMMAND_REAL_HANDLER: ICommandDefinition = {
     name: "banana",
     description: "The banana command",
     type: "command",
-    handler: __dirname + "/__model__/TestCmdHandler"
+    handler: __dirname + "/../__model__/TestCmdHandler"
 };
 
 const SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT: ICommandDefinition = {
     name: "banana",
     description: "The banana command",
     type: "command",
-    handler: __dirname + "/__model__/TestArgHandler",
+    handler: __dirname + "/../__model__/TestArgHandler",
     options: [
         {
             name: "boolean-opt",
@@ -103,7 +103,7 @@ const SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT: ICommandDefinition = {
     name: "banana",
     description: "The banana command",
     type: "command",
-    handler: __dirname + "/__model__/TestArgHandler",
+    handler: __dirname + "/../__model__/TestArgHandler",
     positionals: [
         {
             name: "color",
@@ -157,7 +157,7 @@ const SAMPLE_COMMAND_REAL_HANDLER_WITH_DEFAULT_OPT: ICommandDefinition = {
     name: "banana",
     description: "The banana command",
     type: "command",
-    handler: __dirname + "/__model__/TestArgHandler",
+    handler: __dirname + "/../__model__/TestArgHandler",
     options: [
         {
             name: "color",
@@ -957,11 +957,11 @@ describe("Command Processor", () => {
         expect(stderrText).toContain("Handler Instantiation Failed:");
         expect(stderrText).toContain("Could not instantiate the handler not_a_real_handler for command banana");
         expect(stderrText).toContain("Error Details:");
-        expect(stderrText).toContain("Cannot find module 'not_a_real_handler' from 'packages/imperative/src/cmd/src/CommandProcessor.ts'");
+        expect(stderrText).toContain("Cannot find module 'not_a_real_handler' from 'packages/core/src/cmd/CommandProcessor.ts'");
         expect(commandResponse.message).toEqual("Could not instantiate the handler not_a_real_handler for command banana");
         expect(commandResponse.error?.msg).toEqual("Could not instantiate the handler not_a_real_handler for command banana");
         expect(commandResponse.error?.additionalDetails).toEqual(
-            "Cannot find module 'not_a_real_handler' from 'packages/imperative/src/cmd/src/CommandProcessor.ts'"
+            "Cannot find module 'not_a_real_handler' from 'packages/core/src/cmd/CommandProcessor.ts'"
         );
     });
 
@@ -1580,7 +1580,7 @@ describe("Command Processor", () => {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/../__model__/TestCmdHandler",
                 options: [
                     {
                         name: parm1Key,
@@ -1624,7 +1624,7 @@ describe("Command Processor", () => {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/../__model__/TestCmdHandler",
                 options: [
                     {
                         name: parm1Key,
@@ -1723,7 +1723,7 @@ describe("Command Processor", () => {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestArgHandler",
+                handler: __dirname + "/../__model__/TestArgHandler",
                 options: [
                     {
                         name: "boolean-opt",
@@ -1791,7 +1791,7 @@ describe("Command Processor", () => {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/../__model__/TestCmdHandler",
                 options: [
                     {
                         name: parm1Key,
@@ -1838,7 +1838,7 @@ describe("Command Processor", () => {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/../__model__/TestCmdHandler",
                 options: [
                     {
                         name: parm1Key,
@@ -1976,7 +1976,7 @@ describe("Command Processor", () => {
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             config: { reload: mockConfigReload }
         } as any);
-        jest.spyOn(EnvFileUtils, "getEnvironmentFilePath").mockReturnValueOnce(join(__dirname, "__resources__", ".zowe.env.json"));
+        jest.spyOn(EnvFileUtils, "getEnvironmentFilePath").mockReturnValueOnce(join(__dirname, "../__resources__", ".zowe.env.json"));
 
         const parms: any = {
             arguments: {

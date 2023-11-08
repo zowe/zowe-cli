@@ -9,11 +9,5 @@
 *
 */
 
-export * from "./doc/ISettingsFile";
-
-export * from "./errors";
-
-export * from "./persistance/ISettingsFilePersistence";
-export * from "./persistance/JSONSettingsFilePersistence";
-
-export * from "./AppSettings";
+export * from "./SettingsAlreadyInitialized";
+export * from "./SettingsNotInitialized";

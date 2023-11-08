@@ -155,7 +155,7 @@ describe("validate endevor profile handler", () => {
                         },
                     }
                 },
-                validationPlanModule: "../../../../../__tests__/src/packages/imperative/plugins/test_cli/TestProfileValidationPlan1"
+                validationPlanModule: "../../../../__tests__/__resources__/src/packages/imperative/plugins/test_cli/TestProfileValidationPlan1"
             };
             Imperative.getProfileConfiguration = jest.fn(() => profConfig);
 

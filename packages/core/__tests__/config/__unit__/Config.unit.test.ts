@@ -635,7 +635,7 @@ describe("Config tests", () => {
 
         it("should provide information based on the $schema property: Local Path", async () => {
             const config = await Config.load(MY_APP);
-            const localPath = `./packages/imperative/src/config/__tests__/__resources__/${MY_APP}.schema.json`;
+            const localPath = `./packages/core/__tests__/config/__unit__/__resources__/${MY_APP}.schema.json`;
             const schemaPath = path.join(__dirname, "__resources__", `${MY_APP}.schema.json`);
             config.setSchema(localPath);
             expect(config.getSchemaInfo()).toEqual({
@@ -672,7 +672,7 @@ describe("Config tests", () => {
 
         it("should provide information based on the $schema property: Local Path not found", async () => {
             const config = await Config.load(MY_APP);
-            const localPath = `./packages/imperative/src/config/__tests__/__resources__/FAKE.${MY_APP}.schema.json`;
+            const localPath = `./packages/core/__tests__/config/__unit__/__resources__/FAKE.${MY_APP}.schema.json`;
             const schemaPath = path.join(__dirname, "__resources__", `FAKE.${MY_APP}.schema.json`);
             config.setSchema(localPath);
             expect(config.getSchemaInfo()).toEqual({

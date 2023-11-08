@@ -142,7 +142,7 @@ describe("delete profile handler", () => {
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedOk, configurable: true });
             const parms = Object.assign({}, ...[deleteProfileParms]);
-            const handlerReq = require("../../../src/profiles/handlers/NewDeleteProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/NewDeleteProfilesHandler");
             const handler = new handlerReq.default();
 
             await handler.process(deleteProfileParms);
@@ -166,7 +166,7 @@ describe("delete profile handler", () => {
             });
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedCrash, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/NewDeleteProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/NewDeleteProfilesHandler");
             const handler = new handlerReq.default();
             await handler.process(deleteProfileParms);
             expect(errorText).toContain("An error occurred trying to delete a profile");

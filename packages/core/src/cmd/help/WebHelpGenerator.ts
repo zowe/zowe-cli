@@ -111,7 +111,7 @@ export class WebHelpGenerator {
         const webHelpDir: string = path.join(this.mDocsDir, "..");
 
         // Find web help dist folder
-        const distDir: string = path.join(__dirname, "../../../../web-help/dist");
+        const distDir: string = path.join(__dirname, "../../../web-help/dist");
         if (!fs.existsSync(distDir)) {
             throw new ImperativeError({
                 msg: `The web-help distribution directory does not exist:\n    "${distDir}"`

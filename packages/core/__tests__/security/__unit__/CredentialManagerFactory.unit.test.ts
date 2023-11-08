@@ -29,7 +29,7 @@ describe("CredentialManagerFactory", () => {
         // Because initialize can only be called once, we need to reset the module cache everytime and
         // reload our modules. So we will clear the module registry and import again
         jest.resetModules();
-        jest.doMock("../src/DefaultCredentialManager");
+        jest.doMock("../../../src/security/DefaultCredentialManager");
         ({
             CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError, InvalidCredentialManager
         } = await import("../../../src/security"));

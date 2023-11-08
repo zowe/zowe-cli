@@ -142,7 +142,7 @@ describe("create profile handler", () => {
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedOk, configurable: true });
             const parms = Object.assign({}, ...[createProfileParms]);
-            const handlerReq = require("../../../src/profiles/handlers/CreateProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/CreateProfilesHandler");
             const handler = new handlerReq.default();
 
             await handler.process(createProfileParms);
@@ -166,7 +166,7 @@ describe("create profile handler", () => {
             });
 
             Object.defineProperty(Imperative, "api", { value: impApiMockedCrash, configurable: true });
-            const handlerReq = require("../../../src/profiles/handlers/CreateProfilesHandler");
+            const handlerReq = require("../../../../../src/imperative/profiles/handlers/CreateProfilesHandler");
             const handler = new handlerReq.default();
             await handler.process(createProfileParms);
             expect(errorText).toContain("An error occurred trying to create a profile");

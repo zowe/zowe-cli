@@ -11,16 +11,24 @@
 
 jest.mock('@zowe/core-for-zowe-sdk');
 
-import { Session } from "@zowe/core-for-zowe-sdk";
+import {
+    Session, ZosmfHeaders, ZosmfRestClient,
+    Logger as _Logger, ImperativeError as _ImperativeError, ImperativeExpect as _ImperativeExpect
+} from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
 import { Invoke } from "../../../../src/methods/invoke";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 describe("Delete", () => {
+    const { ImperativeError, ImperativeExpect } = jest.requireActual('@zowe/core-for-zowe-sdk');
+    jest.mocked(_ImperativeError).mockImplementation((parms: any) => new ImperativeError(parms));
+    jest.spyOn(_Logger, "getAppLogger").mockReturnValue({error: jest.fn(), debug: jest.fn()} as any);
+    jest.spyOn(_ImperativeExpect, "toNotBeNullOrUndefined").mockImplementation(ImperativeExpect.toNotBeNullOrUndefined);
+    jest.spyOn(_ImperativeExpect, "toNotBeEqual").mockImplementation(ImperativeExpect.toNotBeEqual);
+
     const deleteExpectStringSpy = jest.spyOn(ZosmfRestClient, "deleteExpectString");
 
     beforeEach(() => {

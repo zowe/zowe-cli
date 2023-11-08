@@ -9,9 +9,7 @@
 *
 */
 
-import { Login } from "../../../src/auth/Login";
-import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ImperativeError, NextVerFeatures, RestConstants } from "@zowe/core-for-zowe-sdk";
+import { Login, ZosmfRestClient, ImperativeError, NextVerFeatures, RestConstants } from "../../../src";
 
 const goodResponse: any = {
     statusCode: RestConstants.HTTP_STATUS_204
@@ -64,8 +62,8 @@ describe("Auth Login APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.mDetails).toMatchSnapshot();
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
     });
 
@@ -79,8 +77,8 @@ describe("Auth Login APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toEqual(mockErrorText);
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
     });
 
@@ -92,8 +90,8 @@ describe("Auth Login APIML unit tests", () => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
                 expect(err).toBeDefined();
-                expect(err instanceof ImperativeError).toEqual(true);
                 expect(err.message).toEqual(mockErrorText);
+                expect(err).toBeInstanceOf(ImperativeError);
                 done();
             });
         });
@@ -109,8 +107,8 @@ describe("Auth Login APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toContain("session");
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
 
         it("should reject calls to apimlLogin that omit token type in session", async () => {
@@ -126,8 +124,8 @@ describe("Auth Login APIML unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeDefined();
-            expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toContain("apimlAuthenticationToken");
+            expect(caughtError).toBeInstanceOf(ImperativeError);
         });
     });
 });
