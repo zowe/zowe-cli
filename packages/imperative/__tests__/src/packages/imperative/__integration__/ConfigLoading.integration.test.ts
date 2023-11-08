@@ -10,30 +10,18 @@
 */
 
 import * as T from "../../../TestUtil";
-import { IImperativeConfig } from "../../../../../src/imperative";
+import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
+import { ImperativeConfig } from "../../../../../src/utilities";
 
-describe("Imperative should validate config provided by the consumer", () => {
-    const packageJsonPath = __dirname + "/package.json";
+describe("Imperative should validate config provided by the consumer", function () {
+    const testDir = T.createUniqueTestDataDir("config-loading");
+    const packageJsonPath = testDir + "/package.json";
     const mainModule = process.mainModule;
-    const loadChangingDependencies = () => {
-        return {
-            Imperative: require("../../../../../src/imperative/src/Imperative").Imperative,
-            ImperativeConfig: require("../../../../../src/utilities/src/ImperativeConfig").ImperativeConfig
-        };
-    };
-
-    let {Imperative, ImperativeConfig} = loadChangingDependencies();
-
-    // Initialize imperative before each test
-    beforeEach(() => {
-        jest.resetModules();
-        ({Imperative, ImperativeConfig} = loadChangingDependencies());
-    });
 
     beforeAll(() => {
         // Temporarily change the main module filename so that the test can work.
         (process.mainModule as any) = {
-            filename: __filename
+            filename: packageJsonPath
         };
     });
 
@@ -42,7 +30,7 @@ describe("Imperative should validate config provided by the consumer", () => {
         T.unlinkSync(packageJsonPath);
     });
 
-    it("We should be able to load our configuration from our package.json", async () => {
+    it("We should be able to load our configuration from our package.json", function () {
         const config: IImperativeConfig = {
             definitions: [
                 {
@@ -57,8 +45,7 @@ describe("Imperative should validate config provided by the consumer", () => {
             rootCommandDescription: "My Product CLI"
         };
         T.writeFileSync(packageJsonPath, JSON.stringify({imperative: config, name: "sample"}));
-        expect(T.existsSync(packageJsonPath)).toEqual(true); // If the file isn't created, something has gone wrong
-        return await Imperative.init().then(() => {
+        return Imperative.init().then(() => {
             // "Display name should have matched our config"
             expect(ImperativeConfig.instance.loadedConfig.productDisplayName)
                 .toEqual(config.productDisplayName);
