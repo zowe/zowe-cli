@@ -13,7 +13,7 @@
     "pluginHealthCheck": "./dummy.handler"
   },
   "peerDependencies": {
-    "@zowe/imperative": "1.0.0"
+    "@zowe/core-for-zowe-sdk": "1.0.0"
   },
   "typings": "lib/index.d.ts",
   "scripts": {

@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../../src/utilities/src/ImperativeConfig");
+jest.mock("../../../../../../src/utils/ImperativeConfig");
 
 import { inspect } from "util";
 import { rimraf, TEST_RESULT_DIR } from "../../../TestUtil";

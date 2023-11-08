@@ -58,7 +58,8 @@ describe("Imperative", () => {
             const { EnvironmentalVariableSettings } = require("../../../src/imperative/env/EnvironmentalVariableSettings");
             const { CompleteAuthGroupBuilder } = require("../../../src/imperative/auth/builders/CompleteAuthGroupBuilder");
             const { CompleteProfilesGroupBuilder } = require("../../../src/imperative/profiles/builders/CompleteProfilesGroupBuilder");
-            const { CompleteAutoInitCommandBuilder } = require("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
+            const { CompleteAutoInitCommandBuilder } =
+                require("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
             const { Config } = require("../../../src/config/Config");
             const { CredentialManagerFactory } = require("../../../src/security/CredentialManagerFactory");
             const { EnvFileUtils } = require("../../../src/utils/EnvFileUtils");

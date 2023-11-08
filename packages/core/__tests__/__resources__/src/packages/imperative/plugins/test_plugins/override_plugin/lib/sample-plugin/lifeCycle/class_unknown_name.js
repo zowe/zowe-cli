@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const imperative_1 = require("@zowe/imperative");
+const imperative_1 = require("@zowe/core-for-zowe-sdk");
 
 const unknownCredMgrDisplayName = "A CredMgr name that is not known";
 

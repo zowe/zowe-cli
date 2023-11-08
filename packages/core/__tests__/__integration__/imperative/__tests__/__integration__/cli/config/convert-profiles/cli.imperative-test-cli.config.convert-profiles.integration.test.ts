@@ -105,7 +105,7 @@ describe("imperative-test-cli config convert-profiles", () => {
     it("should convert v1 profile property names to v2 names", async () => {
         // we don't want the profiles created by beforeEach(). We only want an old profile.
         runCliScript(__dirname + "/__scripts__/delete_profiles_secured_and_base_noerr.sh", TEST_ENVIRONMENT.workingDir);
-        fsExtra.copySync(__dirname + "/../../config/__resources__/profiles_with_v1_names", TEST_ENVIRONMENT.workingDir + "/profiles");
+        fsExtra.copySync(__dirname + "/../../../../__resources__/profiles_with_v1_names", TEST_ENVIRONMENT.workingDir + "/profiles");
 
         const response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["y"]);
         expect(response.status).toBe(0);

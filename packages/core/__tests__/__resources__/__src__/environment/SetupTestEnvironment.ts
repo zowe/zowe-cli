@@ -59,7 +59,7 @@ export class SetupTestEnvironment {
         const pkgCmdDir = process.platform === "win32" ? "" : "bin";
 
         process.env.PATH = [
-            nodePath.resolve(__dirname, "../../../../../.npm-global", pkgCmdDir),
+            nodePath.resolve(__dirname, "../../../../../../.npm-global", pkgCmdDir),
             process.env.PATH
         ].join(separator);
 

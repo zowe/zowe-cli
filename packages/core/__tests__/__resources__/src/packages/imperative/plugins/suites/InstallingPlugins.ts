@@ -249,7 +249,7 @@ describe("Installing Plugins", () => {
         expect(fs.readFileSync(appPrefix + ".schema.json").toString()).toContain(plugins.normal.name);
         if (peerDepWarning) {
             expect(result.stderr).toMatch(/npm.*WARN/);
-            expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+            expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
             expect(result.stderr).toContain("You must install peer dependencies yourself");
         } else {
             expect(result.stderr).toEqual("");
@@ -374,7 +374,7 @@ describe("Installing Plugins", () => {
 
         if (peerDepWarning) {
             expect(result.stderr).toMatch(/npm.*WARN/);
-            expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+            expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
             expect(result.stderr).toContain("You must install peer dependencies yourself");
         } else {
             expect(result.stderr).toEqual("");
@@ -410,7 +410,7 @@ describe("Installing Plugins", () => {
             `${pluginGroup} install ${plugins.normal.location} ${plugins.normal2.location} --registry ${TEST_REGISTRY}`);
         if (peerDepWarning) {
             expect(result.stderr).toMatch(/npm.*WARN/);
-            expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+            expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
             expect(result.stderr).toContain("You must install peer dependencies yourself");
         } else {
             expect(result.stderr).toEqual("");
@@ -436,7 +436,7 @@ describe("Installing Plugins", () => {
         let result = executeCommandString(this, `${pluginGroup} install ${plugins.normal.location}`);
         if (peerDepWarning) {
             expect(result.stderr).toMatch(/npm.*WARN/);
-            expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+            expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
             expect(result.stderr).toContain("You must install peer dependencies yourself");
         } else {
             expect(result.stderr).toEqual("");
@@ -459,7 +459,7 @@ describe("Installing Plugins", () => {
         result = executeCommandString(this, `${pluginGroup} install`);
         if (peerDepWarning) {
             expect(result.stderr).toMatch(/npm.*WARN/);
-            expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+            expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
             expect(result.stderr).toContain("You must install peer dependencies yourself");
         } else {
             expect(result.stderr).toEqual("");
@@ -485,7 +485,7 @@ describe("Installing Plugins", () => {
         result = T.executeTestCLICommand(cliBin, this, [pluginGroup, "install", plugins.space_in_path.location]);
         if (peerDepWarning) {
             expect(result.stderr).toMatch(/npm.*WARN/);
-            expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+            expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
             expect(result.stderr).toContain("You must install peer dependencies yourself");
         } else {
             expect(result.stderr).toEqual("");
@@ -648,7 +648,7 @@ describe("Installing Plugins", () => {
 
             if (peerDepWarning) {
                 expect(result.stderr).toMatch(/npm.*WARN/);
-                expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+                expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
                 expect(result.stderr).toContain("You must install peer dependencies yourself");
             } else {
                 expect(result.stderr).toEqual("");
@@ -691,7 +691,7 @@ describe("Installing Plugins", () => {
 
             if (peerDepWarning) {
                 expect(result.stderr).toMatch(/npm.*WARN/);
-                expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+                expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
                 expect(result.stderr).toContain("You must install peer dependencies yourself");
             } else {
                 expect(result.stderr).toEqual("");
@@ -713,7 +713,7 @@ describe("Installing Plugins", () => {
 
             if (peerDepWarning) {
                 expect(result.stderr).toMatch(/npm.*WARN/);
-                expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+                expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
                 expect(result.stderr).toContain("You must install peer dependencies yourself");
             } else {
                 expect(result.stderr).toEqual("");

@@ -199,7 +199,7 @@ describe("Validate plugin", () => {
 
                 if (peerDepWarning) {
                     expect(result.stderr).toMatch(/npm.*WARN/);
-                    expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+                    expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
                     expect(result.stderr).toContain("You must install peer dependencies yourself");
                 } else {
                     expect(result.stderr).toEqual("");
@@ -228,7 +228,7 @@ describe("Validate plugin", () => {
 
                 if (peerDepWarning) {
                     expect(result.stderr).toMatch(/npm.*WARN/);
-                    expect(result.stderr).toContain("requires a peer of @zowe/imperative");
+                    expect(result.stderr).toContain("requires a peer of @zowe/core-for-zowe-sdk");
                     expect(result.stderr).toContain("You must install peer dependencies yourself");
                 } else {
                     expect(result.stderr).toEqual("");

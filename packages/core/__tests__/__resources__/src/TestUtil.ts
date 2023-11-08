@@ -49,7 +49,7 @@ export { resolve, basename, dirname } from "path";
 
 export const rimraf = (dir: string) => {
 
-    const rimrafExecutable = __dirname + "/../../../../node_modules/rimraf/bin.js";
+    const rimrafExecutable = __dirname + "/../../../../../node_modules/rimraf/bin.js";
     const rimrafProcess = sync("node", [rimrafExecutable, dir]);
     if (rimrafProcess.status !== 0) {
         throw new Error("Error deleting directory with rimraf CLI: \n" + rimrafProcess.output.join(" "));
@@ -66,7 +66,7 @@ export const DataObjectParser = require("dataobject-parser");
 
 export const TEST_HOME: string = process.cwd() + "/__tests__/__results__/data/.testHomeDir";
 
-export const TEST_RESULT_DIR = nodePath.resolve(__dirname + "/../__results__");
+export const TEST_RESULT_DIR = nodePath.resolve(__dirname + "/../../__results__");
 
 /**
  * This function strips any new lines out of the string passed.

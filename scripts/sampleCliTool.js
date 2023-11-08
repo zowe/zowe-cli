@@ -33,6 +33,12 @@ switch (process.argv[2]) {
         break;
     case "install":
         runAll((dir) => ({ command: `npm install -g . --prefix ${npmPrefix} --install-links=false`, cwd: dir }));
+        const binMap = {
+            cmd: "lib/node_modules/cmd-sample-cli/lib/index.js",
+            hello_world: "lib/node_modules/hello-world-cli/lib/index.js",
+            imperative: "lib/node_modules/imperative-test-cli/lib/main.js"
+        };
+        runAll((dir) => ({command: `chmod +x ${npmPrefix}/${binMap[path.basename(dir)]} || echo ${dir}`, cwd: dir }));
         break;
     case "uninstall":
         // Delete install folder since npm uninstall doesn't work as expected: https://github.com/npm/npm/issues/17905

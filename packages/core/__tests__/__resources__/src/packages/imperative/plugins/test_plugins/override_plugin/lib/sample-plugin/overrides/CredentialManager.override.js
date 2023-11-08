@@ -17,7 +17,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const imperative_1 = require("@zowe/imperative");
+const imperative_1 = require("@zowe/core-for-zowe-sdk");
 module.exports = class CredentialManagerOverrides extends imperative_1.AbstractCredentialManager {
     constructor(service, displayName) {
         super(service, displayName);

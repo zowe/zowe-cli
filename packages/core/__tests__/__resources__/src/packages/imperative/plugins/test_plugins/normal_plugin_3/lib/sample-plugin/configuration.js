@@ -30,7 +30,7 @@ const config = {
     commandModuleGlobs: ["**/cmd/*/*.definition!(.d).*s"],
     rootCommandDescription: "Test plugin with globs and profiles",
     pluginBaseCliVersion: "^0.4.0-1",
-    defaultHome: "../../../../../../__results__/.pluginstest",
+    defaultHome: "../../../../../../../__results__/.pluginstest",
     productDisplayName: "Sample CLI",
     primaryTextColor: "blue",
     name: "normal-plugin-3",

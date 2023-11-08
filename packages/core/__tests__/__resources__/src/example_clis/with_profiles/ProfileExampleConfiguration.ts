@@ -74,7 +74,7 @@ const config: IImperativeConfig = {
     ],
     commandModuleGlobs: ["definitions/*/*Definition.ts"],
     rootCommandDescription: "Sample command line interface",
-    defaultHome: __dirname + "/../../../__results__/.examplewithprofiles",
+    defaultHome: __dirname + "/../../../../__results__/.examplewithprofiles",
     // defaultHome: createUniqueTestDataDir(),
     productDisplayName: "Test CLI with Profiles",
     name: "example_with_profiles",

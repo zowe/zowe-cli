@@ -25,6 +25,7 @@ describe("MonitorJobs", () => {
     jest.mocked(_ImperativeError).mockImplementation((parms: any) => new ImperativeError(parms));
     const mockedLogger: any = {trace: jest.fn(), info: jest.fn(), error: jest.fn(), debug: jest.fn()};
     jest.spyOn(_Logger, "getAppLogger").mockReturnValue(mockedLogger);
+    (MonitorJobs as any).log = mockedLogger;
     jest.spyOn(_ImperativeExpect, "keysToBeDefinedAndNonBlank").mockImplementation(ImperativeExpect.keysToBeDefinedAndNonBlank);
     jest.spyOn(_ImperativeExpect, "toBeOneOf").mockImplementation(ImperativeExpect.toBeOneOf);
     jest.spyOn(_ImperativeExpect, "keysToBeOfType").mockImplementation(ImperativeExpect.keysToBeOfType);

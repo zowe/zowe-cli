@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { ICommandHandler, IHandlerParameters } from "@zowe/core-for-zowe-sdk";
 /**
  * Defining handler to be use for the 'bar' command.
  */

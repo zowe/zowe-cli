@@ -9,5 +9,5 @@
 *
 */
 
-import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
+import { ICommandProfileTypeConfiguration } from "@zowe/core-for-zowe-sdk";
 export declare const BarProfileConfig: ICommandProfileTypeConfiguration;

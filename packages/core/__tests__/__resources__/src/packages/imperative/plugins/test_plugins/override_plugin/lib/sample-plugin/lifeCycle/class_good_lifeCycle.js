@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const imperative_1 = require("@zowe/imperative");
+const imperative_1 = require("@zowe/core-for-zowe-sdk");
 
 const knownCredMgr = imperative_1.CredentialManagerOverride.getKnownCredMgrs()[1];
 const credMgrDisplayName = knownCredMgr.credMgrDisplayName;

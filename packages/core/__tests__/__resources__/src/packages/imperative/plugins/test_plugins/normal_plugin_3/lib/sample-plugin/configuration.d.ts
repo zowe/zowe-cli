@@ -9,6 +9,6 @@
 *
 */
 
-import { IImperativeConfig } from "@zowe/imperative";
+import { IImperativeConfig } from "@zowe/core-for-zowe-sdk";
 declare const config: IImperativeConfig;
 export = config;

@@ -1,5 +1,5 @@
 "use strict";
-var ImperativeError = require("@zowe/imperative").ImperativeError;
+var ImperativeError = require("@zowe/core-for-zowe-sdk").ImperativeError;
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {

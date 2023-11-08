@@ -25,7 +25,7 @@ const config: IImperativeConfig = {
         }
     ],
     rootCommandDescription: "Sample command line interface",
-    defaultHome: path.join(__dirname, "../../../../__results__/.packages-profiles"),
+    defaultHome: path.join(__dirname, "../../../../../__results__/.packages-profiles"),
     productDisplayName: "Test CLI with Profiles",
     name: "example_with_profiles",
     profiles: [

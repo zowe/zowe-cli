@@ -238,8 +238,8 @@ describe("Cli Profile Manager", () => {
 
         describe("Missing keytar installation", () => {
             const profileName = "missing-keytar";
-            const keyTarDir = path.join(__dirname, "../../../../../../../node_modules/@zowe/secrets-for-zowe-sdk");
-            const renamedKeyTarDir = path.join(__dirname, "../../../../../../../node_modules/@zowe/zowe-for-secrets-sdk");
+            const keyTarDir = path.join(__dirname, "../../../../../../../../node_modules/@zowe/secrets-for-zowe-sdk");
+            const renamedKeyTarDir = path.join(__dirname, "../../../../../../../../node_modules/@zowe/zowe-for-secrets-sdk");
 
             const renameKeyTar = () => {
                 if (fs.existsSync(keyTarDir)) {

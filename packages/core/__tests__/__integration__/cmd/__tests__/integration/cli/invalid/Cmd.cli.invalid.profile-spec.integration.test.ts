@@ -27,8 +27,8 @@ describe("cmd-cli invalid profile-spec", () => {
 
     it("should fail the command if the profile property is not supplied and the handler requests a profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/profile-spec.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.status).toBe(1);
-        expect(response.stdout.toString()).toBe("");
         expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe("");
+        expect(response.status).toBe(1);
     });
 });

@@ -9,7 +9,7 @@
 *
 */
 
-import { Logger } from "@zowe/imperative";
+import { Logger } from "@zowe/core-for-zowe-sdk";
 declare const _default: {
     new (service: string): {
         consoleLog: Logger;

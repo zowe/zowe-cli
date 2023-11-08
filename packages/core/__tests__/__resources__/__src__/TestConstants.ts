@@ -13,7 +13,7 @@ import { homedir } from "os";
 import { join } from "path";
 
 
-const PROJECTS_HOME = join(__dirname, "../../");
+const PROJECTS_HOME = join(__dirname, "../../../");
 
 /**
  * Variables related to the various projects used during development.
@@ -104,7 +104,7 @@ export const TEST_REGISTRY = "http://imperative-npm-registry:4873";
 
 // The test results directory name - all tests results - logs, test home dirs,
 // coverage reports, etc. are placed in the results directory.
-export const TEST_RESULT_DIR = join(__dirname, "/../__results__/");
+export const TEST_RESULT_DIR = join(__dirname, "/../../__results__/");
 
 // The test data directory is where all data that a test (API/CLI) generates
 // will be placed. Data such as logs, downloaded files, imperative homes, etc.

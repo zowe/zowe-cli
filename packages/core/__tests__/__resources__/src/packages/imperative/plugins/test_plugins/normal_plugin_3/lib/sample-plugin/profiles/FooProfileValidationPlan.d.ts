@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfileValidationPlan, IProfileValidationTask } from "@zowe/imperative";
+import { IProfileValidationPlan, IProfileValidationTask } from "@zowe/core-for-zowe-sdk";
 declare class FooProfileValidationPlan implements IProfileValidationPlan {
     public readonly tasks: IProfileValidationTask[];
     public readonly failureSuggestions: string;

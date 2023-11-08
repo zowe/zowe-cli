@@ -88,7 +88,7 @@ const config: IImperativeConfig = {
         }
     ],
     rootCommandDescription: "Sample command line interface",
-    defaultHome: __dirname + "/../../../__results__/.examplewithexperimental",
+    defaultHome: __dirname + "/../../../../__results__/.examplewithexperimental",
     productDisplayName: "Test CLI with Profiles",
     name: "example_with_experimental",
     experimentalCommandDescription: ExperimentalExampleConstants.EXPERIMENTAL_DESCRIPTION

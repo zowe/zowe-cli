@@ -39,7 +39,8 @@ describe("Hello World", () => {
 
     it ("should print version if the option is specified", async () => {
         const response = await TestUtils.runCliScript(__dirname + "/scripts/version.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.status).toBe(0);
+        expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.status).toBe(0);
     });
 });

@@ -15,7 +15,7 @@ import { join } from "path";
 import { config } from "../plugins/PluginTestConstants";
 
 const testCliNodeModulePath = join(__dirname, "..", "plugins", "test_cli", "node_modules");
-const impLibDir = join(__dirname, "../../../../../lib");
+const impLibDir = join(__dirname, "../../../../../../lib");
 
 describe("Plugin Management Facility", () => {
     const home = config.defaultHome;
@@ -32,7 +32,7 @@ describe("Plugin Management Facility", () => {
          */
         const namespaceDirPath = join(testCliNodeModulePath, "@zowe");
         IO.mkdirp(namespaceDirPath);
-        const testCliImpSymLink = join(namespaceDirPath, "imperative");
+        const testCliImpSymLink = join(namespaceDirPath, "core-for-zowe-sdk");
         IO.createSymlinkToDir(testCliImpSymLink, impLibDir);
     });
 

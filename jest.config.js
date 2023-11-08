@@ -45,12 +45,6 @@ const projectConfig = {
             "coveragePathIgnorePatterns": ["packages/(?!cli)"]
         },
         {
-            "displayName": "Imperative",
-            ...sharedConfig,
-            "roots": ["packages/imperative", "mocks"],
-            "coveragePathIgnorePatterns": ["packages/(?!imperative)"]
-        },
-        {
             "displayName": "Core SDK",
             ...sharedConfig,
             "roots": ["packages/core", "mocks"],
@@ -143,7 +137,7 @@ module.exports = {
     "coverageDirectory": "__tests__/__results__/unit/coverage",
     "collectCoverageFrom": [
         "packages/**/*.ts",
-        "!**/packages/imperative/web-help/**/*.ts",
+        "!**/packages/core/web-help/**/*.ts",
         "!**/packages/**/__tests__/**/*.ts",
         "__tests__/__packages__/*.ts",
         "!**/node_modules/**",

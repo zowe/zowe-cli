@@ -1,5 +1,5 @@
 "use strict";
-var T = require("@zowe/imperative");
+var T = require("@zowe/core-for-zowe-sdk");
 var path = require("path");
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
