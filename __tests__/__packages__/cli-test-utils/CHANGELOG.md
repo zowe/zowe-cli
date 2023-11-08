@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: First major version bump for V3
+
 ## `7.18.9`
 
 - Enhancement: Adds the `CLI_TEST_UTILS_USE_PROJECT_ROOT_DIR` environment variable to force the test utility to use the global project dir instead of workspace dirs if set.
