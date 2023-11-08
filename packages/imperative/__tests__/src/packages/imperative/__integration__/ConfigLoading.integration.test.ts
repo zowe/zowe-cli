@@ -12,7 +12,7 @@
 import * as T from "../../../TestUtil";
 import { IImperativeConfig } from "../../../../../src/imperative";
 
-describe("Imperative should validate config provided by the consumer", function () {
+describe("Imperative should validate config provided by the consumer", () => {
     const packageJsonPath = __dirname + "/package.json";
     const mainModule = process.mainModule;
     const loadChangingDependencies = () => {
@@ -42,7 +42,7 @@ describe("Imperative should validate config provided by the consumer", function 
         T.unlinkSync(packageJsonPath);
     });
 
-    it("We should be able to load our configuration from our package.json", function () {
+    it("We should be able to load our configuration from our package.json", async () => {
         const config: IImperativeConfig = {
             definitions: [
                 {
@@ -58,7 +58,7 @@ describe("Imperative should validate config provided by the consumer", function 
         };
         T.writeFileSync(packageJsonPath, JSON.stringify({imperative: config, name: "sample"}));
         expect(T.existsSync(packageJsonPath)).toEqual(true); // If the file isn't created, something has gone wrong
-        return Imperative.init().then(() => {
+        return await Imperative.init().then(() => {
             // "Display name should have matched our config"
             expect(ImperativeConfig.instance.loadedConfig.productDisplayName)
                 .toEqual(config.productDisplayName);
