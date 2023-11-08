@@ -18,7 +18,3 @@ beforeAll(() => {
     // If the worker runs out of memory, this needs to be reset
     require('events').EventEmitter.defaultMaxListeners = Infinity;
 });
-
-afterAll(() => {
-    jest.restoreAllMocks();
-})
