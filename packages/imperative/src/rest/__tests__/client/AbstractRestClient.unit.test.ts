@@ -36,7 +36,7 @@ import { IO } from "../../../io";
 describe("AbstractRestClient tests", () => {
 
     beforeEach(() => {
-        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+        /* This avoids having to mock ImperativeConfig.instance.envVariablePrefix.
          * Unless overridden, tests will use our legacy format for errors.
          */
         jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);

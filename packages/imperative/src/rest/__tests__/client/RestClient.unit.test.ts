@@ -33,7 +33,7 @@ describe("RestClient tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+        /* This avoids having to mock ImperativeConfig.instance.envVariablePrefix.
          * Unless overridden, tests will use our legacy format for errors.
          */
         jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);

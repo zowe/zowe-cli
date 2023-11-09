@@ -47,7 +47,7 @@ describe("z/OS Files - Upload", () => {
     let error: any;
 
     beforeEach(() => {
-        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
+        /* This avoids having to mock ImperativeConfig.instance.envVariablePrefix.
          * Unless the choice below is overridden, tests will use our legacy format for errors.
          */
         jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
