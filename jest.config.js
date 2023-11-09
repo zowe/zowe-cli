@@ -129,7 +129,6 @@ module.exports = {
             "reportTestSuiteErrors": true
         }],
         ["jest-stare", {
-            "resultDir": "__tests__/__results__/jest-stare",
             "coverageLink": "../unit/coverage/lcov-report/index.html"
         }],
         ["github-actions", { "silent": false } ]
@@ -145,8 +144,7 @@ module.exports = {
     "collectCoverageFrom": [
         "packages/**/*.ts",
         "!**/packages/imperative/web-help/**/*.ts",
-        "!**/packages/**/__tests__/**/*.ts",
-        "__tests__/__packages__/*.ts",
+        "!**/__tests__/**/*.ts",
         "!**/node_modules/**",
         "!**/lib/**"
     ],

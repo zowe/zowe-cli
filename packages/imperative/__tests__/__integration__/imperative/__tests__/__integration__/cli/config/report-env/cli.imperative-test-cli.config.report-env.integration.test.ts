@@ -315,7 +315,7 @@ describe("imperative-test-cli config report-env", () => {
                 path.join(TEST_ENVIRONMENT.workingDir, "test.schema.good.json")
             );
 
-            fs.writeFileSync(envFileHome, '{"ZOWE_OPT_TEST": "TEST_VARIABLE" "ZOWE_OPT_TEST2": "TEST_VARIABLE"}');
+            fs.writeFileSync(envFileCli, '{"ZOWE_OPT_TEST": "TEST_VARIABLE" "ZOWE_OPT_TEST2": "TEST_VARIABLE"}');
 
             const response = runCliScript(path.join(__dirname, "/__scripts__/report-env.sh"),
                 TEST_ENVIRONMENT.workingDir
