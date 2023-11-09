@@ -58,7 +58,12 @@ describe("zos-jobs submit local-file command", () => {
                 TEST_ENVIRONMENT, [relDirname + "/testFileOfLocalJCL.txt"]);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
+            expect(response.stderr.toString()).toContain("Unknown argument: blah");
+            expect(response.stderr.toString()).toContain("Command failed due to improper syntax");
+            expect(response.stderr.toString()).toContain('Command entered: "zos-jobs submit local-file ' +
+                '../../../../packages/cli/__tests__/zosjobs/__integration__/submit/local-file/testFileOfLocalJCL.txt blah"');
+            expect(response.stderr.toString()).toContain('Available commands are "data-set, local-file, stdin, uss-file".');
+            expect(response.stderr.toString()).toContain('Use "zowe zos-jobs submit --help" to view groups, commands, and options.');
         });
 
         it("should occur if --wfa and --directory are both specified", () => {
