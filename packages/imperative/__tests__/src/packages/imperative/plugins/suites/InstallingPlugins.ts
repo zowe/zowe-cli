@@ -226,10 +226,10 @@ describe("Installing Plugins", () => {
     // });
 
     it("should install a plugin from a file location - no space in path", function () {
-        const originalEnvHome = process.env.ZOWE_CLI_HOME;
+        const originalEnvHome = process.env.PLUGINS_TEST_HOME;
         // Not sure if this needs done for all integration tests to simulate that
         // --global-config will point to the __results__ directory created for the test
-        process.env.ZOWE_CLI_HOME = config.defaultHome;
+        process.env.PLUGINS_TEST_HOME = config.defaultHome;
 
         let result = executeCommandString(this, "--help");
         const appPrefix = resolve(config.defaultHome, config.name);
@@ -265,7 +265,7 @@ describe("Installing Plugins", () => {
         expect(result.stderr).toEqual("");
         expect(result.stdout).toContain(plugins.normal.usage);
 
-        process.env.ZOWE_CLI_HOME = originalEnvHome;
+        process.env.PLUGINS_TEST_HOME = originalEnvHome;
     });
 
     it("should fail when a credMgr override plugin has no pluginLifeCycle property", function () {
