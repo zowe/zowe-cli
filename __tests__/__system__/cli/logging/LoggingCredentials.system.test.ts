@@ -53,7 +53,7 @@ describe("Zowe CLI Logging", () => {
         expect(imperativeLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
         expect(imperativeLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
 
-        // ensure that the password and encoded auth does not appear in the brightside log
+        // ensure that the password and encoded auth does not appear in the Zowe log
         expect(zoweLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
         expect(zoweLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
     });
@@ -83,7 +83,7 @@ describe("Zowe CLI Logging", () => {
         expect(imperativeLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
         expect(imperativeLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
 
-        // ensure that the password and encoded auth does not appear in the brightside log
+        // ensure that the password and encoded auth does not appear in the Zowe log
         expect(zoweLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
         expect(zoweLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
     });

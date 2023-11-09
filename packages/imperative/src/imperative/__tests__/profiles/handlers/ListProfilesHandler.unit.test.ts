@@ -81,7 +81,7 @@ const MockedImperativeAPIError = {
 // "Mocked" version of the handler parameters
 const HANDLER_PARAMETERS: any = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-jobs", "submit", "data-set"],
     },
     response: {

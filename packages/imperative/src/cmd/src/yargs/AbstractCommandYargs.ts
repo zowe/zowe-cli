@@ -33,7 +33,7 @@ import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 export type YargsCommandCompleted = (args: Arguments, response: IYargsResponse) => void;
 
 /**
- * Abstract Yargs Bright Command - Contains base methods for defining commands and groups
+ * Abstract Yargs Zowe Command - Contains base methods for defining commands and groups
  */
 export abstract class AbstractCommandYargs {
     /**
@@ -226,7 +226,7 @@ export abstract class AbstractCommandYargs {
     }
 
     /**
-     * Construct the Bright command definition "tree" - the full definition document including all parents.
+     * Construct the Zowe command definition "tree" - the full definition document including all parents.
      * @return {ICommandDefinition}: The command definition "tree".
      */
     public constructDefinitionTree(): ICommandDefinition {
@@ -241,14 +241,14 @@ export abstract class AbstractCommandYargs {
     public abstract defineCommandToYargs(commandExecuted: YargsCommandCompleted): void;
 
     /**
-     * Build The Bright Yargs response for the callback. Includes the Bright command response and status info.
+     * Build The Zowe Yargs response for the callback. Includes the Zowe command response and status info.
      * @param {boolean} successful: True if the command succeeded
      * @param {string} responseMessage: Response message for display purposes.
      * @param {ImperativeYargsCommandAction} action
      * @param {ICommandResponse[]} responses
      * @return {IYargsResponse}
      */
-    protected getBrightYargsResponse(successful: boolean, responseMessage: string,
+    protected getZoweYargsResponse(successful: boolean, responseMessage: string,
         action: ImperativeYargsCommandAction,
         responses?: ICommandResponse[]): IYargsResponse {
         let exitCode: number;
@@ -309,7 +309,7 @@ export abstract class AbstractCommandYargs {
                 stream: ImperativeConfig.instance.daemonContext?.stream
             }));
         } catch (helpErr) {
-            const errorResponse: IYargsResponse = this.getBrightYargsResponse(false,
+            const errorResponse: IYargsResponse = this.getZoweYargsResponse(false,
                 `The help for ${this.definition.name} was invoked and failed.`,
                 "help invoked");
             errorResponse.causeErrors = helpErr;
@@ -318,7 +318,7 @@ export abstract class AbstractCommandYargs {
         }
 
         if (!invoked) {
-            commandExecuted(args, this.getBrightYargsResponse(true,
+            commandExecuted(args, this.getZoweYargsResponse(true,
                 `The help for ${this.definition.name} was invoked.`,
                 "help invoked", [response]));
         }
@@ -423,7 +423,7 @@ export abstract class AbstractCommandYargs {
                 })
             );
         } catch (helpErr) {
-            const errorResponse: IYargsResponse = this.getBrightYargsResponse(false,
+            const errorResponse: IYargsResponse = this.getZoweYargsResponse(false,
                 `The web help for ${this.definition.name} was invoked and failed.`,
                 "help invoked");
             errorResponse.causeErrors = helpErr;
@@ -432,7 +432,7 @@ export abstract class AbstractCommandYargs {
         }
 
         if (!invoked) {
-            commandExecuted(args, this.getBrightYargsResponse(true,
+            commandExecuted(args, this.getZoweYargsResponse(true,
                 `The web help for ${this.definition.name} was invoked.`,
                 "help invoked", [response]));
         }

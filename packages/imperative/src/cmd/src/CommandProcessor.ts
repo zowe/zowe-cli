@@ -295,7 +295,7 @@ export class CommandProcessor {
 
     /**
      * Obtain a copy of the command definition
-     * @return {ICommandDefinition}: The Bright Commands definition document.
+     * @return {ICommandDefinition}: The Zowe Commands definition document.
      */
     get definition(): ICommandDefinition {
         return JSON.parse(JSON.stringify(this.mDefinition));
@@ -303,7 +303,7 @@ export class CommandProcessor {
 
     /**
      * Obtain a copy of the command definition
-     * @return {ICommandDefinition}: The Bright Commands definition document.
+     * @return {ICommandDefinition}: The Zowe Commands definition document.
      */
     get fullDefinition(): ICommandDefinition {
         return JSON.parse(JSON.stringify(this.mFullDefinition));

@@ -88,7 +88,7 @@ export class DeleteJobs {
 
 
     /**
-     * Getter for brightside logger
+     * Getter for Zowe logger
      * @returns {Logger}
      */
     private static get log(): Logger {

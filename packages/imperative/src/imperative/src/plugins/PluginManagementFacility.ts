@@ -121,7 +121,7 @@ export class PluginManagementFacility {
     private pluginIssues = PluginIssues.instance;
 
     /**
-     * A set of bright dependencies used by plugins. Each item in the
+     * A set of Zowe dependencies used by plugins. Each item in the
      * set contains the dependency's property name, and the the version
      * of that dependency.
      *

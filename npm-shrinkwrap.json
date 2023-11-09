@@ -26279,7 +26279,6 @@
         "tar": "6.1.14"
       },
       "bin": {
-        "bright": "lib/main.js",
         "zowe": "lib/main.js"
       },
       "devDependencies": {

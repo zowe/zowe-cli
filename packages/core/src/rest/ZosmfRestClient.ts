@@ -25,7 +25,7 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
 export class ZosmfRestClient extends RestClient {
 
     /**
-     * Use the Brightside logger instead of the imperative logger
+     * Use the Zowe logger instead of the imperative logger
      * @type {Logger}
      */
     public get log(): Logger {
