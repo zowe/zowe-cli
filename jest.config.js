@@ -144,8 +144,7 @@ module.exports = {
     "collectCoverageFrom": [
         "packages/**/*.ts",
         "!**/packages/imperative/web-help/**/*.ts",
-        "!**/packages/**/__tests__/**/*.ts",
-        "__tests__/__packages__/*.ts",
+        "!**/__tests__/**/*.ts",
         "!**/node_modules/**",
         "!**/lib/**"
     ],
