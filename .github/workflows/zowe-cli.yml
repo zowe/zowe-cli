@@ -52,6 +52,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+    
+    - name: Downgrade Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.5'
 
     - name: Disable Lint Annotations
       run: |
