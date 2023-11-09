@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zosmf-for-zowe-sdk",
-  "version": "7.18.9",
+  "version": "8.0.0-merged.202311091507",
   "description": "Zowe SDK to interact with the z/OS Management Facility",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,8 +45,8 @@
   },
   "devDependencies": {
     "@types/node": "^14.18.28",
-    "@zowe/cli-test-utils": "7.18.9",
-    "@zowe/core-for-zowe-sdk": "7.18.9",
+    "@zowe/cli-test-utils": "8.0.0-merged.202311091507",
+    "@zowe/core-for-zowe-sdk": "8.0.0-merged.202311091507",
     "eslint": "^8.22.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
