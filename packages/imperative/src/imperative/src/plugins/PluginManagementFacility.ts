@@ -224,7 +224,6 @@ export class PluginManagementFacility {
      */
     public loadAllPluginCfgProps(): void {
         // Initialize the plugin.json file if needed
-        // TODO Skip creation of PMF_ROOT directory once it is deprecated by team config
         if (!existsSync(this.pmfConst.PLUGIN_JSON)) {
             if (!existsSync(this.pmfConst.PMF_ROOT)) {
                 this.impLogger.debug("Creating PMF_ROOT directory");

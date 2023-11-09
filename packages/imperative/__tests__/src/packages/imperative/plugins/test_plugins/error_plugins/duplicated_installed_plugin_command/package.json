@@ -10,7 +10,6 @@
     "name": "normal-plugin",
     "rootCommandDescription": "duplicated installed plugin command",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

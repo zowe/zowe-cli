@@ -10,7 +10,6 @@
     "name": "definition_empty_chained_handler",
     "rootCommandDescription": "definition empty chained handler",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

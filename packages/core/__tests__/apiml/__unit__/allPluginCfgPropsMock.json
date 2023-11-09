@@ -6,7 +6,6 @@
       "commandModuleGlobs": [
         "**/*.definition!(.d).*s"
       ],
-      "pluginHealthCheck": "./lib/HealthCheck.handler",
       "rootCommandDescription": "CA Endevor SCM plug-in for listing Endevor environment information, working with elements and packages located in specified Endevor instance.",
       "envVariablePrefix": "ENDEVOR",
       "defaultHome": "C:\\Users\\ej608771/.endevor",
@@ -309,7 +308,6 @@
       "commandModuleGlobs": [
         "**/cli/*/*.definition!(.d).*s"
       ],
-      "pluginHealthCheck": "C:\\Users\\ej608771\\.zowe\\plugins\\installed\\node_modules\\@broadcom\\jclcheck-for-zowe-cli\\lib/healthCheck.handler",
       "pluginSummary": "JCLCheck plugin",
       "pluginAliases": [
         "jck"
