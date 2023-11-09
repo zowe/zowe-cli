@@ -23,7 +23,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## `7.18.1`
 
-- Added README to package w/ description, instructions and examples of using the `keyring` module. 
+- Added README to package w/ description, instructions and examples of using the `keyring` module.
 
 ## `7.18.0`
 
