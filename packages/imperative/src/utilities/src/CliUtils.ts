@@ -20,7 +20,6 @@ import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
 import * as prompt from "readline-sync";
-import * as os from "os";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 
 /**
@@ -463,98 +462,6 @@ export class CliUtils {
         return new Promise((resolve) => {
             setTimeout(resolve, timeInMs);
         });
-    }
-
-    /**
-     * Prompt the user with a question and wait for an answer,
-     * but only up to the specified timeout.
-     *
-     * @deprecated Use `readPrompt` instead which supports more options
-     * @param questionText The text with which we will prompt the user.
-     *
-     * @param hideText Should we hide the text. True = display stars.
-     *                 False = display text. Default = false.
-     *
-     * @param secToWait The number of seconds that we will wait for an answer.
-     *                  If not supplied, the default is 600 seconds.
-     *
-     * @return A string containing the user's answer, or null if we timeout.
-     *
-     * @example
-     *      const answer = await CliUtils.promptWithTimeout("Type your answer here: ");
-     *      if (answer === null) {
-     *          // abort the operation that you wanted to perform
-     *      } else {
-     *          // use answer in some operation
-     *      }
-     */
-    public static async promptWithTimeout(
-        questionText: string,
-        hideText: boolean = false,
-        secToWait: number = 600,
-    ): Promise<string> {
-
-        // readline provides our interface for terminal I/O
-        const readline = require("readline");
-        const ttyIo = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-            terminal: true,
-            prompt: questionText
-        });
-        const writeToOutputOrig = ttyIo._writeToOutput;
-
-        // ask user the desired question and then asynchronously read answer
-        ttyIo.prompt();
-        let answerToReturn: string = null;
-        ttyIo.on("line", (answer: string) => {
-            answerToReturn = answer;
-            ttyIo.close();
-        }).on("close", () => {
-            if (hideText) {
-                // The user's Enter key was echoed as a '*', so now output a newline
-                ttyIo._writeToOutput = writeToOutputOrig;
-                ttyIo.output.write("\n");
-            }
-        });
-
-        // when asked to hide text, override output to only display stars
-        if (hideText) {
-            ttyIo._writeToOutput = function _writeToOutput(stringToWrite: string) {
-                if (stringToWrite === os.EOL) {
-                    return;
-                }
-                if (stringToWrite.length === 1) {
-                    // display a star for each one character of the hidden response
-                    ttyIo.output.write("*");
-                } else {
-                    /* After a backspace, we get a string with the whole question
-                     * and the hidden response. Redisplay the prompt and hide the response.
-                     */
-                    let stringToShow = stringToWrite.substring(0, questionText.length);
-                    for (let count = 1; count <= stringToWrite.length - questionText.length; count ++) {
-                        stringToShow += "*";
-                    }
-                    ttyIo.output.write(stringToShow);
-                }
-            };
-        }
-
-        // Ensure that we use a reasonable timeout
-        const maxSecToWait = 900; // 15 minute max
-        if (secToWait > maxSecToWait || secToWait <= 0) {
-            secToWait = maxSecToWait;
-        }
-
-        // loop until timeout, to give our earlier asynch read a chance to work
-        const oneSecOfMillis = 1000;
-        for (let count = 1; answerToReturn === null && count <= secToWait; count++) {
-            await CliUtils.sleep(oneSecOfMillis);
-        }
-
-        // terminate our use of the ttyIo object
-        ttyIo.close();
-        return answerToReturn;
     }
 
     /**
