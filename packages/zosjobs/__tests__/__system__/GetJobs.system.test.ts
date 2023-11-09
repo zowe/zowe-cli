@@ -88,6 +88,7 @@ describe("Get Jobs - System Tests", () => {
             password: "fake",
             hostname: defaultSystem.zosmf.host,
             port: defaultSystem.zosmf.port,
+            basePath: defaultSystem.zosmf.basePath,
             type: "basic",
             rejectUnauthorized: false
         });

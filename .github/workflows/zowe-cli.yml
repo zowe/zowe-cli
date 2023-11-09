@@ -52,6 +52,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+    
+    - name: Downgrade Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.5'
 
     - name: Disable Lint Annotations
       run: |
@@ -74,7 +79,7 @@ jobs:
 
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:unit >> file.txt
+      run: npm run test:unit
 
     - name: Unlock Keyring
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
@@ -82,7 +87,7 @@ jobs:
 
     - name: Integration Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:integration >> file.txt
+      run: npm run test:integration
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
