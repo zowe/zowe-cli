@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-merged.202311091724`
 
 - TEST: This is a test version
 

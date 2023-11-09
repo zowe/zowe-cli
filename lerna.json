@@ -1,5 +1,5 @@
 {
-  "version": "7.18.9",
+  "version": "8.0.0-merged.202311091724",
   "command": {
     "publish": {
       "ignoreChanges": [
