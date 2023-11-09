@@ -27,7 +27,7 @@ fs.writeFileSync(cliShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
 // Build deduped shrinkwrap for @zowe/cli
 const zoweRegistry = require("../lerna.json").command.publish.registry;
-getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
+getLockfile(cliShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry, force: true })
     .then((lockfile) => fs.writeFileSync(cliShrinkwrapFile, lockfile))
     .then(() => console.log(chalk.green("Lockfile contents written!")))
     .catch((err) => { console.error(err); process.exit(1); });

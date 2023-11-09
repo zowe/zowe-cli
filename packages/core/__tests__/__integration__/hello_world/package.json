@@ -34,7 +34,7 @@
     "watch": "npm run build -- --watch"
   },
   "dependencies": {
-    "@zowe/imperative": "../../.."
+    "@zowe/core-for-zowe-sdk": "../../.."
   },
   "engines": {
     "node": ">=8.0.0"
