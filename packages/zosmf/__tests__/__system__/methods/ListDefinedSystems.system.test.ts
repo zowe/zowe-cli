@@ -75,6 +75,7 @@ describe("List Defined Systems Api", () => {
                 password: defaultSystem.zosmf.password,
                 hostname: badHostName,
                 port: defaultSystem.zosmf.port,
+                basePath: defaultSystem.zosmf.basePath,
                 type: "basic",
                 rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
             });
@@ -100,6 +101,7 @@ describe("List Defined Systems Api", () => {
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.password,
                 hostname: defaultSystem.zosmf.host,
+                basePath: defaultSystem.zosmf.basePath,
                 port: badPort,
                 type: "basic",
                 rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
