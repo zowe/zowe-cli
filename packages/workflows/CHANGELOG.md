@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## Recent Changes
+
+- TEST: This is a test version
+
 ## `7.0.0`
 
 - Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
