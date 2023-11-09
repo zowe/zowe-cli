@@ -29,7 +29,7 @@ import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
-import { NextVerFeatures, TextUtils } from "../../../utilities";
+import { TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";

@@ -10,7 +10,7 @@
 */
 
 import {
-    IImperativeError, Logger, NextVerFeatures, RestClient, TextUtils,
+    IImperativeError, Logger, RestClient,
     RestConstants, SessConstants
 } from "@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
@@ -70,10 +70,8 @@ export class ZosmfRestClient extends RestClient {
                         " Here is the full error before deleting the stack:\n%s", JSON.stringify(causeErrorsJson));
                     this.log.error("The stack has been deleted from the error before displaying the error to the user");
                     delete causeErrorsJson.stack; // remove the stack field
+                    original.causeErrors = JSON.stringify(causeErrorsJson, null);
                 }
-
-                // if we didn't get an error, make the parsed causeErrorsString part of the error
-                causeErrorsString = TextUtils.prettyJson(causeErrorsJson, undefined, false);
             }
         } catch (e) {
             // if there's an error, the causeErrors text is not JSON
@@ -97,8 +95,8 @@ export class ZosmfRestClient extends RestClient {
         if (this.response && this.response.statusCode === RestConstants.HTTP_STATUS_401) {
             if (!original.causeErrors || Object.keys(original.causeErrors ).length === 0) {
                 /* We have no causeErrors, so place the original msg we got for a 401
-                    * into the 'response from service' part of our error.
-                    */
+                 * into the 'response from service' part of our error.
+                 */
                 original.causeErrors = `{"Error": "${origMsgFor401}"}`;
             }
             original.msg  += "\nThis operation requires authentication.";

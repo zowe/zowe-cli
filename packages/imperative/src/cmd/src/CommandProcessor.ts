@@ -30,7 +30,7 @@ import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
 import { inspect } from "util";
-import { EnvFileUtils, ImperativeConfig, NextVerFeatures, TextUtils } from "../../utilities";
+import { EnvFileUtils, ImperativeConfig, TextUtils } from "../../utilities";
 import * as nodePath from "path";
 import * as os from "os";
 import * as stream from "stream";
