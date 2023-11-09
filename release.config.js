@@ -11,6 +11,11 @@ module.exports = {
         {
             name: "next",
             prerelease: true
+        },
+        {
+            name: "imp-2-core",
+            prerelease: true,
+            channel: "merged"
         }
     ],
     plugins: [
