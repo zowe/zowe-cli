@@ -125,17 +125,6 @@ describe("CliUtils", () => {
         });
     });
 
-    describe("promptForInput", () => {
-        it("should return the mocked value", () => {
-            const mockedPromptValue = "My value is here ";
-            (prompt as any).question = jest.fn(() => {
-                return mockedPromptValue;
-            });
-            const value = CliUtils.promptForInput("my message goes here:");
-            expect(value).toEqual(mockedPromptValue);
-        });
-    });
-
     describe("sleep", () => {
         it("should sleep for 1 second", async () => {
             const startTime = Date.now();

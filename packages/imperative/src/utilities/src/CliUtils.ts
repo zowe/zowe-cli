@@ -437,20 +437,6 @@ export class CliUtils {
     }
 
     /**
-     * Display a prompt that hides user input and reads from stdin
-     * DOES NOT WORK WITH COMMANDS THAT ALSO READ STDIN
-     * Useful for prompting the user for sensitive info such as passwords
-     * Synchronous
-     * @deprecated Use the asynchronous method `readPrompt` instead
-     * @param message - The message to display to the user e.g. "Please enter password:"
-     * @returns value - the value entered by the user
-     */
-    public static promptForInput(message: string): string {
-        prompt.setDefaultOptions({mask: "", hideEchoBack: true});
-        return prompt.question(message);
-    }
-
-    /**
      * Sleep for the specified number of miliseconds.
      * @param timeInMs Number of miliseconds to sleep
      *
