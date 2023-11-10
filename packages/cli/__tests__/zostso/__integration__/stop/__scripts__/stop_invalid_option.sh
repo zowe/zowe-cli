@@ -2,5 +2,5 @@
 set -e
 
 echo "================Z/OS CONSOLE INVALID PARAMETERS==============="
-zowe zos-tso start as --foo-bar
+zowe zos-tso stop as --foo-bar
 exit $?

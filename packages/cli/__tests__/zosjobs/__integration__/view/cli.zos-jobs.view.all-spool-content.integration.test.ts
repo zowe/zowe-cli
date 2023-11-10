@@ -51,6 +51,12 @@ describe("zos-jobs view all-spool-content command", () => {
                 TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain('Unknown argument: blah');
+            expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
+            expect(response.stderr.toString()).toContain('Command entered: "zos-jobs view all-spool-content JOB123 blah ' +
+                '--host fakehost --user fakeuser --password fakepass"');
+            expect(response.stderr.toString()).toContain('Available commands are "all-spool-content, job-status-by-jobid, spool-file-by-id".');
+            expect(response.stderr.toString()).toContain('Use "zowe zos-jobs view --help" to view groups, commands, and options.');
             expect(response.stderr.toString()).toMatchSnapshot();
         });
     });

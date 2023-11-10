@@ -36,14 +36,25 @@ describe("zos-tso stop", () => {
     it("should fail with invalid parameter", async () => {
         const response = runCliScript(__dirname + "/__scripts__/stop_invalid_parameter.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('Unknown argument: foobar');
+        expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
+        expect(response.stderr.toString()).toContain('Did you mean: zos-tso stop');
+        expect(response.stderr.toString()).toContain('Command entered: "zos-tso stop foobar"');
+        expect(response.stderr.toString()).toContain('Available commands are "address-space".');
+        expect(response.stderr.toString()).toContain('Use "zowe zos-tso stop --help" to view groups, commands, and options.');
+        expect(response.stderr.toString()).toContain('Error: Unknown argument: foobar');
     });
 
     it("should fail with invalid option", async () => {
         const response = runCliScript(__dirname + "/__scripts__/stop_invalid_option.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('Unknown arguments: foo-bar, fooBar');
+        expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
+        expect(response.stderr.toString()).toContain('Command entered: "zos-tso stop as --foo-bar"');
+        expect(response.stderr.toString()).toContain('Available commands are "address-space".');
+        expect(response.stderr.toString()).toContain('Use "zowe zos-tso stop --help" to view groups, commands, and options.');
+        expect(response.stderr.toString()).toContain('Error: Unknown arguments: foo-bar, fooBar');
     });
 });
