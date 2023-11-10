@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
-## `7.18.11`
+## Recent Changes
 
 - BugFix: Fix types error from an incorrect jstree type during compilation
 
