@@ -140,6 +140,7 @@
   },
   "jest-stare": {
     "coverageLink": "../unit/coverage/lcov-report/index.html",
+    "resultDir": "__tests__/__results__/jest-stare",
     "additionalResultsProcessors": [
       "jest-junit",
       "jest-sonar-reporter"
