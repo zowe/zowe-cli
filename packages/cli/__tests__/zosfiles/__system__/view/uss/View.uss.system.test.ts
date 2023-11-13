@@ -32,14 +32,7 @@ describe("View uss file", () => {
         });
         defaultSystem = testEnvironment.systemTestProperties;
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.password,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         // using unique DS function to generate unique USS file name
