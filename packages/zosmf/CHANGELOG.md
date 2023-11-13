@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## `8.0.0-next.202311132045`
+
+- Breaking: First major version bump for V3
+
 ## `7.6.2`
 - BugFix: Updated example for `zowe profiles create zosmf-profile` command. [#1152](https://github.com/zowe/zowe-cli/issues/1152)
 
