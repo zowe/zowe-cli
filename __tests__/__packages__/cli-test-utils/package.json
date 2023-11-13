@@ -46,6 +46,6 @@
     "@zowe/imperative": "8.0.0-next.202311132045"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.0.0"
+    "@zowe/imperative": "^8.0.0"
   }
 }

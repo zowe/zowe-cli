@@ -54,7 +54,7 @@
     "@zowe/imperative": "8.0.0-next.202311132045"
   },
   "peerDependencies": {
-    "@zowe/core-for-zowe-sdk": "^7.0.0",
-    "@zowe/imperative": "^5.0.0"
+    "@zowe/core-for-zowe-sdk": "^8.0.0",
+    "@zowe/imperative": "^8.0.0"
   }
 }
