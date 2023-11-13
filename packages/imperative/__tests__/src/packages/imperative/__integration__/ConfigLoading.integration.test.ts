@@ -14,13 +14,14 @@ import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
 import { ImperativeConfig } from "../../../../../src/utilities";
 
 describe("Imperative should validate config provided by the consumer", function () {
-    const packageJsonPath = __dirname + "/package.json";
+    const testDir = T.createUniqueTestDataDir("config-loading");
+    const packageJsonPath = testDir + "/package.json";
     const mainModule = process.mainModule;
 
     beforeAll(() => {
         // Temporarily change the main module filename so that the test can work.
         (process.mainModule as any) = {
-            filename: __filename
+            filename: packageJsonPath
         };
     });
 
