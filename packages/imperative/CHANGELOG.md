@@ -2,6 +2,20 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- LTS Breaking: Removed the following previously deprecated items:
+  - `flattenCommandTreeWithAliases()` -- Use `CommandUtils.flattenCommandTree()` instead
+  - `AbstractAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead
+  - `BaseAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead
+  - `promptForInput()` -- Use the asynchronous method `readPrompt()` instead
+  - `promptWithTimeout()` -- Use `readPrompt` instead which supports more options
+  - `Imperative.envVariablePrefix` -- Use `ImperativeConfig.instance.envVariablePrefix` instead
+  - `pluginHealthCheck()` -- Plugins that want to perform a health check can
+    specify the `pluginLifeCycle` property to load a class from the plugin.
+    The plugin can implement the `postInstall()` function of that class to perform
+    a health check, or any other desired operation.
+  - `IProfOpts.requireKeytar` -- removing the default implementation of `require("keytar")` from the caller app's node_modules folders
+
 ## `5.18.4`
 
 - BugFix: Removed out of date `Perf-Timing` performance timing package.
