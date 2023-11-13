@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: First major version bump for V3
+
 ## `5.18.4`
 
 - BugFix: Removed out of date `Perf-Timing` performance timing package.

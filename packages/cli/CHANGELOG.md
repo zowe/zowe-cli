@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: First major version bump for V3
+
 ## `7.18.10`
 
 - BugFix: Added missing z/OSMF connection options to the z/OS Logs command group.
