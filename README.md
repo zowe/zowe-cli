@@ -18,6 +18,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
  - [Zowe Node Client SDK](#zowe-node-client-sdk)
  - [Running System Tests](#running-system-tests)
  - [FAQs](#frequently-asked-questions)
+ - [Project Structure and Governance](#project-structure-and-governance)
 
 <br/>
 
@@ -202,3 +203,9 @@ npm run test:system
 <br/>
 
 Don't see what you're looking for? Browse questions from the community or ask your own in the [Q&A section](https://github.com/zowe/zowe-cli/discussions/categories/q-a) of our repo.
+
+## **Project Structure and Governance**
+
+Zowe CLI is a component of the Zowe Open Mainframe Project, part of the Linux Foundation.
+
+To learn more about how Zowe is structured and governed, see the [Technical Steering Committee Strucutre and Governance documentation](https://github.com/zowe/community/blob/master/Technical-Steering-Committee/tsc-governance.md).
