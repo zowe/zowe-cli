@@ -109,15 +109,6 @@ export interface ICreateDataSetOptions extends IZosFilesOptions {
     dsntype?: string;
 
     /**
-     * The indicator that we need to show the attributes
-     *
-     * DO NOT SEND THIS TO ZOSMF
-     *
-     * @type {boolean}
-     */
-    showAttributes?: boolean;
-
-    /**
      * The abstraction of Allocation unit and Primary Space
      *
      * DO NOT SEND THIS TO ZOSMF

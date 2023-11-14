@@ -9,7 +9,6 @@
 *
 */
 
-import { ProfileConstants } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Class to contain  constants

@@ -30,7 +30,6 @@ export default class VsamHandler extends ZosFilesBaseHandler {
             dataclass: commandParameters.arguments.dataClass,
             retainFor: commandParameters.arguments.retainFor,
             retainTo: commandParameters.arguments.retainTo,
-            showAttributes: commandParameters.arguments.showAttributes || commandParameters.arguments.attributes,
             responseTimeout: commandParameters.arguments.responseTimeout
         }));
 

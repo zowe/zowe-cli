@@ -70,7 +70,6 @@ export const VsamDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         vsamRetainFor,
         VsamCreateOptions.retainTo,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [

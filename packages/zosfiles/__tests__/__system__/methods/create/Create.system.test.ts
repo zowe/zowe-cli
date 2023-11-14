@@ -240,8 +240,7 @@ describe("Allocate Like", () => {
         primary: 20,
         recfm: "FB",
         blksize: 6160,
-        lrecl: 80,
-        showAttributes: true
+        lrecl: 80
     } as any;
 
     beforeAll(async () => {
@@ -303,8 +302,7 @@ describe("Allocate Like - encoded", () => {
         primary: 20,
         recfm: "FB",
         blksize: 6160,
-        lrecl: 80,
-        showAttributes: true
+        lrecl: 80
     } as any;
 
     beforeAll(async () => {
