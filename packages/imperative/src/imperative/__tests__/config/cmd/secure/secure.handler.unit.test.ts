@@ -39,6 +39,9 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
                 })
             },
             console: {
+                prompt: jest.fn((prompts) => {
+                    // Nothing
+                }),
                 log: jest.fn((logs) => {
                     // Nothing
                 }),
@@ -157,6 +160,7 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
+        (params.response.console as any).prompt = jest.fn(() => "fakePromptingData");
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
