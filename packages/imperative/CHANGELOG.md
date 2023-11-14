@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Deprecated function AbstractCommandYargs.getBrightYargsResponse in favor of AbstractCommandYargs.getZoweYargsResponse
+- Enhancement: Deprecated the 'bright' command as an alias for the 'zowe' command. The 'bright' command will be removed in Zowe V3.
 
 ## `5.18.4`
 
