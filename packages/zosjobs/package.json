@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-jobs-for-zowe-sdk",
-  "version": "8.0.0-next.202311141517",
+  "version": "8.0.0-next.202311141903",
   "description": "Zowe SDK to interact with jobs on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -46,12 +46,12 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202311141517"
+    "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202311141903"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.0.0-next.202311141517",
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202311141517",
-    "@zowe/imperative": "8.0.0-next.202311141517"
+    "@zowe/cli-test-utils": "8.0.0-next.202311141903",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202311141903",
+    "@zowe/imperative": "8.0.0-next.202311141903"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
