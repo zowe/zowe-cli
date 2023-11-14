@@ -14,7 +14,6 @@ import { CliUtils } from "../src/CliUtils";
 import { CommandProfiles, ICommandOptionDefinition } from "../../cmd";
 import { IProfile } from "../../profiles";
 import { ImperativeError } from "../../error";
-import * as prompt from "readline-sync";
 
 jest.mock("readline-sync");
 

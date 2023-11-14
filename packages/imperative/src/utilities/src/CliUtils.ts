@@ -19,7 +19,6 @@ import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition
 } from "../../cmd";
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
-import * as prompt from "readline-sync";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 
 /**
