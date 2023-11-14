@@ -241,6 +241,16 @@ export abstract class AbstractCommandYargs {
     public abstract defineCommandToYargs(commandExecuted: YargsCommandCompleted): void;
 
     /**
+     * @deprecated Use `getZoweYargsResponse` instead
+     */
+    protected getBrightYargsResponse(successful: boolean, responseMessage: string,
+        action: ImperativeYargsCommandAction,
+        responses?: ICommandResponse[]): IYargsResponse
+    {
+        return this.getZoweYargsResponse(successful, responseMessage, action, responses);
+    }
+
+    /**
      * Build The Bright Yargs response for the callback. Includes the Bright command response and status info.
      * @param {boolean} successful: True if the command succeeded
      * @param {string} responseMessage: Response message for display purposes.
@@ -248,7 +258,7 @@ export abstract class AbstractCommandYargs {
      * @param {ICommandResponse[]} responses
      * @return {IYargsResponse}
      */
-    protected getBrightYargsResponse(successful: boolean, responseMessage: string,
+    protected getZoweYargsResponse(successful: boolean, responseMessage: string,
         action: ImperativeYargsCommandAction,
         responses?: ICommandResponse[]): IYargsResponse {
         let exitCode: number;
@@ -309,7 +319,7 @@ export abstract class AbstractCommandYargs {
                 stream: ImperativeConfig.instance.daemonContext?.stream
             }));
         } catch (helpErr) {
-            const errorResponse: IYargsResponse = this.getBrightYargsResponse(false,
+            const errorResponse: IYargsResponse = this.getZoweYargsResponse(false,
                 `The help for ${this.definition.name} was invoked and failed.`,
                 "help invoked");
             errorResponse.causeErrors = helpErr;
@@ -318,7 +328,7 @@ export abstract class AbstractCommandYargs {
         }
 
         if (!invoked) {
-            commandExecuted(args, this.getBrightYargsResponse(true,
+            commandExecuted(args, this.getZoweYargsResponse(true,
                 `The help for ${this.definition.name} was invoked.`,
                 "help invoked", [response]));
         }
@@ -423,7 +433,7 @@ export abstract class AbstractCommandYargs {
                 })
             );
         } catch (helpErr) {
-            const errorResponse: IYargsResponse = this.getBrightYargsResponse(false,
+            const errorResponse: IYargsResponse = this.getZoweYargsResponse(false,
                 `The web help for ${this.definition.name} was invoked and failed.`,
                 "help invoked");
             errorResponse.causeErrors = helpErr;
@@ -432,7 +442,7 @@ export abstract class AbstractCommandYargs {
         }
 
         if (!invoked) {
-            commandExecuted(args, this.getBrightYargsResponse(true,
+            commandExecuted(args, this.getZoweYargsResponse(true,
                 `The web help for ${this.definition.name} was invoked.`,
                 "help invoked", [response]));
         }

@@ -137,13 +137,13 @@ export class CommandYargs extends AbstractCommandYargs {
                          */
                         this.invokeHandlers(handlerDefinition, 0, argsForHandler, responses)
                             .then((successResponses) => {
-                                commandExecuted(argsForHandler, this.getBrightYargsResponse(true,
+                                commandExecuted(argsForHandler, this.getZoweYargsResponse(true,
                                     `${successResponses.length} command handlers invoked.`,
                                     "command handler invoked", successResponses));
 
                             })
                             .catch((errorResponses) => {
-                                const response: IYargsResponse = this.getBrightYargsResponse(false,
+                                const response: IYargsResponse = this.getZoweYargsResponse(false,
                                     `Error in command ${this.definition.name}`,
                                     "command handler invoked", errorResponses);
                                 this.log.error(`Error in command ${this.definition.name}`);
@@ -155,7 +155,7 @@ export class CommandYargs extends AbstractCommandYargs {
                          * No handlers were present - Respond with an error - this condition should not occur if the
                          * definition was validated against the schema.
                          */
-                        const response: IYargsResponse = this.getBrightYargsResponse(false,
+                        const response: IYargsResponse = this.getZoweYargsResponse(false,
                             `No handlers provided for ${this.definition.name}`,
                             "command handler invoked");
                         commandExecuted(argsForHandler, response);
