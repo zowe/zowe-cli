@@ -26,7 +26,7 @@ import { IProfile } from "../../doc/definition/IProfile";
 import { CliUtils } from "../../../../utilities/src/CliUtils";
 
 /**
- * API for going through the full validation test for a Brightside CLI profile
+ * API for going through the full validation test for a Zowe CLI profile
  * and producing validation report
  */
 export class ProfileValidator {
@@ -316,7 +316,7 @@ export class ProfileValidator {
 
     /**
      * Get a printed/tabular version of your validation plan,
-     * so that the user can see what steps the Brightside CLI will take to validate their profile
+     * so that the user can see what steps the Zowe CLI will take to validate their profile
      * @param {IProfileValidationPlan} plan - the plan for profile validation
      * @param profile - the profile that would be validated - used only in this case to show a summary of the profile's contents
      * @param primaryHighlightColor - primary highlight color for use with chalk

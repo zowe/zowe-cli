@@ -14,7 +14,7 @@ import * as path from "path";
 import * as https from "https";
 import { Session } from "../../src/session/Session";
 import { EventEmitter } from "events";
-import { NextVerFeatures, ProcessUtils } from "../../../utilities";
+import { ProcessUtils } from "../../../utilities";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { CustomRestClient } from "./__model__/CustomRestClient";
 import { CustomRestClientWithProcessError, EXPECTED_REST_ERROR } from "./__model__/CustomRestClientWithProcessError";
@@ -32,11 +32,6 @@ import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProper
 describe("RestClient tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
-        /* This avoids having to mock ImperativeConfig.instance.envVariablePrefix.
-         * Unless overridden, tests will use our legacy format for errors.
-         */
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
     });
 
     it("should add our custom header", async () => {

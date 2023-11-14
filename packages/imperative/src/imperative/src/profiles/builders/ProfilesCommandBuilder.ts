@@ -70,7 +70,7 @@ export abstract class ProfilesCommandBuilder implements AbstractCommandBuilder {
     protected abstract buildProfileSegmentFromSchema(): ICommandDefinition ;
 
     /**
-     * Construct the operands from the Bright Profile Schema.
+     * Construct the operands from the Zowe Profile Schema.
      * @param {any} properties: The properties set to iterate over looking for operands to add
      * @param {ICommandOptionDefinition[]} options: The final option definitions to add.
      * @return {ICommandOptionDefinition[]}: The set of returned option definitions

@@ -30,6 +30,7 @@ describe("cmd-cli invoke exit 143", () => {
         const response = runCliScript(__dirname + "/__scripts__/exit/exit_143.sh",
             TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(ONE_FOUR_THREE);
-        expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe("");
+        expect(response.stderr.toString()).toContain("Command failed with exit code 143");
     });
 });

@@ -2,6 +2,19 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Alter the format of error messages to be more clear and actionable.
+- LTS Breaking: Remove the ```bright``` command from the product.
+
+## `8.0.0-next.202311132045`
+
+- Breaking: First major version bump for V3
+
+## `7.18.10`
+
+- BugFix: Added missing z/OSMF connection options to the z/OS Logs command group.
+
 ## `7.18.9`
 
 - Enhancement: Incorporate all source code from the zowe/imperative Github repository into the zowe/zowe-cli repository. This change should have no user impact.

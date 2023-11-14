@@ -24,7 +24,7 @@ import { CliUtils } from "../../utilities/src/CliUtils";
 import { WebHelpManager } from "../src/help/WebHelpManager";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
-import { EnvFileUtils, NextVerFeatures } from "../../utilities";
+import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 
 jest.mock("../src/syntax/SyntaxValidator");
@@ -1186,56 +1186,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("More details!");
     });
 
-    it("should handle an imperative error thrown from the handler", async () => {
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND,
-            definition: SAMPLE_COMMAND_REAL_HANDLER,
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                valid: true,
-                throwImperative: true
-            },
-            responseFormat: "json",
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse).toBeDefined();
-        const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Handler threw an imperative error!");
-        expect(stderrText).toContain("More details!");
-        expect(commandResponse.message).toEqual("Handler threw an imperative error!");
-        expect(commandResponse.error?.msg).toEqual("Handler threw an imperative error!");
-        expect(commandResponse.error?.additionalDetails).toEqual("More details!");
-    });
-
-    it("should handle an imperative error with JSON causeErrors using v3-format message", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
+    it("should handle an imperative error with JSON causeErrors", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -1286,9 +1237,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("More details!");
     });
 
-    it("should handle an imperative error with string causeErrors using v3-format message", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
+    it("should handle an imperative error with string causeErrors", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -1394,57 +1343,6 @@ describe("Command Processor", () => {
     });
 
     it("should handle the handler rejecting with a message", async () => {
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND,
-            definition: SAMPLE_COMMAND_REAL_HANDLER,
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                valid: true,
-                rejectWithMessage: true
-            },
-            responseFormat: "json",
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse).toBeDefined();
-        const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Command Error:");
-        expect(stderrText).toContain("Rejected with a message");
-        expect(commandResponse.success).toEqual(false);
-        expect(commandResponse.exitCode).toEqual(1);
-        expect(commandResponse.message).toEqual("Rejected with a message");
-        expect(commandResponse.error?.msg).toEqual("Rejected with a message");
-        expect(commandResponse.error?.additionalDetails).not.toBeDefined();
-    });
-
-    it("should handle a handler-error with a v3-format message", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,

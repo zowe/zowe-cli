@@ -47,33 +47,3 @@ exports[`provisioning delete should display the help 1`] = `
   \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Deletes instance previously provisioned with z/OSMF cloud provisioning services.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning delete <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   instance | i Deletes instance.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
 }"
 `;
-
-exports[`provisioning delete should fail with invalid option 1`] = `
-"Command Error:
-Unknown arguments: foo-bar, fooBar
-Command failed due to improper syntax
-Command entered: \\"provisioning delete instance --foo-bar\\"
-Available commands are \\"instance\\".
-Use \\"zowe provisioning delete --help\\" to view groups, commands, and options.
-Error Details:
-Unknown arguments: foo-bar, fooBar
-"
-`;
-
-exports[`provisioning delete should fail with invalid option 2`] = `""`;
-
-exports[`provisioning delete should fail with invalid parameter 1`] = `
-"Command Error:
-Unknown argument: foobar
-Command failed due to improper syntax
-Did you mean: provisioning delete i?
-
-Command entered: \\"provisioning delete foobar\\"
-Available commands are \\"instance\\".
-Use \\"zowe provisioning delete --help\\" to view groups, commands, and options.
-Error Details:
-Unknown argument: foobar
-"
-`;
-
-exports[`provisioning delete should fail with invalid parameter 2`] = `""`;

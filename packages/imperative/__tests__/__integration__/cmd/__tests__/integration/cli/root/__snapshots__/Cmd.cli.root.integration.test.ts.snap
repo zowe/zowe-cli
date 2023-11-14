@@ -130,22 +130,6 @@ exports[`cmd-cli should display the version 1`] = `
 "
 `;
 
-exports[`cmd-cli should flag an invalid group and give a close suggestion 1`] = `
-"================ISSUING CMD WITH INVALID GROUP===============
-"
-`;
-
-exports[`cmd-cli should flag an invalid group and give a close suggestion 2`] = `
-"Command Error:
-Command failed due to improper syntax
-Unknown group: NOT_REAL
-Did you mean: auth?
-
-Command entered: \\"NOT_REAL\\"
-Use \\"cmd-cli --help\\" to view groups, commands, and options.
-"
-`;
-
 exports[`cmd-cli should show a list of available commands 1`] = `
 "================ISSUING HELP NO OPTIONS===============
 cmd-cli auth login fruit
