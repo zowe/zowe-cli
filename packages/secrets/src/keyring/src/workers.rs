@@ -1,7 +1,7 @@
 use napi::{Env, Error, JsBoolean, JsUnknown, Result, Task};
 use napi_derive::napi;
 
-use crate::os;
+use secrets_core::os;
 
 pub struct SetPassword {
     pub service: String,
