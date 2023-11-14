@@ -9,7 +9,6 @@
   "imperative": {
     "rootCommandDescription": "missing name plugin",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

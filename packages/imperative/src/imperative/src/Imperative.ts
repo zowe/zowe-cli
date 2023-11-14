@@ -420,15 +420,6 @@ export class Imperative {
     }
 
     /**
-     * Get the configured environmental variable prefix for the user's CLI
-     * @returns {string} - the configured or default prefix for environmental variables for use in the environmental variable service
-     * @deprecated Please use ImperativeConfig.instance.envVariablePrefix
-     */
-    public static get envVariablePrefix(): string {
-        return ImperativeConfig.instance.envVariablePrefix;
-    }
-
-    /**
      * Highlight text with your configured (or default) secondary color
      * @param {string} text - the text to highlight
      * @returns {string} - the highlighted text

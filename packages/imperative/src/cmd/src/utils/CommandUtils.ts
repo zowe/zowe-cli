@@ -167,17 +167,6 @@ export class CommandUtils {
     }
 
     /**
-     * Accepts the command definition document tree and flattens to a single level, including aliases. This is used to make searching
-     * commands and others easily.
-     * @param {ICommandDefinition} tree - The command document tree
-     * @deprecated Use CommandUtils.flattenCommandTree instead
-     * @return {ICommandTreeEntry[]} - The flattened document tree
-     */
-    public static flattenCommandTreeWithAliases(tree: ICommandDefinition): ICommandTreeEntry[] {
-        return CommandUtils.flattenCommandTree(tree, true);
-    }
-
-    /**
      * TODO - This needs to be well tested
      * TODO - There is a situation where two groups could have the same child command
      * TODO - It appears to choose the last in the list

@@ -356,11 +356,11 @@ describe("Imperative", () => {
 
                 beforeEach(() => {
                     loggingConfig = mocks.LoggingConfigurer.configureLogger("dont care", {});
-                    envConfig = mocks.EnvironmentalVariableSettings.read(Imperative.envVariablePrefix);
+                    envConfig = mocks.EnvironmentalVariableSettings.read(mocks.ImperativeConfig.instance.envVariablePrefix);
                 });
 
                 it("should know what the envVariablePrefix is [DEPRECATED]", async () => {
-                    expect(Imperative.envVariablePrefix).toEqual(defaultConfig.name);
+                    expect(mocks.ImperativeConfig.instance.envVariablePrefix).toEqual(defaultConfig.name);
                 });
 
                 it("should handle a valid imperative log level", async () => {

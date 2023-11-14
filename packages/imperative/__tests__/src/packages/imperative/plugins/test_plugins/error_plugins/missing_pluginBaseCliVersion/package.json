@@ -9,7 +9,6 @@
   "imperative": {
     "name": "missing_pluginBaseCliVersion",
     "rootCommandDescription": "imperative working test plugin",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

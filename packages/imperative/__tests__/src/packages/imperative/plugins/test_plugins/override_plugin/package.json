@@ -10,7 +10,6 @@
     "name": "override-plugin",
     "rootCommandDescription": "imperative override plugin rootCommandDescription",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./lib/sample-plugin/healthCheck.handler",
     "overrides": {
       "CredentialManager": "./sample-plugin/overrides/CredentialManager.override"
     },

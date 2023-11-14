@@ -29,14 +29,6 @@ export interface IProfOpts {
     overrideWithEnv?: boolean;
 
     /**
-     * Implements a custom method to require Keytar module which manages
-     * secure credentials. If undefined, the default implementation is to
-     * `require("keytar")` from the caller app's node_modules folder.
-     * @deprecated
-     */
-    requireKeytar?: () => NodeModule;
-
-    /**
      * Overrides the credential manager class used to load and store secure
      * properties. If undefined, the default implementation is to use the
      * Imperative {@link KeytarCredentialManager} which will `require("keytar")`

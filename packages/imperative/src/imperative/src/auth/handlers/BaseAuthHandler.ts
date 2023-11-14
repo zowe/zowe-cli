@@ -13,7 +13,6 @@ import { IHandlerParameters, IHandlerResponseApi } from "../../../../cmd";
 import {
     AbstractSession,
     ConnectionPropsForSessCfg,
-    IOptionsForAddConnProps,
     ISession,
     RestConstants,
     SessConstants,
@@ -52,21 +51,6 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
      * @param {AbstractSession} session The session object to use to connect to the auth service
      */
     protected abstract doLogout(session: AbstractSession): Promise<void>;
-
-    /**
-     * This is called by the "config secure" handler when it needs to prompt
-     * for connection info to obtain an auth token.
-     * @deprecated Use `getAuthHandlerApi` instead
-     * @returns A tuple containing:
-     *  - Options for adding connection properties
-     *  - The login handler
-     */
-    public getPromptParams(): [IOptionsForAddConnProps, (session: AbstractSession) => Promise<string>] {
-        return [{
-            defaultTokenType: this.mDefaultTokenType,
-            serviceDescription: this.mServiceDescription
-        }, this.doLogin];
-    }
 
     /**
      * Returns auth handler API that provides convenient functions to create a
