@@ -11,16 +11,9 @@
 
 import { ZosmfHeaders } from "../../../src/rest/ZosmfHeaders";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { IImperativeError, NextVerFeatures, RestConstants, SessConstants, Session } from "@zowe/imperative";
+import { IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
-
-    beforeEach(() => {
-        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
-         * Unless the choice below is overridden, tests will use our legacy format for errors.
-         */
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
-    });
 
     it("should append the csrf header to all requests", () => {
         const zosmfRestClient = new ZosmfRestClient(new Session({ hostname: "dummy" }));
@@ -41,29 +34,14 @@ describe("ZosmfRestClient tests", () => {
             })
         };
         const processedError = ((zosmfRestClient as any).processError(error));
-        expect(processedError.msg).toContain(shouldNotDeleteMessage);
+        expect(processedError.causeErrors).not.toContain(shouldDeleteMessage);
+        expect(processedError.causeErrors).toContain(shouldNotDeleteMessage);
         expect(processedError.msg.indexOf()).toEqual(-1);
     });
 
     describe("Authentication errors", () => {
-        it("should handle error for basic auth", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
-                hostname: "dummy",
-                type: SessConstants.AUTH_TYPE_BASIC,
-                user: "fakeUser",
-                password: "fakePass"
-            }));
-            (zosmfRestClient as any).mResponse = {
-                statusCode: RestConstants.HTTP_STATUS_401
-            };
-            const error: IImperativeError = { msg: "hello" };
-            const processedError = ((zosmfRestClient as any).processError(error));
-            expect(processedError.msg).toContain("This operation requires authentication.");
-            expect(processedError.additionalDetails).toContain("Username or password are not valid or expired.");
-        });
 
-        it("should handle basic auth error with empty string causeErrors using V3_ERR_FORMAT", () => {
-            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
+        it("should handle basic auth error with empty string causeErrors", () => {
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
@@ -93,8 +71,7 @@ describe("ZosmfRestClient tests", () => {
             expect(processedError.additionalDetails).toContain("Allow Unauth Cert: true");
         });
 
-        it("should handle basic auth error with JSON causeErrors using V3_ERR_FORMAT", () => {
-            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
+        it("should handle basic auth error with JSON causeErrors", () => {
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
@@ -138,23 +115,6 @@ describe("ZosmfRestClient tests", () => {
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
-            const error: IImperativeError = { msg: "hello" };
-            const processedError = ((zosmfRestClient as any).processError(error));
-            expect(processedError.msg).toContain("This operation requires authentication.");
-            expect(processedError.additionalDetails).toContain("Token is not valid or expired.");
-        });
-
-        it("should handle error for token auth using V3_ERR_FORMAT", () => {
-            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-            const zosmfRestClient = new ZosmfRestClient(new Session({
-                hostname: "dummy",
-                type: SessConstants.AUTH_TYPE_TOKEN,
-                tokenType: SessConstants.TOKEN_TYPE_JWT,
-                tokenValue: "fakeToken"
-            }));
-            (zosmfRestClient as any).mResponse = {
-                statusCode: RestConstants.HTTP_STATUS_401
-            };
             const error: IImperativeError = { msg: "Fake token error" };
             const processedError = ((zosmfRestClient as any).processError(error));
             expect(processedError.msg).toContain("Fake token error");
@@ -176,23 +136,6 @@ describe("ZosmfRestClient tests", () => {
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
-            const error: IImperativeError = { msg: "hello" };
-            const processedError = ((zosmfRestClient as any).processError(error));
-            expect(processedError.msg).toContain("This operation requires authentication.");
-            expect(processedError.additionalDetails).not.toContain("Token is not valid or expired.");
-        });
-
-        it("should handle error for APIML token auth and missing base path using V3_ERR_FORMAT", () => {
-            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-            const zosmfRestClient = new ZosmfRestClient(new Session({
-                hostname: "dummy",
-                type: SessConstants.AUTH_TYPE_TOKEN,
-                tokenType: SessConstants.TOKEN_TYPE_APIML,
-                tokenValue: "fakeToken"
-            }));
-            (zosmfRestClient as any).mResponse = {
-                statusCode: RestConstants.HTTP_STATUS_401
-            };
             const error: IImperativeError = { msg: "Fake token error" };
             const processedError = ((zosmfRestClient as any).processError(error));
             expect(processedError.msg).toContain("Fake token error");
@@ -204,23 +147,6 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for cert auth", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
-                hostname: "dummy",
-                type: SessConstants.AUTH_TYPE_CERT_PEM,
-                cert: "fakeCert",
-                certKey: "fakeKey"
-            }));
-            (zosmfRestClient as any).mResponse = {
-                statusCode: RestConstants.HTTP_STATUS_401
-            };
-            const error: IImperativeError = { msg: "hello" };
-            const processedError = ((zosmfRestClient as any).processError(error));
-            expect(processedError.msg).toContain("This operation requires authentication.");
-            expect(processedError.additionalDetails).toContain("Certificate is not valid or expired.");
-        });
-
-        it("should handle error for cert auth using V3_ERR_FORMAT", () => {
-            jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_CERT_PEM,

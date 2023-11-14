@@ -119,7 +119,7 @@ export interface ICommandDefinition {
     chainedHandlers?: IChainedHandlerEntry[];
     /**
      * The Children for this command - used when the type is provider or group. Use the children to build complex
-     * nested syntaxes - however bright modules must follow the prescribed command syntax structure for Brightside.
+     * nested syntaxes - however Zowe modules must follow the prescribed command syntax structure for Zowe.
      * @type {ICommandDefinition[]}
      * @memberof ICommandDefinition
      */

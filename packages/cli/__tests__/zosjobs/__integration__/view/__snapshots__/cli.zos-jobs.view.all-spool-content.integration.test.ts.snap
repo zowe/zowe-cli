@@ -135,13 +135,17 @@ exports[`zos-jobs view all-spool-content command should display the help 1`] = `
 `;
 
 exports[`zos-jobs view all-spool-content command syntax errors should occur if an extra unknown option is specified 1`] = `
-"Command Error:
+"Unable to perform this operation due to the following problem.
 Unknown argument: blah
 Command failed due to improper syntax
 Command entered: \\"zos-jobs view all-spool-content JOB123 blah --host fakehost --user fakeuser --password fakepass\\"
 Available commands are \\"all-spool-content, job-status-by-jobid, spool-file-by-id\\".
 Use \\"zowe zos-jobs view --help\\" to view groups, commands, and options.
-Error Details:
+
+Response From Service
+Error: Unknown argument: blah
+
+Diagnostic Information
 Unknown argument: blah
 "
 `;

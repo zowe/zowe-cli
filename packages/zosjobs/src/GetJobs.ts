@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, NextVerFeatures, RestClient } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, RestClient } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "./";
@@ -109,10 +109,6 @@ export class GetJobs {
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         const jobs = await GetJobs.getJobsCommon(session, { jobid, owner: "*" });
 
-        // TODO:V3_ERR_FORMAT - Remove in V3
-        const errorMessagePrefix: string = "Obtaining job info for a single job id " + jobid + " on " +
-            session.ISession.hostname + ":" + session.ISession.port + " failed: ";
-
         const userMsg: string = "Cannot obtain job info for job id = " + jobid;
         const diagInfo: string =
             "Protocol:          "   + session.ISession.protocol +
@@ -124,34 +120,20 @@ export class GetJobs {
 
         // fail if no jobs
         if (jobs.length === 0) {
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                throw new ImperativeError({
-                    msg: userMsg,
-                    causeErrors: "Zero jobs were returned.",
-                    additionalDetails: diagInfo
-                });
-            } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                throw new ImperativeError({
-                    msg: errorMessagePrefix + "Job not found"
-                });
-            }
+            throw new ImperativeError({
+                msg: userMsg,
+                causeErrors: "Zero jobs were returned.",
+                additionalDetails: diagInfo
+            });
         }
 
         // fail if unexpected number of jobs (job id should be unique)
         if (jobs.length > 1) {
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                throw new ImperativeError({
-                    msg: userMsg,
-                    causeErrors: jobs.length + " jobs were returned. Only expected 1.",
-                    additionalDetails: diagInfo
-                });
-            } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                throw new ImperativeError({
-                    msg: errorMessagePrefix + "Expected 1 job returned but received " + jobs.length
-                });
-            }
+            throw new ImperativeError({
+                msg: userMsg,
+                causeErrors: jobs.length + " jobs were returned. Only expected 1.",
+                additionalDetails: diagInfo
+            });
         }
 
         // return the single job

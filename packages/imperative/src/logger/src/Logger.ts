@@ -354,7 +354,7 @@ export class Logger {
             const frame: StackTrace.StackFrame[] = StackTrace.parse(new Error());
             let callerStackIndex = 1;
             while (!frame[callerStackIndex].getFileName() || (frame[callerStackIndex].getFileName().indexOf(path.basename(__filename)) >= 0)) {
-                // go up the stack until we're outside of the BrightsideLogger file
+                // go up the stack until we're outside of the Zowe Logger file
                 callerStackIndex += 1;
             }
             const filename = path.basename(frame[callerStackIndex].getFileName());
