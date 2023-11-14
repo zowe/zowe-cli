@@ -65,7 +65,7 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "__tests__/__packages__/cli-test-utils/node_modules/@zowe/imperative/node_modules/find-up": {
@@ -24776,7 +24776,7 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/imperative": {
@@ -25141,8 +25141,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/secrets": {
@@ -25171,8 +25171,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zosconsole": {
@@ -25185,8 +25185,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zosfiles": {
@@ -25204,8 +25204,8 @@
         "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zosfiles/node_modules/brace-expansion": {
@@ -25240,8 +25240,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zoslogs": {
@@ -25254,8 +25254,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zosmf": {
@@ -25268,8 +25268,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zostso": {
@@ -25285,8 +25285,8 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/core-for-zowe-sdk": "^7.0.0",
-        "@zowe/imperative": "^5.0.0"
+        "@zowe/core-for-zowe-sdk": "^8.0.0-next",
+        "@zowe/imperative": "^8.0.0-next"
       }
     },
     "packages/zosuss": {
@@ -25302,7 +25302,7 @@
         "@zowe/imperative": "8.0.0-next.202311132045"
       },
       "peerDependencies": {
-        "@zowe/imperative": "^5.2.0"
+        "@zowe/imperative": "^8.0.0-next"
       }
     }
   },
