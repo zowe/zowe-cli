@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202311141517`
 
 - LTS Breaking: Replaced the previously deprecated function AbstractCommandYargs.getBrightYargsResponse - use AbstractCommandYargs.getZoweYargsResponse
 
