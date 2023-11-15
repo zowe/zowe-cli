@@ -50,4 +50,5 @@ export * from "./GetJobs";
 export * from "./JobsConstants";
 export * from "./JobsMessages";
 export * from "./MonitorJobs";
+export * from "./SearchJobs";
 export * from "./SubmitJobs";
