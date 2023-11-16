@@ -35,7 +35,6 @@ const fakeDownloadOptions: IDownloadOptions = {
     binary: undefined,
     directory: undefined,
     encoding: undefined,
-    excludePatterns: undefined,
     extension: undefined,
     extensionMap: undefined,
     failFast: undefined,
@@ -146,7 +145,6 @@ describe("Download DataSetMatching handler", () => {
     it("should handle generation of an exclusion list", async () => {
         const pattern = "testing";
         const fakeListResponse = [{ dsname: "HLQ." + pattern }];
-        const excludePatterns = "TEST.EXCLUDE.**.CNTL";
         let passedSession: Session = null;
         List.dataSetsMatchingPattern = jest.fn(async (session) => {
             passedSession = session;
@@ -167,14 +165,11 @@ describe("Download DataSetMatching handler", () => {
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
         params.arguments.pattern = pattern;
-        params.arguments.excludePatterns = excludePatterns;
         await handler.process(params);
 
         expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
         expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], {
-            ...fakeListOptions,
-            excludePatterns: [excludePatterns]
-        });
+            ...fakeListOptions });
         expect(Download.allDataSets).toHaveBeenCalledTimes(1);
         expect(Download.allDataSets).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
     });

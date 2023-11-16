@@ -17,13 +17,6 @@ import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
  */
 export interface IDsmListOptions extends IZosFilesOptions {
     /**
-     * Exclude data sets that match these DSLEVEL patterns. Any data sets that match
-     * this pattern will not be listed
-     * @example "ibmuser.**.jcl, ibmuser.rexa.*"
-     */
-    excludePatterns?: string[];
-
-    /**
      * The maximum REST requests to perform at once
      * Increasing this value results in faster requests but increases resource consumption
      * on z/OS and risks encountering an error caused

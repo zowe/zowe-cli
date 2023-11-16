@@ -631,8 +631,7 @@ describe("List command group", () => {
             let caughtError;
 
             try {
-                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname],
-                    { excludePatterns: [dsname + ".LIKE"] });
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname]);
             } catch (error) {
                 caughtError = error;
             }
@@ -968,8 +967,7 @@ describe("List command group - encoded", () => {
             let caughtError;
 
             try {
-                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname],
-                    { excludePatterns: [dsname + ".LIKE"] });
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname]);
             } catch (error) {
                 caughtError = error;
             }
