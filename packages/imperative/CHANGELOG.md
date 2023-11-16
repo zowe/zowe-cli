@@ -3,6 +3,7 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
+
 - LTS Breaking: Removed the following previously deprecated items:
   - `flattenCommandTreeWithAliases()` -- Use `CommandUtils.flattenCommandTree()` instead
   - `AbstractAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead
@@ -15,6 +16,12 @@ All notable changes to the Imperative package will be documented in this file.
     The plugin can implement the `postInstall()` function of that class to perform
     a health check, or any other desired operation.
   - `IProfOpts.requireKeytar` -- removing the default implementation of `require("keytar")` from the caller app's node_modules folders
+
+
+## `5.19.0`
+
+- Enhancement: Deprecated function AbstractCommandYargs.getBrightYargsResponse in favor of AbstractCommandYargs.getZoweYargsResponse
+- Enhancement: Deprecated the 'bright' command as an alias for the 'zowe' command. The 'bright' command will be removed in Zowe V3.
 
 ## `5.18.4`
 

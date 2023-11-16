@@ -45,7 +45,7 @@ export default class OldJobsHandler extends ZosmfBaseHandler {
         // Handle no jobs
         if (jobs.length === 0) {
             let notFoundMessage: string = "No jobs found";
-            if (prefix != null && prefix.length > 0) {
+            if (prefix.length > 0) {
                 notFoundMessage += ` with prefix ${prefix}`;
             }
             this.console.log(notFoundMessage);

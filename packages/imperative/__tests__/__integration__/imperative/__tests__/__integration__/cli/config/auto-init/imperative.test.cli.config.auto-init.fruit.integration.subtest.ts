@@ -58,6 +58,12 @@ describe("cmd-cli config auto-init", () => {
             testName: "imperative_config_auto-init"
         });
         fs.mkdirSync(TEST_ENVIRONMENT.workingDir + "/testDir");
+
+        try {
+            await keytar.deletePassword("imperative-test-cli", "secure_config_props");
+        } catch (err) {
+            // Do nothing
+        }
     });
 
     afterEach(async () => {

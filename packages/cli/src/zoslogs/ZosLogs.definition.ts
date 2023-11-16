@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { ListDefinition } from "./list/List.definition";
 
 export const definition: ICommandDefinition = {
@@ -18,7 +19,17 @@ export const definition: ICommandDefinition = {
     type: "group",
     summary: "Interact with z/OS logs",
     description: "Interact with z/OS logs.",
-    children: [ListDefinition]
+    children: [ListDefinition],
+    passOn: [
+        {
+            property: "options",
+            value: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+            merge: true,
+            ignoreNodes: [
+                {type: "group"}
+            ]
+        }
+    ]
 };
 
 module.exports = definition;

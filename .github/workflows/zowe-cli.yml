@@ -122,9 +122,9 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
       uses: t1m0thyj/unlock-keyring@v1
 
-    - name: Start Daemon on Windows only
+    - name: Start Daemon
       id: start-daemon
-      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: ./__tests__/__resources__/daemon_instances/zowe
 
     - name: Integration Tests (Native)
@@ -133,7 +133,7 @@ jobs:
 
     - name: Integration Tests (Daemon)
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: npm run test:integration:inband
+      run: npm run test:integration -- --runInBand
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}

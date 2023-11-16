@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## `7.18.11`
+
+- BugFix: Fix types error from an incorrect jstree type during compilation
+
 ## `7.18.9`
 
 - Enhancement: Adds the `CLI_TEST_UTILS_USE_PROJECT_ROOT_DIR` environment variable to force the test utility to use the global project dir instead of workspace dirs if set.
