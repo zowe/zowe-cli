@@ -50,9 +50,6 @@ Object {
 
 exports[`ZosFilesUtils CONSTANTS should check if constant files have the expected constants loaded 2`] = `
 Object {
-  "allDataSetsArchived": Object {
-    "message": "All data sets matching the selected pattern(s) were archived.",
-  },
   "amsCommandExecutedSuccessfully": Object {
     "message": "AMS command executed successfully.",
   },
@@ -124,10 +121,6 @@ Destination: %s",
   },
   "datasetRecalledSuccessfully": Object {
     "message": "Data set recall requested.",
-  },
-  "datasetsDownloadedSuccessfully": Object {
-    "message": "Data sets matching pattern downloaded successfully.
-Destination: %s",
   },
   "errorParsingAttributesFile": Object {
     "message": "Error parsing attributes file {{file}}: {{message}}",
@@ -263,23 +256,14 @@ Destination: %s",
   "missingZfsOption": Object {
     "message": "To create a z/OS file system, the following option must be supplied: ",
   },
-  "noDataSetsInList": Object {
-    "message": "No data sets left after excluded pattern(s) were filtered out.",
-  },
   "noDataSetsMatchingPattern": Object {
     "message": "There are no data sets that match the provided pattern(s).",
-  },
-  "noDataSetsMatchingPatternRemain": Object {
-    "message": "After filtering out the archived files and files that match the exclusion-parameters, no data sets matching the supported organization type remain.",
   },
   "noMembersFound": Object {
     "message": "No members found!",
   },
   "nodeJsFsError": Object {
     "message": "Node.js File System API error",
-  },
-  "onlyEmptyPartitionedDataSets": Object {
-    "message": "Only empty partitioned data sets match the provided patterns.",
   },
   "pathIsNotDirectory": Object {
     "message": "%s is not a directory",
