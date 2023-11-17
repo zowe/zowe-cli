@@ -18,7 +18,7 @@ import { CommandResponse } from "../response/CommandResponse";
 import { Logger } from "../../../logger";
 
 /**
- * Options which can be reused between different Brightside commands
+ * Options which can be reused between different Zowe commands
  */
 export class SharedOptions {
     /**

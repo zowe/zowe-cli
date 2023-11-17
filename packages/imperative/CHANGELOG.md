@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202311141903`
 
 - LTS Breaking: Removed the following previously deprecated items:
   - `flattenCommandTreeWithAliases()` -- Use `CommandUtils.flattenCommandTree()` instead
@@ -17,6 +17,13 @@ All notable changes to the Imperative package will be documented in this file.
     a health check, or any other desired operation.
   - `IProfOpts.requireKeytar` -- removing the default implementation of `require("keytar")` from the caller app's node_modules folders
 
+## `8.0.0-next.202311141517`
+
+- LTS Breaking: Replaced the previously deprecated function AbstractCommandYargs.getBrightYargsResponse - use AbstractCommandYargs.getZoweYargsResponse
+
+## `8.0.0-next.202311132045`
+
+- Breaking: First major version bump for V3
 
 ## `5.19.0`
 

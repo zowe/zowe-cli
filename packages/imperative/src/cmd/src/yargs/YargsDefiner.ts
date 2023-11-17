@@ -47,7 +47,7 @@ export class YargsDefiner {
      * Build the definer - maintains the Yargs instance for all future definitions.
      * @param {yargs.Argv} yargsInstance: The Yargs instance used to define the commands.
      * @param primaryHighlightColor -  main color to highlight help text headings and other text with
-     * @param rootCommandName - the display name of the root command (e.g. "bright" or "sample-cli")
+     * @param rootCommandName - the display name of the root command (e.g. "zowe" or "sample-cli")
      * @param envVariablePrefix - the environment variable prefix
      * @param profileManagerFactory - profile manager factory that can be used to instantiate new profile managers
      * @param helpGeneratorFactory - help generator factory that can be used to instantiate new help generators

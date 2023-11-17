@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
+## `8.0.0-next.202311132045`
+
+- Breaking: First major version bump for V3
+
 ## `7.6.2`
 
 - BugFix: Updated `js-yaml` dependency for technical currency.

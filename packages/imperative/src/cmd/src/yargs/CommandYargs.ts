@@ -29,11 +29,11 @@ export class CommandYargs extends AbstractCommandYargs {
     /**
      * Define the options to Yargs.
      * @param {yargs.Argv} yargsInstance: The instance of yargs to define the options.
-     * @param {ICommandOptionDefinition[]} brightOptions: The option definition document array.
+     * @param {ICommandOptionDefinition[]} zoweOptions: The option definition document array.
      */
-    public static defineOptionsToYargs(yargsInstance: Argv, brightOptions: ICommandOptionDefinition[]): void {
-        if (!isNullOrUndefined(brightOptions)) {
-            for (const option of brightOptions) {
+    public static defineOptionsToYargs(yargsInstance: Argv, zoweOptions: ICommandOptionDefinition[]): void {
+        if (!isNullOrUndefined(zoweOptions)) {
+            for (const option of zoweOptions) {
                 const definition: Options = {
                     alias: option.aliases,
                     description: option.description

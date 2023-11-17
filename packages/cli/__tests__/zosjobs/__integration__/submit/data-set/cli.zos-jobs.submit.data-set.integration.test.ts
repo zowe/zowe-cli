@@ -57,7 +57,11 @@ describe("zos-jobs submit data-set command", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_invalid_parm.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
+            expect(response.stderr.toString()).toContain("Unknown argument: blah");
+            expect(response.stderr.toString()).toContain("Command failed due to improper syntax");
+            expect(response.stderr.toString()).toContain('Command entered: "zos-jobs submit data-set DATA.SET blah"');
+            expect(response.stderr.toString()).toContain('Available commands are "data-set, local-file, stdin, uss-file".');
+            expect(response.stderr.toString()).toContain('Use "zowe zos-jobs submit --help" to view groups, commands, and options.');
         });
 
         it("should occur if both --wait-for-active and --directory is specified", () => {

@@ -11,7 +11,7 @@
 
 import { Login } from "../../../src/auth/Login";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ImperativeError, NextVerFeatures, RestConstants } from "@zowe/imperative";
+import { ImperativeError, RestConstants } from "@zowe/imperative";
 
 const goodResponse: any = {
     statusCode: RestConstants.HTTP_STATUS_204
@@ -31,13 +31,6 @@ const fakeSession: any = {
 };
 
 describe("Auth Login APIML unit tests", () => {
-
-    beforeEach(() => {
-        /* This avoids having to mock ImperativeConfig.instance.envVariablePrefix.
-         * Unless the choice below is overridden, tests will use our legacy format for errors.
-         */
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
-    });
 
     describe("Positive tests", () => {
         it("should allow users to call apimlLogin with correct parameters", async () => {
@@ -65,7 +58,9 @@ describe("Auth Login APIML unit tests", () => {
             }
             expect(caughtError).toBeDefined();
             expect(caughtError instanceof ImperativeError).toEqual(true);
-            expect(caughtError.mDetails).toMatchSnapshot();
+            const errDetailString = caughtError.mDetails.toString();
+            expect(errDetailString).toContain("Error: REST API Failure with HTTP(S) status 401");
+            expect(errDetailString).toContain("This operation requires authentication");
         });
     });
 

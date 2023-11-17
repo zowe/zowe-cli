@@ -30,7 +30,7 @@ import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
 import { inspect } from "util";
-import { EnvFileUtils, ImperativeConfig, NextVerFeatures, TextUtils } from "../../utilities";
+import { EnvFileUtils, ImperativeConfig, TextUtils } from "../../utilities";
 import * as nodePath from "path";
 import * as os from "os";
 import * as stream from "stream";
@@ -295,7 +295,7 @@ export class CommandProcessor {
 
     /**
      * Obtain a copy of the command definition
-     * @return {ICommandDefinition}: The Bright Commands definition document.
+     * @return {ICommandDefinition}: The Zowe Commands definition document.
      */
     get definition(): ICommandDefinition {
         return JSON.parse(JSON.stringify(this.mDefinition));
@@ -303,7 +303,7 @@ export class CommandProcessor {
 
     /**
      * Obtain a copy of the command definition
-     * @return {ICommandDefinition}: The Bright Commands definition document.
+     * @return {ICommandDefinition}: The Zowe Commands definition document.
      */
     get fullDefinition(): ICommandDefinition {
         return JSON.parse(JSON.stringify(this.mFullDefinition));
@@ -1210,37 +1210,28 @@ export class CommandProcessor {
             response.setError(handlerErr.details);
 
             // display primary user message
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                response.console.error(TextUtils.chalk.red(
-                    "Unable to perform this operation due to the following problem."
-                ));
-                // Remove http status in 'message', since the same information was placed in additionalDetails.
-                response.console.error(TextUtils.chalk.red(
-                    handlerErr.message.replace(/Rest API failure with HTTP\(S\) status \d\d\d\n/, "")
-                ));
-            } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                response.console.errorHeader("Command Error");
-                response.console.error(Buffer.from(handlerErr.message + "\n"));
-            }
+            response.console.error(TextUtils.chalk.red(
+                "Unable to perform this operation due to the following problem."
+            ));
+            // Remove http status in 'message', since the same information was placed in additionalDetails.
+            response.console.error(TextUtils.chalk.red(
+                handlerErr.message.replace(/Rest API failure with HTTP\(S\) status \d\d\d\n/, "")
+            ));
 
             // display server response
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                const responseTitle = "Response From Service";
-                if (handlerErr.causeErrors) {
-                    try {
-                        const causeErrorsJson = JSON.parse(handlerErr.causeErrors);
+            const responseTitle = "Response From Service";
+            if (handlerErr.causeErrors) {
+                try {
+                    const causeErrorsJson = JSON.parse(handlerErr.causeErrors);
+                    response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
+                    response.console.error(TextUtils.prettyJson(causeErrorsJson, undefined, false, ""));
+                } catch (parseErr) {
+                    // causeErrors was not JSON.
+                    const causeErrString: string = handlerErr.causeErrors.toString();
+                    if (causeErrString.length > 0) {
+                        // output the text value of causeErrors
                         response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
-                        response.console.error(TextUtils.prettyJson(causeErrorsJson, undefined, false, ""));
-                    } catch (parseErr) {
-                        // causeErrors was not JSON.
-                        const causeErrString: string = handlerErr.causeErrors.toString();
-                        if (causeErrString.length > 0) {
-                            // output the text value of causeErrors
-                            response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
-                            response.console.error(causeErrString);
-                        }
+                        response.console.error(causeErrString);
                     }
                 }
             }
@@ -1248,12 +1239,7 @@ export class CommandProcessor {
             // display diagnostic information
             const diagInfo: string = (handlerErr as ImperativeError).details.additionalDetails;
             if (diagInfo?.length > 0) {
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (NextVerFeatures.useV3ErrFormat()) {
-                    response.console.error(TextUtils.chalk.bold.yellow("\nDiagnostic Information"));
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                    response.console.errorHeader("Error Details");
-                }
+                response.console.error(TextUtils.chalk.bold.yellow("\nDiagnostic Information"));
                 response.console.error(diagInfo);
             }
 

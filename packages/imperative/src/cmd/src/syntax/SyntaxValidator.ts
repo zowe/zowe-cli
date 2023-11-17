@@ -122,7 +122,7 @@ export class SyntaxValidator {
 
         /**
          * Prevent empty string options, regardless of if they are
-         * required or not  e.g.   --bright-zosmf-profile (without a value)
+         * required or not  e.g.   --zosmf-profile (without a value)
          */
         if (!isNullOrUndefined(this.mCommandDefinition.options)) {
             for (const option of this.mCommandDefinition.options) {
@@ -1033,8 +1033,8 @@ export class SyntaxValidator {
     }
 
     /**
-     * Append the validator error to the resposne object.
-     * @param {CommandResponse} responseObject: The Brightside response object
+     * Append the validator error to the response object.
+     * @param {CommandResponse} responseObject: The Zowe response object
      * @param {ICommandValidatorError} error: The error to append.
      */
     private appendValidatorError(responseObject: CommandResponse, error: ICommandValidatorError) {

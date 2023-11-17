@@ -27,6 +27,7 @@ import * as fs from "fs";
 import { SessConstants } from "../../../../../rest";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 
+let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
         response: {
@@ -39,16 +40,14 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
                 })
             },
             console: {
-                prompt: jest.fn((prompts) => {
-                    // Nothing
-                }),
                 log: jest.fn((logs) => {
                     // Nothing
                 }),
                 error: jest.fn((errors) => {
                     // Nothing
                 }),
-                errorHeader: jest.fn(() => undefined)
+                errorHeader: jest.fn(() => undefined),
+                prompt: readPromptSpy
             }
         },
         arguments: {},
@@ -81,7 +80,6 @@ const fakeSecureData = Buffer.from(JSON.stringify(fakeSecureDataJson)).toString(
 
 describe("Configuration Secure command handler", () => {
     let readFileSyncSpy: any;
-    let readPromptSpy: any;
     let writeFileSyncSpy: any;
     let existsSyncSpy: any;
     let searchSpy: any;
@@ -90,6 +88,7 @@ describe("Configuration Secure command handler", () => {
     let keytarSetPasswordSpy: any;
     let keytarDeletePasswordSpy: any;
 
+    readPromptSpy = jest.fn().mockReturnValue("fakePromptingData");
     const configOpts: IConfigOpts = {
         vault: {
             load: ((k: string): Promise<string> => {
@@ -122,6 +121,7 @@ describe("Configuration Secure command handler", () => {
         keytarGetPasswordSpy = jest.spyOn(keytar, "getPassword");
         keytarSetPasswordSpy = jest.spyOn(keytar, "setPassword");
         keytarDeletePasswordSpy = jest.spyOn(keytar, "deletePassword");
+        readPromptSpy.mockClear();
     });
 
     afterEach( () => {
@@ -162,6 +162,7 @@ describe("Configuration Secure command handler", () => {
 
         (params.response.console as any).prompt = jest.fn(() => "fakePromptingData");
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
+        (params.response.console as any).prompt = jest.fn(() => "fakePromptingData");
 
         await handler.process(params);
 

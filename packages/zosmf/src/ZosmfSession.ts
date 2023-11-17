@@ -17,7 +17,7 @@ import {
 } from "@zowe/imperative";
 
 /**
- * Utility Methods for Brightside
+ * Utility Methods for Zowe
  * @export
  */
 export class ZosmfSession {

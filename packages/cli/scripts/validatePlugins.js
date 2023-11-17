@@ -10,8 +10,8 @@
 */
 
 /* Validate any existing plugins. We do this when the user has re-installed
- * brightside. It is a safety net to validate whether any existing plugins
- * are incompatible with newly installed brightside/imperative.
+ * Zowe. It is a safety net to validate whether any existing plugins
+ * are incompatible with newly installed Zowe.
  *
  * This script is run in our package.json:scripts:postinstall as:
  *    node ./scripts/validatePlugins.js

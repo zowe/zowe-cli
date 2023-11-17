@@ -33,7 +33,7 @@ import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 export type YargsCommandCompleted = (args: Arguments, response: IYargsResponse) => void;
 
 /**
- * Abstract Yargs Bright Command - Contains base methods for defining commands and groups
+ * Abstract Yargs Zowe Command - Contains base methods for defining commands and groups
  */
 export abstract class AbstractCommandYargs {
     /**
@@ -226,7 +226,7 @@ export abstract class AbstractCommandYargs {
     }
 
     /**
-     * Construct the Bright command definition "tree" - the full definition document including all parents.
+     * Construct the Zowe command definition "tree" - the full definition document including all parents.
      * @return {ICommandDefinition}: The command definition "tree".
      */
     public constructDefinitionTree(): ICommandDefinition {
@@ -241,17 +241,7 @@ export abstract class AbstractCommandYargs {
     public abstract defineCommandToYargs(commandExecuted: YargsCommandCompleted): void;
 
     /**
-     * @deprecated Use `getZoweYargsResponse` instead
-     */
-    protected getBrightYargsResponse(successful: boolean, responseMessage: string,
-        action: ImperativeYargsCommandAction,
-        responses?: ICommandResponse[]): IYargsResponse
-    {
-        return this.getZoweYargsResponse(successful, responseMessage, action, responses);
-    }
-
-    /**
-     * Build The Bright Yargs response for the callback. Includes the Bright command response and status info.
+     * Build The Zowe Yargs response for the callback. Includes the Zowe command response and status info.
      * @param {boolean} successful: True if the command succeeded
      * @param {string} responseMessage: Response message for display purposes.
      * @param {ImperativeYargsCommandAction} action

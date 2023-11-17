@@ -18,7 +18,7 @@ import { ISshSession } from "./doc/ISshSession";
 
 
 /**
- * Utility Methods for Brightside
+ * Utility Methods for Zowe
  * @export
  */
 export class SshSession {

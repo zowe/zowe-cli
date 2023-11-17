@@ -10,10 +10,10 @@
 */
 
 /**
- * Brightside command handlers must implement this interface.
+ * Zowe command handlers must implement this interface.
  *
  * !!!Note: Handlers must "export" the module name via "module.exports=<module name>" for the handler to be
- * instantiated correctly by the bright command processor.
+ * instantiated correctly by the Zowe command processor.
  */
 import { IHandlerParameters } from "./IHandlerParameters";
 
