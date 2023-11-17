@@ -24769,8 +24769,8 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "comment-json": "4.1.1",
-        "string-width": "4.2.3"
+        "comment-json": "^4.1.1",
+        "string-width": "^4.2.3"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.19.0",
@@ -24785,42 +24785,42 @@
       "version": "5.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@types/yargs": "13.0.4",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "comment-json": "4.1.1",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
-        "deepmerge": "4.2.2",
-        "diff": "5.1.0",
+        "@types/yargs": "^13.0.4",
+        "chalk": "^2.4.2",
+        "cli-table3": "^0.6.2",
+        "comment-json": "^4.1.1",
+        "cross-spawn": "^7.0.3",
+        "dataobject-parser": "^1.2.1",
+        "deepmerge": "^4.2.2",
+        "diff": "^5.1.0",
         "diff2html": "3.4.20-usewontache.1.60e7a2e",
-        "fast-glob": "3.2.7",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
-        "jest-diff": "27.0.6",
-        "js-yaml": "4.1.0",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash": "4.17.21",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.6",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "9.1.0",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "read": "1.0.7",
-        "readline-sync": "1.4.10",
-        "semver": "7.5.2",
-        "stack-trace": "0.0.10",
-        "strip-ansi": "6.0.1",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1"
+        "fast-glob": "^3.2.7",
+        "fastest-levenshtein": "^1.0.12",
+        "find-up": "^4.1.0",
+        "fs-extra": "^8.1.0",
+        "jest-diff": "^27.0.6",
+        "js-yaml": "^4.1.0",
+        "jsonfile": "^4.0.0",
+        "jsonschema": "^1.1.1",
+        "lodash": "^4.17.21",
+        "lodash-deep": "^2.0.0",
+        "log4js": "^6.4.6",
+        "markdown-it": "^12.3.2",
+        "mustache": "^2.3.0",
+        "npm-package-arg": "^9.1.0",
+        "opener": "^1.5.2",
+        "pacote": "^11.1.4",
+        "prettyjson": "^1.2.2",
+        "progress": "^2.0.3",
+        "read": "^1.0.7",
+        "readline-sync": "^1.4.10",
+        "semver": "^7.5.2",
+        "stack-trace": "^0.0.10",
+        "strip-ansi": "^6.0.1",
+        "which": "^3.0.0",
+        "wrap-ansi": "^7.0.0",
+        "yamljs": "^0.3.0",
+        "yargs": "^15.3.1"
       },
       "devDependencies": {
         "@types/cross-spawn": "^6.0.2",
@@ -25133,7 +25133,7 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "js-yaml": "4.1.0"
+        "js-yaml": "^4.1.0"
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.5",
@@ -25164,7 +25164,7 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.19.0"
+        "@zowe/zos-files-for-zowe-sdk": "^7.19.0"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.19.0",
@@ -25195,8 +25195,8 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "get-stream": "6.0.1",
-        "minimatch": "5.0.1"
+        "get-stream": "^6.0.1",
+        "minimatch": "^5.0.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.19.0",
@@ -25233,7 +25233,7 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.19.0"
+        "@zowe/zos-files-for-zowe-sdk": "^7.19.0"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.19.0",
@@ -25278,7 +25278,7 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "7.19.0"
+        "@zowe/zosmf-for-zowe-sdk": "^7.19.0"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.19.0",
@@ -25295,7 +25295,7 @@
       "version": "7.19.0",
       "license": "EPL-2.0",
       "dependencies": {
-        "ssh2": "1.11.0"
+        "ssh2": "^1.11.0"
       },
       "devDependencies": {
         "@types/ssh2": "^1.11.0",
@@ -32042,8 +32042,8 @@
       "requires": {
         "@zowe/cli-test-utils": "7.19.0",
         "@zowe/imperative": "5.19.0",
-        "comment-json": "4.1.1",
-        "string-width": "4.2.3"
+        "comment-json": "^4.1.1",
+        "string-width": "^4.2.3"
       }
     },
     "@zowe/imperative": {
@@ -32064,52 +32064,52 @@
         "@types/readline-sync": "^1.4.3",
         "@types/rimraf": "^3.0.2",
         "@types/stack-trace": "^0.0.29",
-        "@types/yargs": "13.0.4",
+        "@types/yargs": "^13.0.4",
         "@zowe/secrets-for-zowe-sdk": "^7.18.0",
-        "chalk": "2.4.2",
-        "cli-table3": "0.6.2",
-        "comment-json": "4.1.1",
+        "chalk": "^2.4.2",
+        "cli-table3": "^0.6.2",
+        "comment-json": "^4.1.1",
         "concurrently": "^7.5.0",
         "cowsay": "^1.2.1",
-        "cross-spawn": "7.0.3",
-        "dataobject-parser": "1.2.1",
+        "cross-spawn": "^7.0.3",
+        "dataobject-parser": "^1.2.1",
         "deep-diff": "^0.3.8",
-        "deepmerge": "4.2.2",
-        "diff": "5.1.0",
+        "deepmerge": "^4.2.2",
+        "diff": "^5.1.0",
         "diff2html": "3.4.20-usewontache.1.60e7a2e",
-        "fast-glob": "3.2.7",
-        "fastest-levenshtein": "1.0.12",
-        "find-up": "4.1.0",
-        "fs-extra": "8.1.0",
+        "fast-glob": "^3.2.7",
+        "fastest-levenshtein": "^1.0.12",
+        "find-up": "^4.1.0",
+        "fs-extra": "^8.1.0",
         "get-function-arguments": "^1.0.0",
-        "jest-diff": "27.0.6",
-        "js-yaml": "4.1.0",
-        "jsonfile": "4.0.0",
-        "jsonschema": "1.1.1",
-        "lodash": "4.17.21",
-        "lodash-deep": "2.0.0",
-        "log4js": "6.4.6",
-        "markdown-it": "12.3.2",
-        "mustache": "2.3.0",
-        "npm-package-arg": "9.1.0",
-        "opener": "1.5.2",
-        "pacote": "11.1.4",
-        "prettyjson": "1.2.2",
-        "progress": "2.0.3",
-        "read": "1.0.7",
-        "readline-sync": "1.4.10",
-        "semver": "7.5.2",
+        "jest-diff": "^27.0.6",
+        "js-yaml": "^4.1.0",
+        "jsonfile": "^4.0.0",
+        "jsonschema": "^1.1.1",
+        "lodash": "^4.17.21",
+        "lodash-deep": "^2.0.0",
+        "log4js": "^6.4.6",
+        "markdown-it": "^12.3.2",
+        "mustache": "^2.3.0",
+        "npm-package-arg": "^9.1.0",
+        "opener": "^1.5.2",
+        "pacote": "^11.1.4",
+        "prettyjson": "^1.2.2",
+        "progress": "^2.0.3",
+        "read": "^1.0.7",
+        "readline-sync": "^1.4.10",
+        "semver": "^7.5.2",
         "serve": "^12.0.1",
-        "stack-trace": "0.0.10",
+        "stack-trace": "^0.0.10",
         "stream-to-string": "^1.2.0",
-        "strip-ansi": "6.0.1",
+        "strip-ansi": "^6.0.1",
         "tsc-watch": "^5.0.3",
         "uuid": "^3.3.2",
         "web-help": "file:web-help",
-        "which": "3.0.0",
-        "wrap-ansi": "7.0.0",
-        "yamljs": "0.3.0",
-        "yargs": "15.3.1",
+        "which": "^3.0.0",
+        "wrap-ansi": "^7.0.0",
+        "yamljs": "^0.3.0",
+        "yargs": "^15.3.1",
         "yargs-parser": "^18.1.2"
       },
       "dependencies": {
@@ -32303,7 +32303,7 @@
         "@zowe/cli-test-utils": "7.19.0",
         "@zowe/core-for-zowe-sdk": "7.19.0",
         "@zowe/imperative": "5.19.0",
-        "js-yaml": "4.1.0"
+        "js-yaml": "^4.1.0"
       }
     },
     "@zowe/secrets-for-zowe-sdk": {
@@ -32328,8 +32328,8 @@
         "@zowe/core-for-zowe-sdk": "7.19.0",
         "@zowe/imperative": "5.19.0",
         "@zowe/zos-uss-for-zowe-sdk": "7.19.0",
-        "get-stream": "6.0.1",
-        "minimatch": "5.0.1"
+        "get-stream": "^6.0.1",
+        "minimatch": "^5.0.1"
       },
       "dependencies": {
         "brace-expansion": {
@@ -32356,7 +32356,7 @@
         "@zowe/cli-test-utils": "7.19.0",
         "@zowe/core-for-zowe-sdk": "7.19.0",
         "@zowe/imperative": "5.19.0",
-        "@zowe/zos-files-for-zowe-sdk": "7.19.0"
+        "@zowe/zos-files-for-zowe-sdk": "^7.19.0"
       }
     },
     "@zowe/zos-logs-for-zowe-sdk": {
@@ -32373,7 +32373,7 @@
         "@zowe/cli-test-utils": "7.19.0",
         "@zowe/core-for-zowe-sdk": "7.19.0",
         "@zowe/imperative": "5.19.0",
-        "@zowe/zosmf-for-zowe-sdk": "7.19.0"
+        "@zowe/zosmf-for-zowe-sdk": "^7.19.0"
       }
     },
     "@zowe/zos-uss-for-zowe-sdk": {
@@ -32382,7 +32382,7 @@
         "@types/ssh2": "^1.11.0",
         "@zowe/cli-test-utils": "7.19.0",
         "@zowe/imperative": "5.19.0",
-        "ssh2": "1.11.0"
+        "ssh2": "^1.11.0"
       }
     },
     "@zowe/zos-workflows-for-zowe-sdk": {
@@ -32391,7 +32391,7 @@
         "@zowe/cli-test-utils": "7.19.0",
         "@zowe/core-for-zowe-sdk": "7.19.0",
         "@zowe/imperative": "5.19.0",
-        "@zowe/zos-files-for-zowe-sdk": "7.19.0"
+        "@zowe/zos-files-for-zowe-sdk": "^7.19.0"
       }
     },
     "@zowe/zosmf-for-zowe-sdk": {

@@ -46,7 +46,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "7.19.0"
+    "@zowe/zos-files-for-zowe-sdk": "^7.19.0"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "7.19.0",
