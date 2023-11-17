@@ -175,8 +175,3 @@ export class Shell {
         };
     }
 }
-
-/**
- * @deprecated Use `Shell.startCmdFlag` instead.
- */
-export const startCmdFlag = Shell.startCmdFlag;
