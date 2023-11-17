@@ -129,42 +129,13 @@ export class DownloadJobs {
 
     /**
      * Get the file where a specified spool file (IJobFile) would be downloaded to
-     * @deprecated Use getSpoolDownloadFilePath instead
-     * @static
-     * @param {IJobFile} jobFile - the spool file that would be downloaded
-     * @param {boolean} omitJobidDirectory - if true, the job ID of the jobFile will not be included in the file path
-     * @param {string} outDir - parent output directory you would like to download to
-     * @returns {string} the file path that the spool file would be downloaded to
-     * @memberof DownloadJobs
-     */
-    public static getSpoolDownloadFile(jobFile: IJobFile, omitJobidDirectory?: boolean, outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR): string {
-        this.log.trace("getSpoolDownloadFile called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
-            JSON.stringify(jobFile), omitJobidDirectory + "", outDir);
-        let directory: string = outDir;
-        if (omitJobidDirectory == null || omitJobidDirectory === false) {
-            directory += IO.FILE_DELIM + jobFile.jobid;
-        }
-
-        if (jobFile.procstep != null) {
-            directory += IO.FILE_DELIM + jobFile.procstep;
-        }
-
-        if (jobFile.stepname != null) {
-            directory += IO.FILE_DELIM + jobFile.stepname;
-        }
-
-        return directory + IO.FILE_DELIM + jobFile.ddname + DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
-    }
-
-    /**
-     * Get the file where a specified spool file (IJobFile) would be downloaded to
      * @static
      * @param {IDownloadSpoolContentParms} parms - parm object (see IDownloadSpoolContentParms interface for details)
      * @returns {string} the file path that the spool file would be downloaded to
      * @memberof DownloadJobs
      */
     public static getSpoolDownloadFilePath(parms: IDownloadSpoolContentParms): string {
-        this.log.trace("getSpoolDownloadFile called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
+        this.log.trace("getSpoolDownloadFilePath called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
             JSON.stringify(parms.jobFile), parms.omitJobidDirectory + "", parms.outDir);
 
         let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
