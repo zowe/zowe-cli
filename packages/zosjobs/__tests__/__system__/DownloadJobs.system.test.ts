@@ -18,6 +18,7 @@ import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { MonitorJobs } from "../../src/MonitorJobs";
 import { IJob } from "../../src/doc/response/IJob";
 import * as fs from "fs";
+import * as path from "path";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
 import { join } from "path";
 import { JobTestsUtils } from "./JobTestsUtils";
@@ -39,11 +40,16 @@ describe("Download Jobs - System tests", () => {
     let jobname: string;
     let jobFiles: IJobFile[];
     let jesJCLJobFile: IJobFile;
+    const getSpoolDownloadFilePathSpy = jest.mocked(DownloadJobs.getSpoolDownloadFilePath);
+
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs"
         });
-        outputDirectory = testEnvironment.workingDir + "/output";
+
+        // Assuming testEnvironment.workingDir is already defined
+        const outputDirectory = path.join(testEnvironment.workingDir, 'output');
+
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
@@ -72,6 +78,13 @@ describe("Download Jobs - System tests", () => {
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
 
+    beforeEach (async () => {
+        // Create the output directory if it doesn't exist
+        if (!fs.existsSync(outputDirectory)) {
+            fs.mkdirSync(outputDirectory);
+        }
+    });
+
     afterEach((done: any) => {  // eslint-disable-line jest/no-done-callback
         require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
             done(err);
@@ -84,18 +97,14 @@ describe("Download Jobs - System tests", () => {
 
     describe("Positive tests", () => {
         it("should be able to download a single DD from job output", async () => {
-            it("should be able to download a single DD from job output to specified directory", async () => {
-                const downloadDir = outputDirectory + "/downloadsingle/";
-                const getSpoolDownloadFilePathSpy = jest.spyOn(DownloadJobs, "getSpoolDownloadFilePath")
-                .mockImplementation((method: any, ...args: any[]): any => "fakeDownloadedFilePath.txt");
-                await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
-                    outDir: downloadDir,
-                    jobFile: jesJCLJobFile
-                } as IDownloadSpoolContentParms);
-                expect(IO.existsSync(downloadDir)).toEqual(true);
-                expect(getSpoolDownloadFilePathSpy).toHaveBeenCalledWith({jobFile: jesJCLJobFile});
-                expect(getSpoolDownloadFilePathSpy).toHaveBeenCalledTimes(1);
-            });
+            const downloadDir = outputDirectory + "/downloadsingle/";
+            await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
+                outDir: downloadDir,
+                jobFile: jesJCLJobFile
+            } as IDownloadSpoolContentParms);
+            expect(IO.existsSync(downloadDir)).toEqual(true);
+            expect(getSpoolDownloadFilePathSpy).toHaveBeenCalledWith({jobFile: jesJCLJobFile, outputDirectory: downloadDir});
+            expect(getSpoolDownloadFilePathSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should be able to download all DDs from job output", async () => {
@@ -107,7 +116,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of jobFiles) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
             }
         });
@@ -122,7 +131,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of jobFiles) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -143,7 +152,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of jobFiles) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -173,7 +182,7 @@ describe("Download Jobs - System tests", () => {
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
             for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
 
                 if (file.stepname !== "JES2") {
@@ -305,7 +314,7 @@ describe("Download Jobs - System tests - Encoded", () => {
                 jobFile: jesJCLJobFile
             });
             expect(IO.existsSync(downloadDir)).toEqual(true);
-            const expectedFile = getSpoolDownloadFilePathSpy({jobFile: jesJCLJobFile});
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: jesJCLJobFile});
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
@@ -314,7 +323,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile
             );
-            const expectedFile = getSpoolDownloadFilePathSpy({jobFile: jesJCLJobFile});
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: jesJCLJobFile});
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
@@ -328,7 +337,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             });
 
             for (const file of jobFiles) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
             }
         });
@@ -343,7 +352,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             });
 
             for (const file of jobFiles) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -364,7 +373,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             });
 
             for (const file of jobFiles) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -394,7 +403,7 @@ describe("Download Jobs - System tests - Encoded", () => {
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
             for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
-                const expectedFile = getSpoolDownloadFilePathSpy({jobFile: file});
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({jobFile: file});
                 expect(IO.existsSync(expectedFile)).toEqual(true);
 
                 if (file.stepname !== "JES2") {
