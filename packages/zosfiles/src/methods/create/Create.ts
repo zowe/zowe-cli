@@ -66,6 +66,12 @@ export class Create {
             case CreateDataSetTypeEnum.DATA_SET_C:
                 tempOptions = { ...CreateDefaults.DATA_SET.C, ...tempOptions };
                 break;
+            case CreateDataSetTypeEnum.DATA_SET_COBOL:
+                tempOptions = { ...CreateDefaults.DATA_SET.COBOL, ...tempOptions };
+                break;
+            case CreateDataSetTypeEnum.DATA_SET_LISTING:
+                tempOptions = { ...CreateDefaults.DATA_SET.LISTING, ...tempOptions };
+                break;
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
                 tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
                 break;
@@ -299,6 +305,7 @@ export class Create {
                             case "DS":
                             case "F":
                             case "FB":
+                            case "FBA":
                             case "FBS":
                             case "FS":
                             case "V":

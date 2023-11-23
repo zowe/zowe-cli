@@ -521,6 +521,110 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a COBOL data set with default options", async () => {
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_COBOL, dataSetName, dsOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.COBOL,
+                    ...dsOptions
+                })
+            );
+        });
+
+        it("should be able to create a COBOL data set and override the primary allocation and secondary allocation options", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 30,
+                secondary: 10,
+                recfm: "FB",
+                blksize: 32920,
+                lrecl: 80,
+                dirblk: 25,
+                dsntype: "LIBRARY"
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_COBOL, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 30,
+                        secondary: 10,
+                        recfm: "FB",
+                        blksize: 32920,
+                        lrecl: 80,
+                        dirblk: 25,
+                        dsntype: "LIBRARY"
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a compiler listing data set with default options", async () => {
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_LISTING, dataSetName, dsOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.LISTING,
+                    ...dsOptions
+                })
+            );
+        });
+
+        it("should be able to create a compiler listing data set and override the primary allocation and secondary allocation options", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 30,
+                secondary: 10,
+                recfm: "FBA",
+                blksize: 32930,
+                lrecl: 133,
+                dirblk: 25,
+                dsntype: "LIBRARY"
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_COBOL, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 30,
+                        secondary: 10,
+                        recfm: "FBA",
+                        blksize: 32930,
+                        lrecl: 133,
+                        dirblk: 25,
+                        dsntype: "LIBRARY"
+                    }
+                })
+            );
+        });
+
         it("should be able to create a C data set", async () => {
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_C, dataSetName, dsOptions);
 

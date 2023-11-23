@@ -13,6 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { BinaryPDSDefinition } from "./binaryPds/BinaryPDS.definition";
 import { ClassicPDSDefinition } from "./classicPds/ClassicPDS.definition";
 import { CPDSDefinition } from "./cPds/CPDS.definition";
+import { CobolPDSDefinition } from "./cobolPds/CobolPDS.definition";
+import { ListingPDSDefinition } from "./listingPds/ListingPDS.definition";
 import { DsDefinition } from "./ds/ds.definition";
 import { PdsDefinition } from "./pds/Pds.definition";
 import { PsDefinition } from "./ps/Ps.definition";
@@ -39,6 +41,8 @@ export const CreateDefinition: ICommandDefinition = {
         PdsDefinition,
         BinaryPDSDefinition,
         CPDSDefinition,
+        CobolPDSDefinition,
+        ListingPDSDefinition,
         ClassicPDSDefinition,
         DsDefinition,
         VsamDefinition,

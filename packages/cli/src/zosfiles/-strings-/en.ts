@@ -43,6 +43,20 @@ export default {
                     EX2: "Create an empty C code PDSE using data set type LIBRARY"
                 }
             },
+            DATA_SET_COBOL: {
+                DESCRIPTION: "Create COBOL source data sets",
+                EXAMPLES: {
+                    EX1: "Create an empty COBOL code PDSE with default parameters",
+                    EX2: "Create an empty COBOL code PDS using data set type PDS"
+                }
+            },
+            DATA_SET_LISTING: {
+                DESCRIPTION: "Create compiler listing data sets",
+                EXAMPLES: {
+                    EX1: "Create an empty compiler listing PDSE with default parameters",
+                    EX2: "Create an empty compiler listing PDS using data set type PDS"
+                }
+            },
             DATA_SET_LIKE: {
                 DESCRIPTION: "Create data sets based on the properties of an existing data set",
                 EXAMPLES: {

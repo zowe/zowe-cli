@@ -15,7 +15,9 @@
 export const enum CreateDataSetTypeEnum {
     DATA_SET_BINARY,
     DATA_SET_C,
+    DATA_SET_COBOL,
     DATA_SET_CLASSIC,
+    DATA_SET_LISTING,
     DATA_SET_PARTITIONED,
     DATA_SET_SEQUENTIAL,
     DATA_SET_BLANK

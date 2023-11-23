@@ -87,6 +87,38 @@ export const CreateDefaults = {
         },
 
         /**
+         * Specifies the defaults used by the Zos Files API to create a data set used for Cobol code
+         * @type {ICreateDataSetOptions}
+         */
+        COBOL: {
+            dsorg: "PO",
+            alcunit: "CYL",
+            primary: 10,
+            secondary: 3,
+            recfm: "FB",
+            blksize: 27920,
+            lrecl: 80,
+            dirblk: 25,
+            dsntype: "LIBRARY"
+        },
+
+        /**
+         * Specifies the defaults used by the Zos Files API to create a data set used for complier listing
+         * @type {ICreateDataSetOptions}
+         */
+        LISTING: {
+            dsorg: "PO",
+            alcunit: "CYL",
+            primary: 10,
+            secondary: 3,
+            recfm: "FBA",
+            blksize: 27930,
+            lrecl: 133,
+            dirblk: 25,
+            dsntype: "LIBRARY"
+        },
+
+        /**
          * Specifies the defaults used by the Zos Files API to create a blank data set
          * @type {ICreateDataSetOptions}
          */

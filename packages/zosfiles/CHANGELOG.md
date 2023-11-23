@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.19.0`
+
+- Enhancement: Add data set creation template for COBOL source codes and compiler listings [#1972](https://github.com/zowe/zowe-cli/issues/1972)
+
 ## `7.18.9`
 
 - BugFix: Fix behavior where a specified directory was being lowercased on non-PDS datasets when downloading all datasets [#1722](https://github.com/zowe/zowe-cli/issues/1722)
