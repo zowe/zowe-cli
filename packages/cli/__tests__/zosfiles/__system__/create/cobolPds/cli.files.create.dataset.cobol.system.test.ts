@@ -68,7 +68,7 @@ describe("Create COBOL Data Set", () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
                 await delay(delTime);
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 
@@ -104,7 +104,7 @@ describe("Create COBOL Data Set", () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
                 await delay(delTime);
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 
