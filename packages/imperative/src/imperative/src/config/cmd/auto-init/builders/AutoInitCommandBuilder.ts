@@ -85,6 +85,7 @@ export class AutoInitCommandBuilder implements AbstractCommandBuilder {
                 AutoInitConstants.AUTO_INIT_OPTION_GLOBAL_CONFIG,
                 AutoInitConstants.AUTO_INIT_OPTION_DRY_RUN,
                 AutoInitConstants.AUTO_INIT_OPTION_EDIT,
+                AutoInitConstants.AUTO_INIT_OPTION_EDITOR,
                 AutoInitConstants.AUTO_INIT_OPTION_OVERWRITE,
                 AutoInitConstants.AUTO_INIT_OPTION_FOR_SURE,
                 ...(this.mConfig.autoInit?.options || [])

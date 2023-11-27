@@ -112,7 +112,7 @@ export default class InitHandler implements ICommandHandler {
             params.response.console.log(`Saved config template to ${layer.path}`);
 
             if (params.arguments.edit && params.arguments.edit === true) {
-                await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path);
+                await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path, params.arguments.editor);
             }
         }
     }

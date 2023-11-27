@@ -240,11 +240,6 @@ describe("ProcessUtils tests", () => {
     describe("openInEditor", () => {
         it("should open file in graphical editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
-            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-                loadedConfig: {
-                    envVariablePrefix: "TEST_CLI"
-                }
-            } as any);
             const mockOpener = require("opener");
             await ProcessUtils.openInEditor("filePath");
             expect(mockOpener).toHaveBeenCalledWith("filePath");
@@ -252,34 +247,14 @@ describe("ProcessUtils tests", () => {
 
         it("should open file in custom graphical editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
-            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-                loadedConfig: {
-                    envVariablePrefix: "TEST_CLI"
-                }
-            } as any);
             const mockOpener = require("opener");
-            try {
-                process.env.TEST_CLI_EDITOR = "fakeEdit";
-                await ProcessUtils.openInEditor("filePath");
-            } finally {
-                delete process.env.TEST_CLI_EDITOR;
-            }
+            await ProcessUtils.openInEditor("filePath", "fakeEdit");
             expect(spawn.spawn).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 
         it("should open file in custom command-line editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.NO_GUI_NO_DISPLAY);
-            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-                loadedConfig: {
-                    envVariablePrefix: "TEST_CLI"
-                }
-            } as any);
-            try {
-                process.env.TEST_CLI_EDITOR = "fakeEdit";
-                await ProcessUtils.openInEditor("filePath");
-            } finally {
-                delete process.env.TEST_CLI_EDITOR;
-            }
+            await ProcessUtils.openInEditor("filePath", "fakeEdit");
             expect(spawn.spawn).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 

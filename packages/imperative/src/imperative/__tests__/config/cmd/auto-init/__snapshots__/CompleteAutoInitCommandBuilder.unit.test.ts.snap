@@ -60,6 +60,17 @@ Object {
     },
     Object {
       "aliases": Array [
+        "ed",
+      ],
+      "description": "Editor that overrides the default editor for this file type. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
+      "implies": Array [
+        "edit",
+      ],
+      "name": "editor",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
         "ow",
       ],
       "defaultValue": false,

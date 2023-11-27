@@ -175,7 +175,7 @@ export abstract class BaseAutoInitHandler implements ICommandHandler {
             this.displayAutoInitChanges(params.response);
 
             if (params.arguments.edit && params.arguments.edit === true) {
-                await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path);
+                await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path, params.arguments.editor);
             }
         }
     }

@@ -75,6 +75,14 @@ export const initDefinition: ICommandDefinition = {
             description: "Open in editor after initializing the configuration",
             type: "boolean",
             conflictsWith: ["dry-run"]
+        },
+        {
+            name: "editor",
+            description: `Editor that overrides the default editor for this file type. Set the option to the editor's executable file location ` +
+                `or the program's name: ie "--editor notepad"`,
+            aliases: ["ed"],
+            type: "string",
+            implies: ["edit"]
         }
     ],
     examples: [

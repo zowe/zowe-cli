@@ -123,18 +123,12 @@ export class ProcessUtils {
      * Open a file in the best editor that can be found in the current
      * environment. In a graphical environment, the default application
      * associated with its file extension will be launched. In a command-line
-     * environment, the file will be opened in vi, or the editor in the
-     * the `{envVariablePrefix}_EDITOR` environment variable if specified.
+     * environment, the file will be opened in vi.
      * @param filePath - File path to edit
-     * @param editorOpt - Chosen editor, can be a path or a valid environment variable name
+     * @param editor - Program name of editor to override the default (e.g., notepad)
      * @param sync - Boolean where true == synchronous and false == asynchronous
      */
-    public static openInEditor(filePath: string, editorOpt?: string, sync?: boolean) {
-        let editor = editorOpt;
-        if (!editorOpt && ImperativeConfig.instance.loadedConfig.envVariablePrefix != null) {
-            const editorEnvVar = `${ImperativeConfig.instance.loadedConfig.envVariablePrefix}_EDITOR`;
-            if (process.env[editorEnvVar] != null) { editor = process.env[editorEnvVar]; }
-        }
+    public static openInEditor(filePath: string, editor?: string, sync?: boolean) {
         if (ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE) {
             Logger.getImperativeLogger().info(`Opening ${filePath} in graphical editor`);
             if (editor != null) {
