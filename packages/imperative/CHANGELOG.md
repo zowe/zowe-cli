@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies
+
 ## `8.0.0-next.202311141903`
 
 - LTS Breaking: Removed the following previously deprecated items:

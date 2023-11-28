@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies
+
 ## `8.0.0-next.202311132045`
 
 - Breaking: First major version bump for V3
