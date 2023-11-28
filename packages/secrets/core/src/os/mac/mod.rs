@@ -35,7 +35,7 @@ impl From<Error> for KeyringError {
 pub fn set_password(
     service: &String,
     account: &String,
-    password: &mut String,
+    password: &String,
 ) -> Result<bool, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
     match keychain.set_password(service.as_str(), account.as_str(), password.as_bytes()) {

@@ -45,8 +45,8 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "comment-json": "4.1.1",
-    "string-width": "4.2.3"
+    "comment-json": "^4.1.1",
+    "string-width": "^4.2.3"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "8.0.0-next.202311162222",
