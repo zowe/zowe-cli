@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.20.0`
 
 - Deprecated: `getDataSet` in the `zosfiles` command group utility functions, use `zosfiles` SDK's `ZosFilesUtils.getDataSetFromName` instead. [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
