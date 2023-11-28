@@ -11,7 +11,7 @@
 
 // We are using arguments as an expected input to the function. Thus there is no generated code
 // so we can ignore this linting error.
-import { IDataSet } from "@zowe/zos-files-for-zowe-sdk";
+import { IDataSet, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * @deprecated - use @zowe/zos-files-for-zowe-sdk's ZosFilesUtils.getDataSetFromName instead
@@ -19,15 +19,5 @@ import { IDataSet } from "@zowe/zos-files-for-zowe-sdk";
  * @param {string} name  - the name in the form USER.DATA.SET | USER.DATA.SET(mem1)
  */
 export function getDataSet(name: string): IDataSet {
-    const parts = name.replace(')', '').split('(');
-    if (parts.length > 1) {
-        return {
-            dsn: parts[0],
-            member: parts[1]
-        };
-    } else {
-        return {
-            dsn: name
-        };
-    }
+    return ZosFilesUtils.getDataSetFromName(name);
 }
