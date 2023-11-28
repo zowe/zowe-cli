@@ -43,21 +43,17 @@ export class SearchJobs {
 
             for (const spoolFile of spoolFiles) {
                 const spoolContent = await this.searchSpoolContentCommon(session, searchString, spoolFile);
-                if (spoolFile.procstep != null && spoolFile.procstep.length > 0) {
-                    replyBuffer = replyBuffer + "Job Name: " + job.jobname + " Job Id: " + job.jobid +
-                        " Spool file: " + spoolFile.ddname + "(ID #" + spoolFile.id + " Step: " +
-                        spoolFile.stepname + " ProcStep: " + spoolFile.procstep +")" + "\n";
+                if(spoolContent.length > 0){
+                    if (spoolFile.procstep != null && spoolFile.procstep.length > 0) {
+                        replyBuffer = replyBuffer + "Job Name: " + job.jobname + " Job Id: " + job.jobid +
+                            " Spool file: " + spoolFile.ddname + "(ID #" + spoolFile.id + " Step: " +
+                            spoolFile.stepname + " ProcStep: " + spoolFile.procstep +")" + "\n";
 
-                } else {
-                    replyBuffer = replyBuffer + "Job Name: " + job.jobname + " Job Id: " + job.jobid +
-                        " Spool file: " + spoolFile.ddname + "(ID #" + spoolFile.id + " Step: " +
-                        spoolFile.stepname + ")" + "\n";
-                }
-
-                if(spoolContent.length == 0){
-                    replyBuffer = replyBuffer + "Search string not found..." + "\n";
-                }
-                else{
+                    } else {
+                        replyBuffer = replyBuffer + "Job Name: " + job.jobname + " Job Id: " + job.jobid +
+                            " Spool file: " + spoolFile.ddname + "(ID #" + spoolFile.id + " Step: " +
+                            spoolFile.stepname + ")" + "\n";
+                    }                
                     replyBuffer = replyBuffer + spoolContent + "\n";
                 }
             }
