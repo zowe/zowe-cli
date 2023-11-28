@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Deprecated: Deprecated `getDataSet` from the `zosfiles` command group. Use the `zosfiles` SDK's `ZosFilesUtils.getDataSetFromName` instead [#1696](https://github.com/zowe/zowe-cli/issues/1696)
+- Enhancement: Adds `ZosFilesUtils.getDataSetFromName` to create an IDataSet from a dataset name [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `7.18.9`
 
