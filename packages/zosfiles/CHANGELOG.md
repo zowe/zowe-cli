@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Deprecated: Deprecated `getDataSet` from the `zosfiles` command group. Use the `zosfiles` SDK's `ZosFilesUtils.getDataSetFromName` instead [#1696](https://github.com/zowe/zowe-cli/issues/1696)
+
 ## `7.18.9`
 
 - BugFix: Fix behavior where a specified directory was being lowercased on non-PDS datasets when downloading all datasets [#1722](https://github.com/zowe/zowe-cli/issues/1722)
