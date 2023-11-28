@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202311282012`
 
 - Breaking: Moved `getDataSet` from the `zosfiles` command group to the `zosfiles` SDK as `ZosFilesUtils.getDataSetFromName` [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
