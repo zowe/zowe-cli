@@ -12,7 +12,6 @@
 import { SpawnSyncOptions } from "child_process";
 import { ExecUtils } from "./ExecUtils";
 import { Logger } from "../../logger";
-import { ImperativeConfig } from "./ImperativeConfig";
 import { ISystemInfo } from "./doc/ISystemInfo";
 import * as spawn from "cross-spawn";
 

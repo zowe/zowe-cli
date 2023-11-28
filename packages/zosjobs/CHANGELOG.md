@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## `8.0.0-next.202311132045`
 
-- Breaking: First major version bump for V3
+- Major: First major version bump for V3
 
 ## `7.17.0`
 

@@ -11,7 +11,6 @@
 
 import { ICommandDefinition } from "../../../../../cmd";
 import { join } from "path";
-import { ImperativeConfig } from "../../../../../utilities/src/ImperativeConfig";
 
 /**
  * Definition of the edit command.

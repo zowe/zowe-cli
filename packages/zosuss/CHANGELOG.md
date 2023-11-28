@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 
 ## `8.0.0-next.202311132045`
 
-- Breaking: First major version bump for V3
+- Major: First major version bump for V3
 
 ## `7.18.2`
 - BugFix: Updated `zowe zos-ssh issue cmd` to return just the command output in `stdout` instead of both the command and its output. [#1724](https://github.com/zowe/zowe-cli/issues/1724)
