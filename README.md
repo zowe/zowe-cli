@@ -208,4 +208,4 @@ Don't see what you're looking for? Browse questions from the community or ask yo
 
 Zowe CLI is a component of the Zowe Open Mainframe Project, part of the Linux Foundation.
 
-To learn more about how Zowe is structured and governed, see the [Technical Steering Committee Strucutre and Governance documentation](https://github.com/zowe/community/blob/master/Technical-Steering-Committee/tsc-governance.md).
+To learn more about how Zowe is structured and governed, see the [Technical Steering Committee Structure and Governance documentation](https://github.com/zowe/community/blob/master/Technical-Steering-Committee/tsc-governance.md).
