@@ -56,7 +56,7 @@ describe("Submit Jobs - System Tests", () => {
         jobUSSFile = testEnvironment.systemTestProperties.zosjobs.iefbr14USSFile;
         const maxJobNamePrefixLength = 5;
         iefbr14JCL = "//" + systemProps.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
-            ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
+            ",'Zowe Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
             "//EXEC PGM=IEFBR14";
     });
 

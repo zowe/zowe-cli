@@ -179,7 +179,7 @@ export class ProfileInfo {
             this.mOverrideWithEnv = profInfoOpts.overrideWithEnv;
         }
 
-        this.mCredentials = new ProfileCredentials(this, profInfoOpts?.requireKeytar ?? profInfoOpts);
+        this.mCredentials = new ProfileCredentials(this, profInfoOpts);
 
         // do enough Imperative stuff to let imperative utilities work
         this.initImpUtils();

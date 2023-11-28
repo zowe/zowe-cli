@@ -10,7 +10,6 @@
     "name": "normal-plugin-2",
     "rootCommandDescription": "imperative working test plugin 2",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./lib/sample-plugin/healthCheck.handler",
     "definitions": [
       {
         "name": "foo",

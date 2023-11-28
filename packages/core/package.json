@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "7.19.0",
+  "version": "8.0.0-next.202311162222",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -49,10 +49,10 @@
     "string-width": "^4.2.3"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "7.19.0",
-    "@zowe/imperative": "5.19.0"
+    "@zowe/cli-test-utils": "8.0.0-next.202311162222",
+    "@zowe/imperative": "8.0.0-next.202311162222"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.0.0"
+    "@zowe/imperative": "^8.0.0-next"
   }
 }

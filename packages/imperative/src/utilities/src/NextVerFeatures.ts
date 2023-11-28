@@ -19,13 +19,15 @@ export class NextVerFeatures {
     private static ENV_VAR_PREFIX = "ZOWE";
 
     /**
+     * This feature has already been incorporated into Zowe. We left this function
+     * in the source as a model for enabling a similar preview feature in the future.
+     *
      * Identify if we should use the V3 error message format.
      * That choice is determined by the value of the ZOWE_V3_ERR_FORMAT environment variable.
      *
-     * TODO:V3_ERR_FORMAT - Remove in V3
-     *
      * @returns {boolean} True -> Use the V3 format.
      */
+    /*
     public static useV3ErrFormat(): boolean {
         // our default is false
         let v3ErrFmtBoolVal: boolean = false;
@@ -38,4 +40,5 @@ export class NextVerFeatures {
         }
         return v3ErrFmtBoolVal;
     }
+    */
 }

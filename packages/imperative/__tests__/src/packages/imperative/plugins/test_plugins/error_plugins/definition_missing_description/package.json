@@ -10,7 +10,6 @@
     "name": "definition_missing_description",
     "rootCommandDescription": "definition missing description",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

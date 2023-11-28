@@ -7,12 +7,11 @@ module.exports = {
         {
             name: "zowe-v?-lts",
             level: "patch"
+        },
+        {
+            name: "next",
+            prerelease: true
         }
-        // {
-        //     name: "next",
-        //     prerelease: true,
-        //     dependencies: { "@zowe/perf-timing": "latest" }
-        // }
     ],
     plugins: [
         ["@octorelease/changelog", {
@@ -35,12 +34,10 @@ module.exports = {
         }],
         ["@octorelease/lerna", {
             aliasTags: {
-                // Note: Remove "next" tag here when the "next" branch is uncommented above
-                "latest": ["zowe-v2-lts", "next"]
+                "latest": ["zowe-v2-lts"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
-            smokeTest: true,
-            versionIndependent: ["@zowe/imperative"]
+            smokeTest: true
         }],
         ["@octorelease/github", {
             checkPrLabels: true,

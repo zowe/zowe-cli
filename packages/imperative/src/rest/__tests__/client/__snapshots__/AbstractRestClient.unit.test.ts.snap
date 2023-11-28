@@ -38,7 +38,7 @@ Object {
 }
 `;
 
-exports[`AbstractRestClient tests should give an error message when error event is called 1`] = `"http(s) request error event called"`;
+exports[`AbstractRestClient tests should give an error message when error event is called 1`] = `"Failed to send an HTTP request."`;
 
 exports[`AbstractRestClient tests should give an error when no resource URI is provided 1`] = `"Expect Error: Required parameter 'resource' must not be blank"`;
 

@@ -27,7 +27,6 @@ const config = {
             }
         }
     ],
-    pluginHealthCheck: "./healthCheck.handler",
     rootCommandDescription: "Test plugin with profiles",
     pluginBaseCliVersion: "^1.0.0",
     defaultHome: "../../../../../../__results__/.pluginstest",

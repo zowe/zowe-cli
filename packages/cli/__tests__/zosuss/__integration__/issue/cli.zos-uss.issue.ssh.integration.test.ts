@@ -38,7 +38,12 @@ describe("zos-uss issue ssh command", () => {
 
     it("should fail due to invalid ssh command", async () => {
         const response = runCliScript(__dirname + "/__scripts__/issue_missing_ssh.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('Unknown argument: ss');
+        expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
+        expect(response.stderr.toString()).toContain('Did you mean: zos-uss issue ssh');
+        expect(response.stderr.toString()).toContain('Command entered: "zos-uss issue ss"');
+        expect(response.stderr.toString()).toContain('Use "zowe --help" to view groups, commands, and options.');
     });
 
 });

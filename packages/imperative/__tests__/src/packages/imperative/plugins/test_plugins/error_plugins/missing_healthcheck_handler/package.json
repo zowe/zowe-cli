@@ -10,7 +10,6 @@
     "name": "missing_healthcheck_handler",
     "rootCommandDescription": "imperative working test plugin",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./non_existing_path",
     "definitions": [
       {
         "name": "foo",

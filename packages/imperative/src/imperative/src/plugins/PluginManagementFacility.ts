@@ -121,7 +121,7 @@ export class PluginManagementFacility {
     private pluginIssues = PluginIssues.instance;
 
     /**
-     * A set of bright dependencies used by plugins. Each item in the
+     * A set of Zowe dependencies used by plugins. Each item in the
      * set contains the dependency's property name, and the the version
      * of that dependency.
      *
@@ -224,7 +224,6 @@ export class PluginManagementFacility {
      */
     public loadAllPluginCfgProps(): void {
         // Initialize the plugin.json file if needed
-        // TODO Skip creation of PMF_ROOT directory once it is deprecated by team config
         if (!existsSync(this.pmfConst.PLUGIN_JSON)) {
             if (!existsSync(this.pmfConst.PMF_ROOT)) {
                 this.impLogger.debug("Creating PMF_ROOT directory");

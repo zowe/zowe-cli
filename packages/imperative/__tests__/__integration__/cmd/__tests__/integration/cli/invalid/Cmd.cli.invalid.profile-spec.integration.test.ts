@@ -28,7 +28,13 @@ describe("cmd-cli invalid profile-spec", () => {
     it("should fail the command if the profile property is not supplied and the handler requests a profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/profile-spec.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(1);
-        expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('Internal Error: No profiles of type "blah" were loaded for this command.');
+        expect(response.stderr.toString()).toContain('This error can occur for one of two reasons:');
+        expect(response.stderr.toString()).toContain('- The "profile" property on the command definition document ' +
+            'does NOT specify the requested profile type');
+        expect(response.stderr.toString()).toContain('- The profile type is marked "optional", ' +
+            'no profiles of type "blah" have been created, ' +
+            'and the command handler requested a profile of type "blah" with "failNotFound=true"');
     });
 });
