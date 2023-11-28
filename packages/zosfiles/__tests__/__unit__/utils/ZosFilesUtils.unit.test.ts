@@ -15,6 +15,7 @@ import { IO } from "@zowe/imperative";
 import { ZosFilesUtils } from "../../../src/utils/ZosFilesUtils";
 import { ZosFilesConstants } from "../../../src/constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../../src/constants/ZosFiles.messages";
+import { IDataSet } from "../../../src/doc/IDataSet";
 
 jest.mock("fs");
 
@@ -207,6 +208,28 @@ describe("ZosFilesUtils", () => {
             const expectResult = Buffer.from("testing\ndummy\n");
 
             expect(ZosFilesUtils.normalizeNewline(input).toString()).toBe(expectResult.toString());
+        });
+    });
+
+    describe("getDataSetFromName", () => {
+        it("should generate an IDataSet for a dataset", () => {
+            const dataSetName = "SYS1.PARMLIB";
+            const expectedResult: IDataSet = {
+                dsn: "SYS1.PARMLIB",
+                member: undefined
+            };
+
+            expect(ZosFilesUtils.getDataSetFromName(dataSetName)).toEqual(expectedResult);
+        });
+
+        it("should generate an IDataSet for a partitioned dataset", () => {
+            const dataSetName = "SYS1.PARMLIB(SOMEMEM)";
+            const expectedResult: IDataSet = {
+                dsn: "SYS1.PARMLIB",
+                member: "SOMEMEM"
+            };
+
+            expect(ZosFilesUtils.getDataSetFromName(dataSetName)).toEqual(expectedResult);
         });
     });
 
