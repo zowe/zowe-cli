@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Breaking: Moved `getDataSet` from the `zosfiles` command group to the `zosfiles` SDK as `ZosFilesUtils.getDataSetFromName` [#1696](https://github.com/zowe/zowe-cli/issues/1696)
+- Enhancement: Added `ZosFilesUtils.getDataSetFromName` to create an IDataSet from a dataset name [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `8.0.0-next.202311132045`
 
