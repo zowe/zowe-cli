@@ -31178,7 +31178,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "6.40.23",
+      "version": "6.40.24",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -31187,12 +31187,12 @@
         "@zowe/provisioning-for-zowe-sdk": "6.40.22",
         "@zowe/zos-console-for-zowe-sdk": "6.40.22",
         "@zowe/zos-files-for-zowe-sdk": "6.40.22",
-        "@zowe/zos-jobs-for-zowe-sdk": "6.40.23",
+        "@zowe/zos-jobs-for-zowe-sdk": "6.40.24",
         "@zowe/zos-logs-for-zowe-sdk": "6.40.22",
-        "@zowe/zos-tso-for-zowe-sdk": "6.40.23",
+        "@zowe/zos-tso-for-zowe-sdk": "6.40.24",
         "@zowe/zos-uss-for-zowe-sdk": "6.40.22",
         "@zowe/zos-workflows-for-zowe-sdk": "6.40.22",
-        "@zowe/zosmf-for-zowe-sdk": "6.40.23",
+        "@zowe/zosmf-for-zowe-sdk": "6.40.24",
         "get-stdin": "7.0.0",
         "minimatch": "3.1.2"
       },
@@ -31729,7 +31729,7 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "6.40.23",
+      "version": "6.40.24",
       "license": "EPL-2.0",
       "dependencies": {
         "@zowe/zos-files-for-zowe-sdk": "6.40.22"
@@ -31770,7 +31770,7 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "6.40.23",
+      "version": "6.40.24",
       "license": "EPL-2.0",
       "devDependencies": {
         "@types/node": "^16.11.7",
@@ -31789,10 +31789,10 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "6.40.23",
+      "version": "6.40.24",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "6.40.23"
+        "@zowe/zosmf-for-zowe-sdk": "6.40.24"
       },
       "devDependencies": {
         "@types/node": "^16.11.7",
