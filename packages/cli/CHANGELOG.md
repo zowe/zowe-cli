@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Add missing npm-shrinkwrap
+
 ## `6.40.23`
 
 - BugFix: Added missing z/OSMF connection options to the z/OS Logs command group.
