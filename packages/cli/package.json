@@ -30,6 +30,7 @@
   "files": [
     "lib",
     "scripts",
+    "npm-shrinkwrap.json",
     "web-help-logo.png"
   ],
   "publishConfig": {
