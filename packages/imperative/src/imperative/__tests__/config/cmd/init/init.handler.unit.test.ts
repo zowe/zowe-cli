@@ -409,7 +409,7 @@ describe("Configuration Initialization command handler", () => {
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledTimes(1);
             expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 1);
-            expect(editFileSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config.layerActive().path);
+            expect(editFileSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config.layerActive().path, undefined);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
 
             if (!user) expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("fakeValue");

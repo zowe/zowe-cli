@@ -4,11 +4,11 @@ All notable changes to the Zowe provisioning SDK package will be documented in t
 
 ## `8.0.0-next.202311282012`
 
-- Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
+- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
 
 ## `8.0.0-next.202311132045`
 
-- Breaking: First major version bump for V3
+- Major: First major version bump for V3
 
 ## `7.6.2`
 

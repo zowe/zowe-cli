@@ -2,9 +2,13 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Removed check for `ZOWE_EDITOR` environment variable in `ProcessUtils.openInEditor` [#1867](https://github.com/zowe/zowe-cli/issues/1867)
+
 ## `8.0.0-next.202311282012`
 
-- Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
+- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
 
 ## `8.0.0-next.202311141903`
 
@@ -27,7 +31,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.0.0-next.202311132045`
 
-- Breaking: First major version bump for V3
+- Major: First major version bump for V3
 
 ## `5.19.0`
 

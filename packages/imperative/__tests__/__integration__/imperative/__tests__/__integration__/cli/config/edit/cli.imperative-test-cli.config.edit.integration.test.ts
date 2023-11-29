@@ -51,7 +51,7 @@ describe("imperative-test-cli config convert-profiles", () => {
         it("should open config file in editor specified by environment variable", async () => {
             const response = runCliScript(__dirname + "/__scripts__/edit_config.sh", path.join(TEST_ENVIRONMENT.workingDir, "test"), [], {
                 // Use "cat" in place of editor to print out the config file
-                IMPERATIVE_TEST_CLI_EDITOR: "cat",
+                IMPERATIVE_TEST_CLI_OPT_EDITOR: "cat",
                 // Pretend to have SSH connection so isGuiAvailable returns false
                 SSH_CONNECTION: "fake"
             });

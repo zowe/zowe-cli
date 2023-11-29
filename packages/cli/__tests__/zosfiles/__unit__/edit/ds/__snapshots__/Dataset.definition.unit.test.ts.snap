@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "ed",
     ],
-    "description": "Set the default editor that you wish to use for editing. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
+    "description": "Editor that overrides the default editor for this file type. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
     "name": "editor",
     "required": false,
     "type": "string",
