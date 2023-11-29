@@ -30,6 +30,7 @@
     "lib",
     "prebuilds",
     "scripts",
+    "npm-shrinkwrap.json",
     "web-help-logo.png"
   ],
   "publishConfig": {

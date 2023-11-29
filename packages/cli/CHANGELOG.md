@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Add missing npm-shrinkwrap
+
 ## `8.0.0-next.202311291643`
 
 - LTS Breaking: Replaced the `ZOWE_EDITOR` environment variable with `ZOWE_OPT_EDITOR` and `--editor` option on commands [#1867](https://github.com/zowe/zowe-cli/issues/1867)
