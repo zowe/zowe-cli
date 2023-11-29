@@ -34,7 +34,7 @@ export default class EditHandler implements ICommandHandler {
             params.response.console.log(`File does not exist: ${configLayer.path}\n` +
                 `To create it, run "${ImperativeConfig.instance.rootCommandName} ${initCmd}".`);
         } else {
-            await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path);
+            await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path, params.arguments.editor);
         }
     }
 }

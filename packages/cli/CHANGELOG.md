@@ -30,7 +30,7 @@ LTS Breaking: Removed the following previously deprecated items:
 
 ## `8.0.0-next.202311132045`
 
-- Breaking: First major version bump for V3
+- Major: First major version bump for V3
 
 ## `7.18.10`
 
