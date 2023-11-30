@@ -5,13 +5,17 @@
 
 Imperative CLI Framework is a command processing system that lets you quickly build customized command-line interfaces. Focus on adding functionality for your users rather than creating CLI infrastructure. We provide you with all the tools to get started building your own CLI plug-ins.
 
+> [!NOTE]
+> Prior to version 3 of the Zowe CLI, Imperative was its own repository and a dependency to using the CLI.
+
 ## Software Requirements
 
 - [**Install Node.js package manager**](https://nodejs.org/en/download/package-manager) on your computer. Node.js® is a JavaScript runtime environment on which we architected Imperative CLI Framework.
 
 - You must have a means to execute ".sh" (bash) scripts to run integration tests. On Windows, you can install "Git Bash", which is bundled with the standard [Git](https://git-scm.com/downloads) installation - (choose the "Use Git and Unix Tools from Windows Command Prompt" installation option). When you run the integration tests on Windows, you must have Administrative authority to enable the integration tests to create symbolic links.
 
-**Note:** Broadcom Inc. does not maintain the prerequisite software that Imperative CLI Framework requires. You are responsible for updating Node.js and other prerequisites on your computer. We recommend that you update Node.js regularly to the latest Long Term Support (LTS) version.
+> [!NOTE]
+> Broadcom Inc. does not maintain the prerequisite software that Imperative CLI Framework requires. You are responsible for updating Node.js and other prerequisites on your computer. We recommend that you update Node.js regularly to the latest Long Term Support (LTS) version.
 
 ## Install Imperative as a Dependency
 
@@ -25,15 +29,17 @@ Issue the following commands to install Imperative CLI Framework as a dependency
     npm install @zowe/imperative
     ```
 
-- **Install `@zowe-v2-lts` version:**
+- **Install `@zowe-v3-lts` version:**
 
     This is a Long Term Support release that is guaranteed to have no breaking changes.
 
     ``` bash
-    npm install @zowe/imperative@zowe-v2-lts
+    npm install @zowe/imperative@zowe-v3-lts
     ```
 
-**Note:** If you want to install the bleeding edge version of Imperative, you can append `--@zowe:registry=https://zowe.jfrog.io/zowe/api/npm/npm-release/` to the install command to get it from a staging registry. It is not recommended to use this registry for production dependencies.
+> [!NOTE]
+> If you want to install the bleeding edge version of Imperative, you can append
+`--@zowe:registry=https://zowe.jfrog.io/zowe/api/npm/npm-release/` to the install command to get it from a staging registry. It is not recommended to use this registry for production dependencies.
 
 ### Build and Install Imperative CLI Framework from Source
 To build and install the Imperative CLI Framework, follow these steps:
@@ -58,7 +64,8 @@ Command | Description
 `npm test:integration` | Run integration tests
 `npm test:system` | Run system tests (requires IPv6 connection)
 
-**Note:** To build and install the test CLIs used by the integration tests:
+> [!NOTE]
+> To build and install the test CLIs used by the integration tests:
 1. `node scripts/sampleCliTool.js build`
 2. `node scripts/sampleCliTool.js install`
 
