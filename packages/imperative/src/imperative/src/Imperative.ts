@@ -282,14 +282,6 @@ export class Imperative {
                 const preparedHostCliCmdTree = this.getPreparedCmdTree(resolvedHostCliCmdTree, config.baseProfile);
 
                 /**
-                 * Only initialize the old-school profile environment
-                 * if we are not in team-config mode.
-                 */
-                if (ImperativeConfig.instance.config.exists === false) {
-                    await this.initProfiles(config);
-                }
-
-                /**
                  * Define all known commands
                  */
                 this.log.info("Inherited traits applied to CLI command tree children. " +
@@ -522,25 +514,6 @@ export class Imperative {
     }
 
     /**
-     * Initialize the profiles directory with types and meta files. This can be called every startup of the CLI
-     * without issue, but if the meta files or configuration changes, we'll have to re-initialize.
-     * TODO: Determine the re-initialize strategy.
-     * @private
-     * @static
-     * @param {IImperativeConfig} config - The configuration document passed to init.
-     * @memberof Imperative
-     */
-    private static async initProfiles(config: IImperativeConfig) {
-        if (config.profiles != null && config.profiles.length > 0) {
-            await CliProfileManager.initialize({
-                configuration: config.profiles,
-                profileRootDirectory: ProfileUtils.constructProfilesRootDirectory(ImperativeConfig.instance.cliHome),
-                reinitialize: false
-            });
-        }
-    }
-
-    /**
      * Define to yargs for main CLI and plugins
      *
      * @param {ICommandDefinition} preparedHostCliCmdTree - The Root of the imperative host CLI
@@ -714,7 +687,6 @@ export class Imperative {
             if (loadedConfig.baseProfile != null) {
                 allProfiles.push(loadedConfig.baseProfile);
             }
-            rootCommand.children.push(CompleteProfilesGroupBuilder.getProfileGroup(allProfiles, this.log));
         }
         const authConfigs: {[key: string]: ICommandProfileAuthConfig[]} = {};
         if (loadedConfig.profiles != null) {

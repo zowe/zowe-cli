@@ -233,7 +233,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
             this.validateConfigurationDocument(config);
         }
         this.mProfileTypeSchema = this.mProfileTypeConfiguration.schema;
-        this.mProfileTypeRootDirectory = this.createProfileTypeDirectory();
         this.mProfileTypeMetaFileName = this.constructMetaName();
     }
 
@@ -1242,20 +1241,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      */
     private constructMetaName(type = this.profileType): string {
         return type + AbstractProfileManager.META_FILE_SUFFIX;
-    }
-
-    /**
-     * Create's the directory for this profile manager's type.
-     * @private
-     * @returns {string} - The directory created
-     * @memberof AbstractProfileManager
-     */
-    private createProfileTypeDirectory(): string {
-        const profilePath: string = this.profileRootDirectory + "/" + this.profileType;
-        if (!ProfileIO.exists(profilePath)) {
-            ProfileIO.createProfileDirs(profilePath);
-        }
-        return profilePath + "/";
     }
 
     /**

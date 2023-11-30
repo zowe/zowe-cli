@@ -13,12 +13,9 @@ import { AbstractProfileManager } from "./abstract/AbstractProfileManager";
 import {
     IDeleteProfile,
     ILoadProfile,
-    IMetaProfile,
     IProfile,
     IProfileDeleted,
-    IProfileInitialized,
     IProfileLoaded,
-    IProfileManagerInit,
     IProfileSaved,
     IProfileTypeConfiguration,
     IProfileUpdated,
@@ -55,77 +52,6 @@ import { ProfileIO } from "./utils";
  * @template T
  */
 export class BasicProfileManager<T extends IProfileTypeConfiguration> extends AbstractProfileManager<T> {
-    /**
-     * Static method to initialize the profile environment. Accepts the profile root directory (normally supplied by
-     * your Imperative configuration documents) and all profile "type" configuration documents and constructs the directories
-     * needed to manage profiles of all types. You must execute this method before beginning to use profiles OR you must
-     * supply all the type configuration documents (normally obtained from your Imperative configuration document) to
-     * the constructor of
-     * @static
-     * @param {IProfileManagerInit} parms
-     * @returns {Promise<IProfileInitialized[]>}
-     * @memberof AbstractProfileManager
-     */
-    public static async initialize(parms: IProfileManagerInit): Promise<IProfileInitialized[]> {
-        // Validate the input parameters - TODO: Validate all
-        ImperativeExpect.toNotBeNullOrUndefined(
-            parms,
-            `A request was made to initialize the profile environment, but no parameters were supplied.`
-        );
-        ImperativeExpect.keysToBeDefined(parms, ["configuration"],
-            `A request was made to initialize the profile environment, but no configuration documents were supplied.`
-        );
-        ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["profileRootDirectory"],
-            `A request was made to initialize the profile environment, but the profile root directory was not supplied.`
-        );
-        ImperativeExpect.keysToBeAnArray(parms, true, ["configuration"],
-            `A request was mad to initialize the profile environment, but the configuration provided is invalid (not an array or of length 0).`
-        );
-
-        // Set any defaults
-        parms.reinitialize = (isNullOrUndefined(parms.reinitialize)) ? false : parms.reinitialize;
-
-        // Create the profile root directory (if necessary)
-        ProfileIO.createProfileDirs(parms.profileRootDirectory);
-
-        // Iterate through the types and create this types configuration document - create a new instance of the
-        // Manager to create the other types
-        const responses: IProfileInitialized[] = [];
-        for (const config of parms.configuration) {
-
-            // Construct the profile type directory
-            const profileTypeRootDir = parms.profileRootDirectory + "/" + config.type + "/";
-            ProfileIO.createProfileDirs(profileTypeRootDir);
-
-            // Meta file path and name
-            const metaFilePath = profileTypeRootDir + config.type
-                + AbstractProfileManager.META_FILE_SUFFIX + AbstractProfileManager.PROFILE_EXTENSION;
-
-            // Construct the default meta file
-            const defaultMetaFile: IMetaProfile<IProfileTypeConfiguration> = {
-                defaultProfile: undefined,
-                configuration: config
-            };
-
-            // If the directory doesn't exist, create it and the default meta file for this type
-            // If the directory exists and re-init was specified, write out the default meta file
-            // If it exists and re-init was not specified, leave it alone
-            if (!ProfileIO.exists(metaFilePath)) {
-                ProfileIO.writeMetaFile(defaultMetaFile, metaFilePath);
-                responses.push({
-                    message: `Profile environment initialized for type "${config.type}".`
-                });
-            } else if (parms.reinitialize) {
-                ProfileIO.writeMetaFile(defaultMetaFile, metaFilePath);
-                responses.push({
-                    message: `Profile environment re-initialized for type "${config.type}".`
-                });
-            }
-        }
-
-        return responses;
-    }
-
     /**
      * Loads all profiles from every type. Profile types are deteremined by reading all directories within the
      * profile root directory.
