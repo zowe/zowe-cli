@@ -2,6 +2,8 @@
 [![codecov](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7204/badge)](https://bestpractices.coreinfrastructure.org/projects/7204)
 
+>[!IMPORTANT] testing
+
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
 This repository also contains the Zowe Node Client SDK. The SDK lets you leverage the underlying APIs to build applications that interface with the mainframe.
@@ -44,7 +46,7 @@ Guidelines for contributing to Zowe SDKs| [SDK Guidelines](./docs/SDKGuidelines.
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs/MaintainerVersioning.md) |
 | Miscellaneous tips for development | [Development Tips](./docs/DevelopmentTips.md)
 
-**Tip:** 
+**Tip:**
 - Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://docs.zowe.org/stable/extend/extend-cli/cli-devTutorials.html).
 
 <br/>
@@ -70,7 +72,7 @@ When you update `package.json` to include new dependencies, or when you pull cha
 npm update
 ```
 
-**Tip:** 
+**Tip:**
 - When necessary, you can run the install command again to update dependencies changed in `package.json`.
 
 <br/>
@@ -82,7 +84,7 @@ From your copy of this repository, after a build, navigate to the `packages/cli`
 npm install -g
 ```
 
-**Notes:** 
+**Notes:**
 - Depending on how you configured npm on Linux or Mac, you might need to prefix the `npm install -g` command or the `npm uninstall -g` command with `sudo` to let npm have write access to the installation directory.
 - On Windows, the `npm install -g` command might fail several times due to an `EPERM` error. This appears to be a bug that npm documented in their GitHub issues. This behaviour does not appear to be specific to installing the Zowe CLI package. Unfortunately, the only solution that we know of is to issue the `npm cache clean` command and the `npm install -g` command repeatedly until it works.
 
@@ -115,7 +117,7 @@ zowe zosmf check status
 
 For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-using-usingcli/).
 
-**Tip:** 
+**Tip:**
 - When you confirm that your profile connects to and communicates with your mainframe system successfully, you can issue the same command at any time to verify the availability and status of the z/OSMF subsystem on your mainframe.
 
 <br/>
@@ -126,7 +128,7 @@ The Zowe Node Client SDK consists of APIs that enable you to build client applic
 
 For information about downloading and getting started with the SDK, see the [Zowe Docs](https://docs.zowe.org/stable/user-guide/sdks-using). To view the Zowe Node.js SDK doc, see [Zowe SDK Docs](https://docs.zowe.org/stable/typedoc/index.html).
 
-**Tip:** 
+**Tip:**
 - Alternatively, you can import Zowe CLI into your project to call the Node APIs. However, importing all of Zowe CLI will increase the size of your project. For example, use the following statement to import packages from Zowe CLI:
 
   ```
@@ -197,7 +199,7 @@ npm run test:system
   - V2 uses **team profiles** and **deprecates the Secure Credential Store** (SCS) plug-in.
 
     Connection details can be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, visit [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/).
-    
+
     Secure credential encryption is included in the core CLI.
 
 <br/>
