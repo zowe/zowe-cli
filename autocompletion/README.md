@@ -1,4 +1,4 @@
-# Zowe Aucompletion for bash
+# Zowe Autocompletion for bash
 
 Autocompletion simplifies composing Zowe CLI commands.
 
@@ -26,22 +26,23 @@ Live demonstration
     ```
 2) start a new `bash` terminal
 
-**NOTE**: files in `/etc/bash_completion.d` do not have to have execute privilege. 
+**NOTE**: files in `/etc/bash_completion.d` do not have to have execute privilege.
 
-If you don't have an access to `/etc/bash_completion.d/`, copy `zowe.bash` file to `~/zowe_autocompletion/zowe.bash` add 
+If you don't have an access to `/etc/bash_completion.d/`, copy `zowe.bash` file to `~/zowe_autocompletion/zowe.bash` add
 ```sh
 . ~/zowe_autocompletion/zowe.bash
-``` 
+```
 at the end of your `.bashrc` file.
 
 ### Mac
 1) enable bash completion on mac because it is not activated by default see instructions:
 https://www.simplified.guide/macos/bash-completion
 
-2) copy `zowe.bash`  file to  `/usr/local/etc/bash_completion.d/zowe.bash`   
-3) start a new `bash` terminal 
+2) copy `zowe.bash`  file to  `/usr/local/etc/bash_completion.d/zowe.bash`
+3) start a new `bash` terminal
 
-**NOTE**: files in `/usr/local/etc/bash_completion.d/zowe.bash` do not have to have execute privilege. 
+> [!NOTE]
+> Files in `/usr/local/etc/bash_completion.d/zowe.bash` do not have to have execute privilege.
 
 ### Windows
  * Windows CMD is not supported.
