@@ -1,10 +1,9 @@
-name: Sync CLI Readmes
+name: Sync Files on README.md Changes
 
 on:
   push:
-    branches:
-      - next
-      - cleanup
+    paths:
+      - '**/README.md'
 
 jobs:
   sync-files:
