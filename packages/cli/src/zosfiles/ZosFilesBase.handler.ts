@@ -13,7 +13,6 @@ import {
     AbstractSession,
     ICommandHandler,
     IHandlerParameters,
-    IProfile,
     ImperativeError,
     ConnectionPropsForSessCfg,
     ISession,
