@@ -2,7 +2,6 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-
 ## Recent Changes
 
 - LTS Breaking: Removed the following previously deprecated items:
@@ -22,6 +21,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
     - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
+
+
+## `8.0.0-next.202311291643`
+
+- BugFix: Add missing npm-shrinkwrap
 
 ## `8.0.0-next.202311141517`
 
