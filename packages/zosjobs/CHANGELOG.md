@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
+
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3

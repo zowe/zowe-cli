@@ -5,14 +5,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-LTS Breaking: Removed the following previously deprecated items:
+- LTS Breaking: Removed the following previously deprecated items:
   - Moved the many constants from `zowe-cli/packages/cli/src/Constants.ts` to `zowe-cli/packages/core/src/constants/Core.constants.ts`
   - Removing `ZosFilesCreateExtraOptions.showAttributes` without replacement
   - Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to  `@zowe/zos-tso-for-zowe-sdk`
   - Removed `isStderrEmptyForProfilesCommand` use `stripProfileDeprecationMessages` from `zowe-cli/__tests__/__packages__/cli-test-utils/src/TestUtils.ts` instead
   - Removed  `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsInList`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from    ZosFiles.messages.ts
   - Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
-  - Removed `excludePatterns` use ...... instead {TO FIX}
+  - Removed `excludePatterns` from `IDsmListOptions`
   - Removed constants from ZosmfSession
     - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead
     - ZOSMF_OPTION_USER_PROFILE use ZOSMF_OPTION_USER instead

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to `@zowe/zos-tso-for-zowe-sdk`
+
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
