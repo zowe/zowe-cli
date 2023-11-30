@@ -26,6 +26,13 @@ export interface IProfInfoUpdatePropOpts extends IProfInfoUpdatePropCommonOpts {
      * Name of the active profile
      */
     profileName: string;
+
+    /**
+     * Force the update to the profile specified even if the property comes from somehwere else
+     * Example: Token Value could be in the base profile and not in the service profile specified
+     *             and the programmer has the intention of storing the token in the service profile
+     */
+    forceUpdate?: boolean
 }
 
 /**
