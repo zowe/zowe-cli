@@ -2,8 +2,6 @@
 [![codecov](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7204/badge)](https://bestpractices.coreinfrastructure.org/projects/7204)
 
->[!IMPORTANT] this is a test
-
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
 This repository also contains the Zowe Node Client SDK. The SDK lets you leverage the underlying APIs to build applications that interface with the mainframe.
@@ -13,13 +11,14 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 ## **Contents**  <!-- omit in toc -->
  - [Documentation](#documentation)
  - [Contribution Guidelines](#contribution-guidelines)
- - [Building Zowe CLI From Source](#build-zowe-cli-from-source)
- - [Installing Zowe CLI From Source](#install-zowe-cli-from-source)
- - [Uninstalling Zowe CLI](#uninstall-zowe-cli)
- - [Configuring Zowe CLI](#configure-zowe-cli)
+ - [Building Zowe CLI From Source](#building-zowe-cli-from-source)
+ - [Installing Zowe CLI From Source](#installing-zowe-cli-from-source)
+ - [Uninstalling Zowe CLI](#uninstalling-zowe-cli)
+ - [Configuring Zowe CLI](#configuring-zowe-cli)
  - [Zowe Node Client SDK](#zowe-node-client-sdk)
- - [Running System Tests](#run-system-tests)
+ - [Running System Tests](#running-system-tests)
  - [FAQs](#frequently-asked-questions)
+ - [Project Structure and Governance](#project-structure-and-governance)
 
 <br/>
 
@@ -204,3 +203,9 @@ npm run test:system
 <br/>
 
 Don't see what you're looking for? Browse questions from the community or ask your own in the [Q&A section](https://github.com/zowe/zowe-cli/discussions/categories/q-a) of our repo.
+
+## **Project Structure and Governance**
+
+Zowe CLI is a component of the Zowe Open Mainframe Project, part of the Linux Foundation.
+
+To learn more about how Zowe is structured and governed, see the [Technical Steering Committee Structure and Governance documentation](https://github.com/zowe/community/blob/master/Technical-Steering-Committee/tsc-governance.md).
