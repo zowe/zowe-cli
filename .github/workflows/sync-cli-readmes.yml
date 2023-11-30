@@ -16,12 +16,12 @@ jobs:
 
       - name: Sync files
         run: |
-          cp "${{ github.workspace }}/zowe-cli/README.md" "${{ github.workspace }}/zowe-cli/packages/cli/README.md"
+          cp "${{ github.workspace }}/README.md" "${{ github.workspace }}/packages/cli/README.md"
 
       - name: Commit then Push Changes
         run: |
           git config --global user.name ${{ secrets.ZOWE_ROBOT_USER }}
           git config --global user.email ${{ secrets.ZOWE_ROBOT_EMAIL }}
-          git add "${{ github.workspace }}/zowe-cli/packages/cli/README.md"
+          git add "${{ github.workspace }}/packages/cli/README.md"
           git commit -m "Synching cli readmes"
           git push origin HEAD
