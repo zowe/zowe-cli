@@ -1,26 +1,26 @@
-name: Sync Files on README.md Changes
+# name: Sync Files on README.md Changes
 
-on:
-  push:
-    paths:
-      - '**/README.md'
+# on:
+#   push:
+#     paths:
+#       - '**/README.md'
 
-jobs:
-  sync-files:
-    runs-on: ubuntu-latest
+# jobs:
+#   sync-files:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
 
-      - name: Sync files
-        run: |
-          cp "${{ github.workspace }}/README.md" "${{ github.workspace }}/packages/cli/README.md"
+#       - name: Sync files
+#         run: |
+#           cp "${{ github.workspace }}/README.md" "${{ github.workspace }}/packages/cli/README.md"
 
-      - name: Commit then Push Changes
-        run: |
-          git config --global user.name ${{ secrets.ZOWE_ROBOT_USER }}
-          git config --global user.email ${{ secrets.ZOWE_ROBOT_EMAIL }}
-          git add "${{ github.workspace }}/packages/cli/README.md"
-          git commit -m "Synching cli readmes"
-          git push origin HEAD
+#       - name: Commit then Push Changes
+#         run: |
+#           git config --global user.name ${{ secrets.ZOWE_ROBOT_USER }}
+#           git config --global user.email ${{ secrets.ZOWE_ROBOT_EMAIL }}
+#           git add "${{ github.workspace }}/packages/cli/README.md"
+#           git commit -m "Synching cli readmes"
+#           git push origin HEAD
