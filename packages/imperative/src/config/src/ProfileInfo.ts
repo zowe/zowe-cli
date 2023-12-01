@@ -204,7 +204,7 @@ export class ProfileInfo {
         if (options.forceUpdate && this.usingTeamConfig) {
             const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
             const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
-            if (!knownProperty.argLoc.jsonLoc.startsWith(profPath)) {
+            if (!knownProperty?.argLoc.jsonLoc.startsWith(profPath)) {
                 knownProperty.argLoc.jsonLoc = `${profPath}.properties.${options.property}`;
             }
         }
