@@ -2,7 +2,8 @@
 
 The Zowe SDK Core package contains functionality that is shared across all other SDK packages, such as `@zowe/zos-files-for-zowe-sdk`.
 
-**Important!** You must install the Core package to satisfy the peer dependency requirement for all other SDK packages.
+> [!IMPORTANT]  
+> You must install the Core package to satisfy the peer dependency requirement for all other SDK packages.
 
 ## Core libraries
 
