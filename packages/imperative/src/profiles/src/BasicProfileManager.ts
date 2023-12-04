@@ -25,7 +25,6 @@ import {
     IValidateProfileWithSchema
 } from "./doc";
 
-import { ImperativeExpect } from "../../expect";
 import { isNullOrUndefined } from "util";
 import { ImperativeError } from "../../error";
 import { ProfileIO } from "./utils";
@@ -218,7 +217,7 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
     }
 
     /**
-     * Validate profile - ensures that the profile is valid agaisnt the schema and configuration document
+     * Validate profile - ensures that the profile is valid against the schema and configuration document
      * @protected
      * @param {IValidateProfileWithSchema} parms - Validate control params - see the interface for full details
      * @returns {Promise<IProfileValidated>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
@@ -238,7 +237,7 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
         // on the profile object passed.
         this.validateRequiredDependenciesAreSpecified(parms.profile);
 
-        // Validate the profile agaisnt the schema
+        // Validate the profile against the schema
         this.validateProfileAgainstSchema(parms.name, parms.profile, parms.strict);
 
         // Return the response
