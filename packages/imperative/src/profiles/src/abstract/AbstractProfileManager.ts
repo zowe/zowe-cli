@@ -233,6 +233,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
             this.validateConfigurationDocument(config);
         }
         this.mProfileTypeSchema = this.mProfileTypeConfiguration.schema;
+        this.mProfileTypeRootDirectory = this.profileRootDirectory + "/" + this.profileType;
         this.mProfileTypeMetaFileName = this.constructMetaName();
     }
 
