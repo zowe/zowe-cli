@@ -1,14 +1,13 @@
 #!/bin/bash
 
-
 cliColor=$1
 cliDescription=$2
 cliMoldType=$3
+envSweetness=$4
 
-CMD_CLI_OPT_SWEETNESS="$4" cmd-cli profile mapping --color "$cliColor" --banana-description "$cliDescription" --mold-type "$cliMoldType"
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Profile mapping command failed!" 1>&2
-    exit $CMDRC
-fi
+# include exitOnFailure function
+myScriptDir=`dirname $0`
+source $myScriptDir/exitOnFailure.sh
+
+CMD_CLI_OPT_SWEETNESS="$envSweetness" cmd-cli profile mapping --color "$cliColor" --banana-description "$cliDescription" --mold-type "$cliMoldType"
+exitOnFailure "The 'profile mapping' command failed." $?
