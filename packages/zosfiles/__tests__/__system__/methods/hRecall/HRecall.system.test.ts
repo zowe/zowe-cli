@@ -9,7 +9,8 @@
 *
 */
 
-import { Create, Delete, CreateDataSetTypeEnum, HMigrate, HRecall, IListOptions, IRecallOptions, List, ZosFilesMessages } from "../../../../src";
+import { Create, Delete, CreateDataSetTypeEnum,
+    HMigrate, HRecall, IListOptions, IRecallOptions, List, ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
