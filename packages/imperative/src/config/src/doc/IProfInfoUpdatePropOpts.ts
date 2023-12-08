@@ -29,8 +29,11 @@ export interface IProfInfoUpdatePropOpts extends IProfInfoUpdatePropCommonOpts {
 
     /**
      * Force the update to the profile specified even if the property comes from somehwere else
-     * Example: Token Value could be in the base profile and not in the service profile specified
-     *             and the programmer has the intention of storing the token in the service profile
+     * @example Token Value could be in the base profile (not in the service profile specified)
+     *          and the programmer has the intention of storing the token in the service profile
+     * @default false When the property is not specified, the updateProperty method follows current
+     *          procedure of updating the property in the known jsonLoc (e.g. base profile). Otherwise,
+     *          the updateProperty method updates the specified profile name-type combination.
      */
     forceUpdate?: boolean
 }
