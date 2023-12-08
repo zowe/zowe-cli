@@ -201,6 +201,13 @@ export class ProfileInfo {
         }
 
         const mergedArgs = this.mergeArgsForProfile(desiredProfile, { getSecureVals: false });
+        if (options.forceUpdate && this.usingTeamConfig) {
+            const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
+            const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
+            if (!knownProperty?.argLoc.jsonLoc.startsWith(profPath)) {
+                knownProperty.argLoc.jsonLoc = `${profPath}.properties.${options.property}`;
+            }
+        }
         if (!(await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] }))) {
             if (this.usingTeamConfig) {
                 // Check to see if loadedConfig already contains the schema for the specified profile type

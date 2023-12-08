@@ -25,6 +25,7 @@ import { AbstractSession, SessConstants } from "../../rest";
 import { ConfigAutoStore } from "../src/ConfigAutoStore";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error";
+import { IProfInfoUpdatePropOpts } from "../src/doc/IProfInfoUpdatePropOpts";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -1009,6 +1010,36 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(updateKnownPropertySpy).toHaveBeenCalledWith({ ...profileOptions, mergedArgs: {}, osLocInfo: undefined });
         });
 
+        it("should succeed forceUpdating a property even if the jsonLoc points somewhere else", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const mergedArgs = {
+                knownArgs: [{
+                    argName: "rejectUnauthorized",
+                    argLoc: { jsonLoc: "profiles.base_glob.properties.rejectUnauthorized" }
+                }]
+            };
+            jest.spyOn(profInfo as any, "mergeArgsForProfile").mockReturnValue(mergedArgs);
+            const updateKnownPropertySpy = jest.spyOn(profInfo as any, "updateKnownProperty").mockResolvedValue(true);
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "LPAR4",
+                profileType: "dummy",
+                property: "rejectUnauthorized",
+                value: true,
+                forceUpdate: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(mergedArgs.knownArgs[0].argLoc.jsonLoc).toEqual("profiles.LPAR4.properties.rejectUnauthorized");
+            const osLocInfo = { global: false, user: false, name: "LPAR4", path: path.join(teamProjDir, `${testAppNm}.config.json`) };
+            expect(updateKnownPropertySpy).toHaveBeenCalledWith({ ...profileOptions, mergedArgs, osLocInfo });
+        });
+
         it("should attempt to store session config properties without adding profile types to the loadedConfig", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
@@ -1153,11 +1184,11 @@ describe("TeamConfig ProfileInfo tests", () => {
             await profInfo.readProfilesFromDisk();
 
             const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
-            await profInfo.updateProperty({profileName: 'LPAR4', property: "someProperty", value: "example.com", profileType: "dummy"});
+            await profInfo.updateProperty({ profileName: 'LPAR4', property: "someProperty", value: "example.com", profileType: "dummy" });
             const afterUpdate = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             expect(afterUpdate.knownArgs.find(v => v.argName === 'someProperty')?.argValue).toBe('example.com');
 
-            await profInfo.removeKnownProperty({mergedArgs: afterUpdate, property: 'someProperty'});
+            await profInfo.removeKnownProperty({ mergedArgs: afterUpdate, property: 'someProperty' });
             const afterRemove = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
 
             expect(afterRemove.knownArgs.find(v => v.argName === 'someProperty')).toBeUndefined();
