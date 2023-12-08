@@ -335,7 +335,7 @@ that would be used if a command were executed.
 - BugFix: Fixed incorrect description for untyped profiles in team config files. [zowe/zowe-cli#1303](https://github.com/zowe/zowe-cli/issues/1303)
 - **Next Breaking**: Schema files created or updated with the above changes are not backward compatible with older versions of Imperative.
 
-## Recent Changes
+## `5.20.0`
 
 - Enhancement: Added the ability to `forceUpdate` a property using the `ProfileInfo.updateProperty` method. [zowe-explorer#2493](https://github.com/zowe/vscode-extension-for-zowe/issues/2493)
 
