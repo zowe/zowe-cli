@@ -22,5 +22,5 @@
 #           git config --global user.name ${{ secrets.ZOWE_ROBOT_USER }}
 #           git config --global user.email ${{ secrets.ZOWE_ROBOT_EMAIL }}
 #           git add "${{ github.workspace }}/packages/cli/README.md"
-#           git commit -m "Synching cli readmes"
+#           git commit -sm "Synching cli readmes"
 #           git push origin HEAD
