@@ -15,7 +15,7 @@
     "clean": "lerna run --parallel clean",
     "clean:exe": "cd zowex && cargo clean",
     "installWithBuild": "npm install && npm run build",
-    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
+    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/tsconfig.json --noEmit",
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
