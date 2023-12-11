@@ -53,6 +53,13 @@ import { IConfig } from "./doc/IConfig";
 import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts";
 import { ConfigUtils } from "./ConfigUtils";
 
+export type IExtenderJson = {
+    profileTypes: Record<string, {
+        from: string[];
+        version?: string;
+    }>;
+};
+
 /**
  * This class provides functions to retrieve profile-related information.
  * It can load the relevant configuration files, merge all possible
@@ -1226,6 +1233,68 @@ export class ProfileInfo {
             }
         }
         LoggerUtils.setProfileSchemas(this.mProfileSchemaCache);
+    }
+
+    /**
+     * Adds a profile type to the schema, and tracks its contribution in extenders.json.
+     *
+     * @param {IProfileSchema} typeSchema The schema to add for the profile type
+     * @returns {boolean} `true` if added to the schema; `false` otherwise
+     */
+    public addProfileTypeToSchema(typeSchema: IProfileSchema): boolean {
+        if (this.mLoadedConfig == null) {
+            return false;
+        }
+
+        // TODO: Add profile type to extenders.json w/ version
+
+        // TODO: prefix key in map with config layer
+        this.mProfileSchemaCache.set(typeSchema.title, typeSchema);
+        return true;
+    }
+
+    /**
+     * Returns a list of all available profile types
+     * @param [sources] Include all available types from given source applications
+     */
+    public getProfileTypes(sources?: string[]): string[] {
+        const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
+        const extenderJson: IExtenderJson = jsonfile.readFileSync(extenderJsonPath);
+        const profileTypes = [];
+        for (const layer of this.getTeamConfig().mLayers) {
+            if (layer.properties.$schema == null) continue;
+            const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
+            const schemaPath = url.fileURLToPath(schemaUri);
+            if (fs.existsSync(schemaPath)) {
+                const schemaJson = jsonfile.readFileSync(schemaPath);
+                for (const { type, schema } of ConfigSchema.loadSchema(schemaJson)) {
+                    if (type in extenderJson.profileTypes) {
+                        if (sources?.length > 0 &&
+                            lodash.difference(extenderJson.profileTypes[type].from, sources).length === 0) {
+                            profileTypes.push(type);
+                        }
+                    }
+                }
+            }
+        }
+
+        return lodash.uniq(profileTypes);
+    }
+
+    /**
+     * Returns the schema object belonging to the specified profile type.
+     *
+     * @param {string} profileType The profile type to retrieve the schema from
+     * @returns {IProfileSchema} The schema object provided by the specified profile type
+     */
+    public getSchemaForType(profileType: string): IProfileSchema {
+        for (const entry of this.mProfileSchemaCache.values()) {
+            if (entry.title === profileType) {
+                return entry;
+            }
+        }
+
+        return null;
     }
 
     // _______________________________________________________________________
