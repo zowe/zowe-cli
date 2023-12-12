@@ -15,6 +15,7 @@ import * as path from "path";
 import * as url from "url";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
+import * as semver from "semver";
 
 // for ProfileInfo structures
 import { IProfArgAttrs } from "./doc/IProfArgAttrs";
@@ -1225,21 +1226,48 @@ export class ProfileInfo {
         LoggerUtils.setProfileSchemas(this.mProfileSchemaCache);
     }
 
+    private readExtendersJson(): IExtenderJson {
+        const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
+        const extenderJson = jsonfile.readFileSync(extenderJsonPath);
+        return extenderJson;
+    }
+
     /**
      * Adds a profile type to the schema, and tracks its contribution in extenders.json.
      *
      * @param {IProfileSchema} typeSchema The schema to add for the profile type
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
-    public addProfileTypeToSchema(typeSchema: IProfileSchema): boolean {
+    public addProfileTypeToSchema(profileType: string, typeInfo:
+        { sourceApp: string; schema: IProfileSchema; version?: string }): boolean {
         if (this.mLoadedConfig == null) {
             return false;
         }
 
-        // TODO: Add profile type to extenders.json w/ version
+        // Track the contributed profile type in extenders.json
+        const extenderJson = this.readExtendersJson();
+        if (profileType in extenderJson.profileTypes) {
+            const typeMetadata = extenderJson.profileTypes[profileType];
+            // Update the schema version for this profile type if newer than the installed version
+            if (version != null && semver.gt(version, typeMetadata.version)) {
+                extenderJson.profileTypes[profileType] = {
+                    version,
+                    from: [...typeMetadata.from, typeInfo.sourceApp]
+                };
+                this.mProfileSchemaCache.set(profileType, typeInfo.schema);
 
-        // TODO: prefix key in map with config layer
-        this.mProfileSchemaCache.set(typeSchema.title, typeSchema);
+                if (semver.major(version) != semver.major(typeMetadata.version)) {
+                    // TODO: User warning about new major schema version
+                }
+            }
+        } else {
+            extenderJson.profileTypes = {
+                version: version,
+                from: [typeInfo.sourceApp]
+            };
+            this.mProfileSchemaCache.set(profileType, typeInfo.schema);
+        }
+
         return true;
     }
 
@@ -1248,8 +1276,7 @@ export class ProfileInfo {
      * @param [sources] Include all available types from given source applications
      */
     public getProfileTypes(sources?: string[]): string[] {
-        const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-        const extenderJson: IExtenderJson = jsonfile.readFileSync(extenderJsonPath);
+        const extenderJson = this.readExtendersJson();
         const profileTypes = [];
         for (const layer of this.getTeamConfig().mLayers) {
             if (layer.properties.$schema == null) continue;
@@ -1259,8 +1286,7 @@ export class ProfileInfo {
                 const schemaJson = jsonfile.readFileSync(schemaPath);
                 for (const { type, schema } of ConfigSchema.loadSchema(schemaJson)) {
                     if (type in extenderJson.profileTypes) {
-                        if (sources?.length > 0 &&
-                            lodash.difference(extenderJson.profileTypes[type].from, sources).length === 0) {
+                        if (sources?.length > 0 && sources.some((val) => extenderJson.profileTypes[type].from.includes(val))) {
                             profileTypes.push(type);
                         }
                     }
