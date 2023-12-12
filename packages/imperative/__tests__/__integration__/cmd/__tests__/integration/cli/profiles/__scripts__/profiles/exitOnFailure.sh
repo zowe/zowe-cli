@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 # function to exit if we encounter a bad return code
-function exitOnFailure
-{
+exitOnFailure () {
     failureMsg=${1:?"First parm (failureMsg) is required."}
     actualExitCode=${2:?"Second parm (actualExitCode) is required."}
     goodExitCode=${3:-0}

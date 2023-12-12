@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 profileColor=$1
 profileDescription=$2

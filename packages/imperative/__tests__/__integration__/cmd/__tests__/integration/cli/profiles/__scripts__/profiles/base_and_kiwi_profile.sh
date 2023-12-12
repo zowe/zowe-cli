@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 baseAmount=$1
 basePrice=$2

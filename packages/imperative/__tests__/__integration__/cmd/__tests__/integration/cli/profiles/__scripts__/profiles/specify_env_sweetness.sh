@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cliColor=$1
 cliDescription=$2
