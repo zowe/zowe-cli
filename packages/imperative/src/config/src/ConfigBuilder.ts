@@ -18,6 +18,7 @@ import { IConfig } from "./doc/IConfig";
 import { IConfigBuilderOpts } from "./doc/IConfigBuilderOpts";
 import { CredentialManagerFactory } from "../../security";
 import { IConfigConvertResult } from "./doc/IConfigConvertResult";
+import { ICommandProfileTypeConfiguration } from "../../cmd";
 
 export class ConfigBuilder {
     /**
@@ -30,31 +31,10 @@ export class ConfigBuilder {
         const config: IConfig = Config.empty();
 
         for (const profile of impConfig.profiles) {
-            const properties: { [key: string]: any } = {};
-            const secureProps: string[] = [];
-            for (const [k, v] of Object.entries(profile.schema.properties)) {
-                if (opts.populateProperties && v.includeInTemplate) {
-                    if (v.secure) {
-                        secureProps.push(k);
-                    } else {
-                        if (v.optionDefinition != null) {
-                            // Use default value of ICommandOptionDefinition if present
-                            properties[k] = v.optionDefinition.defaultValue;
-                        }
-                        if (properties[k] === undefined) {
-                            // Fall back to an empty value
-                            properties[k] = this.getDefaultValue(v.type);
-                        }
-                    }
-                }
-            }
+            const defaultProfile = this.buildDefaultProfile(config, profile);
 
             // Add the profile to config and set it as default
-            lodash.set(config, `profiles.${profile.type}`, {
-                type: profile.type,
-                properties,
-                secure: secureProps
-            });
+            lodash.set(config, `profiles.${profile.type}`, defaultProfile);
 
             if (opts.populateProperties) {
                 config.defaults[profile.type] = profile.type;
@@ -74,6 +54,37 @@ export class ConfigBuilder {
         }
 
         return { ...config, autoStore: true };
+    }
+
+    public static buildDefaultProfile(config: IConfig, profile: ICommandProfileTypeConfiguration): {
+        type: string;
+        properties: Record<string, any>;
+        secure: string[]
+    } {
+        const properties: { [key: string]: any } = {};
+        const secureProps: string[] = [];
+        for (const [k, v] of Object.entries(profile.schema.properties)) {
+            if (v.includeInTemplate) {
+                if (v.secure) {
+                    secureProps.push(k);
+                } else {
+                    if (v.optionDefinition != null) {
+                        // Use default value of ICommandOptionDefinition if present
+                        properties[k] = v.optionDefinition.defaultValue;
+                    }
+                    if (properties[k] === undefined) {
+                        // Fall back to an empty value
+                        properties[k] = this.getDefaultValue(v.type);
+                    }
+                }
+            }
+        }
+
+        return {
+            type: profile.type,
+            properties,
+            secure: secureProps
+        };
     }
 
     /**

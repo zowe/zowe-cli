@@ -23,6 +23,7 @@ import { IProfAttrs } from "./doc/IProfAttrs";
 import { IArgTeamConfigLoc, IProfLoc, IProfLocOsLoc, IProfLocOsLocLayer, ProfLocType } from "./doc/IProfLoc";
 import { IProfMergeArgOpts } from "./doc/IProfMergeArgOpts";
 import { IProfMergedArg } from "./doc/IProfMergedArg";
+import { IConfigSchema } from "./doc/IConfigSchema";
 import { IProfOpts } from "./doc/IProfOpts";
 import { ProfileCredentials } from "./ProfileCredentials";
 import { ProfInfoErr } from "./ProfInfoErr";
@@ -53,6 +54,7 @@ import { IGetAllProfilesOptions } from "./doc/IProfInfoProps";
 import { IConfig } from "./doc/IConfig";
 import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts";
 import { ConfigUtils } from "./ConfigUtils";
+import { ConfigBuilder } from "./ConfigBuilder";
 
 export type IExtenderJson = {
     profileTypes: Record<string, {
@@ -168,6 +170,8 @@ export class ProfileInfo {
      */
     private mProfileSchemaCache: Map<string, IProfileSchema>;
     private mCredentials: ProfileCredentials;
+
+    private mExtendersJson: IExtenderJson;
 
     // _______________________________________________________________________
     /**
@@ -991,6 +995,7 @@ export class ProfileInfo {
         }
 
         this.loadAllSchemas();
+        this.readExtendersJsonFromDisk();
     }
 
     // _______________________________________________________________________
@@ -1236,10 +1241,31 @@ export class ProfileInfo {
         LoggerUtils.setProfileSchemas(this.mProfileSchemaCache);
     }
 
-    private readExtendersJson(): IExtenderJson {
+    private readExtendersJsonFromDisk(): void {
         const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-        const extenderJson = jsonfile.readFileSync(extenderJsonPath);
-        return extenderJson;
+        this.mExtendersJson = jsonfile.readFileSync(extenderJsonPath);
+    }
+
+    /**
+     * Adds a profile type to the loaded Zowe config.
+     * The profile type must first be added to the schema using `addProfileTypeToSchema`.
+     *
+     * @param {string} profileType The profile type to add
+     * @param [layerPath] A dot-separated path that points to a layer in the config (default: top-most layer)
+     * Example: “outer.prod” would add a profile into the “prod” layer (which is contained in “outer” layer)
+     * @returns {boolean} `true` if added to the loaded config; `false` otherwise
+     */
+    public addProfileToConfig(profileType: string, layerPath?: string): boolean {
+        const profileSchema = [...this.getTeamConfig().mLayers].reverse()
+            .reduce((prev: IProfileSchema, layer) => {
+                const [, desiredSchema] = [...this.mProfileSchemaCache.entries()]
+                    .filter(([typeWithPath, schema]) => typeWithPath.includes(`:${profileType}`))[0];
+                return desiredSchema;
+            }, {} as IProfileSchema);
+
+        this.getTeamConfig().api.profiles.set(layerPath ?? profileType,
+            ConfigBuilder.buildDefaultProfile(this.mLoadedConfig.mProperties, { type: profileType, schema: profileSchema }));
+        return true;
     }
 
     /**
@@ -1254,31 +1280,72 @@ export class ProfileInfo {
             return false;
         }
 
+        const oldExtendersJson = { ...this.mExtendersJson };
+
         // Track the contributed profile type in extenders.json
-        const extenderJson = this.readExtendersJson();
-        if (profileType in extenderJson.profileTypes) {
-            const typeMetadata = extenderJson.profileTypes[profileType];
+        if (profileType in this.mExtendersJson.profileTypes) {
+            const typeMetadata = this.mExtendersJson.profileTypes[profileType];
             // Update the schema version for this profile type if newer than the installed version
-            if (version != null && semver.gt(version, typeMetadata.version)) {
-                extenderJson.profileTypes[profileType] = {
-                    version,
+            if (typeInfo.version != null && semver.gt(typeInfo.version, typeMetadata.version)) {
+                this.mExtendersJson.profileTypes[profileType] = {
+                    version: typeInfo.version,
                     from: [...typeMetadata.from, typeInfo.sourceApp]
                 };
                 this.mProfileSchemaCache.set(profileType, typeInfo.schema);
 
-                if (semver.major(version) != semver.major(typeMetadata.version)) {
+                if (semver.major(typeInfo.version) != semver.major(typeMetadata.version)) {
                     // TODO: User warning about new major schema version
                 }
             }
         } else {
-            extenderJson.profileTypes = {
-                version: version,
+            this.mExtendersJson.profileTypes[profileType] = {
+                version: typeInfo.version,
                 from: [typeInfo.sourceApp]
             };
             this.mProfileSchemaCache.set(profileType, typeInfo.schema);
         }
 
+        if (!lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
+            const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
+            fs.writeFileSync(extenderJsonPath, JSON.stringify(this.mExtendersJson));
+        }
+
         return true;
+    }
+
+    /**
+     * Builds the entire schema based on the available profile types and application sources.
+     *
+     * @param [sources] Include profile types contributed by these sources when building the schema
+     *   - Source applications are tracked in the “from” list for each profile type in extenders.json
+     * @returns {IConfigSchema} A config schema containing all applicable profile types
+     */
+    public buildSchema(sources?: string[]): IConfigSchema {
+        const finalSchema: Record<string, IProfileSchema> = {};
+        const teamConfigLayers = this.getTeamConfig().mLayers;
+
+        for (let i = teamConfigLayers.length; i > 0; i--) {
+            const layer = teamConfigLayers[i];
+            if (layer.properties.$schema == null) continue;
+            const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
+            const schemaPath = url.fileURLToPath(schemaUri);
+
+            if (!fs.existsSync(schemaPath)) continue;
+
+            const profileTypesInLayer = [...this.mProfileSchemaCache.entries()].filter(([type, schema]) => type.includes(`${layer.path}:`));
+            for (const [type, schema] of profileTypesInLayer) {
+                if (type in this.mExtendersJson.profileTypes) {
+                    if (sources?.length > 0 && sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
+                        finalSchema[type] = schema;
+                    }
+                }
+            }
+        }
+
+        return ConfigSchema.buildSchema(Object.entries(finalSchema).map(([type, schema]) => ({
+            type,
+            schema
+        })));
     }
 
     /**
@@ -1286,25 +1353,29 @@ export class ProfileInfo {
      * @param [sources] Include all available types from given source applications
      */
     public getProfileTypes(sources?: string[]): string[] {
-        const extenderJson = this.readExtendersJson();
-        const profileTypes = [];
+        const profileTypes = new Set<string>();
         for (const layer of this.getTeamConfig().mLayers) {
             if (layer.properties.$schema == null) continue;
             const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
             const schemaPath = url.fileURLToPath(schemaUri);
-            if (fs.existsSync(schemaPath)) {
-                const schemaJson = jsonfile.readFileSync(schemaPath);
-                for (const { type, schema } of ConfigSchema.loadSchema(schemaJson)) {
-                    if (type in extenderJson.profileTypes) {
-                        if (sources?.length > 0 && sources.some((val) => extenderJson.profileTypes[type].from.includes(val))) {
-                            profileTypes.push(type);
+            if (!fs.existsSync(schemaPath)) continue;
+
+            const profileTypesInLayer = [...this.mProfileSchemaCache.keys()].filter((key) => key.includes(`${layer.path}:`));
+            for (const typeWithPath of profileTypesInLayer) {
+                const [, type] = typeWithPath.split(":");
+                if (type in this.mExtendersJson.profileTypes) {
+                    if (sources?.length > 0) {
+                        if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
+                            profileTypes.add(type);
                         }
+                    } else {
+                        profileTypes.add(type);
                     }
                 }
             }
         }
 
-        return lodash.uniq(profileTypes);
+        return [...profileTypes];
     }
 
     /**
@@ -1314,13 +1385,19 @@ export class ProfileInfo {
      * @returns {IProfileSchema} The schema object provided by the specified profile type
      */
     public getSchemaForType(profileType: string): IProfileSchema {
-        for (const entry of this.mProfileSchemaCache.values()) {
-            if (entry.title === profileType) {
-                return entry;
+        let finalSchema: IProfileSchema = null;
+        for (let i = this.getTeamConfig().mLayers.length; i > 0; i--) {
+            const layer = this.getTeamConfig().mLayers[i];
+            const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, value]) => key.includes(`${layer.path}:`));
+            for (const [layerType, schema] of profileTypesFromLayer) {
+                const [, type] = layerType.split(":");
+                if (type === profileType) {
+                    finalSchema = schema[1];
+                }
             }
         }
 
-        return null;
+        return finalSchema;
     }
 
     // _______________________________________________________________________
