@@ -6,7 +6,7 @@ profileMoldType=$3
 
 # include exitOnFailure function
 myScriptDir=`dirname $0`
-source $myScriptDir/exitOnFailure.sh
+. $myScriptDir/exitOnFailure.sh
 
 # set desired properties in our config file
 cp $myScriptDir/banana.config.json .
