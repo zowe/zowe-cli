@@ -1231,6 +1231,10 @@ export class ProfileInfo {
         LoggerUtils.setProfileSchemas(this.mProfileSchemaCache);
     }
 
+    /**
+     * Reads the `extenders.json` file from the CLI home directory.
+     * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
+     */
     private readExtendersJsonFromDisk(): void {
         const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
         this.mExtendersJson = jsonfile.readFileSync(extenderJsonPath);
@@ -1265,7 +1269,7 @@ export class ProfileInfo {
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
     public addProfileTypeToSchema(profileType: string, typeInfo:
-        { sourceApp: string; schema: IProfileSchema; version?: string }): boolean {
+    { sourceApp: string; schema: IProfileSchema; version?: string }): boolean {
         if (this.mLoadedConfig == null) {
             return false;
         }
@@ -1325,7 +1329,11 @@ export class ProfileInfo {
             const profileTypesInLayer = [...this.mProfileSchemaCache.entries()].filter(([type, schema]) => type.includes(`${layer.path}:`));
             for (const [type, schema] of profileTypesInLayer) {
                 if (type in this.mExtendersJson.profileTypes) {
-                    if (sources?.length > 0 && sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
+                    if (sources?.length > 0) {
+                        if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
+                            finalSchema[type] = schema;
+                        }
+                    } else {
                         finalSchema[type] = schema;
                     }
                 }
