@@ -77,4 +77,13 @@ export interface ICreateVsamOptions extends IZosFilesOptions {
      * @type {string}
      */
     retainTo?: string;
+
+    /**
+     * The indicator that we need to show the attributes
+     *
+     * DO NOT SEND THIS TO ZOSMF
+     *
+     * @type {boolean}
+     */
+    showAttributes?: boolean;
 }

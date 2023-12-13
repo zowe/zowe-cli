@@ -109,6 +109,17 @@ export class Create {
             }
             delete tempOptions.size;
 
+            let response = "";
+            // Handle the print attributes option
+            if (!(tempOptions.showAttributes === null || tempOptions.showAttributes === undefined)) {
+                if (tempOptions.showAttributes) {
+                    delete tempOptions.showAttributes;
+                    response = TextUtils.prettyJson(tempOptions);
+                } else {
+                    delete tempOptions.showAttributes;
+                }
+            }
+
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
             const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options && options.responseTimeout != null) {
@@ -121,7 +132,7 @@ export class Create {
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+                commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
             };
         }
     }
@@ -347,6 +358,7 @@ export class Create {
      *         dsorg: "INDEXED",
      *         size: "640KB",
      *         secondary: 64
+     *         showAttributes: true
      *     }));
      *
      *     try {
@@ -372,6 +384,17 @@ export class Create {
 
         const idcamsOptions: ICreateVsamOptions = this.vsamConvertToIdcamsOptions(options);
 
+        // format the attributes to show, and remove the option
+        let attribText = "";
+        if (!(idcamsOptions.showAttributes === null || idcamsOptions.showAttributes === undefined)) {
+            if (idcamsOptions.showAttributes) {
+                delete idcamsOptions.showAttributes;
+                attribText = ZosFilesMessages.attributeTitle.message + TextUtils.prettyJson(idcamsOptions);
+            } else {
+                delete idcamsOptions.showAttributes;
+            }
+        }
+
         let respTimeout: number;
         if (options) {
             respTimeout = options.responseTimeout;
@@ -386,12 +409,12 @@ export class Create {
             const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds, {responseTimeout: respTimeout});
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message,
+                commandResponse: attribText + ZosFilesMessages.dataSetCreatedSuccessfully.message,
                 apiResponse: idcamsResponse
             };
         } catch (error) {
             const impErr = new ImperativeError({
-                msg: error.mDetails.msg,
+                msg: attribText + error.mDetails.msg,
                 causeErrors: error.mDetails.causeErrors,
                 additionalDetails: error.mDetails.additionalDetails
             });
