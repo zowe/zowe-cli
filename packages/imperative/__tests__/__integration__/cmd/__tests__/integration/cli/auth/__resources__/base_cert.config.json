@@ -1,0 +1,15 @@
+{
+    "profiles": {
+        "baseProfName": {
+            "type": "base",
+            "properties": {
+                "certFile": "./fakeCert.cert",
+                "certKeyFile": "./fakeKey.key"
+            }
+        }
+   },
+    "defaults": {
+        "base": "baseProfName"
+    },
+    "autoStore": true
+}
