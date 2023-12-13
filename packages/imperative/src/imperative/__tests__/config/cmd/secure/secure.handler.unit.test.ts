@@ -160,7 +160,6 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        (params.response.console as any).prompt = jest.fn(() => "fakePromptingData");
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
         (params.response.console as any).prompt = jest.fn(() => "fakePromptingData");
 
