@@ -26,7 +26,8 @@
     "**/__tests__/*",
     "**/*.spec.ts",
     "**/*-spec.ts",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "packages/imperative/__tests__"
   ],
   "files": [
     "./__types__/wontache.d.ts"
