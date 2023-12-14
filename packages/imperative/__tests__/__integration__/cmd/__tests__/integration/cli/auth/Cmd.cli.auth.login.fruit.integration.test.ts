@@ -12,7 +12,6 @@
 import { runCliScript } from "../../../../../../src/TestUtil";
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";
-import { join } from "path";
 
 const fakeCertPath = "./fakeCert.cert";
 const fakeCertKeyPath = "./fakeKey.key";
@@ -125,7 +124,7 @@ describe("imperative-test-cli auth login", () => {
         expect(response.stdout.toString()).not.toContain("tokenType:");
         expect(response.stdout.toString()).not.toContain("tokenValue:");
         expect(response.status).toBe(0);
-});
+    });
 
     it("should store token from cmd line user & password - y", () => {
         let response = runCliScript(__dirname + "/__scripts__/auth_login_cmd_line_password.sh",

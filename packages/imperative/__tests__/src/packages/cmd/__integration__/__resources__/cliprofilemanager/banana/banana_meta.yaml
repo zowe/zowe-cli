@@ -1,0 +1,13 @@
+defaultProfile: myprofile
+configuration:
+    type: banana
+    schema:
+        type: object
+        title: 'test profile'
+        description: 'test profile'
+        properties:
+            sum:
+                type: number
+        required:
+            - sum
+    createProfileFromArgumentsHandler: /home/stduser/repos/zowe-cli/packages/imperative/__tests__/src/packages/cmd/__integration__/../profileHandlers/AddTwoNumbersHandler
