@@ -381,5 +381,5 @@ export const autoInitCommandSummary: IMessageDefinition = {
 };
 
 export const autoInitCommandDesc: IMessageDefinition = {
-    message: `${autoInitCommandSummary}.`
+    message: `${autoInitCommandSummary.message}.`
 };

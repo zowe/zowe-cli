@@ -22,7 +22,8 @@ import { join } from "path";
 export const DataSet: ICommandDefinition = {
     name: "workflow-from-data-set",
     aliases: ["wfds"],
-    description: "Create a z/OSMF workflow on a z/OS system using a Data set",
+    summary: "Create a z/OSMF workflow on a z/OS system using a Data set",
+    description: "${summary}.",
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {

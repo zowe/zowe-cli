@@ -22,7 +22,8 @@ import { join } from "path";
 export const UssFile: ICommandDefinition = {
     name: "workflow-from-uss-file",
     aliases: ["wfuf"],
-    description: "Create a workflow instance in z/OSMF using a USS file",
+    summary: "Create a workflow instance in z/OSMF using a USS file",
+    description: "${summary}.",
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {

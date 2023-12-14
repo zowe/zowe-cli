@@ -16,7 +16,7 @@ export const TemplateDefinition: ICommandDefinition = {
     name: "template",
     aliases: ["tem"],
     type: "command",
-    summary: "Provision a published software service template.",
+    summary: "Provision a published software service template",
     description: "Using z/OSMF cloud provisioning services, provision available templates.\n" +
         "You can view available templates using the " + Constants.BINARY_NAME + " provisioning list " +
         "catalog-templates command.",
