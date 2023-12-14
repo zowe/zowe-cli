@@ -1247,7 +1247,13 @@ export class ProfileInfo {
      */
     private readExtendersJsonFromDisk(): void {
         const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-        this.mExtendersJson = jsonfile.readFileSync(extenderJsonPath);
+        if (!fs.existsSync(extenderJsonPath)) {
+            jsonfile.writeFileSync(extenderJsonPath, {
+                profileTypes: {}
+            });
+        } else {
+            this.mExtendersJson = jsonfile.readFileSync(extenderJsonPath);
+        }
     }
 
     /**
@@ -1306,12 +1312,12 @@ export class ProfileInfo {
                 version: typeInfo.version,
                 from: [typeInfo.sourceApp]
             };
-            this.mProfileSchemaCache.set(profileType, typeInfo.schema);
+            this.mProfileSchemaCache.set(`${this.mLoadedConfig.layerActive().path}:${profileType}`, typeInfo.schema);
         }
 
         if (!lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
             const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-            fs.writeFileSync(extenderJsonPath, JSON.stringify(this.mExtendersJson));
+            jsonfile.writeFileSync(extenderJsonPath, this.mExtendersJson);
         }
 
         return true;
