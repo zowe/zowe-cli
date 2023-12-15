@@ -383,6 +383,7 @@ Object {
   ],
   "description": "Connect to token-based authentication services.",
   "name": "auth",
+  "summary": "Connect to token-based authentication services",
   "type": "group",
 }
 `;
