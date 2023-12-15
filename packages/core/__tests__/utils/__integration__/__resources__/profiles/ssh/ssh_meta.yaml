@@ -1,0 +1,96 @@
+defaultProfile: null
+configuration:
+    type: ssh
+    schema:
+        type: object
+        title: 'z/OS SSH Profile'
+        description: 'z/OS SSH Profile'
+        properties:
+            host:
+                type: string
+                optionDefinition:
+                    name: host
+                    aliases:
+                        - H
+                    description: 'The z/OS SSH server host name.'
+                    type: string
+                    required: false
+                    group: 'z/OS Ssh Connection Options'
+            port:
+                type: number
+                optionDefinition:
+                    name: port
+                    aliases:
+                        - P
+                    description: 'The z/OS SSH server port.'
+                    type: number
+                    defaultValue: 22
+                    group: 'z/OS Ssh Connection Options'
+                includeInTemplate: true
+            user:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: user
+                    aliases:
+                        - u
+                    description: 'Mainframe user name, which can be the same as your TSO login.'
+                    type: string
+                    required: false
+                    group: 'z/OS Ssh Connection Options'
+            password:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: password
+                    aliases:
+                        - pass
+                        - pw
+                    description: 'Mainframe password, which can be the same as your TSO password.'
+                    type: string
+                    group: 'z/OS Ssh Connection Options'
+            privateKey:
+                type: string
+                optionDefinition:
+                    name: privateKey
+                    aliases:
+                        - key
+                        - pk
+                    description: 'Path to a file containing your private key, that must match a public key stored in the server for authentication'
+                    type: string
+                    group: 'z/OS Ssh Connection Options'
+            keyPassphrase:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: keyPassphrase
+                    aliases:
+                        - passphrase
+                        - kp
+                    description: 'Private key passphrase, which unlocks the private key.'
+                    type: string
+                    group: 'z/OS Ssh Connection Options'
+            handshakeTimeout:
+                type: number
+                optionDefinition:
+                    name: handshakeTimeout
+                    aliases:
+                        - timeout
+                        - to
+                    description: 'How long in milliseconds to wait for the SSH handshake to complete.'
+                    type: number
+                    group: 'z/OS Ssh Connection Options'
+        required: []
+    createProfileExamples:
+        -
+            options: 'ssh111 --host sshhost --user ibmuser --password myp4ss'
+            description: 'Create a ssh profile called ''ssh111'' to connect to z/OS SSH server at host ''zos123'' and default port 22'
+        -
+            options: 'ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss'
+            description: 'Create a ssh profile called ''ssh222'' to connect to z/OS SSH server at host ''zos123'' and port 13022'
+        -
+            options: 'ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase'
+            description: 'Create a ssh profile called ''ssh333'' to connect to z/OS SSH server at host ''zos123'' using a privatekey ''/path/to/privatekey'' and its decryption passphrase ''privateKeyPassphrase'' for privatekey authentication'
+        -
+            options: 'ssh444 --privateKey /path/to/privatekey'
+            description: 'Create a ssh profile called ''ssh444'' to connect to z/OS SSH server on default port 22, without specifying username, host, or password, preventing those values from being stored on disk'
