@@ -1263,7 +1263,7 @@ export class ProfileInfo {
                 return desiredSchema;
             }, {} as IProfileSchema);
 
-        this.getTeamConfig().api.profiles.set(layerPath ?? profileType,
+        this.getTeamConfig().api.profiles.set(layerPath ? `${layerPath}.${profileType}` : profileType,
             ConfigBuilder.buildDefaultProfile(this.mLoadedConfig.mProperties, { type: profileType, schema: profileSchema }));
         return true;
     }
@@ -1325,6 +1325,7 @@ export class ProfileInfo {
         const teamConfigLayers = this.getTeamConfig().mLayers;
 
         for (let i = teamConfigLayers.length; i > 0; i--) {
+            // Grab types from each layer, starting with the highest-priority layer
             const layer = teamConfigLayers[i];
             if (layer.properties.$schema == null) continue;
             const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
@@ -1332,10 +1333,13 @@ export class ProfileInfo {
 
             if (!fs.existsSync(schemaPath)) continue;
 
-            const profileTypesInLayer = [...this.mProfileSchemaCache.entries()].filter(([type, schema]) => type.includes(`${layer.path}:`));
-            for (const [type, schema] of profileTypesInLayer) {
+            const profileTypesInLayer = [...this.mProfileSchemaCache.entries()]
+                .filter(([type, schema]) => type.includes(`${layer.path}:`));
+            for (const [typeWithPath, schema] of profileTypesInLayer) {
+                const [, type] = typeWithPath.split(":");
                 if (type in this.mExtendersJson.profileTypes) {
                     if (sources?.length > 0) {
+                        // If a list of sources were provided, ensure the type is contributed at least one of these sources
                         if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                             finalSchema[type] = schema;
                         }
@@ -1369,6 +1373,7 @@ export class ProfileInfo {
                 const [, type] = typeWithPath.split(":");
                 if (type in this.mExtendersJson.profileTypes) {
                     if (sources?.length > 0) {
+                        // Only consider types contributed by at least one of these sources
                         if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                             profileTypes.add(type);
                         }
