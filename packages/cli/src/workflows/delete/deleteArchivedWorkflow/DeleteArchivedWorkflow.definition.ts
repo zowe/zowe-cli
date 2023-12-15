@@ -24,7 +24,7 @@ export const DeleteArchivedWorkflow: ICommandDefinition = {
     name: "archived-workflow",
     aliases: ["arw"],
     summary: "Delete an archived workflow from z/OSMF",
-    description: "${summary}.",
+    description: "Delete an archived workflow from z/OSMF.",
     type: "command",
     handler: join(__dirname, "../Delete.archived.common.handler"),
     profile: {

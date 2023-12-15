@@ -23,7 +23,7 @@ Array [
     "aliases": Array [
       "bv",
     ],
-    "description": "Opens the diffs between two given files in browser",
+    "description": "Opens the diffs between two given files in browser.",
     "name": "browser-view",
     "type": "boolean",
   },

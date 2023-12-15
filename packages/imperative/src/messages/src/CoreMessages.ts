@@ -62,8 +62,12 @@ export const createProfilesCommandDesc: IMessageDefinition = {
     message: `${createProfilesCommandSummary.message}.`,
 };
 
-export const createProfileCommandDesc: IMessageDefinition = {
-    message: `Create a {{type}} profile.`,
+export const createProfileCommandSummary: IMessageDefinition = {
+    message: `Create a {{type}} profile`,
+};
+
+export const createProfileCommandDesc: IMessageDefinition = { //TODO: Currently unused
+    message: `${createProfileCommandSummary.message}.`,
 };
 
 export const createProfileOptionDesc: IMessageDefinition = {

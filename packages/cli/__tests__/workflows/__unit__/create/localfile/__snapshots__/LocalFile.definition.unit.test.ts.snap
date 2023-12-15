@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "wflf",
   ],
-  "description": "Create a z/OSMF workflow on a z/OS system using a Local file",
+  "description": "Create a z/OSMF workflow on a z/OS system using a local file.",
   "examples": Array [
     Object {
       "description": "Create a workflow with name \\"testworkflow\\" using the local file \\"TESTID_WKFLOW.xml\\" that contains the workflow definition xml on the system \\"TESTM1\\" with owner \\"OTHERID\\" and delete workflow with the same name if it already exist in z/OSMF",
@@ -18,7 +18,7 @@ Object {
       "aliases": Array [
         "lf",
       ],
-      "description": "Local file that contains workflow definiton.",
+      "description": "Local file that contains workflow definition.",
       "name": "local-file",
       "required": true,
       "type": "string",
@@ -107,7 +107,7 @@ Object {
       "aliases": Array [
         "rd",
       ],
-      "description": "The remote uss directory where the files are to be uploaded. The directory has to exist",
+      "description": "The remote USS directory where the files are to be uploaded. The directory has to exist.",
       "name": "remote-directory",
       "required": false,
       "type": "string",
@@ -137,6 +137,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Create a z/OSMF workflow on a z/OS system using a local file",
   "type": "command",
 }
 `;

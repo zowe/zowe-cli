@@ -2,7 +2,7 @@
 
 exports[`zos-jobs cancel job definition should not have changed 1`] = `
 Object {
-  "description": "Cancel a single job by job ID",
+  "description": "Cancel a single job by job ID.",
   "examples": Array [
     Object {
       "description": "Cancel job with job ID JOB03456",

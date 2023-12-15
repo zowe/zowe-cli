@@ -22,7 +22,7 @@ export const ReportEnvDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "Report-env.handler"),
     summary: "Report the state of your working environment",
-    description: "Reports key items from your environment and identifies problem conditions",
+    description: "Reports key items from your environment and identifies problem conditions.",
     examples: [
         {
             description: "Report information and issues about your working environment",

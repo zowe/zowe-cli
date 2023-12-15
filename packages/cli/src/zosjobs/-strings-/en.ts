@@ -18,7 +18,7 @@ export default {
         ACTIONS: {
             JOB: {
                 SUMMARY: "Cancel a single job by job ID",
-                DESCRIPTION: "Cancel a single job by job ID",
+                DESCRIPTION: "Cancel a single job by job ID.",
                 POSITIONALS: {
                     JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
@@ -79,7 +79,7 @@ export default {
         ACTIONS: {
             JOB: {
                 SUMMARY: "Delete a single job by job ID",
-                DESCRIPTION: "Delete a single job by job ID",
+                DESCRIPTION: "Delete a single job by job ID.",
                 POSITIONALS: {
                     JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
                         "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +

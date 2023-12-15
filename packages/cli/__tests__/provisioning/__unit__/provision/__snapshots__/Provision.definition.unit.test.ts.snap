@@ -7,7 +7,7 @@ Object {
   ],
   "description": "Using z/OSMF cloud provisioning services provision available templates.",
   "name": "provision",
-  "summary": "Provision published software service templates.",
+  "summary": "Provision published software service templates",
   "type": "group",
 }
 `;

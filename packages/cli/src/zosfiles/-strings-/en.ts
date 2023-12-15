@@ -20,31 +20,36 @@ export default {
         WITH_VALUE: "with value"
     },
     CREATE: {
+        SUMMARY: "Create data sets",
         DESCRIPTION: "Create data sets.",
         ACTIONS: {
             DATA_SET_BINARY: {
-                DESCRIPTION: "Create executable data sets",
+                SUMMARY: "Create executable data sets",
+                DESCRIPTION: "Create executable data sets.",
                 EXAMPLES: {
                     EX1: "Create an empty binary partitioned data set (PDS) with default parameters",
                     EX2: "Create an empty binary PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_CLASSIC: {
-                DESCRIPTION: "Create classic data sets (JCL, HLASM, CBL, etc...)",
+                SUMMARY: "Create classic data sets (JCL, HLASM, CBL, etc...)",
+                DESCRIPTION: "Create classic data sets (JCL, HLASM, CBL, etc...).",
                 EXAMPLES: {
                     EX1: "Create an empty z/OS 'classic' PDS with default parameters",
                     EX2: `Create an empty z/OS 'classic' PDSE using data set type LIBRARY`
                 }
             },
             DATA_SET_C: {
-                DESCRIPTION: "Create data sets for C code programming",
+                SUMMARY: "Create data sets for C code programming",
+                DESCRIPTION: "Create data sets for C code programming.",
                 EXAMPLES: {
                     EX1: "Create an empty C code PDS with default parameters",
                     EX2: "Create an empty C code PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_LIKE: {
-                DESCRIPTION: "Create data sets based on the properties of an existing data set",
+                SUMMARY: "Create data sets based on the properties of an existing data set",
+                DESCRIPTION: "Create data sets based on the properties of an existing data set.",
                 EXAMPLES: {
                     EX1: "Create a data set with default parameters and like flag",
                     EX2: "Create a data set with default parameters and like flag and lrecl flag",
@@ -52,20 +57,23 @@ export default {
                 }
             },
             DATA_SET_PARTITIONED: {
-                DESCRIPTION: "Create partitioned data sets (PDS)",
+                SUMMARY: "Create partitioned data sets (PDS)",
+                DESCRIPTION: "Create partitioned data sets (PDS).",
                 EXAMPLES: {
                     EX1: "Create an empty PDS with default parameters",
                     EX2: "Create an empty PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_SEQUENTIAL: {
-                DESCRIPTION: "Create physical sequential data sets (PS)",
+                SUMMARY: "Create physical sequential data sets (PS)",
+                DESCRIPTION: "Create physical sequential data sets (PS).",
                 EXAMPLES: {
                     EX1: "Create an empty physical sequential data set with default parameters"
                 }
             },
             VSAM: {
-                DESCRIPTION: "Create a VSAM cluster",
+                SUMMARY: "Create a VSAM cluster",
+                DESCRIPTION: "Create a VSAM cluster.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the dataset in which to create a VSAM cluster"
                 },
@@ -176,10 +184,12 @@ export default {
         }
     },
     COPY: {
+        SUMMARY: "Copy a data set",
         DESCRIPTION: "Copy a data set.",
         ACTIONS: {
             DATA_SET: {
-                DESCRIPTION: "Copy a data set to another data set",
+                SUMMARY: "Copy a data set to another data set",
+                DESCRIPTION: "Copy a data set to another data set.",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
                     TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)"
@@ -196,21 +206,22 @@ export default {
                 }
             },
             DATA_SET_CROSS_LPAR: {
-                DESCRIPTION: "Copy a data set to another data set on a specified LPAR",
+                SUMMARY: "Copy a data set to another data set on a specified LPAR",
+                DESCRIPTION: "Copy a data set to another data set on a specified LPAR.",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
                     TODSNAME: "The name of the data set that you want to copy to. If the dataset does not " +
                     "exist it will be allocated automatically"
                 },
                 OPTIONS: {
-                    REPLACE:         "Specify this option as true if you wish to replace the target dataset if it already exists",
+                    REPLACE:         "Specify this option as true if you wish to replace the target dataset if it already exists.",
                     TARGETHOST:      "The target z/OSMF server host name.",
                     TARGETPORT:      "The target z/OSMF server port.",
                     TARGETUSER:      "The target z/OSMF user name, which can be the same as your TSO login.",
                     TARGETPASS:      "The target z/OSMF password, which can be the same as your TSO password.",
                     TARGETTOKENVAL:  "The type of token to get and use for the API for the target system.",
                     TARGETTOKENTYPE: "The value of the token to pass to the API for the target system.",
-                    TARGETPROFILE:   "The name of a z/OSMF profile to load for the target host. ",
+                    TARGETPROFILE:   "The name of a z/OSMF profile to load for the target host.",
                     TARGETVOLSER:    "The volume serial (VOLSER) on which you want the target data set to be placed.",
                     TARGETMGTCLS:    "The SMS management class to use for the allocation of the target data set.",
                     TARGETDATACLS:   "The SMS data class to use for the allocation of the target data set.",
@@ -228,10 +239,12 @@ export default {
         }
     },
     DELETE: {
+        SUMMARY: "Delete a data set or Unix System Services file",
         DESCRIPTION: "Delete a data set or Unix System Services file.",
         ACTIONS: {
             DATA_SET: {
-                DESCRIPTION: "Delete a data set or data set member permanently",
+                SUMMARY: "Delete a data set or data set member permanently",
+                DESCRIPTION: "Delete a data set or data set member permanently.",
                 POSITIONALS: {
                     DSNAME: "The name of the data set that you want to delete"
                 },
@@ -246,6 +259,7 @@ export default {
                 }
             },
             MIGRATED_DATA_SET: {
+                SUMMARY: "Delete migrated data sets",
                 DESCRIPTION: "Delete migrated data sets.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the migrated data set you want to delete."
@@ -260,7 +274,8 @@ export default {
                 }
             },
             VSAM: {
-                DESCRIPTION: "Delete a VSAM cluster permanently",
+                SUMMARY: "Delete a VSAM cluster permanently",
+                DESCRIPTION: "Delete a VSAM cluster permanently.",
                 POSITIONALS: {
                     DSNAME: "The name of the VSAM cluster that you want to delete"
                 },
@@ -278,7 +293,8 @@ export default {
                 }
             },
             USS: {
-                DESCRIPTION: "Delete a Unix Systems Services (USS) File or directory permanently",
+                SUMMARY: "Delete a Unix Systems Services (USS) file or directory permanently",
+                DESCRIPTION: "Delete a Unix Systems Services (USS) file or directory permanently.",
                 POSITIONALS: {
                     FILENAME: "The name of the file or directory that you want to delete"
                 },
@@ -313,7 +329,7 @@ export default {
         ACTIONS: {
             ALL_MEMBERS: {
                 SUMMARY: "Download all members from a pds",
-                DESCRIPTION: "Download all members from a partitioned data set to a local folder",
+                DESCRIPTION: "Download all members from a partitioned data set to a local folder.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set from which you want to download members"
                 },
@@ -324,7 +340,7 @@ export default {
             },
             DATA_SET: {
                 SUMMARY: "Download content from a z/OS data set",
-                DESCRIPTION: "Download content from a z/OS data set to a local file",
+                DESCRIPTION: "Download content from a z/OS data set to a local file.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set that you want to download"
                 },
@@ -334,7 +350,7 @@ export default {
             },
             USS_FILE: {
                 SUMMARY: "Download content from a USS file",
-                DESCRIPTION: "Download content from a USS file to a local file on your PC",
+                DESCRIPTION: "Download content from a USS file to a local file on your PC.",
                 POSITIONALS: {
                     USSFILENAME: "The name of the USS file you want to download"
                 },
@@ -345,7 +361,7 @@ export default {
             },
             USS_DIR: {
                 SUMMARY: "Download content from a USS directory",
-                DESCRIPTION: "Download content from a USS directory to a local directory on your PC",
+                DESCRIPTION: "Download content from a USS directory to a local directory on your PC.",
                 POSITIONALS: {
                     USSDIRNAME: "The name of the USS directory you want to download"
                 },
@@ -381,7 +397,7 @@ export default {
             }
         },
         OPTIONS: {
-            ATTRIBUTES: "Path of an attributes file to control how files are downloaded",
+            ATTRIBUTES: "Path of an attributes file to control how files are downloaded.",
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process " +
@@ -423,9 +439,9 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all files at once" +
                 " without a maximum number of concurrent requests. ",
-            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case",
-            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot",
-            OVERWRITE: "Overwrite files that already exist in your local environment"
+            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case.",
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot.",
+            OVERWRITE: "Overwrite files that already exist in your local environment."
         }
     },
     INVOKE: {
@@ -477,7 +493,7 @@ export default {
             },
             DATA_SET: {
                 SUMMARY: "List data sets",
-                DESCRIPTION: "List data sets that match a pattern in the data set name",
+                DESCRIPTION: "List data sets that match a pattern in the data set name.",
                 POSITIONALS: {
                     DATASETNAME: "The name or pattern of the data set that you want to list"
                 },
@@ -491,7 +507,7 @@ export default {
             },
             USS_FILE: {
                 SUMMARY: "List USS files",
-                DESCRIPTION: "List USS files and directories in a UNIX file path",
+                DESCRIPTION: "List USS files and directories in a UNIX file path.",
                 POSITIONALS: {
                     PATH: "The directory containing the files and directories to be listed"
                 },
@@ -587,10 +603,12 @@ export default {
         }
     },
     UPLOAD: {
+        SUMMARY: "Upload the contents of a file to data sets",
         DESCRIPTION: "Upload the contents of a file to data sets.",
         ACTIONS: {
             DIR_TO_PDS: {
-                DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",
+                SUMMARY: "Upload files from a local directory to a partitioned data set (PDS)",
+                DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS).",
                 POSITIONALS: {
                     INPUTDIR: "The path for a local directory that you want to upload to a PDS",
                     DATASETNAME: "The name of the partitioned data set to which you want to upload the files"
@@ -601,7 +619,8 @@ export default {
                 }
             },
             FILE_TO_DATA_SET: {
-                DESCRIPTION: "Upload the contents of a file to a z/OS data set",
+                SUMMARY: "Upload the contents of a file to a z/OS data set",
+                DESCRIPTION: "Upload the contents of a file to a z/OS data set.",
                 POSITIONALS: {
                     INPUTFILE: "The local file that you want to upload to a data set",
                     DATASETNAME: "The name of the data set to which you want to upload the file"
@@ -613,7 +632,8 @@ export default {
                 }
             },
             STDIN_TO_DATA_SET: {
-                DESCRIPTION: "Upload the content of a stdin to a z/OS data set",
+                SUMMARY: "Upload the content of a stdin to a z/OS data set",
+                DESCRIPTION: "Upload the content of a stdin to a z/OS data set.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set to which you want to upload data"
                 },
@@ -624,7 +644,8 @@ export default {
                 }
             },
             FILE_TO_USS: {
-                DESCRIPTION: "Upload content to a USS file from local file",
+                SUMMARY: "Upload content to a USS file from local file",
+                DESCRIPTION: "Upload content to a USS file from local file.",
                 POSITIONALS: {
                     INPUTFILE: "The local file that you want to upload to a USS file",
                     USSFILENAME: "The name of the USS file to which you want to upload the file"
@@ -701,7 +722,7 @@ export default {
                 "All files matching specified file names will be uploaded in ASCII mode. " +
                 "If a .zosattributes file (or equivalent file specified via --attributes) is present, " +
                 "--ascii-files will be ignored.",
-            ATTRIBUTES: "Path of an attributes file to control how files are uploaded",
+            ATTRIBUTES: "Path of an attributes file to control how files are uploaded.",
             MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files." +
                 " Increasing the value results in faster uploads. " +
                 "However, increasing the value increases resource consumption on z/OS and can be prone " +
@@ -710,7 +731,7 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to upload all members at once" +
                 " without a maximum number of concurrent requests. ",
-            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot"
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot."
         }
     },
     VIEW: {
@@ -847,8 +868,8 @@ export default {
                 SUMMARY: "Compare content of two spool dds",
                 DESCRIPTION: "Compare content of two spool dds on your terminal (stdout).",
                 POSITIONALS: {
-                    SPOOLDDDESCRIPTION1: "The name of the first job with the id of spool dd",
-                    SPOOLDDDESCRIPTION2: "The name of the second job with the id of spool dd"
+                    SPOOLDDDESCRIPTION1: "The name of the first job with the id of spool dd.",
+                    SPOOLDDDESCRIPTION2: "The name of the second job with the id of spool dd."
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"`,
@@ -861,7 +882,7 @@ export default {
                 DESCRIPTION: "Compare content of a local-file and a spool-dd on your terminal (stdout).",
                 POSITIONALS: {
                     LOCALFILEPATH: "The path of the local file  you want to compare.",
-                    SPOOLDDDESCRIPTION: "The name of the job with the id of spool dd"
+                    SPOOLDDDESCRIPTION: "The name of the job with the id of spool dd."
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of a local-file and a spool dd "./a.txt"  "jobName:jobId:spoolId"`,
@@ -893,13 +914,15 @@ export default {
                 "lines display. If you want to limit the amount of data returned to only lines with differences use the context " +
                 "lines option to reduce the matching lines to only those before and after non-matching lines. Using the value " +
                 "of 0 strips all matching lines.",
-            BROWSERVIEW: "Opens the diffs between two given files in browser"
+            BROWSERVIEW: "Opens the diffs between two given files in browser."
         }
     },
     HMIGRATE: {
+        SUMMARY: "Migrate data sets",
         DESCRIPTION: "Migrate data sets.",
         ACTIONS: {
             DATA_SET: {
+                SUMMARY: "Migrate a data set",
                 DESCRIPTION: "Migrate a data set.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set you want to migrate."
@@ -914,6 +937,7 @@ export default {
         }
     },
     HRECALL: {
+        SUMMARY: "Recall migrated data sets",
         DESCRIPTION: "Recall migrated data sets.",
         ACTIONS: {
             DATA_SET: {
@@ -934,6 +958,7 @@ export default {
         DESCRIPTION: "Rename a data set or member.",
         ACTIONS: {
             DATA_SET: {
+                SUMMARY: "Rename a data set",
                 DESCRIPTION: "Rename a data set.",
                 POSITIONALS: {
                     BEFOREDSNAME: "The name of the data set that you want to rename.",
@@ -946,6 +971,7 @@ export default {
                 }
             },
             DATA_SET_MEMBER: {
+                SUMMARY: "Rename a data set member",
                 DESCRIPTION: "Rename a data set member.",
                 POSITIONALS: {
                     DSNAME: "The name of the data set the member belongs to.",

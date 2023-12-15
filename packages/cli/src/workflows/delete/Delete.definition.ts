@@ -25,7 +25,7 @@ export const DeleteDefinition: ICommandDefinition = {
     aliases: ["del"],
     type: "group",
     summary: "Delete an active workflow or an archived workflow from z/OSMF",
-    description: "${summary}.",
+    description: "Delete an active workflow or an archived workflow from z/OSMF.",
     children: [
         DeleteActiveWorkflow,
         DeleteArchivedWorkflow

@@ -26,7 +26,7 @@ export const CreateDefinition: ICommandDefinition = {
     aliases: ["cre"],
     type: "group",
     summary: "Create a z/OSMF workflow on a z/OS system",
-    description: "${summary}.",
+    description: "Create a z/OSMF workflow on a z/OS system.",
     children: [
         DataSet,
         UssFile,

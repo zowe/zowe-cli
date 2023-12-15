@@ -21,7 +21,7 @@ export const initDefinition: ICommandDefinition = {
     name: "init",
     type: "command",
     handler: join(__dirname, "init.handler"),
-    summary: "init config files",
+    summary: "Init config files",
     description: `Initialize config files. Defaults to initializing "${ImperativeConfig.instance.rootCommandName}.config.json" in the current ` +
         `working directory unless otherwise specified.\n\nUse "--user-config" to init ` +
         `"${ImperativeConfig.instance.rootCommandName}.config.user.json". Use "--global-config" to initialize the configuration files in your home ` +
@@ -72,14 +72,14 @@ export const initDefinition: ICommandDefinition = {
         {
             name: "edit",
             aliases: ["e"],
-            description: "Open in editor after initializing the configuration",
+            description: "Open in editor after initializing the configuration.",
             type: "boolean",
             conflictsWith: ["dry-run"]
         },
         {
             name: "editor",
             description: `Editor that overrides the default editor for this file type. Set the option to the editor's executable file location ` +
-                `or the program's name: ie "--editor notepad"`,
+                `or the program's name: ie "--editor notepad".`,
             aliases: ["ed"],
             type: "string",
             implies: ["edit"]

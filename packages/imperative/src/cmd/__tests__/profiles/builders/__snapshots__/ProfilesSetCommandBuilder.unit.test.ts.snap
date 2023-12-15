@@ -28,8 +28,7 @@ Object {
       "type": "string",
     },
   ],
-  "summary": "Set the default
- profiles for the type-a group",
+  "summary": "Set the default profiles for the type-a group",
   "type": "command",
 }
 `;

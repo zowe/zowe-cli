@@ -2,7 +2,7 @@
 
 exports[`zos-jobs delete job definition should not have changed 1`] = `
 Object {
-  "description": "Delete a single job by job ID",
+  "description": "Delete a single job by job ID.",
   "examples": Array [
     Object {
       "description": "Delete job with job ID JOB03456",

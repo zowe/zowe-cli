@@ -86,6 +86,7 @@ leaveConflict: Automation is stopped. The user must resolve the conflict manuall
       "zosmf",
     ],
   },
+  "summary": "Will run workflow from the beginning to the end or to the first manual step",
   "type": "command",
 }
 `;

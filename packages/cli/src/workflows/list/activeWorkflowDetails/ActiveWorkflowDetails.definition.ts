@@ -23,7 +23,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
     name: "active-workflow-details",
     aliases: ["awd"],
     summary: "Get the details of an active z/OSMF workflow",
-    description: "${summary}.",
+    description: "Get the details of an active z/OSMF workflow.",
     type: "command",
     handler: join(__dirname, "./ActiveWorkflowDetails.handler"),
     profile: {

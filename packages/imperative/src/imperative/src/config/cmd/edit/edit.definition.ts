@@ -20,7 +20,7 @@ export const editDefinition: ICommandDefinition = {
     name: "edit",
     type: "command",
     handler: join(__dirname, "edit.handler"),
-    summary: "edit config files",
+    summary: "Edit config files",
     description: `Edit an existing config file in your system's default text editor.\n\n` +
         `In a graphical environment, the application associated with JSON files will be launched. ` +
         `In a command-line environment, vi will be launched. To override the command-line editor used, specify it with the --editor option.`,
@@ -42,7 +42,7 @@ export const editDefinition: ICommandDefinition = {
         {
             name: "editor",
             description: `Editor that overrides the default editor for this file type. Set the option to the editor's executable file location ` +
-                `or the program's name: ie "--editor notepad"`,
+                `or the program's name: ie "--editor notepad".`,
             aliases: ["ed"],
             type: "string",
             required: false

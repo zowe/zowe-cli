@@ -23,8 +23,8 @@ import { join } from "path";
 export const LocalFile: ICommandDefinition = {
     name: "workflow-from-local-file",
     aliases: ["wflf"],
-    summary: "Create a z/OSMF workflow on a z/OS system using a Local file",
-    description: "${summary}.",
+    summary: "Create a z/OSMF workflow on a z/OS system using a local file",
+    description: "Create a z/OSMF workflow on a z/OS system using a local file.",
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {

@@ -27,7 +27,7 @@ export const ListDefinition: ICommandDefinition = {
     aliases: ["ls"],
     type: "group",
     summary: "List the z/OSMF workflows for a system or a sysplex with filter options",
-    description: "${summary}.",
+    description: "List the z/OSMF workflows for a system or a sysplex with filter options.",
     children: [
         ActiveWorkflows,
         ActiveWorkflowDetails,

@@ -24,7 +24,7 @@ export const DeleteActiveWorkflow: ICommandDefinition = {
     name: "active-workflow",
     aliases: ["aw"],
     summary: "Delete an active workflow instance in z/OSMF",
-    description: "${summary}.",
+    description: "Delete an active workflow instance in z/OSMF.",
     type: "command",
     handler: join(__dirname, "../Delete.common.handler"),
     profile: {
