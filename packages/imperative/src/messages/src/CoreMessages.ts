@@ -348,8 +348,12 @@ export const unexpectedProfileUpdateError: IMessageDefinition = {
     message: `An unexpected profile update error occurred: \n{{unexpectedError}}`
 };
 
+export const authCategorySummary: IMessageDefinition = {
+    message: `Connect to token-based authentication services`
+};
+
 export const authCategoryDesc: IMessageDefinition = {
-    message: `Connect to token-based authentication services.`
+    message: `${authCategorySummary.message}.`
 };
 
 export const authLoginGroupSummary: IMessageDefinition = {
