@@ -18,18 +18,17 @@ exports[`cmd-cli should display the help 1`] = `
  GROUPS
  ------
 
-   auth        Connect to token-based authentication services        
-   auto-format Invoke handlers to test auto-format                   
-   chained     chained handler test commands                         
-   gen-help    Commands to test help generator                       
-   invalid     Invalid definitions                                   
-   invoke      Invoke handlers to test promise reject/fulfill        
-   nested      Test a complex structure                              
-   profile     Validate profile mapping                              
-   profiles    Create and manage configuration profiles. (deprecated)
-   read        Read some profiles                                    
-   respond     Invoke handlers that will produce messages            
-   validate    Validate syntax checking                              
+   auth        Connect to token-based authentication services
+   auto-format Invoke handlers to test auto-format           
+   chained     chained handler test commands                 
+   gen-help    Commands to test help generator               
+   invalid     Invalid definitions                           
+   invoke      Invoke handlers to test promise reject/fulfill
+   nested      Test a complex structure                      
+   profile     Validate profile mapping                      
+   read        Read some profiles                            
+   respond     Invoke handlers that will produce messages    
+   validate    Validate syntax checking                      
 
  OPTIONS
  -------
@@ -74,18 +73,17 @@ exports[`cmd-cli should display the help 1`] = `
  GROUPS
  ------
 
-   auth        Connect to token-based authentication services        
-   auto-format Invoke handlers to test auto-format                   
-   chained     chained handler test commands                         
-   gen-help    Commands to test help generator                       
-   invalid     Invalid definitions                                   
-   invoke      Invoke handlers to test promise reject/fulfill        
-   nested      Test a complex structure                              
-   profile     Validate profile mapping                              
-   profiles    Create and manage configuration profiles. (deprecated)
-   read        Read some profiles                                    
-   respond     Invoke handlers that will produce messages            
-   validate    Validate syntax checking                              
+   auth        Connect to token-based authentication services
+   auto-format Invoke handlers to test auto-format           
+   chained     chained handler test commands                 
+   gen-help    Commands to test help generator               
+   invalid     Invalid definitions                           
+   invoke      Invoke handlers to test promise reject/fulfill
+   nested      Test a complex structure                      
+   profile     Validate profile mapping                      
+   read        Read some profiles                            
+   respond     Invoke handlers that will produce messages    
+   validate    Validate syntax checking                      
 
  OPTIONS
  -------
@@ -118,7 +116,7 @@ exports[`cmd-cli should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth        Connect to token-based authentication services        \\\\n   auto-format Invoke handlers to test auto-format                   \\\\n   chained     chained handler test commands                         \\\\n   gen-help    Commands to test help generator                       \\\\n   invalid     Invalid definitions                                   \\\\n   invoke      Invoke handlers to test promise reject/fulfill        \\\\n   nested      Test a complex structure                              \\\\n   profile     Validate profile mapping                              \\\\n   profiles    Create and manage configuration profiles. (deprecated)\\\\n   read        Read some profiles                                    \\\\n   respond     Invoke handlers that will produce messages            \\\\n   validate    Validate syntax checking                              \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth        Connect to token-based authentication services\\\\n   auto-format Invoke handlers to test auto-format           \\\\n   chained     chained handler test commands                 \\\\n   gen-help    Commands to test help generator               \\\\n   invalid     Invalid definitions                           \\\\n   invoke      Invoke handlers to test promise reject/fulfill\\\\n   nested      Test a complex structure                      \\\\n   profile     Validate profile mapping                      \\\\n   read        Read some profiles                            \\\\n   respond     Invoke handlers that will produce messages    \\\\n   validate    Validate syntax checking                      \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
   \\"data\\": {}
 }"
@@ -260,132 +258,6 @@ cmd-cli profile mapping-name-type
 cmd-cli profile mapping-positional
 
 	Tests Imperative's profile to CLI mapping capabilities.
-
-cmd-cli profiles create banana-profile
-
-	Banana Profile
-
-cmd-cli profiles create base-profile
-
-	Fruit Profile
-
-cmd-cli profiles create insecure-profile
-
-	Test Secured Fields
-
-cmd-cli profiles create kiwi-profile
-
-	Kiwi Profile
-
-cmd-cli profiles create strawberry-profile
-
-	Strawberry Profile
-
-cmd-cli profiles delete banana-profile
-
-	Delete a banana profile. You must specify a profile name to be deleted. To find
-	a list of available profiles for deletion, issue the profiles list command. By
-	default, you will be prompted to confirm the profile removal.
-
-cmd-cli profiles delete base-profile
-
-	Delete a base profile. You must specify a profile name to be deleted. To find a
-	list of available profiles for deletion, issue the profiles list command. By
-	default, you will be prompted to confirm the profile removal.
-
-cmd-cli profiles delete insecure-profile
-
-	Delete a insecure profile. You must specify a profile name to be deleted. To
-	find a list of available profiles for deletion, issue the profiles list command.
-	By default, you will be prompted to confirm the profile removal.
-
-cmd-cli profiles delete kiwi-profile
-
-	Delete a kiwi profile. You must specify a profile name to be deleted. To find a
-	list of available profiles for deletion, issue the profiles list command. By
-	default, you will be prompted to confirm the profile removal.
-
-cmd-cli profiles delete strawberry-profile
-
-	Delete a strawberry profile. You must specify a profile name to be deleted. To
-	find a list of available profiles for deletion, issue the profiles list command.
-	By default, you will be prompted to confirm the profile removal.
-
-cmd-cli profiles list banana-profiles
-
-	Banana Profile
-
-cmd-cli profiles list base-profiles
-
-	Fruit Profile
-
-cmd-cli profiles list insecure-profiles
-
-	Test Secured Fields
-
-cmd-cli profiles list kiwi-profiles
-
-	Kiwi Profile
-
-cmd-cli profiles list strawberry-profiles
-
-	Strawberry Profile
-
-cmd-cli profiles set-default banana-profile
-
-	The banana set default-profiles command allows you to set the default profiles
-	for this command group. When a banana command is issued and no profile override
-	options are specified, the default profiles for the command group are
-	automatically loaded for the command based on the commands profile requirements.
-
-cmd-cli profiles set-default base-profile
-
-	The base set default-profiles command allows you to set the default profiles for
-	this command group. When a base command is issued and no profile override
-	options are specified, the default profiles for the command group are
-	automatically loaded for the command based on the commands profile requirements.
-
-cmd-cli profiles set-default insecure-profile
-
-	The insecure set default-profiles command allows you to set the default profiles
-	for this command group. When a insecure command is issued and no profile
-	override options are specified, the default profiles for the command group are
-	automatically loaded for the command based on the commands profile requirements.
-
-cmd-cli profiles set-default kiwi-profile
-
-	The kiwi set default-profiles command allows you to set the default profiles for
-	this command group. When a kiwi command is issued and no profile override
-	options are specified, the default profiles for the command group are
-	automatically loaded for the command based on the commands profile requirements.
-
-cmd-cli profiles set-default strawberry-profile
-
-	The strawberry set default-profiles command allows you to set the default
-	profiles for this command group. When a strawberry command is issued and no
-	profile override options are specified, the default profiles for the command
-	group are automatically loaded for the command based on the commands profile
-	requirements.
-
-cmd-cli profiles update banana-profile
-
-	Banana Profile
-
-cmd-cli profiles update base-profile
-
-	Fruit Profile
-
-cmd-cli profiles update insecure-profile
-
-	Test Secured Fields
-
-cmd-cli profiles update kiwi-profile
-
-	Kiwi Profile
-
-cmd-cli profiles update strawberry-profile
-
-	Strawberry Profile
 
 cmd-cli read profile
 
