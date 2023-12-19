@@ -164,7 +164,11 @@ export class CompareBaseHelper {
     public prepareContent(content: string | Buffer): string {
         let contentString = content.toString();
         if(this.seqnum === false) {
-            const seqnumlen = 8;
+            let seqnumlen = 8;
+            /* If Windows, account for the carriage return */
+            if(process.platform === "win32"){
+                seqnumlen = 9;
+            }
             contentString = content.toString().split("\n").map((line) => line.slice(0, -seqnumlen)).join("\n");
         }
         return contentString;
