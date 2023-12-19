@@ -335,6 +335,10 @@ that would be used if a command were executed.
 - BugFix: Fixed incorrect description for untyped profiles in team config files. [zowe/zowe-cli#1303](https://github.com/zowe/zowe-cli/issues/1303)
 - **Next Breaking**: Schema files created or updated with the above changes are not backward compatible with older versions of Imperative.
 
+## `5.20.0`
+
+- Enhancement: Added the ability to `forceUpdate` a property using the `ProfileInfo.updateProperty` method. [zowe-explorer#2493](https://github.com/zowe/vscode-extension-for-zowe/issues/2493)
+
 ## `5.0.0-next.202203222132`
 
 - BugFix: Reverted unintentional breaking change that prevented `DefaultCredentialManager` from finding Keytar outside of calling CLI's node_modules folder.
