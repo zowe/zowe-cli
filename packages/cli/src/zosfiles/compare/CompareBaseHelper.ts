@@ -166,7 +166,7 @@ export class CompareBaseHelper {
         if(this.seqnum === false) {
             let seqnumlen = 8;
             /* If Windows, account for the carriage return */
-            if(process.platform === "win32"){
+            if(process.platform === "win32" && content.toString().endsWith("\r\n")){
                 seqnumlen = 9;
             }
             contentString = content.toString().split("\n").map((line) => line.slice(0, -seqnumlen)).join("\n");
