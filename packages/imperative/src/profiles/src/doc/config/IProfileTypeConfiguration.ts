@@ -40,6 +40,10 @@ export interface IProfileTypeConfiguration {
      */
     schema: IProfileSchema;
     /**
+     * The version for the JSON schema document (not required).
+     */
+    schemaVersion?: string;
+    /**
      * The profile dependency specification. Indicates the required or optional profiles that a profile is depedent
      * on. Dependencies are written as part of the profile, but you do NOT need to specify dependencies in your
      * schema document - this is automatically generated based on your specifications.
