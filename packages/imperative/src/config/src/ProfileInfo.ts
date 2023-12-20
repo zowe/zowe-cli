@@ -1283,6 +1283,19 @@ export class ProfileInfo {
         return true;
     }
 
+    private writeExtendersJson(): boolean {
+        try {
+            const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
+            jsonfile.writeFileSync(extenderJsonPath, this.mExtendersJson, { spaces: 4 });
+        } catch (err) {
+            if (err.code === "EACCES" || err.code === "EPERM") {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Adds a profile type to the schema, and tracks its contribution in extenders.json.
      *
@@ -1299,21 +1312,16 @@ export class ProfileInfo {
         }
 
         const oldExtendersJson = lodash.cloneDeep(this.mExtendersJson);
-
         let successMsg = "";
 
         if (profileType in this.mExtendersJson.profileTypes) {
             // Profile type was already contributed, determine whether its metadata should be updated
             const typeMetadata = this.mExtendersJson.profileTypes[profileType];
-            if (typeInfo.version != null) {
+            if (semver.valid(typeInfo.version) != null) {
                 const prevTypeVersion = typeMetadata.version;
                 if (prevTypeVersion != null) {
-                    // eslint-disable-next-line no-console
-                    console.log("Comparing versions w/ semver");
                     // Update the schema version for this profile type if newer than the installed version
                     if (semver.gt(typeInfo.version, prevTypeVersion)) {
-                        // eslint-disable-next-line no-console
-                        console.log("new version > old version");
                         this.mExtendersJson.profileTypes[profileType] = {
                             version: typeInfo.version,
                             from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
@@ -1326,8 +1334,6 @@ export class ProfileInfo {
                             );
                         }
                     } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.version)) {
-                        // eslint-disable-next-line no-console
-                        console.log("old version > new version");
                         // Warn user if we are expecting a newer major schema version than the one they are providing
                         return {
                             success: false,
@@ -1343,6 +1349,11 @@ export class ProfileInfo {
                     };
                     this.mProfileSchemaCache.set(profileType, typeInfo.schema);
                 }
+            } else if (typeInfo.version != null) {
+                return {
+                    success: false,
+                    info: `New schema type for profile type ${profileType} is not SemVer-compliant; schema was not updated.`
+                }
             }
         } else {
             // Track the newly-contributed profile type in extenders.json
@@ -1355,19 +1366,14 @@ export class ProfileInfo {
 
         // Update contents of extenders.json
         if (!lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
-            try {
-                const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-                jsonfile.writeFileSync(extenderJsonPath, this.mExtendersJson, { spaces: 4 });
-            } catch (err) {
-                if (err.code === "EACCES" || err.code === "EPERM") {
+            if (!this.writeExtendersJson()) {
+                return {
+                    success: true,
                     // Even if we failed to update extenders.json, it was technically added to the schema cache.
                     // Warn the user that the new type may not persist if the schema is regenerated elsewhere.
-                    return {
-                        success: true,
-                        info: "Failed to update extenders.json: insufficient permissions or read-only file.\n".concat(
-                            `Profile type ${profileType} may not persist if the schema is updated.`)
-                    };
-                }
+                    info: "Failed to update extenders.json: insufficient permissions or read-only file.\n".concat(
+                        `Profile type ${profileType} may not persist if the schema is updated.`)
+                };
             }
         }
 
