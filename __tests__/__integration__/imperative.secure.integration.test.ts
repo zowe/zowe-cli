@@ -14,7 +14,6 @@
 /* eslint-disable max-len */
 
 describe("Imperative Secure Tests", () => {
-    require("./imperative.integration.subtest");
     require("./../../packages/imperative/__tests__/src/packages/profiles/__integration__/CliProfileManager.credentials.integration.subtest");
     require("./../../packages/imperative/__tests__/src/packages/imperative/__integration__/PluginManagementFacility.integration.subtest");
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/config/init/cli.imperative-test-cli.config.init.integration.subtest");
