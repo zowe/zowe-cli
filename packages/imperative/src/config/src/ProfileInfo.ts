@@ -1403,7 +1403,10 @@ export class ProfileInfo {
             const profileTypesInLayer = [...this.mProfileSchemaCache.entries()]
                 .filter(([type, schema]) => type.includes(`${layer.path}:`));
             for (const [typeWithPath, schema] of profileTypesInLayer) {
-                const [, type] = typeWithPath.split(":");
+                const type = typeWithPath.split(":").pop();
+                if (type == null) {
+                    continue;
+                }
                 if (type in this.mExtendersJson.profileTypes) {
                     if (sources?.length > 0) {
                         // If a list of sources were provided, ensure the type is contributed at least one of these sources
@@ -1428,6 +1431,7 @@ export class ProfileInfo {
      * @param [sources] Include all available types from given source applications
      */
     public getProfileTypes(sources?: string[]): string[] {
+        const filteredBySource = sources?.length > 0;
         const profileTypes = new Set<string>();
         for (const layer of this.getTeamConfig().mLayers) {
             if (layer.properties.$schema == null) continue;
@@ -1437,9 +1441,12 @@ export class ProfileInfo {
 
             const profileTypesInLayer = [...this.mProfileSchemaCache.keys()].filter((key) => key.includes(`${layer.path}:`));
             for (const typeWithPath of profileTypesInLayer) {
-                const [, type] = typeWithPath.split(":");
-                if (type in this.mExtendersJson.profileTypes) {
-                    if (sources?.length > 0) {
+                const type = typeWithPath.split(":").pop();
+                if (type == null) {
+                    continue;
+                }
+                // if (type in this.mExtendersJson.profileTypes) {
+                    if (filteredBySource) {
                         // Only consider types contributed by at least one of these sources
                         if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                             profileTypes.add(type);
@@ -1447,11 +1454,18 @@ export class ProfileInfo {
                     } else {
                         profileTypes.add(type);
                     }
-                }
+                //}
             }
         }
 
-        return [...profileTypes];
+        // Include all profile types from extenders.json if we are not filtering by source
+        if (!filteredBySource) {
+            for (const type of Object.keys(this.mExtendersJson.profileTypes)) {
+                profileTypes.add(type);
+            }
+        }
+
+        return [...profileTypes].sort();
     }
 
     /**
@@ -1466,7 +1480,10 @@ export class ProfileInfo {
             const layer = this.getTeamConfig().mLayers[i];
             const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, value]) => key.includes(`${layer.path}:`));
             for (const [layerType, schema] of profileTypesFromLayer) {
-                const [, type] = layerType.split(":");
+                const type = layerType.split(":").pop();
+                if (type == null) {
+                    continue;
+                }
                 if (type === profileType) {
                     finalSchema = schema[1];
                 }
