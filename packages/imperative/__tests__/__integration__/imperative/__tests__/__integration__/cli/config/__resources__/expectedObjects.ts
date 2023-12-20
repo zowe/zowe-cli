@@ -147,6 +147,14 @@ export const expectedSchemaObject = {
                                             tokenValue: {
                                                 type: "string",
                                                 description: "Fruit token value"
+                                            },
+                                            certFile: {
+                                                type: "existingLocalFile",
+                                                description: "Fruit certificate file"
+                                            },
+                                            certKeyFile: {
+                                                type: "existingLocalFile",
+                                                description: "Fruit certificate key file"
                                             }
                                         }
                                     },
