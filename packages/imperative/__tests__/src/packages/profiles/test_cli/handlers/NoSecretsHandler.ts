@@ -11,8 +11,8 @@
 
 import { ICommandHandler, IHandlerParameters } from "../../../../../../src/cmd";
 
-export default class NoneKeytarHandler implements ICommandHandler {
+export default class NoSecretsHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
-        params.response.console.log("This handler does not require keytar");
+        params.response.console.log("This handler does not require secrets");
     }
 }
