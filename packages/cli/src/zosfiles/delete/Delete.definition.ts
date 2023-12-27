@@ -30,6 +30,7 @@ export const DeleteDefinition: ICommandDefinition = {
     name: "delete",
     aliases: ["del"],
     type: "group",
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
         DsDefinition,

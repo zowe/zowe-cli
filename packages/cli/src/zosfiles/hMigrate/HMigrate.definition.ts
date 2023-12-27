@@ -15,7 +15,7 @@ import { DsDefinition } from "./ds/Ds.definition";
 import i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTypings).HMIGRATE;
+const { DESCRIPTION, SUMMARY } = (require("../-strings-/en").default as typeof i18nTypings).HMIGRATE;
 
 /**
  * hMigrate group definition containing its description and children
@@ -25,6 +25,7 @@ export const HMigrateDefinition: ICommandDefinition = {
     name: "migrate",
     aliases: ["hmigr", "hMigrate"],
     type: "group",
+    summary: SUMMARY,
     description: DESCRIPTION,
     children: [
         DsDefinition

@@ -941,6 +941,7 @@ export default {
         DESCRIPTION: "Recall migrated data sets.",
         ACTIONS: {
             DATA_SET: {
+                SUMMARY: "Recall a migrated data set",
                 DESCRIPTION: "Recall a migrated data set.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set you want to recall."
@@ -955,6 +956,7 @@ export default {
         }
     },
     RENAME: {
+        SUMMARY: "Rename a data set or member",
         DESCRIPTION: "Rename a data set or member.",
         ACTIONS: {
             DATA_SET: {

@@ -13,7 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 export const DisableCommand: ICommandDefinition = {
     name: "disable",
-    description: "Disables daemon-mode operation of the Zowe CLI.",
+    summary: "Disable daemon-mode operation of the Zowe CLI",
+    description: "Disable daemon-mode operation of the Zowe CLI.",
     type: "command",
     handler: __dirname + "/Disable.handler",
     examples: [
