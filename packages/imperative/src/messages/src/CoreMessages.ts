@@ -66,10 +66,6 @@ export const createProfileCommandSummary: IMessageDefinition = {
     message: `Create a {{type}} profile`,
 };
 
-export const createProfileCommandDesc: IMessageDefinition = { //TODO: Currently unused
-    message: `${createProfileCommandSummary.message}.`,
-};
-
 export const createProfileOptionDesc: IMessageDefinition = {
     message: `Specifies the name of the new {{type}} profile. ` +
         `You can load this profile by using the name on commands that support the ` +
