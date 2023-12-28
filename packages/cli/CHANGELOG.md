@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Revised Zowe CLI help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
+- Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
 - BugFix: Add missing npm-shrinkwrap
 
 ## `8.0.0-next.202311291643`
