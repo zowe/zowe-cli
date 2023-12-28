@@ -123,7 +123,7 @@ export default {
     LIST: {
     },
     OPTIONS: {
-        MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"1.0\" will make the delete job API aynchronous. " +
+        MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"1.0\" will make the delete job API asynchronous. " +
             "Otherwise, it will be synchronous by default."
     },
     SUBMIT: {

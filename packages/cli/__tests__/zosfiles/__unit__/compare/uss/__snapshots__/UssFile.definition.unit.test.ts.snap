@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "b",
     ],
-    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both datasets are transferred in binary mode.",
+    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both data sets are transferred in binary mode.",
     "name": "binary",
     "type": "boolean",
   },
@@ -65,11 +65,11 @@ Array [
 exports[`zos-files compare uss command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Compare the contents of the uss file \\"/u/user/test.txt\\" and \\"/u/user/test.txt\\"",
+    "description": "Compare the contents of the USS file \\"/u/user/test.txt\\" and \\"/u/user/test.txt\\"",
     "options": "\\"/u/user/test.txt\\" \\"/u/user/test.txt\\"",
   },
   Object {
-    "description": "Compare the contents of the uss file \\"/u/user/test.txt\\" and \\"/u/user/test.txt\\" without sequence numbers",
+    "description": "Compare the contents of the USS file \\"/u/user/test.txt\\" and \\"/u/user/test.txt\\" without sequence numbers",
     "options": "\\"/u/user/test.txt\\" \\"/u/user/test.txt\\" --no-seqnum",
   },
 ]

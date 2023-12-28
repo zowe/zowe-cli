@@ -37,7 +37,7 @@ Array [
     "options": "\\"./a.txt\\" \\"jobName:jobId:spoolId\\"",
   },
   Object {
-    "description": "Compare the contents of a local-file and a spool dd  \\"./a.txt\\"  \\"jobName:jobId:spoolId\\"without sequence numbers",
+    "description": "Compare the contents of a local-file and a spool dd  \\"./a.txt\\"  \\"jobName:jobId:spoolId\\" without sequence numbers",
     "options": "\\"./a.txt\\" \\"jobName:jobId:spoolId\\" --no-seqnum",
   },
 ]

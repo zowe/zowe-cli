@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "rep",
     ],
-    "description": "Specify this option as true if you wish to replace the target dataset if it already exists.",
+    "description": "Specify this option as true if you wish to replace the target data set if it already exists.",
     "name": "replace",
     "type": "boolean",
   },

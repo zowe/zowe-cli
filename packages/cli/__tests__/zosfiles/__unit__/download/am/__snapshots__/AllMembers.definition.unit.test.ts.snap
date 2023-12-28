@@ -39,7 +39,7 @@ Array [
       "ff",
     ],
     "defaultValue": true,
-    "description": "Set this option to false to continue downloading dataset members if one or more fail.",
+    "description": "Set this option to false to continue downloading data set members if one or more fail.",
     "name": "fail-fast",
     "type": "boolean",
   },

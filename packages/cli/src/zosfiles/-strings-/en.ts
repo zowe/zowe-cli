@@ -75,7 +75,7 @@ export default {
                 SUMMARY: "Create a VSAM cluster",
                 DESCRIPTION: "Create a VSAM cluster.",
                 POSITIONALS: {
-                    DATASETNAME: "The name of the dataset in which to create a VSAM cluster"
+                    DATASETNAME: "The name of the data set in which to create a VSAM cluster"
                 },
                 OPTIONS: {
                     RETAINFOR: "The number of days that the VSAM cluster will be retained on the system. You can delete the cluster at any " +
@@ -195,7 +195,7 @@ export default {
                     TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)"
                 },
                 OPTIONS: {
-                    REPLACE: "Specify this option as true if you wish to replace like-named members in the target dataset"
+                    REPLACE: "Specify this option as true if you wish to replace like-named members in the target data set"
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
@@ -210,11 +210,11 @@ export default {
                 DESCRIPTION: "Copy a data set to another data set on a specified LPAR.",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
-                    TODSNAME: "The name of the data set that you want to copy to. If the dataset does not " +
+                    TODSNAME: "The name of the data set that you want to copy to. If the data set does not " +
                     "exist it will be allocated automatically"
                 },
                 OPTIONS: {
-                    REPLACE:         "Specify this option as true if you wish to replace the target dataset if it already exists.",
+                    REPLACE:         "Specify this option as true if you wish to replace the target data set if it already exists.",
                     TARGETHOST:      "The target z/OSMF server host name.",
                     TARGETPORT:      "The target z/OSMF server port.",
                     TARGETUSER:      "The target z/OSMF user name, which can be the same as your TSO login.",
@@ -407,7 +407,7 @@ export default {
                 " Conflicts with binary.",
             ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                 "specified.",
-            FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",
+            FAIL_FAST: "Set this option to false to continue downloading data set members if one or more fail.",
             FAIL_FAST_USS: "Set this option to false to continue downloading USS files if one or more fail.",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
@@ -811,12 +811,12 @@ export default {
         }
     },
     COMPARE: {
-        SUMMARY: "Compare the contents of a two data set members",
-        DESCRIPTION: "Compare the contents of a two data set members on your terminal (stdout).",
+        SUMMARY: "Compare the contents of z/OS data sets or USS files",
+        DESCRIPTION: "Compare the contents of z/OS data sets or USS files in your terminal (stdout).",
         ACTIONS: {
             DATA_SET: {
-                SUMMARY: "Compare content of two z/OS data sets",
-                DESCRIPTION: "Compare content of two z/OS data sets on your terminal (stdout).",
+                SUMMARY: "Compare the contents of two z/OS data sets",
+                DESCRIPTION: "Compare the contents of two z/OS data sets in your terminal (stdout).",
                 POSITIONALS: {
                     DATASETNAME1: "The name of the first data set you want to compare.",
                     DATASETNAME2: "The name of the second data set you want to compare."
@@ -827,73 +827,73 @@ export default {
                 }
             },
             LOCAL_FILE_DATA_SET: {
-                SUMMARY: "Compare content of a local file and a z/os dataset",
-                DESCRIPTION: "Compare content of a local file and a z/os dataset on your terminal (stdout).",
+                SUMMARY: "Compare the contents of a local file and a z/OS data set",
+                DESCRIPTION: "Compare the contents of a local file and a z/OS data set in your terminal (stdout).",
                 POSITIONALS: {
-                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    LOCALFILEPATH: "The path of the local file you want to compare.",
                     DATASETNAME: "The name of the data set you want to compare."
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"`,
-                    EX2: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)"` +
+                    EX2: `Compare the contents of the local file and the data set member "./a.txt" and "sys1.samplib(antxtso)" ` +
                      `without sequence numbers`
                 }
             },
             USS_FILE: {
-                SUMMARY: "Compare content of a local file and a z/os uss files",
-                DESCRIPTION: "Compare the contents of a two uss files on your terminal (stdout). browser.",
+                SUMMARY: "Compare the contents of two z/OS USS files",
+                DESCRIPTION: "Compare the contents of two z/OS USS files in your terminal (stdout).",
                 POSITIONALS: {
-                    USSFILEPATH1: "The path of the first uss file you want to compare.",
-                    USSFILEPATH2: "The path of the second uss file you want to compare."
+                    USSFILEPATH1: "The path of the first USS file you want to compare.",
+                    USSFILEPATH2: "The path of the second USS file you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the uss file "/u/user/test.txt" and "/u/user/test.txt"`,
-                    EX2: `Compare the contents of the uss file "/u/user/test.txt" and "/u/user/test.txt" without sequence numbers`
+                    EX1: `Compare the contents of the USS file "/u/user/test.txt" and "/u/user/test.txt"`,
+                    EX2: `Compare the contents of the USS file "/u/user/test.txt" and "/u/user/test.txt" without sequence numbers`
                 }
             },
             LOCAL_FILE_USS_FILE: {
-                SUMMARY: "Compare content of a local file and a z/os uss file",
-                DESCRIPTION: "Compare content of a local file and a z/os uss file on your terminal (stdout).",
+                SUMMARY: "Compare the contents of a local file and a z/OS USS file",
+                DESCRIPTION: "Compare the contents of a local file and a z/OS USS file in your terminal (stdout).",
                 POSITIONALS: {
-                    LOCALFILEPATH: "The path of the local file  you want to compare.",
-                    USSFILEPATH: "The path of the uss file set you want to compare."
+                    LOCALFILEPATH: "The path of the local file you want to compare.",
+                    USSFILEPATH: "The path of the USS file set you want to compare."
                 },
                 EXAMPLES: {
-                    EX1: `Compare the contents of the local file and the uss file "./a.txt" and "/u/user/test.txt"`,
-                    EX2: `Compare the contents of the local file and the uss file "./a.txt" and "/u/user/test.txt"` +
+                    EX1: `Compare the contents of the local file and the USS file "./a.txt" and "/u/user/test.txt"`,
+                    EX2: `Compare the contents of the local file and the USS file "./a.txt" and "/u/user/test.txt" ` +
                      `without sequence numbers`
                 }
             },
             SPOOL_DD: {
-                SUMMARY: "Compare content of two spool dds",
-                DESCRIPTION: "Compare content of two spool dds on your terminal (stdout).",
+                SUMMARY: "Compare the contents of two spool dds",
+                DESCRIPTION: "Compare the contents of two spool dds in your terminal (stdout).",
                 POSITIONALS: {
                     SPOOLDDDESCRIPTION1: "The name of the first job with the id of spool dd.",
                     SPOOLDDDESCRIPTION2: "The name of the second job with the id of spool dd."
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"`,
-                    EX2: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2"` +
+                    EX2: `Compare the contents of the two spool dds "jobName1:jobId1:spoolId1"  "jobName2:jobId2:spoolId2" ` +
                      `without sequence numbers`
                 }
             },
             LOCAL_FILE_SPOOL_DD: {
-                SUMMARY: "Compare content of a local file and a spool dd",
-                DESCRIPTION: "Compare content of a local-file and a spool-dd on your terminal (stdout).",
+                SUMMARY: "Compare the contents of a local file and a spool dd",
+                DESCRIPTION: "Compare the contents of a local file and a spool dd in your terminal (stdout).",
                 POSITIONALS: {
-                    LOCALFILEPATH: "The path of the local file  you want to compare.",
+                    LOCALFILEPATH: "The path of the local file you want to compare.",
                     SPOOLDDDESCRIPTION: "The name of the job with the id of spool dd."
                 },
                 EXAMPLES: {
                     EX1: `Compare the contents of a local-file and a spool dd "./a.txt"  "jobName:jobId:spoolId"`,
-                    EX2: `Compare the contents of a local-file and a spool dd  "./a.txt"  "jobName:jobId:spoolId"` +
+                    EX2: `Compare the contents of a local-file and a spool dd  "./a.txt"  "jobName:jobId:spoolId" ` +
                      `without sequence numbers`
                 }
             },
         },
         OPTIONS: {
             BINARY: "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set " +
-                "and the binary2 flag is not set then both datasets are transferred in binary mode.",
+                "and the binary2 flag is not set then both data sets are transferred in binary mode.",
             BINARY2: "Transfer the content of the second data set in binary mode.",
             ENCODING: "Transfer the content of the first data set with encoding mode, which means that data conversion is performed " +
                 "using the file encoding specified. If encoding mode is set and the encoding2 flag is not set both data sets are " +

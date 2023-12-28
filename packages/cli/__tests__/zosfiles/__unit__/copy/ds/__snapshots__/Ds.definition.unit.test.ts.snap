@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "rep",
     ],
-    "description": "Specify this option as true if you wish to replace like-named members in the target dataset",
+    "description": "Specify this option as true if you wish to replace like-named members in the target data set",
     "name": "replace",
     "type": "boolean",
   },
