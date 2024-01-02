@@ -45,7 +45,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "ssh2": "1.4.0"
+    "ssh2": "1.15.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.7",
