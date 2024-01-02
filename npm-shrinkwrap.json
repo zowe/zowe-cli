@@ -24704,7 +24704,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "7.21.0",
+      "version": "7.21.1",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -24712,12 +24712,12 @@
         "@zowe/imperative": "5.20.0",
         "@zowe/provisioning-for-zowe-sdk": "7.21.0",
         "@zowe/zos-console-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-files-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.21.0",
+        "@zowe/zos-files-for-zowe-sdk": "7.21.1",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.21.1",
         "@zowe/zos-logs-for-zowe-sdk": "7.21.0",
         "@zowe/zos-tso-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-uss-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-workflows-for-zowe-sdk": "7.21.0",
+        "@zowe/zos-uss-for-zowe-sdk": "7.21.1",
+        "@zowe/zos-workflows-for-zowe-sdk": "7.21.1",
         "@zowe/zosmf-for-zowe-sdk": "7.21.0",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
@@ -25161,10 +25161,10 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "7.21.0",
+      "version": "7.21.1",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.21.0"
+        "@zowe/zos-files-for-zowe-sdk": "7.21.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.21.0",
@@ -25192,7 +25192,7 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "7.21.0",
+      "version": "7.21.1",
       "license": "EPL-2.0",
       "dependencies": {
         "get-stream": "6.0.1",
@@ -25202,7 +25202,7 @@
         "@zowe/cli-test-utils": "7.21.0",
         "@zowe/core-for-zowe-sdk": "7.21.0",
         "@zowe/imperative": "5.20.0",
-        "@zowe/zos-uss-for-zowe-sdk": "7.21.0"
+        "@zowe/zos-uss-for-zowe-sdk": "7.21.1"
       },
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^7.0.0",
@@ -25230,10 +25230,10 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "7.21.0",
+      "version": "7.21.1",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "7.21.0"
+        "@zowe/zos-files-for-zowe-sdk": "7.21.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "7.21.0",
@@ -25292,7 +25292,7 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "7.21.0",
+      "version": "7.21.1",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "1.15.0"
@@ -31980,12 +31980,12 @@
         "@zowe/provisioning-for-zowe-sdk": "7.21.0",
         "@zowe/secrets-for-zowe-sdk": "7.18.6",
         "@zowe/zos-console-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-files-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-jobs-for-zowe-sdk": "7.21.0",
+        "@zowe/zos-files-for-zowe-sdk": "7.21.1",
+        "@zowe/zos-jobs-for-zowe-sdk": "7.21.1",
         "@zowe/zos-logs-for-zowe-sdk": "7.21.0",
         "@zowe/zos-tso-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-uss-for-zowe-sdk": "7.21.0",
-        "@zowe/zos-workflows-for-zowe-sdk": "7.21.0",
+        "@zowe/zos-uss-for-zowe-sdk": "7.21.1",
+        "@zowe/zos-workflows-for-zowe-sdk": "7.21.1",
         "@zowe/zosmf-for-zowe-sdk": "7.21.0",
         "comment-json": "^4.1.1",
         "find-process": "1.4.7",
@@ -32327,7 +32327,7 @@
         "@zowe/cli-test-utils": "7.21.0",
         "@zowe/core-for-zowe-sdk": "7.21.0",
         "@zowe/imperative": "5.20.0",
-        "@zowe/zos-uss-for-zowe-sdk": "7.21.0",
+        "@zowe/zos-uss-for-zowe-sdk": "7.21.1",
         "get-stream": "6.0.1",
         "minimatch": "5.0.1"
       },
@@ -32356,7 +32356,7 @@
         "@zowe/cli-test-utils": "7.21.0",
         "@zowe/core-for-zowe-sdk": "7.21.0",
         "@zowe/imperative": "5.20.0",
-        "@zowe/zos-files-for-zowe-sdk": "7.21.0"
+        "@zowe/zos-files-for-zowe-sdk": "7.21.1"
       }
     },
     "@zowe/zos-logs-for-zowe-sdk": {
@@ -32391,7 +32391,7 @@
         "@zowe/cli-test-utils": "7.21.0",
         "@zowe/core-for-zowe-sdk": "7.21.0",
         "@zowe/imperative": "5.20.0",
-        "@zowe/zos-files-for-zowe-sdk": "7.21.0"
+        "@zowe/zos-files-for-zowe-sdk": "7.21.1"
       }
     },
     "@zowe/zosmf-for-zowe-sdk": {

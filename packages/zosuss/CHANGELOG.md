@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `7.21.1`
 
 - BugFix: Updated `ssh2` package to resolve technical currency
 
