@@ -1,0 +1,25 @@
+name: Update GitHub project
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  update-project:
+    name: Add PR to project
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/add-to-project@v0.5.0
+      id: add-to-project
+      with:
+        project-url: https://github.com/orgs/zowe/projects/21
+        github-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+
+    - uses: titoportas/update-project-fields@v0.1.0
+      with:
+        project-url: https://github.com/orgs/zowe/projects/21
+        github-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+        item-id: ${{ steps.add-to-project.outputs.itemId }}
+        field-keys: Status
+        field-values: In Progress
