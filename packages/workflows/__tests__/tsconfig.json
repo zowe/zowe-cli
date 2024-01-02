@@ -1,0 +1,27 @@
+{
+  // tsconfig for test files //
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "lib": ["esnext"],
+    "target": "es2015",
+    "module": "commonjs",
+    "declaration": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "pretty": true,
+    "sourceMap": true,
+    "newLine": "lf",
+    "esModuleInterop": true
+  },
+  "include": [
+    "**/*.test.ts",
+    "**/__tests__/**/*"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules"
+  ]
+}

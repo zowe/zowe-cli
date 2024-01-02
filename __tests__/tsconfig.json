@@ -1,32 +1,28 @@
 {
+  // tsconfig for test files //
   "compilerOptions": {
-    "types": [
-      "node",
-      "jest"
-    ],
+    "types": ["node", "jest"],
+    "lib": ["esnext"],
     "target": "es2015",
     "module": "commonjs",
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "outDir": "./lib",
     "preserveConstEnums": true,
+    "experimentalDecorators": true,
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "esModuleInterop": true
   },
   "include": [
-    "./**/*.ts",
-    "../packages/**/__tests__/**/*.ts"
-  ],
-  "files": [
-    "../__types__/wontache.d.ts"
+    "**/*.test.ts",
+    "**/*.subtest.ts",
+    "**/__tests__/**/*"
   ],
   "exclude": [
     "lib",
-    "__results__/",
-    "__snapshots__",
     "node_modules"
   ]
 }
