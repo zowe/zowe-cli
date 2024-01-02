@@ -8,15 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// const imperative_cli_1 = require("imperative");
+const imperative_cli_1 = require("@zowe/imperative");
 class FooHandler {
     process(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const impFileLogger = imperative_cli_1.Logger.getImperativeLogger();
-            const profile = params.profiles.get("foo");
+            const profile = imperative_cli_1.ImperativeConfig.instance.config.api.profiles.get("foo");
             const successMsg = "You executed the Foo command with size = " +
                 profile.size + " and duration = " + profile.duration;
-            // impFileLogger.debug(successMsg);
             params.response.console.log(successMsg);
         });
     }
