@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-workflows-for-zowe-sdk",
-  "version": "6.40.22",
+  "version": "6.40.25",
   "description": "Zowe SDK to interact with the z/OS workflows APIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,7 +45,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "6.40.22"
+    "@zowe/zos-files-for-zowe-sdk": "6.40.25"
   },
   "devDependencies": {
     "@types/node": "^16.11.7",

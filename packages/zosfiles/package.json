@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-files-for-zowe-sdk",
-  "version": "6.40.22",
+  "version": "6.40.25",
   "description": "Zowe SDK to interact with files and data sets on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -52,7 +52,7 @@
     "@types/node": "^16.11.7",
     "@zowe/core-for-zowe-sdk": "6.40.22",
     "@zowe/imperative": "4.18.21",
-    "@zowe/zos-uss-for-zowe-sdk": "6.40.22",
+    "@zowe/zos-uss-for-zowe-sdk": "6.40.25",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
