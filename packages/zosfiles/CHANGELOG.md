@@ -7,8 +7,6 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 - LTS Breaking: Removed the following previously deprecated items:
   - Removed `ZosFilesCreateExtraOptions.showAttributes` without replacement
   - Removed `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsInList`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from ZosFiles.messages.ts
-  - Removed `excludePatterns` from `IDsmListOptions`
-
 
 ## `8.0.0-next.202311282012`
 

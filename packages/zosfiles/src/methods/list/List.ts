@@ -432,6 +432,17 @@ export class List {
             };
         }
 
+        // Exclude names of data sets
+        for (const pattern of (options.excludePatterns || [])) {
+            const response = await List.dataSet(session, pattern);
+            response.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
+                const responseIndex = zosmfResponses.findIndex(response => response.dsname === dataSetObj.dsname);
+                if (responseIndex !== -1) {
+                    zosmfResponses.splice(responseIndex, 1);
+                }
+            });
+        }
+
         // Check if exclude pattern has left any data sets in the list
         if (zosmfResponses.length === 0) {
             return {

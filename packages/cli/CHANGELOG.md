@@ -11,7 +11,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
   - Removed `isStderrEmptyForProfilesCommand` use `stripProfileDeprecationMessages` from `zowe-cli/__tests__/__packages__/cli-test-utils/src/TestUtils.ts` instead
   - Removed  `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsInList`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from    ZosFiles.messages.ts
   - Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
-  - Removed `excludePatterns` from `IDsmListOptions`
   - Removed constants from ZosmfSession
     - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead
     - ZOSMF_OPTION_USER_PROFILE use ZOSMF_OPTION_USER instead
