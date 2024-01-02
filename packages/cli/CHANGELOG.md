@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202401022112`
 
 - BugFix: Add missing npm-shrinkwrap
 
