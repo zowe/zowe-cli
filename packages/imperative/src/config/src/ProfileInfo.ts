@@ -1309,11 +1309,19 @@ export class ProfileInfo {
 
         const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].indexOf(":")) : this.getTeamConfig().layerActive().path;
         const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
+        const cacheKey = `${layerPath}:${profileType}`;
+
+        const sameSchemaExists = this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(this.mProfileSchemaCache.get(cacheKey), schema);
+
+        // Update the cache with the newest schema for this profile type
+        this.mProfileSchemaCache.set(cacheKey, schema);
+
         const schemaUri = new url.URL(layerToUpdate.properties.$schema, url.pathToFileURL(layerPath));
         const schemaPath = url.fileURLToPath(schemaUri);
 
-        if (fs.existsSync(schemaPath)) {
-            jsonfile.writeFileSync(schemaPath, this.buildSchema([], layerToUpdate));
+        // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
+        if (!sameSchemaExists && fs.existsSync(schemaPath)) {
+            jsonfile.writeFileSync(schemaPath, this.buildSchema([], layerToUpdate), { spaces: 4 });
         }
     }
 
@@ -1432,15 +1440,14 @@ export class ProfileInfo {
             if (type == null) {
                 continue;
             }
-            if (type in this.mExtendersJson.profileTypes) {
-                if (sources?.length > 0) {
-                    // If a list of sources were provided, ensure the type is contributed at least one of these sources
-                    if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
-                        finalSchema[type] = schema;
-                    }
-                } else {
+
+            if (sources?.length > 0 && type in this.mExtendersJson.profileTypes) {
+                // If a list of sources were provided, ensure the type is contributed by at least one of these sources
+                if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                     finalSchema[type] = schema;
                 }
+            } else {
+                finalSchema[type] = schema;
             }
         }
 
