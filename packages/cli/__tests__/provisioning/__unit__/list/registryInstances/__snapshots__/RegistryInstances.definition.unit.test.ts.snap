@@ -52,7 +52,7 @@ Object {
       "zosmf",
     ],
   },
-  "summary": "List provisioned instances.",
+  "summary": "List provisioned instances",
   "type": "command",
 }
 `;

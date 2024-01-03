@@ -37,7 +37,7 @@ Object {
       "zosmf",
     ],
   },
-  "summary": "Perform instance actions.",
+  "summary": "Perform instance actions",
   "type": "command",
 }
 `;

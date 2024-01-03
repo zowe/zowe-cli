@@ -16,7 +16,7 @@ export const updateSchemasDefinition: ICommandDefinition = {
     name: "update-schemas",
     aliases: ["us"],
     type: "command",
-    summary: "update schema files",
+    summary: "Update schema files",
     description: "Update schema files by looking up the directory structure.\n\n" +
         "Schema files up in higher level directories will always be updated. " +
         "To also update schema files down in lower level directories, specify the `--depth` flag.",

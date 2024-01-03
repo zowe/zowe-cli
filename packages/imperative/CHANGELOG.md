@@ -3,6 +3,10 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
+
+- Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
+
+## Recent Changes
 - LTS Breaking: Removed the following previously deprecated items:
   - `flattenCommandTreeWithAliases()` -- Use `CommandUtils.flattenCommandTree()` instead
   - `AbstractAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead

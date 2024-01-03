@@ -11,7 +11,7 @@ exports[`Create  Data Set should display the help 1`] = `
  DESCRIPTION
  -----------
 
-   Create data sets based on the properties of an existing data set
+   Create data sets based on the properties of an existing data set.
 
  USAGE
  -----

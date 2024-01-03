@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "b",
     ],
-    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both datasets are transferred in binary mode.",
+    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both data sets are transferred in binary mode.",
     "name": "binary",
     "type": "boolean",
   },
@@ -58,7 +58,7 @@ Array [
     "aliases": Array [
       "bv",
     ],
-    "description": "Opens the diffs between two given files in browser",
+    "description": "Opens the diffs between two given files in browser.",
     "name": "browser-view",
     "type": "boolean",
   },
@@ -72,7 +72,7 @@ Array [
     "options": "\\"./a.txt\\" \\"sys1.samplib(antxtso)\\"",
   },
   Object {
-    "description": "Compare the contents of the local file and the data set member \\"./a.txt\\" and \\"sys1.samplib(antxtso)\\"without sequence numbers",
+    "description": "Compare the contents of the local file and the data set member \\"./a.txt\\" and \\"sys1.samplib(antxtso)\\" without sequence numbers",
     "options": "\\"./a.txt\\" \\"sys1.samplib(antxtso)\\" --no-seqnum",
   },
 ]

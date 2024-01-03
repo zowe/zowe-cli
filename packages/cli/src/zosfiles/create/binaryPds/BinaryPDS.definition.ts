@@ -24,6 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
 export const BinaryPDSDefinition: ICommandDefinition = {
     name: "data-set-binary",
     aliases: ["bin"],
+    summary: strings.ACTIONS.DATA_SET_BINARY.SUMMARY,
     description: strings.ACTIONS.DATA_SET_BINARY.DESCRIPTION,
     type: "command",
     handler: __dirname + "/BinaryPDS.handler",

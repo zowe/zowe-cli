@@ -23,6 +23,7 @@ import { StartCommonOptions } from "../Start.common.options";
 export const WorkflowFull: ICommandDefinition = {
     name: "workflow-full",
     aliases: ["wf"],
+    summary: "Will run workflow from the beginning to the end or to the first manual step",
     description: "Will run workflow from the beginning to the end or to the first manual step.",
     type: "command",
     handler: join(__dirname, "./WorkflowFull.handler"),

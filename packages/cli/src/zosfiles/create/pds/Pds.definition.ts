@@ -24,6 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
 export const PdsDefinition: ICommandDefinition = {
     name: "data-set-partitioned",
     aliases: ["pds"],
+    summary: strings.ACTIONS.DATA_SET_PARTITIONED.SUMMARY,
     description: strings.ACTIONS.DATA_SET_PARTITIONED.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Pds.handler",
