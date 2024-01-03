@@ -987,10 +987,11 @@ export class ProfileInfo {
                     this.mImpLogger.warn(err.message);
                 }
             }
+        } else {
+            this.readExtendersJsonFromDisk();
         }
 
         this.loadAllSchemas();
-        this.readExtendersJsonFromDisk();
     }
 
     // _______________________________________________________________________
@@ -1293,7 +1294,7 @@ export class ProfileInfo {
         }
 
         this.getTeamConfig().api.profiles.set(layerPath ? `${layerPath}.${profileType}` : profileType,
-            ConfigBuilder.buildDefaultProfile(this.mLoadedConfig.mProperties, { type: profileType, schema: profileSchema }));
+            ConfigBuilder.buildDefaultProfile({ type: profileType, schema: profileSchema }, { populateProperties: true }));
         return true;
     }
 
