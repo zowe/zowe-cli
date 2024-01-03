@@ -14,7 +14,7 @@ Array [
     "aliases": Array [
       "bv",
     ],
-    "description": "Opens the diffs between two given files in browser",
+    "description": "Opens the diffs between two given files in browser.",
     "name": "browser-view",
     "type": "boolean",
   },
@@ -28,7 +28,7 @@ Array [
     "options": "\\"jobName1:jobId1:spoolId1\\" \\"jobName2:jobId2:spoolId2\\"",
   },
   Object {
-    "description": "Compare the contents of the two spool dds \\"jobName1:jobId1:spoolId1\\"  \\"jobName2:jobId2:spoolId2\\"without sequence numbers",
+    "description": "Compare the contents of the two spool dds \\"jobName1:jobId1:spoolId1\\"  \\"jobName2:jobId2:spoolId2\\" without sequence numbers",
     "options": "\\"jobName1:jobId1:spoolId1\\" \\"jobName2:jobId2:spoolId2\\" --no-seqnum",
   },
 ]

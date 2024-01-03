@@ -47,7 +47,7 @@ Array [
     "conflictsWith": Array [
       "ascii-files, binary-files",
     ],
-    "description": "Path of an attributes file to control how files are uploaded",
+    "description": "Path of an attributes file to control how files are uploaded.",
     "name": "attributes",
     "type": "string",
   },
@@ -69,7 +69,7 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "aliases": Array [
       "ih",
     ],
-    "description": "Include hidden files and folders that have names beginning with a dot",
+    "description": "Include hidden files and folders that have names beginning with a dot.",
     "name": "include-hidden",
     "type": "boolean",
   },

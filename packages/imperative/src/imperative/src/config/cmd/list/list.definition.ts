@@ -16,8 +16,8 @@ export const listDefinition: ICommandDefinition = {
     name: "list",
     aliases: ["ls"],
     type: "command",
-    summary: "list config properties",
-    description: "List config properties",
+    summary: "List config properties",
+    description: "List config properties.",
     handler: join(__dirname, "list.handler"),
     positionals: [
         {

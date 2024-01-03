@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.0-next.202401031939`
+
+- Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
+
 ## `8.0.0-next.202311291643`
 
 - LTS Breaking: Removed check for `ZOWE_EDITOR` environment variable in `ProcessUtils.openInEditor` [#1867](https://github.com/zowe/zowe-cli/issues/1867)

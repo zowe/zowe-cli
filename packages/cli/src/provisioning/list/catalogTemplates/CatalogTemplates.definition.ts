@@ -16,7 +16,7 @@ export const catalogTemplates: ICommandDefinition = {
     name: "catalog-templates",
     aliases: ["ct"],
     type: "command",
-    summary: "List z/OSMF published catalog templates.",
+    summary: "List z/OSMF published catalog templates",
     description: "Lists the z/OSMF service catalog published templates.",
     handler: path.join(__dirname, "/CatalogTemplates.handler"),
     profile: {

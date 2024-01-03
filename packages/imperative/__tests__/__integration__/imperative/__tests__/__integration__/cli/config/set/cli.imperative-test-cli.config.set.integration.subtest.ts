@@ -59,7 +59,7 @@ describe("imperative-test-cli config set", () => {
     it("should display the help", () => {
         const response = runCliScript(__dirname + "/../__scripts__/get_help.sh",
             TEST_ENVIRONMENT.workingDir, ["set"]);
-        expect(response.output.toString()).toContain(`create or update a configuration property`);
+        expect(response.output.toString()).toContain(`Create or update a configuration property.`);
     });
     it("should store a property in plain text", async () => {
         runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);

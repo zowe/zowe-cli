@@ -2,7 +2,7 @@
 
 exports[`zos-jobs delete job definition should not have changed 1`] = `
 Object {
-  "description": "Delete a single job by job ID",
+  "description": "Delete a single job by job ID.",
   "examples": Array [
     Object {
       "description": "Delete job with job ID JOB03456",
@@ -17,7 +17,7 @@ Object {
   "options": Array [
     Object {
       "defaultValue": "2.0",
-      "description": "Using this option to set X-IBM-Job-Modify-Version to \\"1.0\\" will make the delete job API aynchronous. Otherwise, it will be synchronous by default.",
+      "description": "Using this option to set X-IBM-Job-Modify-Version to \\"1.0\\" will make the delete job API asynchronous. Otherwise, it will be synchronous by default.",
       "name": "modify-version",
       "required": false,
       "type": "string",

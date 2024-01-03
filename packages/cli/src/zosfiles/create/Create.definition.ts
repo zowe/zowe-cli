@@ -34,6 +34,7 @@ export const CreateDefinition: ICommandDefinition = {
     name: "create",
     aliases: ["cre"],
     type: "group",
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [PsDefinition,
         PdsDefinition,

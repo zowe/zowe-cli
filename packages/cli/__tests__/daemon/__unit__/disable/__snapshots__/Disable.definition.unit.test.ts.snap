@@ -2,7 +2,7 @@
 
 exports[`daemon disable definition should not have changed 1`] = `
 Object {
-  "description": "Disables daemon-mode operation of the Zowe CLI.",
+  "description": "Disable daemon-mode operation of the Zowe CLI.",
   "examples": Array [
     Object {
       "description": "Disable daemon-mode",
@@ -10,6 +10,7 @@ Object {
     },
   ],
   "name": "disable",
+  "summary": "Disable daemon-mode operation of the Zowe CLI",
   "type": "command",
 }
 `;

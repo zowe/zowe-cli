@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "wfuf",
   ],
-  "description": "Create a workflow instance in z/OSMF using a USS file",
+  "description": "Create a workflow instance in z/OSMF using a USS file.",
   "examples": Array [
     Object {
       "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"OTHERID\\" and delete workflow with the same name if it already exist in z/OSMF",
@@ -30,7 +30,7 @@ Object {
       "aliases": Array [
         "uf",
       ],
-      "description": "Uss file that contains workflow definiton.",
+      "description": "USS file that contains workflow definition.",
       "name": "uss-file",
       "required": true,
       "type": "string",
@@ -130,6 +130,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Create a workflow instance in z/OSMF using a USS file",
   "type": "command",
 }
 `;

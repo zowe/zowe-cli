@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "../../../../cmd";
 import {
-    authCategoryDesc,
+    authCategoryDesc, authCategorySummary,
     authLoginGroupDesc, authLoginGroupSummary,
     authLogoutGroupDesc, authLogoutGroupSummary
 } from "../../../../messages";
@@ -55,6 +55,7 @@ export class CompleteAuthGroupBuilder {
 
     private static defaultAuthGroup: ICommandDefinition = {
         name: Constants.AUTH_GROUP,
+        summary: authCategorySummary.message,
         description: authCategoryDesc.message,
         type: "group",
         children: []
