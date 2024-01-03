@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed typo in command help for `zowe workflows create workflow-from-data-set`.
+- BugFix: Fixed typo in command help for `zowe zos-workflows create` commands.
 
 ## `8.0.0-next.202401031939`
 
