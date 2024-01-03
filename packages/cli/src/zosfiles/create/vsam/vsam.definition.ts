@@ -46,6 +46,7 @@ const vsamRetainFor = Object.assign({}, ...[VsamCreateOptions.retainFor]);
 export const VsamDefinition: ICommandDefinition = {
     name: "data-set-vsam",
     aliases: ["vsam"],
+    summary: vsamStrings.SUMMARY,
     description: vsamStrings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/vsam.handler",

@@ -13,7 +13,7 @@ Object {
       "zosmf",
     ],
   },
-  "summary": "List all archived workflows for a system.",
+  "summary": "List all archived workflows for a system",
   "type": "command",
 }
 `;

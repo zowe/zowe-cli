@@ -214,6 +214,7 @@ describe("Plugin Management Facility", () => {
         expect(UpdateImpConfig.addCmdGrp).toHaveBeenCalledWith({
             name: "plugins",
             type: "group",
+            summary: "Install and manage plug-ins",
             description: "Install and manage plug-ins.",
             children: [
                 installDef,

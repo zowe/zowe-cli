@@ -62,7 +62,7 @@ export const createProfilesCommandDesc: IMessageDefinition = {
     message: `${createProfilesCommandSummary.message}.`,
 };
 
-export const createProfileCommandDesc: IMessageDefinition = {
+export const createProfileCommandSummary: IMessageDefinition = {
     message: `Create a {{type}} profile`,
 };
 
@@ -139,8 +139,8 @@ export const deleteProfilesCommandDesc: IMessageDefinition = {
 };
 
 export const deleteProfileForceOptionDesc: IMessageDefinition = {
-    message: `Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before `
-        + ` deletion occurs.`
+    message: `Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before ` +
+        `deletion occurs.`
 };
 
 export const deleteProfileActionDesc: IMessageDefinition = {
@@ -198,7 +198,7 @@ export const detailProfileCommandDesc: IMessageDefinition = {
     message: `Show details of a profile of a selected type.`,
 };
 export const updateProfileActionDesc: IMessageDefinition = {
-    message: `Update a {{type}} profile`,
+    message: `Update a {{type}} profile.`,
 };
 
 export const updateProfileCommandSummary: IMessageDefinition = {
@@ -244,8 +244,7 @@ export const setProfileActionDesc: IMessageDefinition = {
 };
 
 export const setGroupWithOnlyProfilesSummary: IMessageDefinition = {
-    message: `Set the default
- profiles for the {{type}} group`
+    message: `Set the default profiles for the {{type}} group`
 };
 
 export const setGroupWithOnlyProfilesCommandDesc: IMessageDefinition = {
@@ -345,8 +344,12 @@ export const unexpectedProfileUpdateError: IMessageDefinition = {
     message: `An unexpected profile update error occurred: \n{{unexpectedError}}`
 };
 
-export const authCategoryDesc: IMessageDefinition = {
+export const authCategorySummary: IMessageDefinition = {
     message: `Connect to token-based authentication services`
+};
+
+export const authCategoryDesc: IMessageDefinition = {
+    message: `${authCategorySummary.message}.`
 };
 
 export const authLoginGroupSummary: IMessageDefinition = {
@@ -358,7 +361,7 @@ export const authLoginGroupDesc: IMessageDefinition = {
 };
 
 export const authLoginCommandDesc: IMessageDefinition = {
-    message: `Log in to {{type}} authentication service`
+    message: `Log in to {{type}} authentication service.`
 };
 
 export const authLoginShowTokenDesc: IMessageDefinition = {
@@ -374,9 +377,13 @@ export const authLogoutGroupDesc: IMessageDefinition = {
 };
 
 export const authLogoutCommandDesc: IMessageDefinition = {
-    message: `Log out of {{type}} authentication service`
+    message: `Log out of {{type}} authentication service.`
+};
+
+export const autoInitCommandSummary: IMessageDefinition = {
+    message: `Automatically generate a config from {{source}}`
 };
 
 export const autoInitCommandDesc: IMessageDefinition = {
-    message: `Automatically generate a config from {{source}}`
+    message: `${autoInitCommandSummary.message}.`
 };

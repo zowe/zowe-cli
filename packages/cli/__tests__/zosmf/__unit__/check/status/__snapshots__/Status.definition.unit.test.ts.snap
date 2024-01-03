@@ -111,6 +111,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Check z/OSMF status on a specified system",
   "type": "command",
 }
 `;

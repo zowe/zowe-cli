@@ -15,7 +15,7 @@ export const ActionDefinition: ICommandDefinition = {
     name: "action",
     aliases: ["act"],
     type: "command",
-    summary: "Perform instance actions.",
+    summary: "Perform instance actions",
     description: "Perform actions on instances previously provisioned with z/OSMF cloud\n" +
     "   provisioning services. To view the list of provisioned instances, use the\n" +
     "   \"zowe provisioning list registry-instances\" command. Once you have\n" +

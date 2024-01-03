@@ -54,7 +54,7 @@ full 	- all available information
       "zosmf",
     ],
   },
-  "summary": "List Provisioned Instance Details.",
+  "summary": "List Provisioned Instance Details",
   "type": "command",
 }
 `;

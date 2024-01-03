@@ -95,7 +95,7 @@ e.g: \\"SYSNAME1,SYSNAME2\\".",
       "zosmf",
     ],
   },
-  "summary": "Provision a published software service template.",
+  "summary": "Provision a published software service template",
   "type": "command",
 }
 `;

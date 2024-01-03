@@ -28,6 +28,7 @@ export const UploadDefinition: ICommandDefinition = {
     name: "upload",
     aliases: ["ul"],
     type: "group",
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
         FileToDataSetDefinition,

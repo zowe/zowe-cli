@@ -16,8 +16,8 @@ export const secureDefinition: ICommandDefinition = {
     name: "secure",
     type: "command",
     handler: join(__dirname, "secure.handler"),
-    summary: "secure configuration properties",
-    description: "prompt for secure configuration properties",
+    summary: "Secure configuration properties",
+    description: "Prompt for secure configuration properties.",
     options: [
         {
             name: "global-config",

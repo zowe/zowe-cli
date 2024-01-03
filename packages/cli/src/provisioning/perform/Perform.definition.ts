@@ -17,7 +17,7 @@ export const PerformCommand: ICommandDefinition = {
     name: "perform",
     aliases: ["perf"],
     type: "group",
-    summary: "Perform instance actions.",
+    summary: "Perform instance actions",
     description: "Perform actions against instances provisioned with z/OSMF.",
     children: [ActionDefinition]
 };
