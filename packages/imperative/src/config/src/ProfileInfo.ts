@@ -54,18 +54,8 @@ import { IGetAllProfilesOptions } from "./doc/IProfInfoProps";
 import { IConfig } from "./doc/IConfig";
 import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts";
 import { ConfigBuilder } from "./ConfigBuilder";
-
-export type ExtenderJson = {
-    profileTypes: Record<string, {
-        from: string[];
-        version?: string;
-    }>;
-};
-
-export type AddProfToSchemaResult = {
-    success: boolean;
-    info: string;
-};
+import { IAddProfTypeResult, IExtendersJsonOpts } from "./doc/IExtenderOpts";
+import { IConfigLayer } from "..";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -175,7 +165,7 @@ export class ProfileInfo {
     private mProfileSchemaCache: Map<string, IProfileSchema>;
     private mCredentials: ProfileCredentials;
 
-    private mExtendersJson: ExtenderJson;
+    private mExtendersJson: IExtendersJsonOpts;
 
     // _______________________________________________________________________
     /**
@@ -1259,6 +1249,21 @@ export class ProfileInfo {
     }
 
     /**
+     * Attempts to write to the `extenders.json` file in the CLI home directory.
+     * @returns `true` if written successfully; `false` otherwise
+     */
+    private writeExtendersJson(): boolean {
+        try {
+            const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
+            jsonfile.writeFileSync(extenderJsonPath, this.mExtendersJson, { spaces: 4 });
+        } catch (err) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Adds a profile type to the loaded Zowe config.
      * The profile type must first be added to the schema using `addProfileTypeToSchema`.
      *
@@ -1268,70 +1273,98 @@ export class ProfileInfo {
      * @returns {boolean} `true` if added to the loaded config; `false` otherwise
      */
     public addProfileToConfig(profileType: string, layerPath?: string): boolean {
+        // Find the schema in the cache, starting with the highest-priority layer and working up
         const profileSchema = [...this.getTeamConfig().mLayers].reverse()
             .reduce((prev: IProfileSchema, layer) => {
-                const [, desiredSchema] = [...this.mProfileSchemaCache.entries()]
+                const cachedSchema = [...this.mProfileSchemaCache.entries()]
                     .filter(([typeWithPath, schema]) => typeWithPath.includes(`:${profileType}`))[0];
-                return desiredSchema;
-            }, {} as IProfileSchema);
+                if (cachedSchema != null) {
+                    prev = cachedSchema[1];
+                }
+                return prev;
+            }, undefined);
+
+        // Skip adding to config if the schema was not found
+        if (profileSchema == null) {
+            return false;
+        }
 
         this.getTeamConfig().api.profiles.set(layerPath ? `${layerPath}.${profileType}` : profileType,
             ConfigBuilder.buildDefaultProfile(this.mLoadedConfig.mProperties, { type: profileType, schema: profileSchema }));
         return true;
     }
 
-    private writeExtendersJson(): boolean {
-        try {
-            const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-            jsonfile.writeFileSync(extenderJsonPath, this.mExtendersJson, { spaces: 4 });
-        } catch (err) {
-            if (err.code === "EACCES" || err.code === "EPERM") {
-                return false;
-            }
-        }
+    /**
+     * Updates the schema to contain the new profile type.
+     * If the type exists in the cache, it will use the matching layer; if not found, it will use the schema at the active layer.
+     *
+     * @param {IProfileSchema} typeSchema The schema to add for the profile type
+     * @returns {boolean} `true` if added to the schema; `false` otherwise
+     */
+    private updateSchemaAtLayer(profileType: string, schema: IProfileSchema): void {
+        // Check if type already exists in schema cache; if so, update schema at the same layer.
+        // Otherwise, update schema at the active layer.
+        const cachedType = [...this.mProfileSchemaCache.entries()]
+            .find(([typePath, _schema]) => typePath.includes(`:${profileType}`));
 
-        return true;
+        const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].indexOf(":")) : this.getTeamConfig().layerActive().path;
+        const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
+        const schemaUri = new url.URL(layerToUpdate.properties.$schema, url.pathToFileURL(layerPath));
+        const schemaPath = url.fileURLToPath(schemaUri);
+
+        if (fs.existsSync(schemaPath)) {
+            jsonfile.writeFileSync(schemaPath, this.buildSchema([], layerToUpdate));
+        }
     }
 
     /**
-     * Adds a profile type to the schema, and tracks its contribution in extenders.json.
+     * Adds a profile type to the schema, and tracks its contribution in extenders.json.  
+     * NOTE: `readProfilesFromDisk` must be called at least once before adding new profile types.
      *
      * @param {IProfileSchema} typeSchema The schema to add for the profile type
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
     public addProfileTypeToSchema(profileType: string, typeInfo:
-    { sourceApp: string; schema: IProfileSchema; version?: string }): AddProfToSchemaResult {
-        if (this.mLoadedConfig == null) {
+    { sourceApp: string; schema: IProfileSchema; version?: string }): IAddProfTypeResult {
+        // Get the active team config layer
+        const activeLayer = this.getTeamConfig()?.layerActive();
+        if (activeLayer == null) {
             return {
                 success: false,
-                info: "No config layers are available (none found, or method was called before readProfilesFromDisk)"
+                info: "This function only supports team configurations."
             };
         }
 
+        // copy last value for `extenders.json` to compare against updated object
         const oldExtendersJson = lodash.cloneDeep(this.mExtendersJson);
         let successMsg = "";
 
         if (profileType in this.mExtendersJson.profileTypes) {
             // Profile type was already contributed, determine whether its metadata should be updated
             const typeMetadata = this.mExtendersJson.profileTypes[profileType];
+
             if (semver.valid(typeInfo.version) != null) {
+                // The provided version is SemVer-compliant; compare against previous version (if exists)
                 const prevTypeVersion = typeMetadata.version;
                 if (prevTypeVersion != null) {
-                    // Update the schema version for this profile type if newer than the installed version
                     if (semver.gt(typeInfo.version, prevTypeVersion)) {
+                        // Update the schema for this profile type, as its newer than the installed version
                         this.mExtendersJson.profileTypes[profileType] = {
                             version: typeInfo.version,
                             from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
                         };
-                        this.mProfileSchemaCache.set(profileType, typeInfo.schema);
+
+                        this.updateSchemaAtLayer(profileType, typeInfo.schema);
+
                         if (semver.major(typeInfo.version) != semver.major(prevTypeVersion)) {
+                            // Warn user if new major schema version is specified
                             successMsg =
                             `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.version}.\n`.concat(
                                 `The following applications may be affected: ${typeMetadata.from.filter((src) => src !== typeInfo.sourceApp)}`
                             );
                         }
                     } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.version)) {
-                        // Warn user if we are expecting a newer major schema version than the one they are providing
+                        // Warn user if previous schema version is a newer major version
                         return {
                             success: false,
                             info: `Profile type ${profileType} expects a newer schema version than provided by ${typeInfo.sourceApp}\n`.concat(
@@ -1339,29 +1372,30 @@ export class ProfileInfo {
                         };
                     }
                 } else {
-                    // There wasn't a previous version, so we can update the schema
+                    // No schema version specified previously; update the schema
                     this.mExtendersJson.profileTypes[profileType] = {
                         version: typeInfo.version,
                         from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
                     };
-                    this.mProfileSchemaCache.set(profileType, typeInfo.schema);
+                    this.updateSchemaAtLayer(profileType, typeInfo.schema);
                 }
             } else if (typeInfo.version != null) {
+                // Warn user if this schema does not provide a valid version number
                 return {
                     success: false,
-                    info: `New schema type for profile type ${profileType} is not SemVer-compliant; schema was not updated.`
-                }
+                    info: `New schema type for profile type ${profileType} is not SemVer-compliant; schema was not updated`
+                };
             }
         } else {
-            // Track the newly-contributed profile type in extenders.json
+            // Newly-contributed profile type; track in extenders.json
             this.mExtendersJson.profileTypes[profileType] = {
                 version: typeInfo.version,
                 from: [typeInfo.sourceApp]
             };
-            this.mProfileSchemaCache.set(`${this.mLoadedConfig.layerActive().path}:${profileType}`, typeInfo.schema);
+            this.updateSchemaAtLayer(profileType, typeInfo.schema);
         }
 
-        // Update contents of extenders.json
+        // Update contents of extenders.json if it has changed
         if (!lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
             if (!this.writeExtendersJson()) {
                 return {
@@ -1387,35 +1421,25 @@ export class ProfileInfo {
      *   - Source applications are tracked in the “from” list for each profile type in extenders.json
      * @returns {IConfigSchema} A config schema containing all applicable profile types
      */
-    public buildSchema(sources?: string[]): IConfigSchema {
+    public buildSchema(sources?: string[], layer?: IConfigLayer): IConfigSchema {
         const finalSchema: Record<string, IProfileSchema> = {};
-        const teamConfigLayers = this.getTeamConfig().mLayers;
+        const desiredLayer = layer ?? this.getTeamConfig().layerActive();
 
-        for (let i = teamConfigLayers.length; i > 0; i--) {
-            // Grab types from each layer, starting with the highest-priority layer
-            const layer = teamConfigLayers[i];
-            if (layer.properties.$schema == null) continue;
-            const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
-            const schemaPath = url.fileURLToPath(schemaUri);
-
-            if (!fs.existsSync(schemaPath)) continue;
-
-            const profileTypesInLayer = [...this.mProfileSchemaCache.entries()]
-                .filter(([type, schema]) => type.includes(`${layer.path}:`));
-            for (const [typeWithPath, schema] of profileTypesInLayer) {
-                const type = typeWithPath.split(":").pop();
-                if (type == null) {
-                    continue;
-                }
-                if (type in this.mExtendersJson.profileTypes) {
-                    if (sources?.length > 0) {
-                        // If a list of sources were provided, ensure the type is contributed at least one of these sources
-                        if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
-                            finalSchema[type] = schema;
-                        }
-                    } else {
+        const profileTypesInLayer = [...this.mProfileSchemaCache.entries()]
+            .filter(([type, _schema]) => type.includes(`${desiredLayer.path}:`));
+        for (const [typeWithPath, schema] of profileTypesInLayer) {
+            const type = typeWithPath.split(":").pop();
+            if (type == null) {
+                continue;
+            }
+            if (type in this.mExtendersJson.profileTypes) {
+                if (sources?.length > 0) {
+                    // If a list of sources were provided, ensure the type is contributed at least one of these sources
+                    if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                         finalSchema[type] = schema;
                     }
+                } else {
+                    finalSchema[type] = schema;
                 }
             }
         }
@@ -1445,16 +1469,15 @@ export class ProfileInfo {
                 if (type == null) {
                     continue;
                 }
-                // if (type in this.mExtendersJson.profileTypes) {
-                    if (filteredBySource) {
-                        // Only consider types contributed by at least one of these sources
-                        if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
-                            profileTypes.add(type);
-                        }
-                    } else {
+
+                if (filteredBySource) {
+                    // Only consider types contributed by at least one of these sources
+                    if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                         profileTypes.add(type);
                     }
-                //}
+                } else {
+                    profileTypes.add(type);
+                }
             }
         }
 
