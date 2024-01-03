@@ -178,40 +178,40 @@ describe("Compare data set handler", () => {
             expect(getDiffStringSpy).toHaveBeenCalledWith("compared", "compared", options);
         });
 
-        it("should compare two data sets containing carriage returns in terminal with --seqnum specified(Windows Specific)", async () => {
-            if(process.platform === "win32")
-            {
-                const processArgCopy: any = {
-                    ...processArguments,
-                    arguments:{
-                        ...processArguments.arguments,
-                        seqnum: false,
+        (process.platform === "win32" ? it : it.skip)(
+            "should compare two data sets containing carriage returns in terminal with --seqnum specified(Windows Specific)", async() => {
+                {
+                    const processArgCopy: any = {
+                        ...processArguments,
+                        arguments:{
+                            ...processArguments.arguments,
+                            seqnum: false,
+                        }
+                    };
+
+                    //overwrite ds(strings 1 & 2) to include seqnums to chop off in LocalFileDatasetHandler
+                    getDataSetSpy.mockImplementation(jest.fn(async (session) => {
+                        fakeSession = session;
+                        return Buffer.from("compared12345678\r\n");
+                    }));
+
+                    try {
+                        // Invoke the handler with a full set of mocked arguments and response functions
+                        await handler.process(processArgCopy);
+                    } catch (e) {
+                        error = e;
                     }
-                };
 
-                //overwrite ds(strings 1 & 2) to include seqnums to chop off in LocalFileDatasetHandler
-                getDataSetSpy.mockImplementation(jest.fn(async (session) => {
-                    fakeSession = session;
-                    return Buffer.from("compared12345678\r\n");
-                }));
-
-                try {
-                    // Invoke the handler with a full set of mocked arguments and response functions
-                    await handler.process(processArgCopy);
-                } catch (e) {
-                    error = e;
+                    expect(error).toBeUndefined();
+                    expect(getDataSetSpy).toHaveBeenCalledTimes(2);
+                    expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
+                    expect(apiMessage).toEqual("");
+                    expect(logMessage).toEqual("compared string");
+                    expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, { task: dsTask });
+                    expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
+                    expect(getDiffStringSpy).toHaveBeenCalledWith("compared\n", "compared\n", options);
                 }
-
-                expect(error).toBeUndefined();
-                expect(getDataSetSpy).toHaveBeenCalledTimes(2);
-                expect(getDiffStringSpy).toHaveBeenCalledTimes(1);
-                expect(apiMessage).toEqual("");
-                expect(logMessage).toEqual("compared string");
-                expect(getDataSetSpy).toHaveBeenCalledWith(fakeSession as any, dataSetName1, { task: dsTask });
-                expect(jsonObj).toMatchObject({commandResponse: "compared string", success: true});
-                expect(getDiffStringSpy).toHaveBeenCalledWith("compared\n", "compared\n", options);
-            }
-        });
+            });
 
         it("should compare two data sets in browser", async () => {
             openDiffInbrowserSpy.mockImplementation(jest.fn());
