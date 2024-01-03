@@ -31,7 +31,7 @@ export class ConfigBuilder {
         const config: IConfig = Config.empty();
 
         for (const profile of impConfig.profiles) {
-            const defaultProfile = this.buildDefaultProfile(config, profile);
+            const defaultProfile = this.buildDefaultProfile(profile, opts);
 
             // Add the profile to config and set it as default
             lodash.set(config, `profiles.${profile.type}`, defaultProfile);
@@ -56,7 +56,7 @@ export class ConfigBuilder {
         return { ...config, autoStore: true };
     }
 
-    public static buildDefaultProfile(config: IConfig, profile: ICommandProfileTypeConfiguration): {
+    public static buildDefaultProfile(profile: ICommandProfileTypeConfiguration, opts?: IConfigBuilderOpts): {
         type: string;
         properties: Record<string, any>;
         secure: string[]
@@ -64,7 +64,7 @@ export class ConfigBuilder {
         const properties: { [key: string]: any } = {};
         const secureProps: string[] = [];
         for (const [k, v] of Object.entries(profile.schema.properties)) {
-            if (v.includeInTemplate) {
+            if (opts.populateProperties && v.includeInTemplate) {
                 if (v.secure) {
                     secureProps.push(k);
                 } else {
