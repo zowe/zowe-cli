@@ -1302,7 +1302,7 @@ export class ProfileInfo {
      * @param {IProfileSchema} typeSchema The schema to add for the profile type
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
-    private updateSchemaAtLayer(profileType: string, schema: IProfileSchema): void {
+    private updateSchemaAtLayer(profileType: string, schema: IProfileSchema, versionChanged?: boolean): void {
         // Check if type already exists in schema cache; if so, update schema at the same layer.
         // Otherwise, update schema at the active layer.
         const cachedType = [...this.mProfileSchemaCache.entries()]
@@ -1312,7 +1312,8 @@ export class ProfileInfo {
         const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
         const cacheKey = `${layerPath}:${profileType}`;
 
-        const sameSchemaExists = this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(this.mProfileSchemaCache.get(cacheKey), schema);
+        const sameSchemaExists = versionChanged ? false :
+            this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(this.mProfileSchemaCache.get(cacheKey), schema);
 
         // Update the cache with the newest schema for this profile type
         this.mProfileSchemaCache.set(cacheKey, schema);
@@ -1363,7 +1364,7 @@ export class ProfileInfo {
                             from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
                         };
 
-                        this.updateSchemaAtLayer(profileType, typeInfo.schema);
+                        this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
 
                         if (semver.major(typeInfo.version) != semver.major(prevTypeVersion)) {
                             // Warn user if new major schema version is specified
@@ -1386,7 +1387,7 @@ export class ProfileInfo {
                         version: typeInfo.version,
                         from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
                     };
-                    this.updateSchemaAtLayer(profileType, typeInfo.schema);
+                    this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
                 }
             } else if (typeInfo.version != null) {
                 // Warn user if this schema does not provide a valid version number
