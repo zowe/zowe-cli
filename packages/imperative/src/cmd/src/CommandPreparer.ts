@@ -128,7 +128,7 @@ export class CommandPreparer {
      * @param {ICommandDefinition[]} definitions - the current set of definitions we've traversed - for diagnostics
      */
     private static perfomBasicValidation(definition: ICommandDefinition, definitions: ICommandDefinition[]) {
-        const definitonDetails: string = "The definition in error has been placed in the additional details field of this error object.";
+        const definitionDetails: string = "The definition in error has been placed in the additional details field of this error object.";
 
         // Do a quick check for required properties. If none are present, assume that either the definition
         // is completely incorrect OR the user did NOT export the definition in a module glob
@@ -138,7 +138,7 @@ export class CommandPreparer {
                 msg: `The command definition node being validated does NOT contain any of the required fields (name, description, type). ` +
                     `Either the definition supplied is completely incorrect (see ICommandDefinition interface for required fields) ` +
                     `OR you did NOT export the definition in your command definition module (found via the command definition glob). ` +
-                    `Keys/properties present on the definition: ${props.join(",")}. ${definitonDetails}`,
+                    `Keys/properties present on the definition: ${props.join(",")}. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -146,7 +146,7 @@ export class CommandPreparer {
         // All nodes must have a non-blank name
         if (!(definition as any).isRoot && (definition.name == null || definition.name.trim().length === 0)) {
             throw new ImperativeError({
-                msg: `A command definition node contains an undefined or empty name. ${definitonDetails}`,
+                msg: `A command definition node contains an undefined or empty name. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -155,7 +155,7 @@ export class CommandPreparer {
         if (definition.handler != null && definition.chainedHandlers != null && definition.chainedHandlers.length > 0) {
             throw new ImperativeError({
                 msg: `A command definition node (${definition.name}) contains both a handler and chained handler ` +
-                    `configuration. The two are mutually exclusive. ${definitonDetails}`,
+                    `configuration. The two are mutually exclusive. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -204,7 +204,7 @@ export class CommandPreparer {
         // All nodes must have a type
         if (definition.type == null || definition.type.trim().length === 0) {
             throw new ImperativeError({
-                msg: `A command definition node (${definition.name}) contains an undefined or empty type. ${definitonDetails}`,
+                msg: `A command definition node (${definition.name}) contains an undefined or empty type. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -214,7 +214,7 @@ export class CommandPreparer {
             (definition.description == null || definition.description.trim().length === 0)) {
             throw new ImperativeError({
                 msg: `A command definition node (${definition.name} of type ${definition.type}) contains an ` +
-                    `undefined or empty description. ${definitonDetails}`,
+                    `undefined or empty description. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -225,13 +225,13 @@ export class CommandPreparer {
             if (!Array.isArray(definition.options)) {
                 throw new ImperativeError({
                     msg: `A command definition node (${definition.name} of type ${definition.type}) options are invalid (not an array). ` +
-                        `${definitonDetails}`,
+                        `${definitionDetails}`,
                     additionalDetails: JSON.stringify(definition)
                 });
             }
 
             // If options are specified, perform validation
-            CommandPreparer.performBasicOptionValidation(definition.options, definitions);
+            CommandPreparer.performBasicOptionValidation(definition);
         }
 
         // Check positional arguments are an array
@@ -239,19 +239,19 @@ export class CommandPreparer {
             if (!Array.isArray(definition.positionals)) {
                 throw new ImperativeError({
                     msg: `A command definition node (${definition.name} of type ${definition.type}) positionals are invalid (not an array). ` +
-                        `${definitonDetails}`,
+                        `${definitionDetails}`,
                     additionalDetails: JSON.stringify(definition)
                 });
             }
 
             // If positionals are specified, perform validation
-            CommandPreparer.performBasicPositionalValidation(definition.positionals, definitions);
+            CommandPreparer.performBasicPositionalValidation(definition);
         }
 
         // Children must be an array
         if (definition.children != null && !Array.isArray(definition.children)) {
             throw new ImperativeError({
-                msg: `A command definition node (${definition.name} of type ${definition.type}) contains ill-formed children. ${definitonDetails}`,
+                msg: `A command definition node (${definition.name} of type ${definition.type}) contains ill-formed children. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -259,7 +259,7 @@ export class CommandPreparer {
         // A group must have children
         if (definition.type === "group" && (definition.children == null || definition.children.length === 0)) {
             throw new ImperativeError({
-                msg: `A "group" command definition node (${definition.name}) contains no children. A group implies children. ${definitonDetails}`,
+                msg: `A "group" command definition node (${definition.name}) contains no children. A group implies children. ${definitionDetails}`,
                 additionalDetails: JSON.stringify(definition)
             });
         }
@@ -276,19 +276,18 @@ export class CommandPreparer {
      * Perform basic positional operand validation. Ensure that the positional operands are valid and well formed.
      * @private
      * @static
-     * @param {ICommandPositionalDefinition[]} positionals - The array of positional operands
-     * @param {ICommandDefinition[]} currentDefinitions - The current command definitions for assistance in diagnostics
+     * @param {ICommandDefinition} definition - The command definition containing positionals to be validated
      * @memberof CommandPreparer
      */
-    private static performBasicPositionalValidation(positionals: ICommandPositionalDefinition[], currentDefinitions: ICommandDefinition[]) {
-        for (const pos of positionals) {
+    private static performBasicPositionalValidation(definition: ICommandDefinition) {
+        for (const pos of definition.positionals) {
             /**
              * All positionals must have a name
              */
             if (pos.name == null || pos.name.trim().length === 0) {
                 throw new ImperativeError({
                     msg: `A positional definition contains an undefined or empty name.`,
-                    additionalDetails: "POSITIONAL_DEFINITION:\n" + JSON.stringify(pos) + "\nCURRENT_TREE:\n" + JSON.stringify(currentDefinitions)
+                    additionalDetails: "POSITIONAL_DEFINITION:\n" + JSON.stringify(pos) + "\nCOMMAND_DEFINITION:\n" + JSON.stringify(definition)
                 });
             }
 
@@ -298,7 +297,7 @@ export class CommandPreparer {
             if (pos.type == null || pos.type.trim().length === 0) {
                 throw new ImperativeError({
                     msg: `A positional definition (${pos.name}) contains an undefined or empty type.`,
-                    additionalDetails: "POSITIONAL_DEFINITION:\n" + JSON.stringify(pos) + "\nCURRENT_TREE:\n" + JSON.stringify(currentDefinitions)
+                    additionalDetails: "POSITIONAL_DEFINITION:\n" + JSON.stringify(pos) + "\nCOMMAND_DEFINITION:\n" + JSON.stringify(definition)
                 });
             }
 
@@ -309,7 +308,7 @@ export class CommandPreparer {
                 throw new ImperativeError({
                     msg: `A positional definition (${pos.name} of type ${pos.type}) contains an ` +
                         `undefined or empty description.`,
-                    additionalDetails: "POSITIONAL_DEFINITION:\n" + JSON.stringify(pos) + "\nCURRENT_TREE:\n" + JSON.stringify(currentDefinitions)
+                    additionalDetails: "POSITIONAL_DEFINITION:\n" + JSON.stringify(pos) + "\nCOMMAND_DEFINITION:\n" + JSON.stringify(definition)
                 });
             }
         }
@@ -319,16 +318,15 @@ export class CommandPreparer {
      * Perform basic option operand validation. Ensure that the option operands are valid and well formed.
      * @private
      * @static
-     * @param {ICommandOptionDefinition[]} options - The array of options operands
-     * @param {ICommandDefinition[]} currentDefinitions - The current command definitions for assistance in diagnostics
+     * @param {ICommandDefinition} definition - The command definition containing options to be validated
      * @memberof CommandPreparer
      */
-    private static performBasicOptionValidation(options: ICommandOptionDefinition[], currentDefinitions: ICommandDefinition[]) {
-        for (const opt of options) {
+    private static performBasicOptionValidation(definition: ICommandDefinition) {
+        for (const opt of definition.options) {
             if (opt == null) {
                 throw new ImperativeError({
                     msg: `An option definition is null or undefined.`,
-                    additionalDetails: `CURRENT_TREE:\n${JSON.stringify(currentDefinitions)}`
+                    additionalDetails: `COMMAND_DEFINITION:\n${JSON.stringify(definition)}`
                 });
             }
 
@@ -338,7 +336,7 @@ export class CommandPreparer {
             if (opt.name == null || opt.name.trim().length === 0) {
                 throw new ImperativeError({
                     msg: `An option definition contains an undefined or empty name.`,
-                    additionalDetails: "OPTION_DEFINITION:\n" + JSON.stringify(opt) + "\nCURRENT_TREE:\n" + JSON.stringify(currentDefinitions)
+                    additionalDetails: "OPTION_DEFINITION:\n" + JSON.stringify(opt) + "\nCOMMAND_DEFINITION:\n" + JSON.stringify(definition)
                 });
             }
 
@@ -348,7 +346,7 @@ export class CommandPreparer {
             if (opt.type == null || opt.type.trim().length === 0) {
                 throw new ImperativeError({
                     msg: `An option definition (${opt.name}) contains an undefined or empty type.`,
-                    additionalDetails: "OPTION_DEFINITION:\n" + JSON.stringify(opt) + "\nCURRENT_TREE:\n" + JSON.stringify(currentDefinitions)
+                    additionalDetails: "OPTION_DEFINITION:\n" + JSON.stringify(opt) + "\nCOMMAND_DEFINITION:\n" + JSON.stringify(definition)
                 });
             }
 
@@ -359,7 +357,7 @@ export class CommandPreparer {
                 throw new ImperativeError({
                     msg: `An option definition (${opt.name} of type ${opt.type}) contains an ` +
                         `undefined or empty description.`,
-                    additionalDetails: "OPTION_DEFINITION:\n" + JSON.stringify(opt) + "\nCURRENT_TREE:\n" + JSON.stringify(currentDefinitions)
+                    additionalDetails: "OPTION_DEFINITION:\n" + JSON.stringify(opt) + "\nCOMMAND_DEFINITION:\n" + JSON.stringify(definition)
                 });
             }
         }
