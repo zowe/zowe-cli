@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed typo in command help for `zowe workflows create workflow-from-data-set`.
+
 ## `7.20.1`
 
 - BugFix: Add missing npm-shrinkwrap

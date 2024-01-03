@@ -30,7 +30,7 @@ Object {
       "aliases": Array [
         "ds",
       ],
-      "description": "Data set that contains a workflow definiton.",
+      "description": "Data set that contains a workflow definition.",
       "name": "data-set",
       "required": true,
       "type": "string",

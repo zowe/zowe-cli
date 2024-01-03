@@ -18,7 +18,7 @@ Object {
       "aliases": Array [
         "lf",
       ],
-      "description": "Local file that contains workflow definiton.",
+      "description": "Local file that contains workflow definition.",
       "name": "local-file",
       "required": true,
       "type": "string",
