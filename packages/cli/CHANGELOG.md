@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Correct extra character being displayed at the end of lines when issuing `zowe files compare` on Windows. [#1992](https://github.com/zowe/zowe-cli/issues/1992)
+- BugFix: Correct the online help description for `zowe files compare uss`. [#1754](https://github.com/zowe/zowe-cli/issues/1754)
+
 ## `7.20.1`
 
 - BugFix: Add missing npm-shrinkwrap

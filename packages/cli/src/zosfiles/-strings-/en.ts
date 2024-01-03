@@ -819,8 +819,8 @@ export default {
                 }
             },
             USS_FILE: {
-                SUMMARY: "Compare content of a local file and a z/os uss files",
-                DESCRIPTION: "Compare the contents of a two uss files on your terminal (stdout). browser.",
+                SUMMARY: "Compare the contents of two z/os uss files",
+                DESCRIPTION: "Compare the contents of two uss files on your terminal (stdout). browser.",
                 POSITIONALS: {
                     USSFILEPATH1: "The path of the first uss file you want to compare.",
                     USSFILEPATH2: "The path of the second uss file you want to compare."
