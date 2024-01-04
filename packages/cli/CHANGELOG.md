@@ -21,13 +21,21 @@ All notable changes to the Zowe CLI package will be documented in this file.
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
 
-## `8.0.0-next.202401022112`
+## `8.0.0-next.202311291643`
 
 - Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
 
-## `8.0.0-next.202311291643`
+## `8.0.0-next.202401022112`
 
 - BugFix: Add missing npm-shrinkwrap
+
+## `8.0.0-next.202311291643`
+
+- LTS Breaking: Replaced the `ZOWE_EDITOR` environment variable with `ZOWE_OPT_EDITOR` and `--editor` option on commands [#1867](https://github.com/zowe/zowe-cli/issues/1867)
+
+## `8.0.0-next.202311282012`
+
+- LTS Breaking: Moved `getDataSet` from the `zosfiles` command group to the `zosfiles` SDK as `ZosFilesUtils.getDataSetFromName` [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `8.0.0-next.202311141517`
 
