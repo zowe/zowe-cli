@@ -29,6 +29,7 @@ import { ImperativeError } from "../../error";
 import { IProfInfoUpdatePropOpts } from "../src/doc/IProfInfoUpdatePropOpts";
 import { ConfigUtils } from "../src/ConfigUtils";
 import { ConfigProfiles } from "../src/api";
+import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -1466,16 +1467,24 @@ describe("TeamConfig ProfileInfo tests", () => {
         // case 1: no sources specified, returns profile types without filtering
         it("returns the default set of profile types", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
+            jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
             await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
             const expectedTypes = [...profileTypes].concat(["ssh"]).sort();
             expect(profInfo.getProfileTypes()).toEqual(expectedTypes);
         });
         // TODO: case 2: filtering by source
+        it("filters by source", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
+            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+            profInfo.addProfileTypeToSchema("some-type", { sourceApp: "Zowe Client App", schema: {} as any });
+            expect(profInfo.getProfileTypes(["Zowe Client App"])).toEqual(["some-type"]);
+        });
     });
 
     describe("getSchemaForType", () => {
         // case 1: returns the schema for a registered profile type
-        it("returns the schema for 'dummy' type", async () => {
+        it("returns the schema for a registered type", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
             expect(profInfo.getSchemaForType("dummy")).toBeDefined();
@@ -1488,6 +1497,99 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(profInfo.getSchemaForType("type-that-doesnt-exist")).toBeUndefined();
         });
     });
-    // TODO: getProfileTypes, buildSchema, addProfileTypeToSchema
+
+    describe("addProfileTypeToSchema", () => {
+        const expectAddToSchemaTester = async (testCase: { schema: any; previousVersion?: string; version?: string }, expected: {
+            extendersJson: IExtendersJsonOpts,
+            res: {
+                success: boolean;
+                info?: string;
+            },
+            version?: string,
+        }) => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+            if (testCase.previousVersion) {
+                (profInfo as any).mExtendersJson = {
+                    profileTypes: {
+                        "some-type": {
+                            from: ["Zowe Client App"],
+                            version: testCase.previousVersion === "none" ? undefined : testCase.previousVersion
+                        }
+                    }
+                };
+            } else {
+                (profInfo as any).mExtendersJson = {
+                    profileTypes: {}
+                };
+            }
+            const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer").mockImplementation();
+            const writeExtendersJsonMock = jest.spyOn((ProfileInfo as any).prototype, "writeExtendersJson").mockImplementation();
+            const res = profInfo.addProfileTypeToSchema("some-type", { ...testCase, sourceApp: "Zowe Client App" });
+            if (expected.res.success) {
+                expect(updateSchemaAtLayerMock).toHaveBeenCalled();
+                expect(writeExtendersJsonMock).toHaveBeenCalled();
+            } else {
+                expect(updateSchemaAtLayerMock).not.toHaveBeenCalled();
+                expect(writeExtendersJsonMock).not.toHaveBeenCalled();
+            }
+            expect((profInfo as any).mExtendersJson).toEqual(expected.extendersJson);
+            expect(res.success).toBe(expected.res.success);
+            if (expected.res.info) {
+                expect(res.info).toBe(expected.res.info);
+            }
+        };
+        // case 1: Profile type did not exist
+        it("adds a new profile type to the schema", async () => {
+            expectAddToSchemaTester(
+                { schema: { title: "Mock Schema" } as any },
+                {
+                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"] } } },
+                    res: {
+                        success: true
+                    }
+                }
+            );
+        });
+
+        it("only updates a profile type in the schema if the version is newer", async () => {
+            expectAddToSchemaTester(
+                { previousVersion: "1.0.0", schema: { title: "Mock Schema" } as any, version: "2.0.0" },
+                {
+                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
+                    res: {
+                        success: true
+                    }
+                }
+            );
+        });
+
+        it("does not update a profile type in the schema if the version is older", async () => {
+            expectAddToSchemaTester(
+                { previousVersion: "2.0.0", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                {
+                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
+                    res: {
+                        success: false
+                    }
+                }
+            );
+        });
+
+        it("updates a profile type in the schema - version provided, no previous schema version", async () => {
+            expectAddToSchemaTester(
+                { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                {
+                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
+                    res: {
+                        success: true
+                    }
+                }
+            );
+        });
+    });
+    describe("buildSchema", () => {
+        // TODO
+    });
     // end schema management tests
 });

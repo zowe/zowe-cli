@@ -1247,6 +1247,7 @@ export class ProfileInfo {
             jsonfile.writeFileSync(extenderJsonPath, {
                 profileTypes: {}
             }, { spaces: 4 });
+            this.mExtendersJson = { profileTypes: {} };
         } else {
             this.mExtendersJson = jsonfile.readFileSync(extenderJsonPath);
         }
@@ -1481,22 +1482,19 @@ export class ProfileInfo {
                     continue;
                 }
 
-                if (filteredBySource && type in this.mExtendersJson.profileTypes) {
-                    // Only consider types contributed by at least one of these sources
-                    if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
-                        profileTypes.add(type);
-                    }
-                } else {
-                    profileTypes.add(type);
-                }
+                profileTypes.add(type);
             }
         }
 
         // Include all profile types from extenders.json if we are not filtering by source
-        if (!filteredBySource) {
-            for (const type of Object.keys(this.mExtendersJson.profileTypes)) {
-                profileTypes.add(type);
-            }
+        if (filteredBySource) {
+            return [...profileTypes].filter((t) => {
+                if (!(t in this.mExtendersJson.profileTypes)) {
+                    return false;
+                }
+
+                return this.mExtendersJson.profileTypes[t].from.some((src) => sources.includes(src));
+            }).sort((a, b) => a.localeCompare(b));
         }
 
         return [...profileTypes].sort((a, b) => a.localeCompare(b));
