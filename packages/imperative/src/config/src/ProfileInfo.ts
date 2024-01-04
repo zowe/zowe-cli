@@ -1276,9 +1276,9 @@ export class ProfileInfo {
     public addProfileToConfig(profileType: string, layerPath?: string): boolean {
         // Find the schema in the cache, starting with the highest-priority layer and working up
         const profileSchema = [...this.getTeamConfig().mLayers].reverse()
-            .reduce((prev: IProfileSchema, layer) => {
+            .reduce((prev: IProfileSchema, cfgLayer) => {
                 const cachedSchema = [...this.mProfileSchemaCache.entries()]
-                    .filter(([typeWithPath, schema]) => typeWithPath.includes(`:${profileType}`))[0];
+                    .filter(([typeWithPath, schema]) => typeWithPath.includes(`${cfgLayer.path}:${profileType}`))[0];
                 if (cachedSchema != null) {
                     prev = cachedSchema[1];
                 }
@@ -1308,13 +1308,12 @@ export class ProfileInfo {
         const cachedType = [...this.mProfileSchemaCache.entries()]
             .find(([typePath, _schema]) => typePath.includes(`:${profileType}`));
 
-        const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].indexOf(":")) : this.getTeamConfig().layerActive().path;
+        const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].lastIndexOf(":")) : this.getTeamConfig().layerActive().path;
         const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
         const cacheKey = `${layerPath}:${profileType}`;
 
         const sameSchemaExists = versionChanged ? false :
             this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(this.mProfileSchemaCache.get(cacheKey), schema);
-
         // Update the cache with the newest schema for this profile type
         this.mProfileSchemaCache.set(cacheKey, schema);
 
@@ -1479,7 +1478,7 @@ export class ProfileInfo {
                     continue;
                 }
 
-                if (filteredBySource) {
+                if (filteredBySource && type in this.mExtendersJson.profileTypes) {
                     // Only consider types contributed by at least one of these sources
                     if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
                         profileTypes.add(type);
@@ -1507,18 +1506,16 @@ export class ProfileInfo {
      * @returns {IProfileSchema} The schema object provided by the specified profile type
      */
     public getSchemaForType(profileType: string): IProfileSchema {
-        let finalSchema: IProfileSchema = null;
-        for (let i = this.getTeamConfig().mLayers.length; i > 0; i--) {
+        let finalSchema: IProfileSchema = undefined;
+        for (let i = this.getTeamConfig().mLayers.length - 1; i > 0; i--) {
             const layer = this.getTeamConfig().mLayers[i];
             const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, value]) => key.includes(`${layer.path}:`));
             for (const [layerType, schema] of profileTypesFromLayer) {
                 const type = layerType.split(":").pop();
-                if (type == null) {
+                if (type !== profileType) {
                     continue;
                 }
-                if (type === profileType) {
-                    finalSchema = schema[1];
-                }
+                finalSchema = schema;
             }
         }
 
