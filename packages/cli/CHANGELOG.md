@@ -20,6 +20,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
     - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
+    [#1981](https://github.com/zowe/zowe-cli/pull/1981)
 
 ## `8.0.0-next.202401031939`
 
