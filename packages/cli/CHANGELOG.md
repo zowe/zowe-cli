@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Add information about password-protected certificate file support.
+
 ## `7.20.1`
 
 - BugFix: Add missing npm-shrinkwrap
