@@ -1499,7 +1499,7 @@ export class ProfileInfo {
             }
         }
 
-        return [...profileTypes].sort();
+        return [...profileTypes].sort((a, b) => a.localeCompare(b));
     }
 
     /**
