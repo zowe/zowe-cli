@@ -5,21 +5,39 @@ on:
     types:
       - opened
 
+env:
+  PROJECT_NUMBER: "21"
+
 jobs:
   update-project:
-    name: Add PR to project
+    name: PR opened
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/add-to-project@v0.5.0
+    - name: Add PR to project
+      uses: actions/add-to-project@v0.5.0
       id: add-to-project
       with:
-        project-url: https://github.com/orgs/zowe/projects/21
+        project-url: https://github.com/orgs/zowe/projects/${{ env.PROJECT_NUMBER }}
         github-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-    - uses: titoportas/update-project-fields@v0.1.0
+    - name: Move to In Progress
+      uses: titoportas/update-project-fields@v0.1.0
       with:
-        project-url: https://github.com/orgs/zowe/projects/21
+        project-url: https://github.com/orgs/zowe/projects/${{ env.PROJECT_NUMBER }}
         github-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
         item-id: ${{ steps.add-to-project.outputs.itemId }}
         field-keys: Status
         field-values: In Progress
+
+    - name: Check author permissions
+      id: check-author-permissions
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        response=$(curl -fs -H "Authorization: Token $GITHUB_TOKEN" \
+          https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.event.pull_request.user.login }}/permission)
+        echo "hasWrite=$(echo $response | jq -r '.user.permissions.push')" >> "$GITHUB_OUTPUT"
+
+    - name: Assign author to PR
+      if: ${{ steps.check-author-permissions.outputs.hasWrite == 'true' }}
+      run: gh pr edit ${{ github.event.pull_request.number }} --add-assignee ${{ github.event.pull_request.user.login }}
