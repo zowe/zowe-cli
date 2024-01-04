@@ -4,11 +4,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
-
-
-## `8.0.0-next.202401022112`
-
 - LTS Breaking: Removed the following previously deprecated items:
   - Moved the many constants from `zowe-cli/packages/cli/src/Constants.ts` to `zowe-cli/packages/core/src/constants/Core.constants.ts`
   - Removing `ZosFilesCreateExtraOptions.showAttributes` without replacement
@@ -26,6 +21,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
 
+## `8.0.0-next.202401022112`
+
+- Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
 
 ## `8.0.0-next.202311291643`
 
