@@ -132,6 +132,7 @@ function buildChainedHandlerArgMapping(optionDefs: (ICommandOptionDefinition | I
 export const DsclpDefinition: ICommandDefinition = {
     name: "data-set-cross-lpar",
     aliases: ["dsclp"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     chainedHandlers: [

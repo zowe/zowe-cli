@@ -23,10 +23,10 @@ import { join } from "path";
 export const ActiveWorkflows: ICommandDefinition = {
     name: "active-workflows",
     aliases: ["aw"],
-    summary: "List active workflow instance(s) in z/OSMF.",
+    summary: "List active workflow instance(s) in z/OSMF",
     description: "List active workflow instance(s) in z/OSMF.\n" +
     "Multiple filters can be used together.\n" +
-    "Omitting all options will list all workflows on the sysplex",
+    "Omitting all options will list all workflows on the sysplex.",
     type: "command",
     handler: join(__dirname, "ActiveWorkflows.handler"),
     profile: {

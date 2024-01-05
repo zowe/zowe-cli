@@ -11,7 +11,7 @@
 
 import { ProfilesCommandBuilder } from "./ProfilesCommandBuilder";
 import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../../cmd";
-import { createProfileCommandDesc, createProfileOptionDesc, createProfileOptionOverwriteDesc,
+import { createProfileCommandSummary, createProfileOptionDesc, createProfileOptionOverwriteDesc,
     createProfileDisableDefaultsDesc } from "../../../../messages";
 import { Constants } from "../../../../constants";
 import { TextUtils } from "../../../../utilities";
@@ -58,7 +58,7 @@ export class ProfilesCreateCommandBuilder extends ProfilesCommandBuilder {
         const profileCommand: ICommandDefinition = {
             name: this.mProfileType + "-profile",
             aliases: [this.mProfileType],
-            summary: TextUtils.formatMessage(createProfileCommandDesc.message,
+            summary: TextUtils.formatMessage(createProfileCommandSummary.message,
                 {type: this.mProfileType}),
             description: this.mSchema.description,
             type: "command",

@@ -22,6 +22,7 @@ import { join } from "path";
 export const RetrieveWorkflowDefinition: ICommandDefinition = {
     name: "definition-file-details",
     aliases: ["dfd"],
+    summary: "Retrieve the contents of a z/OSMF workflow definition from a z/OS system",
     description: "Retrieve the contents of a z/OSMF workflow definition from a z/OS system.",
     type: "command",
     handler: join(__dirname, "./RetrieveWorkflowDefinition.handler"),

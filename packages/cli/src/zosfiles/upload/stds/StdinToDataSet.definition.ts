@@ -24,6 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).UP
 export const StdinToDataSetDefinition: ICommandDefinition = {
     name: "stdin-to-data-set",
     aliases: ["stds"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: path.join(__dirname, "/StdinToDataSet.handler"),

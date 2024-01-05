@@ -16,7 +16,7 @@ export const instanceInfo: ICommandDefinition = {
     name: "instance-info",
     aliases: ["ii"],
     type: "command",
-    summary: "List Provisioned Instance Details.",
+    summary: "List Provisioned Instance Details",
     description: "List details about an instance provisioned with z/OSMF.",
     handler:  path.join(__dirname, "/InstanceInfo.handler"),
     profile: {

@@ -28,7 +28,7 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    auth                          Connect to Zowe API ML authentication service
    config                        Manage JSON project and global configuration 
    daemon                        Daemon operations                            
-   plugins                       Install and manage plug-ins.                 
+   plugins                       Install and manage plug-ins                  
    provisioning | pv             Perform z/OSMF provisioning tasks            
    zos-console | console         Issue z/OS console commands and collect      
                                  responses                                    

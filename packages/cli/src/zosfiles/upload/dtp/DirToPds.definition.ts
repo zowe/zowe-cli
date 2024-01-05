@@ -24,6 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).UP
 export const DirToPdsDefinition: ICommandDefinition = {
     name: "dir-to-pds",
     aliases: ["dtp"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: path.join(__dirname, "/DirToPds.handler"),

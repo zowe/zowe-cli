@@ -26,6 +26,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Stop a TSO address space",
   "type": "command",
 }
 `;

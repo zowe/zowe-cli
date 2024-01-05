@@ -50,6 +50,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Retrieve the contents of a z/OSMF workflow definition from a z/OS system",
   "type": "command",
 }
 `;

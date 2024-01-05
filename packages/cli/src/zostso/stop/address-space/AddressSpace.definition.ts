@@ -14,6 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 export const AddressSpaceDefinition: ICommandDefinition = {
     name: "address-space",
     aliases: ["as"],
+    summary: "Stop a TSO address space",
     description: "Stop a TSO address space, from which " +
     "you previously started and received a token (a.k.a 'servlet-key').",
     type: "command",

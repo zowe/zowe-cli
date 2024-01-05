@@ -7,6 +7,7 @@ Object {
   ],
   "description": "Delete an active workflow or an archived workflow from z/OSMF.",
   "name": "delete",
+  "summary": "Delete an active workflow or an archived workflow from z/OSMF",
   "type": "group",
 }
 `;

@@ -7,7 +7,7 @@ Object {
   ],
   "description": "Perform actions against instances provisioned with z/OSMF.",
   "name": "perform",
-  "summary": "Perform instance actions.",
+  "summary": "Perform instance actions",
   "type": "group",
 }
 `;

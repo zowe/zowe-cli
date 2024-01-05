@@ -132,11 +132,11 @@ exports[`cmd-cli should show a list of available commands 1`] = `
 "================ISSUING HELP NO OPTIONS===============
 cmd-cli auth login fruit
 
-	Log in to fruit authentication service
+	Log in to fruit authentication service.
 
 cmd-cli auth logout fruit
 
-	Log out of fruit authentication service
+	Log out of fruit authentication service.
 
 cmd-cli auto-format cmd-output
 

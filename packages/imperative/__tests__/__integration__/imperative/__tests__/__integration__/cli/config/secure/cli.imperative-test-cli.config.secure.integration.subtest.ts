@@ -62,7 +62,7 @@ describe("imperative-test-cli config secure", () => {
     it("should display the help", () => {
         const response = runCliScript(__dirname + "/../__scripts__/get_help.sh",
             TEST_ENVIRONMENT.workingDir, ["secure"]);
-        expect(response.output.toString()).toContain(`prompt for secure configuration properties`);
+        expect(response.output.toString()).toContain(`Prompt for secure configuration properties.`);
     });
 
     it("should secure the project config", async () => {
