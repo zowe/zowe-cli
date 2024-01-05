@@ -203,7 +203,7 @@ describe("Download Jobs - System tests", () => {
 
         it("should encounter an error if a non existent spool file is passed to downloadSpoolContentCommon",
             async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 try {
                     await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                         jobFile: badJobFile,
@@ -214,14 +214,15 @@ describe("Download Jobs - System tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain(jobname);
-                expect(err.message).toContain(jobid);
-                expect(err.message).toContain("does not contain");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.message).toContain(jobname);
+                expect(jsonCauseErrors.message).toContain(jobid);
+                expect(jsonCauseErrors.message).toContain("does not contain");
             });
 
         it("should encounter an error if a non existent jobname/jobid is passed to downloadAllSpoolContentCommon",
             async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 try {
                     await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
                         jobname: "FAKEJOB",
@@ -233,14 +234,15 @@ describe("Download Jobs - System tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain("FAKEJOB");
-                expect(err.message).toContain("JOBABCD");
-                expect(err.message).toContain("Failed to lookup");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.message).toContain("FAKEJOB");
+                expect(jsonCauseErrors.message).toContain("JOBABCD");
+                expect(jsonCauseErrors.message).toContain("Failed to lookup");
             });
 
         it("should encounter an error if a non existent spool file is passed to downloadSpoolContent",
             async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 try {
                     await DownloadJobs.downloadSpoolContent(REAL_SESSION, badJobFile);
                 } catch (e) {
@@ -248,9 +250,10 @@ describe("Download Jobs - System tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain(jobname);
-                expect(err.message).toContain(jobid);
-                expect(err.message).toContain("does not contain");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.message).toContain(jobname);
+                expect(jsonCauseErrors.message).toContain(jobid);
+                expect(jsonCauseErrors.message).toContain("does not contain");
             });
 
     });

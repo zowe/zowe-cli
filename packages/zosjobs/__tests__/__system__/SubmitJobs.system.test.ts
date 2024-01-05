@@ -241,7 +241,7 @@ describe("Submit Jobs - System Tests", () => {
 
         it("should surface an error from z/OSMF when calling submitJclCommon with an invalid JCL", async () => {
 
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJclCommon(REAL_SESSION, {
                     jcl: badJCL
@@ -251,13 +251,13 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain("does not start with a slash");
+            expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
         });
 
 
         it("should surface an error from z/OSMF when calling submitJcl with an invalid JCL",
             async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 try {
                     await SubmitJobs.submitJcl(REAL_SESSION,
                         badJCL
@@ -267,13 +267,13 @@ describe("Submit Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain("does not start with a slash");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
             });
 
 
         it("should surface an error from z/OSMF when calling submitJcl with an invalid JCL with internal reader settings",
             async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 let jcl = badJCL + "\nLONGDD DD *\n";
                 const twoHundredChars = 200;
                 jcl += Array(twoHundredChars).join("A"); // add a long line to test internal reader
@@ -288,13 +288,13 @@ describe("Submit Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain("does not start with a slash");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
             });
 
 
         it("should surface an error from z/OSMF when calling submitJclNotifyCommon with invalid JCL (with internal reader settings)",
             async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 let jcl = badJCL + "\nLONGDD DD *\n";
                 const twoHundredChars = 200;
                 jcl += Array(twoHundredChars).join("A"); // add a long line to test internal reader
@@ -312,11 +312,11 @@ describe("Submit Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain("does not start with a slash");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
             }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJobCommon with a non existent data set", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJobCommon(REAL_SESSION, {
                     jobDataSet: badDataSet
@@ -326,11 +326,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         });
 
         it("should surface an error from z/OSMF when calling submitJobCommon with a non existent uss file", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJobCommon(REAL_SESSION, {
                     jobUSSFile: badUSSFile
@@ -340,11 +340,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         });
 
         it("should surface an error from z/OSMF when calling submitJobNotifyCommon with a non existent data set", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJobNotifyCommon(REAL_SESSION, {
                     jobDataSet: badDataSet
@@ -354,11 +354,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJobNotifyCommon with a non existent uss file", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJobNotifyCommon(REAL_SESSION, {
                     jobUSSFile: badUSSFile
@@ -368,11 +368,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJclNotify with invalid JCL", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             let jcl = badJCL + "\nLONGDD DD *\n";
             const twoHundredChars = 200;
             jcl += Array(twoHundredChars).join("A"); // add a long line to test internal reader
@@ -385,11 +385,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain("does not start with a slash");
+            expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJobNotify with a non existent data set", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJobNotify(REAL_SESSION,
                     badDataSet
@@ -399,11 +399,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitUSSJobNotify with a non existent uss file", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitUSSJobNotify(REAL_SESSION,
                     badUSSFile
@@ -413,11 +413,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJob with a non existent data set", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJob(REAL_SESSION,
                     badDataSet
@@ -427,11 +427,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         });
 
         it("should surface an error from z/OSMF when calling submitUSSJob with a non existent USS file", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitUSSJob(REAL_SESSION,
                     badUSSFile
@@ -441,11 +441,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         });
 
         it("should throw an error if the JCL string is null", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJclString(REAL_SESSION, null, {jclSource: "stdoin"});
             } catch (e) {
@@ -453,11 +453,11 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message.toString()).toContain(ZosJobsMessages.missingJcl.message);
+            expect(err.message).toContain(ZosJobsMessages.missingJcl.message);
         });
 
         it("should throw an error if the JCL is an empty string", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await SubmitJobs.submitJclString(REAL_SESSION, "", {jclSource: "stdoin"});
             } catch (e) {

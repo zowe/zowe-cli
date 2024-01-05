@@ -263,11 +263,12 @@ describe("Get Jobs - System Tests", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 4");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(4);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("prefix query parameter");
+                expect(jsonCauseErrors.message).toContain("prefix query parameter");
             });
         });
 
@@ -315,14 +316,14 @@ describe("Get Jobs - System Tests", () => {
             }, LONG_TIMEOUT);
 
             it("should throw an error if we specify a job ID that doesn't exist", async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 try {
                     await GetJobs.getJob(REAL_SESSION, "J999999");
                 } catch (e) {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(err.message).toContain("not found");
+                expect(err.causeErrors).toContain("Zero jobs");
             });
 
             it("should return no jobs for a prefix that doesn't match anything", async () => {
@@ -400,11 +401,12 @@ describe("Get Jobs - System Tests", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 4");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(4);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("owner query parameter");
+                expect(jsonCauseErrors.message).toContain("owner query parameter");
             });
         });
 
@@ -491,9 +493,10 @@ describe("Get Status APIs", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
             });
 
@@ -507,9 +510,10 @@ describe("Get Status APIs", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
             });
         });
@@ -609,11 +613,12 @@ describe("Get Status APIs", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("rc: 4");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("JOB123");
+                expect(jsonCauseErrors.message).toContain("JOB123");
             });
 
             it("should detect and surface an error for an invalid jobid", async () => {
@@ -626,9 +631,10 @@ describe("Get Status APIs", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
             });
         });
@@ -748,9 +754,10 @@ describe("Get Status APIs", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
             });
 
@@ -764,9 +771,10 @@ describe("Get Status APIs", () => {
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
                 const trimmedErrorMessage = trimMessage(err.message);
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                const jsonCauseErrors = JSON.parse(err.causeErrors);
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
             });
         });
@@ -861,9 +869,10 @@ describe("Get spool APIs", () => {
             expect(JSON.parse(error.causeErrors).reason).toMatchSnapshot();
             expect(JSON.parse(error.causeErrors).category).toMatchSnapshot();
             const trimmedErrorMessage = trimMessage(error.message);
-            expect(trimmedErrorMessage).toContain("category: 6");
-            expect(trimmedErrorMessage).toContain("reason: 10");
-            expect(trimmedErrorMessage).toContain("rc: 4");
+            const jsonCauseErrors = JSON.parse(error.causeErrors);
+            expect(jsonCauseErrors.category).toEqual(6);
+            expect(jsonCauseErrors.reason).toEqual(10);
+            expect(jsonCauseErrors.rc).toEqual(4);
             expect(trimmedErrorMessage).toContain("status 400");
         }, LONG_TIMEOUT);
     });
@@ -944,8 +953,9 @@ describe("Get JCL APIs", () => {
             expect(JSON.parse(error.causeErrors).reason).toMatchSnapshot();
             expect(JSON.parse(error.causeErrors).category).toMatchSnapshot();
             const trimmedErrorMessage = trimMessage(error.message);
+            const jsonCauseErrors = JSON.parse(error.causeErrors);
             expect(trimmedErrorMessage).toContain("status 400");
-            expect(trimmedErrorMessage).toContain(job.jobid);
+            expect(jsonCauseErrors.message).toContain(job.jobid);
         });
     });
 
@@ -1156,14 +1166,14 @@ describe("Get Jobs - System Tests - Encoded", () => {
             }, LONG_TIMEOUT);
 
             it("should throw an error if we specify a job ID that doesn't exist", async () => {
-                let err: Error | ImperativeError;
+                let err: ImperativeError;
                 try {
                     await GetJobs.getJob(REAL_SESSION, "J999999");
                 } catch (e) {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(err.message).toContain("not found");
+                expect(err.causeErrors).toContain("Zero jobs");
             });
 
             it("should return no jobs for a prefix that doesn't match anything", async () => {

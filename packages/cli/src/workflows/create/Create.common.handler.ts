@@ -64,11 +64,11 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         wfKey
                     );
                 } catch (err) {
-                    error =
-                        "Deleting z/OSMF workflow with workflow name " +
-                        this.arguments.workflowName +
-                        " failed. More details: \n" +
-                        err;
+                    error = new ImperativeError({
+                        msg: "Deleting z/OSMF workflow with workflow name " + this.arguments.workflowName + " failed.",
+                        causeErrors: err
+                    });
+                    throw error;
                 }
             }
         }
@@ -88,11 +88,10 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.deleteCompleted
                     );
                 } catch (err) {
-                    error =
-                        "Creating zOS/MF workflow with data set: " +
-                        this.arguments.dataSet +
-                        " failed. More details: \n" +
-                        err;
+                    error = new ImperativeError({
+                        msg: "Creating z/OSMF workflow with data set: " + this.arguments.dataSet + " failed.",
+                        causeErrors: err
+                    });
                     throw error;
                 }
                 params.response.data.setObj(resp);
@@ -120,11 +119,10 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.deleteCompleted
                     );
                 } catch (err) {
-                    error =
-                        "Creating z/OSMF workflow with uss file: " +
-                        this.arguments.ussFile +
-                        " failed. More details: \n" +
-                        err;
+                    error = new ImperativeError({
+                        msg: "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed.",
+                        causeErrors: err
+                    });
                     throw error;
                 }
                 params.response.data.setObj(resp);
@@ -154,11 +152,10 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.remoteDirectory
                     );
                 } catch (err) {
-                    error =
-                        "Creating z/OSMF workflow with local file: " +
-                        this.arguments.localFile +
-                        " failed. More details: \n" +
-                        err;
+                    error = new ImperativeError({
+                        msg: "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed.",
+                        causeErrors: err
+                    });
                     throw error;
                 }
                 params.response.data.setObj(resp);

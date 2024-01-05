@@ -963,7 +963,7 @@ describe("Download Data Set", () => {
 
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
-                expect(stripNewLines(error.message)).toContain("Data set not found.");
+                expect(JSON.parse(error.causeErrors).message).toContain("Data set not found.");
             });
         });
 
@@ -1508,7 +1508,7 @@ describe("Download Data Set", () => {
                     caughtError = error;
                 }
                 expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain("Path name not found");
+                expect(JSON.parse(caughtError.causeErrors).message).toContain("Path name not found");
             });
         });
     });
