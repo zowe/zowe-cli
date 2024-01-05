@@ -1446,17 +1446,26 @@ export class ProfileInfo {
                 continue;
             }
 
-            if (sources?.length > 0 && type in this.mExtendersJson.profileTypes) {
-                // If a list of sources were provided, ensure the type is contributed by at least one of these sources
-                if (sources.some((val) => this.mExtendersJson.profileTypes[type].from.includes(val))) {
-                    finalSchema[type] = schema;
-                }
-            } else {
-                finalSchema[type] = schema;
-            }
+            finalSchema[type] = schema;
         }
 
-        return ConfigSchema.buildSchema(Object.entries(finalSchema).map(([type, schema]) => ({
+        let schemaEntries = Object.entries(finalSchema);
+        if (sources?.length > 0) {
+            schemaEntries = schemaEntries.filter(([typ, sch]) => {
+                if (!(typ in this.mExtendersJson.profileTypes)) {
+                    return false;
+                }
+
+                // If a list of sources were provided, ensure the type is contributed by at least one of these sources
+                if (sources.some((val) => this.mExtendersJson.profileTypes[typ].from.includes(val))) {
+                    return true;
+                }
+
+                return false;
+            });
+        }
+
+        return ConfigSchema.buildSchema(schemaEntries.map(([type, schema]) => ({
             type,
             schema
         })));
