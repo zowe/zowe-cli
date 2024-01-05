@@ -54,7 +54,7 @@ export const LocalFile: ICommandDefinition = {
     examples: [
         {
             description: "Create a workflow with name \"testworkflow\" using the local file \"TESTID_WKFLOW.xml\" that contains the workflow " +
-            "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF",
+            "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exists in z/OSMF",
             options: "\"testworkflow\" --local-file \"TESTID_WKFLOW.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite"
         }
     ]
