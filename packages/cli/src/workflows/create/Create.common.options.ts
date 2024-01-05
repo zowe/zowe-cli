@@ -17,38 +17,38 @@ import { ICommandOptionDefinition } from "@zowe/imperative";
 export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = {
 
     /**
-     * Data set containing workflow definiton option.
+     * Data set containing workflow definition option.
      * @type {ICommandOptionDefinition}
      */
     dataSet: {
         name: "data-set",
         aliases: ["ds"],
         type: "string",
-        description: "Data set that contains a workflow definiton.",
+        description: "Data set that contains a workflow definition.",
         required: true
     },
 
     /**
-     * Uss file containing workflow definiton option.
+     * Uss file containing workflow definition option.
      * @type {ICommandOptionDefinition}
      */
     ussFile: {
         name: "uss-file",
         aliases: ["uf"],
         type: "string",
-        description: "Uss file that contains workflow definiton.",
+        description: "Uss file that contains workflow definition.",
         required: true
     },
 
     /**
-     * Local file containing workflow definiton option.
+     * Local file containing workflow definition option.
      * @type {ICommandOptionDefinition}
      */
     localFile: {
         name: "local-file",
         aliases: ["lf"],
         type: "string",
-        description: "Local file that contains workflow definiton.",
+        description: "Local file that contains workflow definition.",
         required: true
     },
 

@@ -4,7 +4,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Add information about password-protected certificate file support.
+- BugFix: Add information about password-protected certificate file support. [#2006](https://github.com/zowe/zowe-cli/issues/2006)
+- BugFix: Correct extra character being displayed at the end of lines when issuing `zowe files compare` on Windows. [#1992](https://github.com/zowe/zowe-cli/issues/1992)
+- BugFix: Correct the online help description for `zowe files compare uss`. [#1754](https://github.com/zowe/zowe-cli/issues/1754)
+- BugFix: Fixed typo in command help for `zowe zos-workflows create` commands.
 
 ## `7.20.1`
 

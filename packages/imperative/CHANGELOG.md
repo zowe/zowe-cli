@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error message shown for null option definition to include details about which command caused the error. [#2002](https://github.com/zowe/zowe-cli/issues/2002)
+
 ## `5.19.0`
 
 - Enhancement: Deprecated function AbstractCommandYargs.getBrightYargsResponse in favor of AbstractCommandYargs.getZoweYargsResponse
