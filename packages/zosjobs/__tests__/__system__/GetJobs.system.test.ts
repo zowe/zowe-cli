@@ -323,7 +323,7 @@ describe("Get Jobs - System Tests", () => {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(JSON.parse(err.causeErrors).message).toContain("not found");
+                expect(err.causeErrors).toContain("Zero jobs");
             });
 
             it("should return no jobs for a prefix that doesn't match anything", async () => {
@@ -618,7 +618,7 @@ describe("Get Status APIs", () => {
                 expect(jsonCauseErrors.reason).toEqual(7);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("JOB123");
+                expect(jsonCauseErrors.message).toContain("JOB123");
             });
 
             it("should detect and surface an error for an invalid jobid", async () => {
@@ -1173,7 +1173,7 @@ describe("Get Jobs - System Tests - Encoded", () => {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(JSON.parse(err.causeErrors).message).toContain("not found");
+                expect(err.causeErrors).toContain("Zero jobs");
             });
 
             it("should return no jobs for a prefix that doesn't match anything", async () => {

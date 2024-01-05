@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, TextUtils } from "@zowe/imperative";
 import { ListArchivedWorkflows, IWorkflowsInfo, IArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -40,7 +40,10 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
             response = await ListArchivedWorkflows.listArchivedWorkflows(
                 this.mSession);
         } catch (err) {
-            error = "List workflow(s) " + err;
+            error = new ImperativeError({
+                msg: "List workflow(s) " + err,
+                causeErrors: err
+            });
             throw error;
         }
         commandParameters.response.data.setObj(response);

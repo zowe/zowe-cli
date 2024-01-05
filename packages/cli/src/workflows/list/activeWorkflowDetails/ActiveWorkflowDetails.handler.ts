@@ -65,7 +65,10 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                 stepSummaries = response.steps;
             }
         } catch(err){
-            error = "List workflow details error: " + err;
+            error = new ImperativeError({
+                msg: "List workflow details error: " + err,
+                causeErrors: err
+            });
             throw error;
         }
         params.response.data.setObj(response);

@@ -120,7 +120,7 @@ describe("CancelJobs System tests", () => {
 
     describe("Negative tests", () => {
         it("should surface errors from z/OSMF when trying to cancel a non existent job with cancelJob", async () => {
-            let err: ImperativeError | RestClientError | Error;
+            let err: ImperativeError;
             try {
                 await CancelJobs.cancelJob(REAL_SESSION, "FAKEJOB", "JOB00001");
             } catch (e) {
@@ -128,11 +128,11 @@ describe("CancelJobs System tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain("FAKEJOB");
+            expect(JSON.parse(err.causeErrors).message).toContain("FAKEJOB");
         });
 
         it("should surface errors from z/OSMF when trying to cancel a non-existent job using cancelJobForJob", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             const badJob: IJob = {
                 "jobid": "JOB00001",
                 "jobname": "FAKEJOB",
@@ -155,11 +155,11 @@ describe("CancelJobs System tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain("FAKEJOB");
+            expect(JSON.parse(err.causeErrors).message).toContain("FAKEJOB");
         });
 
         it("should surface errors from z/OSMF when trying to cancel a non-existent job using cancelJobCommon", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError;
             try {
                 await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: "FAKEJOB", jobid: "JOB00001"});
             } catch (e) {
@@ -167,7 +167,7 @@ describe("CancelJobs System tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.message).toContain("FAKEJOB");
+            expect(JSON.parse(err.causeErrors).message).toContain("FAKEJOB");
         });
     });
 });
