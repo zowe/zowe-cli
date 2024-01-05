@@ -1472,7 +1472,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const expectedTypes = [...profileTypes].concat(["ssh"]).sort();
                 expect(profInfo.getProfileTypes()).toEqual(expectedTypes);
             });
-            // TODO: case 2: filtering by source
+            // case 2: filtering by source
             it("filters by source", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
