@@ -1498,6 +1498,6 @@ describe("z/OS Files - List", () => {
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(3);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
-        })
+        });
     });
 });
