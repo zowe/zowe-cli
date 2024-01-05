@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added multiple APIs to manage schemas between Zowe client applications using the ProfileInfo class.
+
 ## `5.19.0`
 
 - Enhancement: Deprecated function AbstractCommandYargs.getBrightYargsResponse in favor of AbstractCommandYargs.getZoweYargsResponse
