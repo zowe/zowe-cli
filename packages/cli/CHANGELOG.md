@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- LTS Breaking: Removed the following previously deprecated items: [#1981](https://github.com/zowe/zowe-cli/pull/1981)
+LTS Breaking: Removed the following previously deprecated items: [#1981](https://github.com/zowe/zowe-cli/pull/1981)
   - Moved the many constants from `zowe-cli/packages/cli/src/Constants.ts` to `zowe-cli/packages/core/src/constants/Core.constants.ts`
   - Removing `ZosFilesCreateExtraOptions.showAttributes` without replacement
   - Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to  `@zowe/zos-tso-for-zowe-sdk`
