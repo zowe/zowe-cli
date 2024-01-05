@@ -61,6 +61,7 @@ describe("TeamConfig ProfileInfo tests", () => {
     const envRFH = testEnvPrefix + "_OPT_RESPONSE_FORMAT_HEADER";
     const envArray = testEnvPrefix + "_OPT_LIST";
 
+    let writeFileSyncMock: jest.SpyInstance;
     beforeAll(() => {
         // remember our original directory
         origDir = process.cwd();
@@ -69,6 +70,8 @@ describe("TeamConfig ProfileInfo tests", () => {
     beforeEach(() => {
         // set our desired app home directory into the environment
         process.env[testEnvPrefix + "_CLI_HOME"] = teamProjDir;
+        // mock jsonfile.writeFileSync to avoid writing files to disk during testing
+        writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
     });
 
     afterAll(() => {
@@ -1322,279 +1325,275 @@ describe("TeamConfig ProfileInfo tests", () => {
         expect(Date.now() - startTime).toBeLessThan(15000);
     });
 
-    // begin schema management tests
-    describe("readExtendersJsonFromDisk", () => {
-        // case 1: the JSON file doesn't exist at time of read
-        it("writes an empty extenders.json file if it doesn't exist on disk", async () => {
-            const writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
-            const profInfo = createNewProfInfo(teamProjDir);
-            (profInfo as any).mExtendersJson = { profileTypes: {} };
-            jest.spyOn(fs, "existsSync").mockReturnValue(false);
-            (profInfo as any).readExtendersJsonFromDisk();
-            expect(writeFileSyncMock).toHaveBeenCalled();
-        });
+    describe("Schema management", () => {
+        // begin schema management tests
+        describe("readExtendersJsonFromDisk", () => {
+            // case 1: the JSON file doesn't exist at time of read
+            it("writes an empty extenders.json file if it doesn't exist on disk", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                (profInfo as any).mExtendersJson = { profileTypes: {} };
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+                (profInfo as any).readExtendersJsonFromDisk();
+                expect(writeFileSyncMock).toHaveBeenCalled();
+            });
 
-        // case 2: JSON file exists on-disk at time of read
-        it("reads extenders.json from disk if it exists", async () => {
-            const readFileSyncMock = jest.spyOn(jsonfile, "readFileSync").mockReturnValueOnce({ profileTypes: {
-                "test": {
-                    from: ["Zowe Client App"]
-                }
-            } });
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            expect(readFileSyncMock).toHaveBeenCalled();
-            expect((profInfo as any).mExtendersJson).toEqual({
-                profileTypes: {
+            // case 2: JSON file exists on-disk at time of read
+            it("reads extenders.json from disk if it exists", async () => {
+                const readFileSyncMock = jest.spyOn(jsonfile, "readFileSync").mockReturnValueOnce({ profileTypes: {
                     "test": {
                         from: ["Zowe Client App"]
                     }
-                }
-            });
-        });
-    });
-
-    describe("writeExtendersJson", () => {
-        // case 1: Write operation is successful
-        it("returns true if written to disk successfully", async () => {
-            const writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
-            const profInfo = createNewProfInfo(teamProjDir);
-            (profInfo as any).mExtendersJson = { profileTypes: {} };
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            expect((profInfo as any).writeExtendersJson()).toBe(true);
-            expect(writeFileSyncMock).toHaveBeenCalled();
-        });
-
-        // case 2: Write operation is unsuccessful
-        it("returns false if it couldn't write to disk", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            (profInfo as any).mExtendersJson = { profileTypes: {} };
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            const writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync")
-                .mockImplementation(() => { throw new Error(); });
-            expect((profInfo as any).writeExtendersJson()).toBe(false);
-            expect(writeFileSyncMock).toHaveBeenCalled();
-        });
-    });
-
-    describe("updateSchemaAtLayer", () => {
-        const getBlockMocks = () => {
-            const writeFileSync = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
-            const buildSchema = jest.spyOn(ProfileInfo.prototype, "buildSchema");
-            return {
-                buildSchema,
-                writeFileSync
-            };
-        };
-
-        // case 1: schema is the same as the cached one; do not write to disk
-        it("does not write schema to disk if it hasn't changed", async () => {
-            const blockMocks = getBlockMocks();
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            const dummySchema = profInfo.getSchemaForType("dummy");
-            blockMocks.buildSchema.mockReturnValueOnce({} as any);
-            (profInfo as any).updateSchemaAtLayer("dummy", dummySchema);
-            expect(blockMocks.writeFileSync).not.toHaveBeenCalled();
-        });
-
-        // case 2: schema is different than cached schema; write to disk
-        it("writes schema to disk when changed", async () => {
-            const blockMocks = getBlockMocks();
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            // not a major adjustment to schema - mainly to test schema comparison
-            blockMocks.buildSchema.mockReturnValueOnce({} as any);
-            jest.spyOn(fs, "existsSync").mockReturnValue(true);
-            (profInfo as any).updateSchemaAtLayer("dummy", {});
-            expect(blockMocks.writeFileSync).toHaveBeenCalled();
-        });
-    });
-
-    describe("addProfileToConfig", () => {
-        // case 1: Successfully added profile w/ defaults to config
-        it("returns true if the profile was added", async () => {
-            const setProfileMock = jest.spyOn(ConfigProfiles.prototype, "set").mockImplementation();
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            const res = profInfo.addProfileToConfig("dummy", "some.config.path");
-            expect(res).toBe(true);
-            expect(setProfileMock).toHaveBeenCalled();
-        });
-
-        // case 2: Profile was not added to config
-        it("returns false if the profile was not added", async () => {
-            const setProfileMock = jest.spyOn(ConfigProfiles.prototype, "set").mockImplementation();
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            // scenario: user passes a type that does not have an entry in the schema cache
-            const res = profInfo.addProfileToConfig("type-that-doesnt-exist", "some.config.path");
-            expect(res).toBe(false);
-            expect(setProfileMock).not.toHaveBeenCalled();
-        });
-    });
-
-    describe("getProfileTypes", () => {
-        // case 1: no sources specified, returns profile types without filtering
-        it("returns the default set of profile types", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            const expectedTypes = [...profileTypes].concat(["ssh"]).sort();
-            expect(profInfo.getProfileTypes()).toEqual(expectedTypes);
-        });
-        // TODO: case 2: filtering by source
-        it("filters by source", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            profInfo.addProfileTypeToSchema("some-type", { sourceApp: "Zowe Client App", schema: {} as any });
-            expect(profInfo.getProfileTypes(["Zowe Client App"])).toEqual(["some-type"]);
-        });
-    });
-
-    describe("getSchemaForType", () => {
-        // case 1: returns the schema for a registered profile type
-        it("returns the schema for a registered type", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            expect(profInfo.getSchemaForType("dummy")).toBeDefined();
-        });
-
-        // case 2: returns undefined if the profile type doesn't exist in the schema cache
-        it("returns undefined for a non-existent profile type", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            expect(profInfo.getSchemaForType("type-that-doesnt-exist")).toBeUndefined();
-        });
-    });
-
-    describe("addProfileTypeToSchema", () => {
-        const expectAddToSchemaTester = async (testCase: { schema: any; previousVersion?: string; version?: string }, expected: {
-            extendersJson: IExtendersJsonOpts,
-            res: {
-                success: boolean;
-                info?: string;
-            },
-            version?: string,
-        }) => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            if (testCase.previousVersion) {
-                (profInfo as any).mExtendersJson = {
+                } });
+                const profInfo = createNewProfInfo(teamProjDir);
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                (profInfo as any).readExtendersJsonFromDisk();
+                expect(readFileSyncMock).toHaveBeenCalled();
+                expect((profInfo as any).mExtendersJson).toEqual({
                     profileTypes: {
-                        "some-type": {
-                            from: ["Zowe Client App"],
-                            version: testCase.previousVersion === "none" ? undefined : testCase.previousVersion
+                        "test": {
+                            from: ["Zowe Client App"]
                         }
                     }
-                };
-            } else {
-                (profInfo as any).mExtendersJson = {
-                    profileTypes: {}
-                };
-            }
-            const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer").mockImplementation();
-            const writeExtendersJsonMock = jest.spyOn((ProfileInfo as any).prototype, "writeExtendersJson").mockImplementation();
-            const res = profInfo.addProfileTypeToSchema("some-type", { ...testCase, sourceApp: "Zowe Client App" });
-            if (expected.res.success) {
-                expect(updateSchemaAtLayerMock).toHaveBeenCalled();
-                expect(writeExtendersJsonMock).toHaveBeenCalled();
-            } else {
-                expect(updateSchemaAtLayerMock).not.toHaveBeenCalled();
-                expect(writeExtendersJsonMock).not.toHaveBeenCalled();
-            }
-            expect((profInfo as any).mExtendersJson).toEqual(expected.extendersJson);
-            expect(res.success).toBe(expected.res.success);
-            if (expected.res.info) {
-                expect(res.info).toBe(expected.res.info);
-            }
-        };
-        // case 1: Profile type did not exist
-        it("adds a new profile type to the schema", async () => {
-            expectAddToSchemaTester(
-                { schema: { title: "Mock Schema" } as any },
-                {
-                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"] } } },
-                    res: {
-                        success: true
-                    }
-                }
-            );
-        });
-
-        it("only updates a profile type in the schema if the version is newer", async () => {
-            expectAddToSchemaTester(
-                { previousVersion: "1.0.0", schema: { title: "Mock Schema" } as any, version: "2.0.0" },
-                {
-                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
-                    res: {
-                        success: true
-                    }
-                }
-            );
-        });
-
-        it("does not update a profile type in the schema if the version is older", async () => {
-            expectAddToSchemaTester(
-                { previousVersion: "2.0.0", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
-                {
-                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
-                    res: {
-                        success: false
-                    }
-                }
-            );
-        });
-
-        it("updates a profile type in the schema - version provided, no previous schema version", async () => {
-            expectAddToSchemaTester(
-                { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
-                {
-                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
-                    res: {
-                        success: true
-                    }
-                }
-            );
-        });
-
-        it("does not update the schema if schema version is invalid", async () => {
-            expectAddToSchemaTester(
-                { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
-                {
-                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
-                    res: {
-                        success: true
-                    }
-                }
-            );
-        });
-    });
-    describe("buildSchema", () => {
-        // TODO
-        it("builds a schema with the default types", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
-            profInfo.buildSchema();
-            expect(cfgSchemaBuildMock).toHaveBeenCalled();
-        });
-
-        it("excludes types that do not match a given source", async () => {
-            const profInfo = createNewProfInfo(teamProjDir);
-            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-            profInfo.addProfileTypeToSchema("some-type-with-source", {
-                sourceApp: "A Zowe App",
-                schema: {} as any
+                });
             });
-            const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
-            profInfo.buildSchema(["A Zowe App"]);
-            expect(cfgSchemaBuildMock).toHaveBeenCalledWith([{
-                type: "some-type-with-source",
-                schema: {}
-            }]);
         });
+
+        describe("writeExtendersJson", () => {
+            // case 1: Write operation is successful
+            it("returns true if written to disk successfully", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                (profInfo as any).mExtendersJson = { profileTypes: {} };
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                expect((profInfo as any).writeExtendersJson()).toBe(true);
+                expect(writeFileSyncMock).toHaveBeenCalled();
+            });
+
+            // case 2: Write operation is unsuccessful
+            it("returns false if it couldn't write to disk", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                (profInfo as any).mExtendersJson = { profileTypes: {} };
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                writeFileSyncMock.mockImplementation(() => { throw new Error(); });
+                expect((profInfo as any).writeExtendersJson()).toBe(false);
+                expect(writeFileSyncMock).toHaveBeenCalled();
+            });
+        });
+
+        describe("updateSchemaAtLayer", () => {
+            const getBlockMocks = () => {
+                return {
+                    buildSchema: jest.spyOn(ProfileInfo.prototype, "buildSchema")
+                };
+            };
+
+            // case 1: schema is the same as the cached one; do not write to disk
+            it("does not write schema to disk if it hasn't changed", async () => {
+                const blockMocks = getBlockMocks();
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const dummySchema = profInfo.getSchemaForType("dummy");
+                blockMocks.buildSchema.mockReturnValueOnce({} as any);
+                writeFileSyncMock.mockClear();
+                (profInfo as any).updateSchemaAtLayer("dummy", dummySchema);
+                expect(writeFileSyncMock).not.toHaveBeenCalled();
+            });
+
+            // case 2: schema is different than cached schema; write to disk
+            it("writes schema to disk when changed", async () => {
+                const blockMocks = getBlockMocks();
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                // not a major adjustment to schema - mainly to test schema comparison
+                blockMocks.buildSchema.mockReturnValueOnce({} as any);
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                (profInfo as any).updateSchemaAtLayer("dummy", {});
+                expect(writeFileSyncMock).toHaveBeenCalled();
+            });
+        });
+
+        describe("addProfileToConfig", () => {
+            // case 1: Successfully added profile w/ defaults to config
+            it("returns true if the profile was added", async () => {
+                const setProfileMock = jest.spyOn(ConfigProfiles.prototype, "set").mockImplementation();
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const res = profInfo.addProfileToConfig("dummy", "some.config.path");
+                expect(res).toBe(true);
+                expect(setProfileMock).toHaveBeenCalled();
+            });
+
+            // case 2: Profile was not added to config
+            it("returns false if the profile was not added", async () => {
+                const setProfileMock = jest.spyOn(ConfigProfiles.prototype, "set").mockImplementation();
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                // scenario: user passes a type that does not have an entry in the schema cache
+                const res = profInfo.addProfileToConfig("type-that-doesnt-exist", "some.config.path");
+                expect(res).toBe(false);
+                expect(setProfileMock).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("getProfileTypes", () => {
+            // case 1: no sources specified, returns profile types without filtering
+            it("returns the default set of profile types", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const expectedTypes = [...profileTypes].concat(["ssh"]).sort();
+                expect(profInfo.getProfileTypes()).toEqual(expectedTypes);
+            });
+            // TODO: case 2: filtering by source
+            it("filters by source", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                profInfo.addProfileTypeToSchema("some-type", { sourceApp: "Zowe Client App", schema: {} as any });
+                expect(profInfo.getProfileTypes(["Zowe Client App"])).toEqual(["some-type"]);
+            });
+        });
+
+        describe("getSchemaForType", () => {
+            // case 1: returns the schema for a registered profile type
+            it("returns the schema for a registered type", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                expect(profInfo.getSchemaForType("dummy")).toBeDefined();
+            });
+
+            // case 2: returns undefined if the profile type doesn't exist in the schema cache
+            it("returns undefined for a non-existent profile type", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                expect(profInfo.getSchemaForType("type-that-doesnt-exist")).toBeUndefined();
+            });
+        });
+
+        describe("addProfileTypeToSchema", () => {
+            const expectAddToSchemaTester = async (testCase: { schema: any; previousVersion?: string; version?: string }, expected: {
+                extendersJson: IExtendersJsonOpts,
+                res: {
+                    success: boolean;
+                    info?: string;
+                },
+                version?: string,
+            }) => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                if (testCase.previousVersion) {
+                    (profInfo as any).mExtendersJson = {
+                        profileTypes: {
+                            "some-type": {
+                                from: ["Zowe Client App"],
+                                version: testCase.previousVersion === "none" ? undefined : testCase.previousVersion
+                            }
+                        }
+                    };
+                } else {
+                    (profInfo as any).mExtendersJson = {
+                        profileTypes: {}
+                    };
+                }
+                const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer").mockImplementation();
+                const writeExtendersJsonMock = jest.spyOn((ProfileInfo as any).prototype, "writeExtendersJson").mockImplementation();
+                const res = profInfo.addProfileTypeToSchema("some-type", { ...testCase, sourceApp: "Zowe Client App" });
+                if (expected.res.success) {
+                    expect(updateSchemaAtLayerMock).toHaveBeenCalled();
+                    expect(writeExtendersJsonMock).toHaveBeenCalled();
+                } else {
+                    expect(updateSchemaAtLayerMock).not.toHaveBeenCalled();
+                    expect(writeExtendersJsonMock).not.toHaveBeenCalled();
+                }
+                expect((profInfo as any).mExtendersJson).toEqual(expected.extendersJson);
+                expect(res.success).toBe(expected.res.success);
+                if (expected.res.info) {
+                    expect(res.info).toBe(expected.res.info);
+                }
+            };
+            // case 1: Profile type did not exist
+            it("adds a new profile type to the schema", async () => {
+                expectAddToSchemaTester(
+                    { schema: { title: "Mock Schema" } as any },
+                    {
+                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"] } } },
+                        res: {
+                            success: true
+                        }
+                    }
+                );
+            });
+
+            it("only updates a profile type in the schema if the version is newer", async () => {
+                expectAddToSchemaTester(
+                    { previousVersion: "1.0.0", schema: { title: "Mock Schema" } as any, version: "2.0.0" },
+                    {
+                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
+                        res: {
+                            success: true
+                        }
+                    }
+                );
+            });
+
+            it("does not update a profile type in the schema if the version is older", async () => {
+                expectAddToSchemaTester(
+                    { previousVersion: "2.0.0", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                    {
+                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
+                        res: {
+                            success: false
+                        }
+                    }
+                );
+            });
+
+            it("updates a profile type in the schema - version provided, no previous schema version", async () => {
+                expectAddToSchemaTester(
+                    { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                    {
+                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
+                        res: {
+                            success: true
+                        }
+                    }
+                );
+            });
+
+            it("does not update the schema if schema version is invalid", async () => {
+                expectAddToSchemaTester(
+                    { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                    {
+                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
+                        res: {
+                            success: true
+                        }
+                    }
+                );
+            });
+        });
+        describe("buildSchema", () => {
+            // TODO
+            it("builds a schema with the default types", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
+                profInfo.buildSchema();
+                expect(cfgSchemaBuildMock).toHaveBeenCalled();
+            });
+
+            it("excludes types that do not match a given source", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                profInfo.addProfileTypeToSchema("some-type-with-source", {
+                    sourceApp: "A Zowe App",
+                    schema: {} as any
+                });
+                const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
+                profInfo.buildSchema(["A Zowe App"]);
+                expect(cfgSchemaBuildMock).toHaveBeenCalledWith([{
+                    type: "some-type-with-source",
+                    schema: {}
+                }]);
+            });
+        });
+        // end schema management tests
     });
-    // end schema management tests
 });
