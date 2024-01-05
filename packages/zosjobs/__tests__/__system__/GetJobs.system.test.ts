@@ -870,10 +870,10 @@ describe("Get spool APIs", () => {
             expect(JSON.parse(error.causeErrors).category).toMatchSnapshot();
             const trimmedErrorMessage = trimMessage(error.message);
             const jsonCauseErrors = JSON.parse(err.causeErrors);
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(10);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
+            expect(jsonCauseErrors.category).toEqual(6);
+            expect(jsonCauseErrors.reason).toEqual(10);
+            expect(jsonCauseErrors.rc).toEqual(4);
+            expect(trimmedErrorMessage).toContain("status 400");
         }, LONG_TIMEOUT);
     });
 
