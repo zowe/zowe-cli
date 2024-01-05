@@ -14,6 +14,7 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestBaseSchema } from "../../../../../__tests__/__src__/properties/ITestBaseSchema";
 import { ITestCertPemSchema } from "../../../../../__tests__/__src__/properties/ITestCertPemSchema";
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
 
 describe("auth login/logout apiml with profile", () => {
     let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -140,7 +141,10 @@ describe("auth login/logout apiml create profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
     });
 
-    it("should successfully issue the login command and create a profile", () => {
+    /* Resurrect the following test after this Git issue is fixed:
+       https://github.com/zowe/zowe-cli/issues/2005
+    */
+    it.skip("TODO: After 2005 is fixed: should successfully issue the login command and create a team config", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
@@ -152,18 +156,37 @@ describe("auth login/logout apiml create profile", () => {
                 "y"
             ]);
         expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
         expect(response.stdout.toString()).toContain("The authentication token is stored in the"); // ${name} base profile
+        expect(response.status).toBe(0);
     });
 
-    it("should successfully issue the logout command with a created profile", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh",
-            TEST_ENVIRONMENT_CREATE_PROF);
+    it("should successfully issue the logout command with a created team config", async () => {
+        // create a team config
+        let response = runCliScript(__dirname + "/__scripts__/create_team_cfg.sh",
+            TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                base.host,
+                base.port,
+                base.rejectUnauthorized
+            ]);
+        expect(response.stderr.toString()).toBe("");
+
+        // login to create token in SCS
+        response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                TEST_ENVIRONMENT_CREATE_PROF.systemTestProperties.base.user,
+                TEST_ENVIRONMENT_CREATE_PROF.systemTestProperties.base.password
+            ]
+        );
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+
+        response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh", TEST_ENVIRONMENT_CREATE_PROF);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
-        expect(response.stdout.toString()).toContain("and removed from your 'default' base profile"); // V1 message
+        expect(response.stdout.toString()).toContain("Token was removed from your 'base' base profile"); // V1 message
     });
 });
 
