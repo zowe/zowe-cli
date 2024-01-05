@@ -453,7 +453,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(JSON.parse(err.causeErrors).message).toContain(ZosJobsMessages.missingJcl.message);
+            expect(err.message).toContain(ZosJobsMessages.missingJcl.message);
         });
 
         it("should throw an error if the JCL is an empty string", async () => {
@@ -465,7 +465,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(JSON.parse(err.causeErrors).message).toContain(ZosJobsMessages.missingJcl.message);
+            expect(err.message).toContain(ZosJobsMessages.missingJcl.message);
         });
     });
 });
