@@ -251,7 +251,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain("does not start with a slash");
+            expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
         });
 
 
@@ -267,7 +267,7 @@ describe("Submit Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.causeErrors.message).toContain("does not start with a slash");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
             });
 
 
@@ -288,7 +288,7 @@ describe("Submit Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.causeErrors.message).toContain("does not start with a slash");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
             });
 
 
@@ -312,7 +312,7 @@ describe("Submit Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.causeErrors.message).toContain("does not start with a slash");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
             }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJobCommon with a non existent data set", async () => {
@@ -326,7 +326,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         });
 
         it("should surface an error from z/OSMF when calling submitJobCommon with a non existent uss file", async () => {
@@ -340,7 +340,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         });
 
         it("should surface an error from z/OSMF when calling submitJobNotifyCommon with a non existent data set", async () => {
@@ -354,7 +354,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJobNotifyCommon with a non existent uss file", async () => {
@@ -368,7 +368,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJclNotify with invalid JCL", async () => {
@@ -385,7 +385,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain("does not start with a slash");
+            expect(JSON.parse(err.causeErrors).message).toContain("does not start with a slash");
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJobNotify with a non existent data set", async () => {
@@ -399,7 +399,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitUSSJobNotify with a non existent uss file", async () => {
@@ -413,7 +413,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         }, LONG_TIMEOUT);
 
         it("should surface an error from z/OSMF when calling submitJob with a non existent data set", async () => {
@@ -427,7 +427,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badDataSet);
+            expect(JSON.parse(err.causeErrors).message).toContain(badDataSet);
         });
 
         it("should surface an error from z/OSMF when calling submitUSSJob with a non existent USS file", async () => {
@@ -441,7 +441,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(badUSSFile);
+            expect(JSON.parse(err.causeErrors).message).toContain(badUSSFile);
         });
 
         it("should throw an error if the JCL string is null", async () => {
@@ -453,7 +453,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(ZosJobsMessages.missingJcl.message);
+            expect(JSON.parse(err.causeErrors).message).toContain(ZosJobsMessages.missingJcl.message);
         });
 
         it("should throw an error if the JCL is an empty string", async () => {
@@ -465,7 +465,7 @@ describe("Submit Jobs - System Tests", () => {
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
-            expect(err.causeErrors.message).toContain(ZosJobsMessages.missingJcl.message);
+            expect(JSON.parse(err.causeErrors).message).toContain(ZosJobsMessages.missingJcl.message);
         });
     });
 });

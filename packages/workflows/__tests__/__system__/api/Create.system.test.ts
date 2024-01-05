@@ -236,7 +236,7 @@ describe("Create workflow", () => {
             it("Throws an error with wrong format of workflow definition file. Wrong member name.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME(0)", system, owner);
                 expect(error.errorCode).toEqual(notFound);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
         });
         describe("IZUWF0103E", () => {
@@ -245,52 +245,52 @@ describe("Create workflow", () => {
             it("Throws an error with wrong format of workflow definition file.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "wrongPath", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Name that ends with a period.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME.", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Path not from root.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "home/file", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Qualifier is longer than 8 characters.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME.LONGFIELD", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. More than 44 characters for DSNAME alone.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Name containing two successive periods.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS..NAME", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of definition file. Name contains a qualifier that starts with numeric character.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.123.NAME", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Member name is too long.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME(MEMBER123)", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Member doesn't end with `)`.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME(MEMBER", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of workflow definition file. Name contains non-allowed character.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, "DS.NAME%", system, owner);
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
         });
         describe("IZUWF0105E", () => {
@@ -299,12 +299,12 @@ describe("Create workflow", () => {
             it("Throws an error with wrong format of variable input file. Name does not exist.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "DS.NAME.WRONG");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of variable input file. Wrong member name.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "DS.NAME(0)");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
         });
         describe("IZUWF0107E", () => {
@@ -313,33 +313,33 @@ describe("Create workflow", () => {
             it("Throws an error with wrong format of variable input file. Name that ends with a period.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "DS.NAME.");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of variable input file. More than 44 characters for DSNAME alone.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner,
                     "DS.NAME.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of variable input file. Name containing two successive periods.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "DS..NAME");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Name that contains a qualifier that starts with non-alphabetic or non-special character.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "DS.123.NAME");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of variable input file. Qualifier is longer than 8 characters.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "DS.NAME.LONGFIELD");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
             it("Throws an error with wrong format of variable input file. Path not from root.", async () => {
                 const error = await produceError(REAL_SESSION, wfName, definitionFile, system, owner, "home/file");
                 expect(error.errorCode).toEqual(status400);
-                expect(error.causeErrors.message).toContain(messageId);
+                expect(JSON.parse(error.causeErrors).message).toContain(messageId);
             });
         });
     });
