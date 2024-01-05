@@ -29,6 +29,7 @@ import { ImperativeError } from "../../error";
 import { IProfInfoUpdatePropOpts } from "../src/doc/IProfInfoUpdatePropOpts";
 import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
+import { ConfigSchema } from "../src/ConfigSchema";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -1557,9 +1558,43 @@ describe("TeamConfig ProfileInfo tests", () => {
                 }
             );
         });
+
+        it("does not update the schema if schema version is invalid", async () => {
+            expectAddToSchemaTester(
+                { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                {
+                    extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
+                    res: {
+                        success: true
+                    }
+                }
+            );
+        });
     });
     describe("buildSchema", () => {
         // TODO
+        it("builds a schema with the default types", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+            const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
+            profInfo.buildSchema();
+            expect(cfgSchemaBuildMock).toHaveBeenCalled();
+        });
+
+        it("excludes types that do not match a given source", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+            profInfo.addProfileTypeToSchema("some-type-with-source", {
+                sourceApp: "A Zowe App",
+                schema: {} as any
+            });
+            const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
+            profInfo.buildSchema(["A Zowe App"]);
+            expect(cfgSchemaBuildMock).toHaveBeenCalledWith([{
+                type: "some-type-with-source",
+                schema: {}
+            }]);
+        });
     });
     // end schema management tests
 });
