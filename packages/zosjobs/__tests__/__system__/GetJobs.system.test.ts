@@ -869,7 +869,7 @@ describe("Get spool APIs", () => {
             expect(JSON.parse(error.causeErrors).reason).toMatchSnapshot();
             expect(JSON.parse(error.causeErrors).category).toMatchSnapshot();
             const trimmedErrorMessage = trimMessage(error.message);
-            const jsonCauseErrors = JSON.parse(err.causeErrors);
+            const jsonCauseErrors = JSON.parse(error.causeErrors);
             expect(jsonCauseErrors.category).toEqual(6);
             expect(jsonCauseErrors.reason).toEqual(10);
             expect(jsonCauseErrors.rc).toEqual(4);
@@ -953,7 +953,7 @@ describe("Get JCL APIs", () => {
             expect(JSON.parse(error.causeErrors).reason).toMatchSnapshot();
             expect(JSON.parse(error.causeErrors).category).toMatchSnapshot();
             const trimmedErrorMessage = trimMessage(error.message);
-            const jsonCauseErrors = JSON.parse(err.causeErrors);
+            const jsonCauseErrors = JSON.parse(error.causeErrors);
             expect(trimmedErrorMessage).toContain("status 400");
             expect(jsonCauseErrors.message).toContain(job.jobid);
         });
