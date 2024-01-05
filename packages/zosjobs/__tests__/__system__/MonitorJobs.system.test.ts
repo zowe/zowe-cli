@@ -113,12 +113,13 @@ describe("System Tests - Monitor Jobs", () => {
                 // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
+                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 10");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(10);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No job found for reference");
+                expect(jsonCauseErrors.message).toContain("No job found for reference");
             });
         });
 
@@ -197,12 +198,13 @@ describe("System Tests - Monitor Jobs", () => {
                 // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
+                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 10");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(10);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No job found for reference");
+                expect(jsonCauseErrors.message).toContain("No job found for reference");
             });
         });
 
@@ -280,12 +282,13 @@ describe("System Tests - Monitor Jobs", () => {
                 // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobname.regex").toString(), "g");
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
+                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"(((((\" jobid \"JOB123\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                expect(jsonCauseErrors.message).toContain("No match for method GET and pathInfo");
             });
 
             it("should detect and surface an error message if an invalid jobid is specified", async () => {
@@ -300,12 +303,13 @@ describe("System Tests - Monitor Jobs", () => {
                 // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobid.regex").toString(), "g");
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
+                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"(\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(7);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                expect(jsonCauseErrors.message).toContain("No match for method GET and pathInfo");
             });
 
             it("should detect and surface an error if the job requested is not found", async () => {
@@ -320,12 +324,13 @@ describe("System Tests - Monitor Jobs", () => {
                 // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
+                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 10");
-                expect(trimmedErrorMessage).toContain("rc: 4");
+                expect(jsonCauseErrors.category).toEqual(6);
+                expect(jsonCauseErrors.reason).toEqual(10);
+                expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No job found for reference");
+                expect(jsonCauseErrors.message).toContain("No job found for reference");
             });
         });
 
@@ -466,12 +471,13 @@ describe("System Tests - Monitor Jobs", () => {
                         // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/polling_job_deleted.regex").toString(), "g");
                         // expect(regex.test(error.message)).toBe(true);
                         const trimmedErrorMessage = trimMessage(error.message);
+                        const jsonCauseErrors = JSON.parse(error.causeErrors);
                         expect(trimmedErrorMessage).toContain("Error obtaining status for jobname");
-                        expect(trimmedErrorMessage).toContain("category: 6");
-                        expect(trimmedErrorMessage).toContain("reason: 10");
-                        expect(trimmedErrorMessage).toContain("rc: 4");
+                        expect(jsonCauseErrors.category).toEqual(6);
+                        expect(jsonCauseErrors.reason).toEqual(10);
+                        expect(jsonCauseErrors.rc).toEqual(4);
                         expect(trimmedErrorMessage).toContain("status 400");
-                        expect(trimmedErrorMessage).toContain("No job found for reference");
+                        expect(jsonCauseErrors.message).toContain("No job found for reference");
                         if (!doneCalled) {
                             doneCalled = true;
                             done();
@@ -962,12 +968,13 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
                         // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/polling_job_deleted.regex").toString(), "g");
                         // expect(regex.test(error.message)).toBe(true);
                         const trimmedErrorMessage = trimMessage(error.message);
+                        const jsonCauseErrors = JSON.parse(error.causeErrors);
                         expect(trimmedErrorMessage).toContain("Error obtaining status for jobname");
-                        expect(trimmedErrorMessage).toContain("category: 6");
-                        expect(trimmedErrorMessage).toContain("reason: 10");
-                        expect(trimmedErrorMessage).toContain("rc: 4");
+                        expect(jsonCauseErrors.category).toEqual(6);
+                        expect(jsonCauseErrors.reason).toEqual(10);
+                        expect(jsonCauseErrors.rc).toEqual(4);
                         expect(trimmedErrorMessage).toContain("status 400");
-                        expect(trimmedErrorMessage).toContain("No job found for reference");
+                        expect(jsonCauseErrors.message).toContain("No job found for reference");
                         if (!doneCalled) {
                             doneCalled = true;
                             done();
