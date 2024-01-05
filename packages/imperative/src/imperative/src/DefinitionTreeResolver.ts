@@ -127,8 +127,9 @@ export class DefinitionTreeResolver {
                 } catch (e) {
                     throw new ImperativeError({
                         msg: "Encountered an error loading one of the files ("
-                        + match + ") that matched the provided " +
-                        "command module glob for the glob " + childGlob + ": " + e.message
+                            + match + ") that matched the provided " +
+                            "command module glob for the glob " + childGlob + ": " + e.message,
+                        causeErrors: e
                     });
                 }
 

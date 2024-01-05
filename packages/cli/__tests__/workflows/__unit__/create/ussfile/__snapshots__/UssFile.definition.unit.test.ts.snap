@@ -30,7 +30,7 @@ Object {
       "aliases": Array [
         "uf",
       ],
-      "description": "Uss file that contains workflow definition.",
+      "description": "USS file that contains workflow definition.",
       "name": "uss-file",
       "required": true,
       "type": "string",
