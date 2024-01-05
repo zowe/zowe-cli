@@ -14,7 +14,6 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestBaseSchema } from "../../../../../__tests__/__src__/properties/ITestBaseSchema";
 import { ITestCertPemSchema } from "../../../../../__tests__/__src__/properties/ITestCertPemSchema";
-import { keyring } from "@zowe/secrets-for-zowe-sdk";
 
 describe("auth login/logout apiml with profile", () => {
     let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -144,6 +143,7 @@ describe("auth login/logout apiml create profile", () => {
     /* Resurrect the following test after this Git issue is fixed:
        https://github.com/zowe/zowe-cli/issues/2005
     */
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip("TODO: After 2005 is fixed: should successfully issue the login command and create a team config", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
