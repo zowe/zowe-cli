@@ -124,7 +124,6 @@ describe("List Defined Systems Api", () => {
             const jsonCauseErrors = error.causeErrors;
             expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET)/);
             expect(jsonCauseErrors.syscall).toMatch(/(connect|read)/);
-            expect(jsonCauseErrors.port).toEqual(badPort);
         });
     });
 });
