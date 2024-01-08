@@ -1479,11 +1479,13 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
                 if (testCase.previousVersion) {
+                    const noPreviousVer = testCase.previousVersion === "none";
                     (profInfo as any).mExtendersJson = {
                         profileTypes: {
                             "some-type": {
                                 from: ["Zowe Client App"],
-                                version: testCase.previousVersion === "none" ? undefined : testCase.previousVersion
+                                version: noPreviousVer ? undefined : testCase.previousVersion,
+                                latestFrom: noPreviousVer ? undefined : "Zowe Client App"
                             }
                         }
                     };
