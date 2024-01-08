@@ -65,7 +65,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Deleting z/OSMF workflow with workflow name " + this.arguments.workflowName + " failed.\n" + err.msg,
+                        msg: "Deleting z/OSMF workflow with workflow name " + this.arguments.workflowName + " failed.\n" + err,
                         causeErrors: err.causeErrors,
                         additionalDetails: err.additionalDetails
                     });
@@ -90,7 +90,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Creating z/OSMF workflow with data set: " + this.arguments.dataSet + " failed.\n" + err.msg,
+                        msg: "Creating z/OSMF workflow with data set: " + this.arguments.dataSet + " failed.\n" + err,
                         causeErrors: err.causeErrors,
                         additionalDetails: err.additionalDetails
                     });
@@ -122,7 +122,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed.\n" + err.msg,
+                        msg: "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed.\n" + err,
                         causeErrors: err.causeErrors,
                         additionalDetails: err.additionalDetails
                     });
@@ -156,7 +156,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed.\n" + err.msg,
+                        msg: "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed.\n" + err,
                         causeErrors: err.causeErrors,
                         additionalDetails: err.additionalDetails
                     });
