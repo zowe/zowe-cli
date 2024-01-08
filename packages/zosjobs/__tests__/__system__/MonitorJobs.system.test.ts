@@ -119,7 +119,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(jsonCauseErrors.reason).toEqual(10);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("No job found for reference");
+                expect(trimmedErrorMessage).toContain("No job found for reference");
             });
         });
 
@@ -204,7 +204,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(jsonCauseErrors.reason).toEqual(10);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("No job found for reference");
+                expect(trimmedErrorMessage).toContain("No job found for reference");
             });
         });
 
@@ -288,7 +288,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(jsonCauseErrors.reason).toEqual(7);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("No match for method GET and pathInfo");
+                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
             });
 
             it("should detect and surface an error message if an invalid jobid is specified", async () => {
@@ -309,7 +309,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(jsonCauseErrors.reason).toEqual(7);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("No match for method GET and pathInfo");
+                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
             });
 
             it("should detect and surface an error if the job requested is not found", async () => {
@@ -330,7 +330,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(jsonCauseErrors.reason).toEqual(10);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("No job found for reference");
+                expect(trimmedErrorMessage).toContain("No job found for reference");
             });
         });
 
@@ -477,7 +477,7 @@ describe("System Tests - Monitor Jobs", () => {
                         expect(jsonCauseErrors.reason).toEqual(10);
                         expect(jsonCauseErrors.rc).toEqual(4);
                         expect(trimmedErrorMessage).toContain("status 400");
-                        expect(jsonCauseErrors.message).toContain("No job found for reference");
+                        expect(trimmedErrorMessage).toContain("No job found for reference");
                         if (!doneCalled) {
                             doneCalled = true;
                             done();
@@ -974,7 +974,7 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
                         expect(jsonCauseErrors.reason).toEqual(10);
                         expect(jsonCauseErrors.rc).toEqual(4);
                         expect(trimmedErrorMessage).toContain("status 400");
-                        expect(jsonCauseErrors.message).toContain("No job found for reference");
+                        expect(trimmedErrorMessage).toContain("No job found for reference");
                         if (!doneCalled) {
                             doneCalled = true;
                             done();
