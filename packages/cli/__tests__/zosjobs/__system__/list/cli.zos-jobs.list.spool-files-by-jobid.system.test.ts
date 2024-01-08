@@ -70,7 +70,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/invalid_jobid.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             const trimmed = trimMessage(response.stderr.toString());
-            expect(trimmed).toContain("status 400");
+            expect(trimmed).toContain("HTTP(S) error 400 = Bad Request");
             expect(trimmed).toContain("category: 6");
             expect(trimmed).toContain("reason: 4");
             expect(trimmed).toContain("Value of jobid query parameter is not valid");

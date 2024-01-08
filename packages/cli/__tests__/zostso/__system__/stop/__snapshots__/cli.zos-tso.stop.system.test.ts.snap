@@ -31,7 +31,7 @@ Command entered: \\"zos-tso stop foobar\\"
 Available commands are \\"address-space\\".
 Use \\"zowe zos-tso stop --help\\" to view groups, commands, and options.
 
-Response from Service
+Response From Service
 Error: Unknown argument: foobar
 
 Diagnostic Information

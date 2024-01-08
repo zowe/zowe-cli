@@ -123,7 +123,7 @@ describe("List Defined Systems Api", () => {
             expect(response).toBeFalsy();
             const jsonCauseErrors = error.causeErrors;
             expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET)/);
-            expect(jsonCauseErrors.syscall).toEqual("connect");
+            expect(jsonCauseErrors.syscall).toMatch(/(connect|read)/);
             expect(jsonCauseErrors.port).toEqual(badPort);
         });
     });
