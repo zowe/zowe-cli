@@ -1499,5 +1499,33 @@ describe("z/OS Files - List", () => {
             expect(listDataSetSpy).toHaveBeenCalledTimes(3);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
         });
+        
+        it("should handle an error when the exclude pattern is specified", async () => {
+            const excludePatterns = ["TEST.PS.DATA.SET"];
+            let response;
+            let caughtError;
+
+            List.dataSet = jest.fn(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [dataSetPS]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(
+                    dummySession, [dataSetPS.dsname], { excludePatterns });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: util.format(ZosFilesMessages.noDataSetsInList.message),
+                apiResponse: []
+            });
+        });
     });
 });
