@@ -67,7 +67,7 @@
     "mustache": "^2.3.0",
     "npm-package-arg": "^9.1.0",
     "opener": "^1.5.2",
-    "pacote": "^11.1.4",
+    "pacote": "^17.0.5",
     "prettyjson": "^1.2.2",
     "progress": "^2.0.3",
     "read": "^1.0.7",

@@ -67,7 +67,8 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         } catch(err){
             error = new ImperativeError({
                 msg: "List workflow details error: " + err,
-                causeErrors: err
+                causeErrors: err.causeErrors,
+                additionalDetails: err.additionalDetails
             });
             throw error;
         }

@@ -172,7 +172,7 @@ describe("Errors caused by the user interaction", () => {
         } catch (error) {
             Imperative.console.info(JSON.stringify(error));
             expect(error.mDetails.errorCode).toEqual(404);
-            expect(JSON.parse(error.causeErrors).message).toContain("IZUWF5001W");
+            expect(error.causeErrors).toContain("IZUWF5001W");
             // https://www.ibm.com/docs/en/zos/2.5.0?topic=izuwf9999-izuwf5001w
         }
     });
@@ -191,7 +191,7 @@ describe("Errors caused by the user interaction", () => {
         } catch (error) {
             Imperative.console.info(error);
             expect(error.mDetails.errorCode).toBe(409);
-            expect(JSON.parse(error.causeErrors).message).toContain("IZUWF0158E");
+            expect(error.causeErrors).toContain("IZUWF0158E");
             // https://www.ibm.com/docs/en/zos/2.5.0?topic=izuwf9999-izuwf0158e
         }
         await removeWorkflows();

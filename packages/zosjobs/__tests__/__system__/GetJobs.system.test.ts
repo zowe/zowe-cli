@@ -268,7 +268,7 @@ describe("Get Jobs - System Tests", () => {
                 expect(jsonCauseErrors.reason).toEqual(4);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("prefix query parameter");
+                expect(trimmedErrorMessage).toContain("prefix query parameter");
             });
         });
 
@@ -406,7 +406,7 @@ describe("Get Jobs - System Tests", () => {
                 expect(jsonCauseErrors.reason).toEqual(4);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("owner query parameter");
+                expect(trimmedErrorMessage).toContain("owner query parameter");
             });
         });
 
@@ -618,7 +618,7 @@ describe("Get Status APIs", () => {
                 expect(jsonCauseErrors.reason).toEqual(7);
                 expect(jsonCauseErrors.rc).toEqual(4);
                 expect(trimmedErrorMessage).toContain("status 400");
-                expect(jsonCauseErrors.message).toContain("JOB123");
+                expect(trimmedErrorMessage).toContain("JOB123");
             });
 
             it("should detect and surface an error for an invalid jobid", async () => {
@@ -955,7 +955,7 @@ describe("Get JCL APIs", () => {
             const trimmedErrorMessage = trimMessage(error.message);
             const jsonCauseErrors = JSON.parse(error.causeErrors);
             expect(trimmedErrorMessage).toContain("status 400");
-            expect(jsonCauseErrors.message).toContain(job.jobid);
+            expect(trimmedErrorMessage).toContain(job.jobid);
         });
     });
 

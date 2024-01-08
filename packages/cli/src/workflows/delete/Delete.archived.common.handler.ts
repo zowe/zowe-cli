@@ -39,7 +39,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
      * @memberof DeleteArchivedCommonHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
-        let error: string;
+        let error: ImperativeError;
         let listWorkflows: IArchivedWorkflows;
         this.arguments = params.arguments;
 
@@ -58,7 +58,11 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                         this.arguments.workflowKey
                     );
                 } catch (err) {
-                    error = "Delete workflow: " + err;
+                    error = new ImperativeError({
+                        msg: "Delete workflow: " + err,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
+                    });
                     throw error;
                 }
                 params.response.data.setObj("Deleted.");

@@ -40,7 +40,7 @@ function expectZosmfResponseSucceeded(response: string, error: ImperativeError) 
 function expectZosmfResponseFailed(response: string, error: ImperativeError, msg: string) {
     expect(response).not.toBeDefined();
     expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
+    expect(error.causeErrors).toContain(msg);
 }
 
 describe("Cancel workflow", () => {
