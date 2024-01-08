@@ -1333,7 +1333,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 (profInfo as any).mExtendersJson = { profileTypes: {} };
                 jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
-                (profInfo as any).readExtendersJsonFromDisk();
+                ProfileInfo.readExtendersJsonFromDisk();
                 expect(writeFileSyncMock).toHaveBeenCalled();
             });
 
@@ -1346,7 +1346,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 } });
                 const profInfo = createNewProfInfo(teamProjDir);
                 jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-                (profInfo as any).readExtendersJsonFromDisk();
+                (profInfo as any).mExtendersJson = ProfileInfo.readExtendersJsonFromDisk();
                 expect(readFileSyncMock).toHaveBeenCalled();
                 expect((profInfo as any).mExtendersJson).toEqual({
                     profileTypes: {
@@ -1364,7 +1364,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 (profInfo as any).mExtendersJson = { profileTypes: {} };
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-                expect((profInfo as any).writeExtendersJson()).toBe(true);
+                expect(ProfileInfo.writeExtendersJson((profInfo as any).mExtendersJson)).toBe(true);
                 expect(writeFileSyncMock).toHaveBeenCalled();
             });
 
@@ -1374,7 +1374,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 (profInfo as any).mExtendersJson = { profileTypes: {} };
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
                 writeFileSyncMock.mockImplementation(() => { throw new Error(); });
-                expect((profInfo as any).writeExtendersJson()).toBe(false);
+                expect(ProfileInfo.writeExtendersJson((profInfo as any).mExtendersJson)).toBe(false);
                 expect(writeFileSyncMock).toHaveBeenCalled();
             });
         });
@@ -1495,7 +1495,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                     };
                 }
                 const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer").mockImplementation();
-                const writeExtendersJsonMock = jest.spyOn((ProfileInfo as any).prototype, "writeExtendersJson").mockImplementation();
+                const writeExtendersJsonMock = jest.spyOn(ProfileInfo, "writeExtendersJson").mockImplementation();
                 const res = profInfo.addProfileTypeToSchema("some-type", { ...testCase, sourceApp: "Zowe Client App" });
                 if (expected.res.success) {
                     expect(updateSchemaAtLayerMock).toHaveBeenCalled();
