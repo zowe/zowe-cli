@@ -92,7 +92,7 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            const jsonCauseErrors = JSON.parse(error.causeErrors);
+            const jsonCauseErrors = error.causeErrors;
             expect(jsonCauseErrors.code).toEqual("ENOTFOUND");
             expect(jsonCauseErrors.syscall).toEqual("getaddrinfo");
             expect(jsonCauseErrors.hostname).toEqual(badHostName);
@@ -121,7 +121,7 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            const jsonCauseErrors = JSON.parse(error.causeErrors);
+            const jsonCauseErrors = error.causeErrors;
             expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET)/);
             expect(jsonCauseErrors.syscall).toEqual("connect");
             expect(jsonCauseErrors.port).toEqual(badPort);
