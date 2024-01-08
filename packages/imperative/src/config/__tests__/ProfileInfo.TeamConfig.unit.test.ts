@@ -1543,7 +1543,13 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expectAddToSchemaTester(
                     { schema: { title: "Mock Schema" } as any },
                     {
-                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"] } } },
+                        extendersJson: {
+                            profileTypes: {
+                                "some-type": {
+                                    from: ["Zowe Client App"]
+                                }
+                            }
+                        },
                         res: {
                             success: true
                         }
@@ -1555,7 +1561,15 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expectAddToSchemaTester(
                     { previousVersion: "1.0.0", schema: { title: "Mock Schema" } as any, version: "2.0.0" },
                     {
-                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
+                        extendersJson: {
+                            profileTypes: {
+                                "some-type": {
+                                    from: ["Zowe Client App"],
+                                    version: "2.0.0",
+                                    latestFrom: "Zowe Client App"
+                                }
+                            }
+                        },
                         res: {
                             success: true
                         }
@@ -1567,7 +1581,15 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expectAddToSchemaTester(
                     { previousVersion: "2.0.0", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
                     {
-                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "2.0.0"  } } },
+                        extendersJson: {
+                            profileTypes: {
+                                "some-type": {
+                                    from: ["Zowe Client App"],
+                                    version: "2.0.0",
+                                    latestFrom: "Zowe Client App"
+                                }
+                            }
+                        },
                         res: {
                             success: false
                         }
@@ -1579,7 +1601,15 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expectAddToSchemaTester(
                     { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
                     {
-                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
+                        extendersJson: {
+                            profileTypes: {
+                                "some-type": {
+                                    from: ["Zowe Client App"],
+                                    version: "1.0.0",
+                                    latestFrom: "Zowe Client App"
+                                }
+                            }
+                        },
                         res: {
                             success: true
                         }
@@ -1591,7 +1621,15 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expectAddToSchemaTester(
                     { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
                     {
-                        extendersJson: { profileTypes: { "some-type": { from: ["Zowe Client App"], version: "1.0.0"  } } },
+                        extendersJson: {
+                            profileTypes: {
+                                "some-type": {
+                                    from: ["Zowe Client App"],
+                                    version: "1.0.0",
+                                    latestFrom: "Zowe Client App"
+                                }
+                            }
+                        },
                         res: {
                             success: true
                         }
