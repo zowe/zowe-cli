@@ -54,7 +54,7 @@ import { IGetAllProfilesOptions } from "./doc/IProfInfoProps";
 import { IConfig } from "./doc/IConfig";
 import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts";
 import { ConfigBuilder } from "./ConfigBuilder";
-import { IAddProfTypeResult, IExtendersJsonOpts } from "./doc/IExtenderOpts";
+import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
 import { IConfigLayer } from "..";
 
 /**
@@ -1271,6 +1271,7 @@ export class ProfileInfo {
      *
      * @param {string} profileType The profile type to add
      * @param [layerPath] A dot-separated path that points to a layer in the config (default: top-most layer)
+     *
      * Example: “outer.prod” would add a profile into the “prod” layer (which is contained in “outer” layer)
      * @returns {boolean} `true` if added to the loaded config; `false` otherwise
      */
@@ -1300,7 +1301,9 @@ export class ProfileInfo {
      * Updates the schema to contain the new profile type.
      * If the type exists in the cache, it will use the matching layer; if not found, it will use the schema at the active layer.
      *
-     * @param {IProfileSchema} typeSchema The schema to add for the profile type
+     * @param {string} profileType The profile type to add into the schema
+     * @param {IProfileSchema} typeSchema The schema for the profile type
+     * @param [versionChanged] Whether the version has changed for the schema (optional)
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
     private updateSchemaAtLayer(profileType: string, schema: IProfileSchema, versionChanged?: boolean): void {
@@ -1328,14 +1331,15 @@ export class ProfileInfo {
     }
 
     /**
-     * Adds a profile type to the schema, and tracks its contribution in extenders.json.  
+     * Adds a profile type to the schema, and tracks its contribution in extenders.json.
+     *
      * NOTE: `readProfilesFromDisk` must be called at least once before adding new profile types.
      *
-     * @param {IProfileSchema} typeSchema The schema to add for the profile type
+     * @param {string} profileType The new profile type to add to the schema
+     * @param {IExtenderTypeInfo} typeInfo Type metadata for the profile type (schema, source app., optional version)
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
-    public addProfileTypeToSchema(profileType: string, typeInfo:
-    { sourceApp: string; schema: IProfileSchema; version?: string }): IAddProfTypeResult {
+    public addProfileTypeToSchema(profileType: string, typeInfo: IExtenderTypeInfo): IAddProfTypeResult {
         // Get the active team config layer
         const activeLayer = this.getTeamConfig()?.layerActive();
         if (activeLayer == null) {
@@ -1361,7 +1365,8 @@ export class ProfileInfo {
                         // Update the schema for this profile type, as its newer than the installed version
                         this.mExtendersJson.profileTypes[profileType] = {
                             version: typeInfo.version,
-                            from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
+                            from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp]),
+                            latestFrom: typeInfo.sourceApp
                         };
 
                         this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
@@ -1385,7 +1390,8 @@ export class ProfileInfo {
                     // No schema version specified previously; update the schema
                     this.mExtendersJson.profileTypes[profileType] = {
                         version: typeInfo.version,
-                        from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
+                        from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp]),
+                        latestFrom: typeInfo.sourceApp
                     };
                     this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
                 }
@@ -1429,6 +1435,8 @@ export class ProfileInfo {
      *
      * @param [sources] Include profile types contributed by these sources when building the schema
      *   - Source applications are tracked in the “from” list for each profile type in extenders.json
+     * @param [layer] The config layer to build a schema for
+     *   - If a layer is not specified, `buildSchema` will use the active layer.
      * @returns {IConfigSchema} A config schema containing all applicable profile types
      */
     public buildSchema(sources?: string[], layer?: IConfigLayer): IConfigSchema {
@@ -1469,9 +1477,9 @@ export class ProfileInfo {
     }
 
     /**
-     * Returns a list of all available profile types
-     * @param [sources] Include all available types from given source applications
-     */
+     * @param [sources] (optional) Only include available types from the given list of sources
+     * @returns a list of all available profile types
+    */
     public getProfileTypes(sources?: string[]): string[] {
         const filteredBySource = sources?.length > 0;
         const profileTypes = new Set<string>();
