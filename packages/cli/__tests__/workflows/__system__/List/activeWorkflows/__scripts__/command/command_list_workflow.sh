@@ -1,6 +1,6 @@
 #!/bin/bash
 wname=$1
-definiton=$2
+definition=$2
 sysname=$3
 owner=$4
 set -e
