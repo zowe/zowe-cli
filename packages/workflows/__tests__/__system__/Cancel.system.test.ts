@@ -37,7 +37,13 @@ function expectZosmfResponseSucceeded(response: string, error: ImperativeError) 
     expect(response).toBeDefined();
 }
 
-function expectZosmfResponseFailed(response: string, error: ImperativeError, msg: string) {
+function expectZosmfResponseFailed(response: string, error: ImperativeError, msg:string) {
+    expect(response).not.toBeDefined();
+    expect(error).toBeDefined();
+    expect(error.details.msg).toContain(msg);
+}
+
+function expectZosmfResponseFailedCause(response: string, error: ImperativeError, msg: string) {
     expect(response).not.toBeDefined();
     expect(error).toBeDefined();
     expect(error.causeErrors).toContain(msg);
@@ -161,7 +167,7 @@ describe("Cancel workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, WrongWorkflowKey.message);
+            expectZosmfResponseFailedCause(response, error, WrongWorkflowKey.message);
             // parse from message the workflow key
             const actual: string = JSON.stringify(error);
             const expected: RegExp = /The workflow key .+ was not found/gm;
