@@ -6,7 +6,16 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
 
-## Recent Changes
+## `8.0.0-next.202311291643`
+
+- LTS Breaking: Removed check for `ZOWE_EDITOR` environment variable in `ProcessUtils.openInEditor` [#1867](https://github.com/zowe/zowe-cli/issues/1867)
+
+## `8.0.0-next.202311282012`
+
+- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
+
+## `8.0.0-next.202311141903`
+
 - LTS Breaking: Removed the following previously deprecated items:
   - `flattenCommandTreeWithAliases()` -- Use `CommandUtils.flattenCommandTree()` instead
   - `AbstractAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead
@@ -19,14 +28,6 @@ All notable changes to the Imperative package will be documented in this file.
     The plugin can implement the `postInstall()` function of that class to perform
     a health check, or any other desired operation.
   - `IProfOpts.requireKeytar` -- removing the default implementation of `require("keytar")` from the caller app's node_modules folders
-
-## `8.0.0-next.202311291643`
-
-- LTS Breaking: Removed check for `ZOWE_EDITOR` environment variable in `ProcessUtils.openInEditor` [#1867](https://github.com/zowe/zowe-cli/issues/1867)
-
-## `8.0.0-next.202311282012`
-
-- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
 
 ## `8.0.0-next.202311141517`
 
