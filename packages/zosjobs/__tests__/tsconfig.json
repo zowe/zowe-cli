@@ -1,0 +1,4 @@
+{
+  // tsconfig for test files //
+  "extends": "../../__tests__/tsconfig.json"
+}

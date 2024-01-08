@@ -1,0 +1,30 @@
+defaultProfile: test_insecure
+configuration:
+    type: insecure
+    schema:
+        type: object
+        title: 'insecure Profile'
+        description: 'insecure Profile'
+        properties:
+            info:
+                type: string
+                optionDefinition:
+                    name: info
+                    aliases:
+                        - i
+                    description: 'The info property.'
+                    type: string
+                    required: false
+                    group: 'insecure group'
+            secret:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: secret
+                    aliases:
+                        - s
+                    description: 'The secret property.'
+                    type: string
+                    required: false
+                    group: 'insecure group'
+        required: []

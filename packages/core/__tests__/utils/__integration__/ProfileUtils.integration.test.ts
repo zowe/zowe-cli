@@ -46,14 +46,14 @@ describe("ProfileUtils", () => {
                 testName: "core_utils_get_default_profile",
                 skipProperties: true
             });
-
-            // We need the meta YAML files for the ProfileManager to initialize, so create dummy profiles to supply them
-            runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
-                ["zosmf", "fakeServiceProfile", "--host fake --dd"]);
-            runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
-                ["base", "fakeBaseProfile", "--host fake --dd"]);
             process.env.ZOWE_CLI_HOME = TEST_ENVIRONMENT.workingDir;
+
+            // copy existing profiles into test directory
+            const response = runCliScript(__dirname + "/__scripts__/copy_profiles.sh", TEST_ENVIRONMENT);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
         });
+
         beforeEach(() => {
             jest.resetAllMocks();
 
@@ -67,11 +67,12 @@ describe("ProfileUtils", () => {
                 })
             });
         });
+
         afterAll(async () => {
-            runCliScript(__dirname + "/__scripts__/delete_profile.sh", TEST_ENVIRONMENT, ["zosmf", "fakeServiceProfile"]);
-            runCliScript(__dirname + "/__scripts__/delete_profile.sh", TEST_ENVIRONMENT, ["base", "fakeBaseProfile"]);
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
         });
+
+
         it("Should return a service profile", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
                 .mockResolvedValueOnce({ profile: fakeServiceProfile } as any);

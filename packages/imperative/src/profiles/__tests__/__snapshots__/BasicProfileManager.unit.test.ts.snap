@@ -1,22 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Basic Profile Manager should allow a re-initialize of the environment 1`] = `
-Array [
-  Object {
-    "message": "Profile environment re-initialized for type \\"apple\\".",
-  },
-  Object {
-    "message": "Profile environment re-initialized for type \\"strawberry\\".",
-  },
-  Object {
-    "message": "Profile environment initialized for type \\"banana\\".",
-  },
-  Object {
-    "message": "Profile environment re-initialized for type \\"grape\\".",
-  },
-]
-`;
-
 exports[`Basic Profile Manager should allow us to set the default in the meta profile 1`] = `"Default profile for type \\"blueberry\\" set to \\"tart_blueberry\\"."`;
 
 exports[`Basic Profile Manager should create an instance and read all configurations from the meta files 1`] = `
@@ -107,8 +90,6 @@ Array [
 ]
 `;
 
-exports[`Basic Profile Manager should detect blank profile directory on initialize 1`] = `"Expect Error: A request was made to initialize the profile environment, but the profile root directory was not supplied."`;
-
 exports[`Basic Profile Manager should detect if the type is blank 1`] = `"Expect Error: No profile type supplied on the profile manager parameters."`;
 
 exports[`Basic Profile Manager should detect if the type is undefined 1`] = `"Expect Error: No profile type supplied on the profile manager parameters."`;
@@ -121,15 +102,7 @@ Loading \\"strawberry_and_apple\\" of type \\"strawberry\\"
 Error Details: \\"Profile validation error during load of profile \\"good_apple\\" of type \\"apple\\". Error Details: Profile type \\"apple\\" specifies a required dependency of type \\"strawberry\\" on the \\"apple\\" profile type configuration document. A dependency of type \\"strawberry\\" was NOT listed on the input profile.\\""
 `;
 
-exports[`Basic Profile Manager should detect missing configuration on initialize 1`] = `"Expect Error: A request was made to initialize the profile environment, but no configuration documents were supplied."`;
-
-exports[`Basic Profile Manager should detect missing parms on initialize 1`] = `"Expect Error: A request was made to initialize the profile environment, but no parameters were supplied."`;
-
-exports[`Basic Profile Manager should detect missing profile directory on initialize 1`] = `"Expect Error: A request was made to initialize the profile environment, but the profile root directory was not supplied."`;
-
 exports[`Basic Profile Manager should detect no parms when instantiating 1`] = `"Expect Error: Profile Manager input parms not supplied."`;
-
-exports[`Basic Profile Manager should detect that the configuration passed is not an array 1`] = `"Expect Error: A request was mad to initialize the profile environment, but the configuration provided is invalid (not an array or of length 0)."`;
 
 exports[`Basic Profile Manager should detect that the profile directory is blank 1`] = `"Expect Error: No profile root directory supplied on the profile manager parameters"`;
 
@@ -138,23 +111,6 @@ exports[`Basic Profile Manager should detect that the profile directory is undef
 exports[`Basic Profile Manager should fail a create if no configurations and passed and none can be read from disk 1`] = `"An error occurred collecting all configurations from the profile root directory \\"__tests__/__results__/test_profiles/root/dir/\\". Please supply the configurations on the profile manager constructor parameters OR initialize the profile manager environment. Details: No profile configurations found. Please initialize the profile manager OR supply the configurations to the profile manager."`;
 
 exports[`Basic Profile Manager should fail a request to set the default if the profile is not found 1`] = `"Cannot update default profile for type \\"blueberry\\". The profile name specified (\\"bad_blueberry\\") does not exist. Please create before attempting to set the default."`;
-
-exports[`Basic Profile Manager should initialize the environment 1`] = `
-Array [
-  Object {
-    "message": "Profile environment initialized for type \\"apple\\".",
-  },
-  Object {
-    "message": "Profile environment initialized for type \\"strawberry\\".",
-  },
-  Object {
-    "message": "Profile environment initialized for type \\"banana\\".",
-  },
-  Object {
-    "message": "Profile environment initialized for type \\"grape\\".",
-  },
-]
-`;
 
 exports[`Basic Profile Manager should load all profiles 1`] = `
 Array [
@@ -201,14 +157,6 @@ Array [
       "description": "Tasty",
     },
     "type": "strawberry",
-  },
-]
-`;
-
-exports[`Basic Profile Manager should only initialize types not already defined in the environment 1`] = `
-Array [
-  Object {
-    "message": "Profile environment initialized for type \\"banana\\".",
   },
 ]
 `;

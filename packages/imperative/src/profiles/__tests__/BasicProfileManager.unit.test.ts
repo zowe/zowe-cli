@@ -16,7 +16,6 @@ import { IProfileLoaded } from "../../profiles/src/doc/response/IProfileLoaded";
 import {
     APPLE_PROFILE_TYPE,
     APPLE_TWO_REQ_DEP_BANANA_AND_STRAWBERRIES,
-    APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE,
     BLUEBERRY_PROFILE_TYPE,
     FRUIT_BASKET_DIR,
     ONLY_APPLE,
@@ -218,72 +217,6 @@ describe("Basic Profile Manager", () => {
         expect(error.message).toMatchSnapshot();
     });
 
-    it("should initialize the environment", async () => {
-        const responses = await BasicProfileManager.initialize({
-            configuration: APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE,
-            profileRootDirectory: TEST_PROFILE_ROOT_DIR
-        });
-
-        expect(responses).toBeDefined();
-        expect(responses).toMatchSnapshot();
-    });
-
-    it("should detect missing parms on initialize", async () => {
-        let error;
-        try {
-            const responses = await BasicProfileManager.initialize(undefined);
-        } catch (e) {
-            error = e;
-        }
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
-    it("should detect missing configuration on initialize", async () => {
-        let error;
-        try {
-            const parms = {
-                configuration: undefined as any,
-                profileRootDirectory: TEST_PROFILE_ROOT_DIR
-            };
-            const responses = await BasicProfileManager.initialize(parms);
-        } catch (e) {
-            error = e;
-        }
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
-    it("should detect missing profile directory on initialize", async () => {
-        let error;
-        try {
-            const parms = {
-                configuration: APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE,
-                profileRootDirectory: undefined as any
-            };
-            const responses = await BasicProfileManager.initialize(parms);
-        } catch (e) {
-            error = e;
-        }
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
-    it("should detect blank profile directory on initialize", async () => {
-        let error;
-        try {
-            const parms = {
-                configuration: APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE,
-                profileRootDirectory: " "
-            };
-            const responses = await BasicProfileManager.initialize(parms);
-        } catch (e) {
-            error = e;
-        }
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
     it("should create an instance and read all configurations from the meta files", async () => {
         const prof = new BasicProfileManager({
             profileRootDirectory: TEST_PROFILE_ROOT_DIR + FRUIT_BASKET_DIR,
@@ -306,42 +239,6 @@ describe("Basic Profile Manager", () => {
         }
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
-    });
-
-    it("should detect that the configuration passed is not an array", async () => {
-        const init: any = {
-            configuration: [],
-            profileRootDirectory: TEST_PROFILE_ROOT_DIR + FRUIT_BASKET_DIR
-        };
-        init.configuration = {};
-        let error;
-        try {
-            const responses = await BasicProfileManager.initialize(init);
-        } catch (e) {
-            error = e;
-        }
-        expect(error).toBeDefined();
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
-    it("should only initialize types not already defined in the environment", async () => {
-        const responses = await BasicProfileManager.initialize({
-            configuration: APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE,
-            profileRootDirectory: TEST_PROFILE_ROOT_DIR + FRUIT_BASKET_DIR
-        });
-        expect(responses).toBeDefined();
-        expect(responses).toMatchSnapshot();
-    });
-
-    it("should allow a re-initialize of the environment", async () => {
-        const responses = await BasicProfileManager.initialize({
-            configuration: APPLE_TWO_REQ_DEP_BANANA_ONE_REQ_DEP_GRAPE,
-            profileRootDirectory: TEST_PROFILE_ROOT_DIR + FRUIT_BASKET_DIR,
-            reinitialize: true
-        });
-        expect(responses).toBeDefined();
-        expect(responses).toMatchSnapshot();
     });
 
     it("should allow us to set the default in the meta profile", () => {

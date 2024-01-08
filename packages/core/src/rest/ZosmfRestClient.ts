@@ -90,6 +90,9 @@ export class ZosmfRestClient extends RestClient {
                 original.msg += "\n" + message.messageContent;
             }
         }
+        if (causeErrorsJson?.message?.length > 0) {
+            original.msg += "\n" + causeErrorsJson.message;
+        }
 
         // add further clarification on authentication errors
         if (this.response && this.response.statusCode === RestConstants.HTTP_STATUS_401) {

@@ -1,0 +1,5 @@
+ghost: lenore
+dependencies:
+    -
+        type: profile-a
+        name: good

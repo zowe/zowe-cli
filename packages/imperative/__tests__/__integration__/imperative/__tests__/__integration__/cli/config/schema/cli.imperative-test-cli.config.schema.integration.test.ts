@@ -38,8 +38,8 @@ describe("imperative-test-cli config schema", () => {
     });
     it("should print the generated schema", () => {
         const response = runCliScript(__dirname + "/__scripts__/schema.sh", TEST_ENVIRONMENT.workingDir, [""]);
-        expect(JSON.parse(response.stdout.toString())).toEqual(expectedSchemaObject);
         expect(response.stderr.toString()).toEqual("");
         expect(response.error).toBeFalsy();
+        expect(JSON.parse(response.stdout.toString())).toEqual(expectedSchemaObject);
     });
 });

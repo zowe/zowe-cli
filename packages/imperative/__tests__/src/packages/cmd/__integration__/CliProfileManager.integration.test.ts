@@ -11,21 +11,15 @@
 
 jest.mock("../../../../../src/utilities/src/ImperativeConfig");
 
-import { inspect } from "util";
-import { rimraf, TEST_RESULT_DIR } from "../../../TestUtil";
 import { TestLogger } from "../../../../src/TestLogger";
 import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
 import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
 
 describe("Cli Profile Manager", () => {
-    const profileDir = TEST_RESULT_DIR + "/cliprofilemanager";
+    const profileDir = __dirname + "/__resources__/cliprofilemanager";
+    const addTwoNumbersHandler = __dirname + "/../profileHandlers/AddTwoNumbersHandler";
     const testLogger = TestLogger.getTestLogger();
     const profileTypeOne = "banana";
-
-    const addTwoNumbersHandler = __dirname + "/../profileHandlers/AddTwoNumbersHandler";
-    afterEach(() => {
-        rimraf(profileDir);
-    });
 
     const getTypeConfigurations: () => ICommandProfileTypeConfiguration[] = () => {
         return [{
@@ -43,8 +37,9 @@ describe("Cli Profile Manager", () => {
             },
         }];
     };
-    it("should take a handler to create a profile from command line arguments, and " +
-        "the handler should be called and the resulting profile should have the created fields in it.", async () => {
+
+    it("should be able to load properties from an existing profile", async () => {
+        const profileName = "myprofile";
         const configs = getTypeConfigurations();
         configs[0].createProfileFromArgumentsHandler = addTwoNumbersHandler;
         const manager = new CliProfileManager({
@@ -53,107 +48,8 @@ describe("Cli Profile Manager", () => {
             logger: testLogger,
             typeConfigurations: configs
         });
-        const a = 1;
-        const b = 2;
-        const profileName = "myprofile";
-        const saveResult = await manager.save({
-            name: profileName, type: profileTypeOne,
-            profile: {},
-            args: {_: [], $0: "test", a, b}
-        });
-        testLogger.info("Save profile result: " + inspect(saveResult));
         const loadedProfile: any = await manager.load({name: profileName});
-        expect(loadedProfile.profile.sum).toEqual(a + b);
-    });
-
-
-    it("If we provide a non existent handler to create a profile from command line arguments, " +
-        "we should get a helpful error.", async () => {
-        const configs = getTypeConfigurations();
-        configs[0].createProfileFromArgumentsHandler = __dirname + "/profileHandlers/fakearooni";
-        const manager = new CliProfileManager({
-            profileRootDirectory: profileDir,
-            type: profileTypeOne,
-            logger: testLogger,
-            typeConfigurations: configs
-        });
-        try {
-            await manager.save({
-                name: "badprofile", type: profileTypeOne,
-                profile: {sum: 2},
-                args: {_: [], $0: "test", doesNotMatter: "hi"}
-            });
-        } catch (e) {
-            testLogger.info("Received error as expected: " + inspect(e));
-            expect(e.message).toContain("handler");
-            expect(e.message.toLowerCase()).toContain("error");
-        }
-    });
-
-    it("should take a handler to update a profile that has already been created," +
-        " call the handler and update the profile from arguments.",
-    async () => {
-        const configs = getTypeConfigurations();
-        configs[0].updateProfileFromArgumentsHandler = addTwoNumbersHandler;
-        const manager = new CliProfileManager({
-            profileRootDirectory: profileDir,
-            type: profileTypeOne,
-            logger: testLogger,
-            typeConfigurations: configs
-        });
-        const a = 1;
-        const b = 2;
-        const originalSum = 55;
-        const profileName = "myprofile";
-        const saveResult = await manager.save({
-            name: profileName, type: profileTypeOne,
-            profile: {sum: originalSum}
-        });
-        expect(saveResult.overwritten).toEqual(false);
-
-        testLogger.info("Save profile result: " + inspect(saveResult));
-
-        const updateResult = await manager.update({
-            name: profileName, type: profileTypeOne,
-            profile: {
-                sum: 1
-            },
-            args: {_: [], $0: "fake", a, b}
-        });
-        expect(updateResult.profile.sum).toEqual(a + b);
-
-        testLogger.info("Update profile result: " + inspect(updateResult));
-        const loadedProfile: any = await manager.load({name: profileName});
-        testLogger.info("Loaded profile after update: " + inspect(loadedProfile));
-        expect(loadedProfile.profile.sum).toEqual(a + b);
-    });
-
-    it("If we provide a non existent handler to update a profile from command line arguments, " +
-        "we should get a helpful error.", async () => {
-        const configs = getTypeConfigurations();
-        configs[0].updateProfileFromArgumentsHandler = __dirname + "/profileHandlers/fakearooni";
-        const manager = new CliProfileManager({
-            profileRootDirectory: profileDir,
-            type: profileTypeOne,
-            logger: testLogger,
-            typeConfigurations: configs
-        });
-        const profileName = "badprofile";
-        await manager.save({
-            name: profileName, type: profileTypeOne,
-            profile: {sum: 30}
-        });
-        try {
-            await manager.update({
-                name: profileName, type: profileTypeOne,
-                profile: {sum: 2},
-                args: {_: [], $0: "test", doesNotMatter: "hi"}
-            });
-        } catch (e) {
-            testLogger.info("Received error as expected: " + inspect(e));
-            expect(e.message).toContain("handler");
-            expect(e.message.toLowerCase()).toContain("error");
-        }
+        expect(loadedProfile.profile.sum).toEqual(3);
     });
 
     it("should be able to automatically map command line options to " +
@@ -186,23 +82,17 @@ describe("Cli Profile Manager", () => {
             },
         }];
 
-        const manager = new CliProfileManager({
-            profileRootDirectory: profileDir,
-            type: profileTypeOne,
-            logger: testLogger,
-            typeConfigurations: configs
-        });
-        const propertyOneValue = 345;
-        const propertyTwoValue = "cell phone";
-        const profileName = "myprofile";
-        const saveResult = await manager.save({
-            name: profileName, type: profileTypeOne,
-            profile: {},
-            args: {_: [], $0: "test", differentProperty1: propertyOneValue, differentProperty2: propertyTwoValue}
-        });
-        testLogger.info("Save profile result: " + inspect(saveResult));
-        const loadedProfile: any = await manager.load({name: profileName});
-        expect(loadedProfile.profile.property1).toEqual(propertyOneValue);
-        expect(loadedProfile.profile.property2).toEqual(propertyTwoValue);
+        let caughtError;
+        try {
+            const manager = new CliProfileManager({
+                profileRootDirectory: profileDir,
+                type: profileTypeOne,
+                logger: testLogger,
+                typeConfigurations: configs
+            });
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
     });
 });

@@ -1,25 +1,32 @@
-#!/bin/bash
+#!/bin/sh
 
-color=$1
-description=$2
-moldtype=$3
+profileColor=$1
+profileDescription=$2
+profileMoldType=$3
+
+envColor=$4
+envDescription=$5
+envMoldType=$6
 
 cliColor=$7
 cliDescription=$8
 cliMoldType=$9
-# First create a banana profile
-cmd-cli profiles create banana-profile "test_banana" --color "$color" --banana-description "$description" --mold-type "$moldtype"
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Creating a test_banana profile of type banana failed!" 1>&2
-    exit $CMDRC
-fi
 
-CMD_CLI_OPT_COLOR="$4" CMD_CLI_OPT_BANANA_DESCRIPTION="$5" CMD_CLI_OPT_MOLD_TYPE="$6" cmd-cli profile mapping --color "$cliColor" --banana-description "$cliDescription" --mold-type "$cliMoldType"
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Profile mapping command failed!" 1>&2
-    exit $CMDRC
-fi
+# include exitOnFailure function
+myScriptDir=`dirname $0`
+. $myScriptDir/exitOnFailure.sh
+
+# set desired properties in our config file
+cp $myScriptDir/banana.config.json .
+exitOnFailure "Failed to copy config file." $?
+
+sed -e "s/NoColorVal/$profileColor/" \
+    -e "s/NoDescriptionVal/$profileDescription/" \
+    -e "s/NoMoldTypeVal/$profileMoldType/" \
+    < banana.config.json > cmd-cli.config.json
+exitOnFailure "Failed to update config file." $?
+
+# show the property values that will be used
+CMD_CLI_OPT_COLOR="$envColor" CMD_CLI_OPT_BANANA_DESCRIPTION="$envDescription" CMD_CLI_OPT_MOLD_TYPE="$envMoldType" \
+    cmd-cli profile mapping --color "$cliColor" --banana-description "$cliDescription" --mold-type "$cliMoldType"
+exitOnFailure "The 'profile mapping' command failed." $?
