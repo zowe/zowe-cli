@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.0.0-next.202401081937`
+
+- BugFix: Fixed typo in command help for `zowe zos-workflows create` commands.
+
 ## `8.0.0-next.202401031939`
 
 - Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
