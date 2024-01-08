@@ -985,7 +985,7 @@ export class ProfileInfo {
                 }
             }
         } else {
-            this.readExtendersJsonFromDisk();
+            this.mExtendersJson = ProfileInfo.readExtendersJsonFromDisk();
         }
 
         this.loadAllSchemas();
@@ -1237,27 +1237,29 @@ export class ProfileInfo {
     /**
      * Reads the `extenders.json` file from the CLI home directory.
      * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
+     * @internal
      */
-    private readExtendersJsonFromDisk(): void {
+    public static readExtendersJsonFromDisk(): IExtendersJsonOpts {
         const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
         if (!fs.existsSync(extenderJsonPath)) {
             jsonfile.writeFileSync(extenderJsonPath, {
                 profileTypes: {}
             }, { spaces: 4 });
-            this.mExtendersJson = { profileTypes: {} };
+            return { profileTypes: {} };
         } else {
-            this.mExtendersJson = jsonfile.readFileSync(extenderJsonPath);
+            return jsonfile.readFileSync(extenderJsonPath);
         }
     }
 
     /**
      * Attempts to write to the `extenders.json` file in the CLI home directory.
      * @returns `true` if written successfully; `false` otherwise
+     * @internal
      */
-    private writeExtendersJson(): boolean {
+    public static writeExtendersJson(obj: IExtendersJsonOpts): boolean {
         try {
             const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-            jsonfile.writeFileSync(extenderJsonPath, this.mExtendersJson, { spaces: 4 });
+            jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
         } catch (err) {
             return false;
         }
@@ -1413,7 +1415,7 @@ export class ProfileInfo {
 
         // Update contents of extenders.json if it has changed
         if (!lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
-            if (!this.writeExtendersJson()) {
+            if (!ProfileInfo.writeExtendersJson(this.mExtendersJson)) {
                 return {
                     success: true,
                     // Even if we failed to update extenders.json, it was technically added to the schema cache.

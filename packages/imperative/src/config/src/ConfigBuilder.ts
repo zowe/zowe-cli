@@ -31,7 +31,7 @@ export class ConfigBuilder {
         const config: IConfig = Config.empty();
 
         for (const profile of impConfig.profiles) {
-            const defaultProfile = this.buildDefaultProfile(profile, opts);
+            const defaultProfile = ConfigBuilder.buildDefaultProfile(profile, opts);
 
             // Add the profile to config and set it as default
             lodash.set(config, `profiles.${profile.type}`, defaultProfile);
