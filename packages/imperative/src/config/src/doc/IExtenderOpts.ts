@@ -9,7 +9,11 @@
 *
 */
 
+import { IProfileSchema } from "../../../profiles";
+
 export type IExtendersJsonOpts = {
+    // A map of profile types to type metadata.
+    // Used to track contributed profile types between Zowe client applications.
     profileTypes: Record<string, {
         // The list of application sources that contribute this profile type.
         from: string[];
@@ -27,4 +31,13 @@ export type IAddProfTypeResult = {
     // Any additional information from the `addProfileTypeToSchema` result.
     // If `success` is false, `info` contains any context for why the function failed.
     info: string;
+};
+
+export type IExtenderTypeInfo = {
+    // The source application for the new profile type.
+    sourceApp: string;
+    // The schema for the new profile type.
+    schema: IProfileSchema;
+    // A version for the new profile type's schema (optional).
+    version?: string;
 };
