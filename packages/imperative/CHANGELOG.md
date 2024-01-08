@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.20.1`
 
 - BugFix: Fixed error message shown for null option definition to include details about which command caused the error. [#2002](https://github.com/zowe/zowe-cli/issues/2002)
 - Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications.
