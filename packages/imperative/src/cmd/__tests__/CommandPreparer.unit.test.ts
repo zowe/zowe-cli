@@ -265,7 +265,7 @@ describe("Command Preparer", () => {
         expect(error.message).toMatchSnapshot();
     });
 
-    it("should be able to detect  if a chained handlers index is out of bounds", () => {
+    it("should be able to detect if a chained handlers index is out of bounds", () => {
         let error: ImperativeError;
         try {
             const newDef: ICommandDefinition = {
@@ -294,7 +294,7 @@ describe("Command Preparer", () => {
     });
 
 
-    it("should be able to detect  if a chained handler mapping has no 'to' field", () => {
+    it("should be able to detect if a chained handler mapping has no 'to' field", () => {
         let error: Error;
         try {
             const newDef: ICommandDefinition = {
@@ -326,7 +326,7 @@ describe("Command Preparer", () => {
     });
 
 
-    it("should be able to detect  if a chained handler mapping has both a 'from' field and a 'value' field", () => {
+    it("should be able to detect if a chained handler mapping has both a 'from' field and a 'value' field", () => {
         let error: Error;
         try {
             const newDef: ICommandDefinition = {

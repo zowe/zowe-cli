@@ -52,7 +52,7 @@ export const UssFile: ICommandDefinition = {
     examples: [
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
-            "on system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF",
+            "on system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exists in z/OSMF",
             options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite"
         },
         {

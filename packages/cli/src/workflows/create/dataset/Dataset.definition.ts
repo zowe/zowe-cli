@@ -52,12 +52,12 @@ export const DataSet: ICommandDefinition = {
     examples: [
         {
             description: "Create a workflow with name \"testworkflow\" using the data set \"TESTID.WKFLOW\" that contains the workflow " +
-            "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF",
+            "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exists in z/OSMF",
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite"
         },
         {
             description: "Create a workflow with name \"testworkflow\" using data set \"TESTID.WKFLOW\" containing workflow definition xml, " +
-            "on system \"TESTM1\" with owner \"MYSYSID\" and delete succesfully completed jobs",
+            "on system \"TESTM1\" with owner \"MYSYSID\" and delete successfully completed jobs",
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --owner \"MYSYSID\" --delete-completed"
         },
         {
