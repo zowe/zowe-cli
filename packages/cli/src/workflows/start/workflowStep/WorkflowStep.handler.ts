@@ -52,7 +52,8 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                 } catch (err){
                     error = new ImperativeError({
                         msg: "Start workflow: " + err,
-                        causeErrors: err
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
                     });
                     throw error;
                 }
@@ -73,7 +74,8 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                 } catch (err){
                     error = new ImperativeError({
                         msg: "Start workflow Error: " + err,
-                        causeErrors: err
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
                     });
                     throw error;
                 }

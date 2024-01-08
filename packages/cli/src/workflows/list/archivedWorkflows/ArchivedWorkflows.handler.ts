@@ -42,7 +42,8 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
         } catch (err) {
             error = new ImperativeError({
                 msg: "List workflow(s) " + err,
-                causeErrors: err
+                causeErrors: err.causeErrors,
+                additionalDetails: err.additionalDetails
             });
             throw error;
         }

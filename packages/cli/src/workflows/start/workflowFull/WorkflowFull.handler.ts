@@ -54,7 +54,8 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
         } catch (err) {
             error = new ImperativeError({
                 msg: "Start workflow: " + err,
-                causeErrors: err
+                causeErrors: err.causeErrors,
+                additionalDetails: err.additionalDetails
             });
             throw error;
         }

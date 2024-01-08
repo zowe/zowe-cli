@@ -65,8 +65,9 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Deleting z/OSMF workflow with workflow name " + this.arguments.workflowName + " failed.",
-                        causeErrors: err
+                        msg: "Deleting z/OSMF workflow with workflow name " + this.arguments.workflowName + " failed.\n" + err.msg,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
                     });
                     throw error;
                 }
@@ -89,8 +90,9 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Creating z/OSMF workflow with data set: " + this.arguments.dataSet + " failed.",
-                        causeErrors: err
+                        msg: "Creating z/OSMF workflow with data set: " + this.arguments.dataSet + " failed.\n" + err.msg,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
                     });
                     throw error;
                 }
@@ -120,8 +122,9 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed.",
-                        causeErrors: err
+                        msg: "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed.\n" + err.msg,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
                     });
                     throw error;
                 }
@@ -153,8 +156,9 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     );
                 } catch (err) {
                     error = new ImperativeError({
-                        msg: "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed.",
-                        causeErrors: err
+                        msg: "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed.\n" + err.msg,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
                     });
                     throw error;
                 }
