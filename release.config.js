@@ -19,7 +19,7 @@ module.exports = {
             "displayNames": {
                 "cli": "Zowe CLI",
                 "core": "Core SDK",
-                "imperative": "imperative",
+                "imperative": "Imperative",
                 "zosconsole": "z/OS Console SDK",
                 "zosfiles": "z/OS Files SDK",
                 "zosjobs": "z/OS Jobs SDK",
@@ -35,8 +35,7 @@ module.exports = {
         }],
         ["@octorelease/lerna", {
             aliasTags: {
-                // Note: Remove "next" tag here when the "next" branch is uncommented above
-                "latest": ["zowe-v2-lts", "next"]
+                "latest": ["zowe-v2-lts"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
             smokeTest: true,
