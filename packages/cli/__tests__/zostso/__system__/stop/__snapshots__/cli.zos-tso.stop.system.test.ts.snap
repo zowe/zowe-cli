@@ -1,13 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso stop should fail with invalid option 1`] = `
-"Command Error:
+"Unable to perform this operation due to the following problem.
 Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
 Command entered: \\"zos-tso start as --foo-bar\\"
 Available commands are \\"address-space\\".
 Use \\"zowe zos-tso start --help\\" to view groups, commands, and options.
-Error Details:
+
+Response From Service
+Error: Unknown arguments: foo-bar, fooBar
+
+Diagnostic Information
 Unknown arguments: foo-bar, fooBar
 "
 `;
@@ -18,7 +22,7 @@ exports[`zos-tso stop should fail with invalid option 2`] = `
 `;
 
 exports[`zos-tso stop should fail with invalid parameter 1`] = `
-"Command Error:
+"Unable to perform this operation due to the following problem.
 Unknown argument: foobar
 Command failed due to improper syntax
 Did you mean: zos-tso stop as?
@@ -26,7 +30,11 @@ Did you mean: zos-tso stop as?
 Command entered: \\"zos-tso stop foobar\\"
 Available commands are \\"address-space\\".
 Use \\"zowe zos-tso stop --help\\" to view groups, commands, and options.
-Error Details:
+
+Response from Service
+Error: Unknown argument: foobar
+
+Diagnostic Information
 Unknown argument: foobar
 "
 `;

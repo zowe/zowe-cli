@@ -42,7 +42,7 @@ describe("zos-jobs modify job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/bogus_jobid.sh", TEST_ENVIRONMENT);
             // potential fix needed in imperative to count this type of error as status = 1
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toContain("Job not found");
+            expect(response.stderr.toString()).toContain("Zero jobs were returned.");
         });
     });
 
