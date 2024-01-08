@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `7.21.2`
 
 - BugFix: Add information about password-protected certificate file support. [#2006](https://github.com/zowe/zowe-cli/issues/2006)
 
