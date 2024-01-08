@@ -1523,7 +1523,7 @@ describe("z/OS Files - List", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: false,
-                commandResponse: util.format(ZosFilesMessages.noDataSetsInList.message),
+                commandResponse: util.format(ZosFilesMessages.noDataSetsMatchingPattern.message),
                 apiResponse: []
             });
         });
