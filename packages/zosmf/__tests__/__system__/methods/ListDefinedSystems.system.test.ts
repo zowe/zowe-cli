@@ -92,7 +92,10 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toMatch(/(Error: getaddrinfo).*(badHost)/);
+            const jsonCauseErrors = JSON.parse(error.causeErrors);
+            expect(jsonCauseErrors.code).toEqual("ENOTFOUND");
+            expect(jsonCauseErrors.syscall).toEqual("getaddrinfo");
+            expect(jsonCauseErrors.hostname).toEqual(badHostName);
         });
 
         it("should return with proper message for invalid port", async () => {
@@ -118,7 +121,10 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toMatch(/Error: (connect|read) (ECONNREFUSED|ECONNRESET)/);
+            const jsonCauseErrors = JSON.parse(error.causeErrors);
+            expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET)/);
+            expect(jsonCauseErrors.syscall).toEqual("connect");
+            expect(jsonCauseErrors.port).toEqual(badPort);
         });
     });
 });
