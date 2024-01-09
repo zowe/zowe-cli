@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.21.3`
+
+- BugFix: Corrects the behavior of `Create.dataSetLike` so that the new data set is always defined with the correct block size [#2610](https://github.com/zowe/vscode-extension-for-zowe/issues/2610)
+
 ## `7.20.0`
 
 - Enhancement: Adds `ZosFilesUtils.getDataSetFromName` to create an IDataSet from a dataset name [#1696](https://github.com/zowe/zowe-cli/issues/1696)
