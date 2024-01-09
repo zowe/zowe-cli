@@ -166,6 +166,8 @@ describe("auth login/logout apiml create profile", () => {
         let scriptsPosixPath = __dirname + "/__scripts__";
         scriptsPosixPath = scriptsPosixPath.replaceAll("\\", "/");
         scriptsPosixPath = scriptsPosixPath.replace(/^(.):(.*)/i, "/$1$2");
+
+        // eslint-disable-next-line no-console
         console.log("zzz: scriptsPosixPath = " + scriptsPosixPath);
 
         // create a team config
