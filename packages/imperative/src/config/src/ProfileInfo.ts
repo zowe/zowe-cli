@@ -1408,7 +1408,8 @@ export class ProfileInfo {
             // Newly-contributed profile type; track in extenders.json
             this.mExtendersJson.profileTypes[profileType] = {
                 version: typeInfo.version,
-                from: [typeInfo.sourceApp]
+                from: [typeInfo.sourceApp],
+                latestFrom: typeInfo.version ? typeInfo.sourceApp : undefined
             };
             this.updateSchemaAtLayer(profileType, typeInfo.schema);
         }
