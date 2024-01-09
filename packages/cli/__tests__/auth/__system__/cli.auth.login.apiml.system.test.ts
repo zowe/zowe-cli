@@ -162,15 +162,22 @@ describe("auth login/logout apiml create profile", () => {
     });
 
     it("should successfully issue the logout command with a created team config", async () => {
+        // Form a posix-style path to scripts directory
+        let scriptsPosixPath = __dirname + "/__scripts__";
+        scriptsPosixPath = scriptsPosixPath.replaceAll("\\", "/");
+        scriptsPosixPath = scriptsPosixPath.replace(/^(.):(.*)/, "/$1$2");
+
         // create a team config
         let response = runCliScript(__dirname + "/__scripts__/create_team_cfg.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
                 base.host,
                 base.port,
-                base.rejectUnauthorized
+                base.rejectUnauthorized,
+                scriptsPosixPath
             ]);
         expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
 
         // login to create token in SCS
         response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT_CREATE_PROF,
@@ -184,9 +191,9 @@ describe("auth login/logout apiml create profile", () => {
 
         response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh", TEST_ENVIRONMENT_CREATE_PROF);
         expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
         expect(response.stdout.toString()).toContain("Token was removed from your 'base' base profile"); // V1 message
+        expect(response.status).toBe(0);
     });
 });
 
