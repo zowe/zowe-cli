@@ -162,22 +162,13 @@ describe("auth login/logout apiml create profile", () => {
     });
 
     it("should successfully issue the logout command with a created team config", async () => {
-        // Form a posix-style path to scripts directory
-        let scriptsPosixPath = __dirname + "/__scripts__";
-        scriptsPosixPath = scriptsPosixPath.replaceAll("\\", "/");
-        scriptsPosixPath = scriptsPosixPath.replace(/^(.):(.*)/i, "/$1$2");
-
-        // eslint-disable-next-line no-console
-        console.log("zzz: scriptsPosixPath = " + scriptsPosixPath);
-
         // create a team config
         let response = runCliScript(__dirname + "/__scripts__/create_team_cfg.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
                 base.host,
                 base.port,
-                base.rejectUnauthorized,
-                scriptsPosixPath
+                base.rejectUnauthorized
             ]);
         expect(response.stderr.toString()).toBe("");
 
