@@ -206,7 +206,7 @@ export async function install(packageLocation: string, registry: string, install
                                     existingType.schemaVersion = profile.schemaVersion;
                                 }
                             }
-                            shouldUpdate = shouldUpdate || updateExtendersJson(profile);
+                            shouldUpdate = updateExtendersJson(profile) || shouldUpdate;
                         }
 
                         if (shouldUpdate) {
