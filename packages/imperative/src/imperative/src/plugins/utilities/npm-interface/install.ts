@@ -12,7 +12,6 @@
 import { PMFConstants } from "../PMFConstants";
 import * as path from "path";
 import * as fs from "fs";
-import * as jsonfile from "jsonfile";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { Logger } from "../../../../../logger";
@@ -152,7 +151,7 @@ export async function install(packageLocation: string, registry: string, install
                     let loadedSchema: IProfileTypeConfiguration[];
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
-                        loadedSchema = ConfigSchema.loadSchema(jsonfile.readFileSync(schemaPath));
+                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaPath));
                     } catch (err) {
                         iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
                     }
@@ -215,7 +214,7 @@ export async function install(packageLocation: string, registry: string, install
                         }
                         const schema = ConfigSchema.buildSchema(loadedSchema);
                         ConfigSchema.updateSchema({ layer: "global", schema });
-                        jsonfile.writeFileSync(schemaPath, schema, { spaces: 4 });
+                        writeFileSync(schemaPath, schema, { spaces: 4 });
                     }
                 }
             }
