@@ -1327,6 +1327,9 @@ export class ProfileInfo {
         this.mProfileSchemaCache.set(cacheKey, schema);
 
         const schemaUri = new url.URL(layerToUpdate.properties.$schema, url.pathToFileURL(layerPath));
+        if (schemaUri.protocol !== "file:") {
+            return;
+        }
         const schemaPath = url.fileURLToPath(schemaUri);
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
@@ -1492,6 +1495,7 @@ export class ProfileInfo {
         for (const layer of this.getTeamConfig().mLayers) {
             if (layer.properties.$schema == null) continue;
             const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
+            if (schemaUri.protocol !== "file:") continue;
             const schemaPath = url.fileURLToPath(schemaUri);
             if (!fs.existsSync(schemaPath)) continue;
 
