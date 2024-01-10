@@ -10,7 +10,6 @@
 */
 
 import * as fs from "fs";
-import * as jsonfile from "jsonfile";
 import * as path from "path";
 import { PMFConstants } from "../PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
@@ -135,7 +134,7 @@ export function uninstall(packageName: string): void {
                     let loadedSchema: IProfileTypeConfiguration[];
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
-                        loadedSchema = ConfigSchema.loadSchema(jsonfile.readFileSync(schemaPath));
+                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaPath));
                     } catch (err) {
                         iConsole.error("Error when removing profile type for plugin %s: failed to parse schema", npmPackage);
                     }
@@ -146,7 +145,6 @@ export function uninstall(packageName: string): void {
                             loadedSchema = loadedSchema.filter((typeCfg) => !typesToRemove.includes(typeCfg.type));
                             const schema = ConfigSchema.buildSchema(loadedSchema);
                             ConfigSchema.updateSchema({ layer: "global", schema });
-                            jsonfile.writeFileSync(schemaPath, schema, { spaces: 4 });
                         }
                     }
                 }

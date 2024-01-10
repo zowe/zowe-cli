@@ -214,7 +214,6 @@ export async function install(packageLocation: string, registry: string, install
                         }
                         const schema = ConfigSchema.buildSchema(loadedSchema);
                         ConfigSchema.updateSchema({ layer: "global", schema });
-                        writeFileSync(schemaPath, schema, { spaces: 4 });
                     }
                 }
             }
