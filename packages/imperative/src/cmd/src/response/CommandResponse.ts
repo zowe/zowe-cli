@@ -724,7 +724,7 @@ export class CommandResponse implements ICommandResponseApi {
                                 `Please call progress.endBar() before starting a new one.`
                         });
                     }
-                    if (!outer.silent && outer.mResponseFormat !== "json") {
+                    if (!outer.silent && outer.mResponseFormat !== "json" && TextUtils.chalk.level > 0) {
 
                         // Persist the task specifications and determine the stream to use for the progress bar
                         this.mProgressBarStdoutStartIndex = outer.mStdout.length;

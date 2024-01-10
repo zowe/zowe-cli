@@ -114,10 +114,14 @@ describe("Command Response", () => {
         }
         require("rimraf").sync(testFile);
     });
+    afterEach(() => {
+        delete process.env.FORCE_COLOR;
+    });
 
     it("If we create a progress bar, an interval should be set to update the bar. " +
         "If we finish the bar, the interval should be stopped and no longer stored" +
         "in the command response. ", (done) => {  // eslint-disable-line jest/no-done-callback
+        process.env.FORCE_COLOR = "1";
         const response = new CommandResponse({ silent: false, responseFormat: "default" });
         const status: ITaskWithStatus = {
             statusMessage: "Making a bar",
@@ -147,6 +151,7 @@ describe("Command Response", () => {
     });
 
     it("should allow the progress bar to write directly to a socket stream", (done) => {  // eslint-disable-line jest/no-done-callback
+        process.env.FORCE_COLOR = "1";
         const response = new CommandResponse({ silent: false, responseFormat: "default", stream });
         const status: ITaskWithStatus = {
             statusMessage: "Making a bar",
@@ -180,6 +185,7 @@ describe("Command Response", () => {
 
     it("If we create a progress bar, then set the bar to be complete, " +
         "the progress bar should automatically end ", (done) => {  // eslint-disable-line jest/no-done-callback
+        process.env.FORCE_COLOR = "1";
         const response = new CommandResponse({ silent: false, responseFormat: "default" });
         const status: ITaskWithStatus = {
             statusMessage: "Making a bar",
@@ -215,6 +221,7 @@ describe("Command Response", () => {
     it("If our response object is in silent mode, which is caused for example by " +
         "the user specifying that they want a JSON response, a progress bar should" +
         " not be created", () => {
+        process.env.FORCE_COLOR = "1";
         const response = new CommandResponse({ silent: true, responseFormat: "json" });
         const status: ITaskWithStatus = {
             statusMessage: "No bar should be made",
@@ -233,6 +240,7 @@ describe("Command Response", () => {
 
 
     it("should not duplicate output when calling endBar", () => {
+        process.env.FORCE_COLOR = "1";
         let stdoutMsg: string = "";
         let stderrMsg: string = "";
         const response = new CommandResponse({responseFormat: "default"});
