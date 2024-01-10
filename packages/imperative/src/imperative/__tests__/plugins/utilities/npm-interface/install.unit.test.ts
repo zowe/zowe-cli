@@ -58,7 +58,9 @@ import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { UpdateImpConfig } from "../../../../src/UpdateImpConfig";
 import * as fs from "fs";
 import * as path from "path";
-
+import { gt as versionGreaterThan } from "semver";
+import { ProfileInfo } from "../../../../../config";
+import mockSchema from "../../__resources__/schema";
 
 function setResolve(toResolve: string, resolveTo?: string) {
     expectedVal = toResolve;
@@ -78,7 +80,12 @@ describe("PMF: Install Interface", () => {
         PMF_requirePluginModuleCallback: pmfI.requirePluginModuleCallback as Mock<typeof pmfI.requirePluginModuleCallback>,
         ConfigurationLoader_load: ConfigurationLoader.load as Mock<typeof ConfigurationLoader.load>,
         UpdateImpConfig_addProfiles: UpdateImpConfig.addProfiles as Mock<typeof UpdateImpConfig.addProfiles>,
-        path: path as unknown as Mock<typeof path>
+        path: path as unknown as Mock<typeof path>,
+        ConfigSchema_loadSchema: jest.spyOn(ConfigSchema, "loadSchema"),
+        ProfileInfo: {
+            readExtendersJsonFromDisk: jest.spyOn(ProfileInfo, "readExtendersJsonFromDisk"),
+            writeExtendersJson: jest.spyOn(ProfileInfo, "writeExtendersJson")
+        }
     };
 
     const packageName = "a";
@@ -101,7 +108,16 @@ describe("PMF: Install Interface", () => {
         mocks.sync.mockReturnValue("fake_find-up_sync_result" as any);
         jest.spyOn(path, "dirname").mockReturnValue("fake-dirname");
         jest.spyOn(path, "join").mockReturnValue("/fake/join/path");
-        mocks.ConfigurationLoader_load.mockReturnValue({ profiles: ["fake"] } as any);
+        mocks.ProfileInfo.readExtendersJsonFromDisk.mockReturnValue({
+            profileTypes: {
+                "zosmf": {
+                    from: ["Zowe CLI"]
+                }
+            }
+        });
+        mocks.ProfileInfo.writeExtendersJson.mockImplementation();
+        mocks.ConfigSchema_loadSchema.mockReturnValue([mockSchema]);
+        mocks.ConfigurationLoader_load.mockReturnValue({ profiles: [mockSchema] } as any);
     });
 
     afterAll(() => {
@@ -130,7 +146,7 @@ describe("PMF: Install Interface", () => {
         if (shouldUpdate) {
             expect(mocks.UpdateImpConfig_addProfiles).toHaveBeenCalledTimes(1);
             expect(mocks.ConfigSchema_updateSchema).toHaveBeenCalledTimes(1);
-            expect(mocks.ConfigSchema_updateSchema).toHaveBeenCalledWith({ layer: "global" });
+            expect(mocks.ConfigSchema_updateSchema).toHaveBeenCalledWith(expect.objectContaining({ layer: "global" }));
         } else {
             expect(mocks.UpdateImpConfig_addProfiles).not.toHaveBeenCalled();
             expect(mocks.ConfigSchema_updateSchema).not.toHaveBeenCalled();
@@ -165,7 +181,7 @@ describe("PMF: Install Interface", () => {
     describe("Basic install", () => {
         beforeEach(() => {
             mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
-            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
@@ -326,7 +342,7 @@ describe("PMF: Install Interface", () => {
             });
         });
 
-        it("should merge contents of previous json file", async () => {
+        it("should merge contents of previous plugins.json file", async () => {
             // value for our previous plugins.json
             const oneOldPlugin: IPluginJson = {
                 plugin1: {
@@ -352,6 +368,98 @@ describe("PMF: Install Interface", () => {
                 package: packageName,
                 registry: packageRegistry,
                 version: packageVersion
+            });
+        });
+
+        describe("Updating the global schema", () => {
+            const expectTestSchemaMgmt = async (opts: {
+                schemaExists: boolean;
+                newProfileType: boolean;
+                version?: string;
+                lastVersion?: string;
+            }) => {
+                const oneOldPlugin: IPluginJson = {
+                    plugin1: {
+                        package: "plugin1",
+                        registry: packageRegistry,
+                        version: "1.2.3"
+                    }
+                };
+                if (opts.newProfileType) {
+                    const schema = { ...mockSchema, schemaVersion: opts.version };
+                    mocks.ConfigurationLoader_load.mockReturnValue({
+                        profiles: [
+                            schema
+                        ]
+                    } as any);
+                }
+
+                mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValueOnce(opts.schemaExists);
+                jest.spyOn(path, "normalize").mockReturnValue("testing");
+                jest.spyOn(fs, "lstatSync").mockReturnValue({
+                    isSymbolicLink: jest.fn().mockReturnValue(true)
+                } as any);
+                mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
+
+                if (opts.lastVersion) {
+                    mocks.ProfileInfo.readExtendersJsonFromDisk.mockReturnValueOnce({
+                        profileTypes: {
+                            "test-type": {
+                                from: [oneOldPlugin.plugin1.package],
+                                version: opts.lastVersion,
+                                latestFrom: oneOldPlugin.plugin1.package
+                            }
+                        }
+                    });
+                }
+
+                setResolve(packageName);
+                await install(packageName, packageRegistry);
+                if (opts.schemaExists) {
+                    expect(mocks.ConfigSchema_updateSchema).toHaveBeenCalled();
+                } else {
+                    expect(mocks.ConfigSchema_updateSchema).not.toHaveBeenCalled();
+                }
+
+                if (opts.version && opts.lastVersion) {
+                    if (versionGreaterThan(opts.version, opts.lastVersion)) {
+                        expect(mocks.ProfileInfo.writeExtendersJson).toHaveBeenCalled();
+                    } else {
+                        expect(mocks.ProfileInfo.writeExtendersJson).not.toHaveBeenCalled();
+                    }
+                }
+            };
+            it("should update the schema to contain the new profile type", async () => {
+                expectTestSchemaMgmt({
+                    schemaExists: true,
+                    newProfileType: true
+                });
+            });
+
+            it("should not update the schema if it doesn't exist", async () => {
+                expectTestSchemaMgmt({
+                    schemaExists: false,
+                    newProfileType: true
+                });
+            });
+
+            it("updates the schema with a newer schema version than the one present", () => {
+                expectTestSchemaMgmt({
+                    schemaExists: true,
+                    newProfileType: true,
+                    version: "2.0.0",
+                    lastVersion: "1.0.0"
+                });
+            });
+
+            it("doesn't update the schema with an older schema version than the one present", () => {
+                expectTestSchemaMgmt({
+                    schemaExists: true,
+                    newProfileType: true,
+                    version: "1.0.0",
+                    lastVersion: "2.0.0"
+                });
             });
         });
 

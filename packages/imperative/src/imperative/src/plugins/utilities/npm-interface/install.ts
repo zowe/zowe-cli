@@ -12,6 +12,7 @@
 import { PMFConstants } from "../PMFConstants";
 import * as path from "path";
 import * as fs from "fs";
+import * as jsonfile from "jsonfile";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { Logger } from "../../../../../logger";
@@ -24,6 +25,10 @@ import { PluginManagementFacility } from "../../PluginManagementFacility";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
 import { UpdateImpConfig } from "../../../UpdateImpConfig";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
+import { fileURLToPath, pathToFileURL } from "url";
+import { IProfileTypeConfiguration } from "../../../../../profiles";
+import * as semver from "semver";
+import { ProfileInfo } from "../../../../../config";
 
 /**
  * Common function that abstracts the install process. This function should be called for each
@@ -134,14 +139,85 @@ export async function install(packageLocation: string, registry: string, install
         const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
         iConsole.debug(`Checking for global team configuration files to update.`);
-        if (PMFConstants.instance.PLUGIN_USING_CONFIG &&
-            PMFConstants.instance.PLUGIN_CONFIG.layers.filter((layer) => layer.global && layer.exists).length > 0)
+        if (PMFConstants.instance.PLUGIN_USING_CONFIG)
         {
             // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
             // This might be needed outside of PLUGIN_USING_CONFIG scenarios, but we haven't had issues with other APIs before
-            if (Array.isArray(pluginImpConfig.profiles)) {
+            const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
+            if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
                 UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
-                ConfigSchema.updateSchema({ layer: "global" });
+                const schemaUri = new URL(globalLayer.properties.$schema, pathToFileURL(globalLayer.path));
+                const schemaPath = fileURLToPath(schemaUri);
+                if (fs.existsSync(schemaPath)) {
+                    let loadedSchema: IProfileTypeConfiguration[];
+                    try {
+                        // load schema from disk to prevent removal of profile types from other applications
+                        loadedSchema = ConfigSchema.loadSchema(jsonfile.readFileSync(schemaPath));
+                    } catch (err) {
+                        iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
+                    }
+
+                    // Only update global schema if we were able to load it from disk
+                    if (loadedSchema != null) {
+                        const existingTypes = loadedSchema.map((obj) => obj.type);
+                        const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
+
+                        // Helper function to update extenders.json object during plugin install.
+                        // Returns true if the object was updated, and false otherwise
+                        const updateExtendersJson = (profile: IProfileTypeConfiguration): boolean => {
+                            if (!(profile.type in extendersJson.profileTypes)) {
+                                // If the type doesn't exist, add it to extenders.json and return
+                                extendersJson.profileTypes[profile.type] = {
+                                    from: [packageInfo.name],
+                                    version: profile.schemaVersion
+                                };
+                                return true;
+                            }
+
+                            // Otherwise, only update extenders.json if the schema version is newer
+                            const existingTypeInfo = extendersJson.profileTypes[profile.type];
+                            if (semver.valid(existingTypeInfo.version)) {
+                                if (profile.schemaVersion && semver.lt(profile.schemaVersion, existingTypeInfo.version)) {
+                                    return false;
+                                }
+                            }
+
+                            extendersJson.profileTypes[profile.type] = {
+                                from: [packageInfo.name],
+                                version: profile.schemaVersion
+                            };
+                            return true;
+                        };
+
+                        // Determine new profile types to add to schema
+                        let shouldUpdate = false;
+                        for (const profile of pluginImpConfig.profiles) {
+                            if (!(profile.type in existingTypes)) {
+                                loadedSchema.push(profile);
+                            } else {
+                                const existingType = loadedSchema.find((obj) => obj.type === profile.type);
+                                if (semver.valid(existingType.schemaVersion)) {
+                                    if (semver.gt(profile.schemaVersion, existingType.schemaVersion)) {
+                                        existingType.schema = profile.schema;
+                                        existingType.schemaVersion = profile.schemaVersion;
+                                    }
+                                } else {
+                                    existingType.schema = profile.schema;
+                                    existingType.schemaVersion = profile.schemaVersion;
+                                }
+                            }
+                            shouldUpdate = shouldUpdate || updateExtendersJson(profile);
+                        }
+
+                        if (shouldUpdate) {
+                            // Update extenders.json (if necessary) after installing the plugin
+                            ProfileInfo.writeExtendersJson(extendersJson);
+                        }
+                        const schema = ConfigSchema.buildSchema(loadedSchema);
+                        ConfigSchema.updateSchema({ layer: "global", schema });
+                        jsonfile.writeFileSync(schemaPath, schema, { spaces: 4 });
+                    }
+                }
             }
         }
 

@@ -20,6 +20,7 @@ jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 
 import * as fs from "fs";
+import * as jsonfile from "jsonfile";
 import { Console } from "../../../../../console";
 import { sync } from "cross-spawn";
 import { ImperativeError } from "../../../../../error";
@@ -29,7 +30,9 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { findNpmOnPath } from "../../../../src/plugins/utilities/NpmFunctions";
 import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
-
+import { ConfigSchema, ProfileInfo } from "../../../../../config";
+import mockSchema from "../../__resources__/schema";
+import { ExecUtils } from "../../../../../utilities";
 
 describe("PMF: Uninstall Interface", () => {
     // Objects created so types are correct.
@@ -200,6 +203,77 @@ describe("PMF: Uninstall Interface", () => {
             // Validate the install
             wasSpawnSyncCallValid(packageName);
             expect(caughtError.message).toContain("Failed to uninstall plugin, install folder still exists");
+        });
+    });
+
+    describe("Schema management", () => {
+        const getBlockMocks = () => {
+            jest.spyOn(fs, "existsSync").mockRestore();
+            return {
+                ConfigSchema: {
+                    buildSchema: jest.spyOn(ConfigSchema, "buildSchema").mockImplementation(),
+                    loadSchema: jest.spyOn(ConfigSchema, "loadSchema").mockReturnValueOnce([mockSchema]),
+                    updateSchema: jest.spyOn(ConfigSchema, "updateSchema").mockImplementation()
+                },
+                fs: {
+                    existsSync: jest.spyOn(fs, "existsSync").mockReturnValueOnce(false)
+                },
+                jsonfile: {
+                    // avoid throwing error during plugin uninstall by marking plug-in folder as non-existent
+                    writeFileSync: jest.spyOn(jsonfile, "writeFileSync").mockImplementation()
+                },
+                ExecUtils: {
+                    spawnAndGetOutput: jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation()
+                }
+            };
+        };
+
+        const expectTestSchemaMgmt = (opts: { schemaUpdated?: boolean }) => {
+            const pluginJsonFile: IPluginJson = {
+                a: {
+                    package: "a",
+                    registry: packageRegistry,
+                    version: "3.2.1"
+                },
+                plugin2: {
+                    package: "plugin1",
+                    registry: packageRegistry,
+                    version: "1.2.3"
+                }
+            };
+
+            mocks.readFileSync.mockReturnValue(pluginJsonFile as any);
+            const blockMocks = getBlockMocks();
+            if (opts.schemaUpdated) {
+                blockMocks.fs.existsSync.mockReturnValueOnce(true);
+                jest.spyOn(ProfileInfo, "readExtendersJsonFromDisk").mockReturnValue({
+                    profileTypes: {
+                        "test-type": {
+                            from: ["a"],
+                        }
+                    }
+                });
+            }
+            uninstall(packageName);
+
+            // Check that schema was updated, if it was supposed to update
+            if (opts.schemaUpdated) {
+                expect(blockMocks.ConfigSchema.buildSchema).toHaveBeenCalled();
+                expect(blockMocks.ConfigSchema.updateSchema).toHaveBeenCalled();
+                expect(blockMocks.jsonfile.writeFileSync).toHaveBeenCalled();
+            } else {
+                expect(blockMocks.ConfigSchema.buildSchema).not.toHaveBeenCalled();
+                expect(blockMocks.ConfigSchema.updateSchema).not.toHaveBeenCalled();
+                expect(blockMocks.jsonfile.writeFileSync).not.toHaveBeenCalledTimes(2);
+            }
+        };
+
+        it("Removes a type from the schema if the plug-in is the last source", () => {
+            expectTestSchemaMgmt({ schemaUpdated: true });
+        });
+
+        it("Does not modify the schema if another source contributes to that profile type", () => {
+            expectTestSchemaMgmt({ schemaUpdated: false });
         });
     });
 });
