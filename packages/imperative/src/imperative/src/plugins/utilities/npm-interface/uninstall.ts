@@ -93,8 +93,8 @@ export function uninstall(packageName: string): void {
             const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
             if (globalLayer) {
                 const schemaUri = new URL(globalLayer.properties.$schema, pathToFileURL(globalLayer.path));
-                const schemaPath = fileURLToPath(schemaUri);
-                if (fs.existsSync(schemaPath)) {
+                const schemaPath = schemaUri.protocol === "file:" ? fileURLToPath(schemaUri) : undefined;
+                if (schemaPath && fs.existsSync(schemaPath)) {
                     const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
                     const pluginTypes = Object.keys(extendersJson.profileTypes)
                         .filter((type) => type in extendersJson.profileTypes &&

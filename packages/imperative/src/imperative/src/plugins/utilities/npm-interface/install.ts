@@ -146,8 +146,8 @@ export async function install(packageLocation: string, registry: string, install
             if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
                 UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
                 const schemaUri = new URL(globalLayer.properties.$schema, pathToFileURL(globalLayer.path));
-                const schemaPath = fileURLToPath(schemaUri);
-                if (fs.existsSync(schemaPath)) {
+                const schemaPath = schemaUri.protocol === "file:" ? fileURLToPath(schemaUri) : undefined;
+                if (schemaPath && fs.existsSync(schemaPath)) {
                     let loadedSchema: IProfileTypeConfiguration[];
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
