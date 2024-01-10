@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as jsonfile from "jsonfile";
 import * as path from "path";
 import { PMFConstants } from "../PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
@@ -19,6 +20,9 @@ import { ImperativeError } from "../../../../../error";
 import { ExecUtils, TextUtils } from "../../../../../utilities";
 import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
+import { ConfigSchema, ProfileInfo } from "../../../../../config";
+import { fileURLToPath, pathToFileURL } from "url";
+import { IProfileTypeConfiguration } from "../../../../../profiles";
 const npmCmd = findNpmOnPath();
 
 /**
@@ -82,6 +86,71 @@ export function uninstall(packageName: string): void {
         const installFolder = path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, npmPackage);
         if (fs.existsSync(installFolder)) {
             throw new Error("Failed to uninstall plugin, install folder still exists:\n  " + installFolder);
+        }
+
+        if (PMFConstants.instance.PLUGIN_USING_CONFIG) {
+            // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
+            // This might be needed outside of PLUGIN_USING_CONFIG scenarios, but we haven't had issues with other APIs before
+            const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
+            if (globalLayer) {
+                const schemaUri = new URL(globalLayer.properties.$schema, pathToFileURL(globalLayer.path));
+                const schemaPath = fileURLToPath(schemaUri);
+                if (fs.existsSync(schemaPath)) {
+                    const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
+                    const pluginTypes = Object.keys(extendersJson.profileTypes)
+                        .filter((type) => type in extendersJson.profileTypes &&
+                            extendersJson.profileTypes[type].from.includes(npmPackage));
+                    const typesToRemove: string[] = [];
+                    if (pluginTypes.length > 0) {
+                        // Only remove a profile type contributed by this plugin if its the single source for that type.
+                        for (const profileType of pluginTypes) {
+                            const typeInfo = extendersJson.profileTypes[profileType];
+                            if (typeInfo.from.length > 1) {
+                                // If there are other sources, remove the version for that type if this plugin provides the
+                                // latest version. This will allow the next source to contribute a different schema version.
+                                if (typeInfo.latestFrom === npmPackage) {
+                                    extendersJson.profileTypes[profileType] = {
+                                        ...typeInfo,
+                                        from: typeInfo.from.filter((v) => v !== npmPackage),
+                                        latestFrom: undefined,
+                                        version: undefined
+                                    };
+                                } else {
+                                    extendersJson.profileTypes[profileType] = {
+                                        ...typeInfo,
+                                        from: typeInfo.from.filter((v) => v !== npmPackage)
+                                    };
+                                }
+                            } else {
+                                extendersJson.profileTypes[profileType] = {
+                                    ...typeInfo,
+                                    from: typeInfo.from.filter((v) => v !== npmPackage)
+                                };
+                                typesToRemove.push(profileType);
+                            }
+                        }
+                        ProfileInfo.writeExtendersJson(extendersJson);
+                    }
+
+                    let loadedSchema: IProfileTypeConfiguration[];
+                    try {
+                        // load schema from disk to prevent removal of profile types from other applications
+                        loadedSchema = ConfigSchema.loadSchema(jsonfile.readFileSync(schemaPath));
+                    } catch (err) {
+                        iConsole.error("Error when removing profile type for plugin %s: failed to parse schema", npmPackage);
+                    }
+
+                    // Only update global schema if we were able to load it from disk
+                    if (loadedSchema != null) {
+                        if (typesToRemove.length > 0) {
+                            loadedSchema = loadedSchema.filter((typeCfg) => !typesToRemove.includes(typeCfg.type));
+                            const schema = ConfigSchema.buildSchema(loadedSchema);
+                            ConfigSchema.updateSchema({ layer: "global", schema });
+                            jsonfile.writeFileSync(schemaPath, schema, { spaces: 4 });
+                        }
+                    }
+                }
+            }
         }
 
         iConsole.info("Uninstall complete");
