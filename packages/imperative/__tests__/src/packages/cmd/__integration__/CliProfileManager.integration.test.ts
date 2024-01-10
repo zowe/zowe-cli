@@ -84,7 +84,7 @@ describe("Cli Profile Manager", () => {
 
         let caughtError;
         try {
-            const manager = new CliProfileManager({
+            new CliProfileManager({
                 profileRootDirectory: profileDir,
                 type: profileTypeOne,
                 logger: testLogger,
