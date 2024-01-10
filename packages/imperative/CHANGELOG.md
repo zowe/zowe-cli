@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.20.2`
 
 - BugFix: Fixed issue when a property is not found in `ProfileInfo.updateProperty({forceUpdate: true})`. [zowe-explorer#2493](https://github.com/zowe/vscode-extension-for-zowe/issues/2493)
 
