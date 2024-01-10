@@ -192,7 +192,7 @@ export async function install(packageLocation: string, registry: string, install
                         // Determine new profile types to add to schema
                         let shouldUpdate = false;
                         for (const profile of pluginImpConfig.profiles) {
-                            if (!(profile.type in existingTypes)) {
+                            if (!existingTypes.includes(profile.type)) {
                                 loadedSchema.push(profile);
                             } else {
                                 const existingType = loadedSchema.find((obj) => obj.type === profile.type);
