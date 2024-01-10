@@ -1040,6 +1040,31 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(updateKnownPropertySpy).toHaveBeenCalledWith({ ...profileOptions, mergedArgs, osLocInfo });
         });
 
+        it("should succeed forceUpdating a property even if the property doesn't exist", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const storeSpy = jest.spyOn(ConfigAutoStore, "_storeSessCfgProps").mockImplementation(jest.fn());
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "LPAR4",
+                profileType: "dummy",
+                property: "DOES_NOT_EXIST",
+                value: true,
+                forceUpdate: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(storeSpy).toHaveBeenCalledWith({
+                config: profInfo.getTeamConfig(), profileName: "LPAR4", profileType: "dummy",
+                defaultBaseProfileName: "base_glob",
+                propsToStore: [ "DOES_NOT_EXIST" ], sessCfg: { "DOES_NOT_EXIST": true }, setSecure : undefined,
+            });
+        });
+
         it("should attempt to store session config properties without adding profile types to the loadedConfig", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
