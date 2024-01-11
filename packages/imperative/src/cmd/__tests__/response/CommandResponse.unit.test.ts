@@ -289,7 +289,7 @@ describe("Command Response", () => {
         expect(response.buildJsonResponse().stderr.toString()).toEqual(beforeMessage + "\n" + duringMessage + "\n" + afterMessage + "\n");
     });
 
-    it("should not show a progress bar if FORCE_COLOR is set to 0", () => {  // eslint-disable-line jest/no-done-callback
+    it("should not show a progress bar if FORCE_COLOR is set to 0", () => {
         process.env.FORCE_COLOR = "0";
         const response = new CommandResponse({ silent: false, responseFormat: "default", stream });
         const status: ITaskWithStatus = {
@@ -306,7 +306,7 @@ describe("Command Response", () => {
         expect((response.progress as any).mProgressBarInterval).not.toBeDefined();
     });
 
-    it("should not show a progress bar if CI is set", () => {  // eslint-disable-line jest/no-done-callback
+    it("should not show a progress bar if CI is set", () => {
         process.env.CI = "true";
         jest.spyOn(TextUtils, "chalk").mockImplementation(() => {
             return {level: 1, enabled: true};
