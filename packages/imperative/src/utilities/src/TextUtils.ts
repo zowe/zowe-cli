@@ -300,7 +300,7 @@ export class TextUtils {
         const mChalk = require("chalk");
         // chalk is supposed to handle this, but I think it only does so the first time it is loaded
         // so we need to check ourselves in case we've changed the environmental variables
-        if (process.env.FORCE_COLOR in ["1", "2", "3", "true"]) { mChalk.enabled = true; }
+        if (process.env.FORCE_COLOR != null && ["1", "2", "3", "true"].includes(process.env.FORCE_COLOR)) { mChalk.enabled = true; }
         if (process.env.MARKDOWN_GEN != null || process.env.FORCE_COLOR == "0") { mChalk.enabled = false; }
         if (!mChalk.enabled) { mChalk.level = 0; }
         else if (process.env.FORCE_COLOR != null) {

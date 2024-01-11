@@ -18,7 +18,7 @@ import { inspect } from "util";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { IO } from "../../../io";
 import { OUTPUT_FORMAT } from "../..";
-import { CliUtils, IDaemonResponse } from "../../../utilities";
+import { CliUtils, IDaemonResponse, TextUtils } from "../../../utilities";
 
 const beforeForceColor = process.env.FORCE_COLOR;
 
@@ -88,6 +88,9 @@ chalk.red = jest.fn((str: string) => {
 const ORIGINAL_STDOUT_WRITE = process.stdout.write;
 const ORIGINAL_STDERR_WRITE = process.stderr.write;
 
+let originalCI: any;
+let originalForceColor: any;
+
 describe("Command Response", () => {
 
     beforeEach(() => {
@@ -107,15 +110,22 @@ describe("Command Response", () => {
     beforeAll(() => {
         IO.createDirsSyncFromFilePath(testFile);
         stream = require("fs").createWriteStream(testFile);
+        originalCI = process.env.CI;
+        originalForceColor = process.env.FORCE_COLOR;
+        delete process.env.CI;
+        delete process.env.FORCE_COLOR;
     });
     afterAll(() => {
         if (stream != null) {
             stream.end();
         }
         require("rimraf").sync(testFile);
+        process.env.CI = originalCI;
+        process.env.FORCE_COLOR = originalForceColor;
     });
     afterEach(() => {
         delete process.env.FORCE_COLOR;
+        delete process.env.CI;
     });
 
     it("If we create a progress bar, an interval should be set to update the bar. " +
@@ -277,6 +287,43 @@ describe("Command Response", () => {
         expect(stderrMsg).toMatch(new RegExp(`^Message before progress bar$\n^.*Message during progress bar$\n^Message after progress bar`, 'm'));
         expect(response.buildJsonResponse().stdout.toString()).toEqual(beforeMessage + "\n" + duringMessage + "\n" + afterMessage + "\n");
         expect(response.buildJsonResponse().stderr.toString()).toEqual(beforeMessage + "\n" + duringMessage + "\n" + afterMessage + "\n");
+    });
+
+    it("should not show a progress bar if FORCE_COLOR is set to 0", () => {  // eslint-disable-line jest/no-done-callback
+        process.env.FORCE_COLOR = "0";
+        const response = new CommandResponse({ silent: false, responseFormat: "default", stream });
+        const status: ITaskWithStatus = {
+            statusMessage: "Making a bar",
+            percentComplete: 10,
+            stageName: TaskStage.IN_PROGRESS
+        };
+        response.progress.startBar(
+            {
+                task: status,
+                stream
+            });
+        expect((response as any).mProgressBar).not.toBeDefined(); // access private fields
+        expect((response.progress as any).mProgressBarInterval).not.toBeDefined();
+    });
+
+    it("should not show a progress bar if CI is set", () => {  // eslint-disable-line jest/no-done-callback
+        process.env.CI = "true";
+        jest.spyOn(TextUtils, "chalk").mockImplementation(() => {
+            return {level: 1, enabled: true};
+        });
+        const response = new CommandResponse({ silent: false, responseFormat: "default", stream });
+        const status: ITaskWithStatus = {
+            statusMessage: "Making a bar",
+            percentComplete: 10,
+            stageName: TaskStage.IN_PROGRESS
+        };
+        response.progress.startBar(
+            {
+                task: status,
+                stream
+            });
+        expect((response as any).mProgressBar).not.toBeDefined(); // access private fields
+        expect((response.progress as any).mProgressBarInterval).not.toBeDefined();
     });
 
     it("should allow us to create an instance", () => {
