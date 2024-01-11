@@ -33,6 +33,8 @@ import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 import { ConfigSchema, ProfileInfo } from "../../../../../config";
 import mockSchema from "../../__resources__/schema";
 import { ExecUtils } from "../../../../../utilities";
+import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
+import { updateAndGetRemovedTypes } from "../../../../src/plugins/utilities/npm-interface/uninstall";
 
 describe("PMF: Uninstall Interface", () => {
     // Objects created so types are correct.
@@ -276,4 +278,106 @@ describe("PMF: Uninstall Interface", () => {
             expectTestSchemaMgmt({ schemaUpdated: false });
         });
     });
+
+    describe("updateAndGetRemovedTypes", () => {
+        const getBlockMocks = () => {
+            const profileInfo = {
+                readExtendersJsonFromDisk: jest.spyOn(ProfileInfo, "readExtendersJsonFromDisk"),
+                writeExtendersJson: jest.spyOn(ProfileInfo, "writeExtendersJson").mockImplementation(),
+            };
+
+            return {
+                profileInfo,
+            };
+        };
+
+        const expectUpdateExtendersJson = (shouldUpdate: {
+            extJson: boolean;
+            schema?: boolean;
+        }, extendersJson: IExtendersJsonOpts) => {
+            const blockMocks = getBlockMocks();
+            blockMocks.profileInfo.readExtendersJsonFromDisk.mockReturnValue(extendersJson);
+
+            const hasMultipleSources = extendersJson.profileTypes["some-type"].from.length > 1;
+            const wasLatestSource = extendersJson.profileTypes["some-type"].latestFrom === "aPluginPackage";
+
+            const typesToRemove = updateAndGetRemovedTypes("aPluginPackage");
+            if (shouldUpdate.extJson) {
+                expect(blockMocks.profileInfo.writeExtendersJson).toHaveBeenCalled();
+            } else {
+                expect(blockMocks.profileInfo.writeExtendersJson).not.toHaveBeenCalled();
+                return;
+            }
+
+            const newExtendersObj = blockMocks.profileInfo.writeExtendersJson.mock.calls[0][0];
+
+            if (hasMultipleSources) {
+                expect(blockMocks.profileInfo.writeExtendersJson).not.toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        profileTypes: {
+                            "some-type": {
+                                latestFrom: undefined
+                            }
+                        }
+                    })
+                );
+
+                const newFrom = newExtendersObj.profileTypes["some-type"].from;
+                expect(newFrom).not.toContain("aPluginPackage");
+            } else {
+                expect("some-type" in newExtendersObj.profileTypes).toBe(false);
+            }
+
+            if (wasLatestSource && hasMultipleSources) {
+                expect(newExtendersObj.profileTypes["some-type"].latestFrom).toBeUndefined();
+                expect(newExtendersObj.profileTypes["some-type"].version).toBeUndefined();
+            }
+
+            expect(typesToRemove.length > 0).toBe(shouldUpdate.schema ?? false);
+        };
+
+        it("package is only source for profile type", () => {
+            expectUpdateExtendersJson({ extJson: true, schema: true }, {
+                profileTypes: {
+                    "some-type": {
+                        from: ["aPluginPackage"],
+                    }
+                }
+            });
+        });
+
+        it("package is latest source of profile type", () => {
+            expectUpdateExtendersJson({ extJson: true }, {
+                profileTypes: {
+                    "some-type": {
+                        from: ["aPluginPackage", "someOtherPlugin"],
+                        latestFrom: "aPluginPackage"
+                    }
+                }
+            });
+        });
+
+        it("profile type has multiple sources", () => {
+            expectUpdateExtendersJson({ extJson: true }, {
+                profileTypes: {
+                    "some-type": {
+                        from: ["aPluginPackage", "someOtherPlugin"],
+                    }
+                }
+            });
+        });
+
+        it("returns an empty list when package does not contribute any profile types", () => {
+            const blockMocks = getBlockMocks();
+            blockMocks.profileInfo.readExtendersJsonFromDisk.mockReturnValue({
+                profileTypes: {
+                    "some-type": {
+                        from: ["anotherPkg"]
+                    }
+                }
+            });
+            expect(updateAndGetRemovedTypes("aPluginPackage").length).toBe(0);
+        });
+    });
 });
+
