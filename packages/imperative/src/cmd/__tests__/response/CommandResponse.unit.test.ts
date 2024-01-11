@@ -126,6 +126,7 @@ describe("Command Response", () => {
     afterEach(() => {
         delete process.env.FORCE_COLOR;
         delete process.env.CI;
+        jest.restoreAllMocks();
     });
 
     it("If we create a progress bar, an interval should be set to update the bar. " +
