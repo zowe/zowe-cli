@@ -26,6 +26,7 @@ import { ConfigAutoStore } from "../src/ConfigAutoStore";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error";
 import { IProfInfoUpdatePropOpts } from "../src/doc/IProfInfoUpdatePropOpts";
+import { ConfigUtils } from "../src/ConfigUtils";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -1021,6 +1022,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             };
             jest.spyOn(profInfo as any, "mergeArgsForProfile").mockReturnValue(mergedArgs);
             const updateKnownPropertySpy = jest.spyOn(profInfo as any, "updateKnownProperty").mockResolvedValue(true);
+            const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
             const profileOptions: IProfInfoUpdatePropOpts = {
                 profileName: "LPAR4",
                 profileType: "dummy",
@@ -1038,6 +1040,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(mergedArgs.knownArgs[0].argLoc.jsonLoc).toEqual("profiles.LPAR4.properties.rejectUnauthorized");
             const osLocInfo = { global: false, user: false, name: "LPAR4", path: path.join(teamProjDir, `${testAppNm}.config.json`) };
             expect(updateKnownPropertySpy).toHaveBeenCalledWith({ ...profileOptions, mergedArgs, osLocInfo });
+            expect(jsonPathMatchesSpy).toHaveBeenCalledTimes(1); // Verify that profile names are matched correctly
         });
 
         it("should succeed forceUpdating a property even if the property doesn't exist", async () => {
@@ -1161,6 +1164,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should update the given property and return true", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
+            const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
 
             const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             const ret = await profInfo.updateKnownProperty({ mergedArgs: prof, property: "host", value: "example.com" });
@@ -1168,6 +1172,7 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             expect(newHost).toEqual("example.com");
             expect(ret).toBe(true);
+            expect(jsonPathMatchesSpy).toHaveBeenCalled(); // Verify that profile names are matched correctly
         });
 
         it("should remove the given property if the value specified if undefined", async () => {
