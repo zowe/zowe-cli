@@ -196,7 +196,7 @@ export async function install(packageLocation: string, registry: string, install
                             } else {
                                 const existingType = loadedSchema.find((obj) => obj.type === profile.type);
                                 if (semver.valid(existingType.schemaVersion)) {
-                                    if (semver.gt(profile.schemaVersion, existingType.schemaVersion)) {
+                                    if (semver.valid(profile.schemaVersion) && semver.gt(profile.schemaVersion, existingType.schemaVersion)) {
                                         existingType.schema = profile.schema;
                                         existingType.schemaVersion = profile.schemaVersion;
                                     }
