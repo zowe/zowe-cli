@@ -1640,7 +1640,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             });
         });
         describe("buildSchema", () => {
-            // TODO
             it("builds a schema with the default types", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
