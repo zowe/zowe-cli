@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Hid the progress bar if `CI` environment variable is set, or if `FORCE_COLOR` environment variable is set to `0`. [#1845](https://github.com/zowe/zowe-cli/issues/1845)
+
 ## `7.21.2`
 
 - BugFix: Correct extra character being displayed at the end of lines when issuing `zowe files compare` on Windows. [#1992](https://github.com/zowe/zowe-cli/issues/1992)
