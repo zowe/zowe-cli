@@ -54,6 +54,4 @@ export type IExtenderTypeInfo = {
     sourceApp: string;
     // The schema for the new profile type.
     schema: IProfileSchema;
-    // A version for the new profile type's schema (optional).
-    version?: string;
 };

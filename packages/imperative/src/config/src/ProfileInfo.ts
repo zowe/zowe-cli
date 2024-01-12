@@ -1365,45 +1365,45 @@ export class ProfileInfo {
             // Profile type was already contributed, determine whether its metadata should be updated
             const typeMetadata = this.mExtendersJson.profileTypes[profileType];
 
-            if (semver.valid(typeInfo.version) != null) {
+            if (semver.valid(typeInfo.schema.version) != null) {
                 // The provided version is SemVer-compliant; compare against previous version (if exists)
                 const prevTypeVersion = typeMetadata.version;
                 if (prevTypeVersion != null) {
-                    if (semver.gt(typeInfo.version, prevTypeVersion)) {
+                    if (semver.gt(typeInfo.schema.version, prevTypeVersion)) {
                         // Update the schema for this profile type, as its newer than the installed version
                         this.mExtendersJson.profileTypes[profileType] = {
-                            version: typeInfo.version,
+                            version: typeInfo.schema.version,
                             from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp]),
                             latestFrom: typeInfo.sourceApp
                         };
 
                         this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
 
-                        if (semver.major(typeInfo.version) != semver.major(prevTypeVersion)) {
+                        if (semver.major(typeInfo.schema.version) != semver.major(prevTypeVersion)) {
                             // Warn user if new major schema version is specified
                             successMsg =
-                            `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.version}.\n`.concat(
+                            `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n`.concat(
                                 `The following applications may be affected: ${typeMetadata.from.filter((src) => src !== typeInfo.sourceApp)}`
                             );
                         }
-                    } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.version)) {
+                    } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.schema.version)) {
                         // Warn user if previous schema version is a newer major version
                         return {
                             success: false,
                             info: `Profile type ${profileType} expects a newer schema version than provided by ${typeInfo.sourceApp}\n`.concat(
-                                `(expected: v${typeInfo.version}, installed: v${prevTypeVersion})`)
+                                `(expected: v${typeInfo.schema.version}, installed: v${prevTypeVersion})`)
                         };
                     }
                 } else {
                     // No schema version specified previously; update the schema
                     this.mExtendersJson.profileTypes[profileType] = {
-                        version: typeInfo.version,
+                        version: typeInfo.schema.version,
                         from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp]),
                         latestFrom: typeInfo.sourceApp
                     };
                     this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
                 }
-            } else if (typeInfo.version != null) {
+            } else if (typeInfo.schema.version != null) {
                 // Warn user if this schema does not provide a valid version number
                 return {
                     success: false,
@@ -1413,9 +1413,9 @@ export class ProfileInfo {
         } else {
             // Newly-contributed profile type; track in extenders.json
             this.mExtendersJson.profileTypes[profileType] = {
-                version: typeInfo.version,
+                version: typeInfo.schema.version,
                 from: [typeInfo.sourceApp],
-                latestFrom: typeInfo.version ? typeInfo.sourceApp : undefined
+                latestFrom: typeInfo.schema.version ? typeInfo.sourceApp : undefined
             };
             this.updateSchemaAtLayer(profileType, typeInfo.schema);
         }

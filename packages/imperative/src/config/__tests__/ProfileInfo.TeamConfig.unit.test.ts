@@ -1498,7 +1498,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         });
 
         describe("addProfileTypeToSchema", () => {
-            const expectAddToSchemaTester = async (testCase: { schema: any; previousVersion?: string; version?: string }, expected: {
+            const expectAddToSchemaTester = async (testCase: { schema: any; previousVersion?: string }, expected: {
                 extendersJson: IExtendersJsonOpts,
                 res: {
                     success: boolean;
@@ -1561,7 +1561,7 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             it("only updates a profile type in the schema if the version is newer", async () => {
                 expectAddToSchemaTester(
-                    { previousVersion: "1.0.0", schema: { title: "Mock Schema" } as any, version: "2.0.0" },
+                    { previousVersion: "1.0.0", schema: { title: "Mock Schema", version: "2.0.0" } as any },
                     {
                         extendersJson: {
                             profileTypes: {
@@ -1581,7 +1581,7 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             it("does not update a profile type in the schema if the version is older", async () => {
                 expectAddToSchemaTester(
-                    { previousVersion: "2.0.0", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                    { previousVersion: "2.0.0", schema: { title: "Mock Schema", version: "1.0.0" } as any },
                     {
                         extendersJson: {
                             profileTypes: {
@@ -1601,7 +1601,7 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             it("updates a profile type in the schema - version provided, no previous schema version", async () => {
                 expectAddToSchemaTester(
-                    { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                    { previousVersion: "none", schema: { title: "Mock Schema", version: "1.0.0" } as any },
                     {
                         extendersJson: {
                             profileTypes: {
@@ -1621,7 +1621,7 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             it("does not update the schema if schema version is invalid", async () => {
                 expectAddToSchemaTester(
-                    { previousVersion: "none", schema: { title: "Mock Schema" } as any, version: "1.0.0" },
+                    { previousVersion: "none", schema: { title: "Mock Schema", version: "1.0.0" } as any },
                     {
                         extendersJson: {
                             profileTypes: {
