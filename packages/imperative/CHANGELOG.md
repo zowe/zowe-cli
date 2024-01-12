@@ -4,7 +4,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- LTS Breaking: Remove deprecated V1 'profiles' command group.
+- LTS Breaking: Removed the following:
+  - All 'profiles' commands, since they only worked with now-obsolete V1 profiles.
+  - BasicProfileManager.initialize function
+  - These interfaces:
+    - IProfileManagerInit
+    - IProfileInitialized
 
 ## `8.0.0-next.202401081937`
 
