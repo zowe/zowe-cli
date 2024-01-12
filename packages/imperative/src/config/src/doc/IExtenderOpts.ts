@@ -11,6 +11,22 @@
 
 import { IProfileSchema } from "../../../profiles";
 
+/**
+ * This type corresponds to the `extenders.json` file stored in the CLI home directory.
+ *
+ * Here is an example structure of what `extenders.json` could look like on disk:
+ * ```json
+ * {
+ *     "profileTypes": {
+ *         "banana": {
+ *             "from": ["@zowe/banana-for-zowe-cli", "Zowe Explorer Banana Extension"],
+ *             "version": "v1.1.0",
+ *             "latestFrom": "Zowe Explorer Banana Extension"
+ *         }
+ *     }
+ * }
+ * ```
+ */
 export type IExtendersJsonOpts = {
     // A map of profile types to type metadata.
     // Used to track contributed profile types between Zowe client applications.
@@ -38,6 +54,4 @@ export type IExtenderTypeInfo = {
     sourceApp: string;
     // The schema for the new profile type.
     schema: IProfileSchema;
-    // A version for the new profile type's schema (optional).
-    version?: string;
 };
