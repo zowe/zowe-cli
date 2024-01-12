@@ -19,6 +19,7 @@ import { IConfigSecureProperties } from "../doc/IConfigSecure";
 import { ConfigConstants } from "../ConfigConstants";
 import { IConfigProfile } from "../doc/IConfigProfile";
 import { CredentialManagerFactory } from "../../../security";
+import { ConfigUtils } from "../ConfigUtils";
 
 /**
  * API Class for manipulating config layers.
@@ -200,17 +201,18 @@ export class ConfigSecure extends ConfigApi {
      * @param profileName Profile name to search for
      * @returns Array of secure property names
      */
-    public securePropsForProfile(profileName: string) {
+    public securePropsForProfile(profileName: string): string[] {
         const profilePath = this.mConfig.api.profiles.getProfilePathFromName(profileName);
-        const secureProps = [];
+        const secureProps = new Set<string>();
         for (const propPath of this.secureFields()) {
             const pathSegments = propPath.split(".");  // profiles.XXX.properties.YYY
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            if (profilePath.startsWith(pathSegments.slice(0, -2).join("."))) {
-                secureProps.push(pathSegments.pop());
+            const propProfilePath = pathSegments.slice(0, -2).join(".");
+            if (ConfigUtils.jsonPathMatches(profilePath, propProfilePath)) {
+                secureProps.add(pathSegments.pop());
             }
         }
-        return secureProps;
+        return [...secureProps];
     }
 
     /**
