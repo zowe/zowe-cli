@@ -4,6 +4,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## Recent Changes
 
+- LTS Breaking: Remove deprecated V1 'profiles' command group.
 - BugFix: Include text from a REST response's causeErrors.message property in error messages.
 
 ## `8.0.0-next.202311282012`
