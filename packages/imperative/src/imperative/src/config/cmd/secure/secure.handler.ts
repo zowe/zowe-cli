@@ -11,7 +11,7 @@
 
 import { ICommandArguments, ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { Config, ConfigAutoStore, ConfigConstants, ConfigSchema } from "../../../../../config";
-import { coercePropValue, secureSaveError } from "../../../../../config/src/ConfigUtils";
+import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
 import { ImperativeError } from "../../../../../error";
 import { Logger } from "../../../../../logger";
 import { ConnectionPropsForSessCfg, ISession, Session } from "../../../../../rest";
@@ -36,7 +36,7 @@ export default class SecureHandler implements ICommandHandler {
 
         // Setup the credential vault API for the config
         if (config.api.secure.loadFailed) {
-            throw secureSaveError();
+            throw ConfigUtils.secureSaveError();
         }
 
         if (params.arguments.prune) {
@@ -74,7 +74,7 @@ export default class SecureHandler implements ICommandHandler {
 
                 // Save the value in the config securely
                 if (propValue) {
-                    propValue = coercePropValue(propValue, ConfigSchema.findPropertyType(propName, config.properties));
+                    propValue = ConfigUtils.coercePropValue(propValue, ConfigSchema.findPropertyType(propName, config.properties));
                     config.set(propName, propValue, { secure: true });
                 }
             }
