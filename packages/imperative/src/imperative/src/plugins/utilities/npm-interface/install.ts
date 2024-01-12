@@ -168,7 +168,7 @@ export async function install(packageLocation: string, registry: string, install
                                 // If the type doesn't exist, add it to extenders.json and return
                                 extendersJson.profileTypes[profile.type] = {
                                     from: [packageInfo.name],
-                                    version: profile.schemaVersion
+                                    version: profile.schema.version
                                 };
                                 return true;
                             }
@@ -176,14 +176,14 @@ export async function install(packageLocation: string, registry: string, install
                             // Otherwise, only update extenders.json if the schema version is newer
                             const existingTypeInfo = extendersJson.profileTypes[profile.type];
                             if (semver.valid(existingTypeInfo.version)) {
-                                if (profile.schemaVersion && semver.lt(profile.schemaVersion, existingTypeInfo.version)) {
+                                if (profile.schema.version && semver.lt(profile.schema.version, existingTypeInfo.version)) {
                                     return false;
                                 }
                             }
 
                             extendersJson.profileTypes[profile.type] = {
                                 from: [packageInfo.name],
-                                version: profile.schemaVersion
+                                version: profile.schema.version
                             };
                             return true;
                         };
@@ -195,14 +195,14 @@ export async function install(packageLocation: string, registry: string, install
                                 loadedSchema.push(profile);
                             } else {
                                 const existingType = loadedSchema.find((obj) => obj.type === profile.type);
-                                if (semver.valid(existingType.schemaVersion)) {
-                                    if (semver.valid(profile.schemaVersion) && semver.gt(profile.schemaVersion, existingType.schemaVersion)) {
+                                if (semver.valid(existingType.schema.version)) {
+                                    if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
                                         existingType.schema = profile.schema;
-                                        existingType.schemaVersion = profile.schemaVersion;
+                                        existingType.schema.version = profile.schema.version;
                                     }
                                 } else {
                                     existingType.schema = profile.schema;
-                                    existingType.schemaVersion = profile.schemaVersion;
+                                    existingType.schema.version = profile.schema.version;
                                 }
                             }
                             shouldUpdate = updateExtendersJson(profile) || shouldUpdate;
