@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 imperative-test-cli auth lo fruit
 exitOnFailure "Logging out auth of type fruit failed!" $?

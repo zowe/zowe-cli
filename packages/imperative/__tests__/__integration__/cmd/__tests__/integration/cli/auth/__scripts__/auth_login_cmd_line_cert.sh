@@ -4,9 +4,9 @@ echoVal=${1:?"First parm (echoVal) is required."}
 baseCertFile=${2:?"Second parm (baseCertFile) is required."}
 baseCertKey=${3:?"Third parm (baseCertKey) is required."}
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 # copy our config file and certificate files
 resourceDir=$myScriptDir/../__resources__

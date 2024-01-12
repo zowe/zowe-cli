@@ -6,7 +6,7 @@ REJECT=${3:?"Third parm (REJECT) is required."}
 scriptsDir=${4:?"Fourth parm (scriptsDir) is required."}
 
 # include exitOnFailure function
-. "$scriptsDir/exitOnFailure.sh"
+. "$scriptsDir/../../../../../../__tests__/__scripts__/exitOnFailure.sh"
 
 # copy our config file template
 cp "$scriptsDir/../__resources__/zowe.config_template.json" .

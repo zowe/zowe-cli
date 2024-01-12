@@ -1,12 +1,12 @@
 #!/bin/sh
 
-envColor=$1
-envDescription=$2
-envMoldType=$3
+envColor=${1:?"First parm (envColor) is required."}
+envDescription=${2:?"Second parm (envDescription) is required."}
+envMoldType=${3:?"Third parm (envMoldType) is required."}
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 CMD_CLI_OPT_COLOR="$envColor" CMD_CLI_OPT_BANANA_DESCRIPTION="$envDescription" CMD_CLI_OPT_MOLD_TYPE="$envMoldType" \
     cmd-cli profile mapping-positional
