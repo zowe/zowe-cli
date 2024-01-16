@@ -24,7 +24,6 @@ import { PluginManagementFacility } from "../../PluginManagementFacility";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
 import { UpdateImpConfig } from "../../../UpdateImpConfig";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
-import { fileURLToPath, pathToFileURL } from "url";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
 import { ProfileInfo } from "../../../../../config";
@@ -176,13 +175,12 @@ export async function install(packageLocation: string, registry: string, install
             const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
             if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
                 UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
-                const schemaUri = new URL(globalLayer.properties.$schema, pathToFileURL(globalLayer.path));
-                const schemaPath = schemaUri.protocol === "file:" ? fileURLToPath(schemaUri) : undefined;
-                if (schemaPath && fs.existsSync(schemaPath)) {
+                const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
+                if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
                     let loadedSchema: IProfileTypeConfiguration[];
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
-                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaPath));
+                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
                     } catch (err) {
                         iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
                     }
