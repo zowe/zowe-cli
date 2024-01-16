@@ -20,7 +20,6 @@ import { ExecUtils, TextUtils } from "../../../../../utilities";
 import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
 import { ConfigSchema, ProfileInfo } from "../../../../../config";
-import { fileURLToPath, pathToFileURL } from "url";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 const npmCmd = findNpmOnPath();
 
