@@ -133,13 +133,12 @@ export function uninstall(packageName: string): void {
             // This might be needed outside of PLUGIN_USING_CONFIG scenarios, but we haven't had issues with other APIs before
             const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
             if (globalLayer) {
-                const schemaUri = new URL(globalLayer.properties.$schema, pathToFileURL(globalLayer.path));
-                const schemaPath = schemaUri.protocol === "file:" ? fileURLToPath(schemaUri) : undefined;
-                if (schemaPath && fs.existsSync(schemaPath)) {
+                const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
+                if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
                     let loadedSchema: IProfileTypeConfiguration[];
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
-                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaPath));
+                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
                     } catch (err) {
                         iConsole.error("Error when removing profile type for plugin %s: failed to parse schema", npmPackage);
                     }
