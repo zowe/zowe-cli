@@ -28,6 +28,37 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
 import { ProfileInfo } from "../../../../../config";
+import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
+
+// Helper function to update extenders.json object during plugin install.
+// Returns true if the object was updated, and false otherwise
+const updateExtendersJson = (
+    extendersJson: IExtendersJsonOpts,
+    packageInfo: { name: string; version: string; },
+    profile: IProfileTypeConfiguration): boolean => {
+    if (!(profile.type in extendersJson.profileTypes)) {
+        // If the type doesn't exist, add it to extenders.json and return
+        extendersJson.profileTypes[profile.type] = {
+            from: [packageInfo.name],
+            version: profile.schema.version
+        };
+        return true;
+    }
+
+    // Otherwise, only update extenders.json if the schema version is newer
+    const existingTypeInfo = extendersJson.profileTypes[profile.type];
+    if (semver.valid(existingTypeInfo.version)) {
+        if (profile.schema.version && semver.lt(profile.schema.version, existingTypeInfo.version)) {
+            return false;
+        }
+    }
+
+    extendersJson.profileTypes[profile.type] = {
+        from: [packageInfo.name],
+        version: profile.schema.version
+    };
+    return true;
+};
 
 /**
  * Common function that abstracts the install process. This function should be called for each
@@ -161,33 +192,6 @@ export async function install(packageLocation: string, registry: string, install
                         const existingTypes = loadedSchema.map((obj) => obj.type);
                         const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
 
-                        // Helper function to update extenders.json object during plugin install.
-                        // Returns true if the object was updated, and false otherwise
-                        const updateExtendersJson = (profile: IProfileTypeConfiguration): boolean => {
-                            if (!(profile.type in extendersJson.profileTypes)) {
-                                // If the type doesn't exist, add it to extenders.json and return
-                                extendersJson.profileTypes[profile.type] = {
-                                    from: [packageInfo.name],
-                                    version: profile.schema.version
-                                };
-                                return true;
-                            }
-
-                            // Otherwise, only update extenders.json if the schema version is newer
-                            const existingTypeInfo = extendersJson.profileTypes[profile.type];
-                            if (semver.valid(existingTypeInfo.version)) {
-                                if (profile.schema.version && semver.lt(profile.schema.version, existingTypeInfo.version)) {
-                                    return false;
-                                }
-                            }
-
-                            extendersJson.profileTypes[profile.type] = {
-                                from: [packageInfo.name],
-                                version: profile.schema.version
-                            };
-                            return true;
-                        };
-
                         // Determine new profile types to add to schema
                         let shouldUpdate = false;
                         for (const profile of pluginImpConfig.profiles) {
@@ -205,7 +209,7 @@ export async function install(packageLocation: string, registry: string, install
                                     existingType.schema.version = profile.schema.version;
                                 }
                             }
-                            shouldUpdate = updateExtendersJson(profile) || shouldUpdate;
+                            shouldUpdate = updateExtendersJson(extendersJson, packageInfo, profile) || shouldUpdate;
                         }
 
                         if (shouldUpdate) {
