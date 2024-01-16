@@ -60,7 +60,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { gt as versionGreaterThan } from "semver";
 import { ProfileInfo } from "../../../../../config";
-import mockSchema from "../../__resources__/schema";
+import mockTypeConfig from "../../__resources__/typeConfiguration";
 
 function setResolve(toResolve: string, resolveTo?: string) {
     expectedVal = toResolve;
@@ -116,8 +116,8 @@ describe("PMF: Install Interface", () => {
             }
         });
         mocks.ProfileInfo.writeExtendersJson.mockImplementation();
-        mocks.ConfigSchema_loadSchema.mockReturnValue([mockSchema]);
-        mocks.ConfigurationLoader_load.mockReturnValue({ profiles: [mockSchema] } as any);
+        mocks.ConfigSchema_loadSchema.mockReturnValue([mockTypeConfig]);
+        mocks.ConfigurationLoader_load.mockReturnValue({ profiles: [mockTypeConfig] } as any);
     });
 
     afterAll(() => {
@@ -386,7 +386,7 @@ describe("PMF: Install Interface", () => {
                     }
                 };
                 if (opts.newProfileType) {
-                    const schema = { ...mockSchema, schemaVersion: opts.version };
+                    const schema = { ...mockTypeConfig, schema: { ...mockTypeConfig.schema, version: opts.version } };
                     mocks.ConfigurationLoader_load.mockReturnValue({
                         profiles: [
                             schema
