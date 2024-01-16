@@ -31,7 +31,7 @@ import { readFileSync, writeFileSync } from "jsonfile";
 import { findNpmOnPath } from "../../../../src/plugins/utilities/NpmFunctions";
 import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 import { ConfigSchema, ProfileInfo } from "../../../../../config";
-import mockSchema from "../../__resources__/schema";
+import mockTypeConfig from "../../__resources__/typeConfiguration";
 import { ExecUtils } from "../../../../../utilities";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
 import { updateAndGetRemovedTypes } from "../../../../src/plugins/utilities/npm-interface/uninstall";
@@ -214,7 +214,7 @@ describe("PMF: Uninstall Interface", () => {
             return {
                 ConfigSchema: {
                     buildSchema: jest.spyOn(ConfigSchema, "buildSchema").mockImplementation(),
-                    loadSchema: jest.spyOn(ConfigSchema, "loadSchema").mockReturnValueOnce([mockSchema]),
+                    loadSchema: jest.spyOn(ConfigSchema, "loadSchema").mockReturnValueOnce([mockTypeConfig]),
                     updateSchema: jest.spyOn(ConfigSchema, "updateSchema").mockImplementation()
                 },
                 fs: {

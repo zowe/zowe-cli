@@ -11,7 +11,7 @@
 
 import { IProfileTypeConfiguration } from "../../../..";
 
-const mockSchema: IProfileTypeConfiguration = {
+const mockTypeConfig: IProfileTypeConfiguration = {
     type: "test-type",
     schema: {
         title: "test-type",
@@ -27,4 +27,4 @@ const mockSchema: IProfileTypeConfiguration = {
     }
 };
 
-export default mockSchema;
+export default mockTypeConfig;
