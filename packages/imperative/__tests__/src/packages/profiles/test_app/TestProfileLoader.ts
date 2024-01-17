@@ -9,8 +9,8 @@
 *
 */
 
-import { Logger } from "../../../../../src/logger/src/Logger";
-import { ProfileInfo } from "../../../../../src/config/src/ProfileInfo";
+import { Logger } from "../../../../../src/logger/Logger";
+import { ProfileInfo } from "../../../../../src/config/ProfileInfo";
 import { Log4jsConfig } from "../src/constants/ProfileInfoConstants";
 import { IProfAttrs } from "../../../../../src";
 import * as path from "path";

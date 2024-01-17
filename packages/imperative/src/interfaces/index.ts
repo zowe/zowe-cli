@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./src/types/ImperativeReject";
-export * from "./src/doc/IConstructor";
+export * from "./types/ImperativeReject";
+export * from "./doc/IConstructor";

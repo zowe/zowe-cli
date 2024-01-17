@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./src/doc/IMessageDefinition";
-export * from "./src/CoreMessages";
+export * from "./doc/IMessageDefinition";
+export * from "./CoreMessages";

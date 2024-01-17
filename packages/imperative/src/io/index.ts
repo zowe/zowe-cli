@@ -9,4 +9,4 @@
 *
 */
 
-export * from "./src/IO";
+export * from "./IO";

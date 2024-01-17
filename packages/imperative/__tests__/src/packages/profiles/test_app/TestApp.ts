@@ -11,11 +11,8 @@
 
 import { TestProfileLoader } from "./TestProfileLoader";
 import { TestAppImperativeConfig } from "../src/constants/ProfileInfoConstants";
-import { Logger } from "../../../../../src/logger/src/Logger";
-import { ProfileIO } from "../../../../../src/profiles/src/utils";
-import { AbstractProfileManager } from "../../../../../src/profiles/src/abstract/AbstractProfileManager";
-import { IMetaProfile } from "../../../../../src/profiles/src/doc/definition";
-import { IProfileTypeConfiguration } from "../../../../../src/profiles/src/doc/config/IProfileTypeConfiguration";
+import { CliProfileManager } from "../../../../../src/cmd/profiles/CliProfileManager";
+import { Logger } from "../../../../../src/logger/Logger";
 import * as path from "path";
 
 /* Logic from the now-removed BasicProfileManager.initialize() function. We never create
