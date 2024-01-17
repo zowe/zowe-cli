@@ -9,11 +9,11 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
-import { ImperativeExpect } from "../../../../../expect/src/ImperativeExpect";
-import { ImperativeConfig } from "../../../../../utilities/ImperativeConfig";
-import { TextUtils } from "../../../../../utilities/src/TextUtils";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { ConfigSchema } from "../../../../../src/config/ConfigSchema";
+import { ImperativeExpect } from "../../../../../src/expect/ImperativeExpect";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { TextUtils } from "../../../../../src/utilities/TextUtils";
 
 export default class UpdateSchemasHandler implements ICommandHandler {
     /**

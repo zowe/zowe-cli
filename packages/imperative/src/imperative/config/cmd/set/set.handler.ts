@@ -10,11 +10,11 @@
 */
 
 import * as JSONC from "comment-json";
-import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { ConfigSchema } from "../../../../../config";
-import { coercePropValue, secureSaveError } from "../../../../../config/src/ConfigUtils";
-import { ImperativeError } from "../../../../../error";
-import { ImperativeConfig } from "../../../../../utilities";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { ConfigSchema } from "../../../../../src/config";
+import { coercePropValue, secureSaveError } from "../../../../../src/config/ConfigUtils";
+import { ImperativeError } from "../../../../../src/error";
+import { ImperativeConfig } from "../../../../../src/utilities";
 
 export default class SetHandler implements ICommandHandler {
 

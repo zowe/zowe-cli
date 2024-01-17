@@ -10,9 +10,9 @@
 */
 
 import * as lodash from "lodash";
-import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { ConfigConstants } from "../../../../../config";
-import { ImperativeConfig } from "../../../../../utilities";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { ConfigConstants } from "../../../../../src/config";
+import { ImperativeConfig } from "../../../../../src/utilities";
 
 export default class ListHandler implements ICommandHandler {
     /**

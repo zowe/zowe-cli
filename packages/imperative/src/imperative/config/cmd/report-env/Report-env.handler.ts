@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters, IHandlerResponseApi } from "../../../../../cmd";
+import { ICommandHandler, IHandlerParameters, IHandlerResponseApi } from "../../../../../src/cmd";
 import { ItemId } from "./EnvItems";
 import { EnvQuery, IGetItemOpts } from "./EnvQuery";
-import { TextUtils } from "../../../../../utilities/src/TextUtils";
+import { TextUtils } from "../../../../../src/utilities/TextUtils";
 
 /**
  * Handler to report a user's wroking environment.
