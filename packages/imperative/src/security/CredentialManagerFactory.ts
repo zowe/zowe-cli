@@ -129,7 +129,7 @@ export class CredentialManagerFactory {
 
             if (this.mManager.initialize) {
                 await this.mManager.initialize();
-                const { Logger } = await import("../../logger");
+                const { Logger } = await import("../../src/logger");
                 Logger.getImperativeLogger().debug(`Initialized the "${displayName}" credential manager for "${params.service}".`);
             }
 

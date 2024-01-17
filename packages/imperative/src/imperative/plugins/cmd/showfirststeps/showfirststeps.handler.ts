@@ -9,11 +9,11 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { Logger } from "../../../../../logger";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { Logger } from "../../../../../src/logger";
 import { PMFConstants } from "../../utilities/PMFConstants";
-import { TextUtils } from "../../../../../utilities";
-import { ImperativeError } from "../../../../../error";
+import { TextUtils } from "../../../../../src/utilities";
+import { ImperativeError } from "../../../../../src/error";
 import { PluginManagementFacility } from "../../PluginManagementFacility";
 
 /**

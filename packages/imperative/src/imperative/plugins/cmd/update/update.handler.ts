@@ -9,12 +9,12 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { Logger } from "../../../../../logger";
+import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { Logger } from "../../../../../src/logger";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { update } from "../../utilities/npm-interface";
-import { ImperativeError } from "../../../../../error";
-import { TextUtils } from "../../../../../utilities";
+import { ImperativeError } from "../../../../../src/error";
+import { TextUtils } from "../../../../../src/utilities";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { npmLogin } from "../../utilities/NpmFunctions";

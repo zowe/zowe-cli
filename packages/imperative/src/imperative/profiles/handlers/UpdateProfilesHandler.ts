@@ -9,7 +9,7 @@
 *
 */
 
-import { overroteProfileMessage, profileUpdatedSuccessfullyAndPath, profileReviewMessage } from "../../../../messages";
+import { overroteProfileMessage, profileUpdatedSuccessfullyAndPath, profileReviewMessage } from "../../../../src/messages";
 import { Imperative } from "../../Imperative";
 import { IProfileUpdated, ProfilesConstants } from "../../../../src/profiles";
 import { ICommandHandler, IHandlerParameters } from "../../../../src/cmd";

@@ -10,8 +10,8 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { CliProfileManager, ICommandHandler, IHandlerParameters } from "../../../../cmd";
-import { IImperativeError, ImperativeError } from "../../../../error";
+import { CliProfileManager, ICommandHandler, IHandlerParameters } from "../../../../src/cmd";
+import { IImperativeError, ImperativeError } from "../../../../src/error";
 import { Imperative } from "../../../index";
 import {
     IProfileValidationPlan,
@@ -19,9 +19,9 @@ import {
     IProfileValidationTask,
     ProfilesConstants,
     ProfileValidator
-} from "../../../../profiles";
-import { Logger } from "../../../../logger";
-import { ImperativeConfig } from "../../../../utilities";
+} from "../../../../src/profiles";
+import { Logger } from "../../../../src/logger";
+import { ImperativeConfig } from "../../../../src/utilities";
 
 /**
  * Generic handler for validating a profile and printing a report in response
