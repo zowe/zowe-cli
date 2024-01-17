@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "../../../../src/error";
+import { ImperativeError } from "../../../error";
 
 /**
  * This error is thrown when a second call to {@link PluginRequireProvider.createPluginHooks} has

@@ -10,7 +10,7 @@
 */
 
 import { UpdateImpConfig } from "../UpdateImpConfig";
-import { Logger } from "../../../src/logger";
+import { Logger } from "../../logger";
 import { listDefinition } from "./cmd/list/list.definition";
 import { initDefinition } from "./cmd/init/init.definition";
 import { schemaDefinition } from "./cmd/schema/schema.definition";

@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../../src/cmd";
+import { ICommandDefinition } from "../../../../cmd";
 import { join } from "path";
 import { PMFConstants } from "../../utilities/PMFConstants";
-import { ImperativeConfig } from "../../../../../src/utilities";
+import { ImperativeConfig } from "../../../../utilities";
 
 const cliCmdName = ImperativeConfig.instance.findPackageBinName() ?
     ImperativeConfig.instance.findPackageBinName() : "Your_CLI_Command_Name";

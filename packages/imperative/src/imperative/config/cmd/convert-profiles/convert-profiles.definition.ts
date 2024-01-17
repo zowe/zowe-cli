@@ -10,8 +10,8 @@
 */
 
 import { join } from "path";
-import { ICommandDefinition } from "../../../../../src/cmd";
-import { ImperativeConfig } from "../../../../../src/utilities";
+import { ICommandDefinition } from "../../../../cmd";
+import { ImperativeConfig } from "../../../../utilities";
 
 /**
  * Definition of the convert-profiles command.

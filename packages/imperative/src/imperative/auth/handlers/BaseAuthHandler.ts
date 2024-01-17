@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, IHandlerResponseApi } from "../../../../src/cmd";
+import { IHandlerParameters, IHandlerResponseApi } from "../../../cmd";
 import {
     AbstractSession,
     ConnectionPropsForSessCfg,
@@ -17,12 +17,12 @@ import {
     RestConstants,
     SessConstants,
     Session
-} from "../../../../src/rest";
+} from "../../../rest";
 import { Imperative } from "../../Imperative";
-import { IImperativeError, ImperativeError } from "../../../../src/error";
-import { ISaveProfileFromCliArgs } from "../../../../src/profiles";
-import { ImperativeConfig } from "../../../../src/utilities";
-import { getActiveProfileName, secureSaveError } from "../../../../src/config/ConfigUtils";
+import { IImperativeError, ImperativeError } from "../../../error";
+import { ISaveProfileFromCliArgs } from "../../../profiles";
+import { ImperativeConfig } from "../../../utilities";
+import { getActiveProfileName, secureSaveError } from "../../../config/ConfigUtils";
 import { AbstractAuthHandler } from "./AbstractAuthHandler";
 import { IAuthHandlerApi } from "../doc/IAuthHandlerApi";
 

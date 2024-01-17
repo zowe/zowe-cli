@@ -9,10 +9,10 @@
 *
 */
 
-import { ImperativeConfig } from "../../src/utilities/ImperativeConfig";
+import { ImperativeConfig } from "../utilities/ImperativeConfig";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
-import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../src/cmd";
-import { Logger } from "../../src/logger";
+import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../cmd";
+import { Logger } from "../logger";
 
 /**
  * This class is used to update the imperative config object, that was initially

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../../src/cmd";
+import { ICommandDefinition } from "../../../../cmd";
 import { join } from "path";
 
 /**

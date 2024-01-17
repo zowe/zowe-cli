@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../../src/cmd";
+import { ICommandDefinition } from "../../../../cmd";
 import { join } from "path";
-import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { ImperativeConfig } from "../../../../utilities/ImperativeConfig";
 
 /**
  * Definition of the init command.

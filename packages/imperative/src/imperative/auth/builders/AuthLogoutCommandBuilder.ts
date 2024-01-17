@@ -10,10 +10,10 @@
 */
 
 import { AuthCommandBuilder } from "./AuthCommandBuilder";
-import { ICommandDefinition } from "../../../../src/cmd";
-import { authLogoutCommandDesc } from "../../../../src/messages";
-import { Constants } from "../../../../src/constants";
-import { TextUtils } from "../../../../src/utilities/TextUtils";
+import { ICommandDefinition } from "../../../cmd";
+import { authLogoutCommandDesc } from "../../../messages";
+import { Constants } from "../../../constants";
+import { TextUtils } from "../../../utilities/TextUtils";
 
 /**
  * Used to build auth logout command definitions.

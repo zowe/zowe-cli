@@ -129,14 +129,14 @@ export class CredentialManagerFactory {
 
             if (this.mManager.initialize) {
                 await this.mManager.initialize();
-                const { Logger } = await import("../../src/logger");
+                const { Logger } = await import("../logger");
                 Logger.getImperativeLogger().debug(`Initialized the "${displayName}" credential manager for "${params.service}".`);
             }
 
         } catch (error) {
             // Perform dynamic requires when an error happens
             const { InvalidCredentialManager } = await import("./InvalidCredentialManager");
-            const { Logger } = await import("../../src/logger");
+            const { Logger } = await import("../logger");
 
             // Log appropriate error messages
             if (Manager !== DefaultCredentialManager) {

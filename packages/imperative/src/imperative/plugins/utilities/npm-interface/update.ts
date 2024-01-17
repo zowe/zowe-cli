@@ -10,7 +10,7 @@
 */
 
 import { PMFConstants } from "../PMFConstants";
-import { Logger } from "../../../../src/../logger";
+import { Logger } from "../../../../logger";
 import { getPackageInfo, installPackages } from "../NpmFunctions";
 
 /**

@@ -9,12 +9,12 @@
 *
 */
 
-import { AbstractCommandBuilder } from "../../../../src/cmd/builders/AbstractCommandBuilder";
+import { AbstractCommandBuilder } from "../../../cmd/builders/AbstractCommandBuilder";
 import { isNullOrUndefined } from "util";
-import { ICommandDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration } from "../../../../src/cmd";
-import { Logger } from "../../../../src/logger";
-import { IProfileSchema, ProfileUtils } from "../../../../src/profiles";
-import { ICommandProfileProperty } from "../../../../src/cmd/doc/profiles/definition/ICommandProfileProperty";
+import { ICommandDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration } from "../../../cmd";
+import { Logger } from "../../../logger";
+import { IProfileSchema, ProfileUtils } from "../../../profiles";
+import { ICommandProfileProperty } from "../../../cmd/doc/profiles/definition/ICommandProfileProperty";
 
 /**
  * Abstract class for generating profile-related commands

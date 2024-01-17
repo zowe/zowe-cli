@@ -13,7 +13,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { ImperativeConfig } from "..//ImperativeConfig";
+import { ImperativeConfig } from "../ImperativeConfig";
 import { ImperativeError } from "../../error/ImperativeError";
 import { IWebDiffGenerator } from "./doc/IWebDiffGenerator";
 

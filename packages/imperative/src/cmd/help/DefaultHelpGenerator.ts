@@ -11,7 +11,7 @@
 
 import { format } from "util";
 import { AbstractHelpGenerator } from "./abstract/AbstractHelpGenerator";
-import { TextUtils } from "../../../src/utilities/TextUtils";
+import { TextUtils } from "../../utilities/TextUtils";
 import { Constants } from "../../constants";
 import { CommandUtils } from "../utils/CommandUtils";
 import { ImperativeError } from "../../error";

@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { Logger } from "../../../../../src/logger/";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { Logger } from "../../../../logger/";
 import { IPluginJson } from "../../doc/IPluginJson";
-import { TextUtils } from "../../../../../src/utilities";
+import { TextUtils } from "../../../../utilities";
 import { PluginIssues } from "../../utilities/PluginIssues";
 
 /**

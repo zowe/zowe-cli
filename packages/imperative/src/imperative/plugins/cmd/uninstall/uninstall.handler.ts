@@ -9,16 +9,16 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
-import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../src/security";
-import { Logger } from "../../../../../src/logger/";
+import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../security";
+import { Logger } from "../../../../logger/";
 import { PluginManagementFacility } from "../../PluginManagementFacility";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { uninstall } from "../../utilities/npm-interface";
 import { getPackageInfo } from "../../utilities/NpmFunctions";
-import { ImperativeError } from "../../../../../src/error";
-import { TextUtils } from "../../../../../src/utilities";
+import { ImperativeError } from "../../../../error";
+import { TextUtils } from "../../../../utilities";
 
 /**
  * The uninstall command handler for cli plugin install.

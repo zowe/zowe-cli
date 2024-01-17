@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters, IHandlerResponseApi } from "../../../../../src/cmd";
-import { TextUtils } from "../../../../../src/utilities";
+import { ICommandHandler, IHandlerParameters, IHandlerResponseApi } from "../../../../cmd";
+import { TextUtils } from "../../../../utilities";
 import { IssueSeverity, PluginIssues } from "../../utilities/PluginIssues";
 import { IPluginJson } from "../../doc/IPluginJson";
 

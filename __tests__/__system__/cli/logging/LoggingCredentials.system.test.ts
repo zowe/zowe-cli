@@ -9,7 +9,7 @@
 *
 */
 
-import { ITestEnvironment, TempTestProfiles, runCliScript } from "../../../__packages__/cli-test-utils";
+import { ITestEnvironment, TempTestProfiles, runCliScript } from "../../../__packages__/cli-test-utils/src";
 import { TestEnvironment } from "../../../__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../__src__/properties/ITestPropertiesSchema";
 import { join } from "path";

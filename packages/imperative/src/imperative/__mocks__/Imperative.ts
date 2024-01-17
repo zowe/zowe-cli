@@ -9,8 +9,8 @@
 *
 */
 
-import { TextUtils } from "../../../src/utilities/TextUtils";
-import { AbstractHelpGenerator, DefaultHelpGenerator, IHelpGeneratorParms, ICommandDefinition } from "../../../src/cmd";
+import { TextUtils } from "../../utilities/TextUtils";
+import { AbstractHelpGenerator, DefaultHelpGenerator, IHelpGeneratorParms, ICommandDefinition } from "../../cmd";
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 
 const PRIMARY_COLOR: string = "yellow";

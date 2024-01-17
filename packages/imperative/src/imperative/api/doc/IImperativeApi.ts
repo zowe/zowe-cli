@@ -9,7 +9,7 @@
 *
 */
 
-import { Logger } from "../../../../src/logger";
+import { Logger } from "../../../logger";
 
 export interface IImperativeApi {
     "imperativeLogger": Logger;

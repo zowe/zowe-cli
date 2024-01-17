@@ -11,7 +11,7 @@
 
 import { IPluginIssues, IPluginIssue } from "../doc/IPluginIssues";
 import { IPluginJson } from "../doc/IPluginJson";
-import { ImperativeError } from "../../../../src/error";
+import { ImperativeError } from "../../../error";
 import { PMFConstants } from "./PMFConstants";
 import { readFileSync } from "jsonfile";
 

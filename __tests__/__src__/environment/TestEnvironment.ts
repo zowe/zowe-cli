@@ -14,7 +14,7 @@ import * as nodePath from "path";
 import { AbstractSession, Session } from "@zowe/imperative";
 
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
-import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";
+import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils/src";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
 
 /**

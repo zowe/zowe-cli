@@ -13,12 +13,12 @@ import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath, pathToFileURL, URL } from "url";
 import * as JSONC from "comment-json";
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { ImperativeError } from "../../../../../src/error";
-import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
-import { TextUtils } from "../../../../../src/utilities/TextUtils";
-import { IConfig } from "../../../../../src/config";
-import { RestClient, Session, SessConstants } from "../../../../../src/rest";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { ImperativeError } from "../../../../error";
+import { ImperativeConfig } from "../../../../utilities/ImperativeConfig";
+import { TextUtils } from "../../../../utilities/TextUtils";
+import { IConfig } from "../../../../config";
+import { RestClient, Session, SessConstants } from "../../../../rest";
 
 /**
  * Import config

@@ -9,7 +9,7 @@
 *
 */
 
-import { IPartialCommandDefinition } from "../../../src/cmd";
+import { IPartialCommandDefinition } from "../../cmd";
 
 export interface IImperativeAuthGroupConfig {
     /**

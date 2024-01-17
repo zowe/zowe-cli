@@ -10,7 +10,7 @@
 */
 
 import { join } from "path";
-import { ICommandDefinition } from "../../../../../src/cmd";
+import { ICommandDefinition } from "../../../../cmd";
 
 /**
  * Definition for the 'config report-env' command.

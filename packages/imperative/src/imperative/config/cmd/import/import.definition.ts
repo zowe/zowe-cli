@@ -10,7 +10,7 @@
 */
 
 import { join } from "path";
-import { ICommandDefinition } from "../../../../../src/cmd";
+import { ICommandDefinition } from "../../../../cmd";
 
 const CONNECTION_OPTION_GROUP = "Connection Options";
 
