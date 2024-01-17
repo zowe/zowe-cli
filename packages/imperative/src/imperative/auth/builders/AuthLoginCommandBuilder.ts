@@ -10,10 +10,10 @@
 */
 
 import { AuthCommandBuilder } from "./AuthCommandBuilder";
-import { ICommandDefinition } from "../../../../src/cmd";
-import { authLoginCommandDesc, authLoginShowTokenDesc } from "../../../../src/messages";
-import { Constants } from "../../../../src/constants";
-import { TextUtils } from "../../../../src/utilities/TextUtils";
+import { ICommandDefinition } from "../../../cmd";
+import { authLoginCommandDesc, authLoginShowTokenDesc } from "../../../messages";
+import { Constants } from "../../../constants";
+import { TextUtils } from "../../../utilities/TextUtils";
 
 /**
  * Used to build auth login command definitions.

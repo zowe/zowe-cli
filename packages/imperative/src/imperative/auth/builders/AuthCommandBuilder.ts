@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractCommandBuilder } from "../../../../src/cmd/builders/AbstractCommandBuilder";
-import { ICommandDefinition } from "../../../../src/cmd";
-import { Logger } from "../../../../src/logger";
-import { ICommandProfileAuthConfig } from "../../../../src/cmd/doc/profiles/definition/ICommandProfileAuthConfig";
-import { ImperativeError } from "../../../../src/error";
+import { AbstractCommandBuilder } from "../../../cmd/builders/AbstractCommandBuilder";
+import { ICommandDefinition } from "../../../cmd";
+import { Logger } from "../../../logger";
+import { ICommandProfileAuthConfig } from "../../../cmd/doc/profiles/definition/ICommandProfileAuthConfig";
+import { ImperativeError } from "../../../error";
 
 /**
  * Abstract class for generating auth-related commands

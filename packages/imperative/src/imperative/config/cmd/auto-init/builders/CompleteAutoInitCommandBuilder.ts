@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../../../src/cmd";
+import { ICommandDefinition } from "../../../../../cmd";
 import { AutoInitCommandBuilder } from "./AutoInitCommandBuilder";
-import { Logger } from "../../../../../../src/logger/index";
-import { ICommandProfileAutoInitConfig } from "../../../../../../src/cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
+import { Logger } from "../../../../../logger/index";
+import { ICommandProfileAutoInitConfig } from "../../../../../cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
 
 /**
  * Generate a complete command for automatic initialization of a user configuration

@@ -9,21 +9,20 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
-import { ProcessUtils } from "../../../../../src/utilities/ProcessUtils";
-import { TextUtils } from "../../../../../src/utilities/TextUtils";
-import { Config, ConfigConstants, ConfigSchema, IConfig } from "../../../../../src/config";
-import { IProfileProperty } from "../../../../../src/profiles";
-import { ConfigBuilder } from "../../../../../src/config/ConfigBuilder";
-import { IConfigBuilderOpts } from "../../../../../src/config/doc/IConfigBuilderOpts";
-import { coercePropValue, secureSaveError } from "../../../../../src/config/ConfigUtils";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { ImperativeConfig } from "../../../../utilities/ImperativeConfig";
+import { ProcessUtils } from "../../../../utilities/ProcessUtils";
+import { TextUtils } from "../../../../utilities/TextUtils";
+import { Config, ConfigConstants, ConfigSchema, IConfig } from "../../../../config";
+import { IProfileProperty } from "../../../../profiles";
+import { ConfigBuilder } from "../../../../config/ConfigBuilder";
+import { IConfigBuilderOpts } from "../../../../config/doc/IConfigBuilderOpts";
+import { coercePropValue, secureSaveError } from "../../../../config/ConfigUtils";
 import { OverridesLoader } from "../../../OverridesLoader";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
 import { diff } from "jest-diff";
 import stripAnsi = require("strip-ansi");
-
 
 
 /**

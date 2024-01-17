@@ -10,17 +10,17 @@
 */
 
 import { ProfilesCommandBuilder } from "./ProfilesCommandBuilder";
-import { Constants } from "../../../../src/constants";
-import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../../src/cmd";
+import { Constants } from "../../../constants";
+import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../cmd";
 import {
     listProfileCommandDesc,
     listProfileExample,
     listProfileExampleShowContents,
     listProfileVerboseOptionDesc
-} from "../../../../src/messages";
-import { TextUtils } from "../../../../src/utilities";
-import { Logger } from "../../../../src/logger/";
-import { ProfilesConstants } from "../../../../src/profiles";
+} from "../../../messages";
+import { TextUtils } from "../../../utilities";
+import { Logger } from "../../../logger/";
+import { ProfilesConstants } from "../../../profiles";
 
 /**
  * Used to build profile update command definitions.

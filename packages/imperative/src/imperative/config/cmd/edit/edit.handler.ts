@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { ProcessUtils } from "../../../../../src/utilities/ProcessUtils";
-import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { ProcessUtils } from "../../../../utilities/ProcessUtils";
+import { ImperativeConfig } from "../../../../utilities/ImperativeConfig";
 
 /**
  * Edit config

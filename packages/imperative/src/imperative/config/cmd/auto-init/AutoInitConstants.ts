@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "../../../../../src/cmd";
+import { ICommandOptionDefinition } from "../../../../cmd";
 
 export class AutoInitConstants {
     public static AUTO_INIT_OPTION_GROUP = "Automatic Config Initialization Options";

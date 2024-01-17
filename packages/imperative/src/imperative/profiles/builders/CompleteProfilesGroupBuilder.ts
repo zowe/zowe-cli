@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../src/cmd";
+import { ICommandDefinition } from "../../../cmd";
 import {
     createProfilesCommandDesc, createProfilesCommandSummary,
     deleteProfilesCommandDesc, deleteProfilesCommandSummary,
@@ -17,17 +17,17 @@ import {
     setProfileActionDesc, setProfileActionSummary,
     updateProfileCommandDesc, updateProfileCommandSummary,
     validateProfileGroupDesc, validateProfileCommandSummary
-} from "../../../../src/messages";
-import { Constants } from "../../../../src/constants";
+} from "../../../messages";
+import { Constants } from "../../../constants";
 import { ProfilesCreateCommandBuilder } from "./ProfilesCreateCommandBuilder";
 import { ProfilesUpdateCommandBuilder } from "./ProfilesUpdateCommandBuilder";
 import { ProfilesDeleteCommandBuilder } from "./ProfilesDeleteCommandBuilder";
 import { ProfilesValidateCommandBuilder } from "./ProfilesValidateCommandBuilder";
 import { ProfilesListCommandBuilder } from "./ProfilesListCommandBuilder";
 import { ProfilesSetCommandBuilder } from "./ProfilesSetCommandBuilder";
-import { Logger } from "../../../../src/logger/index";
-import { IProfileTypeConfiguration, ProfilesConstants } from "../../../../src/profiles";
-import { ImperativeConfig } from "../../../../src/utilities";
+import { Logger } from "../../../logger/index";
+import { IProfileTypeConfiguration, ProfilesConstants } from "../../../profiles";
+import { ImperativeConfig } from "../../../utilities";
 
 /**
  * Generate a complete group of commands for maintaining configuration profiles

@@ -9,17 +9,17 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../src/cmd";
+import { ICommandDefinition } from "../../../cmd";
 import {
     authCategoryDesc, authCategorySummary,
     authLoginGroupDesc, authLoginGroupSummary,
     authLogoutGroupDesc, authLogoutGroupSummary
-} from "../../../../src/messages";
-import { Constants } from "../../../../src/constants";
+} from "../../../messages";
+import { Constants } from "../../../constants";
 import { AuthLoginCommandBuilder } from "./AuthLoginCommandBuilder";
 import { AuthLogoutCommandBuilder } from "./AuthLogoutCommandBuilder";
-import { Logger } from "../../../../src/logger/index";
-import { ICommandProfileAuthConfig } from "../../../../src/cmd/doc/profiles/definition/ICommandProfileAuthConfig";
+import { Logger } from "../../../logger/index";
+import { ICommandProfileAuthConfig } from "../../../cmd/doc/profiles/definition/ICommandProfileAuthConfig";
 import { IImperativeAuthGroupConfig } from "../../doc/IImperativeAuthGroupConfig";
 
 /**

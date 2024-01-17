@@ -10,8 +10,8 @@
 */
 
 import { Imperative } from "../../../";
-import { ProfilesConstants } from "../../../../src/profiles/constants/ProfilesConstants";
-import { CliProfileManager, ICommandHandler, IHandlerParameters } from "../../../../src/cmd";
+import { ProfilesConstants } from "../../../profiles/constants/ProfilesConstants";
+import { CliProfileManager, ICommandHandler, IHandlerParameters } from "../../../cmd";
 import { IProfileLoaded } from "../../../";
 
 /**

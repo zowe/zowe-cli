@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { IConfigProfile } from "../../../../../src/config";
-import { ImperativeConfig } from "../../../../../src/utilities";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { IConfigProfile } from "../../../../config";
+import { ImperativeConfig } from "../../../../utilities";
 
 /**
  * The get command group handler for cli configuration settings.

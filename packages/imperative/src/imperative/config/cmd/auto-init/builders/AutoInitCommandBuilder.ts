@@ -9,14 +9,14 @@
 *
 */
 
-import { AbstractCommandBuilder } from "../../../../../../src/cmd/builders/AbstractCommandBuilder";
-import { ICommandDefinition } from "../../../../../../src/cmd";
-import { Logger } from "../../../../../../src/logger";
-import { ICommandProfileAutoInitConfig } from "../../../../../../src/cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
-import { ImperativeError } from "../../../../../../src/error";
-import { TextUtils } from "../../../../../../src/utilities/TextUtils";
-import { autoInitCommandDesc, autoInitCommandSummary } from "../../../../../../src/messages";
-import { Constants } from "../../../../../../src/constants";
+import { AbstractCommandBuilder } from "../../../../../cmd/builders/AbstractCommandBuilder";
+import { ICommandDefinition } from "../../../../../cmd";
+import { Logger } from "../../../../../logger";
+import { ICommandProfileAutoInitConfig } from "../../../../../cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
+import { ImperativeError } from "../../../../../error";
+import { TextUtils } from "../../../../../utilities/TextUtils";
+import { autoInitCommandDesc, autoInitCommandSummary } from "../../../../../messages";
+import { Constants } from "../../../../../constants";
 import { AutoInitConstants } from "../AutoInitConstants";
 
 /**

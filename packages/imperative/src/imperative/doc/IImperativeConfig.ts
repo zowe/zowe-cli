@@ -9,12 +9,12 @@
 *
 */
 
-import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../src/cmd";
+import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../cmd";
 import { IImperativeLogsConfig } from "./IImperativeLogsConfig";
 import { IImperativeOverrides } from "./IImperativeOverrides";
 import { IImperativeAuthGroupConfig } from "./IImperativeAuthGroupConfig";
 import { IApimlSvcAttrs } from "./IApimlSvcAttrs";
-import { ICommandProfileAutoInitConfig } from "../../../src/cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
+import { ICommandProfileAutoInitConfig } from "../../cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
 
 /**
  * All of the configuration required to set up your Imperative CLI app

@@ -9,10 +9,10 @@
 *
 */
 
-import { Imperative } from "../../../src/imperative/Imperative";
-import { ICommandHandler, IHandlerParameters, ICommandTreeEntry, CommandUtils } from "../../../src/cmd";
-import { ImperativeConfig, TextUtils } from "../../../src/utilities";
-import { WebHelpManager } from "../../../src/cmd/help/WebHelpManager";
+import { Imperative } from "../../imperative/Imperative";
+import { ICommandHandler, IHandlerParameters, ICommandTreeEntry, CommandUtils } from "../../cmd";
+import { ImperativeConfig, TextUtils } from "../../utilities";
+import { WebHelpManager } from "../../cmd/help/WebHelpManager";
 /**
  * The default command handler for the top level/root command
  * Allows the user to check the version of the package.

@@ -10,13 +10,13 @@
 */
 
 import { ProfilesCommandBuilder } from "./ProfilesCommandBuilder";
-import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../../src/cmd";
+import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../cmd";
 import { createProfileCommandSummary, createProfileOptionDesc, createProfileOptionOverwriteDesc,
-    createProfileDisableDefaultsDesc } from "../../../../src/messages";
-import { Constants } from "../../../../src/constants";
-import { TextUtils } from "../../../../src/utilities";
-import { Logger } from "../../../../src/logger/index";
-import { ProfilesConstants, ProfileUtils } from "../../../../src/profiles";
+    createProfileDisableDefaultsDesc } from "../../../messages";
+import { Constants } from "../../../constants";
+import { TextUtils } from "../../../utilities";
+import { Logger } from "../../../logger/index";
+import { ProfilesConstants, ProfileUtils } from "../../../profiles";
 
 /**
  * Used to build profile create command definitions.

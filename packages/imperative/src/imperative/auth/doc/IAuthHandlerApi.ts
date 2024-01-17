@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandArguments } from "../../../../src/cmd";
-import { AbstractSession, IOptionsForAddConnProps, ISession } from "../../../../src/rest";
+import { ICommandArguments } from "../../../cmd";
+import { AbstractSession, IOptionsForAddConnProps, ISession } from "../../../rest";
 
 /**
  * Auth handler API that provides convenient functions to create a session from

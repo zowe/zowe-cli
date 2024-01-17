@@ -9,15 +9,15 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters, ICommandArguments, IHandlerResponseApi } from "../../../../../../src/cmd";
-import { ISession, ConnectionPropsForSessCfg, Session, AbstractSession } from "../../../../../../src/rest";
-import { ConfigConstants, ConfigSchema, IConfig } from "../../../../../../src/config";
+import { ICommandHandler, IHandlerParameters, ICommandArguments, IHandlerResponseApi } from "../../../../../cmd";
+import { ISession, ConnectionPropsForSessCfg, Session, AbstractSession } from "../../../../../rest";
+import { ConfigConstants, ConfigSchema, IConfig } from "../../../../../config";
 import { diff } from "jest-diff";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { ProcessUtils } from "../../../../../../src/utilities/ProcessUtils";
-import { TextUtils } from "../../../../../../src/utilities/TextUtils";
+import { ImperativeConfig } from "../../../../../utilities/ImperativeConfig";
+import { ProcessUtils } from "../../../../../utilities/ProcessUtils";
+import { TextUtils } from "../../../../../utilities/TextUtils";
 import { OverridesLoader } from "../../../../OverridesLoader";
 
 import stripAnsi = require("strip-ansi");

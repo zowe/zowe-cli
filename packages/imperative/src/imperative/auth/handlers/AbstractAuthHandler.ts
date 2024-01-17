@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters, ICommandArguments } from "../../../../src/cmd";
-import { Constants } from "../../../../src/constants";
-import { ISession, SessConstants } from "../../../../src/rest";
-import { ImperativeError } from "../../../../src/error";
+import { ICommandHandler, IHandlerParameters, ICommandArguments } from "../../../cmd";
+import { Constants } from "../../../constants";
+import { ISession, SessConstants } from "../../../rest";
+import { ImperativeError } from "../../../error";
 import { IAuthHandlerApi } from "../doc/IAuthHandlerApi";
 
 /**

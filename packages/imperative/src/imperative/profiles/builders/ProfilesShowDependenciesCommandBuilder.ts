@@ -10,11 +10,11 @@
 */
 
 import { ProfilesCommandBuilder } from "./ProfilesCommandBuilder";
-import { Constants } from "../../../../src/constants";
-import { ICommandDefinition } from "../../../../src/cmd";
-import { deleteProfileNameDesc, showDependenciesCommandDesc } from "../../../../src/messages";
-import { TextUtils } from "../../../../src/utilities";
-import { ProfilesConstants, ProfileUtils } from "../../../../src/profiles";
+import { Constants } from "../../../constants";
+import { ICommandDefinition } from "../../../cmd";
+import { deleteProfileNameDesc, showDependenciesCommandDesc } from "../../../messages";
+import { TextUtils } from "../../../utilities";
+import { ProfilesConstants, ProfileUtils } from "../../../profiles";
 
 /**
  * Used to build profile create command definitions.

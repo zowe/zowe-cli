@@ -11,9 +11,9 @@
 
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 import { IImperativeApi } from "./doc/IImperativeApi";
-import { Logger } from "../../../src/logger";
-import { ProfileUtils } from "../../../src/profiles";
-import { CliProfileManager } from "../../../src/cmd";
+import { Logger } from "../../logger";
+import { ProfileUtils } from "../../profiles";
+import { CliProfileManager } from "../../cmd";
 
 export class ImperativeApi {
     /**

@@ -9,16 +9,16 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
-import { Logger } from "../../../../../src/logger/";
+import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { Logger } from "../../../../logger/";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { resolve } from "path";
 import { install } from "../../utilities/npm-interface";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { IPluginJsonObject } from "../../doc/IPluginJsonObject";
 import { readFileSync } from "jsonfile";
-import { ImperativeConfig, TextUtils } from "../../../../../src/utilities";
-import { ImperativeError } from "../../../../../src/error";
+import { ImperativeConfig, TextUtils } from "../../../../utilities";
+import { ImperativeError } from "../../../../error";
 import { runValidatePlugin } from "../../utilities/runValidatePlugin";
 import { getRegistry, npmLogin } from "../../utilities/NpmFunctions";
 

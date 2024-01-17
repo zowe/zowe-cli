@@ -9,7 +9,7 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "../__packages__/cli-test-utils";
+import { ITestEnvironment, runCliScript } from "../__packages__/cli-test-utils/src";
 import { TestEnvironment } from "../__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../__src__/properties/ITestPropertiesSchema";
 

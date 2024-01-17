@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "../../src/session/AbstractSession";
+import { AbstractSession } from "../session/AbstractSession";
 export class RestClient {
     public static getExpectString(session: AbstractSession, resource: string, reqHeaders?: any[]) {
         return new Promise((resolve, reject) => {

@@ -9,10 +9,10 @@
 *
 */
 
-import { Logger } from "../../../../src/logger";
-import { ExecUtils } from "../../../../src/utilities";
+import { Logger } from "../../../logger";
+import { ExecUtils } from "../../../utilities";
 import { PMFConstants } from "./PMFConstants";
-import { ImperativeError } from "../../../../src/error";
+import { ImperativeError } from "../../../error";
 
 /**
  * Run another instance of the host CLI command to validate a plugin that has
