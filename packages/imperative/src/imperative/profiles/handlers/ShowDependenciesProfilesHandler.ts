@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
+import { ICommandHandler, IHandlerParameters } from "../../../../src/cmd";
 
 /**
  * Handler for the auto-generated show dependencies command

@@ -14,16 +14,16 @@ import * as path from "path";
 import * as fs from "fs";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginJson } from "../../doc/IPluginJson";
-import { Logger } from "../../../../../logger";
+import { Logger } from "../../../../src/../logger";
 import { IImperativeConfig } from "../../../doc/IImperativeConfig";
-import { ImperativeError } from "../../../../../error";
+import { ImperativeError } from "../../../../src/../error";
 import { IPluginJsonObject } from "../../doc/IPluginJsonObject";
 import { getPackageInfo, installPackages } from "../NpmFunctions";
-import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
+import { ConfigSchema } from "../../../../src/../config/ConfigSchema";
 import { PluginManagementFacility } from "../../PluginManagementFacility";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
 import { UpdateImpConfig } from "../../../UpdateImpConfig";
-import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
+import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../src/../security";
 
 /**
  * Common function that abstracts the install process. This function should be called for each

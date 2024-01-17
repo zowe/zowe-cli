@@ -9,8 +9,8 @@
 *
 */
 
-import { AbstractProfileManagerFactory } from "../../../profiles";
-import { CliProfileManager, ICommandProfileTypeConfiguration } from "../../../cmd/";
+import { AbstractProfileManagerFactory } from "../../../src/profiles";
+import { CliProfileManager, ICommandProfileTypeConfiguration } from "../../../src/cmd/";
 import { ImperativeApi } from "../api/ImperativeApi";
 /**
  * The imperative profile manager factory returns instances of the cli profile manager

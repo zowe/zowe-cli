@@ -16,7 +16,7 @@ import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
-import { ExecUtils } from "../../../../utilities";
+import { ExecUtils } from "../../../../src/utilities";
 const npmCmd = findNpmOnPath();
 
 /**

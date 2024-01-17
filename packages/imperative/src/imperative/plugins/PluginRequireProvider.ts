@@ -11,7 +11,7 @@
 
 import Module = require("module");
 
-import { ImperativeConfig } from "../../../utilities";
+import { ImperativeConfig } from "../../../src/utilities";
 import * as path from "path";
 import * as findUp from "find-up";
 import * as lodash from "lodash";

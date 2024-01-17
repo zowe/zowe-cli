@@ -11,10 +11,10 @@
 
 import { overroteProfileMessage, profileUpdatedSuccessfullyAndPath, profileReviewMessage } from "../../../../messages";
 import { Imperative } from "../../Imperative";
-import { IProfileUpdated, ProfilesConstants } from "../../../../profiles";
-import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
-import { Constants } from "../../../../constants";
-import { TextUtils } from "../../../../utilities";
+import { IProfileUpdated, ProfilesConstants } from "../../../../src/profiles";
+import { ICommandHandler, IHandlerParameters } from "../../../../src/cmd";
+import { Constants } from "../../../../src/constants";
+import { TextUtils } from "../../../../src/utilities";
 
 /**
  * Handler for the auto-generated update profile commands

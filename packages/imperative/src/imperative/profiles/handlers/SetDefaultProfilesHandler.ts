@@ -10,9 +10,9 @@
 */
 
 import { Imperative } from "../../Imperative";
-import { ProfilesConstants } from "../../../../profiles";
-import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
-import { Constants } from "../../../../constants";
+import { ProfilesConstants } from "../../../../src/profiles";
+import { ICommandHandler, IHandlerParameters } from "../../../../src/cmd";
+import { Constants } from "../../../../src/constants";
 /**
  * Handler for the auto generated commands to set the default profile for a type
  * The default profile is loaded when no specific profile name is specified

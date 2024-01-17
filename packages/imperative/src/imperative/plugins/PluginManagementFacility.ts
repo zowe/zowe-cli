@@ -9,24 +9,24 @@
 *
 */
 
-import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
-import { UpdateImpConfig } from "../../src/UpdateImpConfig";
+import { IImperativeConfig } from "../../../src/imperative/doc/IImperativeConfig";
+import { UpdateImpConfig } from "../../../src/imperative/UpdateImpConfig";
 import { isAbsolute, join } from "path";
-import { ImperativeConfig, JsUtils } from "../../../utilities";
-import { Logger } from "../../../logger";
+import { ImperativeConfig, JsUtils } from "../../../src/utilities";
+import { Logger } from "../../../src/logger";
 import { existsSync } from "fs";
 import { PMFConstants } from "./utilities/PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginCfgProps } from "./doc/IPluginCfgProps";
-import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../cmd";
+import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../../src/cmd";
 import { IssueSeverity, PluginIssues } from "./utilities/PluginIssues";
 import { ConfigurationValidator } from "../ConfigurationValidator";
 import { ConfigurationLoader } from "../ConfigurationLoader";
 import { DefinitionTreeResolver } from "../DefinitionTreeResolver";
 import { IImperativeOverrides } from "../doc/IImperativeOverrides";
-import { AppSettings } from "../../../settings";
-import { IO } from "../../../io";
-import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../security";
+import { AppSettings } from "../../../src/settings";
+import { IO } from "../../../src/io";
+import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../src/security";
 
 /**
  * This class is the main engine for the Plugin Management Facility. The

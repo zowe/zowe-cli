@@ -136,7 +136,7 @@ export class CredentialManagerFactory {
         } catch (error) {
             // Perform dynamic requires when an error happens
             const { InvalidCredentialManager } = await import("./InvalidCredentialManager");
-            const { Logger } = await import("../../logger");
+            const { Logger } = await import("../../src/logger");
 
             // Log appropriate error messages
             if (Manager !== DefaultCredentialManager) {
