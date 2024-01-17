@@ -11,7 +11,7 @@
 
 import { EnvironmentalVariableSettings } from "../../../src/imperative/env/EnvironmentalVariableSettings";
 import { LoggerUtils } from "../../../src/logger";
-import { ImperativeConfig } from "../../../src/utilities/ImperativeConfigImperativeConfig";
+import { ImperativeConfig } from "../../../src/utilities/ImperativeConfig";
 
 describe("LoggerUtils tests", () => {
 
