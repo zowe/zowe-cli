@@ -10,13 +10,13 @@
 */
 
 import { IImperativeOverrides } from "./doc/IImperativeOverrides";
-import { CredentialManagerFactory, DefaultCredentialManager } from "../../security";
+import { CredentialManagerFactory, DefaultCredentialManager } from "../../src/security";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
 import { isAbsolute, resolve } from "path";
-import { AppSettings } from "../../settings";
-import { ImperativeConfig } from "../../utilities";
-import { IConfigVault } from "../../config";
-import { Logger } from "../../logger";
+import { AppSettings } from "../../src/settings";
+import { ImperativeConfig } from "../../src/utilities";
+import { IConfigVault } from "../../src/config";
+import { Logger } from "../../src/logger";
 
 /**
  * Imperative-internal class to load overrides
