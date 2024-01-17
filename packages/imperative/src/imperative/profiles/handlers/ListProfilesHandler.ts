@@ -12,7 +12,7 @@
 import { Imperative } from "../../../";
 import { ProfilesConstants } from "../../../../src/profiles/constants/ProfilesConstants";
 import { CliProfileManager, ICommandHandler, IHandlerParameters } from "../../../../src/cmd";
-import { IProfileLoaded } from "../../../..";
+import { IProfileLoaded } from "../../../";
 
 /**
  * Handler for the auto-generated list profiles command.

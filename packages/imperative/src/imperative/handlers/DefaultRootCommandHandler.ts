@@ -10,7 +10,7 @@
 */
 
 import { Imperative } from "../../../src/imperative/Imperative";
-import { ICommandHandler, IHandlerParameters, ICommandTreeEntry, CommandUtils } from "../../../cmd";
+import { ICommandHandler, IHandlerParameters, ICommandTreeEntry, CommandUtils } from "../../../src/cmd";
 import { ImperativeConfig, TextUtils } from "../../../src/utilities";
 import { WebHelpManager } from "../../../src/cmd/help/WebHelpManager";
 /**

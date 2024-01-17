@@ -9,13 +9,13 @@
 *
 */
 
-import { ICommandArguments, ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { Config, ConfigAutoStore, ConfigConstants, ConfigSchema } from "../../../../../config";
-import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
-import { ImperativeError } from "../../../../../error";
-import { Logger } from "../../../../../logger";
-import { ConnectionPropsForSessCfg, ISession, Session } from "../../../../../rest";
-import { ImperativeConfig } from "../../../../../utilities";
+import { ICommandArguments, ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
+import { Config, ConfigAutoStore, ConfigConstants, ConfigSchema } from "../../../../../src/config";
+import { coercePropValue, secureSaveError } from "../../../../../src/config/ConfigUtils";
+import { ImperativeError } from "../../../../../src/error";
+import { Logger } from "../../../../../src/logger";
+import { ConnectionPropsForSessCfg, ISession, Session } from "../../../../../src/rest";
+import { ImperativeConfig } from "../../../../../src/utilities";
 
 export default class SecureHandler implements ICommandHandler {
     /**

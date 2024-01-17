@@ -16,12 +16,12 @@ import * as path from "path";
 import * as spawn from "cross-spawn";
 import { StdioOptions } from "child_process";
 
-import { ConfigConstants, IConfigProfile } from "../../../../../config";
-import { IHandlerProgressApi } from "../../../../../cmd";
-import { IO } from "../../../../../io";
-import { ImperativeConfig , TextUtils } from "../../../../../utilities";
-import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../../../operations";
-import { CliUtils } from "../../../../../utilities/src/CliUtils";
+import { ConfigConstants, IConfigProfile } from "../../../../../src/config";
+import { IHandlerProgressApi } from "../../../../../src/cmd";
+import { IO } from "../../../../../src/io";
+import { ImperativeConfig , TextUtils } from "../../../../../src/utilities";
+import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../../../src/operations";
+import { CliUtils } from "../../../../../src/utilities/CliUtils";
 
 import { IPluginJson } from "../../../plugins/doc/IPluginJson";
 import { PluginIssues } from "../../../plugins/utilities/PluginIssues";

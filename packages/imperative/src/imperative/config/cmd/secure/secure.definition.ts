@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "../../../../../cmd";
+import { ICommandDefinition } from "../../../../../src/cmd";
 import { join } from "path";
 
 export const secureDefinition: ICommandDefinition = {

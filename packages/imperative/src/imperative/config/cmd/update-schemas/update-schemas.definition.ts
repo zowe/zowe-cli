@@ -10,7 +10,7 @@
 */
 
 import { join } from "path";
-import { ICommandDefinition } from "../../../../../cmd";
+import { ICommandDefinition } from "../../../../../src/cmd";
 
 export const updateSchemasDefinition: ICommandDefinition = {
     name: "update-schemas",
