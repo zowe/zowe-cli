@@ -1,18 +1,31 @@
 {
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
-    "target": "es5",
-    "module": "commonjs",
-    "declaration": true,
     "outDir": "./lib",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": [
-      "node",
-      "jest"
-    ]
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "target": "es5",
   }
 }
+
+// Standardize the tsconfig to match any other SDK package
+// {
+//   "compilerOptions": {
+//     /* Visit https://aka.ms/tsconfig.json to read more about this file */
+//     "target": "es5",
+//     "module": "commonjs",
+//     "declaration": true,
+//     "outDir": "./lib",
+//     "rootDir": "./src",
+//     // "strict": true, // We do not enable strict on other dependencies (like @zowe/imperative)
+//     "esModuleInterop": true,
+//     "skipLibCheck": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "types": [
+//       "node",
+//       "jest"
+//     ]
+//   }
+// }
