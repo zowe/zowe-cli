@@ -11,12 +11,12 @@
 
 import { ProfilesCommandBuilder } from "./ProfilesCommandBuilder";
 import { isNullOrUndefined } from "util";
-import { Constants } from "../../../../constants";
-import { ICommandDefinition } from "../../../../cmd";
-import { createProfileOptionDesc, updateProfileCommandDesc } from "../../../../messages";
-import { TextUtils } from "../../../../utilities";
-import { IProfileProperty, ProfilesConstants, ProfileUtils } from "../../../../profiles";
-import { ICommandProfileProperty } from "../../../../cmd/src/doc/profiles/definition/ICommandProfileProperty";
+import { Constants } from "../../../../src/constants";
+import { ICommandDefinition } from "../../../../src/cmd";
+import { createProfileOptionDesc, updateProfileCommandDesc } from "../../../../src/messages";
+import { TextUtils } from "../../../../src/utilities";
+import { IProfileProperty, ProfilesConstants, ProfileUtils } from "../../../../src/profiles";
+import { ICommandProfileProperty } from "../../../../src/cmd/doc/profiles/definition/ICommandProfileProperty";
 
 /**
  * Used to build profile update command definitions.

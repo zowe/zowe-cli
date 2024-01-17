@@ -9,9 +9,9 @@
 *
 */
 
-import { ImperativeConfig } from "../../../../utilities";
+import { ImperativeConfig } from "../../../../src/utilities";
 import { dirname, join } from "path";
-import { Config } from "../../../../config";
+import { Config } from "../../../../src/config";
 import { EnvironmentalVariableSettings } from "../../env/EnvironmentalVariableSettings";
 
 /**
