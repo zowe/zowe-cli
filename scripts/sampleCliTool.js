@@ -18,12 +18,13 @@ const npmPrefix = path.join(process.cwd(), ".npm-global");
 
 function runAll(callback, parallel=false) {
     if (!parallel) {
-        glob.sync("packages/imperative/__tests__/__integration__/*").forEach((dir) => {
-            const command = callback(dir);
+        glob.sync("packages/imperative/__tests__/__integration__/*/package.json").forEach((pkgJson) => {
+            const command = callback(path.dirname(pkgJson));
             childProcess.execSync(command.command, { cwd: command.cwd, stdio: "inherit" });
         });
     } else {
-        require("concurrently")(glob.sync("packages/imperative/__tests__/__integration__/*").map((dir) => callback(dir)));
+        require("concurrently")(glob.sync("packages/imperative/__tests__/__integration__/*/package.json")
+                                .map((pkgJson) => callback(path.dirname(pkgJson))));
     }
 }
 
