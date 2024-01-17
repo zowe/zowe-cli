@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandDefinition } from "../../cmd";
-import { Logger } from "../../logger";
+import { ICommandDefinition } from "../cmd";
+import { Logger } from "../logger";
 import * as glob from "fast-glob";
-import { ImperativeError } from "../../error";
+import { ImperativeError } from "../error";
 
 /**
  * Combines a root command definition with an array of

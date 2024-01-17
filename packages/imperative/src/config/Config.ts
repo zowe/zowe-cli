@@ -21,7 +21,7 @@ import { fileURLToPath } from "url";
 import { ConfigConstants } from "./ConfigConstants";
 import { IConfig } from "./doc/IConfig";
 import { IConfigLayer } from "./doc/IConfigLayer";
-import { ImperativeError } from "../../error";
+import { ImperativeError } from "../error";
 import { IConfigProfile } from "./doc/IConfigProfile";
 import { IConfigOpts } from "./doc/IConfigOpts";
 import { IConfigSecure } from "./doc/IConfigSecure";
@@ -29,7 +29,7 @@ import { IConfigVault } from "./doc/IConfigVault";
 import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigSecure } from "./api";
 import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
-import { JsUtils } from "../../utilities/src/JsUtils";
+import { JsUtils } from "../utilities/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
 
 /**

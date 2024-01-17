@@ -13,56 +13,59 @@
  * Main class of the Imperative framework, returned when you
  * require("@zowe/imperative") e.g. const imperative =  require("@zowe/imperative");
  */
-import { Logger} from "../../logger/src/Logger";
-import { LoggerConfigBuilder } from "../../logger/src/LoggerConfigBuilder";
+import { Logger} from "../logger/Logger";
+import { LoggerConfigBuilder } from "../logger/LoggerConfigBuilder";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
 import * as yargs from "yargs";
 import { ConfigurationLoader } from "./ConfigurationLoader";
 import { ConfigurationValidator } from "./ConfigurationValidator";
 import { ImperativeApi } from "./api/ImperativeApi";
 import { IImperativeApi } from "./api/doc/IImperativeApi";
-import { Constants } from "../../constants/src/Constants";
-import { TextUtils } from "../../utilities/src/TextUtils";
-import { ImperativeConfig } from "../../utilities/ImperativeConfig";
-import { ImperativeReject } from "../../interfaces/src/types/ImperativeReject";
+import { Constants } from "../constants/Constants";
+import { TextUtils } from "../utilities/TextUtils";
+import { ImperativeConfig } from "../utilities/ImperativeConfig";
+import { ImperativeReject } from "../interfaces/types/ImperativeReject";
 import { LoggingConfigurer } from "./LoggingConfigurer";
-import { ImperativeError } from "../../error";
+import { ImperativeError } from "../error";
 import { PluginManagementFacility } from "./plugins/PluginManagementFacility";
 // import { ConfigManagementFacility } from "./config/ConfigManagementFacility";
 
-import { AbstractCommandYargs } from "../../cmd/src/yargs/AbstractCommandYargs";
-import { CommandPreparer } from "../../cmd/src/CommandPreparer";
-import { CommandYargs } from "../../cmd/src/yargs/CommandYargs";
-import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
-import { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
-import { ICommandResponseParms } from "../../cmd/src/doc/response/parms/ICommandResponseParms";
-import { IHelpGenerator } from "../../cmd/src/help/doc/IHelpGenerator";
-import { IHelpGeneratorFactory } from "../../cmd/src/help/doc/IHelpGeneratorFactory";
-import { IHelpGeneratorParms } from "../../cmd/src/help/doc/IHelpGeneratorParms";
-import { IYargsResponse } from "../../cmd/src/yargs/doc/IYargsResponse";
-import { WebHelpManager } from "../../cmd/src/help/WebHelpManager";
-import { YargsConfigurer } from "../../cmd/src/yargs/YargsConfigurer";
-import { YargsDefiner } from "../../cmd/src/yargs/YargsDefiner";
+import { AbstractCommandYargs } from "../cmd/yargs/AbstractCommandYargs";
+import { CliProfileManager } from "../cmd/profiles/CliProfileManager";
+import { CommandPreparer } from "../cmd/CommandPreparer";
+import { CommandYargs } from "../cmd/yargs/CommandYargs";
+import { ICommandDefinition } from "../cmd/doc/ICommandDefinition";
+import { ICommandProfileTypeConfiguration } from "../cmd/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import { ICommandResponseParms } from "../cmd/doc/response/parms/ICommandResponseParms";
+import { IHelpGenerator } from "../cmd/help/doc/IHelpGenerator";
+import { IHelpGeneratorFactory } from "../cmd/help/doc/IHelpGeneratorFactory";
+import { IHelpGeneratorParms } from "../cmd/help/doc/IHelpGeneratorParms";
+import { IYargsResponse } from "../cmd/yargs/doc/IYargsResponse";
+import { WebHelpManager } from "../cmd/help/WebHelpManager";
+import { YargsConfigurer } from "../cmd/yargs/YargsConfigurer";
+import { YargsDefiner } from "../cmd/yargs/YargsDefiner";
 
-import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
+import { ProfileUtils } from "../profiles/utils/ProfileUtils";
+import { IProfileTypeConfiguration } from "../profiles/doc/config/IProfileTypeConfiguration";
+import { CompleteProfilesGroupBuilder } from "./profiles/builders/CompleteProfilesGroupBuilder";
 import { ImperativeHelpGeneratorFactory } from "./help/ImperativeHelpGeneratorFactory";
 import { OverridesLoader } from "./OverridesLoader";
 import { ImperativeProfileManagerFactory } from "./profiles/ImperativeProfileManagerFactory";
 import { DefinitionTreeResolver } from "./DefinitionTreeResolver";
 import { EnvironmentalVariableSettings } from "./env/EnvironmentalVariableSettings";
-import { AppSettings } from "../../settings/src/AppSettings";
+import { AppSettings } from "../settings/AppSettings";
 import { dirname, join } from "path";
 
-import { Console } from "../../console/src/Console";
-import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
+import { Console } from "../console/Console";
+import { ISettingsFile } from "../settings/doc/ISettingsFile";
 import { IDaemonContext } from "./doc/IDaemonContext";
-import { ICommandProfileAuthConfig } from "../../cmd/src/doc/profiles/definition/ICommandProfileAuthConfig";
-import { ImperativeExpect } from "../../expect/src/ImperativeExpect";
+import { ICommandProfileAuthConfig } from "../cmd/doc/profiles/definition/ICommandProfileAuthConfig";
+import { ImperativeExpect } from "../expect/ImperativeExpect";
 import { CompleteAuthGroupBuilder } from "./auth/builders/CompleteAuthGroupBuilder";
-import { Config } from "../../config/src/Config";
+import { Config } from "../config/Config";
 import { CompleteAutoInitCommandBuilder } from "./config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder";
-import { ICommandProfileAutoInitConfig } from "../../cmd/src/doc/profiles/definition/ICommandProfileAutoInitConfig";
-import { EnvFileUtils } from "../../utilities/src/EnvFileUtils";
+import { ICommandProfileAutoInitConfig } from "../cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
+import { EnvFileUtils } from "../utilities/EnvFileUtils";
 
 export class Imperative {
 

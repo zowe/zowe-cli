@@ -37,7 +37,7 @@ import * as nodePath from "path";
 import * as os from "os";
 import * as stream from "stream";
 import { ICommandHandlerRequire } from "./doc/handler/ICommandHandlerRequire";
-import { IHandlerParameters } from "../cmd";
+import { IHandlerParameters, IHandlerResponseApi } from "../cmd";
 import { ChainedHandlerService } from "./ChainedHandlerUtils";
 import { Constants } from "../constants";
 import { ICommandArguments } from "./doc/args/ICommandArguments";
@@ -48,7 +48,6 @@ import { Config } from "../config/Config";
 import { getActiveProfileName } from "../config/ConfigUtils";
 import { ConfigConstants } from "../config/ConfigConstants";
 import { IDaemonContext } from "../imperative/doc/IDaemonContext";
-import { IHandlerResponseApi } from "../..";
 
 
 /**

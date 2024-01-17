@@ -10,9 +10,9 @@
 */
 
 import { ICommandProfileSchema } from "./ICommandProfileSchema";
-import { IProfileTypeConfiguration } from "../../../../..";
 import { ICommandExampleDefinition } from "../../ICommandExampleDefinition";
 import { ICommandProfileAuthConfig } from "./ICommandProfileAuthConfig";
+import { IProfileTypeConfiguration } from "../../../../profiles/doc/config/IProfileTypeConfiguration";
 
 /**
  * Cmd packages additions to the profile manager type configuration document. Used by the CliProfileManager. Allows
