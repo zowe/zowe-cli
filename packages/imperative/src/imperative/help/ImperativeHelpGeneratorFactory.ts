@@ -13,7 +13,7 @@ import { isNullOrUndefined } from "util";
 import { IHelpGenerator,
     HelpGeneratorFactory,
     IHelpGeneratorParms,
-    AbstractHelpGeneratorFactory } from "../../../cmd";
+    AbstractHelpGeneratorFactory } from "../../../src/cmd";
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 /**
  * Imperative Help generator factory passed to yargs to build help generators where needed.

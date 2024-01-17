@@ -32,8 +32,8 @@
  * strings and undefined values.
  */
 
-import { ICredentialManagerConstructor } from "../../../security";
-import { IConstructor } from "../../../interfaces";
+import { ICredentialManagerConstructor } from "../../../src/security";
+import { IConstructor } from "../../../src/interfaces";
 
 /**
  * Type of the {@link ImperativeOverrides} interface. This ensures that all
