@@ -15,7 +15,7 @@ function getImperative() {
     } catch (err) {
         if (err.code === "ERR_MODULE_NOT_FOUND" || err.code === "MODULE_NOT_FOUND") {
             require("ts-node/register");
-            return require(require("path").resolve(__dirname, "../../imperative/src/utilities/src/TextUtils"));
+            return require(require("path").resolve(__dirname, "../../imperative/src/utilities/TextUtils"));
         } else {
             throw err;
         }
