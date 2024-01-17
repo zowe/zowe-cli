@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../src/utilities/src/ImperativeConfig");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 
 import { inspect } from "util";
 import { rimraf, TEST_RESULT_DIR } from "../../../TestUtil";
 import { TestLogger } from "../../../../src/TestLogger";
-import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
+import { CliProfileManager } from "../../../../../src/cmd/profiles/CliProfileManager";
 import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
 
 describe("Cli Profile Manager", () => {

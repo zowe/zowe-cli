@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./src/doc/IImperativeError";
-export * from "./src/ImperativeError";
+export * from "./doc/IImperativeError";
+export * from "./ImperativeError";

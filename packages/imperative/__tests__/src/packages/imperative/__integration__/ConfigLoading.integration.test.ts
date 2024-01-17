@@ -11,7 +11,7 @@
 
 import * as T from "../../../TestUtil";
 import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
-import { ImperativeConfig } from "../../../../../src/utilities";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
 
 describe("Imperative should validate config provided by the consumer", function () {
     const testDir = T.createUniqueTestDataDir("config-loading");

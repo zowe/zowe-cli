@@ -9,26 +9,26 @@
 *
 */
 
-export * from "./src/client/types/HTTPVerb";
-export * from "./src/client/doc/IHeaderContent";
-export * from "./src/client/doc/IHTTPSOptions";
-export * from "./src/client/doc/IOptionsFullResponse";
-export * from "./src/client/doc/IRestClientError";
-export * from "./src/client/doc/IRestClientResponse";
-export * from "./src/client/doc/IRestOptions";
-export * from "./src/client/Headers";
-export * from "./src/client/AbstractRestClient";
-export * from "./src/client/CompressionUtils";
-export * from "./src/client/RestClient";
-export * from "./src/client/RestConstants";
-export * from "./src/client/RestStandAloneUtils";
-export * from "./src/client/RestClientError";
+export * from "./client/types/HTTPVerb";
+export * from "./client/doc/IHeaderContent";
+export * from "./client/doc/IHTTPSOptions";
+export * from "./client/doc/IOptionsFullResponse";
+export * from "./client/doc/IRestClientError";
+export * from "./client/doc/IRestClientResponse";
+export * from "./client/doc/IRestOptions";
+export * from "./client/Headers";
+export * from "./client/AbstractRestClient";
+export * from "./client/CompressionUtils";
+export * from "./client/RestClient";
+export * from "./client/RestConstants";
+export * from "./client/RestStandAloneUtils";
+export * from "./client/RestClientError";
 
-export * as SessConstants from "./src/session/SessConstants";
+export * as SessConstants from "./session/SessConstants";
 
-export * from "./src/session/doc/ISession";
-export * from "./src/session/doc/IOptionsForAddConnProps";
-export * from "./src/session/doc/IOverridePromptConnProps";
-export * from "./src/session/AbstractSession";
-export * from "./src/session/ConnectionPropsForSessCfg";
-export * from "./src/session/Session";
+export * from "./session/doc/ISession";
+export * from "./session/doc/IOptionsForAddConnProps";
+export * from "./session/doc/IOverridePromptConnProps";
+export * from "./session/AbstractSession";
+export * from "./session/ConnectionPropsForSessCfg";
+export * from "./session/Session";

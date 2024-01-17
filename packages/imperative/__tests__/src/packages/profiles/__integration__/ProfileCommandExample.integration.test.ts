@@ -14,11 +14,11 @@ import { IImperativeConfig } from "../../../../../src/imperative";
 import * as yargs from "yargs";
 import { Constants } from "../../../../../src/constants";
 import { CommandProcessor, ICommandDefinition, ICommandProfileTypeConfiguration, ICommandResponse } from "../../../../../src/cmd";
-import { ICommandProcessorParms } from "../../../../../src/cmd/src/doc/processor/ICommandProcessorParms";
+import { ICommandProcessorParms } from "../../../../../src/cmd/doc/processor/ICommandProcessorParms";
 import { isNullOrUndefined } from "util";
 import { TestLogger } from "../../../../src/TestLogger";
-import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
-import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
+import { AbstractHelpGenerator } from "../../../../../src/cmd/help/abstract/AbstractHelpGenerator";
+import { DefaultHelpGenerator } from "../../../../../src/cmd/help/DefaultHelpGenerator";
 import { BasicProfileManagerFactory } from "../../../../../src/index";
 
 const logger = TestLogger.getTestLogger();

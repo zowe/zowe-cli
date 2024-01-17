@@ -9,4 +9,4 @@
 *
 */
 
-export * from "./src/Constants";
+export * from "./Constants";

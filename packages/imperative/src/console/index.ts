@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./src/doc/IConsole";
-export * from "./src/Console";
+export * from "./doc/IConsole";
+export * from "./Console";

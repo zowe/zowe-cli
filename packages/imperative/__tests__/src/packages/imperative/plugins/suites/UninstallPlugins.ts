@@ -11,7 +11,7 @@
 
 import * as T from "../../../../../src/TestUtil";
 import { cliBin, config } from "../PluginTestConstants";
-import { CredentialManagerOverride } from "../../../../../../src/security/src/CredentialManagerOverride";
+import { CredentialManagerOverride } from "../../../../../../src/security/CredentialManagerOverride";
 import { join } from "path";
 import { readJsonSync, writeJsonSync } from "fs-extra";
 

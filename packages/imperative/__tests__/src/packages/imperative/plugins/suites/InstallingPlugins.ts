@@ -19,9 +19,9 @@ import { TEST_REGISTRY } from "../../../../../__src__/TestConstants";
 import { execSync, SpawnSyncReturns } from "child_process";
 
 import { config, cliBin, pluginGroup } from "../PluginTestConstants";
-import { CredentialManagerOverride } from "../../../../../../src/security/src/CredentialManagerOverride";
+import { CredentialManagerOverride } from "../../../../../../src/security/CredentialManagerOverride";
 import { readFileSync, writeFileSync } from "jsonfile";
-import { IPluginJson } from "../../../../../../src/imperative/src/plugins/doc/IPluginJson";
+import { IPluginJson } from "../../../../../../src/imperative/plugins/doc/IPluginJson";
 import { SetupTestEnvironment } from "../../../../../__src__/environment/SetupTestEnvironment";
 import * as fs from "fs";
 import { readJsonSync, writeJsonSync } from "fs-extra";
