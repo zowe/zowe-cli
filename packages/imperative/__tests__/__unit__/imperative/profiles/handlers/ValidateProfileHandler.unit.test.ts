@@ -9,13 +9,13 @@
 *
 */
 
-jest.mock("../../../src/Imperative");
-jest.mock("../../../../utilities/ImperativeConfig");
+jest.mock("../../../../../src/imperative/Imperative");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 
-import { IProfileLoaded, ProfileValidator } from "../../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../../../../cmd";
-import { Imperative } from "../../../src/Imperative";
-import { ImperativeConfig } from "../../../../utilities";
+import { IProfileLoaded, ProfileValidator } from "../../../../../src/profiles";
+import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
+import { Imperative } from "../../../../../src/imperative/Imperative";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
 
 const fakeProfileIoError = "Pretend a ProfileIO error occurred";
 const noMsgText = "No message text";

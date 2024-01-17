@@ -28,9 +28,9 @@ describe("PMFConstants", () => {
 
     beforeEach(async () => {
         jest.resetModules();
-        ({PMFConstants} = await import("../../../src/plugins/utilities/PMFConstants"));
-        ({ImperativeConfig} = await import("../../../../utilities/ImperativeConfig"));
-        ({EnvironmentalVariableSettings} = await import("../../../src/env/EnvironmentalVariableSettings"));
+        ({PMFConstants} = await import("../../../../../src/imperative/plugins/utilities/PMFConstants"));
+        ({ImperativeConfig} = await import("../../../../../src/utilities/ImperativeConfig"));
+        ({EnvironmentalVariableSettings} = await import("../../../../../src/imperative/env/EnvironmentalVariableSettings"));
         ({join} = await import("path"));
 
         mocks.join = join;

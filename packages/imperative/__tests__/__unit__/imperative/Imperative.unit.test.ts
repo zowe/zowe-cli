@@ -12,13 +12,13 @@
 import Mock = jest.Mock;
 import { join } from "path";
 import { generateRandomAlphaNumericString } from "../../../__tests__/src/TestUtil";
-import { IImperativeConfig } from "../src/doc/IImperativeConfig";
-import { IImperativeOverrides } from "../src/doc/IImperativeOverrides";
-import { IConfigLogging } from "../../logger";
-import { IImperativeEnvironmentalVariableSettings } from "..";
-import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
+import { IImperativeConfig } from "../../../src/imperative/doc/IImperativeConfig";
+import { IImperativeOverrides } from "../../../src/imperative/doc/IImperativeOverrides";
+import { IConfigLogging } from "../../../src/logger";
+import { IImperativeEnvironmentalVariableSettings } from "../../..";
+import { ICommandDefinition } from "../../../src/cmd/doc/ICommandDefinition";
 import * as yargs from "yargs";
-import { ImperativeError } from "../../error/src/ImperativeError";
+import { ImperativeError } from "../../../src/error/ImperativeError";
 
 describe("Imperative", () => {
     const mainModule = process.mainModule;

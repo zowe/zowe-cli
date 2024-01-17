@@ -9,11 +9,11 @@
 *
 */
 
-import { DefinitionTreeResolver } from "../src/DefinitionTreeResolver";
-import { ImperativeError } from "../../error";
-import { Logger } from "../../logger";
-import { Console } from "../../console";
-import { ICommandDefinition } from "../../cmd";
+import { DefinitionTreeResolver } from "../../../src/imperative/DefinitionTreeResolver";
+import { ImperativeError } from "../../../src/error";
+import { Logger } from "../../../src/logger";
+import { Console } from "../../../src/console";
+import { ICommandDefinition } from "../../../src/cmd";
 
 const fakeDefinition: ICommandDefinition = {
     name: "users",

@@ -13,19 +13,19 @@ import Mock = jest.Mock;
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../logger");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/imperative/logger");
+jest.mock("../../../../../../src/imperative/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/imperative/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/imperative/imperative/utilities/NpmFunctions");
 
-import { Console } from "../../../../../console";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { Logger } from "../../../../../logger";
-import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
+import { Console } from "../../../../../../src/console";
+import { IPluginJson } from "../../../../../../src/imperative/plugins/doc/IPluginJson";
+import { Logger } from "../../../../../../src/logger";
+import { PMFConstants } from "../../../../../../src/imperative/plugins/utilities/PMFConstants";
 import { readFileSync } from "jsonfile";
-import { update } from "../../../../src/plugins/utilities/npm-interface";
-import { getPackageInfo, installPackages } from "../../../../src/plugins/utilities/NpmFunctions";
+import { update } from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import { getPackageInfo, installPackages } from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
 
 describe("PMF: update Interface", () => {
     // Objects created so types are correct.

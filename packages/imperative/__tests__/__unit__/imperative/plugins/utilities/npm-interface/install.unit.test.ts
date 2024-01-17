@@ -40,22 +40,22 @@ jest.doMock("path", () => {
     };
 });
 
-import { Console } from "../../../../../console";
-import { ImperativeError } from "../../../../../error";
-import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
-import { install } from "../../../../src/plugins/utilities/npm-interface";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { IPluginJsonObject } from "../../../../src/plugins/doc/IPluginJsonObject";
-import { Logger } from "../../../../../logger";
-import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
+import { Console } from "../../../../../../src/console";
+import { ImperativeError } from "../../../../../../src/error";
+import { IImperativeConfig } from "../../../../../../src/imperative/doc/IImperativeConfig";
+import { install } from "../../../../../../src/imperative/plugins/utilities/npm-interface";
+import { IPluginJson } from "../../../../../../src/imperative/plugins/doc/IPluginJson";
+import { IPluginJsonObject } from "../../../../../../src/imperative/plugins/doc/IPluginJsonObject";
+import { Logger } from "../../../../../../src/logger";
+import { PMFConstants } from "../../../../../../src/imperative/plugins/utilities/PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { sync } from "find-up";
-import { getPackageInfo, installPackages } from "../../../../src/plugins/utilities/NpmFunctions";
-import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
-import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
-import { AbstractPluginLifeCycle } from "../../../../src/plugins/AbstractPluginLifeCycle";
-import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
-import { UpdateImpConfig } from "../../../../src/UpdateImpConfig";
+import { getPackageInfo, installPackages } from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
+import { ConfigSchema } from "../../../../../../src/config/ConfigSchema";
+import { PluginManagementFacility } from "../../../../../../src/imperative/plugins/PluginManagementFacility";
+import { AbstractPluginLifeCycle } from "../../../../../../src/imperative/plugins/AbstractPluginLifeCycle";
+import { ConfigurationLoader } from "../../../../../../src/imperative/ConfigurationLoader";
+import { UpdateImpConfig } from "../../../../../../src/imperative/UpdateImpConfig";
 import * as fs from "fs";
 import * as path from "path";
 

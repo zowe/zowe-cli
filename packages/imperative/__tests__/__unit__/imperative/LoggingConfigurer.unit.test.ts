@@ -9,7 +9,7 @@
 *
 */
 
-import { LoggingConfigurer } from "../src/LoggingConfigurer";
+import { LoggingConfigurer } from "../../../src/imperative/LoggingConfigurer";
 import * as os from "os";
 import * as path from "path";
 

@@ -17,26 +17,26 @@ jest.mock("../../src/plugins/utilities/PMFConstants");
 jest.mock("../../src/plugins/PluginRequireProvider");
 
 import * as fs from "fs";
-import { AppSettings } from "../../../settings";
+import { AppSettings } from "../../../../src/settings";
 import { ICommandDefinition } from "../../../../src/cmd";
-import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
-import { ImperativeConfig } from "../../../utilities/ImperativeConfig";
-import { UpdateImpConfig } from "../../src/UpdateImpConfig";
-import { IPluginJson } from "../../src/plugins/doc/IPluginJson";
-import { IssueSeverity, PluginIssues } from "../../src/plugins/utilities/PluginIssues";
+import { IImperativeConfig } from "../../../../src/imperative/doc/IImperativeConfig";
+import { ImperativeConfig } from "../../../../src/utilities/ImperativeConfig";
+import { UpdateImpConfig } from "../../../../src/imperative/UpdateImpConfig";
+import { IPluginJson } from "../../../../src/imperative/plugins/doc/IPluginJson";
+import { IssueSeverity, PluginIssues } from "../../../../src/imperative/plugins/utilities/PluginIssues";
 import { join, resolve } from "path";
-import { PluginManagementFacility } from "../../src/plugins/PluginManagementFacility";
-import { PMFConstants } from "../../src/plugins/utilities/PMFConstants";
+import { PluginManagementFacility } from "../../../../src/imperative/plugins/PluginManagementFacility";
+import { PMFConstants } from "../../../../src/imperative/plugins/utilities/PMFConstants";
 import * as jsonfile from "jsonfile";
-import { ConfigurationLoader } from "../../src/ConfigurationLoader";
-import { ConfigurationValidator } from "../../src/ConfigurationValidator";
-import { ICommandProfileTypeConfiguration } from "../../../cmd";
-import { DefinitionTreeResolver } from "../../src/DefinitionTreeResolver";
-import { IPluginCfgProps } from "../../src/plugins/doc/IPluginCfgProps";
-import { Logger } from "../../../logger";
-import { IO } from "../../../io";
-import { ISettingsFile } from "../../../settings/src/doc/ISettingsFile";
-import { CredentialManagerOverride } from "../../../security/src/CredentialManagerOverride";
+import { ConfigurationLoader } from "../../../../src/imperative/ConfigurationLoader";
+import { ConfigurationValidator } from "../../../../src/imperative/ConfigurationValidator";
+import { ICommandProfileTypeConfiguration } from "../../../../src/cmd";
+import { DefinitionTreeResolver } from "../../../../src/imperative/DefinitionTreeResolver";
+import { IPluginCfgProps } from "../../../../src/imperative/plugins/doc/IPluginCfgProps";
+import { Logger } from "../../../../src/logger";
+import { IO } from "../../../../src/io";
+import { ISettingsFile } from "../../../../src/settings/doc/ISettingsFile";
+import { CredentialManagerOverride } from "../../../../src/security/CredentialManagerOverride";
 
 // NOTE: Several tests for CredentialManager override are currently disabled
 describe("Plugin Management Facility", () => {
