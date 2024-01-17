@@ -9,16 +9,17 @@
 *
 */
 
-import { IImperativeConfig } from "../src/doc/IImperativeConfig";
+import { IImperativeConfig } from "../../../src/imperative/doc/IImperativeConfig";
 
 jest.mock("../../security");
 jest.mock("../../utilities/ImperativeConfig");
 
-import { OverridesLoader } from "../src/OverridesLoader";
-import { CredentialManagerFactory, AbstractCredentialManager } from "../../security";
+import { OverridesLoader } from "../../../src/imperative/OverridesLoader";
+import { CredentialManagerFactory, AbstractCredentialManager } from "../../../src/security";
 import * as path from "path";
-import { ImperativeConfig, Logger } from "../..";
-import { AppSettings } from "../../settings";
+import { Logger } from "../../../";
+import { ImperativeConfig } from "../../../src/utilities/ImperativeConfig";
+import { AppSettings } from "../../../src/settings";
 
 const TEST_MANAGER_NAME = "test manager";
 

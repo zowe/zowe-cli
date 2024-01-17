@@ -9,9 +9,9 @@
 *
 */
 
-import { ConfigurationLoader } from "..";
-import { IImperativeOverrides } from "../src/doc/IImperativeOverrides";
-import { IApimlSvcAttrs } from "../src/doc/IApimlSvcAttrs";
+import { ConfigurationLoader } from "../../..";
+import { IImperativeOverrides } from "../../../src/imperative/doc/IImperativeOverrides";
+import { IApimlSvcAttrs } from "../../../src/imperative/doc/IApimlSvcAttrs";
 import { homedir } from "os";
 import * as path from "path";
 

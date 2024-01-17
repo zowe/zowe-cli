@@ -13,8 +13,8 @@ import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
-import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
-import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
+import * as npmFunctions from "../../../../../src/imperative/plugins/utilities/NpmFunctions";
+import { PMFConstants } from "../../../../../src/imperative/plugins/utilities/PMFConstants";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");

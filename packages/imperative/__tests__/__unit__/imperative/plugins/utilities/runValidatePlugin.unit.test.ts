@@ -9,9 +9,9 @@
 *
 */
 
-import { runValidatePlugin } from "../../../src/plugins/utilities/runValidatePlugin";
+import { runValidatePlugin } from "../../../../../src/imperative/plugins/utilities/runValidatePlugin";
 import { sync } from "cross-spawn";
-import { Imperative } from "../../..";
+import { Imperative } from "../../../../../";
 import Mock = jest.Mock;
 
 jest.mock("cross-spawn");

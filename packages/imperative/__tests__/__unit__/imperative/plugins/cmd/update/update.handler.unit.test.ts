@@ -13,24 +13,24 @@ import Mock = jest.Mock;
 
 jest.mock("child_process");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/npm-interface/update");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../../logger");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/imperative/plugins/utilities/npm-interface/update");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/cmd/doc/handler/IHandlerParameters");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/logger");
+jest.mock("../../../../../../src/imperative/plugins/utilities/NpmFunctions");
 
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
-import { Console } from "../../../../../console";
-import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { Logger } from "../../../../../logger";
-import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
-import UpdateHandler from "../../../../src/plugins/cmd/update/update.handler";
-import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
+import { HandlerResponse, IHandlerParameters } from "../../../../../../src/cmd";
+import { Console } from "../../../../../../src/console";
+import { IPluginJson } from "../../../../../../src/imperative/plugins/doc/IPluginJson";
+import { Logger } from "../../../../../../src/logger";
+import { PMFConstants } from "../../../../../../src/imperative/plugins/utilities/PMFConstants";
+import UpdateHandler from "../../../../../../src/imperative/plugins/cmd/update/update.handler";
+import * as NpmFunctions from "../../../../../../src/imperative/plugins/utilities/NpmFunctions";
 import * as ChildProcesses from "child_process";
 import * as JsonFile from "jsonfile";
-import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
+import * as NpmInterface from "../../../../../../src/imperative/plugins/utilities/npm-interface";
 
 describe("Plugin Management Facility update handler", () => {
 

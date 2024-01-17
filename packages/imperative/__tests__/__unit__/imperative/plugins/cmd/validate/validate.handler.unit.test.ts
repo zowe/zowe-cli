@@ -11,15 +11,15 @@
 
 import Mock = jest.Mock;
 
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 
-import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
-import { ImperativeConfig } from "../../../../../utilities/ImperativeConfig";
-import { IssueSeverity, PluginIssues } from "../../../../src/plugins/utilities/PluginIssues";
+import { HandlerResponse, IHandlerParameters } from "../../../../../../src/cmd";
+import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
+import { IssueSeverity, PluginIssues } from "../../../../../../src/imperative/plugins/utilities/PluginIssues";
 import { resolve } from "path";
-import { TextUtils } from "../../../../../utilities";
-import ValidateHandler from "../../../../src/plugins/cmd/validate/validate.handler";
+import { TextUtils } from "../../../../../../src/utilities/TextUtils";
+import ValidateHandler from "../../../../../../src/imperative/plugins/cmd/validate/validate.handler";
 
 describe("Plugin validate command handler", () => {
 

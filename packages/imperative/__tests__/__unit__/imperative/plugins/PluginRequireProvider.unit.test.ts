@@ -11,16 +11,16 @@
 
 import { getMockWrapper } from "../../../../__tests__/__src__/types/MockWrapper";
 
-jest.mock("../../../utilities/ImperativeConfig");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 jest.mock("find-up");
 jest.mock("path");
 
 import * as Module from "module";
 import * as findUp from "find-up";
-import { ImperativeConfig } from "../../../utilities/ImperativeConfig";
-import { PluginRequireProvider } from "../../src/plugins/PluginRequireProvider";
-import { PluginRequireAlreadyCreatedError } from "../../src/plugins/errors/PluginRequireAlreadyCreatedError";
-import { PluginRequireNotCreatedError } from "../../src/plugins/errors/PluginRequireNotCreatedError";
+import { ImperativeConfig } from "../../../../src/utilities/ImperativeConfig";
+import { PluginRequireProvider } from "../../../../src/imperative/plugins/PluginRequireProvider";
+import { PluginRequireAlreadyCreatedError } from "../../../../src/imperative/plugins/errors/PluginRequireAlreadyCreatedError";
+import { PluginRequireNotCreatedError } from "../../../../src/imperative/plugins/errors/PluginRequireNotCreatedError";
 import * as path from "path";
 import { generateRandomAlphaNumericString } from "../../../../__tests__/src/TestUtil";
 
