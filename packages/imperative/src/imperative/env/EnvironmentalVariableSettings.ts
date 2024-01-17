@@ -10,8 +10,8 @@
 */
 
 import { IImperativeEnvironmentalVariableSettings } from "../doc/IImperativeEnvironmentalVariableSettings";
-import { ImperativeExpect } from "../../../expect";
-import { Constants } from "../../../constants/src/Constants";
+import { ImperativeExpect } from "../../../src/expect";
+import { Constants } from "../../../src/constants/Constants";
 
 /**
  * Service for reading environmental variable settings

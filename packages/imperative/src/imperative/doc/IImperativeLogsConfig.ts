@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeLoggingConfig } from "../../../index";
+import { IImperativeLoggingConfig } from "../../../src/index";
 
 export interface IImperativeLogsConfig {
 

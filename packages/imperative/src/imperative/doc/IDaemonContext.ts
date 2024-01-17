@@ -11,7 +11,7 @@
 
 import * as net from "net";
 import * as stream from "stream";
-import { IDaemonResponse } from "../../../utilities";
+import { IDaemonResponse } from "../../../src/utilities";
 
 /**
  * Allow for passing our own "context" / user data to the Imperative parser
