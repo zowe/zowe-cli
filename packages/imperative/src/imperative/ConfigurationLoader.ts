@@ -15,7 +15,7 @@
  */
 import { IImperativeConfig } from "./doc/IImperativeConfig";
 import * as os from "os";
-import { ImperativeError } from "../../error";
+import { ImperativeError } from "../error";
 
 export class ConfigurationLoader {
 

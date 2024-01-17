@@ -10,10 +10,9 @@
 */
 
 import { IImperativeConfig } from "./doc/IImperativeConfig";
-import { isNullOrUndefined } from "util";
-import { TextUtils } from "../../utilities";
-import { ImperativeError } from "../../error";
-import { ICommandProfileProperty } from "../../cmd/src/doc/profiles/definition/ICommandProfileProperty";
+import { TextUtils } from "../utilities";
+import { ImperativeError } from "../error";
+import { ICommandProfileProperty } from "../cmd/doc/profiles/definition/ICommandProfileProperty";
 
 /**
  * Imperative-internal class to validate configuration
@@ -34,10 +33,10 @@ export class ConfigurationValidator {
                 + fieldName + ". Please provide this field in order to use Imperative"
             });
         };
-        if (isNullOrUndefined(config.productDisplayName)) {
+        if (config.productDisplayName == null) {
             throw getMissingFieldError("productDisplayName");
         }
-        if (isNullOrUndefined(config.commandModuleGlobs) && isNullOrUndefined(config.definitions)) {
+        if (config.commandModuleGlobs == null && config.definitions == null) {
             throw new ImperativeError({
                 msg: "Your Imperative configuration had neither \"definitions\"" +
                 " nor \"commandModuleGlobs\". At least one of these fields is required so that the syntax for " +
@@ -45,31 +44,31 @@ export class ConfigurationValidator {
             });
         }
 
-        if (isNullOrUndefined(config.primaryTextColor)) {
+        if (config.primaryTextColor == null) {
             config.primaryTextColor = "yellow";
         } else {
             // if the user specified a color, test to make sure it works
             ConfigurationValidator.verifyChalkColor(config, "primaryTextColor", "primary text highlighting");
         }
-        if (isNullOrUndefined(config.secondaryTextColor)) {
+        if (config.secondaryTextColor == null) {
             config.secondaryTextColor = "blue";
         } else {
             // if the user specified a color, test to make sure it works
             ConfigurationValidator.verifyChalkColor(config, "secondaryTextColor", "secondary text highlighting");
         }
-        if (isNullOrUndefined(config.allowConfigGroup)) {
+        if (config.allowConfigGroup == null) {
             // default allowConfigGroup to true
             config.allowConfigGroup = true;
         }
-        if (isNullOrUndefined(config.allowPlugins)) {
+        if (config.allowPlugins == null) {
             // default allowPlugins to true
             config.allowPlugins = true;
         }
 
         // validate profile configurations
-        if (!isNullOrUndefined(config.profiles)) {
+        if (config.profiles != null) {
             for (const profileConfig of config.profiles) {
-                if (isNullOrUndefined(profileConfig.schema)) {
+                if (profileConfig.schema == null) {
                     throw new ImperativeError({
                         msg: "Your Imperative profile configuration of type \"" + profileConfig.type +
                         "\" has no schema. Please provide a schema for your profile so that it can be used to " +
@@ -80,9 +79,7 @@ export class ConfigurationValidator {
                     for (const propertyName of Object.keys(profileConfig.schema.properties)) {
 
                         const property: ICommandProfileProperty = profileConfig.schema.properties[propertyName];
-                        if (!isNullOrUndefined(property.optionDefinitions) &&
-                            property.optionDefinitions.length > 1 &&
-                            isNullOrUndefined(profileConfig.createProfileFromArgumentsHandler)) {
+                        if (property.optionDefinitions?.length > 1 && profileConfig.createProfileFromArgumentsHandler == null) {
                             throw new ImperativeError({
                                 msg: TextUtils.formatMessage(
                                     "Your Imperative profile configuration of type \"{{type}}\"" +
