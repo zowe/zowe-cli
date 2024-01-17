@@ -9,16 +9,15 @@
 *
 */
 
-import { IConfigLogging } from "../../logger/src/doc/IConfigLogging";
-import { Logger } from "../../logger/src/Logger";
-import { LoggerConfigBuilder } from "../../logger/src/LoggerConfigBuilder";
+import { IConfigLogging } from "../logger/doc/IConfigLogging";
+import { Logger } from "../logger/Logger";
+import { LoggerConfigBuilder } from "../logger/LoggerConfigBuilder";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
-import { Console } from "../../console";
-import { isNullOrUndefined } from "util";
-import { IO } from "../../io/src/IO";
+import { Console } from "../console";
+import { IO } from "../io/IO";
 import { IImperativeLoggingConfig } from "./doc/IImperativeLoggingConfig";
-import { ImperativeError } from "../../error/src/ImperativeError";
-import { ImperativeExpect } from "../../expect/src/ImperativeExpect";
+import { ImperativeError } from "../error/ImperativeError";
+import { ImperativeExpect } from "../expect/ImperativeExpect";
 
 /**
  * Helper class to construct default config, log4js config, and define
@@ -89,9 +88,9 @@ export class LoggingConfigurer {
         /**
          * All remaining logs are created here
          */
-        if (!isNullOrUndefined(imperativeConfig.logging.additionalLogging)) {
+        if (imperativeConfig.logging.additionalLogging != null) {
             imperativeConfig.logging.additionalLogging.forEach((logConfig) => {
-                if (isNullOrUndefined(logConfig.apiName)) {
+                if (logConfig.apiName == null) {
                     throw new ImperativeError({
                         msg: "apiName is required for additionalLoggers",
                     });
@@ -160,11 +159,9 @@ export class LoggingConfigurer {
      */
     private static configureLoggerByKey(
         home: string, imperativeConfig: IImperativeConfig, loggingConfig: IConfigLogging, entryKey: string, configKey: string) {
-        if (!isNullOrUndefined(imperativeConfig.logging)) {
-            if (!isNullOrUndefined(imperativeConfig.logging[configKey])) {
-                loggingConfig = LoggingConfigurer.configureLoggerByKeyHelper(
-                    home, imperativeConfig.logging[configKey], loggingConfig, entryKey, configKey);
-            }
+        if (imperativeConfig.logging?.[configKey] != null) {
+            loggingConfig = LoggingConfigurer.configureLoggerByKeyHelper(
+                home, imperativeConfig.logging[configKey], loggingConfig, entryKey, configKey);
         }
 
         return loggingConfig;
@@ -184,12 +181,12 @@ export class LoggingConfigurer {
      */
     private static configureLoggerByKeyHelper(home: string, impLogConfig: IImperativeLoggingConfig,
         loggingConfig: IConfigLogging, entryKey: string, configKey: string) {
-        if (!isNullOrUndefined(impLogConfig.logFile)) {
+        if (impLogConfig.logFile != null) {
             const fullLogFilePath = home +
                 LoggingConfigurer.normalizeDir(impLogConfig.logFile);
             loggingConfig.log4jsConfig.appenders[entryKey].filename = fullLogFilePath as any;
         }
-        if (!isNullOrUndefined(impLogConfig.level)) {
+        if (impLogConfig.level != null) {
             Console.validateLevel(impLogConfig.level);
             loggingConfig.log4jsConfig.categories[entryKey].level = impLogConfig.level;
         }
@@ -269,12 +266,12 @@ export class LoggingConfigurer {
      */
     private static buildLoggingDefaultsByKey(
         imperativeConfig: IImperativeConfig, key: string, apiName: string, category = apiName): IImperativeConfig {
-        if (isNullOrUndefined(imperativeConfig.logging)) {
+        if (imperativeConfig.logging == null) {
             imperativeConfig.logging = {};
-            imperativeConfig.logging[key] = {apiName, category};
+            imperativeConfig.logging[key] = { apiName, category };
         } else {
-            if (isNullOrUndefined(imperativeConfig.logging[key])) {
-                imperativeConfig.logging[key] = {apiName, category};
+            if (imperativeConfig.logging[key] == null) {
+                imperativeConfig.logging[key] = { apiName, category };
             } else {
                 imperativeConfig.logging[key].apiName = apiName;
                 imperativeConfig.logging[key].category = category;
