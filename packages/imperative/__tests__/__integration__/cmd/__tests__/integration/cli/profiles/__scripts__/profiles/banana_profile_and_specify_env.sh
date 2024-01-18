@@ -1,16 +1,16 @@
 #!/bin/sh
 
-profileColor=$1
-profileDescription=$2
-profileMoldType=$3
+profileColor=${1:?"First parm (profileColor) is required."}
+profileDescription=${2:?"Second parm (profileDescription) is required."}
+profileMoldType=${3:?"Third parm (profileMoldType) is required."}
 
-envColor=$4
-envDescription=$5
-envMoldType=$6
+envColor=${4:?"Fourth parm (envColor) is required."}
+envDescription=${5:?"Fifth parm (envDescription) is required."}
+envMoldType=${6:?"Sixth parm (envMoldType) is required."}
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 # set desired properties in our config file
 cp $myScriptDir/banana.config.json .

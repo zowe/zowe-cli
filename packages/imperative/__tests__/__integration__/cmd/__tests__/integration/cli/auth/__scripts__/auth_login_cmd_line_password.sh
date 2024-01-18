@@ -4,9 +4,9 @@ echoVal=${1:?"First parm (echoVal) is required."}
 baseUser=${2:?"Second parm (baseUser) is required."}
 basePass=${3:?"Third parm (basePass) is required."}
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 # copy our config file
 cp $myScriptDir/../__resources__/base_password.config.json .

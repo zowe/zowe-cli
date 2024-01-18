@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 # copy our config file
 cp $myScriptDir/../__resources__/base_password.config.json imperative-test-cli.config.json

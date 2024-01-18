@@ -2,9 +2,9 @@
 
 tokenValue=$1
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 imperative-test-cli auth logout fruit --token-value "$tokenValue"
 exitOnFailure "Logging out auth of type fruit failed!" $?

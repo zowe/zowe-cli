@@ -1,12 +1,12 @@
 #!/bin/sh
 
-baseAmount=$1
-basePrice=$2
-kiwiAmount=$3
+baseAmount=${1:?"First parm (baseAmount) is required."}
+basePrice=${2:?"Second parm (basePrice) is required."}
+kiwiAmount=${3:?"Third parm (kiwiAmount) is required."}
 
-# include exitOnFailure function
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
 myScriptDir=`dirname $0`
-. $myScriptDir/exitOnFailure.sh
+. $myScriptDir/../../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
 # set desired properties in our config file
 cp $myScriptDir/base_and_kiwi.config.json .
