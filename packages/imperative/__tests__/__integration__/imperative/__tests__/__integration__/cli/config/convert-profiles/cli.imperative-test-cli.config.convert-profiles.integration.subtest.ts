@@ -163,8 +163,8 @@ describe("imperative-test-cli config convert-profiles", () => {
         it("should not delete profiles if prompt is rejected", () => {
             // delete profiles previously created, but leave the profile type definitions
             let response = runCliScript(__dirname + "/__scripts__/delete_profiles.sh", TEST_ENVIRONMENT.workingDir);
-            expect(response.stdout.toString()).toEqual("");
             expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toEqual("");
 
             response = runCliScript(__dirname + "/__scripts__/convert_profiles_delete.sh", TEST_ENVIRONMENT.workingDir, ["n"]);
             expect(response.status).toBe(0);
