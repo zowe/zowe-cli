@@ -16,7 +16,7 @@ exitOnFailure "Failed to copy config file." $?
 cp $resourceDir/$baseCertFile .
 exitOnFailure "Failed to copy certificate file." $?
 
-cp $resourceDir/fakeKey.key .
+cp $resourceDir/$baseCertKey .
 exitOnFailure "Failed to copy certificate key file." $?
 
 # remove existing cert from our config file
