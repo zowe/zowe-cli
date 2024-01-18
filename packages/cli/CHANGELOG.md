@@ -10,6 +10,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - LTS Breaking: Replaced the `ZOWE_EDITOR` environment variable with `ZOWE_OPT_EDITOR` and `--editor` option on commands [#1867](https://github.com/zowe/zowe-cli/issues/1867)
 
+## `8.0.0-next.202311282012`
+
+- LTS Breaking: Moved `getDataSet` from the `zosfiles` command group to the `zosfiles` SDK as `ZosFilesUtils.getDataSetFromName` [#1696](https://github.com/zowe/zowe-cli/issues/1696)
+
 ## `8.0.0-next.202311141517`
 
 - LTS Breaking: Alter the format of error messages to be more clear and actionable.
