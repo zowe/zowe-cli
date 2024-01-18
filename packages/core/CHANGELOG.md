@@ -10,6 +10,10 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 - Major: First major version bump for V3
 
+## `7.21.2`
+
+- BugFix: Add information about password-protected certificate file support. [#2006](https://github.com/zowe/zowe-cli/issues/2006)
+
 ## `7.18.0`
 
 - Enhancement: Added support for dynamic APIML tokens. [#1734](https://github.com/zowe/zowe-cli/pull/1734)

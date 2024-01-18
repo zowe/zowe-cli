@@ -161,7 +161,10 @@ describe("Config secure tests", () => {
             .mockReturnValueOnce(false);    // Global layer
         jest.spyOn(fs, "readFileSync");
         const config = await Config.load(MY_APP);
-        expect(config.api.secure.secureFields()).toEqual(["profiles.fruit.properties.secret"]);
+        expect(config.api.secure.secureFields()).toEqual([
+            "profiles.fruit.properties.secret",
+            "profiles.fruit.profiles.grape.properties.secret2"
+        ]);
     });
 
     it("should list all secure fields for a profile", async () => {
@@ -174,6 +177,19 @@ describe("Config secure tests", () => {
         jest.spyOn(fs, "readFileSync");
         const config = await Config.load(MY_APP);
         expect(config.api.secure.securePropsForProfile("fruit.apple")).toEqual(["secret"]);
+    });
+
+    it("should not list secure fields for a profile with partial name match", async () => {
+        jest.spyOn(Config, "search").mockReturnValue(projectConfigPath);
+        jest.spyOn(fs, "existsSync")
+            .mockReturnValueOnce(false)     // Project user layer
+            .mockReturnValueOnce(true)      // Project layer
+            .mockReturnValueOnce(false)     // User layer
+            .mockReturnValueOnce(false);    // Global layer
+        jest.spyOn(fs, "readFileSync");
+        const config = await Config.load(MY_APP);
+        expect(config.api.secure.securePropsForProfile("fruit.grape")).toEqual(["secret", "secret2"]);
+        expect(config.api.secure.securePropsForProfile("fruit.grapefruit")).toEqual(["secret"]);
     });
 
     describe("secureInfoForProp", () => {

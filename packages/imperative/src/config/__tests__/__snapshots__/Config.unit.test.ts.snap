@@ -67,6 +67,21 @@ Object {
           },
           "type": "fruit",
         },
+        "grape": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "secure": Array [
+            "secret2",
+          ],
+          "type": "fruit",
+        },
+        "grapefruit": Object {
+          "properties": Object {
+            "color": "pink",
+          },
+          "type": "fruit",
+        },
         "orange": Object {
           "properties": Object {
             "color": "orange",
@@ -180,6 +195,21 @@ Object {
         "apple": Object {
           "properties": Object {
             "color": "red",
+          },
+          "type": "fruit",
+        },
+        "grape": Object {
+          "properties": Object {
+            "color": "red",
+          },
+          "secure": Array [
+            "secret2",
+          ],
+          "type": "fruit",
+        },
+        "grapefruit": Object {
+          "properties": Object {
+            "color": "pink",
           },
           "type": "fruit",
         },

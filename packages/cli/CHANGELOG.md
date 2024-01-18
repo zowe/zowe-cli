@@ -2,25 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `8.0.0-next.202401081937`
-
-- BugFix: Fixed typo in command help for `zowe zos-workflows create` commands.
-
 ## `8.0.0-next.202401031939`
 
 - Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
 
-## `8.0.0-next.202401022112`
-
-- BugFix: Add missing npm-shrinkwrap
-
 ## `8.0.0-next.202311291643`
 
 - LTS Breaking: Replaced the `ZOWE_EDITOR` environment variable with `ZOWE_OPT_EDITOR` and `--editor` option on commands [#1867](https://github.com/zowe/zowe-cli/issues/1867)
-
-## `8.0.0-next.202311282012`
-
-- LTS Breaking: Moved `getDataSet` from the `zosfiles` command group to the `zosfiles` SDK as `ZosFilesUtils.getDataSetFromName` [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `8.0.0-next.202311141517`
 
@@ -30,6 +18,24 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.22.0`
+
+- Enhancement: Hid the progress bar if `CI` environment variable is set, or if `FORCE_COLOR` environment variable is set to `0`. [#1845](https://github.com/zowe/zowe-cli/issues/1845)
+
+## `7.21.2`
+
+- BugFix: Correct extra character being displayed at the end of lines when issuing `zowe files compare` on Windows. [#1992](https://github.com/zowe/zowe-cli/issues/1992)
+- BugFix: Correct the online help description for `zowe files compare uss`. [#1754](https://github.com/zowe/zowe-cli/issues/1754)
+- BugFix: Fixed typo in command help for `zowe zos-workflows create` commands.
+
+## `7.20.1`
+
+- BugFix: Add missing npm-shrinkwrap
+
+## `7.20.0`
+
+- Deprecated: `getDataSet` in the `zosfiles` command group utility functions, use `zosfiles` SDK's `ZosFilesUtils.getDataSetFromName` instead. [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `7.18.10`
 

@@ -25,6 +25,8 @@ import { AbstractSession, SessConstants } from "../../rest";
 import { ConfigAutoStore } from "../src/ConfigAutoStore";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error";
+import { IProfInfoUpdatePropOpts } from "../src/doc/IProfInfoUpdatePropOpts";
+import { ConfigUtils } from "../src/ConfigUtils";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -1009,6 +1011,63 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(updateKnownPropertySpy).toHaveBeenCalledWith({ ...profileOptions, mergedArgs: {}, osLocInfo: undefined });
         });
 
+        it("should succeed forceUpdating a property even if the jsonLoc points somewhere else", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const mergedArgs = {
+                knownArgs: [{
+                    argName: "rejectUnauthorized",
+                    argLoc: { jsonLoc: "profiles.base_glob.properties.rejectUnauthorized" }
+                }]
+            };
+            jest.spyOn(profInfo as any, "mergeArgsForProfile").mockReturnValue(mergedArgs);
+            const updateKnownPropertySpy = jest.spyOn(profInfo as any, "updateKnownProperty").mockResolvedValue(true);
+            const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "LPAR4",
+                profileType: "dummy",
+                property: "rejectUnauthorized",
+                value: true,
+                forceUpdate: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(mergedArgs.knownArgs[0].argLoc.jsonLoc).toEqual("profiles.LPAR4.properties.rejectUnauthorized");
+            const osLocInfo = { global: false, user: false, name: "LPAR4", path: path.join(teamProjDir, `${testAppNm}.config.json`) };
+            expect(updateKnownPropertySpy).toHaveBeenCalledWith({ ...profileOptions, mergedArgs, osLocInfo });
+            expect(jsonPathMatchesSpy).toHaveBeenCalledTimes(1); // Verify that profile names are matched correctly
+        });
+
+        it("should succeed forceUpdating a property even if the property doesn't exist", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const storeSpy = jest.spyOn(ConfigAutoStore, "_storeSessCfgProps").mockImplementation(jest.fn());
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "LPAR4",
+                profileType: "dummy",
+                property: "DOES_NOT_EXIST",
+                value: true,
+                forceUpdate: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(storeSpy).toHaveBeenCalledWith({
+                config: profInfo.getTeamConfig(), profileName: "LPAR4", profileType: "dummy",
+                defaultBaseProfileName: "base_glob",
+                propsToStore: [ "DOES_NOT_EXIST" ], sessCfg: { "DOES_NOT_EXIST": true }, setSecure : undefined,
+            });
+        });
+
         it("should attempt to store session config properties without adding profile types to the loadedConfig", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
@@ -1105,6 +1164,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should update the given property and return true", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
+            const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
 
             const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             const ret = await profInfo.updateKnownProperty({ mergedArgs: prof, property: "host", value: "example.com" });
@@ -1112,6 +1172,7 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             expect(newHost).toEqual("example.com");
             expect(ret).toBe(true);
+            expect(jsonPathMatchesSpy).toHaveBeenCalled(); // Verify that profile names are matched correctly
         });
 
         it("should remove the given property if the value specified if undefined", async () => {
@@ -1153,11 +1214,11 @@ describe("TeamConfig ProfileInfo tests", () => {
             await profInfo.readProfilesFromDisk();
 
             const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
-            await profInfo.updateProperty({profileName: 'LPAR4', property: "someProperty", value: "example.com", profileType: "dummy"});
+            await profInfo.updateProperty({ profileName: 'LPAR4', property: "someProperty", value: "example.com", profileType: "dummy" });
             const afterUpdate = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             expect(afterUpdate.knownArgs.find(v => v.argName === 'someProperty')?.argValue).toBe('example.com');
 
-            await profInfo.removeKnownProperty({mergedArgs: afterUpdate, property: 'someProperty'});
+            await profInfo.removeKnownProperty({ mergedArgs: afterUpdate, property: 'someProperty' });
             const afterRemove = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
 
             expect(afterRemove.knownArgs.find(v => v.argName === 'someProperty')).toBeUndefined();

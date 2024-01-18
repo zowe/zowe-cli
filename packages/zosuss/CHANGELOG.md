@@ -2,10 +2,6 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## `8.0.0-next.202401022112`
-
-- BugFix: Updated `ssh2` package to resolve technical currency
-
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
@@ -13,6 +9,10 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.21.1`
+
+- BugFix: Updated `ssh2` package to resolve technical currency
 
 ## `7.18.2`
 
