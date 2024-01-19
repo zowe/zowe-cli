@@ -50,11 +50,13 @@ describe("cmd-cli", () => {
         expect(response.stderr.toString()).toContain('Use "cmd-cli --help" to view groups, commands, and options.');
     });
 
-    it("should flag an invalid command and list valid commands", async () => {
+    it("should flag a valid command with invalid arguments", async () => {
         const response = runCliScript(__dirname + "/__scripts__/invalid_command2.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toContain(
-            "Available commands are \"banana-profile, strawberry-profile, kiwi-profile, insecure-profile, base-profile\"");
+        expect(response.stderr.toString()).toContain("Unknown argument: vegetable");
+        expect(response.stderr.toString()).toContain("Command failed due to improper syntax");
+        expect(response.stderr.toString()).toContain("Did you mean: auth login fruit?");
+        expect(response.stderr.toString()).toContain('Command entered: "auth login vegetable"');
     });
 
     it("should display the version", async () => {

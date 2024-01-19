@@ -1,0 +1,19 @@
+defaultProfile: null
+configuration:
+    type: strawberry
+    schema:
+        type: object
+        title: 'The strawberry command profile schema'
+        description: 'The strawberry command profile schema'
+        properties:
+            age:
+                optionDefinition:
+                    description: 'The age of the strawberry'
+                    type: number
+                    name: age
+                    aliases:
+                        - a
+                    required: true
+                type: number
+        required:
+            - age

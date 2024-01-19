@@ -23,7 +23,8 @@ const sharedConfig = {
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
     "moduleFileExtensions": [
         "ts",
-        "js"
+        "js",
+        "json"
     ],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [

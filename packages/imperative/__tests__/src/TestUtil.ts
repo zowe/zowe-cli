@@ -440,7 +440,7 @@ export function runCliScript(scriptPath: string, cwd: string, args: any = [], en
         // Execute the command synchronously
         return sync("sh", [`${scriptPath}`].concat(args), {cwd, env: childEnv});
     } else {
-        throw new Error("The script directory doesn't exist");
+        throw new Error("The script directory doesn't exist: " + scriptPath);
     }
 }
 

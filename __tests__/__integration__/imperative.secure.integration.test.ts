@@ -14,7 +14,6 @@
 /* eslint-disable max-len */
 
 describe("Imperative Secure Tests", () => {
-    require("./imperative.integration.subtest");
     require("./../../packages/imperative/__tests__/src/packages/profiles/__integration__/CliProfileManager.credentials.integration.subtest");
     require("./../../packages/imperative/__tests__/src/packages/imperative/__integration__/PluginManagementFacility.integration.subtest");
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/config/init/cli.imperative-test-cli.config.init.integration.subtest");
@@ -23,7 +22,6 @@ describe("Imperative Secure Tests", () => {
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/config/profiles/cli.imperative-test-cli.config.profiles.integration.subtest");
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/config/secure/cli.imperative-test-cli.config.secure.integration.subtest");
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/config/set/cli.imperative-test-cli.config.set.integration.subtest");
-    require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/profiles/cli.imperative-test-cli.profiles.create.secured-profile.integration.subtest");
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/test/cli.imperative-test-cli.test.config-auto-store.integration.subtest");
     require("./../../packages/imperative/__tests__/__integration__/imperative/__tests__/__integration__/cli/test/cli.imperative-test-cli.test.config-override.integration.subtest");
 });

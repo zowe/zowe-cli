@@ -31,7 +31,7 @@ export const PROFILE_TYPE = {
     STRAWBERRY: "strawberry"
 };
 
-const bananaProfile: ICommandProfileTypeConfiguration = {
+export const bananaProfile: ICommandProfileTypeConfiguration = {
     type: PROFILE_TYPE.BANANA,
     schema: {
         type: "object",

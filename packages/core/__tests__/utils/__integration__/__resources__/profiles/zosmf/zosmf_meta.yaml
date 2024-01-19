@@ -1,0 +1,139 @@
+defaultProfile: fakeServiceProfile
+configuration:
+    type: zosmf
+    schema:
+        type: object
+        title: 'z/OSMF Profile'
+        description: 'z/OSMF Profile'
+        properties:
+            host:
+                type: string
+                optionDefinition:
+                    name: host
+                    aliases:
+                        - H
+                    description: 'The z/OSMF server host name.'
+                    type: string
+                    required: false
+                    group: 'Zosmf Connection Options'
+            port:
+                type: number
+                optionDefinition:
+                    name: port
+                    aliases:
+                        - P
+                    description: 'The z/OSMF server port.'
+                    type: number
+                    defaultValue: 443
+                    group: 'Zosmf Connection Options'
+                includeInTemplate: true
+            user:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: user
+                    aliases:
+                        - u
+                    description: 'Mainframe (z/OSMF) user name, which can be the same as your TSO login.'
+                    type: string
+                    required: false
+                    group: 'Zosmf Connection Options'
+            password:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: password
+                    aliases:
+                        - pass
+                        - pw
+                    description: 'Mainframe (z/OSMF) password, which can be the same as your TSO password.'
+                    type: string
+                    required: false
+                    group: 'Zosmf Connection Options'
+            rejectUnauthorized:
+                type: boolean
+                optionDefinition:
+                    name: reject-unauthorized
+                    aliases:
+                        - ru
+                    description: 'Reject self-signed certificates.'
+                    type: boolean
+                    defaultValue: true
+                    group: 'Zosmf Connection Options'
+            certFile:
+                type: string
+                optionDefinition:
+                    name: cert-file
+                    description: 'The file path to a certificate file to use for authentication'
+                    type: existingLocalFile
+                    group: 'Zosmf Connection Options'
+            certKeyFile:
+                type: string
+                optionDefinition:
+                    name: cert-key-file
+                    description: 'The file path to a certificate key file to use for authentication'
+                    type: existingLocalFile
+                    group: 'Zosmf Connection Options'
+            basePath:
+                type: string
+                optionDefinition:
+                    name: base-path
+                    aliases:
+                        - bp
+                    description: 'The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer.'
+                    type: string
+                    group: 'Zosmf Connection Options'
+            protocol:
+                type: string
+                optionDefinition:
+                    name: protocol
+                    description: 'The protocol used (HTTP or HTTPS)'
+                    type: string
+                    defaultValue: https
+                    group: 'Zosmf Connection Options'
+                    allowableValues:
+                        values:
+                            - http
+                            - https
+                        caseSensitive: false
+            encoding:
+                type: string
+                optionDefinition:
+                    name: encoding
+                    aliases:
+                        - ec
+                    description: 'The encoding for download and upload of z/OS data set and USS files. The default encoding if not specified is IBM-1047.'
+                    type: string
+            responseTimeout:
+                type: number
+                optionDefinition:
+                    name: response-timeout
+                    aliases:
+                        - rto
+                    description: 'The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response. Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600'
+                    type: number
+                    defaultValue: null
+                    numericValueRange:
+                        - 5
+                        - 600
+        required: []
+    createProfileExamples:
+        -
+            options: 'zos123 --host zos123 --port 1443 --user ibmuser --password myp4ss'
+            description: 'Create a zosmf profile called ''zos123'' to connect to z/OSMF at host zos123 and port 1443'
+        -
+            options: 'zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false'
+            description: 'Create a zosmf profile called ''zos124'' to connect to z/OSMF at the host zos124 (default port - 443) and allow self-signed certificates'
+        -
+            options: 'zos125 --host zos125 --port 1443'
+            description: 'Create a zosmf profile called ''zos125'' to connect to z/OSMF at the host zos125 and port 1443,  not specifying a username or password so they are not stored on disk; these will need to be specified on every command'
+        -
+            options: 'zos126 --reject-unauthorized false'
+            description: 'Create a zosmf profile called ''zos126'' to connect to z/OSMF on the default port 443 and allow self-signed certificates, not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command'
+        -
+            options: 'zosAPIML --host zosAPIML --port 7554 --user ibmuser --password myp4ss --reject-unauthorized false --base-path ibmzosmf/api/v1'
+            description: 'Create a zosmf profile called ''zosAPIML'' to connect to z/OSMF via the Zowe API Mediation Layer running at host ''zosAPIML'', port ''7554'', and allow for self-signed certificates. To reduce duplication, you could elect to store the ''host'', ''port'', ''reject-unauthorized'', ''user'', and ''password'' values for the API Mediation Layer in a base profile and only store the ''base-path'' of the service in the zosmf profile'
+    updateProfileExamples:
+        -
+            options: 'zos123 --user newuser --password newp4ss'
+            description: 'Update a zosmf profile named ''zos123'' with a new username and password'

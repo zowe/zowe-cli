@@ -11,15 +11,62 @@
 
 import { TestProfileLoader } from "./TestProfileLoader";
 import { TestAppImperativeConfig } from "../src/constants/ProfileInfoConstants";
-import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
 import { Logger } from "../../../../../src/logger/src/Logger";
+import { ProfileIO } from "../../../../../src/profiles/src/utils";
+import { AbstractProfileManager } from "../../../../../src/profiles/src/abstract/AbstractProfileManager";
+import { IMetaProfile } from "../../../../../src/profiles/src/doc/definition";
+import { IProfileTypeConfiguration } from "../../../../../src/profiles/src/doc/config/IProfileTypeConfiguration";
 import * as path from "path";
 
+/* Logic from the now-removed BasicProfileManager.initialize() function. We never create
+ * the old v1 profile structure in the product, but we might for tests. In V3, we maintain
+ * the ability to read V1 profiles for the purpose of converting them to a team config.
+ */
 const setupOldProfiles = async (projectDir: string) => {
-    await CliProfileManager.initialize({
+    const parms: any = {
         configuration: TestAppImperativeConfig.profiles,
         profileRootDirectory: path.join(projectDir, "profiles"),
-    });
+    };
+
+    // Create the profile root directory (if necessary)
+    ProfileIO.createProfileDirs(parms.profileRootDirectory);
+
+    // Iterate through the types and create this types configuration document - create a new instance of the
+    // Manager to create the other types
+    const responses: any[] = [];
+    for(const config of parms.configuration) {
+
+        // Construct the profile type directory
+        const profileTypeRootDir = parms.profileRootDirectory + "/" + config.type + "/";
+        ProfileIO.createProfileDirs(profileTypeRootDir);
+
+        // Meta file path and name
+        const metaFilePath = profileTypeRootDir + config.type
+            + AbstractProfileManager.META_FILE_SUFFIX + AbstractProfileManager.PROFILE_EXTENSION;
+
+        // Construct the default meta file
+        const defaultMetaFile: IMetaProfile<IProfileTypeConfiguration> = {
+            defaultProfile: undefined,
+            configuration: config
+        };
+
+        // If the directory doesn't exist, create it and the default meta file for this type
+        // If the directory exists and re-init was specified, write out the default meta file
+        // If it exists and re-init was not specified, leave it alone
+        if (!ProfileIO.exists(metaFilePath)) {
+            ProfileIO.writeMetaFile(defaultMetaFile, metaFilePath);
+            responses.push({
+                message: `Profile environment initialized for type "${config.type}".`
+            });
+        } else if (parms.reinitialize) {
+            ProfileIO.writeMetaFile(defaultMetaFile, metaFilePath);
+            responses.push({
+                message: `Profile environment re-initialized for type "${config.type}".`
+            });
+        }
+    }
+
+    return responses;
 };
 
 const log = (logger: Logger, msg: string, ...args: any) => {
