@@ -51,6 +51,7 @@ import { ConfigAutoStore } from "./ConfigAutoStore";
 import { IGetAllProfilesOptions } from "./doc/IProfInfoProps";
 import { IConfig } from "./doc/IConfig";
 import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts";
+import { ConfigUtils } from "./ConfigUtils";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -203,9 +204,11 @@ export class ProfileInfo {
         const mergedArgs = this.mergeArgsForProfile(desiredProfile, { getSecureVals: false });
         if (options.forceUpdate && this.usingTeamConfig) {
             const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
-            const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
-            if (!knownProperty?.argLoc.jsonLoc.startsWith(profPath)) {
-                knownProperty.argLoc.jsonLoc = `${profPath}.properties.${options.property}`;
+            if (knownProperty != null) {
+                const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
+                if (!ConfigUtils.jsonPathMatches(knownProperty.argLoc.jsonLoc, profPath)) {
+                    knownProperty.argLoc.jsonLoc = `${profPath}.properties.${options.property}`;
+                }
             }
         }
         if (!(await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] }))) {
@@ -291,7 +294,7 @@ export class ProfileInfo {
                 let oldLayer: IProfLocOsLocLayer;
                 const layer = this.getTeamConfig().layerActive();
                 const osLoc = options.osLocInfo ?? this.getOsLocInfo(
-                    this.getAllProfiles().find(p => toUpdate.argLoc.jsonLoc.startsWith(p.profLoc.jsonLoc)))?.[0];
+                    this.getAllProfiles().find(p => ConfigUtils.jsonPathMatches(toUpdate.argLoc.jsonLoc, p.profLoc.jsonLoc)))?.[0];
                 if (osLoc && (layer.user !== osLoc.user || layer.global !== osLoc.global)) {
                     oldLayer = { user: layer.user, global: layer.global };
                     this.getTeamConfig().api.layers.activate(osLoc.user, osLoc.global);

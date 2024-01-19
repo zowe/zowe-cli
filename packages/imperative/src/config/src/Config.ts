@@ -27,7 +27,7 @@ import { IConfigOpts } from "./doc/IConfigOpts";
 import { IConfigSecure } from "./doc/IConfigSecure";
 import { IConfigVault } from "./doc/IConfigVault";
 import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigSecure } from "./api";
-import { coercePropValue } from "./ConfigUtils";
+import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
@@ -443,7 +443,7 @@ export class Config {
                 obj = obj[segment];
             } else if (segments.indexOf(segment) === segments.length - 1) {
                 if (opts?.parseString) {
-                    value = coercePropValue(value);
+                    value = ConfigUtils.coercePropValue(value);
                 }
 
                 if (opts?.parseString && Array.isArray(obj[segment])) {
