@@ -61,6 +61,8 @@ import * as path from "path";
 import { gt as versionGreaterThan } from "semver";
 import { ProfileInfo } from "../../../../../config";
 import mockTypeConfig from "../../__resources__/typeConfiguration";
+import { updateExtendersJson } from "../../../../src/plugins/utilities/npm-interface/install";
+import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
 
 function setResolve(toResolve: string, resolveTo?: string) {
     expectedVal = toResolve;
@@ -460,6 +462,30 @@ describe("PMF: Install Interface", () => {
                     version: "1.0.0",
                     lastVersion: "2.0.0"
                 });
+            });
+        });
+
+        describe("updating extenders.json", () => {
+            it("adds a new profile type if it doesn't exist", () => {
+                const extendersJson = { profileTypes: {} } as IExtendersJsonOpts;
+                updateExtendersJson(extendersJson, { name: "aPkg", version: "1.0.0" }, mockTypeConfig);
+                expect(extendersJson.profileTypes["test-type"]).not.toBeUndefined();
+            });
+
+            it("replaces a profile type with a newer schema version", () => {
+                const extendersJson = { profileTypes: { "test-type": { from: ["Zowe Client App"], version: "0.9.0" } } };
+                updateExtendersJson(extendersJson, { name: "aPkg", version: "1.0.0" },
+                    { ...mockTypeConfig, schema: { ...mockTypeConfig.schema, version: "1.0.0" } });
+                expect(extendersJson.profileTypes["test-type"]).not.toBeUndefined();
+                expect(extendersJson.profileTypes["test-type"].version).toBe("1.0.0");
+            });
+
+            it("does not change the schema version if older", () => {
+                const extendersJson = { profileTypes: { "test-type": { from: ["Zowe Client App"], version: "1.2.0" } } };
+                updateExtendersJson(extendersJson, { name: "aPkg", version: "1.0.0" },
+                    { ...mockTypeConfig, schema: { ...mockTypeConfig.schema, version: "1.0.0" } });
+                expect(extendersJson.profileTypes["test-type"]).not.toBeUndefined();
+                expect(extendersJson.profileTypes["test-type"].version).toBe("1.2.0");
             });
         });
 
