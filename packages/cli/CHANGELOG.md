@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Update zos-files copy dsclp system tests to include large mock files. 
+
 ## `7.21.2`
 
 - BugFix: Correct extra character being displayed at the end of lines when issuing `zowe files compare` on Windows. [#1992](https://github.com/zowe/zowe-cli/issues/1992)
