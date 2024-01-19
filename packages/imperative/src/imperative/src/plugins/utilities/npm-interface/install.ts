@@ -31,7 +31,7 @@ import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts"
 
 // Helper function to update extenders.json object during plugin install.
 // Returns true if the object was updated, and false otherwise
-const updateExtendersJson = (
+export const updateExtendersJson = (
     extendersJson: IExtendersJsonOpts,
     packageInfo: { name: string; version: string; },
     profile: IProfileTypeConfiguration): boolean => {
