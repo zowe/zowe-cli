@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `8.1.0-next.202401191548`
+## Recent Changes
 
 - LTS Breaking: Removed the following:
   - All 'profiles' commands, since they only worked with now-obsolete V1 profiles.
@@ -49,6 +49,19 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.21.0`
+
+- Enhancement: Hid the progress bar if `CI` environment variable is set, or if `FORCE_COLOR` environment variable is set to `0`. [#1845](https://github.com/zowe/zowe-cli/issues/1845)
+- BugFix: Fixed issue where secure property names could be returned for the wrong profile. [zowe-explorer#2633](https://github.com/zowe/vscode-extension-for-zowe/issues/2633)
+
+## `5.20.2`
+
+- BugFix: Fixed issue when a property is not found in `ProfileInfo.updateProperty({forceUpdate: true})`. [zowe-explorer#2493](https://github.com/zowe/vscode-extension-for-zowe/issues/2493)
+
+## `5.20.1`
+
+- BugFix: Fixed error message shown for null option definition to include details about which command caused the error. [#2002](https://github.com/zowe/zowe-cli/issues/2002)
 
 ## `5.19.0`
 
@@ -382,6 +395,10 @@ that would be used if a command were executed.
 - Enhancement: Added JSON property autocompletion to `secure` array in team config files. [zowe/zowe-cli#1187](https://github.com/zowe/zowe-cli/issues/1187)
 - BugFix: Fixed incorrect description for untyped profiles in team config files. [zowe/zowe-cli#1303](https://github.com/zowe/zowe-cli/issues/1303)
 - **Next Breaking**: Schema files created or updated with the above changes are not backward compatible with older versions of Imperative.
+
+## `5.20.0`
+
+- Enhancement: Added the ability to `forceUpdate` a property using the `ProfileInfo.updateProperty` method. [zowe-explorer#2493](https://github.com/zowe/vscode-extension-for-zowe/issues/2493)
 
 ## `5.0.0-next.202203222132`
 

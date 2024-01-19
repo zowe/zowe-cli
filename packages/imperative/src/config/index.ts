@@ -14,7 +14,7 @@ export * from "./src/ConfigAutoStore";
 export * from "./src/ConfigConstants";
 export * from "./src/ConfigSchema";
 export * from "./src/ConfigBuilder";
-export * as ConfigUtils from "./src/ConfigUtils";
+export * from "./src/ConfigUtils";
 export * from "./src/ProfileCredentials";
 export * from "./src/ProfileInfo";
 export * from "./src/ProfInfoErr";

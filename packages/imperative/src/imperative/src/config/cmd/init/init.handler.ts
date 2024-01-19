@@ -15,7 +15,7 @@ import { Config, ConfigConstants, ConfigSchema, IConfig } from "../../../../../c
 import { IProfileProperty } from "../../../../../profiles";
 import { ConfigBuilder } from "../../../../../config/src/ConfigBuilder";
 import { IConfigBuilderOpts } from "../../../../../config/src/doc/IConfigBuilderOpts";
-import { coercePropValue, secureSaveError } from "../../../../../config/src/ConfigUtils";
+import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
 import { OverridesLoader } from "../../../OverridesLoader";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
@@ -102,7 +102,7 @@ export default class InitHandler implements ICommandHandler {
             await this.initWithSchema(config, params.arguments.userConfig, params.arguments.overwrite && params.arguments.forSure);
 
             if (params.arguments.prompt !== false && config.api.secure.loadFailed && config.api.secure.secureFields().length > 0) {
-                const warning = secureSaveError();
+                const warning = ConfigUtils.secureSaveError();
                 params.response.console.log(TextUtils.chalk.yellow("Warning:\n") +
                     `${warning.message} Skipped prompting for credentials.\n\n${warning.additionalDetails}\n`);
             }
@@ -193,7 +193,7 @@ export default class InitHandler implements ICommandHandler {
 
         // coerce to correct type
         if (propValue && propValue.trim().length > 0) {
-            return coercePropValue(propValue);
+            return ConfigUtils.coercePropValue(propValue);
         }
 
         return propValue || null;
