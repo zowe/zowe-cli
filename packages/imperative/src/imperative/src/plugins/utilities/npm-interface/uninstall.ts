@@ -28,7 +28,7 @@ const npmCmd = findNpmOnPath();
  * @param npmPackage The package name for the plug-in that's being uninstalled
  * @returns A list of types to remove from the schema
  */
-export function updateAndGetRemovedTypes(npmPackage: string): string[] {
+export const updateAndGetRemovedTypes = (npmPackage: string): string[] => {
     const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
     const pluginTypes = Object.keys(extendersJson.profileTypes)
         .filter((type) => extendersJson.profileTypes[type].from.includes(npmPackage));
