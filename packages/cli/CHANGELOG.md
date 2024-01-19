@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202401191954`
 
 - LTS Breaking: Removed all 'profiles' commands, since they only worked with now-obsolete V1 profiles.
 - BugFix: Properly construct workflow error messages to display properly with V3 error formatting.

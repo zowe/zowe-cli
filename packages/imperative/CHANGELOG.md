@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202401191954`
 
 - LTS Breaking: Removed the following:
   - All 'profiles' commands, since they only worked with now-obsolete V1 profiles.
