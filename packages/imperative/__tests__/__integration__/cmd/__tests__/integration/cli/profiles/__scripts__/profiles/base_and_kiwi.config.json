@@ -1,0 +1,22 @@
+{
+    "profiles": {
+        "baseProfName": {
+            "type": "base",
+            "properties": {
+                "amount": NoBaseAmountVal,
+                "price": NoBasePriceVal
+            }
+        },
+        "kiwiProfName": {
+            "type": "kiwi",
+            "properties": {
+                "amount": NoKiwiAmountVal
+            }
+        }
+   },
+    "defaults": {
+        "base": "baseProfName",
+        "kiwi": "kiwiProfName"
+    },
+    "autoStore": true
+}

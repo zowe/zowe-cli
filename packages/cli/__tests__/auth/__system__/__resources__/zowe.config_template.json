@@ -1,0 +1,46 @@
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1443
+            },
+            "secure": []
+        },
+        "tso": {
+            "type": "tso",
+            "properties": {
+                "account": "",
+                "codePage": "1047",
+                "logonProcedure": "IZUFPROC"
+            },
+            "secure": []
+        },
+        "ssh": {
+            "type": "ssh",
+            "properties": {
+                "port": 22
+            },
+            "secure": []
+        },
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "NoBaseHostVal",
+                "port": NoBasePortVal,
+                "rejectUnauthorized": NoBaseRejectUnauthVal,
+                "tokenType": "apimlAuthenticationToken"
+            },
+            "secure": [
+                "tokenValue"
+            ]
+        }
+    },
+    "defaults": {
+        "zosmf": "zosmf",
+        "tso": "tso",
+        "ssh": "ssh",
+        "base": "base"
+    }
+}

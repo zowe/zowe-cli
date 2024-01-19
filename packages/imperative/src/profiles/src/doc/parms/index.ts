@@ -13,7 +13,6 @@ export * from "./IDeleteProfile";
 export * from "./ILoadAllProfiles";
 export * from "./ILoadProfile";
 export * from "./IProfileManager";
-export * from "./IProfileManagerInit";
 export * from "./ISaveProfile";
 export * from "./ISaveProfileFromCliArgs";
 export * from "./ISetDefaultProfile";

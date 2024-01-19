@@ -52,7 +52,11 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 try{
                     resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, this.arguments.workflowKey, undefined);
                 } catch (err){
-                    error = "Archive workflow: " + err;
+                    error = new ImperativeError({
+                        msg: "Archive workflow: " + err,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
+                    });
                     throw error;
                 }
                 params.response.data.setObj(resp);

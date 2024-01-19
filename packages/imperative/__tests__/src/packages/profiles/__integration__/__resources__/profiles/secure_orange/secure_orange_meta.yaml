@@ -1,0 +1,21 @@
+defaultProfile: null
+configuration:
+    type: secure_orange
+    schema:
+        type: object
+        title: 'The secure_orange command profile schema'
+        description: 'The secure_orange command profile schema'
+        properties:
+            username:
+                optionDefinition:
+                    description: 'The username of the secure_orange'
+                    type: string
+                    name: username
+                type: string
+            password:
+                optionDefinition:
+                    description: 'The password of the secure_orange'
+                    type: string
+                    name: password
+                type: string
+        required: []

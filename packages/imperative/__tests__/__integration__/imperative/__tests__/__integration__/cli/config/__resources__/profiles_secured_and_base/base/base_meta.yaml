@@ -1,0 +1,157 @@
+defaultProfile: test
+configuration:
+    type: base
+    schema:
+        type: object
+        title: 'Secure Profile'
+        description: 'Secure Profile'
+        properties:
+            info:
+                type: string
+                optionDefinition:
+                    name: info
+                    description: 'The info the keep in the profile.'
+                    type: string
+                    group: Options
+                    aliases: []
+            secret:
+                type: string
+                secure: true
+                includeInTemplate: true
+                optionDefinition:
+                    name: secret
+                    description: 'The secret info the keep in the profile.'
+                    type: string
+                    group: Options
+                    aliases: []
+            host:
+                type: string
+                optionDefinition:
+                    name: host
+                    description: 'Fruit host'
+                    type: string
+                    group: Options
+                    aliases: []
+            port:
+                type: number
+                optionDefinition:
+                    name: port
+                    description: 'Fruit port'
+                    type: number
+                    group: Options
+                    aliases: []
+            user:
+                type: string
+                optionDefinition:
+                    name: user
+                    description: 'Fruit username'
+                    type: string
+                    group: Options
+                    aliases: []
+                secure: true
+            password:
+                type: string
+                optionDefinition:
+                    name: password
+                    description: 'Fruit password'
+                    type: string
+                    group: Options
+                    aliases: []
+                secure: true
+            tokenType:
+                type: string
+                optionDefinition:
+                    name: token-type
+                    description: 'Fruit token type'
+                    type: string
+                    group: Options
+                    aliases: []
+            tokenValue:
+                type: string
+                optionDefinition:
+                    name: token-value
+                    description: 'Fruit token value'
+                    type: string
+                    group: Options
+                    aliases: []
+                secure: true
+    authConfig:
+        -
+            serviceName: fruit
+            handler: /home/stduser/repos/zowe-cli/packages/imperative/__tests__/__integration__/imperative/lib/cli/auth/FruitAuthHandler
+            login:
+                options:
+                    -
+                        name: info
+                        description: 'The info the keep in the profile.'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: secret
+                        description: 'The secret info the keep in the profile.'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: host
+                        description: 'Fruit host'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: port
+                        description: 'Fruit port'
+                        type: number
+                        group: Options
+                        aliases: []
+                    -
+                        name: user
+                        description: 'Fruit username'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: password
+                        description: 'Fruit password'
+                        type: string
+                        group: Options
+                        aliases: []
+            logout:
+                options:
+                    -
+                        name: info
+                        description: 'The info the keep in the profile.'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: secret
+                        description: 'The secret info the keep in the profile.'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: host
+                        description: 'Fruit host'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: port
+                        description: 'Fruit port'
+                        type: number
+                        group: Options
+                        aliases: []
+                    -
+                        name: token-type
+                        description: 'Fruit token type'
+                        type: string
+                        group: Options
+                        aliases: []
+                    -
+                        name: token-value
+                        description: 'Fruit token value'
+                        type: string
+                        group: Options
+                        aliases: []

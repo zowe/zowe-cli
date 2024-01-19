@@ -9,7 +9,8 @@
 *
 */
 
-import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "../../../../../../lib";
+import { BaseAuthHandler, AbstractSession, CredentialManagerFactory, ICommandArguments, ISession, SessConstants
+} from "../../../../../../lib";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -52,6 +53,13 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
      * @returns {Promise<string>} The response from the auth service containing a token
      */
     protected async doLogin(session: AbstractSession) {
+        await CredentialManagerFactory.initialize({
+            service: null,
+            Manager: null,
+            displayName: null,
+            invalidOnFailure: null
+        });
+
         if (session.ISession.user) {
             return `${session.ISession.user}:${session.ISession.password}@fakeToken`;
         } else {

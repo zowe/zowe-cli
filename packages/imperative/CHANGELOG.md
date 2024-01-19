@@ -2,6 +2,19 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.1.0-next.202401191548`
+
+- LTS Breaking: Removed the following:
+  - All 'profiles' commands, since they only worked with now-obsolete V1 profiles.
+  - BasicProfileManager.initialize function
+  - These interfaces:
+    - IProfileManagerInit
+    - IProfileInitialized
+
+## `8.0.0-next.202401081937`
+
+- BugFix: Fixed error message shown for null option definition to include details about which command caused the error. [#2002](https://github.com/zowe/zowe-cli/issues/2002)
+
 ## `8.0.0-next.202401031939`
 
 - Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)

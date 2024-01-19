@@ -31,12 +31,6 @@ describe("Using a Plugin", () => {
     const pluginJsonFile = join(config.defaultHome, "plugins", "plugins.json");
 
     /**
-     * Location of the profiles created for test plugins
-     * @type {string}
-     */
-    const pluginProfDir = join(config.defaultHome, "profiles");
-
-    /**
      * Specifies whether warnings about missing peer dependencies should be
      * expected in stderr output of `npm install`. This defaults to true and is
      * set to false if version 7 or newer of NPM is detected.
@@ -51,7 +45,6 @@ describe("Using a Plugin", () => {
     beforeEach(() => {
         // ensure that each test starts with no installed plugins
         T.rimraf(pluginJsonFile);
-        T.rimraf(pluginProfDir);
     });
 
     it("should create plugin commands from in-line JSON text", () => {
@@ -138,30 +131,32 @@ describe("Using a Plugin", () => {
         expect(result.stdout).toContain("globcmd1 First command created by globs");
         expect(result.stdout).toContain("globcmd2 Second command created by globs");
 
-        cmd = "profiles list";
+        cmd = "config init --global-config";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
         expect(result.stderr).toBe("");
-        expect(result.stdout).toContain("bar-profiles | bar");
-        expect(result.stdout).toContain("foo-profiles | foo");
+        expect(result.stdout).toContain(`Saved config template to ${config.defaultHome}`);
+        expect(result.stdout).toContain("plugins_test.config.json");
+
+        cmd = "config list";
+        result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+        expect(result.stderr).toBe("");
+        expect(result.stdout).toContain("foo:");
+        expect(result.stdout).toContain("type:       foo");
+        expect(result.stdout).toContain("bar:");
+        expect(result.stdout).toContain("type:       bar");
 
         cmd = pluginName + " foo";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("Command Preparation Failed:");
-        expect(result.stderr).toContain("No default profile set for type \"foo\"");
+        expect(result.stderr).toBe("");
+        expect(result.stdout).toContain("You executed the Foo command with size = undefined and duration = undefined");
 
-        cmd = "profiles create foo myFooProfile --duration 5";
+        cmd = "config set profiles.foo.properties.size small --global-config";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("command 'profiles create' is deprecated");
-        expect(result.stdout).toContain("Profile created successfully!");
-        expect(result.stdout.replace(/\s+/g, " ")).toContain("size: small");
-        expect(result.stdout.replace(/\s+/g, " ")).toContain("duration: 5");
+        expect(result.stderr).toBe("");
 
-        cmd = "profiles validate foo-profile";
+        cmd = "config set profiles.foo.properties.duration 5 --global-config";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("command 'profiles validate' is deprecated");
-        expect(result.stdout).toContain("Check the size of the Foo");
-        expect(result.stdout).toContain("Repair in time");
-        expect(result.stdout).toContain("Of 2 tests, 2 succeeded, 0 failed, and 0 had warnings or undetermined results.");
+        expect(result.stderr).toBe("");
 
         cmd = pluginName + " foo";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
@@ -297,12 +292,18 @@ describe("Using a Plugin", () => {
         const knownOverridePluginNm = CredentialManagerOverride.getKnownCredMgrs()[1].credMgrDisplayName as string;
         setCredMgrOverride(knownOverridePluginNm);
 
-        // Create a zosmf profile. That will trigger the CredMgr.
-        cmd = "profiles create secure-pass-profile TestProfileName --password 'AnyPass' --overwrite";
+        /* config init will add the secure-pass profile for the newly installed override-plugin.
+         * It will also trigger the CredMgr.
+         */
+        cmd = "config init --global-config";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("command 'profiles create' is deprecated");
+        expect(result.stderr).toBe("");
         expect(result.stdout).toContain("CredentialManager in sample-plugin is saving these creds:");
-        expect(result.stdout).toContain(`password: managed by ${knownOverridePluginNm}`);
+        expect(result.stdout).toContain("service     = plugins_test");
+        expect(result.stdout).toContain("account     = secure_config_props");
+        expect(result.stdout).toContain("credentials = ");
+        expect(result.stdout).toContain(`Saved config template to ${config.defaultHome}`);
+        expect(result.stdout).toContain("plugins_test.config.json");
 
         // Restore our name and remove our lifecycle class from package.json
         pkgContents = fsExtra.readJsonSync(pkgFileNm);

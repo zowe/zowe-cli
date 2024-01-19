@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `8.1.0-next.202401191548`
+
+- LTS Breaking: Removed all 'profiles' commands, since they only worked with now-obsolete V1 profiles.
+- BugFix: Include text from a REST response's causeErrors.message property in error messages.
+
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)

@@ -24,10 +24,10 @@ const config: IImperativeConfig = {
             handler: path.join(__dirname, "handlers", "DisplayProfileHandler.ts")
         },
         {
-            name: "display-non-keytar",
-            description: "Display handler without require keytar",
+            name: "display-no-secrets",
+            description: "Display handler without secrets",
             type: "command",
-            handler: path.join(__dirname, "handlers", "NonKeytarHandler.ts")
+            handler: path.join(__dirname, "handlers", "NoSecretsHandler.ts")
         }
     ],
     rootCommandDescription: "Sample command line interface",

@@ -13,78 +13,65 @@ import * as T from "../../../TestUtil";
 import * as path from "path";
 import * as fs from "fs";
 import { IImperativeConfig } from "../../../../../src/imperative";
-import { CliProfileManager } from "../../../../../src/cmd";
-import { ProfileIO } from "../../../../../src/profiles/src/utils";
-import { IProfile } from "../../../../../src/profiles/src/doc/definition";
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
 
 describe("Cli Profile Manager", () => {
-    let writtenProfile: any;
-    const credentialManagerErrorMessage = /(Unable to).*(the secure field)/;
+    const cliBin = path.join(__dirname, "../test_cli/TestCLI.ts");
+    const config: IImperativeConfig = require(path.join(__dirname, "../test_cli/TestConfiguration"));
+    const homeDir: string = config.defaultHome;
+    const testProfileType = "username-password";
+    const username: string = "username";
+    const password: number = 0;
+    const account: string = "account123";
+    const secured: string = "secured";
 
-    const originalSaveProfile = (CliProfileManager.prototype as any).saveProfile;
-    afterEach(() => {
-        (CliProfileManager.prototype as any).saveProfile = originalSaveProfile;
-    });
-    ProfileIO.writeProfile = jest.fn((fullFilePath: string, profile: IProfile) => {
-        writtenProfile = profile;
+    beforeAll(async () => {
+        // ensure the CLI home directory exists before running our copy_profile script
+        if (!fs.existsSync(homeDir)) {
+            fs.mkdirSync(homeDir);
+        }
+
+        // copy existing profiles into test directory
+        const response = T.runCliScript(path.join(__dirname, "__scripts__/copy_profiles_cli_prof_mgr_creds.sh"), homeDir);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+
+        // store desired secure properties into the credential vault
+        await keyring.setPassword("example_with_profiles", "username-password_profile-name_username",
+            Buffer.from(`"${username}"`).toString("base64")
+        );
+        await keyring.setPassword("example_with_profiles", "username-password_profile-name_password",
+            Buffer.from(`${password}`).toString("base64")
+        );
+        await keyring.setPassword("example_with_profiles", "username-password_profile-name_account",
+            Buffer.from(`"${account}"`).toString("base64")
+        );
+        await keyring.setPassword("example_with_profiles",
+            "username-password_profile-name_myParent_securedProperty_mySecuredChild",
+            Buffer.from(`"${secured}"`).toString("base64")
+        );
     });
 
-    ProfileIO.exists = jest.fn((profilePath: string) => {
-        return profilePath.indexOf("meta") === -1 ? profilePath : undefined;
-    });
+    afterAll(async () => {
+        // delete secure properties from the credential vault
+        await keyring.deletePassword("example_with_profiles", "username-password_profile-name_username");
+        await keyring.deletePassword("example_with_profiles", "username-password_profile-name_password");
+        await keyring.deletePassword("example_with_profiles", "username-password_profile-name_account");
+        await keyring.deletePassword("example_with_profiles",
+            "username-password_profile-name_myParent_securedProperty_mySecuredChild"
+        );
 
-    ProfileIO.readMetaFile = jest.fn((fullFilePath: string) => {
-        return {
-            defaultProfile: "mybana",
-            configuration: {
-                type: "",
-                schema: {
-                    type: "object",
-                    title: "test profile",
-                    description: "test profile",
-                    properties: {
-                        sum: {
-                            type: "number"
-                        }
-                    },
-                    required: ["sum"]
-                }
-            }
-        };
-    }) as any;
-    afterEach(() => {
-        writtenProfile = undefined; // clear any saved profile to not pollute results across tests
+        // delete the CLI_HOME directory
+        T.rimraf(homeDir);
     });
 
     describe("Default Credential Management", () => {
-        const cliBin = path.join(__dirname, "../test_cli/TestCLI.ts");
-        const config: IImperativeConfig = require(path.join(__dirname, "../test_cli/TestConfiguration"));
-        const homeDir: string = config.defaultHome;
-
-        const testProfileName = "username-password";
-        const username: string = "username";
-        const password: number = 0;
-        const account: string = "account123";
-        const secured: string = "secured";
-        const insecured: string = "insecured"; // playing off insecure child...
-        const newPass: number = 1;
-
-        beforeEach(() => {
-            T.rimraf(homeDir);
-        });
 
         describe("Generic Success Scenarios", () => {
-            const profileName = "profile-name";
 
-            it("should create and load a profile with saved credentials", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-                cmd = `display-profile`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+            it("should load a profile with saved credentials", () => {
+                const cmd = `display-profile`;
+                const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
                 expect(result.stderr).toEqual("");
                 expect(JSON.parse(result.stdout)).toEqual({
                     myParent: {
@@ -93,271 +80,118 @@ describe("Cli Profile Manager", () => {
                     },
                     account, username, password});
             });
-
-            it("should overwrite and load a profile with saved credentials", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured} --ow`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Overwrote existing profile");
-                expect(result.stdout).toContain("Profile created successfully!");
-            });
-
-            it("should update and load a profile with saved credentials", () => {
-                const newName: string = "newName";
-
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                cmd = `profiles update ${testProfileName}-profile ${profileName} --username ${newName} --password ${newPass}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles update' is deprecated");
-                expect(result.stdout).toContain("Overwrote existing profile");
-                expect(result.stdout).toContain("Profile updated successfully!");
-
-                cmd = `display-profile`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toEqual("");
-                expect(JSON.parse(result.stdout)).toEqual({
-                    myParent: {
-                        insecuredProperty: {myInSecuredChild: "insecured"},
-                        securedProperty: {mySecuredChild: "secured"}
-                    },
-                    account, username: newName, password: newPass});
-            });
-
-            it("should delete a profile with saved credentials", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                cmd = `profiles delete ${testProfileName}-profile ${profileName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles delete' is deprecated");
-                expect(result.stdout).toContain("successfully deleted");
-            });
-
-            it("should update a password", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                // profiles upd username-password username-password --password pass
-                cmd = `profiles update ${testProfileName}-profile ${profileName} --password ${newPass}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(T.stripNewLines(result.stdout)).toContain("Overwrote existing profile");
-                expect(result.stderr).toMatchSnapshot();
-
-                cmd = `profiles delete ${testProfileName}-profile ${profileName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles delete' is deprecated");
-                expect(T.stripNewLines(result.stdout)).toContain("successfully deleted");
-                expect(result.stdout).toMatchSnapshot();
-            });
         });
 
         describe("Generic Failure Scenarios", () => {
             const createdName = "profile-name";
             const changedName = "profile-name-changed";
-            const changedProfileName = "changed-username-password";
 
-            const profilePath = path.join(homeDir, "profiles", testProfileName);
+            const profilePath = path.join(homeDir, "profiles", testProfileType);
             const createdPath = path.join(profilePath, createdName + ".yaml");
             const changedPath = path.join(profilePath, changedName + ".yaml");
 
             it("should fail if the Credential Manager is unable to find the profile", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${createdName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                // Now change the name of the profile so that we can break it
+                // change the name of the profile so that we can break it
                 fs.renameSync(createdPath, changedPath);
 
-                cmd = `profiles delete ${testProfileName}-profile ${createdName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+                const cmd = `display-profile`;
+                const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
 
-                expect(T.stripNewLines(result.stderr)).toContain(`Profile "${createdName}" of type "${testProfileName}" does not exist.`);
-                expect(result.stderr).toContain("Profile \"profile-name\" of type \"username-password\" does not exist");
-                expect(result.stderr).toContain("The command 'profiles delete' is deprecated");
-
-                // Now put it back for cleanup
+                // put the profile back for cleanup
                 fs.renameSync(changedPath, createdPath);
 
-                cmd = `profiles delete ${testProfileName}-profile ${createdName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles delete' is deprecated");
-                expect(T.stripNewLines(result.stdout)).toContain("successfully deleted");
+                expect(result.stderr).toContain(
+                    `Your default profile named ${createdName} does not exist for type ${testProfileType}.`
+                );
             });
 
             it("should fail if the Credential Manager is unable to retrieve a password", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${createdName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                // Now change the name of the profile so that we can break it
+                // change the name of the profile so that we can break it
                 fs.renameSync(createdPath, changedPath);
 
-                cmd = `display-profile --${testProfileName}-profile ${changedName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+                const cmd = `display-profile --${testProfileType}-profile ${changedName}`;
+                const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
 
-                expect(T.stripNewLines(result.stderr)).toMatch(credentialManagerErrorMessage);
-                expect(result.stderr).toMatchSnapshot();
-
-                // Now put it back for cleanup
+                // put the profile back for cleanup
                 fs.renameSync(changedPath, createdPath);
 
-                cmd = `profiles delete ${testProfileName}-profile ${createdName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-
-                expect(result.stderr).toContain("command 'profiles delete' is deprecated");
-                expect(T.stripNewLines(result.stdout)).toContain("successfully deleted");
-                expect(result.stdout).toMatchSnapshot();
+                expect(T.stripNewLines(result.stderr)).toContain(
+                    `Unable to load the secure field "${username}" associated with ` +
+                    `the profile "${changedName}" of type "${testProfileType}".`
+                );
+                expect(T.stripNewLines(result.stderr)).toContain(
+                    "Could not find an entry in the credential vault for the following:"
+                );
+                expect(T.stripNewLines(result.stderr)).toContain("Service = example_with_profiles");
+                expect(T.stripNewLines(result.stderr)).toContain("Account = username-password_profile-name-changed_username");
             });
         });
 
-        describe("Missing keytar installation", () => {
-            const profileName = "missing-keytar";
-            const keyTarDir = path.join(__dirname, "../../../../../../../node_modules/@zowe/secrets-for-zowe-sdk");
-            const renamedKeyTarDir = path.join(__dirname, "../../../../../../../node_modules/@zowe/zowe-for-secrets-sdk");
+        describe("Missing secrets SDK installation", () => {
+            const secretsSdk = path.join(__dirname, "../../../../../../../node_modules/@zowe/secrets-for-zowe-sdk");
+            const renamedSecretsSdk = path.join(__dirname, "../../../../../../../node_modules/@zowe/zowe-for-secrets-sdk");
 
-            const renameKeyTar = () => {
-                if (fs.existsSync(keyTarDir)) {
-                    fs.renameSync(keyTarDir, renamedKeyTarDir);
+            const renameSecretsSdk = () => {
+                if (fs.existsSync(secretsSdk)) {
+                    fs.renameSync(secretsSdk, renamedSecretsSdk);
                 }
             };
 
-            // Make sure that the keytar folder is reset to the original name.
+            // Make sure that the secrets SDK folder is reset to the original name.
             afterEach(() => {
-                if (fs.existsSync(renamedKeyTarDir)) {
-                    fs.renameSync(renamedKeyTarDir, keyTarDir);
+                if (fs.existsSync(renamedSecretsSdk)) {
+                    fs.renameSync(renamedSecretsSdk, secretsSdk);
                 }
             });
 
-            it("should fail if keytar is not loaded on profiles create", () => {
-                renameKeyTar();
+            it("should fail if secrets SDK is not loaded on using profile handler", () => {
+                renameSecretsSdk();
 
-                const cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
+                const cmd = `display-profile`;
                 const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stdout).toEqual("");
-                expect(result.stderr).toContain(profileName);
-                expect(result.stderr).toContain("Failed to load Keytar module");
-            });
 
-            it("should fail if keytar is not loaded on using profile handler", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                renameKeyTar();
-
-                cmd = `display-profile`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
                 expect(result.stderr).toContain("Command Preparation Failed");
-                expect(result.stderr).toContain("Failed to load Keytar module");
-            });
-
-            it("should fail if keytar is not loaded on profiles delete", () => {
-                let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} ` +
-                    `--password ${password} --account ${account} --sec1 ${secured} --insec1 ${insecured}`;
-                let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain("command 'profiles create' is deprecated");
-                expect(result.stdout).toContain("Profile created successfully!");
-
-                renameKeyTar();
-
-                cmd = `profiles delete ${testProfileName}-profile ${profileName}`;
-                result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stderr).toContain(profileName);
-                expect(result.stderr).toMatch(credentialManagerErrorMessage);
+                expect(result.stderr).toContain(
+                    `Unable to load the secure field "${username}" associated with ` +
+                    `the profile "profile-name" of type "${testProfileType}".`
+                );
+                expect(T.stripNewLines(result.stderr)).toContain(
+                    "Failed to load Keytar module: Cannot find module '@zowe/secrets-for-zowe-sdk"
+                );
             });
 
             it("should be able to issue command", () => {
-                renameKeyTar();
+                renameSecretsSdk();
 
-                const cmd = `display-non-keytar`;
+                const cmd = `display-no-secrets`;
                 const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-                expect(result.stdout).toContain("This handler does not require keytar");
+                expect(result.stderr).toBe("");
+                expect(result.stdout).toContain("This handler does not require secrets");
             });
         });
     });
 
-    describe("Custom Credential Management (Absolute String)", () => {
-        const cliBin = path.join(__dirname, "../test_cli/TestCustomCredString.ts");
-        const config: IImperativeConfig = require(path.join(__dirname, "../test_cli/TestCustomCredStringConfiguration"));
-        const homeDir: string = config.defaultHome;
+    describe("Custom Credential Management - Absolute String", () => {
 
-        const testProfileName = "username-password";
-        const username: string = "username";
-        const password: string = "password";
-
-        beforeEach(() => {
-            T.rimraf(homeDir);
-        });
-
-        it("should use an overwritten credential manager (Absolute String)", () => {
-            const profileName = "custom-credential-string";
-
-            let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} --password ${password}`;
-            let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-            expect(result.stderr).toContain("command 'profiles create' is deprecated");
-            expect(result.stdout).toContain("Profile created successfully!");
-
-            cmd = `display-profile`;
-            result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-            expect(JSON.parse(result.stdout)).toEqual({username: "custom", password: "custom"});
+        it("should use an overwritten credential manager - Absolute String", () => {
+            const cliBin = path.join(__dirname, "../test_cli/TestCustomCredString.ts");
+            const cmd = `display-profile`;
+            const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+            expect(result.stderr).toBe("");
+            expect(result.stdout).toContain('"username":"custom"');
+            expect(result.stdout).toContain('"password":"custom"');
         });
     });
 
-    describe("Custom Credential Management (Class)", () => {
-        const cliBin = path.join(__dirname, "../test_cli/TestCustomCredClass.ts");
-        const config: IImperativeConfig = require(path.join(__dirname, "../test_cli/TestCustomCredClassConfiguration"));
-        const homeDir: string = config.defaultHome;
+    describe("Custom Credential Management - Class", () => {
 
-        const testProfileName = "username-password";
-        const username: string = "username";
-        const password: string = "password";
-
-        beforeEach(() => {
-            T.rimraf(homeDir);
-        });
-
-        it("should use an overwritten credential manager (Class)", () => {
-            const profileName = "custom-credential-class";
-
-            let cmd = `profiles create ${testProfileName}-profile ${profileName} --username ${username} --password ${password}`;
-            let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-            expect(result.stderr).toContain("command 'profiles create' is deprecated");
-            expect(result.stdout).toContain("Profile created successfully!");
-
-            cmd = `display-profile`;
-            result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-            expect(JSON.parse(result.stdout)).toEqual({ username: "custom", password: "custom"});
+        it("should use an overwritten credential manager - Class", () => {
+            const cliBin = path.join(__dirname, "../test_cli/TestCustomCredClass.ts");
+            const cmd = `display-profile`;
+            const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+            expect(result.stderr).toBe("");
+            expect(result.stdout).toContain('"username":"custom"');
+            expect(result.stdout).toContain('"password":"custom"');
         });
     });
 });
