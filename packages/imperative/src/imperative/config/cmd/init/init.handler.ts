@@ -195,7 +195,7 @@ export default class InitHandler implements ICommandHandler {
             `Enter ${propDesc} ${ConfigConstants.SKIP_PROMPT}`, { hideText: property.secure });
 
         // coerce to correct type
-        if (propValue && propValue.trim().length > 0) { 
+        if (propValue && propValue.trim().length > 0) {
             return ConfigUtils.coercePropValue(propValue);
         }
 
