@@ -11,7 +11,7 @@
 
 import { CredentialManagerFactory } from "../security";
 import { ICommandArguments } from "../cmd";
-import { ImperativeConfig } from "../utilities/ImperativeConfig";
+import { ImperativeConfig } from "../utilities";
 import { ImperativeError } from "../error";
 
 export class ConfigUtils {

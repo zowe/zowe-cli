@@ -45,7 +45,7 @@ import { CliUtils } from "../utilities/CliUtils";
 import { WebHelpManager } from "./help/WebHelpManager";
 import { ICommandProfile } from "./doc/profiles/definition/ICommandProfile";
 import { Config } from "../config/Config";
-import { getActiveProfileName } from "../config/ConfigUtils";
+import { ConfigUtils } from "../config/ConfigUtils";
 import { ConfigConstants } from "../config/ConfigConstants";
 import { IDaemonContext } from "../imperative/doc/IDaemonContext";
 
