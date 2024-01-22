@@ -14,9 +14,6 @@ import * as path from "path";
 import * as fs from "fs";
 import { IImperativeConfig } from "../../../../../src/imperative";
 import { keyring } from "@zowe/secrets-for-zowe-sdk";
-import { CliProfileManager } from "../../../../../src/cmd";
-import { ProfileIO } from "../../../../../src/profiles/utils";
-import { IProfile } from "../../../../../src/profiles/doc/definition";
 
 describe("Cli Profile Manager", () => {
     const cliBin = path.join(__dirname, "../test_cli/TestCLI.ts");
