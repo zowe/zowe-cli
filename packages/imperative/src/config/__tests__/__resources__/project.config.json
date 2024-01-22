@@ -16,6 +16,21 @@
                     "properties": {
                         "color": "orange"
                     }
+                },
+                "grape": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "red"
+                    },
+                    "secure": [
+                        "secret2"
+                    ]
+                },
+                "grapefruit": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "pink"
+                    }
                 }
             },
             "secure": [

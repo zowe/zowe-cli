@@ -81,6 +81,9 @@ Object {
   "dataSetsMatchedPattern": Object {
     "message": "%d data set(s) were found matching pattern.",
   },
+  "datasetAllocateLikeNotFound": Object {
+    "message": "Data set allocation aborted. The \\"allocate like\\" data set was not found.",
+  },
   "datasetCopiedAborted": Object {
     "message": "Data set copied aborted. The existing target data set was not overwritten.",
   },

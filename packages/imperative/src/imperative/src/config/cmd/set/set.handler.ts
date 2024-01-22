@@ -12,7 +12,7 @@
 import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ConfigSchema } from "../../../../../config";
-import { coercePropValue, secureSaveError } from "../../../../../config/src/ConfigUtils";
+import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
 import { ImperativeError } from "../../../../../error";
 import { ImperativeConfig } from "../../../../../utilities";
 
@@ -39,7 +39,7 @@ export default class SetHandler implements ICommandHandler {
 
         // Setup the credential vault API for the config
         if (secure && config.api.secure.loadFailed) {
-            throw secureSaveError();
+            throw ConfigUtils.secureSaveError();
         }
 
         // Get the value to set
@@ -57,7 +57,7 @@ export default class SetHandler implements ICommandHandler {
                 throw new ImperativeError({ msg: `could not parse JSON value: ${e.message}` });
             }
         } else {
-            value = coercePropValue(value, ConfigSchema.findPropertyType(params.arguments.property, config.properties));
+            value = ConfigUtils.coercePropValue(value, ConfigSchema.findPropertyType(params.arguments.property, config.properties));
         }
 
         // Set the value in the config, save the secure values, write the config layer
