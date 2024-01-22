@@ -1,18 +1,11 @@
 {
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
-    "target": "es5",
-    "module": "commonjs",
-    "declaration": true,
     "outDir": "./lib",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": [
-      "node",
-      "jest"
-    ]
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "target": "es5",
   }
 }

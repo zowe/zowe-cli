@@ -9,4 +9,4 @@
 *
 */
 
-export * from "./src/AppSettings";
+export * from "./AppSettings";

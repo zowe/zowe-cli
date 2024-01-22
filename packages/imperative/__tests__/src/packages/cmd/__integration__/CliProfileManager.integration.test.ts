@@ -9,10 +9,10 @@
 *
 */
 
-jest.mock("../../../../../src/utilities/src/ImperativeConfig");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 
 import { TestLogger } from "../../../../src/TestLogger";
-import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
+import { CliProfileManager } from "../../../../../src/cmd/profiles/CliProfileManager";
 import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
 
 describe("Cli Profile Manager", () => {

@@ -9,9 +9,9 @@
 *
 */
 
-export * from "./src/doc/IOperationResult";
-export * from "./src/doc/ITaskWithStatus";
-export * from "./src/Operation";
-export * from "./src/Operations";
-export * from "./src/TaskProgress";
-export * from "./src/TaskStage";
+export * from "./doc/IOperationResult";
+export * from "./doc/ITaskWithStatus";
+export * from "./Operation";
+export * from "./Operations";
+export * from "./TaskProgress";
+export * from "./TaskStage";

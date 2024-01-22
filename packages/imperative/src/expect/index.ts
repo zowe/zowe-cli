@@ -9,4 +9,4 @@
 *
 */
 
-export * from "./src/ImperativeExpect";
+export * from "./ImperativeExpect";
