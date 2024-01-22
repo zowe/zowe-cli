@@ -62,41 +62,6 @@ export class CommandProfiles {
     }
 
     /**
-     * Gets the first (or by name) meta profile in the map - automatically throws an exception (unless disabled)
-     * @deprecated
-     * @template T - The expected profile mapping to be returned
-     * @param {string} type - The profile type
-     * @param {string} [name=""] - The name of the profile to retrieve
-     * @param {boolean} [failNotFound=true] - Automatically throws an imperative exception if not profiles are not
-     * found - this is provided as convince for the handlers (will fail your command if not found) - This would
-     * normally be the result of a command configuration problem.
-     * @returns {T} - The first profile in the map (or the one located by name)
-     * @memberof CommandProfiles
-     */
-    public getMeta<T extends IProfileLoaded>(type: string, failNotFound = true, name = ""): T {
-        let profile: IProfileLoaded;
-        // If a profile is returned for the type, then we'll check if a profile of a specific name was requseted
-        // if not, just return the first profile found (first loaded)
-        if (this.metaMap.get(type) != null) {
-            if (name != null && name.trim().length > 0) {
-                for (const prof of this.metaMap.get(type)) {
-
-                    if (prof.name === name) {
-                        profile = prof;
-                        break;
-                    }
-                }
-            } else {
-                profile = this.metaMap.get(type)[0];
-            }
-        } else if (failNotFound) {
-            this.fail(type);
-        }
-        return profile as T;
-    }
-
-
-    /**
      * Gets the first (or by name) profile in the map - automatically throws an exception (unless disabled)
      * @deprecated Load profile properties from `IHandlerParameters.arguments` property instead.
      * @template T - The expected profile mapping to be returned
