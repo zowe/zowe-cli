@@ -17,15 +17,15 @@ let returnedVal: any;
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("find-up");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../src/plugins/PluginManagementFacility");
-jest.mock("../../../../src/ConfigurationLoader");
-jest.mock("../../../../src/UpdateImpConfig");
-jest.mock("../../../../../config/src/ConfigSchema");
-jest.mock("../../../../../logger");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
+jest.mock("../../../../../../src/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/plugins/PluginManagementFacility");
+jest.mock("../../../../../../src/ConfigurationLoader");
+jest.mock("../../../../../../src/UpdateImpConfig");
+jest.mock("../../../../../../src/config/ConfigSchema");
+jest.mock("../../../../../../src/logger");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/plugins/utilities/NpmFunctions");
 jest.doMock("path", () => {
     const originalPath = jest.requireActual("path");
     return {

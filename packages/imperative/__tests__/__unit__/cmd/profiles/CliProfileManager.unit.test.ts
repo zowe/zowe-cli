@@ -22,8 +22,8 @@ import { STRAWBERRY_PROFILE_TYPE } from "../../../../__tests__/__unit__/profiles
 import { TEST_PROFILE_ROOT_DIR } from "../../../../__tests__/__unit__/profiles/TestConstants";
 import { IProfileLoaded } from "../../../..";
 
-jest.mock("../../../profiles/utils/ProfileIO");
-jest.mock("../../../security/DefaultCredentialManager");
+jest.mock("../../../../src/profiles/utils/ProfileIO");
+jest.mock("../../../../src/security/DefaultCredentialManager");
 
 describe("Cli Profile Manager", () => {
     let writtenProfile: any;

@@ -21,8 +21,8 @@ import * as npmInterface from "../../../../../../src/imperative/plugins/utilitie
 import { PluginIssues } from "../../../../../../src/imperative/plugins/utilities/PluginIssues";
 import ConvertProfilesHandler from "../../../../../../src/imperative/config/cmd/convert-profiles/convert-profiles.handler";
 
-jest.mock("../../../../src/plugins/utilities/npm-interface");
-jest.mock("../../../../../../src/imperative/src/OverridesLoader");
+jest.mock("../../../../../../src/plugins/utilities/npm-interface");
+jest.mock("../../../../../../src/imperative/OverridesLoader");
 
 let stdout: string;
 let stderr: string;

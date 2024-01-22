@@ -13,8 +13,8 @@ import Mock = jest.MockedFunction;
 
 jest.mock("fs");
 jest.mock("jsonfile");
-jest.mock("../../src/plugins/utilities/PMFConstants");
-jest.mock("../../src/plugins/PluginRequireProvider");
+jest.mock("../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../src/imperative/plugins/PluginRequireProvider");
 
 import * as fs from "fs";
 import { AppSettings } from "../../../../src/settings";

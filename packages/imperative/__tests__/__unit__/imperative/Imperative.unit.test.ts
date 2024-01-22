@@ -100,7 +100,7 @@ describe("Imperative", () => {
             // If we error here, jest silently fails and says the test is empty. So let's make sure
             // that doesn't happen!
 
-            const { Logger } = (jest as any).requireActual("../../logger/src/Logger");
+            const { Logger } = (jest as any).requireActual("../src/logger/Logger");
 
             Logger.getConsoleLogger().fatal("Imperative.test.ts test execution error!");
             Logger.getConsoleLogger().fatal(error);
