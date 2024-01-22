@@ -20,7 +20,7 @@ import { IPromptOptions } from "../../cmd/doc/response/api/handler/IPromptOption
 import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../profiles";
 import { ConfigAutoStore } from "../../config/ConfigAutoStore";
-import * as ConfigUtils from "../../config/ConfigUtils";
+import { ConfigUtils } from "../../config/ConfigUtils";
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
