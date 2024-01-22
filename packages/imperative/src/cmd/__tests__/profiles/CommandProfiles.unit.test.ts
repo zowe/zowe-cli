@@ -27,6 +27,41 @@ describe("Command Profiles", () => {
         expect(caughtError).toBeUndefined();
     });
 
+    it("should allow us to create an instance with map values", () => {
+        const map = new Map<string, IProfile[]>();
+        map.set(STRAWBERRY_PROFILE_TYPE, [{
+            name: "great",
+            type: STRAWBERRY_PROFILE_TYPE,
+            age: 1
+        }, {
+            name: "awesome",
+            type: STRAWBERRY_PROFILE_TYPE,
+            age: 2
+        }]);
+        const metaMap = new Map<string, IProfileLoaded[]>();
+        metaMap.set(STRAWBERRY_PROFILE_TYPE, [{
+            name: "great",
+            type: STRAWBERRY_PROFILE_TYPE,
+            profile: {
+                age: 1
+            },
+            message: "just right",
+            failNotFound: false
+        },
+        {
+            name: "gross",
+            type: STRAWBERRY_PROFILE_TYPE,
+            profile: {
+                age: 3
+            },
+            message: "too old",
+            failNotFound: false
+        }]);
+
+        const profiles = new CommandProfiles(map, metaMap);
+        expect(profiles).toMatchSnapshot();
+    });
+
     it("should detect missing parameters", () => {
         let error;
         try {
@@ -128,116 +163,5 @@ describe("Command Profiles", () => {
         const profiles = new CommandProfiles(map);
         const awesome = profiles.get(STRAWBERRY_PROFILE_TYPE, true, "awesome");
         expect(awesome).toMatchSnapshot();
-    });
-
-    it("should accept a loaded profile map and allow us to retrieve by name", () => {
-        const map = new Map<string, IProfile[]>();
-        map.set(STRAWBERRY_PROFILE_TYPE, [{
-            name: "great",
-            type: STRAWBERRY_PROFILE_TYPE,
-            age: 1
-        }, {
-            name: "awesome",
-            type: STRAWBERRY_PROFILE_TYPE,
-            age: 2
-        }]);
-        const metaMap = new Map<string, IProfileLoaded[]>();
-        metaMap.set(STRAWBERRY_PROFILE_TYPE, [{
-            name: "great",
-            type: STRAWBERRY_PROFILE_TYPE,
-            profile: {
-                age: 1
-            },
-            message: "just right",
-            failNotFound: false
-        },
-        {
-            name: "gross",
-            type: STRAWBERRY_PROFILE_TYPE,
-            profile: {
-                age: 3
-            },
-            message: "too old",
-            failNotFound: false
-        }]);
-        const profiles = new CommandProfiles(map, metaMap);
-        const awesome = profiles.getMeta(STRAWBERRY_PROFILE_TYPE, false, "great");
-        expect(awesome).toMatchSnapshot();
-    });
-
-    it("should accept a loaded profile map and allow us to retrieve without a name", () => {
-        const map = new Map<string, IProfile[]>();
-        map.set(STRAWBERRY_PROFILE_TYPE, [{
-            name: "great",
-            type: STRAWBERRY_PROFILE_TYPE,
-            age: 1
-        }, {
-            name: "awesome",
-            type: STRAWBERRY_PROFILE_TYPE,
-            age: 2
-        }]);
-        const metaMap = new Map<string, IProfileLoaded[]>();
-        metaMap.set(STRAWBERRY_PROFILE_TYPE, [{
-            name: "great",
-            type: STRAWBERRY_PROFILE_TYPE,
-            profile: {
-                age: 1
-            },
-            message: "just right",
-            failNotFound: false
-        },
-        {
-            name: "gross",
-            type: STRAWBERRY_PROFILE_TYPE,
-            profile: {
-                age: 3
-            },
-            message: "too old",
-            failNotFound: false
-        }]);
-        const profiles = new CommandProfiles(map, metaMap);
-        const awesome = profiles.getMeta(STRAWBERRY_PROFILE_TYPE, false, null);
-        expect(awesome).toMatchSnapshot();
-    });
-
-    it("should accept a loaded profile map and allow us to retrieve with a name and fail", () => {
-        const map = new Map<string, IProfile[]>();
-        map.set(STRAWBERRY_PROFILE_TYPE, [{
-            name: "great",
-            type: STRAWBERRY_PROFILE_TYPE,
-            age: 1
-        }, {
-            name: "awesome",
-            type: STRAWBERRY_PROFILE_TYPE,
-            age: 2
-        }]);
-        const metaMap = new Map<string, IProfileLoaded[]>();
-        metaMap.set(STRAWBERRY_PROFILE_TYPE, [{
-            name: "great",
-            type: STRAWBERRY_PROFILE_TYPE,
-            profile: {
-                age: 1
-            },
-            message: "just right",
-            failNotFound: true
-        },
-        {
-            name: "gross",
-            type: STRAWBERRY_PROFILE_TYPE,
-            profile: {
-                age: 3
-            },
-            message: "too old",
-            failNotFound: true
-        }]);
-        const profiles = new CommandProfiles(map, metaMap);
-
-        let err;
-        try {
-            const awesome = profiles.getMeta("unknown", true, "tasty");
-        } catch (thrownError) {
-            err = thrownError;
-        }
-        expect(err.message).toMatchSnapshot();
     });
 });

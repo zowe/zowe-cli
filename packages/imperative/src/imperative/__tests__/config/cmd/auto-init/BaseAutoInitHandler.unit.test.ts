@@ -33,11 +33,7 @@ const mockParams: IHandlerParameters = {
     },
     arguments: {},  // To be defined by individual tests
     positionals: ["config", "auto-init"],
-    profiles: {
-        getMeta: jest.fn(() => ({
-            name: "fakeName"
-        }))
-    }
+    profiles: {}
 } as any;
 
 describe("BaseAutoInitHandler", () => {

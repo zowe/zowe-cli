@@ -1,31 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Command Profiles should accept a loaded profile map and allow us to retrieve by name 1`] = `
-Object {
-  "failNotFound": false,
-  "message": "just right",
-  "name": "great",
-  "profile": Object {
-    "age": 1,
-  },
-  "type": "strawberry",
-}
-`;
-
-exports[`Command Profiles should accept a loaded profile map and allow us to retrieve with a name and fail 1`] = `"Internal Error: No profiles of type \\"unknown\\" were loaded for this command."`;
-
-exports[`Command Profiles should accept a loaded profile map and allow us to retrieve without a name 1`] = `
-Object {
-  "failNotFound": false,
-  "message": "just right",
-  "name": "great",
-  "profile": Object {
-    "age": 1,
-  },
-  "type": "strawberry",
-}
-`;
-
 exports[`Command Profiles should accept a profile map and allow us to retrieve by name 1`] = `
 Object {
   "age": 2,
@@ -72,6 +46,47 @@ Object {
   "age": 1,
   "name": "tasty",
   "type": "banana",
+}
+`;
+
+exports[`Command Profiles should allow us to create an instance with map values 1`] = `
+CommandProfiles {
+  "mMap": Map {
+    "strawberry" => Array [
+      Object {
+        "age": 1,
+        "name": "great",
+        "type": "strawberry",
+      },
+      Object {
+        "age": 2,
+        "name": "awesome",
+        "type": "strawberry",
+      },
+    ],
+  },
+  "mMetaMap": Map {
+    "strawberry" => Array [
+      Object {
+        "failNotFound": false,
+        "message": "just right",
+        "name": "great",
+        "profile": Object {
+          "age": 1,
+        },
+        "type": "strawberry",
+      },
+      Object {
+        "failNotFound": false,
+        "message": "too old",
+        "name": "gross",
+        "profile": Object {
+          "age": 3,
+        },
+        "type": "strawberry",
+      },
+    ],
+  },
 }
 `;
 
