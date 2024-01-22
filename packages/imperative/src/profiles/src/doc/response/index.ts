@@ -10,7 +10,6 @@
 */
 
 export * from "./IProfileDeleted";
-export * from "./IProfileInitialized";
 export * from "./IProfileLoaded";
 export * from "./IProfileSaved";
 export * from "./IProfileUpdated";

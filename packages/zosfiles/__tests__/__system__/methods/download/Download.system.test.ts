@@ -1508,7 +1508,7 @@ describe("Download Data Set", () => {
                     caughtError = error;
                 }
                 expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain("Path name not found");
+                expect(stripNewLines(caughtError.message)).toContain("Path name not found");
             });
         });
     });

@@ -12,6 +12,9 @@
 /* eslint-disable jest/expect-expect */
 import Mock = jest.Mock;
 
+let expectedVal: unknown;
+let returnedVal: unknown;
+
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/npm-interface/install");
@@ -50,9 +53,6 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
 import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
-
-let expectedVal: unknown;
-let returnedVal: unknown;
 
 describe("Plugin Management Facility install handler", () => {
 

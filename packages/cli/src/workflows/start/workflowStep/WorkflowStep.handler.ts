@@ -50,7 +50,11 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                     await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict,
                         this.arguments.stepName, this.arguments.performFollowingSteps);
                 } catch (err){
-                    error = "Start workflow: " + err;
+                    error = new ImperativeError({
+                        msg: "Start workflow: " + err,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
+                    });
                     throw error;
                 }
                 params.response.data.setObj("Started.");
@@ -68,7 +72,11 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                     await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict,
                         this.arguments.stepName, this.arguments.performFollowingSteps);
                 } catch (err){
-                    error = "Start workflow: " + err;
+                    error = new ImperativeError({
+                        msg: "Start workflow Error: " + err,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
+                    });
                     throw error;
                 }
                 params.response.data.setObj("Started.");

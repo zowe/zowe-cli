@@ -11,11 +11,18 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
-- Enhancement: Added `ZosFilesUtils.getDataSetFromName` to create an IDataSet from a dataset name [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.21.3`
+
+- BugFix: Corrects the behavior of `Create.dataSetLike` so that the new data set is always defined with the correct block size [#2610](https://github.com/zowe/vscode-extension-for-zowe/issues/2610)
+
+## `7.20.0`
+
+- Enhancement: Adds `ZosFilesUtils.getDataSetFromName` to create an IDataSet from a dataset name [#1696](https://github.com/zowe/zowe-cli/issues/1696)
 
 ## `7.18.9`
 

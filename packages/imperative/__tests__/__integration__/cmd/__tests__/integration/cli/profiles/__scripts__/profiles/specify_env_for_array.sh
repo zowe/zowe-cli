@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 
-cliColor=$1
-cliDescription=$2
-cliMoldType=$3
+cliColor=${1:?"First parm (cliColor) is required."}
+cliDescription=${2:?"Second parm (cliDescription) is required."}
+cliMoldType=${3:?"Third parm (cliMoldType) is required."}
+envNames=${4:?"Fourth parm (envNames) is required."}
 
-CMD_CLI_OPT_NAMES="$4" cmd-cli profile mapping --color "$cliColor" --banana-description "$cliDescription" --mold-type "$cliMoldType"
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Profile mapping command failed!" 1>&2
-    exit $CMDRC
-fi
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
+myScriptDir=`dirname $0`
+. $myScriptDir/../../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
+
+CMD_CLI_OPT_NAMES="$envNames" cmd-cli profile mapping --color "$cliColor" --banana-description "$cliDescription" --mold-type "$cliMoldType"
+exitOnFailure "The 'profile mapping' command failed." $?

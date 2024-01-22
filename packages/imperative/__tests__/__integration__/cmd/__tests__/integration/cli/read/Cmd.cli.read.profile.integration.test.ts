@@ -23,10 +23,11 @@ describe("cmd-cli profiles read profiles", () => {
         });
     });
 
-    it("should create a profile with a field marked as secure in plain text (no keytar) and be able to read the contents", () => {
+    it("should read a profile with a secure field stored in plain text and be able to read the contents", () => {
         const response = runCliScript(__dirname + "/__scripts__/profile/create_and_read.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
-        expect(response.stdout.toString()).toContain("not so secret info");
+        expect(response.stderr.toString()).toBe("");
+        expect(response.stdout.toString()).toContain("info:   some info");
+        expect(response.stdout.toString()).toContain("secret: not so secret info");
         expect(response.stdout.toString()).not.toContain("managed by");
         expect(response.status).toBe(0);
     });

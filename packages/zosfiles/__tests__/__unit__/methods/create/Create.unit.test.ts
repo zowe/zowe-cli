@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
-import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../src";
+import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions, List } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
@@ -19,17 +19,29 @@ describe("Create data set", () => {
     const dummySession: any = {};
     const dataSetName = "testing";
     const dsOptions: any = {alcunit: "CYL"};
+    const likePsDataSetName = "TEST.PS.DATA.SET";
     const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
     let mySpy: any;
+    let listDatasetSpy: any;
+
+    const dataSetPS = {
+        dsname: likePsDataSetName,
+        dsorg: "PS",
+        spacu: "TRK",
+        blksz: "800"
+    };
 
     beforeEach(() => {
         mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockResolvedValue("");
+        listDatasetSpy   = jest.spyOn(List, "dataSet");
     });
 
     afterEach(() => {
-        mySpy.mockReset();
+        mySpy.mockClear();
         mySpy.mockRestore();
+        listDatasetSpy.mockClear();
+        listDatasetSpy.mockResolvedValue({} as any);
     });
 
     describe("Success scenarios", () => {
@@ -179,28 +191,48 @@ describe("Create data set", () => {
         });
 
         it("should be able to allocate like from a sequential data set", async () => {
-            const response = await Create.dataSetLike(dummySession, dataSetName, "testing2");
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        returnedRows: 1,
+                        items: [dataSetPS]
+                    }
+                };
+            });
+            const response = await Create.dataSetLike(dummySession, dataSetName, likePsDataSetName);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
+            expect(listDatasetSpy).toHaveBeenCalledTimes(1);
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
-                        like: "testing2"
+                        like: likePsDataSetName,
+                        blksize: 800
                     }
                 })
             );
         });
 
         it("should be able to create a dataSetLike with responseTimeout", async () => {
-            dsOptions.dsntype = "PDS";
+            dsOptions.alcunit = undefined;
+            dsOptions.dsntype = undefined;
+            dsOptions.recfm = undefined;
             dsOptions.responseTimeout = 5;
 
-            await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
-            const response2 = await Create.dataSetLike(dummySession, dataSetName, "testing2", dsOptions);
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        returnedRows: 1,
+                        items: [dataSetPS]
+                    }
+                };
+            });
+
+            const response2 = await Create.dataSetLike(dummySession, dataSetName, likePsDataSetName, dsOptions);
 
             expect(response2.success).toBe(true);
             expect(response2.commandResponse).toContain("created successfully");
@@ -209,10 +241,10 @@ describe("Create data set", () => {
                 endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }],
                 JSON.stringify({
-                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
-                    ...dsOptions,
                     ...{
-                        secondary: 1
+                        like: likePsDataSetName,
+                        responseTimeout: 5,
+                        blksize: 800
                     }
                 })
             );
@@ -410,6 +442,8 @@ describe("Create data set", () => {
         });
 
         it("should be able to create a classic data set", async () => {
+            dsOptions.alcunit = "CYL";
+            dsOptions.recfm = "FB";
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dataSetName, dsOptions);
 
             expect(response.success).toBe(true);
@@ -522,6 +556,8 @@ describe("Create data set", () => {
         });
 
         it("should be able to create a C data set", async () => {
+            dsOptions.alcunit = "CYL";
+            dsOptions.recfm = "VB";
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_C, dataSetName, dsOptions);
 
             expect(response.success).toBe(true);
@@ -633,6 +669,8 @@ describe("Create data set", () => {
         });
 
         it("should be able to create a binary data set", async () => {
+            dsOptions.alcunit = "CYL";
+            dsOptions.recfm = "U";
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, dsOptions);
 
             expect(response.success).toBe(true);
@@ -904,6 +942,8 @@ describe("Create data set", () => {
 
             let error;
             try {
+                dsOptions.alcunit = "CYL";
+                dsOptions.recfm = "FB";
                 await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName, dsOptions);
             } catch (err) {
                 error = err.message;

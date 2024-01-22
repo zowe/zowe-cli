@@ -1,31 +1,23 @@
-#!/bin/bash
+#!/bin/sh
 
-baseAmount=$1
-basePrice=$2
-kiwiAmount=$3
+baseAmount=${1:?"First parm (baseAmount) is required."}
+basePrice=${2:?"Second parm (basePrice) is required."}
+kiwiAmount=${3:?"Third parm (kiwiAmount) is required."}
 
-# First create a base profile
-cmd-cli profiles create base-profile "test_base" --amount $baseAmount --price $basePrice
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Creating a test_base profile of type base failed!" 1>&2
-    exit $CMDRC
-fi
+# include zowe-cli\__tests__\__scripts__\exitOnFailure function
+myScriptDir=`dirname $0`
+. $myScriptDir/../../../../../../../../../../../__tests__/__scripts__/exitOnFailure.sh
 
-# Next create a kiwi profile
-cmd-cli profiles create kiwi-profile "test_kiwi" --amount $kiwiAmount --dd
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Creating a test_kiwi profile of type kiwi failed!" 1>&2
-    exit $CMDRC
-fi
+# set desired properties in our config file
+cp $myScriptDir/base_and_kiwi.config.json .
+exitOnFailure "Failed to copy config file." $?
 
+sed -e "s/NoBaseAmountVal/$baseAmount/" \
+    -e "s/NoBasePriceVal/$basePrice/" \
+    -e "s/NoKiwiAmountVal/$kiwiAmount/" \
+    < base_and_kiwi.config.json > cmd-cli.config.json
+exitOnFailure "Failed to update config file." $?
+
+# show the property values that will be used
 cmd-cli profile mapping-base
-CMDRC=$?
-if [ $CMDRC -gt 0 ]
-then
-    echo "Profile mapping command failed!" 1>&2
-    exit $CMDRC
-fi
+exitOnFailure "The 'profile mapping' command failed." $?

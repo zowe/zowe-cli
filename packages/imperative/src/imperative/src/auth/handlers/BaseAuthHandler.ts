@@ -22,7 +22,7 @@ import { Imperative } from "../../Imperative";
 import { IImperativeError, ImperativeError } from "../../../../error";
 import { ISaveProfileFromCliArgs } from "../../../../profiles";
 import { ImperativeConfig } from "../../../../utilities";
-import { getActiveProfileName, secureSaveError } from "../../../../config/src/ConfigUtils";
+import { ConfigUtils } from "../../../../config/src/ConfigUtils";
 import { AbstractAuthHandler } from "./AbstractAuthHandler";
 import { IAuthHandlerApi } from "../doc/IAuthHandlerApi";
 
@@ -102,7 +102,8 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
             // process login for old school profiles
             await this.processLoginOld(params, tokenValue);
         } else if (ImperativeConfig.instance.config.api.secure.loadFailed) {
-            throw secureSaveError(`Instead of secure storage, rerun this command with the "--show-token" flag to print the token to console. ` +
+            throw ConfigUtils.secureSaveError(`Instead of secure storage, ` +
+                `rerun this command with the "--show-token" flag to print the token to console. ` +
                 `Store the token in an environment variable ${ImperativeConfig.instance.loadedConfig.envVariablePrefix}_OPT_TOKEN_VALUE to use it ` +
                 `in future commands.`);
         } else {
@@ -161,7 +162,7 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
     }
 
     private getBaseProfileName(params: IHandlerParameters): string {
-        return getActiveProfileName(this.mProfileType, params.arguments, `${this.mProfileType}_${params.positionals[2]}`);
+        return ConfigUtils.getActiveProfileName(this.mProfileType, params.arguments, `${this.mProfileType}_${params.positionals[2]}`);
     }
 
     private async promptForBaseProfile(params: IHandlerParameters, profileName: string): Promise<boolean> {
