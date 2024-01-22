@@ -9,8 +9,8 @@
 *
 */
 
-jest.mock("../../../imperative/src/Imperative");
-jest.mock("../../../utilities/ImperativeConfig");
+jest.mock("../../../../src/imperative/Imperative");
+jest.mock("../../../../src/utilities/ImperativeConfig");
 
 import { IHelpGeneratorFactoryParms } from "../../../../src/cmd/help/doc/IHelpGeneratorFactoryParms";
 import { ICommandDefinition } from "../../../../src/cmd/doc/ICommandDefinition";

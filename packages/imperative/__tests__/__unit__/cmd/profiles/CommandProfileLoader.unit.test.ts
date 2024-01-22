@@ -9,10 +9,10 @@
 *
 */
 
-jest.mock("../../../profiles/src/BasicProfileManager");
-jest.mock("../../../profiles/src/BasicProfileManagerFactory");
-jest.mock("../../../utilities/ImperativeConfig");
-jest.mock("../../../logger/src/LoggerUtils");
+jest.mock("../../../../src/profiles/BasicProfileManager");
+jest.mock("../../../../src/profiles/BasicProfileManagerFactory");
+jest.mock("../../../../src/utilities/ImperativeConfig");
+jest.mock("../../../../src/logger/LoggerUtils");
 import { CommandProfileLoader } from "../../../../src/cmd/profiles/CommandProfileLoader";
 import { ICommandDefinition } from "../../../../src/cmd/doc/ICommandDefinition";
 import { BasicProfileManager } from "../../../../src/profiles/BasicProfileManager";

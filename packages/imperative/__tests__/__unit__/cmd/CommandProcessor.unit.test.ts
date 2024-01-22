@@ -15,7 +15,7 @@ import { CommandProcessor } from "../../../src/cmd/CommandProcessor";
 import { ICommandResponse } from "../../../src/cmd/doc/response/response/ICommandResponse";
 import { CommandResponse } from "../../../src/cmd/response/CommandResponse";
 import { IHelpGenerator } from "../../../src/cmd/help/doc/IHelpGenerator";
-import { BasicProfileManager, IProfileManagerFactory, IProfileTypeConfiguration } from "../../profiles";
+import { BasicProfileManager, IProfileManagerFactory, IProfileTypeConfiguration } from "../../../src/profiles";
 import { ImperativeError } from "../../../src/error";
 import { ICommandValidatorResponse } from "../../../src/cmd/doc/response/response/ICommandValidatorResponse";
 import { SharedOptions } from "../../../src/cmd/utils/SharedOptions";
@@ -29,7 +29,7 @@ import { join } from "path";
 
 jest.mock("../../../src/cmd/syntax/SyntaxValidator");
 jest.mock("../../../src/cmd/utils/SharedOptions");
-jest.mock("../../utilities/ImperativeConfig");
+jest.mock("../../../src/utilities/ImperativeConfig");
 
 // Persist the original definitions of process.write
 const ORIGINAL_STDOUT_WRITE = process.stdout.write;

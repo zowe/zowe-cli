@@ -23,7 +23,7 @@ import {
     VALID_COMMANDS_WITH_PROFILES,
     SAMPLE_BASE_PROFILE
 } from "./__resources__/CommandDefinitions";
-import { ImperativeError } from "../../error/src/ImperativeError";
+import { ImperativeError } from "../../../src/error/ImperativeError";
 
 // UnitTestUtils.replaceIt();
 

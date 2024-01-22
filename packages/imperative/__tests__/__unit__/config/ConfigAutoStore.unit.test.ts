@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../logger/src/LoggerUtils");
+jest.mock("../../../src/logger/LoggerUtils");
 import { AbstractAuthHandler } from "../../../src/imperative";
 import { SessConstants } from "../../../src/rest";
 import { ImperativeConfig } from "../../../src/utilities/ImperativeConfig";

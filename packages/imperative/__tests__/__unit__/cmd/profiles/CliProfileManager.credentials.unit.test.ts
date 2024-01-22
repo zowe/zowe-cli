@@ -22,8 +22,8 @@ import { CredentialManagerFactory, DefaultCredentialManager } from "../../../../
 import { BasicProfileManager } from "../../../../src/profiles/BasicProfileManager";
 import { ProfilesConstants, ISaveProfile, IProfileSaved } from "../../../../src/profiles";
 
-jest.mock("../../../profiles/src/utils/ProfileIO");
-jest.mock("../../../security/src/DefaultCredentialManager");
+jest.mock("../../../../src/profiles/utils/ProfileIO");
+jest.mock("../../../../src/profiles/security/DefaultCredentialManager");
 
 // TODO: Some of these tests are not completely isolated, some may cause others to fail depending on mocks
 

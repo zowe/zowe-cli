@@ -11,7 +11,7 @@
 
 import { getMockWrapper } from "../../../../__tests__/__src__/types/MockWrapper";
 
-jest.mock("../../../../../src/utilities/ImperativeConfig");
+jest.mock("../../../../src/utilities/ImperativeConfig");
 jest.mock("find-up");
 jest.mock("path");
 

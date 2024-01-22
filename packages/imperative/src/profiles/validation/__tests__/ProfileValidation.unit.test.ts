@@ -18,7 +18,7 @@ import { IProfileValidationTaskResult } from "../doc/IProfileValidationTaskResul
 import { ProfileValidator } from "../api/ProfileValidator";
 import { IProfileValidationTask } from "../../..";
 
-jest.mock("../../../../imperative/src/Imperative");
+jest.mock("../../../imperative/Imperative");
 
 
 const oldForceColorOption = process.env.FORCE_COLOR;

@@ -12,7 +12,7 @@
 /* eslint-disable jest/expect-expect */
 import { TextUtils } from "../../../utilities/TextUtils";
 
-jest.mock("../../../../imperative/src/Imperative");
+jest.mock("../../../../src/imperative/Imperative");
 import { inspect, isNullOrUndefined } from "util";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { CommandResponse, ICommandDefinition, ICommandValidatorResponse } from "../../../";
