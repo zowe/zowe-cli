@@ -13,6 +13,7 @@ export * from "./cmd";
 export * from "./config";
 export * from "./console";
 export * from "./constants";
+export * from "./events";
 export * from "./error";
 export * from "./expect";
 export * from "./imperative";

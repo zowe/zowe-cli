@@ -12,3 +12,4 @@
 export * from "./src/doc";
 export * from "./src/ImperativeEvent";
 export * from "./src/ImperativeEventConstants";
+export * from "./src/ImperativeEventManager";
