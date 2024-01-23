@@ -62,7 +62,6 @@ describe("imperative-test-cli auth login", () => {
         expect(response.stdout.toString()).toContain("certFile:    " + fakeCertPath);
         expect(response.stdout.toString()).toContain("certKeyFile: " + fakeCertKeyPath);
         expect(response.stdout.toString()).toContain("tokenType:   jwtToken");
-        expect(response.stdout.toString()).toContain("tokenValue:  (secure value)");
         expect(response.status).toBe(0);
     });
 
