@@ -157,6 +157,8 @@ export class ProfileInfo {
     private mOldSchoolProfileDefaults: { [key: string]: string } = null;
     private mOldSchoolProfileTypes: string[];
     private mOverrideWithEnv: boolean = false;
+
+    private mHasValidSchema: boolean = false;
     /**
      * Cache of profile schema objects mapped by profile type and config path
      * if applicable. Examples of map keys:
@@ -1009,6 +1011,13 @@ export class ProfileInfo {
     }
 
     /**
+     * Returns whether a valid schema was found (works for v1 and v2 configs)
+     */
+    public get hasValidSchema(): boolean {
+        return this.mHasValidSchema;
+    }
+
+    /**
      * Gather information about the paths in osLoc
      * @param profile Profile attributes gathered from getAllProfiles
      */
@@ -1216,11 +1225,14 @@ export class ProfileInfo {
                     }
                 }
             }
+
+            this.mHasValidSchema = lastSchema.path != null;
         } else {
             // Load profile schemas from meta files in profile root dir
             for (const type of this.mOldSchoolProfileTypes) {
                 const metaPath = this.oldProfileFilePath(type, type + AbstractProfileManager.META_FILE_SUFFIX);
                 if (fs.existsSync(metaPath)) {
+                    this.mHasValidSchema = true;
                     try {
                         const metaProfile = ProfileIO.readMetaFile(metaPath);
                         this.mProfileSchemaCache.set(type, metaProfile.configuration.schema);
