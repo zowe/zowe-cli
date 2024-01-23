@@ -1499,7 +1499,7 @@ describe("z/OS Files - List", () => {
             expect(listDataSetSpy).toHaveBeenCalledTimes(3);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
         });
-        
+
         it("should handle an error when the exclude pattern is specified", async () => {
             const excludePatterns = ["TEST.PS.DATA.SET"];
             let response;
@@ -1523,7 +1523,7 @@ describe("z/OS Files - List", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: false,
-                commandResponse: util.format(ZosFilesMessages.noDataSetsMatchingPattern.message),
+                commandResponse: util.format(ZosFilesMessages.noDataSetsInList.message),
                 apiResponse: []
             });
         });

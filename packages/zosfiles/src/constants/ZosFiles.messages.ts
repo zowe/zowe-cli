@@ -410,7 +410,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
-     * @deprecated
      */
     noDataSetsInList: {
         message: "No data sets left after excluded pattern(s) were filtered out."

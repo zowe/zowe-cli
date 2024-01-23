@@ -9,7 +9,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
   - Removing `ZosFilesCreateExtraOptions.showAttributes` without replacement
   - Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to  `@zowe/zos-tso-for-zowe-sdk`
   - Removed `isStderrEmptyForProfilesCommand` use `stripProfileDeprecationMessages` from `zowe-cli/__tests__/__packages__/cli-test-utils/src/TestUtils.ts` instead
-  - Removed  `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsInList`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from    ZosFiles.messages.ts
+  - Removed  `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from    ZosFiles.messages.ts
   - Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
   - Removed constants from ZosmfSession
     - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead
