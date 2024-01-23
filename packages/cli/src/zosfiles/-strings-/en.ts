@@ -807,7 +807,10 @@ export default {
             EDITOR: `Editor that overrides the default editor for this file type. Set the option to the editor's executable file location ` +
             `or the program's name: ie "--editor notepad"`,
             EXTENSION: `Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ` +
-            `ie "--extension jcl"`
+            `ie "--extension jcl"`,
+            BINARY: "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
+            ENCODING: "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding " +
+                "specified."
         }
     },
     COMPARE: {

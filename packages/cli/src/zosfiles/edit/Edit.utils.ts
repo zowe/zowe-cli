@@ -53,6 +53,7 @@ export interface ILocalFile {
     zosResp: IZosFilesResponse | null;
     conflict: boolean;
     encoding?: string | null;
+    binary?: boolean;
 }
 
 /**
@@ -158,8 +159,8 @@ export class EditUtilities {
             lfFile.fileName,
             {
                 returnEtag: true,
-                binary: null,
-                encoding: null,
+                binary: lfFile.binary,
+                encoding: lfFile.encoding,
                 file: tempPath
             }
         ];
