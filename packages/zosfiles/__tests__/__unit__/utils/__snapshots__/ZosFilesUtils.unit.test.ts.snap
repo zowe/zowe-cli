@@ -259,6 +259,9 @@ Destination: %s",
   "missingZfsOption": Object {
     "message": "To create a z/OS file system, the following option must be supplied: ",
   },
+  "noDataSetsInList": Object {
+    "message": "No data sets left after excluded pattern(s) were filtered out.",
+  },
   "noDataSetsMatchingPattern": Object {
     "message": "There are no data sets that match the provided pattern(s).",
   },
