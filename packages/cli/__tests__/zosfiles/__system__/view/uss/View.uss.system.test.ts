@@ -12,9 +12,10 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
-import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders } from "@zowe/cli";
+import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders, Upload } from "@zowe/cli";
 import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
 import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { getRandomBytes } from "../../../../../../../__tests__/__src__/TestUtils";
 import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName} from "../../../../../../../__tests__/__src__/TestUtils";
 
@@ -94,6 +95,19 @@ describe("View uss file", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString().trim()).toEqual(data);
+        });
+        it("should view large uss file in binary", async () => {
+            const rawData:Buffer =  await getRandomBytes(1024*64);
+            const data = encodeURIComponent(rawData.toLocaleString());
+            await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data), { binary: true });
+
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
+            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--binary"]);
+            const respdata = response.stdout.toLocaleString();
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(respdata.trim()).toEqual(data);
         });
         it("should view uss file with range", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
