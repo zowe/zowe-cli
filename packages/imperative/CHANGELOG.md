@@ -2,6 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Removed the following obsolete V1 profile functions:
+  - CommandProfiles.getMeta()
+  - CommandProfiles.get()
+
 ## `8.0.0-next.202401191954`
 
 - LTS Breaking: Removed the following:

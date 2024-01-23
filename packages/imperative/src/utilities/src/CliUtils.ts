@@ -9,6 +9,7 @@
 *
 */
 
+import { ImperativeConfig } from "./ImperativeConfig";
 import { ImperativeError } from "../../error";
 import { Constants } from "../../constants";
 import { Arguments } from "yargs";
@@ -20,6 +21,7 @@ import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
+
 
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
@@ -131,7 +133,7 @@ export class CliUtils {
         profileOrder.forEach((profileType: string) => {
 
             // Get the first profile loaded - for now, we won't worry about profiles and double-type loading for dependencies
-            const profile: IProfile = profiles.get(profileType, false);
+            const profile: IProfile = ImperativeConfig.instance.config.api.profiles.get(profileType);
             if (profile == null && definitions.required != null && definitions.required.indexOf(profileType) >= 0) {
                 throw new ImperativeError({
                     msg: `Profile of type "${profileType}" does not exist within the loaded profiles for the command and it is marked as required.`,

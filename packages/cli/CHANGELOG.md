@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Eliminated the use of a V1 profile function `CommandProfiles.get()` in TargetProfileHandler.
+
 ## `8.0.0-next.202401191954`
 
 - LTS Breaking: Removed all 'profiles' commands, since they only worked with now-obsolete V1 profiles.
