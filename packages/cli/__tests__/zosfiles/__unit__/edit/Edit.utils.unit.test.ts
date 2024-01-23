@@ -46,6 +46,7 @@ describe("Files Edit Utilities", () => {
         guiAvail: true,
         zosResp: null,
         encoding: null,
+        binary: null,
         conflict: false
     };
 
@@ -56,6 +57,7 @@ describe("Files Edit Utilities", () => {
         guiAvail: true,
         zosResp: null,
         encoding: null,
+        binary: null,
         conflict: false
     };
 
