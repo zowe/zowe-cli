@@ -123,8 +123,8 @@ The following is an example of the markdown that you should insert into the chan
 ```
 ## Recent Changes
 
-- BugFix: Document your bug fix here. [Issue# or PR#](link-to-issue-or-pr)
-- Enhancement: Document an enhancement here. [Issue# or PR#](link-to-issue-or-pr)
+- BugFix: Describe the bug fix here. [Issue# or PR#](link-to-issue-or-pr)
+- Enhancement: Describe the enhancement here. [Issue# or PR#](link-to-issue-or-pr)
 ```
 
 **Tips:**
