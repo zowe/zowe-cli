@@ -1403,12 +1403,24 @@ export class ProfileInfo {
                     };
                     this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
                 }
-            } else if (typeInfo.schema.version != null) {
-                // Warn user if this schema does not provide a valid version number
-                return {
-                    success: false,
-                    info: `New schema type for profile type ${profileType} is not SemVer-compliant; schema was not updated`
-                };
+            } else {
+                if (typeInfo.schema.version != null) {
+                    // Warn user if this schema does not provide a valid version number
+                    return {
+                        success: false,
+                        info: `New schema type for profile type ${profileType} is not SemVer-compliant; schema was not updated`
+                    };
+                }
+
+                // If the old schema doesn't have a tracked version and its different from the one passed into this function, use the new schema
+                if (this.mExtendersJson.profileTypes[profileType].version == null &&
+                    !lodash.isEqual({ ...typeInfo.schema, version: undefined }, { ...this.getSchemaForType(profileType), version: undefined })) {
+                    this.mExtendersJson.profileTypes[profileType] = {
+                        version: typeInfo.schema.version,
+                        from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
+                    };
+                    this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
+                }
             }
         } else {
             // Newly-contributed profile type; track in extenders.json
