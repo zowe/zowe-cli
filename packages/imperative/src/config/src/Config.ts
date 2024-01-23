@@ -31,6 +31,7 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
+import { ImperativeEventManager } from "../../events/src/ImperativeEventManager";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -229,6 +230,7 @@ export class Config {
                     this.api.layers.write(currLayer);
                 }
             }
+            ImperativeEventManager.writeEvent("onConfigChanged");
         } catch (e) {
             if (e instanceof ImperativeError) {
                 throw e;
@@ -512,6 +514,7 @@ export class Config {
         const schemaInfo = this.getSchemaInfo();
         if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./"))) {
             fs.writeFileSync(schemaInfo.resolved, JSONC.stringify(schemaObj, null, ConfigConstants.INDENT));
+            ImperativeEventManager.writeEvent("onSchemaChanged");
         }
     }
 
