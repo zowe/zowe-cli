@@ -1559,6 +1559,24 @@ describe("TeamConfig ProfileInfo tests", () => {
                 );
             });
 
+            it("warns the user when old, unversioned schema is different from new, unversioned schema", () => {
+                jest.spyOn(ProfileInfo.prototype, "getSchemaForType").mockReturnValue({ title: "Mock Schema", otherKey: "otherVal" } as any);
+                expectAddToSchemaTester(
+                    { schema: { title: "Mock Schema", someKey: "someValue" } as any, previousVersion: "none" },
+                    {
+                        extendersJson: {
+                            profileTypes: {
+                                "some-type": {
+                                    from: ["Zowe Client App"]
+                                }
+                            }
+                        },
+                        res: { success: false, info: "Both the old and new schemas are unversioned for some-type, but the schemas are different. "
+                            .concat("The new schema was not written to disk, but will still be accessible in-memory.") }
+                    }
+                );
+            });
+
             it("only updates a profile type in the schema if the version is newer", async () => {
                 expectAddToSchemaTester(
                     { previousVersion: "1.0.0", schema: { title: "Mock Schema", version: "2.0.0" } as any },

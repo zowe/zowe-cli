@@ -1412,14 +1412,14 @@ export class ProfileInfo {
                     };
                 }
 
-                // If the old schema doesn't have a tracked version and its different from the one passed into this function, use the new schema
+                // If the old schema doesn't have a tracked version and its different from the one passed into this function, warn the user
                 if (this.mExtendersJson.profileTypes[profileType].version == null &&
-                    !lodash.isEqual({ ...typeInfo.schema, version: undefined }, { ...this.getSchemaForType(profileType), version: undefined })) {
-                    this.mExtendersJson.profileTypes[profileType] = {
-                        version: typeInfo.schema.version,
-                        from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp])
+                    !lodash.isEqual(typeInfo.schema, this.getSchemaForType(profileType))) {
+                    return {
+                        success: false,
+                        info: `Both the old and new schemas are unversioned for ${profileType}, but the schemas are different. `.concat(
+                            "The new schema was not written to disk, but will still be accessible in-memory.")
                     };
-                    this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
                 }
             }
         } else {
