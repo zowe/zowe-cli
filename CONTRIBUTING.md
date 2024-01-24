@@ -111,14 +111,20 @@ Add an entry to changelog.md for any PR that introduces a feature, enhancement, 
 **Each changelog entry must:**
 - Describe the change and how it impacts end users.
 - Include a relevant Issue # or Pull Request #.
+- Include one of the following prefixes:
+  - `BugFix` - If a fix was added
+  - `Enhancement` - If a feature or enhancement was introduced
+  - For breaking changes (only allowed for PRs merged into the "next" branch):
+    - `LTS Breaking` - If behavior has changed since the last LTS release
+    - `Next Breaking` - If behavior has changed since an earlier vNext prerelease
 
 The following is an example of the markdown that you should insert into the changelog above the last-released version:
 
 ```
 ## Recent Changes
 
-- Document your changes here. [Issue# or PR#](link-to-issue-or-pr)
-- Document another change here. [Issue# or PR#](link-to-issue-or-pr)
+- BugFix: Describe the bug fix here. [Issue# or PR#](link-to-issue-or-pr)
+- Enhancement: Describe the enhancement here. [Issue# or PR#](link-to-issue-or-pr)
 ```
 
 **Tips:**
