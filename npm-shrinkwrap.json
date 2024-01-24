@@ -5428,11 +5428,6 @@
         "@types/node": "*"
       }
     },
-    "node_modules/@types/readline-sync": {
-      "version": "1.4.5",
-      "dev": true,
-      "license": "MIT"
-    },
     "node_modules/@types/rimraf": {
       "version": "3.0.2",
       "dev": true,
@@ -18559,13 +18554,6 @@
         "node": ">=8.10.0"
       }
     },
-    "node_modules/readline-sync": {
-      "version": "1.4.10",
-      "license": "MIT",
-      "engines": {
-        "node": ">= 0.8.0"
-      }
-    },
     "node_modules/redent": {
       "version": "3.0.0",
       "dev": true,
@@ -21390,7 +21378,6 @@
         "prettyjson": "^1.2.2",
         "progress": "^2.0.3",
         "read": "^1.0.7",
-        "readline-sync": "^1.4.10",
         "semver": "^7.5.2",
         "stack-trace": "^0.0.10",
         "strip-ansi": "^6.0.1",
@@ -21412,7 +21399,6 @@
         "@types/npm-package-arg": "^6.1.0",
         "@types/pacote": "^11.1.0",
         "@types/progress": "^2.0.3",
-        "@types/readline-sync": "^1.4.3",
         "@types/rimraf": "^3.0.2",
         "@types/stack-trace": "^0.0.29",
         "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202401232128",
