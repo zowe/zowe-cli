@@ -55,11 +55,7 @@ export const DatasetDefinition: ICommandDefinition = {
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
-            options: `ibmuser.jcl(iefbr14) --editor notepad --extension jcl`
-        },
-        {
-            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
-            options: `ibmuser.jcl(iefbr14) --editor notepad --binary`
+            options: `ibmuser.jcl(iefbr14) --binary`
         }
     ]
 };

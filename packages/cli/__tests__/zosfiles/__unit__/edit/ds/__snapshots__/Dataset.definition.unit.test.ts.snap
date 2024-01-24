@@ -53,12 +53,8 @@ Array [
     "options": "ibmuser.cntl(iefbr14) --editor C:\\\\Windows\\\\System32\\\\Notepad.exe",
   },
   Object {
-    "description": "Edit the contents of the USS file \\"ibmuser.jcl(iefbr14)\\" and set extension as \\"jcl\\"",
-    "options": "ibmuser.jcl(iefbr14) --editor notepad --extension jcl",
-  },
-  Object {
-    "description": "Edit the contents of the USS file \\"ibmuser.jcl(iefbr14)\\" and set extension as \\"jcl\\"",
-    "options": "ibmuser.jcl(iefbr14) --editor notepad --binary",
+    "description": "Edit the contents of the data set member \\"ibmuser.jcl(iefbr14)\\" and set extension as \\"jcl\\"",
+    "options": "ibmuser.jcl(iefbr14) --binary",
   },
 ]
 `;

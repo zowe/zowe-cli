@@ -226,6 +226,7 @@ describe("Files Edit Utilities", () => {
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
         });
+
         it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {
             //TEST SETUP
             //download (to temp) AND grab etag
@@ -241,6 +242,86 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
+        });
+
+        it("localDownload should properly pass non-falsy binary option to Download.dataSet", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.binary = true;
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that binary option is passed to downloadDS
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDataSetSpy).toHaveBeenCalledWith(undefined, "TEST(DS)", {
+                "binary": true,
+                "encoding": null,
+                "file": null,
+                "returnEtag": true
+            });
+        });
+
+        it("localDownload should properly pass non-falsy encoding option to Download.dataSet", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.encoding = "1047";
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that encoding option is passed to downloadDS
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDataSetSpy).toHaveBeenCalledWith(undefined, "TEST(DS)", {
+                "binary": null,
+                "encoding": "1047",
+                "file": null,
+                "returnEtag": true
+            });
+        });
+
+        it("localDownload should properly pass non-falsy binary option to Download.ussFile", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.binary = true;
+            downloadUssFileSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that encoding option is passed to downloadDS
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(undefined, "test_uss.jcl", {
+                "binary": true,
+                "encoding": null,
+                "file": null,
+                "returnEtag": true
+            });
+        });
+
+        it("localDownload should properly pass non-falsy encoding option to Download.ussFile", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.encoding = "1047";
+            downloadUssFileSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that encoding option is passed to downloadDS
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(undefined, "test_uss.jcl", {
+                "binary": null,
+                "encoding": "1047",
+                "file": null,
+                "returnEtag": true
+            });
         });
     });
     describe("fileComparison()", () => {

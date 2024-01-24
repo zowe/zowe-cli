@@ -53,7 +53,7 @@ export const USSFileDefinition: ICommandDefinition = {
             options: `/a/ibmuser/my_text.txt --editor C:\\Windows\\System32\\Notepad.exe`
         },
         {
-            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
+            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
             options: `/a/ibmuser/my_text.txt --binary`
         },
     ]

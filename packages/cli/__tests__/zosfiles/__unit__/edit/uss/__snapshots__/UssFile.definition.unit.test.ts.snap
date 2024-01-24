@@ -44,7 +44,7 @@ Array [
     "options": "/a/ibmuser/my_text.txt --editor C:\\\\Windows\\\\System32\\\\Notepad.exe",
   },
   Object {
-    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_text.txt\\" in notepad",
+    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_jcl.jcl\\" with binary flag set",
     "options": "/a/ibmuser/my_text.txt --binary",
   },
 ]
