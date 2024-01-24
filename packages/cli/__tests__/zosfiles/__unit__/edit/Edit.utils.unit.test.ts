@@ -254,7 +254,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             //test that binary option is passed to downloadDS
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(downloadDataSetSpy).toHaveBeenCalledTimes(1);
             expect(downloadDataSetSpy).toHaveBeenCalledWith(undefined, "TEST(DS)", {
                 "binary": true,
@@ -274,7 +274,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             //test that encoding option is passed to downloadDS
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(downloadDataSetSpy).toHaveBeenCalledTimes(1);
             expect(downloadDataSetSpy).toHaveBeenCalledWith(undefined, "TEST(DS)", {
                 "binary": null,
@@ -294,7 +294,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             //test that encoding option is passed to downloadDS
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
             expect(downloadUssFileSpy).toHaveBeenCalledWith(undefined, "test_uss.jcl", {
                 "binary": true,
@@ -314,7 +314,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             //test that encoding option is passed to downloadDS
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
             expect(downloadUssFileSpy).toHaveBeenCalledWith(undefined, "test_uss.jcl", {
                 "binary": null,
