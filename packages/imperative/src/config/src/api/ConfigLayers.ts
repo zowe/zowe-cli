@@ -18,7 +18,6 @@ import { ConfigConstants } from "../ConfigConstants";
 import { IConfigLayer } from "../doc/IConfigLayer";
 import { ConfigApi } from "./ConfigApi";
 import { IConfig } from "../doc/IConfig";
-import { ImperativeEventManager } from "../../../events/src/ImperativeEventManager";
 
 /**
  * API Class for manipulating config layers.

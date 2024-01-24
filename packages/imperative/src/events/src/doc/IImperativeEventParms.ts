@@ -16,16 +16,16 @@ import { ImperativeEventType } from "../ImperativeEventConstants";
  * @interface IImperativeEventParms
  */
 export interface IImperativeEventParms {
-  /**
+    /**
    * The name of the application to be used to generate a unique ID for the event
    * @type {string}
    * @memberof IImperativeEventParms
    */
-  appName: string;
-  /**
+    appName: string;
+    /**
    * The type of imperative event that occurred
    * @type {ImperativeEventType}
    * @memberof IImperativeEventParms
    */
-  eventType: ImperativeEventType
+    eventType: ImperativeEventType | string
 }

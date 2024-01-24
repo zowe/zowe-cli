@@ -19,54 +19,54 @@ import { ImperativeEventType } from "./ImperativeEventConstants";
  * @class ImperativeEvent
  */
 export class ImperativeEvent {
-  /**
+    /**
    * The ID of the event
    * @private
    * @type {string}
    * @memberof ImperativeEvent
    */
-  private mEventID: string;
+    private mEventID: string;
 
-  /**
+    /**
    * The application ID that caused this event
    * @private
    * @type {string}
    * @memberof ImperativeEvent
    */
-  private mAppID: string
+    private mAppID: string;
 
-  /**
+    /**
    * The time of the event created with new Date().toISOString() (ISO String)
    * @private
    * @type {string}
    * @memberof ImperativeEvent
    */
-  private mEventTime: string
+    private mEventTime: string;
 
-  /**
+    /**
    * The type of event that occurred
    * @private
    * @type {string}
    * @memberof ImperativeEvent
    */
-  private mEventType: ImperativeEventType
+    private mEventType: ImperativeEventType | string;
 
-  constructor(parms: IImperativeEventParms) {
-    this.mEventTime = new Date().toISOString();
-    this.mEventID = randomUUID();
-    this.mAppID = parms.appName;
-    this.mEventType = parms.eventType;
-  }
+    constructor(parms: IImperativeEventParms) {
+        this.mEventTime = new Date().toISOString();
+        this.mEventID = randomUUID();
+        this.mAppID = parms.appName;
+        this.mEventType = parms.eventType;
+    }
 
-  public get eventTime(): string {
-    return this.mEventTime
-  }
+    public get eventTime(): string {
+        return this.mEventTime;
+    }
 
-  public get eventType(): ImperativeEventType {
-    return this.mEventType;
-  }
+    public get eventType(): ImperativeEventType | string {
+        return this.mEventType;
+    }
 
-  public get appName(): string {
-    return this.mAppID;
-  }
+    public get appName(): string {
+        return this.mAppID;
+    }
 }

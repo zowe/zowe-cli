@@ -10,13 +10,13 @@
 */
 
 export const ImperativeUserEvents = [
-  "onVaultChanged"
+    "onVaultChanged"
 ] as const;
 export type ImperativeUserEventType = typeof ImperativeUserEvents[number];
 
 export const ImperativeZoweEvents = [
-  "onConfigChanged",
-  "onSchemaChanged"
+    "onConfigChanged",
+    "onSchemaChanged"
 ] as const;
 export type ImperativeZoweEventType = typeof ImperativeZoweEvents[number];
 
