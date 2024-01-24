@@ -10,6 +10,7 @@ module.exports = {
         },
         {
             name: "next",
+            level: "none",
             prerelease: true
         }
     ],
