@@ -806,7 +806,7 @@ describe("Create data set", () => {
             );
         });
 
-        it("should be able to create a partinioned data set without specifying an options object", async () => {
+        it("should be able to create a partitioned data set without specifying an options object", async () => {
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName);
 
             expect(response.success).toBe(true);
@@ -823,7 +823,7 @@ describe("Create data set", () => {
             );
         });
 
-        it("should be able to create a partinioned data set without printing the attributes", async () => {
+        it("should be able to create a partitioned data set without printing the attributes", async () => {
             const response = await Create.dataSet(
                 dummySession,
                 CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
@@ -835,6 +835,33 @@ describe("Create data set", () => {
             expect(response.commandResponse).not.toMatch(/alcunit.*CYL/);
             expect(response.commandResponse).not.toMatch(/dsorg.*PO/);
             expect(mySpy).toHaveBeenCalledWith(dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a partitioned data set and print all the attributes", async () => {
+            const response = await Create.dataSet(
+                dummySession,
+                CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
+                dataSetName,
+                {
+                    attributes: true
+                } as any
+            );
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(response.commandResponse).toMatch(/alcunit.*CYL/);
+            expect(response.commandResponse).toMatch(/dsorg.*PO/);
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
                 endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
