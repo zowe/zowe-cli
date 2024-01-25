@@ -852,7 +852,7 @@ describe("Create data set", () => {
                 CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
                 dataSetName,
                 {
-                    attributes: true
+                    showAttributes: true
                 } as any
             );
 
