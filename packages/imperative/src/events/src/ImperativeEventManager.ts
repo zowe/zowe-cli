@@ -16,27 +16,30 @@ import { join } from "path";
 import { ImperativeError } from "../../error";
 import { ImperativeEventType, ImperativeUserEvents, ImperativeZoweEvents } from "./ImperativeEventConstants";
 import { ImperativeEvent } from "./ImperativeEvent";
+import { Logger } from "../../logger";
+import { ProfileInfo } from "../../config";
+import { LoggerManager } from "../../logger/src/LoggerManager";
 
 export class ImperativeEventManager {
 
     /**
-   * ZOWE HOME directory to search for system wide ImperativeEvents like `configChanged`
-   */
+     * ZOWE HOME directory to search for system wide ImperativeEvents like `configChanged`
+     */
     public static getZoweEventDir(): string {
         return join(ImperativeConfig.instance.cliHome, ".events");
     }
 
     /**
-   * USER HOME directory to search for user specific ImperativeEvents like `vaultChanged`
-   */
+     * USER HOME directory to search for user specific ImperativeEvents like `vaultChanged`
+     */
     public static getUserEventDir(): string {
         return join(homedir(), ".zowe", ".events");
     }
 
     /**
-   * Check to see if the directory exists, otherwise, create it : )
-   * @param directoryPath Zowe or User path where we will write the events
-   */
+     * Check to see if the directory exists, otherwise, create it : )
+     * @param directoryPath Zowe or User path where we will write the events
+     */
     private static ensureEventsDirExists(directoryPath: string) {
         try {
             if (!fs.existsSync(directoryPath)) {
@@ -48,39 +51,59 @@ export class ImperativeEventManager {
     }
 
     /**
-   * Check to see if the given event is a User event
-   * @param eventType A string representing the type of event
-   * @returns True if it is a user event, false otherwise
-   */
+     * Helper method to initialize the event
+     * @param eventType The type of event to initialize
+     * @returns The initialized ImperativeEvent
+     */
+    private static initializeEvent(eventType: string): ImperativeEvent {
+        let logger: Logger;
+        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
+            logger = ProfileInfo.initImpUtils("zowe");
+        }
+        logger = logger ?? Logger.getImperativeLogger();
+        const appName = ImperativeConfig.instance.callerPackageJson?.name;
+        if (logger == null || appName == null) {
+            throw new ImperativeError({
+                msg: `Unable to initialize the Imperative utilities to emit this event. Event: ${eventType} \t| App: ${appName}`
+            });
+        }
+        return new ImperativeEvent({ appName, eventType, logger });
+    }
+
+    /**
+     * Check to see if the given event is a User event
+     * @param eventType A string representing the type of event
+     * @returns True if it is a user event, false otherwise
+     */
     public static isUserEvent(eventType: string): boolean {
         return ImperativeUserEvents.indexOf(eventType as any) >= 0;
     }
 
     /**
-   * Check to see if the given event is a Zowe event
-   * @param eventType A string representing the type of event
-   * @returns True if it is a zowe event, false otherwise
-   */
+     * Check to see if the given event is a Zowe event
+     * @param eventType A string representing the type of event
+     * @returns True if it is a zowe event, false otherwise
+     */
     public static isZoweEvent(eventType: string): boolean {
         return ImperativeZoweEvents.indexOf(eventType as any) >= 0;
     }
 
     /**
-   * Check to see if the given event is a Custom event
-   * @param eventType A string representing the type of event
-   * @returns True if it is not a zowe or a user event, false otherwise
-   */
+     * Check to see if the given event is a Custom event
+     * @param eventType A string representing the type of event
+     * @returns True if it is not a zowe or a user event, false otherwise
+     */
     public static isCustomEvent(eventType: string): boolean {
         return !ImperativeEventManager.isUserEvent(eventType) && !ImperativeEventManager.isZoweEvent(eventType);
     }
 
     /**
-   * Simple method to write the events to disk
-   * @param eventType The type of event to write
-   * @internal We do not want to make this function accessible to any application developers
-   */
+     * Simple method to write the events to disk
+     * @param eventType The type of event to write
+     * @internal We do not want to make this function accessible to any application developers
+     */
     public static writeEvent(eventType: ImperativeEventType) {
-        const theEvent = new ImperativeEvent({ appName: ImperativeConfig.instance.callerPackageJson?.name, eventType });
+        const theEvent = ImperativeEventManager.initializeEvent(eventType);
 
         let dir: string;
         if (ImperativeEventManager.isUserEvent(eventType)) {
@@ -96,11 +119,11 @@ export class ImperativeEventManager {
     }
 
     /**
-  * Simple method to write the events to disk
-  * @param eventType The type of event to write
-  */
+     * Simple method to write the events to disk
+     * @param eventType The type of event to write
+     */
     public static writeCustomEvent(eventType: string, isUserSpecific: boolean = false) {
-        const theEvent = new ImperativeEvent({ appName: ImperativeConfig.instance.callerPackageJson?.name, eventType });
+        const theEvent = ImperativeEventManager.initializeEvent(eventType);
 
         let dir: string;
         if (ImperativeEventManager.isCustomEvent(eventType)) {
@@ -124,16 +147,17 @@ export class ImperativeEventManager {
     }
 
     /**
-   * Phase 1
-   *    Implement the writers
-   *      These are the functions that are embedded in every config.save (for `configUpdated`) or secure.save (for vaultUpdated)
-   *
-   * Phase 2
-   *    Implement file watchers in a subscription pattern
-   *      These are the methods that create the nodejs file watchers
-   *        They should have a callback to perform an accion when the event is triggered
-   *
-   * Phase 3
-   *    Investigate how to turn these file watchers into vscode.Dispoable
-   */
+     * Phase 1
+     *    Implement the writers
+     *      These are the functions that are embedded in every config.save, secure.save, or other methods
+     *
+     * Phase 2
+     *    Implement file watchers in a subscription pattern
+     *      These are the methods that create the nodejs file watchers
+     *        They should have a callback to perform an action when the event is triggered
+     *
+     * Phase 3
+     *    Investigate how to turn these file watchers into vscode.Disposable
+     *
+     */
 }

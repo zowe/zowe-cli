@@ -20,42 +20,51 @@ import { ImperativeEventType } from "./ImperativeEventConstants";
  */
 export class ImperativeEvent {
     /**
-   * The ID of the event
-   * @private
-   * @type {string}
-   * @memberof ImperativeEvent
-   */
+     * The ID of the event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
     private mEventID: string;
 
     /**
-   * The application ID that caused this event
-   * @private
-   * @type {string}
-   * @memberof ImperativeEvent
-   */
+     * The application ID that caused this event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
     private mAppID: string;
 
     /**
-   * The time of the event created with new Date().toISOString() (ISO String)
-   * @private
-   * @type {string}
-   * @memberof ImperativeEvent
-   */
+     * The time of the event created with new Date().toISOString() (ISO String)
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
     private mEventTime: string;
 
     /**
-   * The type of event that occurred
-   * @private
-   * @type {string}
-   * @memberof ImperativeEvent
-   */
+     * The type of event that occurred
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
     private mEventType: ImperativeEventType | string;
+
+    /**
+     * toString overload to be called automatically on string concatenation
+     * @returns string representation of the imperative event
+     */
+    public toString = () : string => {
+        return `Type: ${this.eventType} \t| Time: ${this.eventTime} \t| App: ${this.appName} \t| ID: ${this.eventId}`;
+    };
 
     constructor(parms: IImperativeEventParms) {
         this.mEventTime = new Date().toISOString();
         this.mEventID = randomUUID();
         this.mAppID = parms.appName;
         this.mEventType = parms.eventType;
+        parms.logger.debug("ImperativeEvent: " + this);
     }
 
     public get eventTime(): string {
@@ -68,5 +77,9 @@ export class ImperativeEvent {
 
     public get appName(): string {
         return this.mAppID;
+    }
+
+    public get eventId() : string {
+        return this.mEventID;
     }
 }

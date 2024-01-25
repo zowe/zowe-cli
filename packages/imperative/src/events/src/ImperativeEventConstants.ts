@@ -16,7 +16,8 @@ export type ImperativeUserEventType = typeof ImperativeUserEvents[number];
 
 export const ImperativeZoweEvents = [
     "onConfigChanged",
-    "onSchemaChanged"
+    "onSchemaChanged",
+    "onCredentialManagerChanged"
 ] as const;
 export type ImperativeZoweEventType = typeof ImperativeZoweEvents[number];
 

@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+import { Logger } from "../../../logger";
 import { ImperativeEventType } from "../ImperativeEventConstants";
 
 /**
@@ -17,15 +18,21 @@ import { ImperativeEventType } from "../ImperativeEventConstants";
  */
 export interface IImperativeEventParms {
     /**
-   * The name of the application to be used to generate a unique ID for the event
-   * @type {string}
-   * @memberof IImperativeEventParms
-   */
+     * The name of the application to be used to generate a unique ID for the event
+     * @type {string}
+     * @memberof IImperativeEventParms
+     */
     appName: string;
     /**
-   * The type of imperative event that occurred
-   * @type {ImperativeEventType}
-   * @memberof IImperativeEventParms
-   */
+     * The type of imperative event that occurred
+     * @type {ImperativeEventType}
+     * @memberof IImperativeEventParms
+     */
     eventType: ImperativeEventType | string
+    /**
+     * The logger to use when logging the imperative event that occurred
+     * @type {Logger}
+     * @memberof IImperativeEventParms
+     */
+    logger: Logger;
 }

@@ -183,7 +183,7 @@ export class ProfileInfo {
         this.mCredentials = new ProfileCredentials(this, profInfoOpts);
 
         // do enough Imperative stuff to let imperative utilities work
-        this.initImpUtils();
+        this.mImpLogger = ProfileInfo.initImpUtils(this.mAppName);
     }
 
     /**
@@ -1133,26 +1133,27 @@ export class ProfileInfo {
     /**
      * Perform a rudimentary initialization of some Imperative utilities.
      * We must do this because VSCode apps do not typically call imperative.init.
+     * @internal
      */
-    private initImpUtils() {
+    public static initImpUtils(appName: string) {
         // create a rudimentary ImperativeConfig if it has not been initialized
         if (ImperativeConfig.instance.loadedConfig == null) {
             let homeDir: string = null;
-            const envVarPrefix = this.mAppName.toUpperCase();
+            const envVarPrefix = appName.toUpperCase();
             const envVarNm = envVarPrefix + EnvironmentalVariableSettings.CLI_HOME_SUFFIX;
             if (process.env[envVarNm] === undefined) {
                 // use OS home directory
-                homeDir = path.join(os.homedir(), "." + this.mAppName.toLowerCase());
+                homeDir = path.join(os.homedir(), "." + appName.toLowerCase());
             } else {
                 // use the available environment variable
                 homeDir = path.normalize(process.env[envVarNm]);
             }
             ImperativeConfig.instance.loadedConfig = {
-                name: this.mAppName,
+                name: appName,
                 defaultHome: homeDir,
                 envVariablePrefix: envVarPrefix
             };
-            ImperativeConfig.instance.rootCommandName = this.mAppName;
+            ImperativeConfig.instance.rootCommandName = appName;
         }
 
         // initialize logging
@@ -1162,7 +1163,7 @@ export class ProfileInfo {
             );
             Logger.initLogger(loggingConfig);
         }
-        this.mImpLogger = Logger.getImperativeLogger();
+        return Logger.getImperativeLogger();
     }
 
     /**
