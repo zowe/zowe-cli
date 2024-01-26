@@ -10,7 +10,7 @@
 */
 
 import { randomUUID } from "crypto";
-import { IImperativeEventParms } from "./doc";
+import { IImperativeEventJson, IImperativeEventParms } from "./doc";
 import { ImperativeEventType } from "./ImperativeEventConstants";
 
 /**
@@ -52,11 +52,32 @@ export class ImperativeEvent {
     private mEventType: ImperativeEventType | string;
 
     /**
+     * Indicator of user-specific (if true) or shared (if false) events
+     * The ImperativeEventEmitter is responsible for setting this value on all events
+     * @default false We assume that all events are shared unless the ImperativeEventEmitter says otherwise
+     */
+    public isUserSpecific: boolean = false;
+
+    /**
      * toString overload to be called automatically on string concatenation
      * @returns string representation of the imperative event
      */
-    public toString = () : string => {
+    public toString = (): string => {
         return `Type: ${this.eventType} \t| Time: ${this.eventTime} \t| App: ${this.appName} \t| ID: ${this.eventId}`;
+    };
+
+    /**
+     * toJson helper method to be called for emitting or logging imperative events
+     * @returns JSON representation of the imperative event
+     */
+    public toJson = (): IImperativeEventJson => {
+        return {
+            time: this.eventTime,
+            type: this.eventType,
+            source: this.appName,
+            id: this.eventId,
+            user: this.isUserSpecific,
+        };
     };
 
     constructor(parms: IImperativeEventParms) {

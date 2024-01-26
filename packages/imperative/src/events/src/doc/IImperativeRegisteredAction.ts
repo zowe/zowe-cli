@@ -9,6 +9,15 @@
 *
 */
 
-export * from "./IImperativeEventParms";
-export * from "./IImperativeRegisteredAction";
-export * from "./IImperativeEventJson";
+/**
+ * Imperative Registered Action
+ * @export
+ * @interface IImperativeRegisteredAction
+ */
+export interface IImperativeRegisteredAction {
+    /**
+     * The method to dispose of the registered action
+     * @memberof IImperativeRegisteredAction
+     */
+    close(): void;
+}
