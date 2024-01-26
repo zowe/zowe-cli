@@ -273,6 +273,7 @@ export class EditUtilities {
             lfFile.tempPath,
             lfFile.fileName,
             {
+                binary: lfFile.binary,
                 encoding: lfFile.encoding,
                 etag: lfFile.zosResp.apiResponse.etag,
                 returnEtag: true
