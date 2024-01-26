@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.23.0`
 
 - BugFix: Update zos-files copy dsclp system tests to include large mock files. 
 
