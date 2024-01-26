@@ -61,7 +61,7 @@ exports[`Basic Profile Manager Save should detect that the dependencies are pres
 
 exports[`Basic Profile Manager Save should fail a save request if a profile has more properties than defined on the schema 1`] = `
 "Errors located in profile \\"tasty_apple\\" of type \\"apple\\":
-profile additionalProperty \\"seedless\\" exists in instance when not allowed
+profile is not allowed to have the additional property \\"seedless\\"
 "
 `;
 
