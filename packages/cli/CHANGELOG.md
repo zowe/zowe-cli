@@ -21,6 +21,10 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
 
+## `8.0.0-next.202401262128`
+
+- Enhancement: Adding `--binary` and `--encoding` options to `zosfiles edit`
+
 ## `8.0.0-next.202401191954`
 
 - LTS Breaking: Removed all 'profiles' commands, since they only worked with now-obsolete V1 profiles.
