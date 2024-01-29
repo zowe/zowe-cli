@@ -1314,6 +1314,7 @@ describe("Create VSAM Data Set", () => {
             const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.volumes = "STG100";
+            dsOptions.showAttributes = true;
 
             const response = await Create.vsam(dummySession, dataSetName, dsOptions);
 
