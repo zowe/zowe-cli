@@ -1333,6 +1333,7 @@ describe("Create VSAM Data Set", () => {
             dsOptions.primary = THIRTY;
             dsOptions.alcunit = "TRK";
             dsOptions.volumes = "STG100";
+            dsOptions.showAttributes = false;
 
             const response = await Create.vsam(dummySession, dataSetName, dsOptions);
 
