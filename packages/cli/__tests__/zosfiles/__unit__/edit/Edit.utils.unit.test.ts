@@ -46,6 +46,7 @@ describe("Files Edit Utilities", () => {
         guiAvail: true,
         zosResp: null,
         encoding: null,
+        binary: null,
         conflict: false
     };
 
@@ -56,6 +57,7 @@ describe("Files Edit Utilities", () => {
         guiAvail: true,
         zosResp: null,
         encoding: null,
+        binary: null,
         conflict: false
     };
 
@@ -206,41 +208,7 @@ describe("Files Edit Utilities", () => {
             });
         });
     });
-    describe("localDownload()", () => {
-        jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation(jest.fn());
-        const downloadDataSetSpy = jest.spyOn(Download, "dataSet");
-        const downloadUssFileSpy = jest.spyOn(Download, "ussFile");
 
-        it("should apply etag from remote to ILocalFile without overwriting stash - [fileType = 'uss', useStash = true]", async () => {
-            //TEST SETUP
-            downloadUssFileSpy.mockImplementation(jest.fn(async () => {
-                return zosResp;
-            }));
-
-            //TEST CONFIRMATION
-            //test that lfFile etag is the same as remote
-            //test that lfFile contents are different from remote (wrote to temp location & called destroyTemp)
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFileUSS, true);
-            expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
-            expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
-        });
-        it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {
-            //TEST SETUP
-            //download (to temp) AND grab etag
-            const localFile = cloneDeep(localFileDS);
-            localFile.tempPath = "temp";
-            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
-                return zosResp;
-            }));
-
-            //TEST CONFIRMATION
-            //test that lfFile etag is the same as remote
-            //test that lfFile contents are the same as remote (did not write to temp location)
-            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
-            expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
-            expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
-        });
-    });
     describe("fileComparison()", () => {
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         const getFile1Spy = jest.spyOn(LocalfileDatasetHandler.prototype, "getFile1");
@@ -354,6 +322,98 @@ describe("Files Edit Utilities", () => {
         });
     });
     describe("uploadEdits()", () => {
+        it("should successfully pass binary option when uploading - ds", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.encoding = "matching etag";
+            localFile.binary = true;
+            const UploadSpy = jest.spyOn(Upload, "fileToDataset").mockImplementation(async() => {
+                return zosResp;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
+
+            //TEST CONFIRMATION
+            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(UploadSpy).toHaveBeenCalledWith(
+                undefined,
+                null,
+                "TEST(DS)",
+                expect.objectContaining({ binary: true })
+            );
+        });
+        it("should successfully pass binary option when uploading - uss", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = "etag";
+            localFile.binary = true;
+            const UploadSpy = jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+                return zosResp;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
+
+            //TEST CONFIRMATION
+            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(UploadSpy).toHaveBeenCalledWith(
+                undefined,
+                null,
+                "test_uss.jcl",
+                expect.objectContaining({ binary: true })
+            );
+        });
+        it("should successfully pass encoding option when uploading - ds", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.encoding = "matching etag";
+            localFile.encoding = "1047";
+            jest.spyOn(Upload, "fileToDataset").mockImplementation(async() => {
+                return zosResp;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
+
+            //TEST CONFIRMATION
+            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(Upload.fileToDataset).toHaveBeenCalledWith(
+                undefined,
+                null,
+                "TEST(DS)",
+                expect.objectContaining({ encoding: "1047" })
+            );
+        });
+        it("should successfully pass encoding option when uploading - uss", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.zosResp = zosResp;
+            localFile.zosResp.apiResponse.etag = "etag";
+            localFile.encoding = "1047";
+            const UploadSpy = jest.spyOn(Upload, "fileToUssFile").mockImplementation(async() => {
+                return zosResp;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockImplementation(async () => {
+                return true;
+            });
+            jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation();
+
+            //TEST CONFIRMATION
+            await EditUtilities.uploadEdits(REAL_SESSION, commandParametersDs, localFile);
+            expect(UploadSpy).toHaveBeenCalledWith(
+                undefined,
+                null,
+                "test_uss.jcl",
+                expect.objectContaining({ encoding: "1047" })
+            );
+        });
         it("should successfully upload when etags are matching, then destroy temp - uss", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileUSS);
