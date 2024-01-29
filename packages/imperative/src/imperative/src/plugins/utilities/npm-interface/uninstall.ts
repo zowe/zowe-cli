@@ -62,7 +62,7 @@ export const updateAndGetRemovedTypes = (npmPackage: string): string[] => {
     }
 
     return typesToRemove;
-};
+}
 
 /**
  * @TODO - allow multiple packages to be uninstalled?
