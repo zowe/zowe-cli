@@ -99,6 +99,15 @@ describe("Download Jobs - System tests", () => {
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
 
+        it("should be able to download a single DD from job output", async () => {
+            await DownloadJobs.downloadSpoolContent(REAL_SESSION,
+                jesJCLJobFile
+            );
+            const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
+        });
+
         it("should be able to download all DDs from job output", async () => {
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
                 outDir: outputDirectory,
