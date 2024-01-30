@@ -15,8 +15,6 @@ import { CommandProfiles, ICommandOptionDefinition } from "../../cmd";
 import { IProfile } from "../../profiles";
 import { ImperativeError } from "../../error";
 
-jest.mock("readline-sync");
-
 const TEST_PREFIX = "TEST_CLI_PREFIX";
 const boolEnv = TEST_PREFIX + "_OPT_FAKE_BOOL_OPT";
 const stringEnv = TEST_PREFIX + "_OPT_FAKE_STRING_OPT";

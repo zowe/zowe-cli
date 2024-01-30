@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`View USS file should display the help 1`] = `
+exports[`Edit USS file should display the help 1`] = `
 "================Z/OS FILES EDIT USS FILE HELP===============
 
  COMMAND NAME
@@ -161,7 +161,7 @@ exports[`View USS file should display the help 1`] = `
 "
 `;
 
-exports[`View USS file should display the help in json format 1`] = `
+exports[`Edit USS file should display the help in json format 1`] = `
 "================Z/OS FILES EDIT USS FILE HELP===============
 {
   \\"success\\": true,

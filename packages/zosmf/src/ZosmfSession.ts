@@ -37,12 +37,6 @@ export class ZosmfSession {
     };
 
     /**
-     * Option used in profile creation and commands for hostname for z/OSMF
-     * @deprecated Use ZOSMF_OPTION_HOST instead
-     */
-    public static ZOSMF_OPTION_HOST_PROFILE = ZosmfSession.ZOSMF_OPTION_HOST;
-
-    /**
      * Option used in profile creation and commands for port for z/OSMF
      */
     public static ZOSMF_OPTION_PORT: ICommandOptionDefinition = {
@@ -67,12 +61,6 @@ export class ZosmfSession {
     };
 
     /**
-     * Option used in profile creation and commands for username / ID for z/OSMF
-     * @deprecated Use ZOSMF_OPTION_USER instead
-     */
-    public static ZOSMF_OPTION_USER_PROFILE = ZosmfSession.ZOSMF_OPTION_USER;
-
-    /**
      * Option used in profile creation and commands for password/passphrase for z/OSMF
      */
     public static ZOSMF_OPTION_PASSWORD: ICommandOptionDefinition = {
@@ -83,12 +71,6 @@ export class ZosmfSession {
         required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
-
-    /**
-     * Option used in profile creation and commands for password/passphrase for z/OSMF
-     * @deprecated Use ZOSMF_OPTION_PASSWORD instead
-     */
-    public static ZOSMF_OPTION_PASSWORD_PROFILE = ZosmfSession.ZOSMF_OPTION_PASSWORD;
 
     /**
      * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF

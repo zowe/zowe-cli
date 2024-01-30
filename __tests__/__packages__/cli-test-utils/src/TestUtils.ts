@@ -63,15 +63,6 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
 }
 
 /**
- * Check if stderr output is empty for profiles command. Ignores any message
- * about profiles being deprecated.
- * @deprecated Use `stripProfileDeprecationMessages`
- */
-export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
-    return stripProfileDeprecationMessages(output).length === 0;
-}
-
-/**
  * Strip v1 profile deprecation messages from stderr output.
  */
 export function stripProfileDeprecationMessages(stderr: Buffer | string): string {

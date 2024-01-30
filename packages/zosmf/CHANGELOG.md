@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Removed the following constants from ZosmfSession
+  - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead
+  - ZOSMF_OPTION_USER_PROFILE use ZOSMF_OPTION_USER instead
+  - ZOSMF_OPTION_PASSWORD_PROFILE use ZOSMF_OPTION_PASSWORD instead
+
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3

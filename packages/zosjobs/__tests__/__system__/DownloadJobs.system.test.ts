@@ -84,13 +84,17 @@ describe("Download Jobs - System tests", () => {
     describe("Positive tests", () => {
 
         it("should be able to download a single DD from job output to specified directory", async () => {
-            const downloadDir = outputDirectory + "/downloadsingle/";
             await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobFile: jesJCLJobFile
             });
-            expect(IO.existsSync(downloadDir)).toEqual(true);
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
@@ -105,30 +109,38 @@ describe("Download Jobs - System tests", () => {
         });
 
         it("should be able to download all DDs from job output", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
+                jobid,
+                jobname
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
+        });
+
+        it("should be able to download all DDs from job output in binary mode", async () => {
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                binary: true,
                 jobid,
                 jobname
             });
 
             for (const file of jobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
-                expect(IO.existsSync(expectedFile)).toEqual(true);
-            }
-        });
-
-        it("should be able to download all DDs from job output in binary mode", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
-            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
-                jobid,
-                jobname,
-                binary: true
-            });
-
-            for (const file of jobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -140,16 +152,21 @@ describe("Download Jobs - System tests", () => {
         });
 
         it("should be able to download all DDs from job output in record mode", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobid,
                 jobname,
                 record: true
             });
 
             for (const file of jobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -170,16 +187,21 @@ describe("Download Jobs - System tests", () => {
 
             await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, job);
 
-            const downloadDir = outputDirectory + "/downloadsteps/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobid: job.jobid,
                 jobname: job.jobname
             });
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
             for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
 
                 if (file.stepname !== "JES2") {
@@ -193,6 +215,7 @@ describe("Download Jobs - System tests", () => {
 
     describe("Negative tests", () => {
         let badJobFile: IJobFile;
+        let err: Error | ImperativeError |any;
 
         const badID = 9999;
         beforeAll(() => {
@@ -203,25 +226,22 @@ describe("Download Jobs - System tests", () => {
 
         it("should encounter an error if a non existent spool file is passed to downloadSpoolContentCommon",
             async () => {
-                let err: Error | ImperativeError;
                 try {
                     await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                         jobFile: badJobFile,
+                        jobname: "FAKEJOB",
+                        jobid: "FAKEJOBID",
                         outDir: outputDirectory
                     });
                 } catch (e) {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain(jobname);
-                expect(err.message).toContain(jobid);
-                expect(err.message).toContain("does not contain");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not contain spool file");
             });
 
         it("should encounter an error if a non existent jobname/jobid is passed to downloadAllSpoolContentCommon",
             async () => {
-                let err: Error | ImperativeError;
                 try {
                     await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
                         jobname: "FAKEJOB",
@@ -232,25 +252,18 @@ describe("Download Jobs - System tests", () => {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain("FAKEJOB");
-                expect(err.message).toContain("JOBABCD");
-                expect(err.message).toContain("Failed to lookup");
+                expect(err.message).toContain("queryJobs failed");
             });
 
         it("should encounter an error if a non existent spool file is passed to downloadSpoolContent",
             async () => {
-                let err: Error | ImperativeError;
                 try {
                     await DownloadJobs.downloadSpoolContent(REAL_SESSION, badJobFile);
                 } catch (e) {
                     err = e;
                 }
                 expect(err).toBeDefined();
-                expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toContain(jobname);
-                expect(err.message).toContain(jobid);
-                expect(err.message).toContain("does not contain");
+                expect(JSON.parse(err.causeErrors).message).toContain("does not contain spool file");
             });
 
     });
@@ -261,6 +274,7 @@ describe("Download Jobs - System tests - Encoded", () => {
     let jobname: string;
     let jobFiles: IJobFile[];
     let jesJCLJobFile: IJobFile;
+
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs_encoded"
@@ -303,15 +317,19 @@ describe("Download Jobs - System tests - Encoded", () => {
     });
 
     describe("Positive tests", () => {
-
         it("should be able to download a single DD from job output to specified directory", async () => {
-            const downloadDir = outputDirectory + "/downloadsingle/";
             await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobFile: jesJCLJobFile
             });
-            expect(IO.existsSync(downloadDir)).toEqual(true);
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
+            expect(IO.existsSync(outputDirectory)).toEqual(true);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
@@ -320,36 +338,51 @@ describe("Download Jobs - System tests - Encoded", () => {
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile
             );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false
+                }
+            );
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
 
         it("should be able to download all DDs from job output", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobid,
                 jobname
             });
 
             for (const file of jobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
             }
         });
 
         it("should be able to download all DDs from job output in binary mode", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobid,
                 jobname,
                 binary: true
             });
 
             for (const file of jobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -361,16 +394,21 @@ describe("Download Jobs - System tests - Encoded", () => {
         });
 
         it("should be able to download all DDs from job output in record mode", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobid,
                 jobname,
                 record: true
             });
 
             for (const file of jobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     // Record is 90 characters long, starts with 8 spaces
@@ -391,16 +429,21 @@ describe("Download Jobs - System tests - Encoded", () => {
 
             await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, job);
 
-            const downloadDir = outputDirectory + "/downloadsteps/";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
+                outDir: outputDirectory,
                 jobid: job.jobid,
                 jobname: job.jobname
             });
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
             for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: file,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
                 expect(IO.existsSync(expectedFile)).toEqual(true);
 
                 if (file.stepname !== "JES2") {
