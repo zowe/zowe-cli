@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandProfileAutoInitConfig } from "../../../../../../../src/cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
-import { ICommandOptionDefinition } from "../../../../../../../src/cmd";
+import { ICommandProfileAutoInitConfig } from "../../../../../../src/cmd/doc/profiles/definition/ICommandProfileAutoInitConfig";
+import { ICommandOptionDefinition } from "../../../../../../src/cmd";
 
 const fakeOption: ICommandOptionDefinition = {
     name: "fake",

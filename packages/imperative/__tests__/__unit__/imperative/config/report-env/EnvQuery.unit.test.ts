@@ -13,13 +13,13 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 
-import { CommandResponse } from "../../../../../../src/cmd/response/CommandResponse";
-import { IO } from "../../../../../../src/io";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { PluginIssues } from "../../../../../../src/imperative/plugins/utilities/PluginIssues";
+import { CommandResponse } from "../../../../../src/cmd/response/CommandResponse";
+import { IO } from "../../../../../src/io";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { PluginIssues } from "../../../../../src/imperative/plugins/utilities/PluginIssues";
 
-import { EnvQuery, IGetItemOpts, IGetItemVal } from "../../../../../../src/imperative/config/cmd/report-env/EnvQuery";
-import { ItemId } from "../../../../../../src/imperative/config/cmd/report-env/EnvItems";
+import { EnvQuery, IGetItemOpts, IGetItemVal } from "../../../../../src/imperative/config/cmd/report-env/EnvQuery";
+import { ItemId } from "../../../../../src/imperative/config/cmd/report-env/EnvItems";
 
 describe("Tests for EnvQuery module", () => {
     const fakeCliHomeDir = "this_is_a_fake_cli_home_dir";
@@ -120,7 +120,7 @@ describe("Tests for EnvQuery module", () => {
             Object.defineProperty(impCfg, "callerLocation", {
                 configurable: true,
                 get: jest.fn(() => {
-                    return path.normalize(__dirname + "/../../../../../../../cli");
+                    return path.normalize(__dirname + "../../../../../cli");
                 })
             });
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_VER);
@@ -283,7 +283,7 @@ describe("Tests for EnvQuery module", () => {
         });
 
         it("should report an unknown item id", async () => {
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(999);
+            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(999 as any);
             expect(itemObj.itemProbMsg).toBe("An unknown item ID was supplied = 999");
         });
 

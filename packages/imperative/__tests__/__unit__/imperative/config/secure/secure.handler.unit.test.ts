@@ -9,23 +9,24 @@
 *
 */
 
-import { IHandlerParameters, Logger } from "../../../../../../";
-import { Config } from "../../../../../../src/config/Config";
-import { IConfig, IConfigOpts, IConfigProfile } from "../../../../../../src/config";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { IImperativeConfig } from "../../../../../../src/imperative/doc/IImperativeConfig";
-import { ICredentialManagerInit } from "../../../../../../src/security/doc/ICredentialManagerInit";
-import { CredentialManagerFactory } from "../../../../../../src/security";
+import { IHandlerParameters, Logger } from "../../../../../";
+import { Config } from "../../../../../src/config/Config";
+import { IConfig, IConfigOpts, IConfigProfile } from "../../../../../src/config";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { IImperativeConfig } from "../../../../../src/imperative/doc/IImperativeConfig";
+import { ICredentialManagerInit } from "../../../../../src/security/doc/ICredentialManagerInit";
+import { CredentialManagerFactory } from "../../../../../src/security";
 import { expectedConfigObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import SecureHandler from "../../../../../../src/imperative/config/cmd/secure/secure.handler";
-import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
+    "../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
+import SecureHandler from "../../../../../src/imperative/config/cmd/secure/secure.handler";
+import * as config from "../../../../../__tests__/__integration__/imperative/src/imperative";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
-import { SessConstants } from "../../../../../../src/rest";
-import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
+import { SessConstants } from "../../../../../src/rest";
+import { setupConfigToLoad } from "../../../../../__tests__/src/TestUtil";
+import { IHandlerFormatOutputApi } from "../../../../../src";
 
 let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {
@@ -130,7 +131,7 @@ describe("Configuration Secure command handler", () => {
 
     it("should attempt to secure the project configuration", async () => {
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
+        const params: IHandlerParameters = getIHandlerParametersObject();
 
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
@@ -192,8 +193,7 @@ describe("Configuration Secure command handler", () => {
 
     it("should attempt to secure the user configuration", async () => {
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
-
+        const params: IHandlerParameters = getIHandlerParametersObject();
         params.arguments.userConfig = true;
         params.arguments.globalConfig = false;
 
@@ -252,7 +252,7 @@ describe("Configuration Secure command handler", () => {
 
     it("should attempt to secure the global project configuration", async () => {
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
+        const params: IHandlerParameters = getIHandlerParametersObject();
 
         params.arguments.userConfig = false;
         params.arguments.globalConfig = true;
@@ -314,7 +314,7 @@ describe("Configuration Secure command handler", () => {
 
     it("should attempt to secure the global user configuration", async () => {
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
+        const params: IHandlerParameters = getIHandlerParametersObject();
 
         params.arguments.userConfig = true;
         params.arguments.globalConfig = true;
@@ -376,7 +376,7 @@ describe("Configuration Secure command handler", () => {
 
     it("should fail to secure the project configuration if there is no project configuration", async () => {
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
+        const params: IHandlerParameters = getIHandlerParametersObject();
 
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
@@ -420,7 +420,7 @@ describe("Configuration Secure command handler", () => {
 
     it("should secure the project configuration and prune unused properties", async () => {
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
+        const params: IHandlerParameters = getIHandlerParametersObject();
 
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
@@ -505,7 +505,7 @@ describe("Configuration Secure command handler", () => {
 
         const authHandlerPath = __dirname + "/../../../../src/auth/handlers/AbstractAuthHandler";
         const handler = new SecureHandler();
-        const params = getIHandlerParametersObject();
+        const params: IHandlerParameters = getIHandlerParametersObject();
         let mockAuthHandlerApi: any;
 
         beforeAll(() => {

@@ -15,7 +15,7 @@ import { join } from "path";
 describe("AbstractPluginLifeCycle", () => {
     it("should have the right class definition", () => {
         const absLifeCycleClass: string = fs.readFileSync(
-            join(__dirname, "../../src/plugins/AbstractPluginLifeCycle.ts"),
+            join(__dirname, "../../../../src/imperative/plugins/AbstractPluginLifeCycle.ts"),
             "utf8"
         );
         expect(absLifeCycleClass).toContain("export abstract class AbstractPluginLifeCycle");

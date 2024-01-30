@@ -11,9 +11,9 @@
 
 jest.mock("../../../../../utilities/ImperativeConfig");
 
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { IProfileTypeConfiguration } from "../../../../../../src/profiles";
-import SchemaHandler from "../../../../../../src/imperative/config/cmd/schema/schema.handler";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { IProfileTypeConfiguration } from "../../../../../src/profiles";
+import SchemaHandler from "../../../../../src/imperative/config/cmd/schema/schema.handler";
 
 let dataObj: any;
 let errorText: string;

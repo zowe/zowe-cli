@@ -9,10 +9,10 @@
 *
 */
 
-import EditHandler from "../../../../../../src/imperative/config/cmd/edit/edit.handler";
-import { IHandlerParameters } from "../../../../../../src/cmd";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { ProcessUtils } from "../../../../../../src/utilities/ProcessUtils";
+import EditHandler from "../../../../../src/imperative/config/cmd/edit/edit.handler";
+import { IHandlerParameters } from "../../../../../src/cmd";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { ProcessUtils } from "../../../../../src/utilities/ProcessUtils";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {

@@ -12,17 +12,17 @@
 import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
-import { Config, ConfigBuilder, ConfigSchema } from "../../../../../../src/config";
-import { IHandlerParameters } from "../../../../../../src/cmd";
-import { ProfileIO } from "../../../../../../src/profiles";
-import { AppSettings } from "../../../../../../src/settings";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import * as npmInterface from "../../../../../../src/imperative/plugins/utilities/npm-interface";
-import { PluginIssues } from "../../../../../../src/imperative/plugins/utilities/PluginIssues";
-import ConvertProfilesHandler from "../../../../../../src/imperative/config/cmd/convert-profiles/convert-profiles.handler";
+import { Config, ConfigBuilder, ConfigSchema } from "../../../../../src/config";
+import { IHandlerParameters } from "../../../../../src/cmd";
+import { ProfileIO } from "../../../../../src/profiles";
+import { AppSettings } from "../../../../../src/settings";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import * as npmInterface from "../../../../../src/imperative/plugins/utilities/npm-interface";
+import { PluginIssues } from "../../../../../src/imperative/plugins/utilities/PluginIssues";
+import ConvertProfilesHandler from "../../../../../src/imperative/config/cmd/convert-profiles/convert-profiles.handler";
 
-jest.mock("../../../../../../src/plugins/utilities/npm-interface");
-jest.mock("../../../../../../src/imperative/OverridesLoader");
+jest.mock("../../../../../src/plugins/utilities/npm-interface");
+jest.mock("../../../../../src/imperative/OverridesLoader");
 
 let stdout: string;
 let stderr: string;

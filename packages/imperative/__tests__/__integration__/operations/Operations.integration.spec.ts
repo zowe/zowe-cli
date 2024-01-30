@@ -14,7 +14,7 @@ import { TestOperations1 } from "../../__unit__/operations/TestOperations1";
 import { TestOperations3 } from "../../__unit__/operations/TestOperations3";
 import { TestOperations4 } from "../../__unit__/operations/TestOperations4";
 import { isNullOrUndefined } from "util";
-import { IOperationResult, Operation, Operations } from "../../../../imperative/src/operations/index";
+import { IOperationResult, Operation, Operations } from "../../../src/operations/index";
 import { TestLogger } from "../../../__tests__/src/TestLogger";
 
 const logger = TestLogger.getTestLogger();
