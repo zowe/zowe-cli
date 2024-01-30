@@ -11,9 +11,9 @@
 
 jest.mock("../../../../../utilities/ImperativeConfig");
 
-import { IConfig } from "../../../../../../src/config";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import ProfilesHandler from "../../../../../../src/imperative/config/cmd/profiles/profiles.handler";
+import { IConfig } from "../../../../../src/config/doc/IConfig";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import ProfilesHandler from "../../../../../src/imperative/config/cmd/profiles/profiles.handler";
 
 let dataObj: any;
 let formatObj: any;

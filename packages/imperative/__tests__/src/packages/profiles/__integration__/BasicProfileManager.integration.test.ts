@@ -23,9 +23,9 @@ describe("Imperative should allow CLI implementations to read their own profiles
     const mainModule = process.mainModule;
     const loadChangingDependencies = () => {
         return {
-            Imperative: require("../../../../../src/imperative/src/Imperative").Imperative,
-            ImperativeConfig: require("../../../../../src/utilities/ImperativeConfig").ImperativeConfig,
-            ImperativeError: require("../../../../../src/error/src/ImperativeError").ImperativeError
+            Imperative: require("../../../../src/imperative/Imperative").Imperative,
+            ImperativeConfig: require("../../../../src/utilities/ImperativeConfig").ImperativeConfig,
+            ImperativeError: require("../../../../src/error/ImperativeError").ImperativeError
         };
     };
 

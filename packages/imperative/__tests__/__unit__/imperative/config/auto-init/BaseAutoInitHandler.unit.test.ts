@@ -9,17 +9,17 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../../../src/cmd";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { ProcessUtils } from "../../../../../../src/utilities/ProcessUtils";
+import { IHandlerParameters } from "../../../../../src/cmd";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { ProcessUtils } from "../../../../../src/utilities/ProcessUtils";
 import { FakeAutoInitHandler } from "./__data__/FakeAutoInitHandler";
 import * as lodash from "lodash";
 import * as jestDiff from "jest-diff";
 import stripAnsi = require("strip-ansi");
-import { ConfigSchema } from "../../../../../../src/config";
-import { CredentialManagerFactory } from "../../../../../../src/security";
-import { SessConstants, Session } from "../../../../../../src/rest";
-import { OverridesLoader } from "../../../../../../src/imperative/OverridesLoader";
+import { ConfigSchema } from "../../../../../src/config";
+import { CredentialManagerFactory } from "../../../../../src/security";
+import { SessConstants, Session } from "../../../../../src/rest";
+import { OverridesLoader } from "../../../../../src/imperative/OverridesLoader";
 
 jest.mock("strip-ansi");
 

@@ -14,13 +14,13 @@ import * as path from "path";
 import * as url from "url";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
-import ImportHandler from "../../../../../../src/imperative/config/cmd/import/import.handler";
-import { IHandlerParameters } from "../../../../../../src/cmd";
-import { Config, ConfigConstants, IConfig } from "../../../../../../src/config";
-import { ISession, RestClient } from "../../../../../../src/rest";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
+import ImportHandler from "../../../../../src/imperative/config/cmd/import/import.handler";
+import { IHandlerParameters } from "../../../../../src/cmd";
+import { Config, ConfigConstants, IConfig } from "../../../../../src/config";
+import { ISession, RestClient } from "../../../../../src/rest";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
 import { expectedConfigObject, expectedSchemaObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
+    "../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
 
 jest.mock("fs");
 

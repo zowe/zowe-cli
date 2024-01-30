@@ -9,22 +9,22 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../../../";
-import { Config } from "../../../../../../src/config/Config";
-import { ConfigConstants } from "../../../../../../src/config/ConfigConstants";
-import { ProcessUtils } from "../../../../../../src/utilities/ProcessUtils";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { IImperativeConfig } from "../../../../../../src/imperative/doc/IImperativeConfig";
+import { IHandlerParameters } from "../../../../../";
+import { Config } from "../../../../../src/config/Config";
+import { ConfigConstants } from "../../../../../src/config/ConfigConstants";
+import { ProcessUtils } from "../../../../../src/utilities/ProcessUtils";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { IImperativeConfig } from "../../../../../src/imperative/doc/IImperativeConfig";
 import { expectedSchemaObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import InitHandler from "../../../../../../src/imperative/config/cmd/init/init.handler";
-import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
+    "../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
+import InitHandler from "../../../../../src/imperative/config/cmd/init/init.handler";
+import * as config from "../../../../../__tests__/__integration__/imperative/src/imperative";
 import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
-import { CredentialManagerFactory } from "../../../../../../src/security";
-import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
-import { OverridesLoader } from "../../../../../../src/imperative/OverridesLoader";
+import { CredentialManagerFactory } from "../../../../../src/security";
+import { setupConfigToLoad } from "../../../../../__tests__/src/TestUtil";
+import { OverridesLoader } from "../../../../../src/imperative/OverridesLoader";
 
 jest.mock("fs");
 

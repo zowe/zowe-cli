@@ -11,10 +11,10 @@
 
 jest.mock("../../../../../utilities/ImperativeConfig");
 
-import { Config, ConfigConstants, IConfig, IConfigLayer } from "../../../../../../src/config";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
+import { Config, ConfigConstants, IConfig, IConfigLayer } from "../../../../../src/config";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
 import { cloneDeep } from "lodash";
-import ListHandler from "../../../../../../src/imperative/config/cmd/list/list.handler";
+import ListHandler from "../../../../../src/imperative/config/cmd/list/list.handler";
 
 let dataObj: any;
 let formatObj: any;
