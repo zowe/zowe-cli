@@ -827,7 +827,10 @@ describe("Create data set", () => {
             const response = await Create.dataSet(
                 dummySession,
                 CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
-                dataSetName
+                dataSetName,
+                {
+                    showAttributes: false
+                } as any
             );
 
             expect(response.success).toBe(true);
