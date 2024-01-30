@@ -16,7 +16,7 @@ import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
 import * as fs from "fs";
-import { IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
@@ -208,7 +208,122 @@ describe("Files Edit Utilities", () => {
             });
         });
     });
+    describe("localDownload()", () => {
+        jest.spyOn(EditUtilities, "destroyTempFile").mockImplementation(jest.fn());
+        const downloadDataSetSpy = jest.spyOn(Download, "dataSet");
+        const downloadUssFileSpy = jest.spyOn(Download, "ussFile");
 
+        it("should apply etag from remote to ILocalFile without overwriting stash - [fileType = 'uss', useStash = true]", async () => {
+            //TEST SETUP
+            downloadUssFileSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that lfFile etag is the same as remote
+            //test that lfFile contents are different from remote (wrote to temp location & called destroyTemp)
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFileUSS, true);
+            expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
+            expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
+        });
+
+        it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {
+            //TEST SETUP
+            //download (to temp) AND grab etag
+            const localFile = cloneDeep(localFileDS);
+            localFile.tempPath = "temp";
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that lfFile etag is the same as remote
+            //test that lfFile contents are the same as remote (did not write to temp location)
+            const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
+            expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
+        });
+
+        it("localDownload should properly pass non-falsy binary option to Download.dataSet", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.binary = true;
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that binary option is passed to downloadDS
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDataSetSpy).toHaveBeenCalledWith(undefined, "TEST(DS)", {
+                "binary": true,
+                "encoding": null,
+                "file": null,
+                "returnEtag": true
+            });
+        });
+
+        it("localDownload should properly pass non-falsy encoding option to Download.dataSet", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.encoding = "1047";
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that encoding option is passed to downloadDS
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDataSetSpy).toHaveBeenCalledWith(undefined, "TEST(DS)", {
+                "binary": null,
+                "encoding": "1047",
+                "file": null,
+                "returnEtag": true
+            });
+        });
+
+        it("localDownload should properly pass non-falsy binary option to Download.ussFile", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.binary = true;
+            downloadUssFileSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that encoding option is passed to downloadDS
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(undefined, "test_uss.jcl", {
+                "binary": true,
+                "encoding": null,
+                "file": null,
+                "returnEtag": true
+            });
+        });
+
+        it("localDownload should properly pass non-falsy encoding option to Download.ussFile", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileUSS);
+            localFile.encoding = "1047";
+            downloadUssFileSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+
+            //TEST CONFIRMATION
+            //test that encoding option is passed to downloadDS
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(undefined, "test_uss.jcl", {
+                "binary": null,
+                "encoding": "1047",
+                "file": null,
+                "returnEtag": true
+            });
+        });
+    });
     describe("fileComparison()", () => {
         const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable");
         const getFile1Spy = jest.spyOn(LocalfileDatasetHandler.prototype, "getFile1");
