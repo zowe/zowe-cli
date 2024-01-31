@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../src/imperative/utilities/ImperativeConfig.ts");
+jest.mock("../../../../src/imperative/utilities/ImperativeConfig");
 
 import * as TestUtil from "../../../TestUtil";
 import { BasicProfileManager } from "../../../../../src/index";

@@ -19,7 +19,7 @@
   "include": [
     "**/*.test.ts",
     "**/__tests__/**/*"
-  ],
+, "__unit__/auth/__data__"  ],
   "exclude": [
     "lib",
     "node_modules"
