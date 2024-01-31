@@ -28,7 +28,7 @@ import {
     STRAWBERRY_WITH_REQUIRED_APPLE_DEPENDENCY,
     TEST_PROFILE_ROOT_DIR
 } from "./TestConstants";
-import { BasicProfileManager } from "../src/BasicProfileManager";
+import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";
 
 jest.mock("../src/utils/ProfileIO");
 
