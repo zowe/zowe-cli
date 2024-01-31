@@ -38,7 +38,7 @@ jobs:
         os: 
           - windows-latest
           - ubuntu-latest
-          - ${{ github.event.inputs.macos-type }}
+          - ${{ github.event.inputs.macos-type || 'macos-14'}}
 
     env:
       OS: ${{ matrix.os }}
