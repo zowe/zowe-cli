@@ -28,8 +28,8 @@ describe("CredentialManagerFactory", () => {
         // reload our modules. So we will clear the module registry and import again
         jest.resetModules();
         jest.doMock("../src/DefaultCredentialManager");
-        ({ CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError } = await import(".."));
-        ({ InvalidCredentialManager } = await import("../src/InvalidCredentialManager"));
+        ({ CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError } = await import("../../../src/security"));
+        ({ InvalidCredentialManager } = await import("../../../src/security/InvalidCredentialManager"));
     });
 
     it("should throw an error if no service name was provided", () => {

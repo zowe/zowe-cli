@@ -23,7 +23,7 @@ import {
     STRAWBERRY_AND_APPLE_NO_DEP,
     TEST_PROFILE_ROOT_DIR
 } from "./TestConstants";
-import { BasicProfileManager } from "../src/BasicProfileManager";
+import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";
 // UnitTestUtils.replaceIt();
 
 describe("Basic Profile Manager", () => {

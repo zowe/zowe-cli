@@ -21,7 +21,7 @@ import {
     TEST_PROFILE_ROOT_DIR
 } from "./TestConstants";
 import { TestLogger } from "../../../__tests__/src/TestLogger";
-import { IProfile, ProfileIO } from "../";
+import { IProfile, ProfileIO } from "../../../src/profiles";
 import { inspect } from "util";
 
 // UnitTestUtils.replaceIt();
