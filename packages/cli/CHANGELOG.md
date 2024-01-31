@@ -2,9 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Adding `--binary` and `--encoding` options to `zosfiles edit` to zowe V2
+
 ## `7.23.0`
 
-- BugFix: Update zos-files copy dsclp system tests to include large mock files. 
+- BugFix: Update zos-files copy dsclp system tests to include large mock files.
 
 ## `7.22.0`
 
