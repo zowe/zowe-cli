@@ -4,9 +4,83 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- LTS Breaking: Removed the following obsolete V1 profile functions:
-  - CommandProfiles.getMeta()
-  - CommandProfiles.get()
+- LTS Breaking:
+  - Removed CommandProfiles.getMeta and CommandProfiles.getAll
+  - Annotated CommandProfiles.get as @internal
+  - Removed the following obsolete constants from the ProfilesConstants class:
+    - DEPRECATE_TO_CONFIG_EDIT
+    - DEPRECATE_TO_CONFIG_INIT
+    - DEPRECATE_TO_CONFIG_LIST
+    - DEPRECATE_TO_CONFIG_SET
+    - PROFILES_COMMAND_TYPE_KEY
+  - Removed the following obsolete constants from the CoreMessages class:
+    - createProfileCommandSummary
+    - createProfileDisableDefaultsDesc
+    - createProfileOptionDesc
+    - createProfileOptionOverwriteDesc
+    - createProfilesCommandDesc
+    - createProfilesCommandSummary
+    - deleteProfileActionDesc
+    - deleteProfileCommandDesc
+    - deleteProfileDepsDesc
+    - deleteProfileExample
+    - deleteProfileForceOptionDesc
+    - deleteProfileNameDesc
+    - deleteProfilesCommandDesc
+    - deleteProfilesCommandSummary
+    - detailProfileCommandDesc
+    - listGroupWithOnlyProfileCommandSummary
+    - listGroupWithOnlyProfileDefaultDesc
+    - listGroupWithOnlyProfilesDefinition
+    - listGroupWithOnlyProfileSetDesc
+    - listGroupWithOnlyProfilesSummary
+    - listProfileCommandDesc
+    - listProfileCommandSummary
+    - listProfileExample
+    - listProfileExampleShowContents
+    - listProfileLoadedModulesOptionDesc
+    - listProfilesFoundMessage
+    - listProfilesNotFoundMessage
+    - listProfileVerboseOptionDesc
+    - locateProfilesDesc
+    - overroteProfileMessage
+    - profileCreatedSuccessfully
+    - profileCreatedSuccessfullyAndPath
+    - profileCreateErrorDetails
+    - profileCreateErrorHeader
+    - profileDeletedSuccessfully
+    - profileDeleteErrorDetails
+    - profileDeleteErrorHeader
+    - profileDesc
+    - profileLoadError
+    - profileNotDeletedMessage
+    - profileReviewMessage
+    - profileUpdatedSuccessfullyAndPath
+    - selectProfileNameDesc
+    - setGroupWithOnlyProfilesCommandDesc
+    - setGroupWithOnlyProfilesListDesc
+    - setGroupWithOnlyProfilesSummary
+    - setProfileActionDesc
+    - setProfileActionSummary
+    - setProfileExample
+    - setProfileOptionDesc
+    - showDependenciesCommandDesc
+    - unableToCreateProfile
+    - unableToDeleteProfile
+    - unableToFindProfile
+    - unableToLoadRequestedProfilesError
+    - unexpectedProfileCreationError
+    - unexpectedProfileLoadError
+    - unexpectedProfilesLoadError
+    - unexpectedProfileUpdateError
+    - updateProfileActionDesc
+    - updateProfileCommandDesc
+    - updateProfileCommandSummary
+    - validateProfileCommandDesc
+    - validateProfileCommandSummary
+    - validateProfileGroupDesc
+    - validateProfileNameDesc
+    - validateProfileOptionDesc
 
 ## `8.0.0-next.202401191954`
 

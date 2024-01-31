@@ -9,7 +9,6 @@
 *
 */
 
-import { ImperativeConfig } from "./ImperativeConfig";
 import { ImperativeError } from "../../error";
 import { Constants } from "../../constants";
 import { Arguments } from "yargs";
@@ -106,7 +105,7 @@ export class CliUtils {
     /**
      * Accepts the full set of loaded profiles and attempts to match the option names supplied with profile keys.
      *
-     * @param {Map<string, IProfile[]>} profileMap - the map of type to loaded profiles. The key is the profile type
+     * @param {Map<string, IProfile[]>} profiles - the map of type to loaded profiles. The key is the profile type
      * and the value is an array of profiles loaded for that type.
      *
      * @param {definitions} definitions - the profile definition on the command.
@@ -133,7 +132,7 @@ export class CliUtils {
         profileOrder.forEach((profileType: string) => {
 
             // Get the first profile loaded - for now, we won't worry about profiles and double-type loading for dependencies
-            const profile: IProfile = ImperativeConfig.instance.config.api.profiles.get(profileType);
+            const profile: IProfile = profiles.get(profileType, false);
             if (profile == null && definitions.required != null && definitions.required.indexOf(profileType) >= 0) {
                 throw new ImperativeError({
                     msg: `Profile of type "${profileType}" does not exist within the loaded profiles for the command and it is marked as required.`,

@@ -1,54 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Command Profiles should accept a profile map and allow us to retrieve by name 1`] = `
-Object {
-  "age": 2,
-  "name": "awesome",
-  "type": "strawberry",
-}
-`;
-
-exports[`Command Profiles should accept a profile map and allow us to retrieve them 1`] = `
-Array [
-  Object {
-    "age": 1,
-    "name": "tasty",
-    "type": "banana",
-  },
-]
-`;
-
-exports[`Command Profiles should accept a profile map and allow us to retrieve them 2`] = `
-Array [
-  Object {
-    "age": 1,
-    "name": "great",
-    "type": "strawberry",
-  },
-  Object {
-    "age": 2,
-    "name": "awesome",
-    "type": "strawberry",
-  },
-]
-`;
-
-exports[`Command Profiles should accept a profile map and allow us to retrieve them 3`] = `
-Object {
-  "age": 1,
-  "name": "great",
-  "type": "strawberry",
-}
-`;
-
-exports[`Command Profiles should accept a profile map and allow us to retrieve them 4`] = `
-Object {
-  "age": 1,
-  "name": "tasty",
-  "type": "banana",
-}
-`;
-
 exports[`Command Profiles should allow us to create an instance with map values 1`] = `
 CommandProfiles {
   "mMap": Map {
@@ -93,11 +44,3 @@ CommandProfiles {
 exports[`Command Profiles should detect missing parameters 1`] = `"Expect Error: Command Profiles Internal Error: No map was supplied."`;
 
 exports[`Command Profiles should detect that the parameters are not a map 1`] = `"Expect Error: Command Profiles Internal Error: The \\"map\\" supplied is not an instance of a map."`;
-
-exports[`Command Profiles should throw an error if get does not have the profile type in the map 1`] = `"Internal Error: No profiles of type \\"strawberry\\" were loaded for this command."`;
-
-exports[`Command Profiles should throw an error if get does not have the profile type in the map 2`] = `
-"This error can occur for one of two reasons:
- - The \\"profile\\" property on the command definition document does NOT specify the requested profile type
- - The profile type is marked \\"optional\\", no profiles of type \\"strawberry\\" have been created, and the command handler requested a profile of type \\"strawberry\\" with \\"failNotFound=true\\""
-`;

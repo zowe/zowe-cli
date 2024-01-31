@@ -74,11 +74,14 @@ describe("Cli Profile Manager", () => {
                 const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
                 expect(result.stderr).toEqual("");
                 expect(JSON.parse(result.stdout)).toEqual({
+                    account: "account123",
                     myParent: {
-                        insecuredProperty: {myInSecuredChild: "insecured"},
-                        securedProperty: {mySecuredChild: "secured"}
+                        insecuredProperty: { myInSecuredChild: "insecured" },
+                        securedProperty: { mySecuredChild: "secured" }
                     },
-                    account, username, password});
+                    password: 0,
+                    username: "username"
+                });
             });
         });
 

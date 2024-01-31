@@ -113,7 +113,7 @@ describe("Command Profile Loader", () => {
         }
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toContain('Expect Error: Could not construct the profile loader. The "logger" supplied is not of type Logger.');
     });
 
     it("should detect missing command definitions when creating the loader", () => {
@@ -130,7 +130,7 @@ describe("Command Profile Loader", () => {
         }
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toContain("Expect Error: Could not construct the profile loader. No command definition supplied.");
     });
 
     it("should detect missing profile manager when creating the loader", () => {
@@ -147,7 +147,7 @@ describe("Command Profile Loader", () => {
         }
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toContain("Expect Error: Could not construct the profile loader. No profile factory supplied.");
     });
 
     it("should not load old profiles when in team-config mode", async () => {
@@ -215,13 +215,27 @@ describe("Command Profile Loader", () => {
                 type: PROFILE_BANANA_TYPE,
             }
         }));
+
+        const expectedMap = new Map<string, IProfile[]>();
+        expectedMap.set("banana", [{ "name": "tasty", "type": "banana" }]);
+
+        const expectedMetaMap = new Map<string, IProfile[]>();
+        expectedMetaMap.set("banana", [{
+            "failNotFound": true,
+            "message": "Profile Loaded",
+            "name": "tasty",
+            "profile": { "name": "tasty", "type": "banana" },
+            "type": "banana" }
+        ]);
+
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
-        })
-            .loadProfiles({ _: undefined as any, $0: undefined as any });
-        expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+        }).loadProfiles({ _: undefined as any, $0: undefined as any });
+
+        expect(response).toHaveProperty("mMap", expectedMap);
+        expect(response).toHaveProperty("mMetaMap", expectedMetaMap);
     });
 
     it("should percolate the load error to the caller", async () => {
@@ -327,13 +341,28 @@ describe("Command Profile Loader", () => {
                 type: PROFILE_BANANA_TYPE,
             }
         }));
+
+        const expectedMap = new Map<string, IProfile[]>();
+        expectedMap.set("banana", [{ "name": "tasty", "type": "banana" }]);
+
+        const expectedMetaMap = new Map<string, IProfile[]>();
+        expectedMetaMap.set("banana", [{
+            "failNotFound": true,
+            "message": "Profile Loaded",
+            "name": "tasty",
+            "profile": { "name": "tasty", "type": "banana" },
+            "type": "banana"
+        }
+        ]);
+
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
-        })
-            .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
-        expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+        }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
+
+        expect(response).toHaveProperty("mMap", expectedMap);
+        expect(response).toHaveProperty("mMetaMap", expectedMetaMap);
     });
 
     it("should allow us to load a required profile by name with a dependency", async () => {
@@ -369,14 +398,43 @@ describe("Command Profile Loader", () => {
                 }
             ]
         }));
+
+        const expectedMap = new Map<string, IProfile[]>();
+        expectedMap.set("banana", [{ "name": "tasty", "type": "banana" }]);
+        expectedMap.set("strawberry", [{ "name": "red", "type": "strawberry" }]);
+
+        const expectedMetaMap = new Map<string, IProfile[]>();
+        expectedMetaMap.set("banana", [{
+            "dependenciesLoaded": true,
+            "dependencyLoadResponses": [{
+                "failNotFound": true,
+                "message": "Profile Loaded",
+                "name": "tasty",
+                "profile": { "name": "red", "type": "strawberry" },
+                "type": "strawberry"
+            }],
+            "failNotFound": true,
+            "message": "Profile Loaded",
+            "name": "tasty",
+            "profile": { "name": "tasty", "type": "banana" },
+            "type": "banana"
+        }]);
+        expectedMetaMap.set("strawberry", [{
+            "failNotFound": true,
+            "message": "Profile Loaded",
+            "name": "tasty",
+            "profile": { "name": "red", "type": "strawberry" },
+            "type": "strawberry"
+        }]);
+
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
-        })
-            .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
-        expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
-        expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
+        }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
+
+        expect(response).toHaveProperty("mMap", expectedMap);
+        expect(response).toHaveProperty("mMetaMap", expectedMetaMap);
     });
 
     it("should allow us to load two different required types", async () => {
@@ -420,14 +478,35 @@ describe("Command Profile Loader", () => {
                 type: STRAWBERRY_PROFILE_TYPE,
             }
         }));
+
+        const expectedMap = new Map<string, IProfile[]>();
+        expectedMap.set("banana", [{ "name": "tasty", "type": "banana" }]);
+        expectedMap.set("strawberry", [{ "name": "red", "type": "strawberry" }]);
+
+        const expectedMetaMap = new Map<string, IProfile[]>();
+        expectedMetaMap.set("banana", [{
+            "failNotFound": true,
+            "message": "Profile Loaded",
+            "name": "tasty",
+            "profile": { "name": "tasty", "type": "banana" },
+            "type": "banana"
+        }]);
+        expectedMetaMap.set("strawberry", [{
+            "failNotFound": true,
+            "message": "Profile Loaded",
+            "name": "tasty",
+            "profile": { "name": "red", "type": "strawberry" },
+            "type": "strawberry"
+        }]);
+
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_TWO_PROFILE_TYPES,
             profileManagerFactory: manager,
             logger: TestLogger.getTestLogger()
-        })
-            .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
-        expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
-        expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
+        }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
+
+        expect(response).toHaveProperty("mMap", expectedMap);
+        expect(response).toHaveProperty("mMetaMap", expectedMetaMap);
     });
 
     it("should percolate the error if a required profile for one type is not found", async () => {
@@ -529,17 +608,58 @@ describe("Command Profile Loader", () => {
                 }
             ]
         }));
+
+        const expectedMap = new Map<string, IProfile[]>();
+        expectedMap.set("banana", [
+            { "name": "tasty", "type": "banana" },
+            { "name": "great", "type": "banana" },
+            { "name": "awesome", "type": "banana" }
+        ]);
+
+        const expectedMetaMap = new Map<string, IProfile[]>();
+        expectedMetaMap.set("banana", [
+            {
+                "dependenciesLoaded": true,
+                "dependencyLoadResponses": [{
+                    "dependenciesLoaded": true,
+                    "failNotFound": true,
+                    "message": "Profile Loaded",
+                    "name": "great",
+                    "profile": { "name": "great", "type": "banana" },
+                    "type": "banana"
+                }],
+                "failNotFound": true,
+                "message": "Profile Loaded",
+                "name": "tasty",
+                "profile": { "name": "tasty", "type": "banana" },
+                "type": "banana"
+            },
+            {
+                "dependenciesLoaded": true,
+                "failNotFound": true,
+                "message": "Profile Loaded",
+                "name": "great",
+                "profile": { "name": "great", "type": "banana" },
+                "type": "banana"
+            },
+            {
+                "failNotFound": true,
+                "message": "Profile Loaded",
+                "name": "awesome",
+                "profile": { "name": "awesome", "type": "banana" },
+                "type": "banana"
+            }
+        ]);
+
         // commandDefinition: SAMPLE_COMMAND_TWO_PROFILE_TYPES_ONE_OPTIONAL,
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_PROFILE,
-            profileManagerFactory: manager, logger:
-        TestLogger.getTestLogger()
+            profileManagerFactory: manager,
+            logger: TestLogger.getTestLogger()
         }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
-        expect(response.getAll(PROFILE_BANANA_TYPE)[0]).toMatchSnapshot();
-        expect(response.getAll(PROFILE_BANANA_TYPE)[1]).toMatchSnapshot();
-        expect(response.getAll(PROFILE_BANANA_TYPE)[2]).toMatchSnapshot();
-        expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
-        expect(response.getAll(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+
+        expect(response).toHaveProperty("mMap", expectedMap);
+        expect(response).toHaveProperty("mMetaMap", expectedMetaMap);
     });
 
     it("should handle load of required and optional profiles", async () => {
@@ -584,12 +704,41 @@ describe("Command Profile Loader", () => {
             }
         }));
 
+        const expectedMap = new Map<string, IProfile[]>();
+        expectedMap.set("banana", [
+            { "name": "tasty", "type": "banana" }
+        ]);
+        expectedMap.set("strawberry", [
+            { "name": "red", "type": "strawberry" }
+        ]);
+
+        const expectedMetaMap = new Map<string, IProfile[]>();
+        expectedMetaMap.set("banana", [
+            {
+                "failNotFound": true,
+                "message": "Profile Loaded",
+                "name": "tasty",
+                "profile": { "name": "tasty", "type": "banana" },
+                "type": "banana"
+            }
+        ]);
+        expectedMetaMap.set("strawberry", [
+            {
+                "failNotFound": true,
+                "message": "Profile Loaded",
+                "name": "tasty",
+                "profile": { "name": "red", "type": "strawberry" },
+                "type": "strawberry"
+            }
+        ]);
+
         const response = await CommandProfileLoader.loader({
             commandDefinition: SAMPLE_COMMAND_TWO_PROFILE_TYPES_ONE_OPTIONAL,
-            profileManagerFactory: manager, logger:
-        TestLogger.getTestLogger()
+            profileManagerFactory: manager,
+            logger: TestLogger.getTestLogger()
         }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
-        expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
-        expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
+
+        expect(response).toHaveProperty("mMap", expectedMap);
+        expect(response).toHaveProperty("mMetaMap", expectedMetaMap);
     });
 });
