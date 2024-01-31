@@ -16,7 +16,7 @@ jest.mock("jsonfile");
 
 import { AppSettings } from "../../../";
 import { existsSync } from "fs";
-import { SettingsAlreadyInitialized, SettingsNotInitialized } from "../../../src/errors";
+import { SettingsAlreadyInitialized, SettingsNotInitialized } from "../../../src/settings/errors";
 import { readFileSync, writeFile, writeFileSync } from "jsonfile";
 import { ISettingsFile } from "../../../src/settings/doc/ISettingsFile";
 import * as DeepMerge from "deepmerge";

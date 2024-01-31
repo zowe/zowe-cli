@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerInit } from "../../security";
+import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerInit } from "../../../src/security";
 import { ConfigSecure } from "../../../src/config/api/ConfigSecure";
 import { ProfileCredentials } from "../../../src/config/ProfileCredentials";
 

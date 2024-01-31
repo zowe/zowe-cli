@@ -12,7 +12,7 @@
 jest.mock("@zowe/secrets-for-zowe-sdk");
 
 import * as path from "path";
-import { DefaultCredentialManager } from "..";
+import { DefaultCredentialManager } from "../../../src/security";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ImperativeError } from "../../../src/error";
 
