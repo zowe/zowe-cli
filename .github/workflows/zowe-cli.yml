@@ -35,7 +35,10 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [18.x, 20.x]
-        os: [windows-latest, ubuntu-latest, ${{ github.event.inputs.macos-type }}]
+        os: 
+          - windows-latest
+          - ubuntu-latest
+          - ${{ github.event.inputs.macos-type }}
 
     env:
       OS: ${{ matrix.os }}
