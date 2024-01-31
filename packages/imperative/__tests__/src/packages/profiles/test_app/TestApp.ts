@@ -11,7 +11,6 @@
 
 import { TestProfileLoader } from "./TestProfileLoader";
 import { TestAppImperativeConfig } from "../src/constants/ProfileInfoConstants";
-import { CliProfileManager } from "../../../../../src/cmd/profiles/CliProfileManager";
 import { Logger } from "../../../../../src/logger/Logger";
 import * as path from "path";
 

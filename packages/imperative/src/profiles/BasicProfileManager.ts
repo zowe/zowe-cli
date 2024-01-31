@@ -25,7 +25,6 @@ import {
     IValidateProfileWithSchema
 } from "./doc";
 
-import { ImperativeExpect } from "../expect";
 import { isNullOrUndefined } from "util";
 import { ImperativeError } from "../error";
 import { ProfileIO } from "./utils";

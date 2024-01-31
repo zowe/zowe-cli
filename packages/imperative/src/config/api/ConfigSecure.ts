@@ -19,6 +19,7 @@ import { IConfigSecureProperties } from "../doc/IConfigSecure";
 import { ConfigConstants } from "../ConfigConstants";
 import { IConfigProfile } from "../doc/IConfigProfile";
 import { CredentialManagerFactory } from "../../security";
+import { ConfigUtils } from "../ConfigUtils";
 
 /**
  * API Class for manipulating config layers.

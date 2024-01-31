@@ -13,7 +13,7 @@ import * as lodash from "lodash";
 import { ICommandArguments, IHandlerParameters } from "../cmd";
 import { ICommandHandlerRequire } from "../cmd/doc/handler/ICommandHandlerRequire";
 import { ICommandProfileAuthConfig } from "../cmd/doc/profiles/definition/ICommandProfileAuthConfig";
-import * as ConfigUtils from "./ConfigUtils";
+import { ConfigUtils } from "./ConfigUtils";
 import { AbstractAuthHandler } from "../imperative/auth/handlers/AbstractAuthHandler";
 import { ImperativeConfig } from "../utilities/ImperativeConfig";
 import { ISession } from "../rest/session/doc/ISession";

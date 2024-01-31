@@ -11,7 +11,7 @@
 
 import { ICommandArguments, ICommandHandler, IHandlerParameters } from "../../../../cmd";
 import { Config, ConfigAutoStore, ConfigConstants, ConfigSchema } from "../../../../config";
-import { coercePropValue, secureSaveError } from "../../../../config/ConfigUtils";
+import { ConfigUtils } from "../../../../config/ConfigUtils";
 import { ImperativeError } from "../../../../error";
 import { Logger } from "../../../../logger";
 import { ConnectionPropsForSessCfg, ISession, Session } from "../../../../rest";

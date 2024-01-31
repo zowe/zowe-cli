@@ -17,7 +17,7 @@ import { Config, ConfigConstants, ConfigSchema, IConfig } from "../../../../conf
 import { IProfileProperty } from "../../../../profiles";
 import { ConfigBuilder } from "../../../../config/ConfigBuilder";
 import { IConfigBuilderOpts } from "../../../../config/doc/IConfigBuilderOpts";
-import { coercePropValue, secureSaveError } from "../../../../config/ConfigUtils";
+import { ConfigUtils } from "../../../../config/ConfigUtils";
 import { OverridesLoader } from "../../../OverridesLoader";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";

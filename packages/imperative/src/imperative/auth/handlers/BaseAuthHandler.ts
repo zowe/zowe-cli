@@ -22,7 +22,7 @@ import { Imperative } from "../../Imperative";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { ISaveProfileFromCliArgs } from "../../../profiles";
 import { ImperativeConfig } from "../../../utilities";
-import { getActiveProfileName, secureSaveError } from "../../../config/ConfigUtils";
+import { ConfigUtils } from "../../../config/ConfigUtils";
 import { AbstractAuthHandler } from "./AbstractAuthHandler";
 import { IAuthHandlerApi } from "../doc/IAuthHandlerApi";
 

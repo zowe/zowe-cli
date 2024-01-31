@@ -12,7 +12,7 @@
 import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
 import { ConfigSchema } from "../../../../config";
-import { coercePropValue, secureSaveError } from "../../../../config/ConfigUtils";
+import { ConfigUtils } from "../../../../config/ConfigUtils";
 import { ImperativeError } from "../../../../error";
 import { ImperativeConfig } from "../../../../utilities";
 

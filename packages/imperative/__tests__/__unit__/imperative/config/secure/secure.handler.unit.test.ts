@@ -26,7 +26,6 @@ import * as lodash from "lodash";
 import * as fs from "fs";
 import { SessConstants } from "../../../../../src/rest";
 import { setupConfigToLoad } from "../../../../../__tests__/src/TestUtil";
-import { IHandlerFormatOutputApi } from "../../../../../src";
 
 let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {

@@ -31,7 +31,6 @@ import { PluginManagementFacility } from "./plugins/PluginManagementFacility";
 // import { ConfigManagementFacility } from "./config/ConfigManagementFacility";
 
 import { AbstractCommandYargs } from "../cmd/yargs/AbstractCommandYargs";
-import { CliProfileManager } from "../cmd/profiles/CliProfileManager";
 import { CommandPreparer } from "../cmd/CommandPreparer";
 import { CommandYargs } from "../cmd/yargs/CommandYargs";
 import { ICommandDefinition } from "../cmd/doc/ICommandDefinition";
@@ -45,9 +44,7 @@ import { WebHelpManager } from "../cmd/help/WebHelpManager";
 import { YargsConfigurer } from "../cmd/yargs/YargsConfigurer";
 import { YargsDefiner } from "../cmd/yargs/YargsDefiner";
 
-import { ProfileUtils } from "../profiles/utils/ProfileUtils";
 import { IProfileTypeConfiguration } from "../profiles/doc/config/IProfileTypeConfiguration";
-import { CompleteProfilesGroupBuilder } from "./profiles/builders/CompleteProfilesGroupBuilder";
 import { ImperativeHelpGeneratorFactory } from "./help/ImperativeHelpGeneratorFactory";
 import { OverridesLoader } from "./OverridesLoader";
 import { ImperativeProfileManagerFactory } from "./profiles/ImperativeProfileManagerFactory";
