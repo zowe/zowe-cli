@@ -9,22 +9,22 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../../../";
-import { Config } from "../../../../../../src/config/Config";
-import { IConfigOpts } from "../../../../../../src/config";
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { IImperativeConfig } from "../../../../../../src/imperative/doc/IImperativeConfig";
-import { ICredentialManagerInit } from "../../../../../../src/security/doc/ICredentialManagerInit";
-import { CredentialManagerFactory } from "../../../../../../src/security";
+import { IHandlerParameters } from "../../../../../";
+import { Config } from "../../../../../src/config/Config";
+import { IConfigOpts } from "../../../../../src/config";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { IImperativeConfig } from "../../../../../src/imperative/doc/IImperativeConfig";
+import { ICredentialManagerInit } from "../../../../../src/security/doc/ICredentialManagerInit";
+import { CredentialManagerFactory } from "../../../../../src/security";
 import { expectedConfigObject, expectedUserConfigObject } from
-    "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import SetHandler from "../../../../../../src/imperative/config/cmd/set/set.handler";
-import * as config from "../../../../../../__tests__/__integration__/imperative/src/imperative";
+    "../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
+import SetHandler from "../../../../../src/imperative/config/cmd/set/set.handler";
+import * as config from "../../../../../__tests__/__integration__/imperative/src/imperative";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
-import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
+import { setupConfigToLoad } from "../../../../../__tests__/src/TestUtil";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
@@ -158,7 +158,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
@@ -224,7 +224,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         fakeSecureDataExpectedJson[fakeProjUserPath] = {
@@ -289,7 +289,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeGblProjPath];
@@ -356,7 +356,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         fakeSecureDataExpectedJson[fakeGblProjUserPath] = {
@@ -420,7 +420,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
@@ -480,7 +480,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
@@ -540,7 +540,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeGblProjPath];
@@ -601,7 +601,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
@@ -665,7 +665,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
@@ -729,7 +729,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         // ConfigSecure.save() deletes and adds back this secure entry, which changes the order
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -796,7 +796,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
@@ -860,7 +860,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         // ConfigSecure.save() deletes and adds back this secure entry, which changes the order
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -926,7 +926,7 @@ describe("Configuration Set command handler", () => {
 
         setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
-        await handler.process(params);
+        await handler.process(params as any);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
         delete fakeSecureDataExpectedJson[fakeProjPath];
@@ -994,7 +994,7 @@ describe("Configuration Set command handler", () => {
         let error: any;
 
         try {
-            await handler.process(params);
+            await handler.process(params as any);
         } catch (err) {
             error = err;
         }

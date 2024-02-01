@@ -9,7 +9,7 @@
 *
 */
 
-import * as ConfigUtils from "../../../src/config/ConfigUtils";
+import { ConfigUtils } from "../../../src/config/ConfigUtils";
 import { CredentialManagerFactory } from "../../../src/security";
 import { ImperativeConfig } from "../../../src/utilities/ImperativeConfig";
 

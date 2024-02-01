@@ -11,7 +11,7 @@
 
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
 import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { ProfilesSetCommandBuilder } from ".../../../../../src/imperative/profiles/builders/ProfilesSetCommandBuilder";
+import { ProfilesSetCommandBuilder } from "../../../../../src/imperative/profiles/builders/ProfilesSetCommandBuilder";
 
 describe("Profile Set Command Builder", () => {
     const logger = TestLogger.getTestLogger();

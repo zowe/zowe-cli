@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../utilities/ImperativeConfig");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 
-import { ImperativeConfig } from "../../../../../../src/utilities/ImperativeConfig";
-import { IProfileTypeConfiguration } from "../../../../../../src/profiles";
-import UpdateSchemasHandler from "../../../../../../src/imperative/config/cmd/update-schemas/update-schemas.handler";
-import { ConfigSchema } from "../../../../../../";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { IProfileTypeConfiguration } from "../../../../../src/profiles";
+import UpdateSchemasHandler from "../../../../../src/imperative/config/cmd/update-schemas/update-schemas.handler";
+import { ConfigSchema } from "../../../../../";
 
 let dataObj: any;
 let formatObj: any;

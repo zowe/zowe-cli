@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../../utilities/ImperativeConfig");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 
 import { Config, ConfigConstants, IConfig, IConfigLayer } from "../../../../../src/config";
 import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";

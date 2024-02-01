@@ -14,7 +14,7 @@ jest.mock("fs");
 import * as log4js from "log4js";
 import { LoggingConfigurer } from "../../../src/imperative/LoggingConfigurer";
 import { IConfigLogging, ILog4jsConfig, Logger } from "../../../src/logger";
-import { LoggerManager } from "../../../src/logger/src/LoggerManager";
+import { LoggerManager } from "../../../src/logger/LoggerManager";
 
 import { ImperativeError } from "../../../src/error";
 

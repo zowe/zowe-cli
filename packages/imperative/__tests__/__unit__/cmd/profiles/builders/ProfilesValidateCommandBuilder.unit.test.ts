@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../utilities/ImperativeConfig");
+jest.mock("../../../../../src/utilities/ImperativeConfig");
 
 import { deleteHandlerPaths, testBuilderProfiles } from "./ProfileBuilderTestConstants";
 import { TestLogger } from "../../../../../__tests__/src/TestLogger";

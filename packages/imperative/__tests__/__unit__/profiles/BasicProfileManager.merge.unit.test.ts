@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../src/utils/ProfileIO");
+jest.mock("../../../src/utils/ProfileIO");
 
 import { PROFILE_TYPE } from "../../../__tests__/src/packages/profiles/src/constants/BasicProfileManagerTestConstants";
 import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";

@@ -11,8 +11,8 @@
 
 import { IImperativeConfig } from "../../../src/imperative/doc/IImperativeConfig";
 
-jest.mock("../../security");
-jest.mock("../../utilities/ImperativeConfig");
+jest.mock("../../../src/security");
+jest.mock("../../../src/utilities/ImperativeConfig");
 
 import { OverridesLoader } from "../../../src/imperative/OverridesLoader";
 import { CredentialManagerFactory, AbstractCredentialManager } from "../../../src/security";

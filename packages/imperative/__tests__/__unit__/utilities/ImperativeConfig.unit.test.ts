@@ -12,7 +12,7 @@
 import { Constants } from "../../../src/constants";
 
 describe("ImperativeConfig", () => {
-    const {ImperativeConfig} = require("../../utilities/ImperativeConfig");
+    const {ImperativeConfig} = require("../../../src/utilities/ImperativeConfig");
 
     const mockConfig = {
         name: "test-cli",

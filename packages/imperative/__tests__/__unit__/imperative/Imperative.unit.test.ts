@@ -24,43 +24,44 @@ describe("Imperative", () => {
     const mainModule = process.mainModule;
 
     const loadImperative = () => {
-        return require("../src/Imperative").Imperative;
+        return require("../../../src/imperative/Imperative").Imperative;
     };
 
     const reloadExternalMocks = () => {
         try {
-            jest.doMock("../src/OverridesLoader");
-            jest.doMock("../src/LoggingConfigurer");
-            jest.doMock("../src/ConfigurationLoader");
-            jest.doMock("../src/ConfigurationValidator");
-            jest.doMock("../src/help/ImperativeHelpGeneratorFactory");
-            jest.doMock("../../utilities/ImperativeConfig");
-            jest.doMock("../src/config/ConfigManagementFacility");
-            jest.doMock("../src/plugins/PluginManagementFacility");
-            jest.doMock("../../settings/src/AppSettings");
-            jest.doMock("../../logger/src/Logger");
-            jest.doMock("../src/env/EnvironmentalVariableSettings");
-            jest.doMock("../src/auth/builders/CompleteAuthGroupBuilder");
-            jest.doMock("../src/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
-            jest.doMock("../../config/src/Config");
-            jest.doMock("../../security/src/CredentialManagerFactory");
-            jest.doMock("../../utilities/src/EnvFileUtils");
+            jest.doMock("../../../src/imperative/OverridesLoader");
+            jest.doMock("../../../src/imperative/LoggingConfigurer");
+            jest.doMock("../../../src/imperative/ConfigurationLoader");
+            jest.doMock("../../../src/imperative/ConfigurationValidator");
+            jest.doMock("../../../src/imperative/help/ImperativeHelpGeneratorFactory");
+            jest.doMock("../../../src/imperative/utilities/ImperativeConfig");
+            jest.doMock("../../../src/imperative/config/ConfigManagementFacility");
+            jest.doMock("../../../src/imperative/plugins/PluginManagementFacility");
+            jest.doMock("../../../src/imperative/settings/AppSettings");
+            jest.doMock("../../../src/imperative/logger/Logger");
+            jest.doMock("../../../src/imperative/env/EnvironmentalVariableSettings");
+            jest.doMock("../../../src/imperative/auth/builders/CompleteAuthGroupBuilder");
+            jest.doMock("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
+            jest.doMock("../../../src/config/Config");
+            jest.doMock("../../../src/imperative/security/CredentialManagerFactory");
+            jest.doMock("../../../src/imperative/utilities/EnvFileUtils");
 
-            const { OverridesLoader } = require("../src/OverridesLoader");
-            const { LoggingConfigurer } = require("../src/LoggingConfigurer");
-            const { ConfigurationLoader } = require("../src/ConfigurationLoader");
-            const ConfigurationValidator = require("../src/ConfigurationValidator").ConfigurationValidator.validate;
-            const { AppSettings } = require("../../settings");
-            const { ImperativeConfig } = require("../../utilities/ImperativeConfig");
-            const { ConfigManagementFacility } = require("../src/config/ConfigManagementFacility");
-            const { PluginManagementFacility } = require("../src/plugins/PluginManagementFacility");
-            const { Logger } = require("../../logger");
-            const { EnvironmentalVariableSettings } = require("../src/env/EnvironmentalVariableSettings");
-            const { CompleteAuthGroupBuilder } = require("../src/auth/builders/CompleteAuthGroupBuilder");
-            const { CompleteAutoInitCommandBuilder } = require("../src/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
-            const { Config } = require("../../config/src/Config");
-            const { CredentialManagerFactory } = require("../../security/src/CredentialManagerFactory");
-            const { EnvFileUtils } = require("../../utilities/src/EnvFileUtils");
+            const { OverridesLoader } = require("../../../src/imperative/OverridesLoader");
+            const { LoggingConfigurer } = require("../../../src/imperative/LoggingConfigurer");
+            const { ConfigurationLoader } = require("../../../src/imperative/ConfigurationLoader");
+            const ConfigurationValidator = require("../../../src/imperative/ConfigurationValidator").ConfigurationValidator.validate;
+            const { AppSettings } = require("../../../src/imperative/settings");
+            const { ImperativeConfig } = require("../../../src/imperative/utilities/ImperativeConfig");
+            const { ConfigManagementFacility } = require("../../../src/imperative/config/ConfigManagementFacility");
+            const { PluginManagementFacility } = require("../../../src/imperative/plugins/PluginManagementFacility");
+            const { Logger } = require("../../../src/imperative/logger/Logger");
+            const { EnvironmentalVariableSettings } = require("../../../src/imperative/env/EnvironmentalVariableSettings");
+            const { CompleteAuthGroupBuilder } = require("../../../src/imperative/auth/builders/CompleteAuthGroupBuilder");
+            const { CompleteAutoInitCommandBuilder } =
+                require("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
+            const { Config } = require("../../../src/config/Config");
+            const { CredentialManagerFactory } = require("../../../src/imperative/security/CredentialManagerFactory");
+            const { EnvFileUtils } = require("../../../src/imperative/utilities/EnvFileUtils");
             return {
                 OverridesLoader: {
                     load: OverridesLoader.load as Mock<typeof OverridesLoader.load>

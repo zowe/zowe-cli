@@ -25,6 +25,8 @@ import { AbstractSession, SessConstants } from "../../../src/rest";
 import { ConfigAutoStore } from "../../../src/config/ConfigAutoStore";
 import { ImperativeConfig } from "../../../src/utilities/ImperativeConfig";
 import { ImperativeError } from "../../../src/error";
+import { IProfInfoUpdatePropOpts } from "../../../src/config/doc/IProfInfoUpdatePropOpts";
+import { ConfigUtils } from "../../../src/config/ConfigUtils";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();

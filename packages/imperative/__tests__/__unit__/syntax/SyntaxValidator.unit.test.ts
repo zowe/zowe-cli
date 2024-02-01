@@ -17,7 +17,7 @@ import { inspect, isNullOrUndefined } from "util";
 import { TestLogger } from "../../src/TestLogger";
 import { CommandResponse, ICommandDefinition, ICommandValidatorResponse } from "../../../";
 import { ValidationTestCommand } from "../../src/packages/cmd/ValidationTestCommand";
-import { SyntaxValidator } from "../../src/cmd/syntax/SyntaxValidator";
+import { SyntaxValidator } from "../../../src/cmd/syntax/SyntaxValidator";
 import { Constants } from "../../../src/constants";
 
 

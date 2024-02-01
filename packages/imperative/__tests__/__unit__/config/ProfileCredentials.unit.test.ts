@@ -14,9 +14,9 @@ import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerI
 import { ConfigSecure } from "../../../src/config/api/ConfigSecure";
 import { ProfileCredentials } from "../../../src/config/ProfileCredentials";
 
-jest.mock("../../security/src/CredentialManagerFactory");
-jest.mock("../../security/src/DefaultCredentialManager");
-jest.mock("../../utilities/ImperativeConfig");
+jest.mock("../../../src/security/CredentialManagerFactory");
+jest.mock("../../../src/security/DefaultCredentialManager");
+jest.mock("../../../src/utilities/ImperativeConfig");
 
 function mockConfigApi(secureApi: Partial<ConfigSecure>): any {
     return {

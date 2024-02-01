@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../utilities/ImperativeConfig");
+jest.mock("../../../../src/utilities/ImperativeConfig");
 jest.mock("../../../../src/imperative/Imperative");
 
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
@@ -18,7 +18,7 @@ import { ICommandHandlerRequire } from "../../../../src/cmd/doc/handler/ICommand
 import { ImperativeConfig } from "../../../../src/utilities/ImperativeConfig";
 
 /* eslint-disable-next-line jest/no-mocks-import */
-import { MOCKED_COMMAND_TREE } from "../../../../src/imperative/__mocks__/Imperative";
+import { MOCKED_COMMAND_TREE } from "../__mocks__/Imperative";
 
 (CommandResponse as any).spinnerChars = "-oO0)|(0Oo-";
 const beforeForceColor = process.env.FORCE_COLOR;

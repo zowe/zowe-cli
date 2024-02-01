@@ -17,7 +17,7 @@ import { MULTIPLE_GROUPS } from "../__resources__/CommandDefinitions";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { ICommandHandlerRequire } from "../../../../src/cmd/doc/handler/ICommandHandlerRequire";
 
-jest.mock("../../../imperative/src/Imperative");
+jest.mock("../../../src/imperative/Imperative");
 
 describe("Failed Command Handler", () => {
     it("We should be able to get proper error messages on a non syntax failure", async () => {
