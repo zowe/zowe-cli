@@ -9,10 +9,10 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters, ImperativeConfig } from "../../../../../../../lib";
+import { ICommandHandler, IHandlerParameters } from "../../../../../../../lib";
 
 export default class ProfileSpecHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
-        ImperativeConfig.instance.config.api.profiles.get("blah");
+        params.profiles.get("blah");
     }
 }

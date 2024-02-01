@@ -5,8 +5,12 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - LTS Breaking:
-  - Removed CommandProfiles.getMeta and CommandProfiles.getAll
-  - Annotated CommandProfiles.get as @internal
+  - Removed the following functions:
+    - CommandProfiles.getMeta
+    - CommandProfiles.getAll
+  - Annotated the following items as @internal:
+    - CommandProfiles.get
+    - IHandlerParameters.profiles
   - Removed the following obsolete constants from the ProfilesConstants class:
     - DEPRECATE_TO_CONFIG_EDIT
     - DEPRECATE_TO_CONFIG_INIT
