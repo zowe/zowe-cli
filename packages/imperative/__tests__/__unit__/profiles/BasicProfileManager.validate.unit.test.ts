@@ -19,9 +19,8 @@ import {
     STRAWBERRY_WITH_REQUIRED_APPLE_DEPENDENCY,
     TEST_PROFILE_ROOT_DIR
 } from "./TestConstants";
-import { ImperativeError } from "../../error/src/ImperativeError";
-
-jest.mock("../src/utils/ProfileIO");
+import { ImperativeError } from "../../../src/error/ImperativeError";
+jest.mock("../../../src/profiles/utils/ProfileIO");
 
 describe("Basic Profile Manager Validate", () => {
     it("should detect undefined parms", async () => {

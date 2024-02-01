@@ -14,10 +14,10 @@ import Mock = jest.Mock;
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../logger");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
+jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
+jest.mock("../../../../../../src/logger/Logger");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
 
 import * as fs from "fs";
 import { Console } from "../../../../../../src/console";

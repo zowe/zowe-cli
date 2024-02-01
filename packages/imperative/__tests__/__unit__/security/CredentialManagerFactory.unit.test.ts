@@ -18,16 +18,15 @@ const ORIG_ERR = process.stderr.write;
 describe("CredentialManagerFactory", () => {
     const testClassDir = "CredentialManagerFactory-testClasses";
 
-    jest.doMock("../src/DefaultCredentialManager");
+    jest.doMock("../../../src/security/DefaultCredentialManager");
     let { CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError } = require("..");
-    let { InvalidCredentialManager } = require("../src/InvalidCredentialManager");
-
+    let { InvalidCredentialManager } = require("../../../src/security/InvalidCredentialManager");
 
     afterEach(async () => {
         // Because initialize can only be called once, we need to reset the module cache everytime and
         // reload our modules. So we will clear the module registry and import again
         jest.resetModules();
-        jest.doMock("../src/DefaultCredentialManager");
+        jest.doMock("../../../src/security/DefaultCredentialManager");
         ({ CredentialManagerFactory, DefaultCredentialManager, BadCredentialManagerError } = await import("../../../src/security"));
         ({ InvalidCredentialManager } = await import("../../../src/security/InvalidCredentialManager"));
     });

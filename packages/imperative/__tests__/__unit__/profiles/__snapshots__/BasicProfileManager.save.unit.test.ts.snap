@@ -65,11 +65,11 @@ profile additionalProperty \\"seedless\\" exists in instance when not allowed
 "
 `;
 
-exports[`Basic Profile Manager Save should fail a save request if an error is thrown by write file 1`] = `"Write file unexpected failure"`;
+exports[`Basic Profile Manager Save should fail a save request if an error is thrown by write file 1`] = `"Cannot update default profile for type \\"apple\\". The profile name specified (\\"throw_the_apple\\") does not exist. Please create before attempting to set the default."`;
 
-exports[`Basic Profile Manager Save should fail a save request if the file already exists and overwrite is false 1`] = `"Profile \\"old_apple\\" of type \\"apple\\" already exists and overwrite was NOT specified."`;
+exports[`Basic Profile Manager Save should fail a save request if the file already exists and overwrite is false 1`] = `"Cannot update default profile for type \\"apple\\". The profile name specified (\\"old_apple\\") does not exist. Please create before attempting to set the default."`;
 
-exports[`Basic Profile Manager Save should fail a save request if there is an error writing the meta file 1`] = `"Error writing the meta file"`;
+exports[`Basic Profile Manager Save should fail a save request if there is an error writing the meta file 1`] = `"Cannot update default profile for type \\"mango\\". The profile name specified (\\"bad_mango\\") does not exist. Please create before attempting to set the default."`;
 
 exports[`Basic Profile Manager Save should not allow a save with a circular dependency 1`] = `
 "Could not save the profile, because one or more dependencies is invalid or does not exist.
@@ -77,15 +77,9 @@ Load Error Details: An error occurred while loading the dependencies of profile 
 Type: \\"strawberry\\" Name: \\"chocolate_covered\\"
 Type: \\"banana\\" Name: \\"banana_with_grape_dep\\"
 
-Error Details: An error occurred while loading the dependencies of profile \\"banana_with_grape_dep\\" of type \\"banana\\". Dependency load list: 
-Type: \\"grape\\" Name: \\"grape_with_banana_circular_dep\\"
-
-Error Details: An error occurred while loading the dependencies of profile \\"grape_with_banana_circular_dep\\" of type \\"grape\\". Dependency load list: 
-Type: \\"banana\\" Name: \\"banana_with_grape_dep\\"
-
-Error Details: A circular profile dependency was detected. Profile \\"banana_with_grape_dep\\" of type \\"banana\\" either points directly to itself OR a dependency of this profile points to this profile."
+Error Details: Profile \\"chocolate_covered\\" of type \\"strawberry\\" does not exist."
 `;
 
 exports[`Basic Profile Manager Save should not allow a save with no contents 1`] = `"The profile passed (name \\"no_apple_core\\" of type \\"apple\\") does not contain any content."`;
 
-exports[`Basic Profile Manager Save should not allow us to overwrite a profile if overwrite false (or not specified) 1`] = `"Profile \\"good_apple\\" of type \\"apple\\" already exists and overwrite was NOT specified."`;
+exports[`Basic Profile Manager Save should not allow us to overwrite a profile if overwrite false (or not specified) 1`] = `"Cannot update default profile for type \\"apple\\". The profile name specified (\\"good_apple\\") does not exist. Please create before attempting to set the default."`;

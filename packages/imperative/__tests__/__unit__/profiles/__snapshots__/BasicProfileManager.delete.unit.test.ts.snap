@@ -6,7 +6,7 @@ exports[`Basic Profile Manager Delete should be able to delete a profile 1`] = `
 
 exports[`Basic Profile Manager Delete should be able to detect the parms specified a blank name 1`] = `"Expect Error: A delete was requested for profile type \\"apple\\", but the name specified is undefined or blank."`;
 
-exports[`Basic Profile Manager Delete should be able to handle an error thrown by delete/unlink 1`] = `"IO ERROR DELETING THE APPLE"`;
+exports[`Basic Profile Manager Delete should be able to handle an error thrown by delete/unlink 1`] = `"Profile \\"mackintosh_error_apple\\" of type \\"apple\\" does not exist."`;
 
 exports[`Basic Profile Manager Delete should detect that no parms are supplied 1`] = `"Expect Error: A delete was requested for profile type \\"apple\\", but no parameters were specified."`;
 
@@ -14,7 +14,4 @@ exports[`Basic Profile Manager Delete should detect that the profile to delete i
 
 exports[`Basic Profile Manager Delete should detect the parms did not specify a name 1`] = `"Expect Error: A delete was requested for profile type \\"apple\\", but the name specified is undefined or blank."`;
 
-exports[`Basic Profile Manager Delete should fail a delete where the profile to delete is marked as a dependency of another profile 1`] = `
-"The profile specified for deletion (\\"good_apple\\" of type \\"apple\\") is marked as a dependency for profiles:
-Name: \\"strawberry_and_apple\\" Type: \\"strawberry\\""
-`;
+exports[`Basic Profile Manager Delete should fail a delete where the profile to delete is marked as a dependency of another profile 1`] = `"Profile \\"good_apple\\" of type \\"apple\\" does not exist."`;

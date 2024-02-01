@@ -30,7 +30,7 @@ import {
 } from "./TestConstants";
 import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";
 
-jest.mock("../../../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 
 describe("Basic Profile Manager Load", () => {
     it("should detect missing parms", async () => {

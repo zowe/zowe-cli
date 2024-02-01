@@ -10,7 +10,7 @@
 */
 
 
-jest.mock("../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";
 import { TestLogger } from "../../../__tests__/src/TestLogger";
 import { IProfileDeleted } from "../../../src/profiles/doc/response/IProfileDeleted";

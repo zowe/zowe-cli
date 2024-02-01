@@ -61,7 +61,7 @@ describe("Plugin Management Facility", () => {
     const mockCfgValidator = jest.fn();
     let realCfgValidator: any;
 
-    let { PluginRequireProvider } = require("../../src/plugins/PluginRequireProvider");
+    let { PluginRequireProvider } = require("../../../../src/imperative/plugins/PluginRequireProvider");
 
     const pluginName = "sample-plugin";
     const PMF = PluginManagementFacility.instance as any;
@@ -163,7 +163,7 @@ describe("Plugin Management Facility", () => {
         pluginIssues.removeIssuesForPlugin(pluginName);
 
 
-        ({ PluginRequireProvider } = require("../../src/plugins/PluginRequireProvider"));
+        ({ PluginRequireProvider } = require("../../../../src/imperative/plugins/PluginRequireProvider"));
 
         Logger.setLogInMemory(true, 0);
     });
@@ -191,12 +191,13 @@ describe("Plugin Management Facility", () => {
         const realFindPackageBinName = impCfg.findPackageBinName;
         impCfg.findPackageBinName = mockFindPackageBinName;
 
-        const installDef: ICommandDefinition = require("../../src/plugins/cmd/install/install.definition").installDefinition;
-        const listDef: ICommandDefinition = require("../../src/plugins/cmd/list/list.definition").listDefinition;
-        const uninstallDef: ICommandDefinition = require("../../src/plugins/cmd/uninstall/uninstall.definition").uninstallDefinition;
-        const updateDef: ICommandDefinition = require("../../src/plugins/cmd/update/update.definition").updateDefinition;
-        const validateDef: ICommandDefinition = require("../../src/plugins/cmd/validate/validate.definition").validateDefinition;
-        const firststepsDef: ICommandDefinition = require("../../src/plugins/cmd/showfirststeps/showfirststeps.definition").firststepsDefinition;
+        const installDef: ICommandDefinition = require("../../../../src/imperative/plugins/cmd/install/install.definition").installDefinition;
+        const listDef: ICommandDefinition = require("../../../../src/imperative/plugins/cmd/list/list.definition").listDefinition;
+        const uninstallDef: ICommandDefinition = require("../../../../src/imperative/plugins/cmd/uninstall/uninstall.definition").uninstallDefinition;
+        const updateDef: ICommandDefinition = require("../../../../src/imperative/plugins/cmd/update/update.definition").updateDefinition;
+        const validateDef: ICommandDefinition = require("../../../../src/imperative/plugins/cmd/validate/validate.definition").validateDefinition;
+        const firststepsDef: ICommandDefinition =
+            require("../../../../src/imperative/plugins/cmd/showfirststeps/showfirststeps.definition").firststepsDefinition;
         mocks.existsSync.mockReturnValue(true);
 
         expect((PluginManagementFacility.instance as any).wasInitCalled).toBe(false);

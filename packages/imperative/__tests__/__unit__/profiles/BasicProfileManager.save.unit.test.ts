@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 import { ImperativeError } from "../../../src/error/ImperativeError";
 import { TestLogger } from "../../../__tests__/src/TestLogger";
 import { ISaveProfile } from "../../../src/profiles/doc/parms/ISaveProfile";

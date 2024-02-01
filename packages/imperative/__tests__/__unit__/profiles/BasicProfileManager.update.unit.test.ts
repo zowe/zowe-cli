@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../src/utils/ProfileIO");
+jest.mock("../../../src/profiles/utils/ProfileIO");
 import { BasicProfileManager } from "../../../src/profiles/BasicProfileManager";
 import { APPLE_PROFILE_TYPE, ONLY_APPLE, TEST_PROFILE_ROOT_DIR } from "./TestConstants";
 import { TestLogger } from "../../../__tests__/src/TestLogger";

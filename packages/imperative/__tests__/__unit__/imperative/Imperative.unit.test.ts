@@ -34,24 +34,24 @@ describe("Imperative", () => {
             jest.doMock("../../../src/imperative/ConfigurationLoader");
             jest.doMock("../../../src/imperative/ConfigurationValidator");
             jest.doMock("../../../src/imperative/help/ImperativeHelpGeneratorFactory");
-            jest.doMock("../../../src/imperative/utilities/ImperativeConfig");
+            jest.doMock("../../../src/utilities/ImperativeConfig");
             jest.doMock("../../../src/imperative/config/ConfigManagementFacility");
             jest.doMock("../../../src/imperative/plugins/PluginManagementFacility");
-            jest.doMock("../../../src/imperative/settings/AppSettings");
+            jest.doMock("../../../src/settings/AppSettings");
             jest.doMock("../../../src/imperative/logger/Logger");
             jest.doMock("../../../src/imperative/env/EnvironmentalVariableSettings");
             jest.doMock("../../../src/imperative/auth/builders/CompleteAuthGroupBuilder");
             jest.doMock("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
             jest.doMock("../../../src/config/Config");
             jest.doMock("../../../src/imperative/security/CredentialManagerFactory");
-            jest.doMock("../../../src/imperative/utilities/EnvFileUtils");
+            jest.doMock("../../../src/utilities/EnvFileUtils");
 
             const { OverridesLoader } = require("../../../src/imperative/OverridesLoader");
             const { LoggingConfigurer } = require("../../../src/imperative/LoggingConfigurer");
             const { ConfigurationLoader } = require("../../../src/imperative/ConfigurationLoader");
             const ConfigurationValidator = require("../../../src/imperative/ConfigurationValidator").ConfigurationValidator.validate;
-            const { AppSettings } = require("../../../src/imperative/settings");
-            const { ImperativeConfig } = require("../../../src/imperative/utilities/ImperativeConfig");
+            const { AppSettings } = require("../../../src/settings/AppSettings");
+            const { ImperativeConfig } = require("../../../src/utilities/ImperativeConfig");
             const { ConfigManagementFacility } = require("../../../src/imperative/config/ConfigManagementFacility");
             const { PluginManagementFacility } = require("../../../src/imperative/plugins/PluginManagementFacility");
             const { Logger } = require("../../../src/imperative/logger/Logger");
@@ -61,7 +61,7 @@ describe("Imperative", () => {
                 require("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
             const { Config } = require("../../../src/config/Config");
             const { CredentialManagerFactory } = require("../../../src/imperative/security/CredentialManagerFactory");
-            const { EnvFileUtils } = require("../../../src/imperative/utilities/EnvFileUtils");
+            const { EnvFileUtils } = require("../../../src/utilities/EnvFileUtils");
             return {
                 OverridesLoader: {
                     load: OverridesLoader.load as Mock<typeof OverridesLoader.load>
@@ -101,7 +101,7 @@ describe("Imperative", () => {
             // If we error here, jest silently fails and says the test is empty. So let's make sure
             // that doesn't happen!
 
-            const { Logger } = (jest as any).requireActual("../src/logger/Logger");
+            const { Logger } = (jest as any).requireActual("../../../src/logger/Logger");
 
             Logger.getConsoleLogger().fatal("Imperative.test.ts test execution error!");
             Logger.getConsoleLogger().fatal(error);

@@ -17,7 +17,7 @@ import { MULTIPLE_GROUPS } from "../__resources__/CommandDefinitions";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { ICommandHandlerRequire } from "../../../../src/cmd/doc/handler/ICommandHandlerRequire";
 
-jest.mock("../../../src/imperative/Imperative");
+jest.mock("../../../../src/imperative/Imperative");
 
 describe("Failed Command Handler", () => {
     it("We should be able to get proper error messages on a non syntax failure", async () => {
@@ -25,7 +25,7 @@ describe("Failed Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/FailedCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/cmd/handlers/FailedCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
         try {
             await handler.process({
@@ -50,7 +50,7 @@ describe("Failed Command Handler", () => {
             primaryTextColor: "yellow",
             silent: true
         });
-        const commandHandler: ICommandHandlerRequire = require("../../src/handlers/FailedCommandHandler");
+        const commandHandler: ICommandHandlerRequire = require("../../../../src/cmd/handlers/FailedCommandHandler");
         const handler: ICommandHandler = new commandHandler.default();
         try {
             await handler.process({

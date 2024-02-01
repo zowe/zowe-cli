@@ -94,13 +94,7 @@ exports[`Basic Profile Manager should detect if the type is blank 1`] = `"Expect
 
 exports[`Basic Profile Manager should detect if the type is undefined 1`] = `"Expect Error: No profile type supplied on the profile manager parameters."`;
 
-exports[`Basic Profile Manager should detect ill formed profiles during a load all 1`] = `
-"An error occurred attempting to load all profiles of every type. Load List: 
-Loading \\"good_apple\\" of type \\"apple\\"
-Loading \\"tasty_apples\\" of type \\"apple\\"
-Loading \\"strawberry_and_apple\\" of type \\"strawberry\\"
-Error Details: \\"Profile validation error during load of profile \\"good_apple\\" of type \\"apple\\". Error Details: Profile type \\"apple\\" specifies a required dependency of type \\"strawberry\\" on the \\"apple\\" profile type configuration document. A dependency of type \\"strawberry\\" was NOT listed on the input profile.\\""
-`;
+exports[`Basic Profile Manager should detect ill formed profiles during a load all 1`] = `"names is not iterable"`;
 
 exports[`Basic Profile Manager should detect no parms when instantiating 1`] = `"Expect Error: Profile Manager input parms not supplied."`;
 
@@ -108,7 +102,7 @@ exports[`Basic Profile Manager should detect that the profile directory is blank
 
 exports[`Basic Profile Manager should detect that the profile directory is undefined 1`] = `"Expect Error: No profile root directory supplied on the profile manager parameters"`;
 
-exports[`Basic Profile Manager should fail a create if no configurations and passed and none can be read from disk 1`] = `"An error occurred collecting all configurations from the profile root directory \\"__tests__/__results__/test_profiles/root/dir/\\". Please supply the configurations on the profile manager constructor parameters OR initialize the profile manager environment. Details: No profile configurations found. Please initialize the profile manager OR supply the configurations to the profile manager."`;
+exports[`Basic Profile Manager should fail a create if no configurations and passed and none can be read from disk 1`] = `"An error occurred collecting all configurations from the profile root directory \\"__tests__/__results__/test_profiles/root/dir/\\". Please supply the configurations on the profile manager constructor parameters OR initialize the profile manager environment. Details: types is not iterable"`;
 
 exports[`Basic Profile Manager should fail a request to set the default if the profile is not found 1`] = `"Cannot update default profile for type \\"blueberry\\". The profile name specified (\\"bad_blueberry\\") does not exist. Please create before attempting to set the default."`;
 

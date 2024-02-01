@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../src/LoggerUtils");
+jest.mock("../../../../src/logger/LoggerUtils");
 
 import { ConnectionPropsForSessCfg } from "../../../../src/rest/session/ConnectionPropsForSessCfg";
 import { CliUtils } from "../../../../src/utilities/CliUtils";

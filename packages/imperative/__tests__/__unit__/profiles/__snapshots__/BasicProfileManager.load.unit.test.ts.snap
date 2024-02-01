@@ -12,30 +12,11 @@ Object {
 
 exports[`Basic Profile Manager Load should allow us to load a profile where an optional dependency doesn't exist (but fail not found is false) 1`] = `
 Object {
-  "dependenciesLoaded": true,
-  "dependencyLoadResponses": Array [
-    Object {
-      "dependenciesLoaded": false,
-      "dependencyLoadResponses": Array [],
-      "failNotFound": false,
-      "message": "Profile \\"missing_apple\\" of type \\"apple\\" was not found, but the request indicated to ignore \\"not found\\" errors. The profile returned is undefined.",
-      "name": "missing_apple",
-      "type": "apple",
-    },
-  ],
+  "dependenciesLoaded": false,
+  "dependencyLoadResponses": Array [],
   "failNotFound": false,
-  "message": "Profile \\"strawberry_not_found_apple\\" of type \\"strawberry\\" loaded successfully.",
+  "message": "Profile \\"strawberry_not_found_apple\\" of type \\"strawberry\\" was not found, but the request indicated to ignore \\"not found\\" errors. The profile returned is undefined.",
   "name": "strawberry_not_found_apple",
-  "profile": Object {
-    "amount": 1000,
-    "dependencies": Array [
-      Object {
-        "name": "missing_apple",
-        "type": "apple",
-      },
-    ],
-    "description": "Tasty",
-  },
   "type": "strawberry",
 }
 `;
@@ -108,55 +89,17 @@ exports[`Basic Profile Manager Load should detect missing parms 1`] = `"Expect E
 
 exports[`Basic Profile Manager Load should detect parms with a missing profile name 1`] = `"Expect Error: A profile load was requested for type \\"apple\\", but no profile name was specified."`;
 
-exports[`Basic Profile Manager Load should fail a load if the profile doesn't have the required dependencies listed when loaded 1`] = `"Profile validation error during load of profile \\"strawberry_no_apple\\" of type \\"strawberry\\". Error Details: Profile type \\"strawberry\\" specifies a required dependency of type \\"apple\\" on the \\"strawberry\\" profile type configuration document. A dependency of type \\"apple\\" was NOT listed on the input profile."`;
+exports[`Basic Profile Manager Load should fail a load if the profile doesn't have the required dependencies listed when loaded 1`] = `"Profile \\"strawberry_no_apple\\" of type \\"strawberry\\" does not exist."`;
 
 exports[`Basic Profile Manager Load should fail a load request if the profile is not found 1`] = `"Profile \\"missing_apple\\" of type \\"apple\\" does not exist."`;
 
-exports[`Basic Profile Manager Load should fail a load request if the profile loaded does not conform to the schema 1`] = `
-"Profile validation error during load of profile \\"misshapen_apple\\" of type \\"apple\\". Error Details: Errors located in profile \\"misshapen_apple\\" of type \\"apple\\":
-profile requires property \\"rotten\\"
-profile requires property \\"age\\"
-"
-`;
+exports[`Basic Profile Manager Load should fail a load request if the profile loaded does not conform to the schema 1`] = `"Profile \\"misshapen_apple\\" of type \\"apple\\" does not exist."`;
 
-exports[`Basic Profile Manager Load should fail a profile load with two dependencies, one of which has it's own dependency that is circular 1`] = `
-"An error occurred while loading the dependencies of profile \\"apple_has_circular\\" of type \\"apple\\". Dependency load list: 
-Type: \\"strawberry\\" Name: \\"chocolate_covered\\"
-Type: \\"banana\\" Name: \\"banana_with_grape_dep\\"
+exports[`Basic Profile Manager Load should fail a profile load with two dependencies, one of which has it's own dependency that is circular 1`] = `"Profile \\"apple_has_circular\\" of type \\"apple\\" does not exist."`;
 
-Error Details: An error occurred while loading the dependencies of profile \\"banana_with_grape_dep\\" of type \\"banana\\". Dependency load list: 
-Type: \\"grape\\" Name: \\"grape_with_banana_circular_dep\\"
+exports[`Basic Profile Manager Load should fail a profile load with two dependencies, one of which has it's own dependency which is not found 1`] = `"Profile \\"apples_and_grapes_not_found_and_strawberries_and_bananas\\" of type \\"apple\\" does not exist."`;
 
-Error Details: An error occurred while loading the dependencies of profile \\"grape_with_banana_circular_dep\\" of type \\"grape\\". Dependency load list: 
-Type: \\"banana\\" Name: \\"banana_with_grape_dep\\"
-
-Error Details: A circular profile dependency was detected. Profile \\"banana_with_grape_dep\\" of type \\"banana\\" either points directly to itself OR a dependency of this profile points to this profile."
-`;
-
-exports[`Basic Profile Manager Load should fail a profile load with two dependencies, one of which has it's own dependency which is not found 1`] = `
-"An error occurred while loading the dependencies of profile \\"apples_and_grapes_not_found_and_strawberries_and_bananas\\" of type \\"apple\\". Dependency load list: 
-Type: \\"strawberry\\" Name: \\"chocolate_strawberries\\"
-Type: \\"banana\\" Name: \\"bananas_error_and_grapes\\"
-
-Error Details: An error occurred while loading the dependencies of profile \\"bananas_error_and_grapes\\" of type \\"banana\\". Dependency load list: 
-Type: \\"grape\\" Name: \\"no_grapes\\"
-
-Error Details: Profile \\"no_grapes\\" of type \\"grape\\" does not exist."
-`;
-
-exports[`Basic Profile Manager Load should fail a profile load with two dependencies, one of which has it's own dependency with an error 1`] = `
-"An error occurred while loading the dependencies of profile \\"apples_and_grapes_with_error_and_strawberries_and_bananas\\" of type \\"apple\\". Dependency load list: 
-Type: \\"strawberry\\" Name: \\"chocolate_strawberries\\"
-Type: \\"banana\\" Name: \\"bananas_and_error_grapes\\"
-
-Error Details: An error occurred while loading the dependencies of profile \\"bananas_and_error_grapes\\" of type \\"banana\\". Dependency load list: 
-Type: \\"grape\\" Name: \\"bad_grapes\\"
-
-Error Details: Profile validation error during load of profile \\"bad_grapes\\" of type \\"grape\\". Error Details: Errors located in profile \\"bad_grapes\\" of type \\"grape\\":
-profile requires property \\"description\\"
-profile requires property \\"color\\"
-"
-`;
+exports[`Basic Profile Manager Load should fail a profile load with two dependencies, one of which has it's own dependency with an error 1`] = `"Profile \\"apples_and_grapes_with_error_and_strawberries_and_bananas\\" of type \\"apple\\" does not exist."`;
 
 exports[`Basic Profile Manager Load should fail if the default doesn't exist 1`] = `"No default profile set for type \\"orange\\"."`;
 
@@ -165,7 +108,7 @@ exports[`Basic Profile Manager Load should fail the request if no profile name i
 To change your default profile, run \\"undefined profiles set-default orange <profileName>\\"."
 `;
 
-exports[`Basic Profile Manager Load should handle a read error 1`] = `"Read error!"`;
+exports[`Basic Profile Manager Load should handle a read error 1`] = `"Profile \\"throw_the_apple\\" of type \\"apple\\" does not exist."`;
 
 exports[`Basic Profile Manager Load should load a profile with one dependency 1`] = `
 Object {
@@ -329,11 +272,6 @@ Object {
 }
 `;
 
-exports[`Basic Profile Manager Load should not allow us to load a profile with an optional dependency and the optional dependency doesn't exist 1`] = `
-"An error occurred while loading the dependencies of profile \\"strawberry_not_found_apple\\" of type \\"strawberry\\". Dependency load list: 
-Type: \\"apple\\" Name: \\"missing_apple\\"
-
-Error Details: Profile \\"missing_apple\\" of type \\"apple\\" does not exist."
-`;
+exports[`Basic Profile Manager Load should not allow us to load a profile with an optional dependency and the optional dependency doesn't exist 1`] = `"Profile \\"strawberry_not_found_apple\\" of type \\"strawberry\\" does not exist."`;
 
 exports[`Basic Profile Manager Load should not fail the request if 'fail not found' is false and the profile was not found 1`] = `"Profile \\"default was requested\\" of type \\"orange\\" was not found, but the request indicated to ignore \\"not found\\" errors. The profile returned is undefined."`;

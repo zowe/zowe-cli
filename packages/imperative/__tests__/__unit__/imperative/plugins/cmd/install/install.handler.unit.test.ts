@@ -367,7 +367,7 @@ describe("Plugin Management Facility install handler", () => {
         });
 
         jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 1 } as any);
-        mocks.getRegistry.mockImplementationOnce(jest.requireActual("../../../../src/plugins/utilities/NpmFunctions").getRegistry);
+        mocks.getRegistry.mockImplementationOnce(jest.requireActual("../../../../src/imperative/plugins/utilities/NpmFunctions").getRegistry);
 
         try {
             await handler.process(params);

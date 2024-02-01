@@ -9,8 +9,8 @@
 *
 */
 
-import { ImperativeConfig } from "../../../../../utilities/src//ImperativeConfig";
-import { Config } from "../../../../../config/src/__mocks__/Config";
+import { ImperativeConfig } from "../../../../../src/utilities/ImperativeConfig";
+import { Config } from "../../../../../src/config/Config";
 
 /**
  * Mock PMFConstants class
@@ -47,6 +47,6 @@ export class PMFConstants {
         this.PLUGIN_HOME_LOCATION = `${this.PLUGIN_INSTALL_LOCATION}/lib/node_modules`;
         this.PLUGIN_NODE_MODULE_LOCATION = [this.PLUGIN_HOME_LOCATION];
         this.PLUGIN_USING_CONFIG = true;
-        this.PLUGIN_CONFIG = Config.load(ImperativeConfig.instance.hostPackageName);
+        this.PLUGIN_CONFIG = Config.load(ImperativeConfig.instance.hostPackageName) as any;
     }
 }
