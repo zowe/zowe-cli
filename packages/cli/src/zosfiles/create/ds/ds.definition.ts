@@ -52,7 +52,6 @@ export const DsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes,
         ZosFilesCreateExtraOptions.like
     ].sort((a, b) => a.name.localeCompare(b.name)),

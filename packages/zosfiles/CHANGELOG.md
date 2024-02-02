@@ -5,7 +5,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## Recent Changes
 
 - LTS Breaking: Removed the unused protected property `mSshProfile` in SshBaseHandler.
--
+- LTS Breaking: Removed the following previously deprecated items:
+  - Removed `ZosFilesCreateExtraOptions.showAttributes` without replacement
+  - Removed `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from ZosFiles.messages.ts
+
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
