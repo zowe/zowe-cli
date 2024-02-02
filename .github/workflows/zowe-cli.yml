@@ -16,6 +16,13 @@ on:
         description: Specify whether to run tests using the `binary` or regular `nodejs` executable
         default: binary
         required: false
+      macos-type:
+        type: choice
+        description: Run against x86-based MacOS (12), otherwise run against ARM64-based MacOS (14)
+        default: macos-14
+        options:
+          - macos-12
+          - macos-14
 
 jobs:
   test:
@@ -28,7 +35,10 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [18.x, 20.x]
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: 
+          - windows-latest
+          - ubuntu-latest
+          - ${{ github.event.inputs.macos-type || 'macos-14'}}
 
     env:
       OS: ${{ matrix.os }}
