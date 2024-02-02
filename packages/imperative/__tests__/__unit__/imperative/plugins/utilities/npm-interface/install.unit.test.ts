@@ -19,8 +19,8 @@ jest.mock("jsonfile");
 jest.mock("find-up");
 jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
 jest.mock("../../../../../../src/imperative/plugins/PluginManagementFacility");
-jest.mock("../../../../../../src/ConfigurationLoader");
-jest.mock("../../../../../../src/UpdateImpConfig");
+jest.mock("../../../../../../src/imperative/ConfigurationLoader");
+jest.mock("../../../../../../src/imperative/UpdateImpConfig");
 jest.mock("../../../../../../src/config/ConfigSchema");
 jest.mock("../../../../../../src/logger");
 jest.mock("../../../../../../src/cmd/response/CommandResponse");
@@ -443,7 +443,7 @@ describe("PMF: Install Interface", () => {
                 });
 
             // gain access to the non-exported callPluginPostInstall function
-            installModule = require("../../../../src/plugins/utilities/npm-interface/install");
+            installModule = require("../../../../../../src/imperative/plugins/utilities/npm-interface/install");
             callPluginPostInstall = installModule.onlyForTesting.callPluginPostInstall;
         });
 
