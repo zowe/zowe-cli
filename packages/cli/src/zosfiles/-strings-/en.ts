@@ -767,7 +767,8 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Edit the contents of the data set member "ibmuser.cntl(iefbr14)"`,
-                    EX2: `Edit the contents of the USS file "ibmuser.jcl(iefbr14)" and set extension as "jcl"`,
+                    EX2: `Edit the contents of the data set member "ibmuser.jcl(iefbr14)" and set extension as "jcl"`,
+                    EX3: `Edit the contents of the data set member "ibmuser.jcl(iefbr14)" with binary flag set`,
                 }
             },
             USS_FILE: {
@@ -778,15 +779,18 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Edit the contents of the USS file "/a/ibmuser/my_text.txt" in notepad`,
-                    EX2: `Edit the contents of the USS file "/a/ibmuser/my_jcl.jcl" in notepad and set extension as "jcl"`,
+                    EX2: `Edit the contents of the USS file "/a/ibmuser/my_jcl.jcl" with binary flag set`,
                 }
             }
         },
         OPTIONS: {
-            EDITOR: `Set the default editor that you wish to use for editing. Set the option to the editor's executable file location ` +
+            EDITOR: `Editor that overrides the default editor for this file type. Set the option to the editor's executable file location ` +
             `or the program's name: ie "--editor notepad"`,
             EXTENSION: `Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ` +
-            `ie "--extension jcl"`
+            `ie "--extension jcl"`,
+            BINARY: "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
+            ENCODING: "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding " +
+                "specified."
         }
     },
     COMPARE: {
