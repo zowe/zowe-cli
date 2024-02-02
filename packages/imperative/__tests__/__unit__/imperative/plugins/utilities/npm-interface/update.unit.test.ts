@@ -14,10 +14,10 @@ import Mock = jest.Mock;
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("../../../../../../src/imperative/plugins/utilities/PMFConstants");
-jest.mock("../../../../../../src/imperative/logger/Logger");
-jest.mock("../../../../../../src/imperative/cmd/response/CommandResponse");
-jest.mock("../../../../../../src/imperative/cmd/response/HandlerResponse");
-jest.mock("../../../../../../src/imperative/imperative/utilities/NpmFunctions");
+jest.mock("../../../../../../src/logger/Logger");
+jest.mock("../../../../../../src/cmd/response/CommandResponse");
+jest.mock("../../../../../../src/cmd/response/HandlerResponse");
+jest.mock("../../../../../../src/imperative/plugins/utilities/NpmFunctions");
 
 import { Console } from "../../../../../../src/console";
 import { IPluginJson } from "../../../../../../src/imperative/plugins/doc/IPluginJson";

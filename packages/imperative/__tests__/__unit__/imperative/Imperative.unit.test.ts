@@ -38,12 +38,12 @@ describe("Imperative", () => {
             jest.doMock("../../../src/imperative/config/ConfigManagementFacility");
             jest.doMock("../../../src/imperative/plugins/PluginManagementFacility");
             jest.doMock("../../../src/settings/AppSettings");
-            jest.doMock("../../../src/imperative/logger/Logger");
+            jest.doMock("../../../src/logger/Logger");
             jest.doMock("../../../src/imperative/env/EnvironmentalVariableSettings");
             jest.doMock("../../../src/imperative/auth/builders/CompleteAuthGroupBuilder");
             jest.doMock("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
             jest.doMock("../../../src/config/Config");
-            jest.doMock("../../../src/imperative/security/CredentialManagerFactory");
+            jest.doMock("../../../src/security/CredentialManagerFactory");
             jest.doMock("../../../src/utilities/EnvFileUtils");
 
             const { OverridesLoader } = require("../../../src/imperative/OverridesLoader");
@@ -54,13 +54,13 @@ describe("Imperative", () => {
             const { ImperativeConfig } = require("../../../src/utilities/ImperativeConfig");
             const { ConfigManagementFacility } = require("../../../src/imperative/config/ConfigManagementFacility");
             const { PluginManagementFacility } = require("../../../src/imperative/plugins/PluginManagementFacility");
-            const { Logger } = require("../../../src/imperative/logger/Logger");
+            const { Logger } = require("../../../src/logger/Logger");
             const { EnvironmentalVariableSettings } = require("../../../src/imperative/env/EnvironmentalVariableSettings");
             const { CompleteAuthGroupBuilder } = require("../../../src/imperative/auth/builders/CompleteAuthGroupBuilder");
             const { CompleteAutoInitCommandBuilder } =
                 require("../../../src/imperative/config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder");
             const { Config } = require("../../../src/config/Config");
-            const { CredentialManagerFactory } = require("../../../src/imperative/security/CredentialManagerFactory");
+            const { CredentialManagerFactory } = require("../../../src/security/CredentialManagerFactory");
             const { EnvFileUtils } = require("../../../src/utilities/EnvFileUtils");
             return {
                 OverridesLoader: {

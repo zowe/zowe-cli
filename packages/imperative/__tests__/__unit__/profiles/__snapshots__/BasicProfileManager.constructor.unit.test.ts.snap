@@ -4,7 +4,7 @@ exports[`Basic Profile Manager Constructor should detect if the type is blank 1`
 
 exports[`Basic Profile Manager Constructor should detect if the type is undefined 1`] = `"Expect Error: No profile type supplied on the profile manager parameters."`;
 
-exports[`Basic Profile Manager Constructor should detect ill-formed meta profile configurations 1`] = `"An error occurred collecting all configurations from the profile root directory \\"__tests__/__results__/test_profiles/root/dir//FRUIT_BAD_BASKET/\\". Please supply the configurations on the profile manager constructor parameters OR initialize the profile manager environment. Details: Expect Error: A meta profile of type \\"mango\\", does NOT supply a configuration."`;
+exports[`Basic Profile Manager Constructor should detect ill-formed meta profile configurations 1`] = `"An error occurred collecting all configurations from the profile root directory \\"__tests__/__results__/test_profiles/root/dir//FRUIT_BAD_BASKET/\\". Please supply the configurations on the profile manager constructor parameters OR initialize the profile manager environment. Details: types is not iterable"`;
 
 exports[`Basic Profile Manager Constructor should detect no parms when instantiating 1`] = `"Expect Error: Profile Manager input parms not supplied."`;
 

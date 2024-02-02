@@ -10,7 +10,7 @@
 */
 
 const PluginManagementFacility: any =
-    (jest.genMockFromModule("../PluginManagementFacility") as any).PluginManagementFacility;
+    (jest.createMockFromModule("../../../../,,/../src/plugins/PluginManagementFacility") as any).PluginManagementFacility;
 
 PluginManagementFacility.instance = new PluginManagementFacility();
 

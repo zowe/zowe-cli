@@ -15,7 +15,7 @@ import { Imperative } from "../../../../../";
 import Mock = jest.Mock;
 
 jest.mock("cross-spawn");
-jest.mock("../../../src/plugins/utilities/PMFConstants");
+jest.mock("../../../../../src/imperative/plugins/utilities/PMFConstants");
 
 const pluginName = "fakePluginName";
 const cmdOutputJson = {

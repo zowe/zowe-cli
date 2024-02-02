@@ -20,6 +20,7 @@ import { IO } from "../../../../src/io";
 import { OUTPUT_FORMAT } from "../../../..";
 import { CliUtils } from "../../../../src/utilities/CliUtils";
 import { IDaemonResponse } from "../../../../src/utilities/doc/IDaemonResponse";
+import { TextUtils } from "../../../../src/utilities/TextUtils";
 
 const beforeForceColor = process.env.FORCE_COLOR;
 
