@@ -19,7 +19,7 @@ jobs:
       ZOWEX_VERSION: ${{ steps.get-version.outputs.ZOWEX_VERSION }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Get version
       id: get-version
