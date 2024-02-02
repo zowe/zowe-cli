@@ -73,6 +73,43 @@ export default {
             }
         }
     },
+    SEARCH: {
+        SUMMARY: "Search the spool output of a z/OS job",
+        DESCRIPTION: "Search the spool output of a job.",
+        ACTIONS: {
+            JOB: {
+                SUMMARY: "Search the spool output of a job.",
+                DESCRIPTION: "Search the spool output of a job.",
+                POSITIONALS: {
+                    JOBNAME: "The job name to search. Wildcards are accepted for the job name." +
+                        " You can use, for example \"USERJOB*\" to search all jobs that start" +
+                        " with USERJOB."
+                },
+                OPTIONS: {
+                    SEARCHSTRING: "The string to search for in the spool output",
+                    SEARCHREGEX: "The regular expression to search for in the spool output",
+                    CASEINSENSITIVE: "The search is case insensitive or not",
+                    SEARCHLIMIT: "The maximum number of matching lines to return for an individual spool file",
+                    FILELIMIT: "The maximum number of spool files to search."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Search all jobs named USERJOB for the string \"RC=0000\"",
+                        OPTIONS: "\"USERJOB\" --search-string \"RC=0000\"",
+                    },
+                    EX2: {
+                        DESCRIPTION: "Search all jobs that start with USER for the string \"ENDED\"",
+                        OPTIONS: "\"USER*\" --search-string \"ENDED\"",
+                    },
+                    EX3: {
+                        DESCRIPTION: "Search all jobs named USERJOB for the string \"COND CODE\", with the options" +
+                        " case sensitive and a search limit of 5",
+                        OPTIONS: "\"USERJOB\" --search-string \"COND CODE\" --case-insensitive false --search-limit 5"
+                    },
+                }
+            }
+        }
+    },
     DELETE: {
         SUMMARY: "Delete a z/OS job or jobs",
         DESCRIPTION: "Delete a single job by job ID or delete multiple jobs in OUTPUT status.",
