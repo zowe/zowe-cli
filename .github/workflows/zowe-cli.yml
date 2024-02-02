@@ -158,6 +158,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         env_vars: OS,NODE
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   release:
     if: github.event_name == 'push' && github.ref_protected
