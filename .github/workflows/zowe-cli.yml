@@ -53,10 +53,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         check-latest: true
@@ -105,7 +105,7 @@ jobs:
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: upload-binary
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-${{ matrix.os }}.tgz
         path: zowe.tgz
@@ -147,14 +147,14 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
         path: __tests__/__results__/
 
     - name: Upload Results to Codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         env_vars: OS,NODE
 
@@ -165,7 +165,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -173,7 +173,7 @@ jobs:
 
     # Use Node 20. Currently the latest.
     - name: Use Node.js 20
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '20'
 
