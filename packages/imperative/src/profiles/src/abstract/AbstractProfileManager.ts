@@ -23,13 +23,9 @@ import {
     IProfileDependency,
     IProfileLoaded,
     IProfileManager,
-    IProfileSaved,
     IProfileSchema,
     IProfileTypeConfiguration,
-    IProfileUpdated,
     IProfileValidated,
-    ISaveProfile,
-    IUpdateProfile,
     IValidateProfile,
     IValidateProfileWithSchema,
     ILoadAllProfiles
@@ -382,66 +378,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     }
 
     /**
-     * Save a profile to disk. Ensures that the profile specified is valid (basic and schema validation) and invokes the implementations
-     * "saveProfile" method to perform the save and formulate the response.
-     * @template S
-     * @param {ISaveProfile} parms - See interface for details
-     * @returns {Promise<IProfileSaved>} - The promise that is fulfilled with the response object (see interface for details) or rejected
-     * with an Imperative Error.
-     * @memberof AbstractProfileManager
-     */
-    public async save<S extends ISaveProfile>(parms: S): Promise<IProfileSaved> {
-        // Validate the input parameters
-        ImperativeExpect.toNotBeNullOrUndefined(parms,
-            `A request was made to save a profile of type "${this.profileType}", but no parameters were supplied.`);
-        ImperativeExpect.keysToBeDefined(parms, ["profile"],
-            `A request was made to save a profile of type "${this.profileType}", but no profile was supplied.`);
-        ImperativeExpect.keysToBeDefined(parms, ["name"],
-            `A request was made to save a profile of type "${this.profileType}", but no name was supplied.`);
-
-        // Ensure that the type is filled in - a mismatch will be thrown if the type indicates a type other than the manager's current type
-        parms.type = parms.type || this.profileType;
-
-        // Log the invocation
-        this.log.info(`Saving profile "${parms.name}" of type "${this.profileType}"...`);
-
-        // Perform basic profile object validation (not specific to create - just that the object is correct for our usage here)
-        this.log.debug(`Validating the profile ("${parms.name}" of type "${this.profileType}") before save.`);
-        await this.validate({
-            name: parms.name,
-            profile: parms.profile
-        });
-
-        // Protect against overwriting the profile - unless explicitly requested
-        this.protectAgainstOverwrite(parms.name, parms.overwrite || false);
-
-        // Invoke the implementation
-        this.log.trace(`Invoking save profile of implementation...`);
-        const response = await this.saveProfile(parms);
-        if (isNullOrUndefined(response)) {
-            throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile save response.`},
-                {tag: `Internal Profile Management Error`});
-        }
-
-        // If the meta file exists - read to ensure that the name of the default is not null or undefined - this can
-        // happen after the profile environment is initialized for the first time.
-        if (this.locateExistingProfile(this.constructMetaName())) {
-            const meta = this.readMeta(this.constructFullProfilePath(this.constructMetaName()));
-            if (isNullOrUndefined(meta.defaultProfile)) {
-                this.log.debug(`Setting "${parms.name}" of type "${parms.type}" as the default profile.`);
-                this.setDefault(parms.name);
-            }
-        } else if (parms.updateDefault || isNullOrUndefined(this.locateExistingProfile(this.constructMetaName()))) {
-            this.log.debug(`Setting "${parms.name}" of type "${parms.type}" as the default profile.`);
-            this.setDefault(parms.name);
-        }
-
-        // Return the save/create response to the caller
-        this.log.info(`Save API complete for profile "${parms.name}" of type "${this.profileType}".`);
-        return response;
-    }
-
-    /**
      * Load a profile from disk. Ensures that the parameters are valid and loads the profile specified by name OR the default profile if
      * requested. If load default is requested, any name supplied is ignored.
      * @template L
@@ -707,35 +643,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     }
 
     /**
-     * Update the profile - The action performed is dictacted by the implementation of the Abstract manager.
-     * @template U
-     * @param {IUpdateProfile} parms - See the interface for details
-     * @returns {Promise<IProfileUpdated>} - The promise that is fulfilled with the response object (see interface for details) or rejected
-     * with an Imperative Error.
-     * @memberof AbstractProfileManager
-     */
-    public async update<U extends IUpdateProfile>(parms: U): Promise<IProfileUpdated> {
-        // Validate the input parameters are correct
-        ImperativeExpect.toNotBeNullOrUndefined(parms,
-            `An update for a profile of type "${this.profileType}" was requested, but no parameters were specified.`);
-        ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["name"],
-            `An update for a profile of type "${this.profileType}" was requested, but no name was specified.`);
-
-        // Log the API call
-        this.log.info(`Updating profile "${parms.name}" of type "${this.profileType}"...`);
-
-        // Invoke the implementation
-        this.log.trace(`Invoking update profile implementation for profile "${parms.name}" of type "${this.profileType}".`);
-        const response = await this.updateProfile(parms);
-        if (isNullOrUndefined(response)) {
-            throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile update response.`},
-                {tag: `Internal Profile Management Error`});
-        }
-
-        return response;
-    }
-
-    /**
      * Sets the default profile for the profile managers type.
      * @param {string} name - The name of the new default
      * @returns {string} - The response string (or an error is thrown if the request cannot be completed);
@@ -856,17 +763,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     public abstract loadAll(parms?: ILoadAllProfiles): Promise<IProfileLoaded[]>;
 
     /**
-     * Save profile - performs the profile save according to the implementation - invoked when all parameters are valid
-     * (according the abstract manager).
-     * @protected
-     * @abstract
-     * @param {ISaveProfile} parms - See interface for details
-     * @returns {Promise<IProfileSaved>} - The promise fulfilled with response or rejected with an ImperativeError.
-     * @memberof AbstractProfileManager
-     */
-    protected abstract saveProfile(parms: ISaveProfile): Promise<IProfileSaved>;
-
-    /**
      * Save profile - performs the profile load according to the implementation - invoked when all parameters are valid
      * (according the abstract manager).
      * @protected
@@ -898,17 +794,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      * @memberof AbstractProfileManager
      */
     protected abstract validateProfile(parms: IValidateProfileWithSchema): Promise<IProfileValidated>;
-
-    /**
-     * Update profile - performs the profile update according to the implementation - invoked when all parameters are valid
-     * (according the abstract manager).
-     * @protected
-     * @abstract
-     * @param {IUpdateProfile} parms - See interface for details
-     * @returns {Promise<IProfileUpdated>} - The promise fulfilled with response or rejected with an ImperativeError.
-     * @memberof AbstractProfileManager
-     */
-    protected abstract updateProfile(parms: IUpdateProfile): Promise<IProfileUpdated>;
 
     /**
      * Load a profiles dependencies - dictacted by the implementation.

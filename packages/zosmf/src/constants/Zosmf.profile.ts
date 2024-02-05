@@ -115,11 +115,5 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
                 "'port', 'reject-unauthorized', 'user', and 'password' values for the API Mediation Layer in a base profile and only store " +
                 "the 'base-path' of the service in the zosmf profile"
         }
-    ],
-    updateProfileExamples: [
-        {
-            options: "zos123 --user newuser --password newp4ss",
-            description: "Update a zosmf profile named 'zos123' with a new username and password"
-        }
     ]
 };

@@ -402,12 +402,6 @@ export class ProfileConstants {
                 description: "Create a zosmf profile called 'base4' to connect to default port 443 and allow self-signed certificates, " +
             "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
             }
-        ],
-        updateProfileExamples: [
-            {
-                options: "base1 --user newuser --password newp4ss",
-                description: "Update a base profile named 'base1' with a new username and password"
-            }
         ]
     };
 }

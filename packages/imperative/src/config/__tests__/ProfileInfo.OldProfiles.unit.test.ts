@@ -456,53 +456,41 @@ describe("Old-school ProfileInfo tests", () => {
     });
 
     describe("updateProperty and updateKnownProperty", () => {
-        it("should succeed if the property is known", async () => {
+        it("should throw an error trying to update a property in V1 profiles", async () => {
             const testProf = "lpar4_zosmf";
-            const testHost = "lpar4.fakehost.com";
             const profInfo = createNewProfInfo(homeDirPath);
             await profInfo.readProfilesFromDisk();
-            const before = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
-            await profInfo.updateProperty({ profileName: testProf, profileType: "zosmf", property: "host", value: "example.com" });
-            const after = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
 
-            expect(before.knownArgs.find(v => v.argName === "host").argValue).toEqual(testHost);
-            expect(after.knownArgs.find(v => v.argName === "host").argValue).toEqual("example.com");
-
-            await profInfo.updateProperty({ profileName: testProf, profileType: "zosmf", property: "host", value: testHost });
-            const afterTests = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
-            expect(afterTests.knownArgs.find(v => v.argName === "host").argValue).toEqual(testHost);
-        });
-
-        it("should add a new property if it does not exist in the profile then remove it if undefined is specified", async () => {
-            const profInfo = createNewProfInfo(homeDirPath);
-            await profInfo.readProfilesFromDisk();
-            const testProf = "lpar4_zosmf";
-            const before = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
-            await profInfo.updateProperty({ profileName: testProf, profileType: "zosmf", property: "dummy", value: "example.com" });
-            const after = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
-
-            expect(before.knownArgs.find(v => v.argName === "dummy")).toBeUndefined();
-            expect(after.knownArgs.find(v => v.argName === "dummy").argValue).toEqual("example.com");
-
-            await profInfo.updateProperty({ profileName: testProf, profileType: "zosmf", property: "dummy", value: undefined });
-            const removed = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
-            expect(removed.knownArgs.find(v => v.argName === "dummy")).toBeUndefined();
+            let caughtError;
+            try {
+                await profInfo.updateProperty({ profileName: testProf, profileType: "zosmf", property: "host", value: "example.com" });
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError instanceof ProfInfoErr).toBe(true);
+            expect(caughtError.message).toContain(
+                "You can no longer write to V1 profiles. Location type = " + ProfLocType.OLD_PROFILE
+            );
         });
     });
 
     describe("removeKnownProperty oldProfile tests", () => {
-        it("should remove property", async () => {
+        it("should throw an error trying to removeKnownProperty in V1 profiles", async () => {
             const profInfo = createNewProfInfo(homeDirPath);
             await profInfo.readProfilesFromDisk();
-            const testProf = "lpar4_zosmf";
-            await profInfo.updateProperty({ profileName: testProf, profileType: "zosmf", property: "dummy", value: "example.com"});
-            const afterUpdate = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
+            jest.spyOn(profInfo as any, "loadSchema").mockReturnValueOnce({});
+            const mergedArgsForTest = profInfo.mergeArgsForProfileType("cics");
 
-            await profInfo.removeKnownProperty({mergedArgs: afterUpdate, property: 'dummy'});
-            const afterRemove = profInfo.mergeArgsForProfile((profInfo.getAllProfiles("zosmf").find(v => v.profName === testProf)) as IProfAttrs);
-
-            expect(afterUpdate.knownArgs.find(v => v.argName === "dummy")?.argValue).toEqual("example.com");
-            expect(afterRemove.knownArgs.find(v => v.argName === "dummy")).toBeUndefined();
+            let caughtError;
+            try {
+                await profInfo.removeKnownProperty({ mergedArgs: mergedArgsForTest, property: "user" });
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError instanceof ProfInfoErr).toBe(true);
+            expect(caughtError.message).toContain(
+                "You can no longer write to V1 profiles. Location type = " + ProfLocType.OLD_PROFILE
+            );
         });
     });
 

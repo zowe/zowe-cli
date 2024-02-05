@@ -5,19 +5,35 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - LTS Breaking:
-  - Removed the following functions:
+  - Removed the following obsolete V1 profile interfaces:
+    - ICommandProfileTypeConfiguration.updateProfileExamples
+    - ICommandProfileTypeConfiguration.updateProfileFromArgumentsHandler
+    - IProfileSaved
+    - ISaveProfile
+    - ISaveProfileFromCliArgs
+    - IUpdateProfile
+    - IUpdateProfileFromCliArgs
+
+  - Removed the following obsolete V1 profile functions:
+    - AbstractProfileManager.save
+    - AbstractProfileManager.saveProfile
+    - AbstractProfileManager.update
+    - BasicProfileManager.saveProfile
+    - BasicProfileManager.updateProfile
+    - CliProfileManager.saveProfile
+    - CliProfileManager.updateProfile
     - CommandProfiles.getMeta
     - CommandProfiles.getAll
   - Annotated the following items as @internal:
     - CommandProfiles.get
     - IHandlerParameters.profiles
-  - Removed the following obsolete constants from the ProfilesConstants class:
+  - Removed the following obsolete V1 profile constants from the ProfilesConstants class:
     - DEPRECATE_TO_CONFIG_EDIT
     - DEPRECATE_TO_CONFIG_INIT
     - DEPRECATE_TO_CONFIG_LIST
     - DEPRECATE_TO_CONFIG_SET
     - PROFILES_COMMAND_TYPE_KEY
-  - Removed the following obsolete constants from the CoreMessages class:
+  - Removed the following obsolete V1 profile constants from the CoreMessages class:
     - createProfileCommandSummary
     - createProfileDisableDefaultsDesc
     - createProfileOptionDesc

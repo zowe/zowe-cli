@@ -16,18 +16,13 @@ import {
     IProfile,
     IProfileDeleted,
     IProfileLoaded,
-    IProfileSaved,
     IProfileTypeConfiguration,
-    IProfileUpdated,
     IProfileValidated,
-    ISaveProfile,
-    IUpdateProfile,
     IValidateProfileWithSchema
 } from "./doc";
 
 import { isNullOrUndefined } from "util";
 import { ImperativeError } from "../../error";
-import { ProfileIO } from "./utils";
 
 /**
  * Basic Profile Manager is the most basic implementation of the Imperative Profile Manager. In general, it invokes
@@ -153,44 +148,10 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
     }
 
     /**
-     * Save the profile to disk. First ensures that all dependencies are valid and writes the profile.
-     * @protected
-     * @param {ISaveProfile} parms - Save control params - see the interface for full details
-     * @returns {Promise<IProfileSaved>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
-     * @memberof BasicProfileManager
-     */
-    protected async saveProfile(parms: ISaveProfile): Promise<IProfileSaved> {
-        // Validate that the dependencies listed exist before saving
-        try {
-            this.log.debug(`Loading dependencies for profile "${parms.name}" of type "${this.profileType}", ` +
-                `checking if if they are valid (before save.)`);
-            await this.loadDependencies(parms.name, parms.profile);
-        } catch (e) {
-            throw new ImperativeError({
-                msg: `Could not save the profile, because one or more dependencies is invalid or does not exist.\n` +
-                    `Load Error Details: ${e.message}`
-            });
-        }
-
-        // Construct the full file path, write to disk, and return the response
-        this.log.info(`Saving profile "${parms.name}" of type "${this.profileType}"...`);
-        const path = this.constructFullProfilePath(parms.name);
-        ProfileIO.writeProfile(path, parms.profile);
-        this.log.info(`Profile "${parms.name}" of type "${this.profileType}" saved.`);
-        return {
-            path,
-            overwritten: parms.overwrite || false,
-            message: `Profile ("${parms.name}" of type "${this.profileType}") ` +
-                `successfully written: ${path}`,
-            profile: parms.profile
-        };
-    }
-
-    /**
      * Load a profile from disk - invokes the "loadSpecificProfile" method in the abstract to perform the load.
      * @protected
      * @param {ILoadProfile} parms - Load control params - see the interface for full details
-     * @returns {Promise<IProfileSaved>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
+     * @returns {Promise<IProfileLoaded>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
      * @memberof BasicProfileManager
      */
     protected async loadProfile(parms: ILoadProfile): Promise<IProfileLoaded> {
@@ -244,36 +205,6 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
         this.log.debug(`Profile "${parms.name}" of type "${this.profileType}" is valid.`);
         return {
             message: `Profile "${parms.name}" of type "${this.profileType}" is valid.`
-        };
-    }
-
-    /**
-     * Update a profile - Accepts the "new" version of the profile and overwrites the existing profile on disk.
-     * @protected
-     * @param {IUpdateProfile} parms - Update control params - see the interface for full details
-     * @returns {Promise<IProfileUpdated>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
-     * @memberof BasicProfileManager
-     */
-    protected async updateProfile(parms: IUpdateProfile): Promise<IProfileUpdated> {
-        this.log.trace(`Saving (as part of updating) profile "${parms.name}" of type "${this.profileType}".`);
-        if (parms.merge) {
-            this.log.debug(`Profile merging was requested. Loading the old version of the profile ` +
-                `"${parms.name}" of type "${this.profileType}".`);
-            const oldProfileLoad = await this.load({name: parms.name, failNotFound: true});
-            parms.profile = this.mergeProfiles(oldProfileLoad.profile, parms.profile);
-            this.log.debug(`Merged profile "${parms.name}" of type "${this.profileType}" with old version`);
-        }
-        const response = await this.save({
-            name: parms.name,
-            type: this.profileType,
-            profile: parms.profile,
-            overwrite: true
-        });
-        this.log.trace(`Save of profile "${parms.name}" of type "${this.profileType}" complete.`);
-        return {
-            path: response.path,
-            message: `Profile "${parms.name}" of type "${this.profileType}" updated successfully.`,
-            profile: response.profile
         };
     }
 }

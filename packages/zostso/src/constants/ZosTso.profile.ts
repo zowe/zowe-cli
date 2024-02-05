@@ -73,11 +73,5 @@ export const ZosTsoProfile: ICommandProfileTypeConfiguration = {
                 "account on disk",
             options: "myprof2 --rs 8192"
         }
-    ],
-    updateProfileExamples: [
-        {
-            description: "Update a tso profile called myprof with new JES accounting information",
-            options: "myprof -a NEWACCT"
-        }
     ]
 };

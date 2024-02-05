@@ -212,43 +212,34 @@ export class ProfileInfo {
             }
         }
         if (!(await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] }))) {
-            if (this.usingTeamConfig) {
-                // Check to see if loadedConfig already contains the schema for the specified profile type
-                if (ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === options.profileType)?.schema == null ||
-                    ImperativeConfig.instance.loadedConfig?.baseProfile?.schema == null) {
+            // Check to see if loadedConfig already contains the schema for the specified profile type
+            if (ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === options.profileType)?.schema == null ||
+                ImperativeConfig.instance.loadedConfig?.baseProfile?.schema == null) {
 
-                    const loadedConfig = ImperativeConfig.instance.loadedConfig;
-                    if (!loadedConfig.profiles) loadedConfig.profiles = [];
-                    this.mProfileSchemaCache.forEach((value: IProfileSchema, key: string) => {
-                        if (key.indexOf(":base") > 0 && loadedConfig.baseProfile == null) {
-                            loadedConfig.baseProfile = { type: "base", schema: value };
-                        } else if (key.indexOf(":base") < 0 && !loadedConfig.profiles.find(p => p.type === key.split(":")[1])) {
-                            // Add the schema corresponding to the given profile type
-                            loadedConfig.profiles.push({ type: key.split(":")[1], schema: value });
-                        }
-                    });
-                    ImperativeConfig.instance.loadedConfig = loadedConfig;
-                }
-
-                await ConfigAutoStore._storeSessCfgProps({
-                    config: this.mLoadedConfig,
-                    defaultBaseProfileName: this.mLoadedConfig?.mProperties.defaults.base,
-                    sessCfg: {
-                        [options.property === "host" ? "hostname" : options.property]: options.value
-                    },
-                    propsToStore: [options.property],
-                    profileName: options.profileName,
-                    profileType: options.profileType,
-                    setSecure: options.setSecure
+                const loadedConfig = ImperativeConfig.instance.loadedConfig;
+                if (!loadedConfig.profiles) loadedConfig.profiles = [];
+                this.mProfileSchemaCache.forEach((value: IProfileSchema, key: string) => {
+                    if (key.indexOf(":base") > 0 && loadedConfig.baseProfile == null) {
+                        loadedConfig.baseProfile = { type: "base", schema: value };
+                    } else if (key.indexOf(":base") < 0 && !loadedConfig.profiles.find(p => p.type === key.split(":")[1])) {
+                        // Add the schema corresponding to the given profile type
+                        loadedConfig.profiles.push({ type: key.split(":")[1], schema: value });
+                    }
                 });
-            } else {
-                const profMgr = new CliProfileManager({ profileRootDirectory: this.mOldSchoolProfileRootDir, type: options.profileType });
-                // Add new property
-                await profMgr.update({ name: options.profileName, merge: true, profile: { [options.property]: options.value } });
-
-                // Update mOldSchoolProfileCache to get mergedArgs updated
-                this.mOldSchoolProfileCache.find(v => v.name === options.profileName).profile[options.property] = options.value;
+                ImperativeConfig.instance.loadedConfig = loadedConfig;
             }
+
+            await ConfigAutoStore._storeSessCfgProps({
+                config: this.mLoadedConfig,
+                defaultBaseProfileName: this.mLoadedConfig?.mProperties.defaults.base,
+                sessCfg: {
+                    [options.property === "host" ? "hostname" : options.property]: options.value
+                },
+                propsToStore: [options.property],
+                profileName: options.profileName,
+                profileType: options.profileType,
+                setSecure: options.setSecure
+            });
         }
     }
 
@@ -269,27 +260,6 @@ export class ProfileInfo {
         }
 
         switch (toUpdate.argLoc.locType) {
-            case ProfLocType.OLD_PROFILE: {
-                const filePath = toUpdate.argLoc.osLoc;
-                const profileName = ProfileIO.fileToProfileName(filePath[0], "." + filePath[0].split(".").slice(-1)[0]);
-                const profileType = filePath[0].substring(this.mOldSchoolProfileRootDir.length + 1).split(path.sep)[0];
-                const profMgr = new CliProfileManager({ profileRootDirectory: this.mOldSchoolProfileRootDir, type: profileType });
-                if (options.value !== undefined) {
-                    await profMgr.update({ name: profileName, merge: true, profile: { [options.property]: options.value } });
-                } else {
-                    // Remove existing property (or don't do anything)
-                    const oldProf = await profMgr.load({ name: profileName, failNotFound: false });
-                    if (oldProf && oldProf.profile && oldProf.profile[options.property]) {
-                        delete oldProf.profile[options.property];
-                        await profMgr.save({ name: profileName, profile: oldProf.profile, overwrite: true, type: profileType });
-                    }
-                }
-
-                // Update mOldSchoolProfileCache to get mergedArgs updated
-                const profile = this.mOldSchoolProfileCache.find(v => v.name === profileName);
-                if (profile != null) profile.profile[options.property] = options.value; // What should we do in the else case?
-                break;
-            }
             case ProfLocType.TEAM_CONFIG: {
                 let oldLayer: IProfLocOsLocLayer;
                 const layer = this.getTeamConfig().layerActive();
@@ -312,9 +282,13 @@ export class ProfileInfo {
             case ProfLocType.DEFAULT:
                 return false;
             default: {
+                let msgText = "Invalid profile location type: ";
+                if (toUpdate.argLoc.locType == ProfLocType.OLD_PROFILE) {
+                    msgText = "You can no longer write to V1 profiles. Location type = ";
+                }
                 throw new ProfInfoErr({
                     errorCode: ProfInfoErr.INVALID_PROF_LOC_TYPE,
-                    msg: "Invalid profile location type: " + toUpdate.argLoc.locType
+                    msg: msgText + toUpdate.argLoc.locType
                 });
             }
         }

@@ -23,11 +23,7 @@ export * from "./src/doc/api/IProfileManagerFactory";
 export * from "./src/doc/parms/IDeleteProfile";
 export * from "./src/doc/parms/ILoadProfile";
 export * from "./src/doc/parms/IProfileManager";
-export * from "./src/doc/parms/ISaveProfile";
-export * from "./src/doc/parms/ISaveProfileFromCliArgs";
 export * from "./src/doc/parms/ISetDefaultProfile";
-export * from "./src/doc/parms/IUpdateProfile";
-export * from "./src/doc/parms/IUpdateProfileFromCliArgs";
 export * from "./src/doc/parms/IValidateProfile";
 export * from "./src/doc/parms/IValidateProfileForCLI";
 export * from "./src/doc/parms/IValidateProfileWithSchema";
@@ -36,8 +32,6 @@ export * from "./src/doc/api/IProfileManagerFactory";
 
 export * from "./src/doc/response/IProfileDeleted";
 export * from "./src/doc/response/IProfileLoaded";
-export * from "./src/doc/response/IProfileSaved";
-export * from "./src/doc/response/IProfileUpdated";
 export * from "./src/doc/response/IProfileValidated";
 
 export * from "./src/utils/ProfileIO";

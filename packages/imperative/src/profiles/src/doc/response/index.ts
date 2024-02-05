@@ -11,7 +11,4 @@
 
 export * from "./IProfileDeleted";
 export * from "./IProfileLoaded";
-export * from "./IProfileSaved";
-export * from "./IProfileUpdated";
 export * from "./IProfileValidated";
-

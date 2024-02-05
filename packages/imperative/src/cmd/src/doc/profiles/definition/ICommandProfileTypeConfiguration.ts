@@ -42,35 +42,12 @@ export interface ICommandProfileTypeConfiguration extends IProfileTypeConfigurat
      */
     createProfileFromArgumentsHandler?: string;
     /**
-     * The module's default export should be a handler that calls appendResponseObject on the provided
-     * commandParameters.response You do NOT have to implement writing the profile to disk -- you only have to produce
-     * the final profile object that you would like to be written.
-     *
-     * This is only required if finished updated profile can't be created directly from the arguments, e.g.
-     * if certain fields that the user might specify mean that other fields should be deleted or updated.
-     *
-     * If omitted, Imperative will load the old profile, overwrite any fields specified by the user,
-     * and write the updated profile to disk.
-     *
-     * @type {string}
-     * @memberof IProfileTypeConfiguration
-     */
-    updateProfileFromArgumentsHandler?: string;
-    /**
      * Examples to be displayed in the help text for the auto generated create profile command.
      *
      * @type {ICommandExampleDefinition[]}
      * @memberof IProfileTypeConfiguration
      */
     createProfileExamples?: ICommandExampleDefinition[];
-
-    /**
-     * Examples to be displayed in the help text for the auto generated update profile command.
-     *
-     * @type {ICommandExampleDefinition[]}
-     * @memberof IProfileTypeConfiguration
-     */
-    updateProfileExamples?: ICommandExampleDefinition[];
 
     /**
      * The JSON schema document. The schema document provides a way to enforce the contents of a profile. The schema

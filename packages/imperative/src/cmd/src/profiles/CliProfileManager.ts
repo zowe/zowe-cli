@@ -12,12 +12,7 @@
 import {
     BasicProfileManager,
     IProfile,
-    IProfileManager,
-    IProfileSaved,
-    IProfileUpdated,
     IProfileValidated,
-    ISaveProfileFromCliArgs,
-    IUpdateProfileFromCliArgs,
     IValidateProfileForCLI,
     ProfilesConstants,
     ProfileUtils
@@ -108,75 +103,6 @@ export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeCo
         }
 
         return allProfiles;
-    }
-
-    /**
-     * Overridden saveProfile functionality.
-     * If CLI args are provided, profile fields are built from the args.
-     * Otherwise BaseProfileManager functionality is used.
-     * @param {ISaveProfileFromCliArgs} parms - parameters for the save, potentially including CLI args
-     * @returns {Promise<IProfileSaved>} - promise which fulfills with the save results
-     */
-    protected async saveProfile(parms: ISaveProfileFromCliArgs): Promise<IProfileSaved> {
-        // If the arguments are present, build the new profile from the arguments
-        // Otherwise, just save the profile passed.
-        this.log.trace("Cli save profile entered");
-        const validationParms: IValidateProfileForCLI = JSON.parse(JSON.stringify(parms));
-        validationParms.readyForValidation = true;
-
-        if (parms.args != null) {
-            this.log.trace(`Arguments supplied, constructing profile from arguments:\n${inspect(parms.args, {depth: null})}`);
-            parms.profile = await this.createProfileFromCommandArguments(parms.args, parms.profile);
-
-            validationParms.profile = parms.profile;
-            delete parms.args;
-            this.log.debug(`Validating profile build (name: ${parms.name}).`);
-            await this.validate(validationParms); // validate now that the profile has been built
-        } else {
-            // profile should already be ready
-            this.log.trace("No arguments specified, performing the basic validation (schema, etc.).");
-            await this.validate(validationParms);
-        }
-        parms.profile = await this.processSecureProperties(parms.name, parms.profile);
-        return super.saveProfile(parms);
-    }
-
-    /**
-     * Overridden updateProfile functionality
-     * If CLI args are provided, profile fields are built from the arguments. Otherwise
-     * the BaseProfileManager update functionality is used
-     *
-     * @param {IUpdateProfileFromCliArgs} parms - parameters, potentially including CLI args
-     * @returns {Promise<IProfileUpdated>} - promise which contains the updated profile, path, and message
-     *                                       when fulfilled
-     */
-    protected async updateProfile(parms: IUpdateProfileFromCliArgs): Promise<IProfileUpdated> {
-        // If there are arguments present, then it is assumed that we want to update from the args,
-        // otherwise we will invoke the default updateProfile which assumes that the profile update
-        // has already been constructed and just needs to be saved.
-        // When updating from the args, we do not need to run validation twice when saving the profile
-        let updated: any;
-        if (parms.args != null) {
-            const newManagerParams: IProfileManager<ICommandProfileTypeConfiguration> = JSON.parse(JSON.stringify(this.managerParameters));
-            newManagerParams.loadCounter = this.loadCounter;
-            newManagerParams.logger = this.log;
-            const loadedProfile = await new CliProfileManager(newManagerParams).loadProfile({name: parms.name});
-            updated = await this.updateProfileFromCliArgs(parms, loadedProfile.profile,
-                (parms.profile == null) ? {} : parms.profile);
-            delete parms.args;
-            this.log.debug("Profile \"%s\" of type \"%s\" has been updated from CLI arguments. " +
-                "Validating the structure of the profile.", parms.name, this.profileType);
-        } else {
-            updated = await super.updateProfile(parms);
-            this.log.debug("No CLI args were provided. Used the BasicProfileManager update API");
-
-            const validationParms: IValidateProfileForCLI = JSON.parse(JSON.stringify(parms));
-            validationParms.readyForValidation = true;
-            validationParms.profile = updated.profile;
-            await this.validateProfile(validationParms);
-        }
-
-        return updated;
     }
 
     /**
@@ -455,115 +381,6 @@ export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeCo
         }
 
         return profile;
-    }
-
-    /**
-     * Update an existing profile with arguments from the user based on
-     * the schema and configuration for this profile type
-     * @param {IUpdateProfileFromCliArgs} parms - parameters including args
-     * @param {IProfile} oldProfile - the pre-existing profile to update
-     * @param {IProfile} newProfile - new profile which will have fields set from CLI args
-     * @returns {Promise<IProfileUpdated>}  promise which provides the finished profile on fulfill
-     */
-    private async updateProfileFromCliArgs(parms: IUpdateProfileFromCliArgs, oldProfile: IProfile, newProfile: IProfile): Promise<IProfileUpdated> {
-        // Create the modified profile from the CLI arguments
-        const updatedProfile = await this.updateProfileFieldsFromCommandArguments(oldProfile, newProfile, parms.args, parms.merge);
-        // Save the profile (basically just overwrites the old profile)
-        let createResponse: IProfileSaved;
-        try {
-            this.log.info("Saving updated profile \"%s\" of type \"%s\"",
-                parms.name, this.profileType);
-            createResponse = await this.saveProfile({
-                name: parms.name,
-                type: this.profileType,
-                profile: updatedProfile,
-                updateDefault: false,
-                overwrite: true,
-            });
-        } catch (saveErr) {
-            throw new ImperativeError({
-                msg: `An error occurred while saving the modified profile ` +
-                    `("${parms.name}" of type "${this.profileType}"): ${saveErr.message}`
-            });
-        }
-
-        // Return the success response
-        return {
-            profile: updatedProfile,
-            path: createResponse.path,
-            message: `Profile "${parms.name}" of type "${this.profileType}" successfully updated from command line arguments.`
-        };
-    }
-
-    /**
-     *
-     * If a custom handler is provided for update, the handler will be loaded and invoked
-     * in order to build the finished profile
-     * @param {IProfile} oldProfile - the old profile to update
-     * @param newProfile - new profile which may have fields populated, which will be updated from the CLI args
-     * @param {yargs.Arguments} newArguments - CLi arguments specified by the user
-     * @param merge - should the profiles be merged? (will be skipped if there is a custom update profile handler)
-     * @returns {Promise<IProfile>} - promise which provides the finished profile on fulfill
-     */
-    private async updateProfileFieldsFromCommandArguments(oldProfile: IProfile, newProfile: IProfile, newArguments: Arguments,
-        merge: boolean): Promise<IProfile> {
-        const profileConfig = this.profileTypeConfiguration;
-        if (profileConfig.updateProfileFromArgumentsHandler != null) {
-            // if there is a custom update profile handler, they can call mergeProfile
-            // from their handler, so we will not do it for them to avoid issues
-            this.log.debug("Loading custom update profile handler: " + profileConfig.updateProfileFromArgumentsHandler);
-            const response = new CommandResponse({silent: true});
-            let handler: ICommandHandler;
-            try {
-                const commandHandler: ICommandHandlerRequire = require(profileConfig.updateProfileFromArgumentsHandler);
-                handler = new commandHandler.default();
-            } catch (e) {
-                const errorMessage = this.log.error(`Error encountered loading custom update profile handler ` +
-                    `${profileConfig.updateProfileFromArgumentsHandler}:\n` + +e.message);
-                throw new ImperativeError(
-                    {
-                        msg: errorMessage,
-                        causeErrors: [e],
-                        stack: e.stack
-                    });
-            }
-            try {
-                await handler.process({
-                    arguments: CliUtils.buildBaseArgs(newArguments),
-                    positionals: newArguments._,
-                    response,
-                    fullDefinition: undefined,
-                    definition: undefined,
-                    profiles: new CommandProfiles(new Map<string, IProfile[]>()),
-                    stdin: process.stdin
-                });
-            } catch (invokeErr) {
-                const errorMessage = this.log.error(`Error encountered updating profile of type ${this.profileType} ` +
-                    ` with custom update profile handler ` +
-                    `("${profileConfig.updateProfileFromArgumentsHandler}"):` +
-                    invokeErr.message);
-                throw new ImperativeError(
-                    {
-                        msg: errorMessage,
-                        causeErrors: [invokeErr],
-                        stack: invokeErr.stack
-                    });
-            }
-
-            // zeroth response object is specified to be
-            // the finalized profile
-            const finishedProfile = response.buildJsonResponse().data;
-            this.insertDependenciesIntoProfileFromCLIArguments(newArguments, finishedProfile);
-            return finishedProfile;
-        } else {
-            this.log.debug("No custom update profile handler was specified. Building profile from CLI arguments");
-            await this.insertCliArgumentsIntoProfile(newArguments, newProfile);
-            if (merge) {
-                this.log.debug("Merging new profile created from CLI arguments with existing profile");
-                newProfile = this.mergeProfiles(oldProfile, newProfile);
-            }
-            return newProfile;
-        }
     }
 
     /**
