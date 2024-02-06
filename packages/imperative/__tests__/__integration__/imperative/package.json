@@ -1,6 +1,7 @@
 {
   "name": "imperative-test-cli",
   "version": "0.0.0",
+  "zoweVersion": "V99",
   "description": "Imperative Test CLI",
   "license": "EPL 2.0",
   "repository": "",
