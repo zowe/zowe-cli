@@ -14,10 +14,6 @@ import { ICommandProfileTypeConfiguration } from "../../src/doc/profiles/definit
 import { ProfileIO } from "../../../profiles/src/utils/ProfileIO";
 import { CliProfileManager } from "../../src/profiles/CliProfileManager";
 import { IProfile } from "../../../profiles/src/doc/definition/IProfile";
-import { inspect } from "util";
-import { ImperativeError } from "../../../error/src/ImperativeError";
-import { PROFILE_TYPE } from "../../../../__tests__/src/packages/profiles/src/constants/BasicProfileManagerTestConstants";
-import { TEST_PROFILE_ROOT_DIR } from "../../../profiles/__tests__/TestConstants";
 import { IProfileLoaded } from "../../..";
 
 jest.mock("../../../profiles/src/utils/ProfileIO");
