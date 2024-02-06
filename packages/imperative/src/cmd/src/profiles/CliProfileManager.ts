@@ -44,6 +44,7 @@ export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeCo
      * REASON: We needed the Abstract profile manager to call the CLI profile manager to handle loading of secure properties
      * Loads all profiles from every type. Profile types are determined by reading all directories within the
      * profile root directory.
+     * @internal
      * @returns {Promise<IProfileLoaded[]>} - The list of all profiles for every type
      */
     public async loadAll(params?: ICliLoadAllProfiles): Promise<IProfileLoaded[]> {

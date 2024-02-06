@@ -47,6 +47,7 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
     /**
      * Loads all profiles from every type. Profile types are deteremined by reading all directories within the
      * profile root directory.
+     * @internal
      * @returns {Promise<IProfileLoaded[]>} - The list of all profiles for every type
      * @memberof BasicProfileManager
      */

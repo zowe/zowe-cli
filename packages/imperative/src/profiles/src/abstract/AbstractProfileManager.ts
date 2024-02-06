@@ -685,6 +685,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     /**
      * Load all profiles - the behavior is dictated by the implementation.
      * @abstract
+     * @internal
      * @param {ILoadAllProfiles} [parms] - the load parameters - See interface for details
      * @returns {Promise<IProfileLoaded[]>} - The list of profiles when the promise is fulfilled or rejected with an ImperativeError.
      * @memberof AbstractProfileManager
