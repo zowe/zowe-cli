@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402021649`
 
 - LTS Breaking: Removed the unused protected property `mSshProfile` in SshBaseHandler.
 - LTS Breaking: Removed the following previously deprecated items:
