@@ -15,11 +15,9 @@ import { Logger } from "../../../logger";
 import { ImperativeError } from "../../../error";
 import * as nodePath from "path";
 import {
-    IDeleteProfile,
     ILoadProfile,
     IMetaProfile,
     IProfile,
-    IProfileDeleted,
     IProfileDependency,
     IProfileLoaded,
     IProfileManager,
@@ -574,75 +572,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     }
 
     /**
-     * Deletes a profile from disk. Ensures that the parameters are correct and removes the profile. If the profile is listed as a dependency of
-     * other profiles it will NOT delete the profile unless "rejectIfDependency" is set to false.
-     * @template D
-     * @param {IDeleteProfile} parms - See the interface for details
-     * @returns {Promise<IProfileDeleted>} - The promise that is fulfilled with the response object (see interface for details) or rejected
-     * with an Imperative Error.
-     * @memberof AbstractProfileManager
-     */
-    public async delete<D extends IDeleteProfile>(parms: D): Promise<IProfileDeleted> {
-        // Validate that the delete parms are valid
-        ImperativeExpect.toNotBeNullOrUndefined(parms,
-            `A delete was requested for profile type "${this.profileType}", but no parameters were specified.`);
-        ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["name"],
-            `A delete was requested for profile type "${this.profileType}", but the name specified is undefined or blank.`);
-
-        // Ensure defaults are set
-        parms.rejectIfDependency = (isNullOrUndefined(parms.rejectIfDependency)) ? true : parms.rejectIfDependency;
-
-        // Log the API call
-        this.log.info(`Deleting profile "${parms.name}" of type "${this.profileType}"...`);
-
-        // Check if the profile exists before continuing
-        if (isNullOrUndefined(this.locateExistingProfile(parms.name))) {
-            const msg: string = `Profile "${parms.name}" of type "${this.profileType}" does not exist.`;
-            this.log.error(msg);
-            throw new ImperativeError({msg});
-        }
-
-        // If specified, reject the delete if this profile is listed as dependency for another profile (of any type)
-        if (parms.rejectIfDependency) {
-            this.log.trace(`Reject if dependency was specified, loading all profiles to check if "${parms.name}" of type ` +
-                `"${this.profileType}" is a dependency.`);
-            const allProfiles = await this.loadAll({ noSecure: true });
-            this.log.trace(`All profiles loaded (for dependency check).`);
-            const flatten = ProfileUtils.flattenDependencies(allProfiles);
-            const dependents: IProfile[] = this.isDependencyOf(flatten, parms.name);
-            if (dependents.length > 0) {
-                let depList: string = "";
-                for (const dep of dependents) {
-                    depList += ("\n" + `Name: "${dep.name}" Type: "${dep.type}"`);
-                }
-                const msg: string = `The profile specified for deletion ("${parms.name}" of type ` +
-                    `"${this.profileType}") is marked as a dependency for profiles:` + depList;
-                throw new ImperativeError({msg});
-            }
-        }
-
-        this.log.trace(`Invoking implementation to delete profile "${parms.name}" of type "${this.profileType}".`);
-        const response = await this.deleteProfile(parms);
-        if (isNullOrUndefined(response)) {
-            throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile delete response.`},
-                {tag: `Internal Profile Management Error`});
-        }
-
-        // If the meta file exists - read to check if the name of the default profile is the same as
-        // the profile that was deleted. If so, reset it to null.
-        if (this.locateExistingProfile(this.constructMetaName())) {
-            const meta = this.readMeta(this.constructFullProfilePath(this.constructMetaName()));
-            if (meta.defaultProfile === parms.name) {
-                this.log.debug(`Profile deleted was the default. Clearing the default profile for type "${this.profileType}".`);
-                this.clearDefault();
-                response.defaultCleared = true;
-            }
-        }
-
-        return response;
-    }
-
-    /**
      * Sets the default profile for the profile managers type.
      * @param {string} name - The name of the new default
      * @returns {string} - The response string (or an error is thrown if the request cannot be completed);
@@ -774,17 +703,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     protected abstract loadProfile(parms: ILoadProfile): Promise<IProfileLoaded>;
 
     /**
-     * Delete profile - performs the profile delete according to the implementation - invoked when all parameters are valid
-     * (according the abstract manager).
-     * @protected
-     * @abstract
-     * @param {IDeleteProfile} parms - See interface for details
-     * @returns {Promise<IProfileDeleted>} - The promise fulfilled with response or rejected with an ImperativeError.
-     * @memberof AbstractProfileManager
-     */
-    protected abstract deleteProfile(parms: IDeleteProfile): Promise<IProfileDeleted>;
-
-    /**
      * Validate profile - performs the profile validation according to the implementation - invoked when all parameters are valid
      * (according the abstract manager).
      * @protected
@@ -806,19 +724,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      * @memberof AbstractProfileManager
      */
     protected abstract loadDependencies(name: string, profile: IProfile, failNotFound: boolean): Promise<IProfileLoaded[]>;
-
-    /**
-     * Invokes the profile IO method to delete the profile from disk.
-     * @protected
-     * @param {string} name - The name of the profile to delete.
-     * @returns {string} - The path where the profile was.
-     * @memberof AbstractProfileManager
-     */
-    protected deleteProfileFromDisk(name: string): string {
-        const profileFullPath: string = this.locateExistingProfile(name);
-        ProfileIO.deleteProfile(name, profileFullPath);
-        return profileFullPath;
-    }
 
     /**
      * Performs basic validation of a profile object - ensures that all fields are present (if required).

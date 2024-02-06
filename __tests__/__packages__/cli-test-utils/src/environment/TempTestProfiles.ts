@@ -16,10 +16,9 @@
 import * as fs from "fs";
 
 import { v4 as uuidv4 } from "uuid";
-import { Config, ImperativeError, IO } from "@zowe/imperative";
+import { Config } from "@zowe/imperative";
 
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { runCliScript, stripProfileDeprecationMessages } from "../TestUtils";
 
 /**
  * Utilities for creating and cleaning up temporary profiles for tests
@@ -54,12 +53,6 @@ export class TempTestProfiles {
         `issue other commands.`;
 
     /**
-     * Override for the ZOWE_CLI_TEST_OLD_PROFILES environment variable. If
-     * set to true, old-school profiles will be created instead of team config.
-     */
-    public static forceOldProfiles: boolean = false;
-
-    /**
      * Create profiles for tests from data in the properties yaml file
      * @param {ITestEnvironment} testEnvironment - with working directory and test properties loaded
      * @param {string[]} profileTypes - array of types of profiles to create
@@ -73,11 +66,7 @@ export class TempTestProfiles {
         const profileNames: { [key: string]: string[] } = {};
         this.log(testEnvironment, "Creating the following profileTypes: " + profileTypes);
         for (const profileType of profileTypes) {
-            if (this.usingTeamConfig) {
-                profileNames[profileType] = [await this.createV2Profile(testEnvironment, profileType)];
-            } else {
-                profileNames[profileType] = [await this.createV1Profile(testEnvironment, profileType)];
-            }
+            profileNames[profileType] = [await this.createV2Profile(testEnvironment, profileType)];
         }
         return profileNames;
     }
@@ -94,11 +83,7 @@ export class TempTestProfiles {
         this.log(testEnvironment, "Deleting the following profiles:\n" + JSON.stringify(profiles));
         for (const profileType of Object.keys(profiles)) {
             for (const profileName of profiles[profileType]) {
-                if (this.usingTeamConfig) {
-                    await this.deleteV2Profile(testEnvironment, profileType, profileName);
-                } else {
-                    await this.deleteV1Profile(testEnvironment, profileType, profileName);
-                }
+                await this.deleteV2Profile(testEnvironment, profileType, profileName);
             }
         }
     }
@@ -110,44 +95,6 @@ export class TempTestProfiles {
      * @type {number}
      */
     private static readonly MAX_UUID_LENGTH = 20;
-
-    /**
-     * Whether new team config profiles should be used instead of old school
-     * profiles.
-     */
-    private static get usingTeamConfig(): boolean {
-        if (this.forceOldProfiles) return false;
-        const envOldProfiles = process.env.ZOWE_CLI_TEST_OLD_PROFILES;
-        return envOldProfiles !== "1" && envOldProfiles?.toLowerCase() !== "true";
-    }
-
-    /**
-     * Helper to create a temporary old school profile from test properties
-     * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
-     * @returns {Promise<string>} promise that resolves to the name of the created profile on success
-     * @throws errors if the profile creation fails
-     */
-    private static async createV1Profile(testEnvironment: ITestEnvironment<any>, profileType: string): Promise<string> {
-        const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_" + profileType;
-        let createProfileScript = this.SHEBANG +
-            `${this.BINARY_NAME} profiles create ${profileType} ${profileName}`;
-        for (const [k, v] of Object.entries(testEnvironment.systemTestProperties[profileType])) {
-            createProfileScript += ` ${(k.length > 1) ? "--" : "-"}${k} ${v}`;
-        }
-        const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
-        await IO.writeFileAsync(scriptPath, createProfileScript);
-        const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || stripProfileDeprecationMessages(output.stderr).length > 0) {
-            throw new ImperativeError({
-                msg: `Creation of ${profileType} profile '${profileName}' failed! You should delete the script: ` +
-                    `'${scriptPath}' after reviewing it to check for possible errors. Stderr of the profile create ` +
-                    `command:\n` + output.stderr.toString() + TempTestProfiles.GLOBAL_INSTALL_NOTE
-            });
-        }
-        IO.deleteFile(scriptPath);
-        this.log(testEnvironment, `Created ${profileType} V1 profile '${profileName}'. Stdout from creation:\n${output.stdout.toString()}`);
-        return profileName;
-    }
 
     /**
      * Helper to create a temporary team config profile from test properties
@@ -173,31 +120,6 @@ export class TempTestProfiles {
 
         await config.api.layers.write();
         this.log(testEnvironment, `Created ${profileType} V2 profile '${profileName}'`);
-        return profileName;
-    }
-
-    /**
-     * Helper to delete a temporary old school profile
-     * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
-     * @param {string} profileType - the type of profile e.g. zosmf to
-     * @param {string} profileName - the name of the profile to delete
-     * @returns {Promise<string>} promise that resolves to the name of the created profile on success
-     * @throws errors if the profile delete fails
-     */
-    private static async deleteV1Profile(testEnvironment: ITestEnvironment<any>, profileType: string, profileName: string): Promise<string> {
-        const deleteProfileScript = this.SHEBANG + `${this.BINARY_NAME} profiles delete ${profileType} ${profileName} --force`;
-        const scriptPath = testEnvironment.workingDir + "_delete_profile_" + profileName;
-        await IO.writeFileAsync(scriptPath, deleteProfileScript);
-        const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || stripProfileDeprecationMessages(output.stderr).length > 0) {
-            throw new ImperativeError({
-                msg: "Deletion of " + profileType + " profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
-                    "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
-                    + TempTestProfiles.GLOBAL_INSTALL_NOTE
-            });
-        }
-        this.log(testEnvironment, `Deleted ${profileType} V1 profile '${profileName}'. Stdout from deletion:\n${output.stdout.toString()}`);
-        IO.deleteFile(scriptPath);
         return profileName;
     }
 

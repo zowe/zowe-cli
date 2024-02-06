@@ -20,7 +20,6 @@ export * from "./src/doc/definition/IProfileProperty";
 export * from "./src/doc/definition/IProfileSchema";
 export * from "./src/doc/api/IProfileManagerFactory";
 
-export * from "./src/doc/parms/IDeleteProfile";
 export * from "./src/doc/parms/ILoadProfile";
 export * from "./src/doc/parms/IProfileManager";
 export * from "./src/doc/parms/ISetDefaultProfile";
@@ -30,7 +29,6 @@ export * from "./src/doc/parms/IValidateProfileWithSchema";
 
 export * from "./src/doc/api/IProfileManagerFactory";
 
-export * from "./src/doc/response/IProfileDeleted";
 export * from "./src/doc/response/IProfileLoaded";
 export * from "./src/doc/response/IProfileValidated";
 

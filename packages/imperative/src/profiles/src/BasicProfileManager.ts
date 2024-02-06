@@ -11,10 +11,8 @@
 
 import { AbstractProfileManager } from "./abstract/AbstractProfileManager";
 import {
-    IDeleteProfile,
     ILoadProfile,
     IProfile,
-    IProfileDeleted,
     IProfileLoaded,
     IProfileTypeConfiguration,
     IProfileValidated,
@@ -158,23 +156,6 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
         const loadName: string = (parms.loadDefault || false) ? this.getDefaultProfileName() : parms.name;
         this.log.debug(`Loading profile "${loadName}" (load default: "${parms.loadDefault}") of type "${this.profileType}".`);
         return this.loadSpecificProfile(loadName, parms.failNotFound, parms.loadDependencies);
-    }
-
-    /**
-     * Delete a profile from disk - invokes the "deleteProfileFromDisk" method in the abstract to perform the load.
-     * @protected
-     * @param {IDeleteProfile} parms - Delete control params - see the interface for full details
-     * @returns {Promise<IProfileDeleted>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
-     * @memberof BasicProfileManager
-     */
-    protected async deleteProfile(parms: IDeleteProfile): Promise<IProfileDeleted> {
-        this.log.trace(`Removing profile "${parms.name}" of type "${this.profileType}".`);
-        const path = this.deleteProfileFromDisk(parms.name);
-        this.log.debug(`Profile "${parms.name}" of type "${this.profileType}" successfully deleted.`);
-        return {
-            path,
-            message: `Profile "${parms.name}" of type "${this.profileType}" deleted successfully.`
-        };
     }
 
     /**

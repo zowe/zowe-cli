@@ -27,7 +27,7 @@ import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICo
 import { CommandProfiles } from "./CommandProfiles";
 import { ICommandProfileProperty } from "../doc/profiles/definition/ICommandProfileProperty";
 import { CredentialManagerFactory } from "../../../security";
-import { IDeleteProfile, IProfileDeleted, IProfileLoaded } from "../../../profiles/src/doc";
+import { IProfileLoaded } from "../../../profiles/src/doc";
 import { SecureOperationFunction } from "../types/SecureOperationFunction";
 import { ICliLoadProfile } from "../doc/profiles/parms/ICliLoadProfile";
 import { ICliLoadAllProfiles } from "../doc/profiles/parms/ICliLoadAllProfiles";
@@ -170,56 +170,6 @@ export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeCo
         // Return the loaded profile
         loadedProfile.profile = profile || {};
         return loadedProfile;
-    }
-
-    /**
-     * Overridden loadProfile functionality
-     * Before the BasicProfileManager deletes the profile, we remove the secure properties associated with the profile
-     *
-     * @param {IDeleteProfile} parms - Delete control params - see the interface for full details
-     * @returns {Promise<IProfileDeleted>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
-     */
-    protected async deleteProfile(parms: IDeleteProfile): Promise<IProfileDeleted> {
-
-        // If the credential manager is null, we are using plain text
-        let deleteSecureProperty: SecureOperationFunction;
-        if (CredentialManagerFactory.initialized) {
-            /**
-             * Delete a secure property associated with a given profile
-             * @param {string} propertyNamePath - The path to the property
-             * @return {Promise<string>}
-             */
-            deleteSecureProperty = async (propertyNamePath: string): Promise<void> => {
-                try {
-                    this.log
-                        .debug(`Deleting secured field with key ${propertyNamePath} for profile ("${parms.name}" of type "${this.profileType}").`);
-                    // Use the Credential Manager to store the credentials
-                    await CredentialManagerFactory.manager.delete(
-                        ProfileUtils.getProfilePropertyKey(this.profileType, parms.name, propertyNamePath)
-                    );
-                } catch (err) {
-                    this.log.error(`Unable to delete secure field "${propertyNamePath}" ` +
-                        `associated with profile "${parms.name}" of type "${this.profileType}".`);
-
-                    let additionalDetails: string = err.message + (err.additionalDetails ? `\n${err.additionalDetails}` : "");
-                    additionalDetails = this.addProfileInstruction(additionalDetails);
-                    this.log.error(`Error: ${additionalDetails}`);
-
-                    throw new ImperativeError({
-                        msg: `Unable to delete the secure field "${propertyNamePath}" associated with ` +
-                            `the profile "${parms.name}" of type "${this.profileType}".`,
-                        additionalDetails,
-                        causeErrors: err
-                    });
-                }
-            };
-        }
-
-        for (const prop of Object.keys(this.profileTypeConfiguration.schema.properties)) {
-            await this.findOptions(this.profileTypeConfiguration.schema.properties[prop], prop, null, deleteSecureProperty);
-        }
-
-        return super.deleteProfile(parms);
     }
 
     /**

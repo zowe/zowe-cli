@@ -8,22 +8,33 @@ All notable changes to the Imperative package will be documented in this file.
   - Removed the following obsolete V1 profile interfaces:
     - ICommandProfileTypeConfiguration.updateProfileExamples
     - ICommandProfileTypeConfiguration.updateProfileFromArgumentsHandler
+    - IDeleteProfile
+    - IProfileDeleted
     - IProfileSaved
     - ISaveProfile
     - ISaveProfileFromCliArgs
+    - ISetupEnvironmentParms.createOldProfiles
     - IUpdateProfile
     - IUpdateProfileFromCliArgs
 
   - Removed the following obsolete V1 profile functions:
+    - AbstractProfileManager.delete
+    - AbstractProfileManager.deleteProfile
+    - AbstractProfileManager.deleteProfileFromDisk
     - AbstractProfileManager.save
     - AbstractProfileManager.saveProfile
     - AbstractProfileManager.update
+    - AbstractProfileManager.updateProfile
+    - BasicProfileManager.deleteProfile
     - BasicProfileManager.saveProfile
     - BasicProfileManager.updateProfile
+    - CliProfileManager.deleteProfile
     - CliProfileManager.saveProfile
     - CliProfileManager.updateProfile
     - CommandProfiles.getMeta
     - CommandProfiles.getAll
+    - TempTestProfiles.forceOldProfiles
+    - TestUtils.stripProfileDeprecationMessages
   - Annotated the following items as @internal:
     - CommandProfiles.get
     - IHandlerParameters.profiles

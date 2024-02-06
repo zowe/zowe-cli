@@ -9,6 +9,5 @@
 *
 */
 
-export * from "./IProfileDeleted";
 export * from "./IProfileLoaded";
 export * from "./IProfileValidated";
