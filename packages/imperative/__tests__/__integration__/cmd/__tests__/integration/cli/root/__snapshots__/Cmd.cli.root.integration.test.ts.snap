@@ -125,7 +125,7 @@ exports[`cmd-cli should display the help 1`] = `
 exports[`cmd-cli should display the version 1`] = `
 "================ISSUING VERSION===============
 CLI Version: 0.0.0
-Release Version: V99
+Zowe Release Version: V99
 "
 `;
 

@@ -50,7 +50,7 @@ exports[`Hello World should print help if the option is specified 1`] = `
 
 exports[`Hello World should print version if the option is specified 1`] = `
 "CLI Version: 0.0.0
-Release Version: V99
+Zowe Release Version: V99
 "
 `;
 

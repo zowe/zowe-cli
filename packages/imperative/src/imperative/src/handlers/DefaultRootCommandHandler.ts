@@ -28,7 +28,7 @@ export default class DefaultRootCommandHandler implements ICommandHandler {
             const jsonResponse: IImperativeVersions = { version: packageJson.version };
             params.response.console.log("CLI Version: " + packageJson.version);
             if (packageJson.zoweVersion) {
-                params.response.console.log("Release Version: " + packageJson.zoweVersion);
+                params.response.console.log("Zowe Release Version: " + packageJson.zoweVersion);
                 jsonResponse.zoweVersion = packageJson.zoweVersion;
             }
             params.response.data.setObj(jsonResponse);
