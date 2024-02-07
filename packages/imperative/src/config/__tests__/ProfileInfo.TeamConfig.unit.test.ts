@@ -1416,6 +1416,17 @@ describe("TeamConfig ProfileInfo tests", () => {
                 };
             };
 
+            it("does nothing if there are no layers that match the built layer path", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                (profInfo as any).mProfileSchemaCache = new Map();
+                (profInfo as any).mProfileSchemaCache.set("/some/nonexistent/layer/path:someUnregisteredProfType");
+                const writeFileSync = jest.spyOn(jsonfile, "writeFileSync");
+                writeFileSync.mockReset();
+                (profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any);
+                expect(writeFileSync).not.toHaveBeenCalled();
+            });
+
             // case 1: schema is the same as the cached one; do not write to disk
             it("does not write schema to disk if it hasn't changed", async () => {
                 const blockMocks = getBlockMocks();
