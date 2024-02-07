@@ -57,7 +57,7 @@ const SchemaValidator = require("jsonschema").Validator;
  * means you must supply all configuration information to the manager when creating an instance. See the "initialize()" API
  * method in the "BasicProfileManager" for full details.
  *
- * @export
+ * @internal
  * @abstract
  * @class AbstractProfileManager
  */
@@ -685,7 +685,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     /**
      * Load all profiles - the behavior is dictated by the implementation.
      * @abstract
-     * @internal
      * @param {ILoadAllProfiles} [parms] - the load parameters - See interface for details
      * @returns {Promise<IProfileLoaded[]>} - The list of profiles when the promise is fulfilled or rejected with an ImperativeError.
      * @memberof AbstractProfileManager

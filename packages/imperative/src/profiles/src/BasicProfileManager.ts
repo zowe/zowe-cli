@@ -38,7 +38,7 @@ import { ImperativeError } from "../../error";
  * configuration documents used to construct the CLI's. This is why the initialize() API persists the configuration
  * documents within the meta files for each type.
  *
- * @export
+ * @internal
  * @class BasicProfileManager
  * @extends {AbstractProfileManager<T>}
  * @template T
@@ -47,7 +47,6 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
     /**
      * Loads all profiles from every type. Profile types are deteremined by reading all directories within the
      * profile root directory.
-     * @internal
      * @returns {Promise<IProfileLoaded[]>} - The list of all profiles for every type
      * @memberof BasicProfileManager
      */
