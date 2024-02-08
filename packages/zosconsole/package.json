@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-console-for-zowe-sdk",
-  "version": "7.23.0",
+  "version": "7.23.1",
   "description": "Zowe SDK to interact with the z/OS console",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,9 +45,9 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "7.23.0",
-    "@zowe/core-for-zowe-sdk": "7.23.0",
-    "@zowe/imperative": "5.22.0"
+    "@zowe/cli-test-utils": "7.23.1",
+    "@zowe/core-for-zowe-sdk": "7.23.1",
+    "@zowe/imperative": "5.22.1"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^7.0.0",
