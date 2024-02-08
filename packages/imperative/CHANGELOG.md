@@ -128,6 +128,8 @@ All notable changes to the Imperative package will be documented in this file.
         - validateProfileNameDesc
         - validateProfileOptionDesc
 
+- LTS Breaking: Added Zowe release version output for `--version` [#2028](https://github.com/zowe/zowe-cli/issues/2028)
+
 ## `8.0.0-next.202401191954`
 
 - LTS Breaking: Removed the following:
