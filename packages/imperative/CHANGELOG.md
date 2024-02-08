@@ -7,6 +7,8 @@ All notable changes to the Imperative package will be documented in this file.
 - LTS Breaking:
   - Removed the following obsolete V1 profile interfaces:
     - @zowe/imperative
+      - ICommandProfileTypeConfiguration.createProfileExamples
+      - ICommandProfileTypeConfiguration.createProfileFromArgumentsHandler
       - ICommandProfileTypeConfiguration.updateProfileExamples
       - ICommandProfileTypeConfiguration.updateProfileFromArgumentsHandler
       - IDeleteProfile
@@ -14,6 +16,7 @@ All notable changes to the Imperative package will be documented in this file.
       - IProfileSaved
       - ISaveProfile
       - ISaveProfileFromCliArgs
+      - ISetDefaultProfile
       - IUpdateProfile
       - IUpdateProfileFromCliArgs
     - @zowe/cli-test-utils
@@ -21,11 +24,13 @@ All notable changes to the Imperative package will be documented in this file.
 
   - Removed the following obsolete V1 profile functions:
     - @zowe/imperative
+      - AbstractProfileManager.clearDefault
       - AbstractProfileManager.delete
       - AbstractProfileManager.deleteProfile
       - AbstractProfileManager.deleteProfileFromDisk
       - AbstractProfileManager.save
       - AbstractProfileManager.saveProfile
+      - AbstractProfileManager.setDefault
       - AbstractProfileManager.update
       - AbstractProfileManager.updateProfile
       - BasicProfileManager.deleteProfile
@@ -48,7 +53,8 @@ All notable changes to the Imperative package will be documented in this file.
       - AbstractProfileManager
       - BasicProfileManager
       - CliProfileManager
-      - CommandProfiles.get
+      - CommandProfileLoader
+      - CommandProfiles
       - IHandlerParameters.profiles
 
   - Removed the following obsolete V1 profile constants:

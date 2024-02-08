@@ -20,18 +20,13 @@ import {
 import { inspect } from "util";
 import { ImperativeError } from "../../../error";
 import { Arguments } from "yargs";
-import { CommandResponse } from "../response/CommandResponse";
-import { ICommandHandlerRequire } from "../doc/handler/ICommandHandlerRequire";
-import { ICommandHandler } from "../../src/doc/handler/ICommandHandler";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
-import { CommandProfiles } from "./CommandProfiles";
 import { ICommandProfileProperty } from "../doc/profiles/definition/ICommandProfileProperty";
 import { CredentialManagerFactory } from "../../../security";
 import { IProfileLoaded } from "../../../profiles/src/doc";
 import { SecureOperationFunction } from "../types/SecureOperationFunction";
 import { ICliLoadProfile } from "../doc/profiles/parms/ICliLoadProfile";
 import { ICliLoadAllProfiles } from "../doc/profiles/parms/ICliLoadAllProfiles";
-import { CliUtils } from "../../../utilities/src/CliUtils";
 
 /**
  * A profile management API compatible with transforming command line arguments into
@@ -332,67 +327,6 @@ export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeCo
         }
 
         return profile;
-    }
-
-    /**
-     * Take command line arguments from the user and create a profile from them using the schema and configuration for
-     * the profile type
-     * @param {yargs.Arguments} profileArguments - CLI arguments specified by the user
-     * @param {IProfile} starterProfile - the profile with name and type to use to start the profile creation
-     * @returns {Promise<IProfile>} profile which provides the finished profile on fulfill
-     */
-    private async createProfileFromCommandArguments(profileArguments: Arguments, starterProfile: IProfile): Promise<IProfile> {
-        const profileConfig = this.profileTypeConfiguration;
-        if (profileConfig.createProfileFromArgumentsHandler != null) {
-            const response = new CommandResponse({silent: true, args: profileArguments});
-            let handler: ICommandHandler;
-            try {
-                const commandHandler: ICommandHandlerRequire = require(profileConfig.createProfileFromArgumentsHandler);
-                handler = new commandHandler.default();
-            } catch (e) {
-                const errorMessage = this.log.error(`Error encountered loading custom create profile handler ` +
-                    `${profileConfig.createProfileFromArgumentsHandler}:\n` + +e.message);
-                throw new ImperativeError(
-                    {
-                        msg: errorMessage,
-                        causeErrors: [e],
-                        stack: e.stack
-                    });
-            }
-            try {
-                await handler.process({
-                    arguments: CliUtils.buildBaseArgs(profileArguments),
-                    positionals: profileArguments._,
-                    response,
-                    fullDefinition: undefined,
-                    definition: undefined,
-                    profiles: new CommandProfiles(new Map<string, IProfile[]>()),
-                    stdin: process.stdin
-                });
-            } catch (invokeErr) {
-                const errorMessage = this.log.error("Error encountered building new profile with custom create profile handler:" + invokeErr.message);
-                throw new ImperativeError(
-                    {
-                        msg: errorMessage,
-                        causeErrors: [invokeErr],
-                        stack: invokeErr.stack
-                    });
-            }
-
-            // zeroth response object is specified to be
-            // the finalized profile
-            const finishedProfile = response.buildJsonResponse().data;
-            this.insertDependenciesIntoProfileFromCLIArguments(profileArguments, finishedProfile);
-
-            return finishedProfile;
-        } else {
-            const profile: IProfile = {};
-            // default case - no custom handler
-            // build profile object directly from command arguments
-            await this.insertCliArgumentsIntoProfile(profileArguments, profile);
-            this.insertDependenciesIntoProfileFromCLIArguments(profileArguments, profile);
-            return profile;
-        }
     }
 
     /**

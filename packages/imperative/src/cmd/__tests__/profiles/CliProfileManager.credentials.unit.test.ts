@@ -83,8 +83,6 @@ describe("Cli Profile Manager", () => {
                     minime
                 }
             };
-
-            prof.setDefault = jest.fn();
         });
 
         describe("Load operation", () => {

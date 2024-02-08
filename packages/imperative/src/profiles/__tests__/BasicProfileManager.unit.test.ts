@@ -240,45 +240,4 @@ describe("Basic Profile Manager", () => {
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
     });
-
-    it("should allow us to set the default in the meta profile", () => {
-        let error;
-        let response;
-        try {
-            const prof = new BasicProfileManager({
-                profileRootDirectory: TEST_PROFILE_ROOT_DIR,
-                typeConfigurations: ONLY_BLUEBERRY,
-                type: BLUEBERRY_PROFILE_TYPE,
-                logger: TestLogger.getTestLogger()
-            });
-
-            response = prof.setDefault("tart_blueberry");
-        } catch (e) {
-            error = e;
-            TestLogger.error(e);
-        }
-        expect(error).toBeUndefined();
-        expect(response).toMatchSnapshot();
-    });
-
-    it("should fail a request to set the default if the profile is not found", () => {
-        let error;
-        let response;
-        try {
-            const prof = new BasicProfileManager({
-                profileRootDirectory: TEST_PROFILE_ROOT_DIR,
-                typeConfigurations: ONLY_BLUEBERRY,
-                type: BLUEBERRY_PROFILE_TYPE,
-                logger: TestLogger.getTestLogger()
-            });
-            response = prof.setDefault("bad_blueberry");
-        } catch (e) {
-            error = e;
-            TestLogger.info(e);
-        }
-        expect(error).toBeDefined();
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-        expect(response).toBeUndefined();
-    });
 });

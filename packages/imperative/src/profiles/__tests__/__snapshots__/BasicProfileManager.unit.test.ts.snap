@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Basic Profile Manager should allow us to set the default in the meta profile 1`] = `"Default profile for type \\"blueberry\\" set to \\"tart_blueberry\\"."`;
-
 exports[`Basic Profile Manager should create an instance and read all configurations from the meta files 1`] = `
 Array [
   Object {
@@ -109,8 +107,6 @@ exports[`Basic Profile Manager should detect that the profile directory is blank
 exports[`Basic Profile Manager should detect that the profile directory is undefined 1`] = `"Expect Error: No profile root directory supplied on the profile manager parameters"`;
 
 exports[`Basic Profile Manager should fail a create if no configurations and passed and none can be read from disk 1`] = `"An error occurred collecting all configurations from the profile root directory \\"__tests__/__results__/test_profiles/root/dir/\\". Please supply the configurations on the profile manager constructor parameters OR initialize the profile manager environment. Details: No profile configurations found. Please initialize the profile manager OR supply the configurations to the profile manager."`;
-
-exports[`Basic Profile Manager should fail a request to set the default if the profile is not found 1`] = `"Cannot update default profile for type \\"blueberry\\". The profile name specified (\\"bad_blueberry\\") does not exist. Please create before attempting to set the default."`;
 
 exports[`Basic Profile Manager should load all profiles 1`] = `
 Array [

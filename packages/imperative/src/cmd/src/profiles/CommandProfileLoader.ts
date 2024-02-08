@@ -26,7 +26,7 @@ import { ImperativeConfig } from "../../../utilities";
  * The command processor profile loader loads all profiles that are required (or optional) given a command
  * definitions requirements. It returns the CommandProfiles object (which contains the map and getters for the
  * command handlers usage).
- * @export
+ * @internal
  * @class CommandProfileLoader
  */
 export class CommandProfileLoader {

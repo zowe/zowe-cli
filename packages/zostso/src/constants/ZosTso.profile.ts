@@ -57,21 +57,5 @@ export const ZosTsoProfile: ICommandProfileTypeConfiguration = {
             }
         },
         required: []
-    },
-    createProfileExamples: [
-        {
-            description: "Create a tso profile called 'myprof' with default settings and JES accounting information of 'IZUACCT'",
-            options: "myprof -a IZUACCT"
-        },
-        {
-            description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
-                "JES accounting information of '1234'",
-            options: "largeregion -a 1234 --rs 8192"
-        },
-        {
-            description: "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user " +
-                "account on disk",
-            options: "myprof2 --rs 8192"
-        }
-    ]
+    }
 };
