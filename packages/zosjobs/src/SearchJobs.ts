@@ -9,13 +9,14 @@
 *
 */
 
-import { AbstractSession, IRestClientResponse, IOptionsFullResponse, Headers, Logger} from "@zowe/imperative";
+import { AbstractSession, ImperativeError, IRestClientResponse, IOptionsFullResponse, Headers, Logger} from "@zowe/imperative";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { GetJobs} from "./GetJobs";
 import { ISearchJobsParms } from "./doc/input/ISearchJobsParms";
 import { IJobFile } from "./doc/response/IJobFile";
 import { IJob } from "./doc/response/IJob";
 import { JobsConstants } from "./JobsConstants";
+import { ZosJobsMessages } from "./JobsMessages";
 
 /**
  * Class to handle the searching of z/OS batch job spool output
@@ -29,6 +30,7 @@ export class SearchJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ISearchJobsParms} searchParms - The search parameters for the API call
      * @returns {Promise<string>} - promise that resolves to spool output
+     * @throws {ImperativeError} --search-string or --search-regx must be specified
      * @memberof searchJobs
      */
     public static async searchJobs(session: AbstractSession, searchParms : ISearchJobsParms) {
@@ -42,6 +44,15 @@ export class SearchJobs {
         Logger.getAppLogger().info("SearchJobs.searchJobs() called!");
         let replyBuffer:string = "";
 
+        // Validate that a search string or regex parameter was passed
+        if(searchRegex === undefined && searchString === undefined){
+            throw new ImperativeError({ msg: ZosJobsMessages.missingSearchOption.message });
+        }
+
+        // Validate that both options are not passed on the same call
+        if(searchRegex !== undefined && searchString !== undefined){
+            throw new ImperativeError({ msg: ZosJobsMessages.missingSearchOption.message });
+        }
 
         const jobsList: IJob[] = await GetJobs.getJobsByPrefix(session, jobName);
         let fileCount = 0;
@@ -87,6 +98,7 @@ export class SearchJobs {
                         if(lineCount > searchLimit){
                             Logger.getAppLogger().debug("searchJobs() - Search limit reached");
                             startingLine = -1;
+                            replyBuffer = replyBuffer + "\n";
                         }
                     }
                     else{

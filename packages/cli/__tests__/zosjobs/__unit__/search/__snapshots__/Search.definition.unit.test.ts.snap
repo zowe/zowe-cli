@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs search group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "sea",
+  ],
+  "description": "Search the spool output of a job.",
+  "name": "search",
+  "summary": "Search the spool output of a z/OS job",
+  "type": "group",
+}
+`;
