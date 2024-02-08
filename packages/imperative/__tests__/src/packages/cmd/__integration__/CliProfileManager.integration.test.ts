@@ -17,7 +17,6 @@ import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
 
 describe("Cli Profile Manager", () => {
     const profileDir = __dirname + "/__resources__/cliprofilemanager";
-    const addTwoNumbersHandler = __dirname + "/../profileHandlers/AddTwoNumbersHandler";
     const testLogger = TestLogger.getTestLogger();
     const profileTypeOne = "banana";
 
@@ -41,7 +40,6 @@ describe("Cli Profile Manager", () => {
     it("should be able to load properties from an existing profile", async () => {
         const profileName = "myprofile";
         const configs = getTypeConfigurations();
-        configs[0].createProfileFromArgumentsHandler = addTwoNumbersHandler;
         const manager = new CliProfileManager({
             profileRootDirectory: profileDir,
             type: profileTypeOne,
