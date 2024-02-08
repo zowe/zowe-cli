@@ -68,6 +68,7 @@ export class ImperativeApi {
     /**
      * Return an instance of a profile manager for a given profile type
      * See ProfileManager.ts for more details
+     * @internal
      */
     public profileManager(type: string): CliProfileManager {
         return new CliProfileManager({

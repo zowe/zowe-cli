@@ -56,6 +56,7 @@ All notable changes to the Imperative package will be documented in this file.
       - CommandProfileLoader
       - CommandProfiles
       - IHandlerParameters.profiles
+      - ImperativeApi.profileManager
 
   - Removed the following obsolete V1 profile constants:
     - @zowe/imperative
