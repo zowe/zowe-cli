@@ -439,7 +439,7 @@ describe("Profile IO", () => {
         expect(error.message).toContain("Error Details: IO ERROR!");
     });
     describe("Profile operations should crash in team-config mode", () => {
-        const configModeErr = "Profile IO Error: A Zowe V1 profile operation was attempted with a Zowe V2 configuration in use.";
+        const configModeErr = "Profile IO Error: A Zowe V1 profile operation was attempted with a Zowe team configuration in use.";
 
         beforeEach(() => {
             /* Pretend that we have a team config.

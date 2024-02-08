@@ -54,7 +54,7 @@ describe("Tests for EnvQuery module", () => {
                 }
             });
 
-        // set ImperativeConfig properties for a v2 config
+        // set ImperativeConfig properties for a team config
         impCfg = ImperativeConfig.instance;
         impCfg.rootCommandName = "zowe";
         (impCfg.loadedConfig as any) = { daemonMode: false };
@@ -287,11 +287,11 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemProbMsg).toBe("An unknown item ID was supplied = 999");
         });
 
-        it("should report Zowe V2 configuration info", async () => {
+        it("should report Zowe team configuration info", async () => {
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("V2 Team Config");
+            expect(itemObj.itemVal).toContain("Team Config");
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = off");
-            expect(itemObj.itemValMsg).toContain("Zowe config type = V2 Team Config");
+            expect(itemObj.itemValMsg).toContain("Zowe config type = Team Config");
             expect(itemObj.itemValMsg).toContain("Team config files in effect:");
             expect(itemObj.itemValMsg).toContain("fakeDir/zowe.config.json");
             expect(itemObj.itemValMsg).toMatch(/base = +fakeBaseProfNm/);
@@ -307,7 +307,7 @@ describe("Tests for EnvQuery module", () => {
 
             // return the values that we want from external commands
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("V2 Team Config");
+            expect(itemObj.itemVal).toContain("Team Config");
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = on");
             expect(itemObj.itemValMsg).toMatch(/Default Zowe daemon executable directory = this_is_a_fake_cli_home_dir.bin/);
             expect(itemObj.itemProbMsg).toBe("");

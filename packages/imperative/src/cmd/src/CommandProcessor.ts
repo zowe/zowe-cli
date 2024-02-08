@@ -64,10 +64,10 @@ interface IResolvedArgsResponse {
 
     /**
      * Whether we're using old profiles or config
-     * @type {(`v1` | `v2`)}
+     * @type {(`v1` | `TeamConfig`)}
      * @memberof IResolvedArgsResponse
      */
-    profileVersion?: `v1` | `v2`;
+    profileVersion?: `v1` | `TeamConfig`;
 
     /**
      * The profiles that are required
@@ -801,7 +801,7 @@ export class CommandProcessor {
         const showInputsOnly: IResolvedArgsResponse =
         {
             commandValues: {} as ICommandArguments,
-            profileVersion: useConfig ? `v2` : `v1`,
+            profileVersion: useConfig ? `TeamConfig` : `v1`,
         };
 
         /**
@@ -827,7 +827,7 @@ export class CommandProcessor {
         }
 
         /**
-         * Determine if Zowe V2 Config is in effect.  If it is, then we will construct
+         * Determine if Zowe Team Config is in effect.  If it is, then we will construct
          * a Set of secure fields from its API.  If it is not, then we will construct
          * a Set of secure fields from the `ConnectionPropsForSessCfg` defaults.
          */

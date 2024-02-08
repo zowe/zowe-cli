@@ -67,7 +67,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
         }
 
         if (oldPluginInfo.plugins.length == 0 && oldProfileCount === 0) {
-            params.response.console.log("No old profiles were found to convert from Zowe v1 to v2.");
+            params.response.console.log("No old profiles were found to convert from Zowe v1 to TeamConfig.");
             // Exit if we're not deleting
             if (!(params.arguments.delete != null && params.arguments.delete === true)) {
                 return;
@@ -79,7 +79,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
         // If this is true, then we know that we want to delete, but there is nothing to convert first.
         if (!skipConversion) {
             if (oldProfileCount > 0) {
-                params.response.console.log(`Detected ${oldProfileCount} old profile(s) to convert from Zowe v1 to v2.\n`);
+                params.response.console.log(`Detected ${oldProfileCount} old profile(s) to convert from Zowe v1 to TeamConfig.\n`);
             }
 
             if (oldPluginInfo.plugins.length > 0) {

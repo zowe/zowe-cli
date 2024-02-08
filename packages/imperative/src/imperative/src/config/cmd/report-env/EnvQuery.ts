@@ -218,7 +218,7 @@ export class EnvQuery {
     private static async getConfigInfo(
         getResult: IGetItemVal, getItemOpts: IGetItemOpts
     ): Promise<void> {
-        const teamCfg: string = "V2 Team Config";
+        const teamCfg: string = "Team Config";
         const v1Profiles = "V1 Profiles";
         const doesProgBarExist: boolean = (getItemOpts?.progressApi) ? true: false;
 
@@ -231,7 +231,7 @@ export class EnvQuery {
 
         if (ImperativeConfig.instance.config?.exists) {
             getResult.itemVal = teamCfg;
-            configProgress.statusMessage = "Retrieving V2 configuration";
+            configProgress.statusMessage = "Retrieving Team configuration";
             configProgress.percentComplete = TaskProgress.TWENTY_PERCENT;
         } else {
             getResult.itemVal = v1Profiles;

@@ -1578,7 +1578,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.profileVersion).toBe('v1');
     });
 
-    it("should display input value for simple parm when --show-inputs-only flag is set and v2 config exists", async () => {
+    it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
         const parm1Key = `parm1`;
@@ -1679,7 +1679,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.locations.length).toBeGreaterThan(0);
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
-        expect(commandResponse.data.profileVersion).toBe('v2');
+        expect(commandResponse.data.profileVersion).toBe('TeamConfig');
     });
 
 
