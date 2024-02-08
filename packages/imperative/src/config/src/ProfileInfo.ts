@@ -1331,6 +1331,9 @@ export class ProfileInfo {
 
         const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].lastIndexOf(":")) : this.getTeamConfig().layerActive().path;
         const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
+        if (layerToUpdate == null) {
+            return;
+        }
         const cacheKey = `${layerPath}:${profileType}`;
 
         const sameSchemaExists = versionChanged ? false :
