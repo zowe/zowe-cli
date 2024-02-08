@@ -65,7 +65,7 @@ export const DataSet: ICommandDefinition = {
             description: "Create a workflow with name \"testworkflow\" using data set \"TESTID.WKFLOW\" containing workflow definition xml, " +
             "on system \"TESTM1\" with owner \"MYSYSID\" and with variable values in the member PROPERTIES of data set TESTID.DATA",
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --owner \"MYSYSID\" " +
-                "--variables-input-file TESTID.DATA(PROPERTIES)"
+                "--variables-input-file \"TESTID.DATA(PROPERTIES)\""
         },
         {
             description: "Create a workflow with name \"testworkflow\" using the data set \"TESTID.WKFLOW\" that contains a workflow definition xml" +

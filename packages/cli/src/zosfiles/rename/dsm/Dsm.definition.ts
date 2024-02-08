@@ -50,7 +50,7 @@ export const DsmDefinition: ICommandDefinition = {
     examples: [
         {
             description: dsmStrings.EXAMPLES.EX1,
-            options: '"USER.DATA.SET" "MEM1" "MEM2'
+            options: '"USER.DATA.SET" "MEM1" "MEM2"'
         }
     ]
 };

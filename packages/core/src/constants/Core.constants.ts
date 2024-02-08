@@ -305,7 +305,7 @@ export class ProfileConstants {
      */
     public static readonly APIML_LOGOUT_EXAMPLE2: ICommandExampleDefinition = {
         description: "Log out of an API ML instance to revoke a token that was not stored in a profile",
-        options: "--token-value <token>"
+        options: "--token-value \"<token>\""
     };
 
     /**

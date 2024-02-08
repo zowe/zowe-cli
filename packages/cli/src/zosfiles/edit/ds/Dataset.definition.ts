@@ -47,15 +47,15 @@ export const DatasetDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `ibmuser.cntl(iefbr14) --editor notepad`
+            options: `"ibmuser.cntl0(iefbr14)" --editor notepad`
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX1,
-            options: `ibmuser.cntl(iefbr14) --editor C:\\Windows\\System32\\Notepad.exe`
+            options: `"ibmuser.cntl1(iefbr14)" --editor C:\\Windows\\System32\\Notepad.exe`
         },
         {
             description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
-            options: `ibmuser.jcl(iefbr14) --binary`
+            options: `"ibmuser.jcl2(iefbr14)" --binary`
         }
     ]
 };

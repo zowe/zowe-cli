@@ -46,15 +46,15 @@ export const USSFileDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
-            options: `/a/ibmuser/my_text.txt --editor notepad`
+            options: `/a/ibmuser/my_text0.txt --editor notepad`
         },
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX1,
-            options: `/a/ibmuser/my_text.txt --editor C:\\Windows\\System32\\Notepad.exe`
+            options: `/a/ibmuser/my_text1.txt --editor C:\\Windows\\System32\\Notepad.exe`
         },
         {
             description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
-            options: `/a/ibmuser/my_text.txt --binary`
+            options: `/a/ibmuser/my_text2.txt --binary`
         },
     ]
 };

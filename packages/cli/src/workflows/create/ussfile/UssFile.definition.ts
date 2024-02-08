@@ -65,7 +65,7 @@ export const UssFile: ICommandDefinition = {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
             "on system \"TESTM1\" with owner \"MYSYSID\" and with variable values in the member PROPERTIES of data set TESTID.DATA",
             options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"MYSYSID\" " +
-                "--variables-input-file TESTID.DATA(PROPERTIES)"
+                "--variables-input-file \"TESTID.DATA(PROPERTIES)\""
         },
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +

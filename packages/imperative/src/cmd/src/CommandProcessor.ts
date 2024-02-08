@@ -318,7 +318,7 @@ export class CommandProcessor {
         ImperativeExpect.toNotBeNullOrUndefined(response, `${CommandProcessor.ERROR_TAG} help(): No command response object supplied.`);
         this.log.info(`Building help text for command "${this.definition.name}"...`);
         const help: string = this.helpGenerator.buildHelp();
-        response.data.setObj(help);
+        response.data.setObj(this.definition);
         response.console.log(Buffer.from(help));
         response.data.setMessage(`The help was constructed for command: ${this.mDefinition.name}.`);
         return this.finishResponse(response);
