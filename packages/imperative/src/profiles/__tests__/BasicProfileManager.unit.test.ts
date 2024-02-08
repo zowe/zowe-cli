@@ -16,10 +16,8 @@ import { IProfileLoaded } from "../../profiles/src/doc/response/IProfileLoaded";
 import {
     APPLE_PROFILE_TYPE,
     APPLE_TWO_REQ_DEP_BANANA_AND_STRAWBERRIES,
-    BLUEBERRY_PROFILE_TYPE,
     FRUIT_BASKET_DIR,
     ONLY_APPLE,
-    ONLY_BLUEBERRY,
     STRAWBERRY_AND_APPLE_NO_DEP,
     TEST_PROFILE_ROOT_DIR
 } from "./TestConstants";
