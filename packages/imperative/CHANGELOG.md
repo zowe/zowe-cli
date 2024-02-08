@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- LTS Breaking:
+- LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:
     - @zowe/imperative
       - ICommandProfileTypeConfiguration.createProfileExamples
@@ -133,6 +133,8 @@ All notable changes to the Imperative package will be documented in this file.
         - validateProfileGroupDesc
         - validateProfileNameDesc
         - validateProfileOptionDesc
+
+- LTS Breaking: Change displayed text from V1 Config to Team Config, including [#2019](https://github.com/zowe/zowe-cli/issues/2019)
 
 - LTS Breaking: Added Zowe release version output for `--version` [#2028](https://github.com/zowe/zowe-cli/issues/2028)
 
