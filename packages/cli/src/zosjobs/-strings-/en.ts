@@ -86,10 +86,10 @@ export default {
                         " with USERJOB."
                 },
                 OPTIONS: {
-                    SEARCHSTRING: "The string to search for in the spool output",
-                    SEARCHREGEX: "The regular expression to search for in the spool output",
-                    CASEINSENSITIVE: "The search is case insensitive or not",
-                    SEARCHLIMIT: "The maximum number of matching lines to return for an individual spool file",
+                    SEARCHSTRING: "The string to search for in the spool output.",
+                    SEARCHREGEX: "The regular expression to search for in the spool output.",
+                    CASEINSENSITIVE: "The search is case insensitive or not.",
+                    SEARCHLIMIT: "The maximum number of matching lines to return for an individual spool file.",
                     FILELIMIT: "The maximum number of spool files to search."
                 },
                 EXAMPLES: {
