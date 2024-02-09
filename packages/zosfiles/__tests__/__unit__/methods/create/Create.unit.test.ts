@@ -1066,14 +1066,14 @@ describe("Create data set  Validator", () => {
             expect(testOptions.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
         });
 
-        it("recfm should default to 'F' if not specified", async () => {
+        it("recfm should not default to anything if not specified", async () => {
             const testOptions: any = {
                 recfm: undefined
             };
 
             Create.dataSetValidateOptions(testOptions);
 
-            expect(testOptions.recfm).toEqual("F");  // Should be changed during create validation to zOSMF default of 'F'
+            expect(testOptions.recfm).not.toEqual("F");  // Should not be changed during create validation to zOSMF default of 'F'
         });
     });
 

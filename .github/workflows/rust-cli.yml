@@ -18,7 +18,7 @@ jobs:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -41,7 +41,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-linux.tgz
         path: zowex/target/x86_64-unknown-linux-gnu/debug/zowe.tgz
@@ -59,7 +59,7 @@ jobs:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -81,7 +81,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-macos.tgz
         path: zowex/target/debug/zowe.tgz
@@ -95,7 +95,7 @@ jobs:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -112,7 +112,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-windows.tgz
         path: zowex/target/debug/zowe.tgz

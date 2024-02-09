@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402021649`
 
 - LTS Breaking: Removed the following constants from ZosmfSession
   - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead

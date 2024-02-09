@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-files-for-zowe-sdk",
-  "version": "8.0.0-next.202401262128",
+  "version": "8.0.0-next.202402021649",
   "description": "Zowe SDK to interact with files and data sets on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -50,10 +50,10 @@
     "minimatch": "^5.0.1"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.0.0-next.202401262128",
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202401262128",
-    "@zowe/imperative": "8.0.0-next.202401262128",
-    "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202401262128"
+    "@zowe/cli-test-utils": "8.0.0-next.202402021649",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202402021649",
+    "@zowe/imperative": "8.0.0-next.202402021649",
+    "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202402021649"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
