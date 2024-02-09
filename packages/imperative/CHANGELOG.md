@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved issue in `ProfileInfo` where schema comparisons fail, specifically when comparing the cached schema against a command-based schema during registration.
+
 ## `5.22.0`
 
 - BugFix: Updated `mustache` and `jsonschema` dependencies for technical currency.
@@ -68,7 +72,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.14.2`
 
 - BugFix: Handle logic for if a null command handler is provided
-
 
 ## `5.14.1`
 
