@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402021649`
 
 - Enhancement: New `SeachJob.searchJobs` class and method, which can be used to search spool files for a specified string or regular expression. 
 - LTS Breaking: Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead

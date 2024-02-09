@@ -1,6 +1,7 @@
 {
   "name": "cmd-sample-cli",
   "version": "0.0.0",
+  "zoweVersion": "V99",
   "description": "Command Sample CLI",
   "license": "EPL-2.0",
   "repository": "",

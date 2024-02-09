@@ -4,6 +4,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- LTS Breaking: Removed record format (recfm) validation when creating data-sets [#1699](https://github.com/zowe/zowe-cli/issues/1699)
+
+## `8.0.0-next.202402021649`
+
 - LTS Breaking: Removed the following previously deprecated items:
   - Removed `ZosFilesCreateExtraOptions.showAttributes` without replacement
   - Removed `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from ZosFiles.messages.ts
