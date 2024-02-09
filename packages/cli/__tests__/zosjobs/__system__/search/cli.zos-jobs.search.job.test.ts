@@ -67,7 +67,7 @@ describe("zos-jobs search job command", () => {
             expect(response.stdout.toString()).toContain("RC=0000");
         });
 
-        it("should fail if no parameters are passed", () => {       
+        it("should fail if no parameters are passed", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 TEST_ENVIRONMENT, [JOB_NAME, ""]);
             expect(response.stderr.toString()).toContain("You must specify either the `--search-string` or `--search-regex` option");

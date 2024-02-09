@@ -103,8 +103,10 @@ export class SearchJobs {
                     }
                     else{
                         // If nothing more is found in this file, move on to the next one.
+                        if(startingLine > 0){
+                            replyBuffer = replyBuffer + "\n";
+                        }
                         startingLine = -1;
-                        replyBuffer = replyBuffer + "\n";
                     }
                 }
             }

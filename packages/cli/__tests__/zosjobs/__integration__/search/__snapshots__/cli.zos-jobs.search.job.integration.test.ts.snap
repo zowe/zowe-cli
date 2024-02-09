@@ -1,0 +1,194 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs search job command should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   job
+
+ DESCRIPTION
+ -----------
+
+   Search the spool output of a job.
+
+ USAGE
+ -----
+
+   zowe zos-jobs search job <jobname> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   jobname		 (string)
+
+      The job name to search. Wildcards are accepted for the job name. You can use,
+      for example \\"USERJOB*\\" to search all jobs that start with USERJOB.
+
+ OPTIONS
+ -------
+
+   --search-string | --string (string)
+
+      The string to search for in the spool output
+
+   --search-regex | --regex (string)
+
+      The regular expression to search for in the spool output
+
+   --case-insensitive | --ci (boolean)
+
+      The search is case insensitive or not
+
+      Default value: true
+
+   --search-limit | --sl (number)
+
+      The maximum number of matching lines to return for an individual spool file
+
+      Default value: 100
+
+   --file-limit | --fl (number)
+
+      The maximum number of spool files to search.
+
+      Default value: 100
+
+ ZOSMF CONNECTION OPTIONS
+ ------------------------
+
+   --host | -H (string)
+
+      The z/OSMF server host name.
+
+   --port | -P (number)
+
+      The z/OSMF server port.
+
+      Default value: 443
+
+   --user | -u (string)
+
+      Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+   --password | --pass | --pw (string)
+
+      Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+   --reject-unauthorized | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+   --base-path | --bp (string)
+
+      The base path for your API mediation layer instance. Specify this option to
+      prepend the base path to all z/OSMF resources when making REST requests. Do not
+      specify this option if you are not using an API mediation layer.
+
+   --protocol (string)
+
+      The protocol used (HTTP or HTTPS)
+
+      Default value: https
+      Allowed values: http, https
+
+   --cert-file (local file path)
+
+      The file path to a certificate file to use for authentication
+
+   --cert-key-file (local file path)
+
+      The file path to a certificate key file to use for authentication
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+   --base-profile | --base-p (string)
+
+      The name of a (base) profile to load for this command execution.
+
+ BASE CONNECTION OPTIONS
+ -----------------------
+
+   --token-type | --tt (string)
+
+      The type of token to get and use for the API. Omit this option to use the
+      default token type, which is provided by 'zowe auth login'.
+
+   --token-value | --tv (string)
+
+      The value of the token to pass to the API.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Search all jobs named USERJOB for the string \\"RC=0000\\":
+
+      $ zowe zos-jobs search job \\"USERJOB\\" --search-string \\"RC=0000\\"
+
+   - Search all jobs that start with USER for the string
+   \\"ENDED\\":
+
+      $ zowe zos-jobs search job \\"USER*\\" --search-string \\"ENDED\\"
+
+   - Search all jobs named USERJOB for the string \\"COND CODE\\",
+   with the options case sensitive and a search limit of 5:
+
+      $ zowe zos-jobs search job \\"USERJOB\\" --search-string \\"COND CODE\\" --case-insensitive false --search-limit 5
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: job.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Search the spool output of a job.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs search job <jobname> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobname\\\\t\\\\t (string)\\\\n\\\\n      The job name to search. Wildcards are accepted for the job name. You can use,\\\\n      for example \\\\\\"USERJOB*\\\\\\" to search all jobs that start with USERJOB.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --search-string | --string (string)\\\\n\\\\n      The string to search for in the spool output\\\\n\\\\n   --search-regex | --regex (string)\\\\n\\\\n      The regular expression to search for in the spool output\\\\n\\\\n   --case-insensitive | --ci (boolean)\\\\n\\\\n      The search is case insensitive or not\\\\n\\\\n      Default value: true\\\\n\\\\n   --search-limit | --sl (number)\\\\n\\\\n      The maximum number of matching lines to return for an individual spool file\\\\n\\\\n      Default value: 100\\\\n\\\\n   --file-limit | --fl (number)\\\\n\\\\n      The maximum number of spool files to search.\\\\n\\\\n      Default value: 100\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Search all jobs named USERJOB for the string \\\\\\"RC=0000\\\\\\":\\\\n\\\\n      $ zowe zos-jobs search job \\\\\\"USERJOB\\\\\\" --search-string \\\\\\"RC=0000\\\\\\"\\\\n\\\\n   - Search all jobs that start with USER for the string\\\\n   \\\\\\"ENDED\\\\\\":\\\\n\\\\n      $ zowe zos-jobs search job \\\\\\"USER*\\\\\\" --search-string \\\\\\"ENDED\\\\\\"\\\\n\\\\n   - Search all jobs named USERJOB for the string \\\\\\"COND CODE\\\\\\",\\\\n   with the options case sensitive and a search limit of 5:\\\\n\\\\n      $ zowe zos-jobs search job \\\\\\"USERJOB\\\\\\" --search-string \\\\\\"COND CODE\\\\\\" --case-insensitive false --search-limit 5\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Search the spool output of a job.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs search job <jobname> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobname\\\\t\\\\t (string)\\\\n\\\\n      The job name to search. Wildcards are accepted for the job name. You can use,\\\\n      for example \\\\\\"USERJOB*\\\\\\" to search all jobs that start with USERJOB.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --search-string | --string (string)\\\\n\\\\n      The string to search for in the spool output\\\\n\\\\n   --search-regex | --regex (string)\\\\n\\\\n      The regular expression to search for in the spool output\\\\n\\\\n   --case-insensitive | --ci (boolean)\\\\n\\\\n      The search is case insensitive or not\\\\n\\\\n      Default value: true\\\\n\\\\n   --search-limit | --sl (number)\\\\n\\\\n      The maximum number of matching lines to return for an individual spool file\\\\n\\\\n      Default value: 100\\\\n\\\\n   --file-limit | --fl (number)\\\\n\\\\n      The maximum number of spool files to search.\\\\n\\\\n      Default value: 100\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Search all jobs named USERJOB for the string \\\\\\"RC=0000\\\\\\":\\\\n\\\\n      $ zowe zos-jobs search job \\\\\\"USERJOB\\\\\\" --search-string \\\\\\"RC=0000\\\\\\"\\\\n\\\\n   - Search all jobs that start with USER for the string\\\\n   \\\\\\"ENDED\\\\\\":\\\\n\\\\n      $ zowe zos-jobs search job \\\\\\"USER*\\\\\\" --search-string \\\\\\"ENDED\\\\\\"\\\\n\\\\n   - Search all jobs named USERJOB for the string \\\\\\"COND CODE\\\\\\",\\\\n   with the options case sensitive and a search limit of 5:\\\\n\\\\n      $ zowe zos-jobs search job \\\\\\"USERJOB\\\\\\" --search-string \\\\\\"COND CODE\\\\\\" --case-insensitive false --search-limit 5\\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-jobs search job command syntax errors should occur if an extra unknown option is specified 1`] = `
+"Unable to perform this operation due to the following problem.
+Unknown argument: blah
+Command failed due to improper syntax
+Command entered: \\"zos-jobs search job JOB123 blah --host fakehost --user fakeuser --password fakepass\\"
+Available commands are \\"job\\".
+Use \\"zowe zos-jobs search --help\\" to view groups, commands, and options.
+
+Response From Service
+Error: Unknown argument: blah
+
+Diagnostic Information
+Unknown argument: blah
+"
+`;
+
+exports[`zos-jobs search job command syntax errors should occur if any search parameter is missing 1`] = `
+"Unable to perform this operation due to the following problem.
+You must specify either the \`--search-string\` or \`--search-regex\` option
+"
+`;
