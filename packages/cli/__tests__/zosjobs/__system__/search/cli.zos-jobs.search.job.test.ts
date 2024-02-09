@@ -23,6 +23,7 @@ let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
 let SEARCH_STRING: string;
 let REGEX_STRING: string;
+let BAD_SEARCH_STRING: string;
 
 describe("zos-jobs search job command", () => {
     // Create the unique test environment
@@ -42,13 +43,15 @@ describe("zos-jobs search job command", () => {
         NON_HELD_JOBCLASS = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
         SEARCH_STRING = "PGM=IEFBR14";
         REGEX_STRING = "IEFBR14|RC=0000";
+        BAD_SEARCH_STRING = "bluhbluh";
+
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("response", () => {
+    describe("Successful response", () => {
         it("should be able to search for a string in every spool file for a job", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_string_spool_content.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JOB, JOB_NAME, SEARCH_STRING]);
@@ -67,6 +70,26 @@ describe("zos-jobs search job command", () => {
             expect(response.stdout.toString()).toContain("RC=0000");
         });
 
+        it("should limit the search when the --search-limit and --file-limit options are specified", () => {
+            const argString = "--search-string \"" + SEARCH_STRING + "\" --search-limit 5 --file-limit 3";
+            const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
+                TEST_ENVIRONMENT, [JOB_NAME, argString]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(SEARCH_STRING);
+        });
+    });
+
+    describe("error handling", () => {
+        it("should return a status code of 1 if the string is not found", () => {
+            const argString = "--search-string \"" + BAD_SEARCH_STRING + "\"";
+            const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
+                TEST_ENVIRONMENT, [JOB_NAME, argString]);
+            expect(response.stderr.toString()).toContain("The search spool job command returned a non-zero rc: 1");
+            expect(response.status).toBe(1);
+            expect(response.stdout.toString()).toBe("");
+        });
+
         it("should fail if no parameters are passed", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 TEST_ENVIRONMENT, [JOB_NAME, ""]);
@@ -80,15 +103,6 @@ describe("zos-jobs search job command", () => {
                 TEST_ENVIRONMENT, [JOB_NAME, argString]);
             expect(response.stderr.toString()).toContain("You must specify either the `--search-string` or `--search-regex` option");
             expect(response.status).toBe(1);
-        });
-
-        it("should limit the search when the --search-limit and --file-limit options are specified", () => {
-            const argString = "--search-string \"" + SEARCH_STRING + "\" --search-limit 5 --file-limit 3";
-            const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
-                TEST_ENVIRONMENT, [JOB_NAME, argString]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain(SEARCH_STRING);
         });
     });
 });
