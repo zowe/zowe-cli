@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
 ## `4.18.21`
 
 - BugFix: Removed out of date `Perf-Timing` performance timing package.
