@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
 ## `6.40.24`
 
 - BugFix: Add missing npm-shrinkwrap
