@@ -352,6 +352,19 @@ export class ConnectionPropsForSessCfg {
      */
     private static getValuesBack(connOpts: IOptionsForAddConnProps): (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
+            // we want to prompt for connection values, but first complain if user only has V1 profiles.
+            connOpts.parms.response.console.log("No Zowe client configuration exists.");
+            if (ConfigUtils.onlyV1ProfilesExist) {
+                connOpts.parms.response.console.log(
+                    "Only V1 profiles exist. V1 profiles are no longer supported.\n" +
+                    "You should convert your V1 profiles to a Zowe client team configuration."
+                );
+            }
+            connOpts.parms.response.console.log(
+                "For now, we will prompt you for the connection properties\n" +
+                "required to complete your command.\n"
+            );
+
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";

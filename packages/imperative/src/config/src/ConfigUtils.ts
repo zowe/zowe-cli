@@ -9,6 +9,9 @@
 *
 */
 
+import { normalize as pathNormalize } from "path";
+import { existsSync as fsExistsSync } from "fs";
+
 import { CredentialManagerFactory } from "../../security";
 import { ICommandArguments } from "../../cmd";
 import { ImperativeConfig } from "../../utilities";
@@ -16,7 +19,7 @@ import { ImperativeError } from "../../error";
 
 export class ConfigUtils {
     /**
-     * Coeerces string property value to a boolean or number type.
+     * Coerces string property value to a boolean or number type.
      * @param value String value
      * @param type Property type defined in the schema
      * @returns Boolean, number, or string
@@ -63,6 +66,30 @@ export class ConfigUtils {
      */
     public static jsonPathMatches(fullPath: string, partialPath: string): boolean {
         return fullPath === partialPath || fullPath.startsWith(partialPath + ".profiles.");
+    }
+
+    /**
+     * Returns an indicator that the user has no team configuration, but we
+     * detected the existence of old-school V1 profiles. We will not work with the
+     * V1 profiles. This function can let you tell a user that they are incorrectly
+     * trying to use V1 profiles.
+     *
+     * @returns True - Means there is *NO* team config *AND* we detected that a V1 profile exists.
+     *          False otherwise.
+     */
+    public static get onlyV1ProfilesExist(): boolean {
+        if (ImperativeConfig.instance.config?.exists) {
+            // we have a team config
+            return false;
+        }
+
+        const v1ZosmfProfileFileNm = pathNormalize(ImperativeConfig.instance.cliHome + "/profiles/zosmf/zosmf_meta.yaml");
+        if (fsExistsSync(v1ZosmfProfileFileNm)) {
+            // we found V1 profiles
+            return true;
+        }
+
+        return false;
     }
 
     /**
