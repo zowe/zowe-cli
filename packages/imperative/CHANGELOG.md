@@ -41,6 +41,10 @@ All notable changes to the Imperative package will be documented in this file.
       - CliProfileManager.updateProfile
       - CommandProfiles.getMeta
       - CommandProfiles.getAll
+      - ProfileInfo.usingTeamConfig
+        - To detect if a team config exists, use ProfileInfo.getTeamConfig
+        - To detect if only V1 profiles exist, use ProfileInfo.onlyV1ProfilesExist
+
     - @zowe/core-for-zowe-sdk
       - getDefaultProfile
       - getZoweDir
