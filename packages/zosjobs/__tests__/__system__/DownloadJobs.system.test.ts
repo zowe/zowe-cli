@@ -103,7 +103,12 @@ describe("Download Jobs - System tests", () => {
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile
             );
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false
+                }
+            );
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
         });
