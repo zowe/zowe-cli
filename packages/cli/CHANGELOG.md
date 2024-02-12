@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
 ## `7.23.1`
 
 - Enhancement: Adding `--binary` and `--encoding` options to `zosfiles edit` to zowe V2

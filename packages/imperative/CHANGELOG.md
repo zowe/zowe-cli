@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
 ## `5.22.0`
 
 - BugFix: Updated `mustache` and `jsonschema` dependencies for technical currency.
