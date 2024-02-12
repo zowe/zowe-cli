@@ -25,7 +25,7 @@ import { ZosJobsMessages } from "./JobsMessages";
  */
 export class SearchJobs {
     /**
-     * Get jobs (defaults to the user ID of the session as owner)
+     * Search Jobs - Search the spool output of the specified job name for a string or regular expression
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ISearchJobsParms} searchParms - The search parameters for the API call
@@ -116,7 +116,7 @@ export class SearchJobs {
     }
 
     /**
-     * Get jobs (defaults to the user ID of the session as owner)
+     * Search the spool of the specified file for the a search string or regular expression
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} searchString - The string to search for in the spool output
@@ -133,7 +133,7 @@ export class SearchJobs {
         caseInsensitive:boolean,
         jobFile: IJobFile,
         startingLine: number) {
-        Logger.getAppLogger().trace("SearchJobs.getSpoolContentCommon()");
+        Logger.getAppLogger().trace("SearchJobs.searchSpoolContentCommon()");
         const headers: any[] = [Headers.TEXT_PLAIN_UTF8];
 
         let parameters: string = "/" + encodeURIComponent(jobFile.jobname) + "/" + encodeURIComponent(jobFile.jobid) +
