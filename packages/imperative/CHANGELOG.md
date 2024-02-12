@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.22.2`
 
 - BugFix: Resolved technical currency by updating `socks` transitive dependency
 

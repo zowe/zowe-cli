@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.23.2`
 
 - BugFix: Resolved technical currency by updating `socks` transitive dependency
 
