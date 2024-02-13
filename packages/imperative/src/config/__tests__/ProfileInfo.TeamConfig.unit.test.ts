@@ -1420,7 +1420,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
                 (profInfo as any).mProfileSchemaCache = new Map();
-                (profInfo as any).mProfileSchemaCache.set("/some/nonexistent/layer/path:someUnregisteredProfType");
+                (profInfo as any).mProfileSchemaCache.set("/some/nonexistent/layer/path:someUnregisteredProfType", {});
                 const writeFileSync = jest.spyOn(jsonfile, "writeFileSync");
                 writeFileSync.mockReset();
                 (profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any);
@@ -1432,6 +1432,8 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const blockMocks = getBlockMocks();
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                jest.spyOn(Map.prototype, "has").mockReturnValue(true);
+                jest.spyOn(lodash, "isEqual").mockReturnValue(true);
                 const dummySchema = profInfo.getSchemaForType("dummy");
                 blockMocks.buildSchema.mockReturnValueOnce({} as any);
                 writeFileSyncMock.mockClear();
@@ -1571,9 +1573,10 @@ describe("TeamConfig ProfileInfo tests", () => {
             });
 
             it("warns the user when old, unversioned schema is different from new, unversioned schema", () => {
-                jest.spyOn(ProfileInfo.prototype, "getSchemaForType").mockReturnValue({ title: "Mock Schema", otherKey: "otherVal" } as any);
+                jest.spyOn(ProfileInfo.prototype, "getSchemaForType")
+                    .mockReturnValue({ title: "Mock Schema", properties: { otherKey: "someValue" } } as any);
                 expectAddToSchemaTester(
-                    { schema: { title: "Mock Schema", someKey: "someValue" } as any, previousVersion: "none" },
+                    { schema: { title: "Mock Schema", properties: { someKey: "someValue" } } as any, previousVersion: "none" },
                     {
                         extendersJson: {
                             profileTypes: {
