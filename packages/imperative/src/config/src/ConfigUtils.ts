@@ -83,7 +83,14 @@ export class ConfigUtils {
             return false;
         }
 
-        const v1ZosmfProfileFileNm = pathNormalize(ImperativeConfig.instance.cliHome + "/profiles/zosmf/zosmf_meta.yaml");
+        let v1ZosmfProfileFileNm: string;
+        try {
+            v1ZosmfProfileFileNm = pathNormalize(ImperativeConfig.instance.cliHome + "/profiles/zosmf/zosmf_meta.yaml");
+        } catch (_thrownErr) {
+            // We failed to get the CLI home directory. So, we definitely have no V1 profiles.
+            return false;
+        }
+
         if (fsExistsSync(v1ZosmfProfileFileNm)) {
             // we found V1 profiles
             return true;
