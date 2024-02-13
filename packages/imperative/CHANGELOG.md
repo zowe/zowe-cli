@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402132108`
 
 - LTS Breaking: Added Zowe release version output for `--version` [#2028](https://github.com/zowe/zowe-cli/issues/2028)
 - Enhancement: Added `name-only` alias to `root` on `config list` command [#1797](https://github.com/zowe/zowe-cli/issues/1797)
