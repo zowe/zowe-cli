@@ -219,6 +219,17 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(newSess.ISession.tokenType).toBeUndefined();
                 expect(newSess.ISession.tokenValue).toBeUndefined();
             });
+
+            it("should detect that only V1 profiles exist", async () => {
+                // onlyV1ProfilesExist is a getter of a property, so mock the property
+                Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return true;
+                    })
+                });
+                expect(ProfileInfo.onlyV1ProfilesExist).toBe(true);
+            });
         });
     });
 
@@ -249,7 +260,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             "getTeamConfig",
             "mergeArgsForProfile",
             "mergeArgsForProfileType",
-            "usingTeamConfig",
             "getOsLocInfo",
             "loadSecureArg"
         ];
@@ -272,7 +282,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
-            expect(profInfo.usingTeamConfig).toBe(true);
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
@@ -285,7 +294,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             const teamCfgOpts: IConfigOpts = { projectDir: teamProjDir };
             await profInfo.readProfilesFromDisk(teamCfgOpts);
 
-            expect(profInfo.usingTeamConfig).toBe(true);
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
@@ -899,6 +907,9 @@ describe("TeamConfig ProfileInfo tests", () => {
     describe("loadSchema", () => {
         it("should return null if schema is not found", () => {
             const profInfo = createNewProfInfo(teamProjDir);
+            profInfo["mLoadedConfig"] = {
+                mLayers: []
+            } as any;
             let schema: IProfileSchema;
             let caughtError;
 
