@@ -57,6 +57,7 @@ import { ConfigUtils } from "./ConfigUtils";
 import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
 import { IConfigLayer } from "..";
+import { Constants } from "../../constants";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -1364,7 +1365,7 @@ export class ProfileInfo {
      * @returns The properties object, but with all of the command-related properties removed
      */
     private omitCmdPropsFromSchema(obj: Record<string, any>): Record<string, IProfileProperty> {
-        const result = lodash.omit(obj, ["optionDefinition", "optionDefinitions", "includeInTemplate"]);
+        const result: Record<string, any> = lodash.omit(obj, Constants.COMMAND_PROF_TYPE_PROPS);
         Object.keys(result).forEach((key) => {
             if (lodash.isObject(result[key])) {
                 result[key] = this.omitCmdPropsFromSchema(result[key]);

@@ -120,4 +120,10 @@ export class Constants {
      * Auto Init constants
      */
     public static readonly AUTO_INIT_ACTION = "auto-init";
+
+    /**
+     * ICommandProfileTypeConfiguration properties
+     * (used to omit from schemas registered via ProfileInfo)
+     */
+    public static readonly COMMAND_PROF_TYPE_PROPS = ["optionDefinition", "optionDefinitions", "includeInTemplate"];
 }
