@@ -11,10 +11,6 @@ exports[`Download uss dir handler process method should download a uss dir and f
 
 exports[`Download uss dir handler process method should download a uss dir and follow symlinks 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -29,10 +25,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -47,10 +39,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file permission bitmask 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -65,10 +53,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file size 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -83,10 +67,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular file type 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -101,10 +81,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular group 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -119,10 +95,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular modification time 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -137,10 +109,6 @@ exports[`Download uss dir handler process method should download a uss dir and l
 
 exports[`Download uss dir handler process method should download a uss dir and look for a particular owner 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -155,10 +123,6 @@ exports[`Download uss dir handler process method should download a uss dir and u
 
 exports[`Download uss dir handler process method should download a uss dir and use a specific file system 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -173,10 +137,6 @@ exports[`Download uss dir handler process method should download a uss dir and u
 
 exports[`Download uss dir handler process method should download a uss dir and use a specific folder depth 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -191,10 +151,6 @@ exports[`Download uss dir handler process method should download a uss dir if re
 
 exports[`Download uss dir handler process method should download a uss dir if requested 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;
 
@@ -209,9 +165,5 @@ exports[`Download uss dir handler process method should download a uss dir in an
 
 exports[`Download uss dir handler process method should download a uss dir in an encoding 3`] = `
 "
-No Zowe client configuration exists.
-Therefore, you will be asked for the connection properties
-that are required to complete your command.
-
 downloaded"
 `;

@@ -352,10 +352,15 @@ export class ConnectionPropsForSessCfg {
      */
     private static getValuesBack(connOpts: IOptionsForAddConnProps): (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
-            /* The following guard only exists to keep existing automated tests working
-             * which do not create a mock for the connOpts.parms.response.console.log property.
-             * In the real world, that property always exists for this CLI-only path of logic.
-             */
+            /* ToDo: Uncomment this code block to display an informative message before prompting
+             * a user for connection values. Because 219 unit test fails and 144 system tests
+             * fail due to a minor difference in output, we chose not to implement this
+             * minor enhancement until we have time to devote to correcting so many tests.
+             *
+             * The following 'if' statement is only needed for tests which do not create a mock for
+             * the connOpts.parms.response.console.log property. In the real world, that property
+             * always exists for this CLI-only path of logic.
+             *
             if (connOpts?.parms?.response?.console?.log) {
                 // we want to prompt for connection values, but first complain if user only has V1 profiles.
                 connOpts.parms.response.console.log("No Zowe client configuration exists.");
@@ -370,6 +375,7 @@ export class ConnectionPropsForSessCfg {
                     "that are required to complete your command.\n"
                 );
             }
+            */
 
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
