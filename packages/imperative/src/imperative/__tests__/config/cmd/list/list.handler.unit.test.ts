@@ -164,7 +164,7 @@ describe("Configuration List command handler", () => {
 
     it("should output entire config at root level", async () => {
         (fakeConfig as any).mLayers = configLayers;
-        handlerParms.arguments = { root: true };
+        handlerParms.arguments = { nameOnly: true };
 
         await (new ListHandler()).process(handlerParms);
         expect(errorText).toBeNull();

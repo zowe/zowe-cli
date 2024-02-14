@@ -34,10 +34,13 @@ export const listDefinition: ICommandDefinition = {
             type: "boolean"
         },
         {
-            name: "root",
-            description: "List only the root level property names. " +
+            name: "name-only",
+            description: "List only the names of root level property names. " +
                 "For example, specify in addition to '--locations' to get a list of config file paths only.",
-            type: "boolean"
+            type: "boolean",
+            aliases: [
+                "root"
+            ]
         }
     ],
     examples: [
@@ -47,7 +50,7 @@ export const listDefinition: ICommandDefinition = {
         },
         {
             description: "List only root level property names for a specified config property",
-            options: `"defaults" --root`
+            options: `"defaults" --name-only`
         },
         {
             description: "List config properties by separating them by their respective config file locations",
@@ -55,11 +58,11 @@ export const listDefinition: ICommandDefinition = {
         },
         {
             description: "List only the root level configuration property names",
-            options: "--root"
+            options: "--name-only"
         },
         {
-            description: "List only the root level configuration properties by separating them by their respective config file locations",
-            options: "--locations --root"
+            description: "List only the root level configuration property names by separating them by their respective config file locations",
+            options: "--locations --name-only"
         }
     ]
 };
