@@ -262,7 +262,6 @@ export class EnvQuery {
         } else {
             getResult.itemValMsg += "off";
         }
-        getResult.itemValMsg += `${os.EOL}Zowe config type = ` + getResult.itemVal;
 
         if ( getResult.itemVal == teamCfg) {
             // Display all relevant zowe team config files.
