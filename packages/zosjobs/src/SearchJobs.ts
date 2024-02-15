@@ -54,6 +54,7 @@ export class SearchJobs {
             throw new ImperativeError({ msg: ZosJobsMessages.missingSearchOption.message });
         }
 
+        // Loop through all of the jobs that match the name or wildcard
         const jobsList: IJob[] = await GetJobs.getJobsByPrefix(session, jobName);
         let fileCount = 0;
         for(const job of jobsList )
