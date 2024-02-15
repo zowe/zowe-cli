@@ -44,15 +44,13 @@ async function cleanTestJobs(prefix: string) {
     if (jobs.length > 0) {
         for (const job of jobs) {
             try {
-                const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
+                await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
             } catch (e) {
                 // Don't worry about it
             }
         }
     }
 }
-
-const LONG_TIMEOUT = 200000;
 
 describe("Search Jobs - System Tests", () => {
 
