@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added new `zowe zos-jobs search job` command, which allows the user to search spool files for a specified string or regular expresion.
+
 ## `8.0.0-next.202402132108`
 
 - LTS Breaking: Removed record format (recfm) validation when issuing `zowe files create` commands [#1699](https://github.com/zowe/zowe-cli/issues/1699)
@@ -27,6 +31,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
     - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
+  
 
 ## `8.0.0-next.202401262128`
 

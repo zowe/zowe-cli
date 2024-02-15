@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchJobs tests SearchJobs API successful call should search a job and find the expected output 1`] = `
+"Job Name: IBMUSER$ Job Id: TSUxxx Spool file: undefined(ID #undefined Step: undefined)
+ Line 2 : BluhBluh Line 2 : BluhBluh
+Job Name: IBMUSER$ Job Id: JOB03781 Spool file: undefined(ID #undefined Step: undefined)
+ Line 2 : BluhBluh Line 2 : BluhBluh
+"
+`;
