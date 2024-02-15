@@ -12,6 +12,7 @@ class FooHandler {
     process(params) {
         return __awaiter(this, void 0, void 0, function* () {
             params.response.console.log("Invoked sample-plugin foo handler");
+            yield undefined;
         });
     }
 }

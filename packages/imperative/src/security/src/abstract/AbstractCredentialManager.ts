@@ -143,11 +143,11 @@ export abstract class AbstractCredentialManager {
     }
 
     /**
-     * @returns {string[]} - List of possible solutions for credential manager errors.
+     * @returns {string[] | undefined} - List of possible solutions for credential manager errors.
      * Override this in your CredentialManager to supply more detailed error messages.
      */
     protected get possibleSolutions(): string[] | undefined {
-        return;
+        return undefined;
     }
 
     /**

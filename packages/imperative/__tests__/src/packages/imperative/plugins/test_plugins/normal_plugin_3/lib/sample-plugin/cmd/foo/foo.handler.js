@@ -18,6 +18,7 @@ class FooHandler {
                 profile.size + " and duration = " + profile.duration;
             // impFileLogger.debug(successMsg);
             params.response.console.log(successMsg);
+            yield undefined;
         });
     }
 }
