@@ -454,17 +454,8 @@ export abstract class AbstractRestClient {
          * Here is where we conditionally perform our HTTP REST request using basic authentication or the stored
          * cookie in our session object.
          */
-        if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC ||
-            this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
-            if (this.session.ISession.base64EncodedAuth || (this.session.ISession.user && this.session.ISession.password)) {
-                this.log.trace("Using basic authentication");
-                const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
-                const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
-                    AbstractSession.getBase64Auth(this.session.ISession.user,  this.session.ISession.password));
-                headerKeys.forEach((property) => {
-                    options.headers[property] = authentication;
-                });
-            } else if (this.session.ISession.tokenValue) {
+        if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
+            if (this.session.ISession.tokenValue) {
                 this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
                 const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
                 const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
@@ -472,7 +463,7 @@ export abstract class AbstractRestClient {
                     options.headers[property] = authentication;
                 });
             } else {
-                throw new ImperativeError({msg: "No credentials for a BASIC or TOKEN type of session."});
+                throw new ImperativeError({msg: "No credentials for a TOKEN type of session."});
             }
         } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_BEARER) {
             this.log.trace("Using bearer authentication");
@@ -493,6 +484,18 @@ export abstract class AbstractRestClient {
                     causeErrors: err,
                     additionalDetails: err.message,
                 });
+            }
+        } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
+            if (this.session.ISession.base64EncodedAuth || (this.session.ISession.user && this.session.ISession.password)) {
+                this.log.trace("Using basic authentication");
+                const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
+                const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
+                    AbstractSession.getBase64Auth(this.session.ISession.user,  this.session.ISession.password));
+                headerKeys.forEach((property) => {
+                    options.headers[property] = authentication;
+                });
+            } else {
+                throw new ImperativeError({msg: "No credentials for a BASIC type of session."});
             }
         }
         // else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PFX) {
@@ -536,7 +539,7 @@ export abstract class AbstractRestClient {
 
         if (this.response.headers != null) {
             // This is not ideal, but is the only way to avoid introducing a breaking change.
-            if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN || this.session.ISession.storeCookie === true) {
+            if (this.session.ISession.storeCookie === true) {
                 if (RestConstants.PROP_COOKIE in this.response.headers) {
                     this.session.storeCookie(this.response.headers[RestConstants.PROP_COOKIE]);
                 }

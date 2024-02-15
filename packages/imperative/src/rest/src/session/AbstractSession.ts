@@ -261,7 +261,7 @@ export abstract class AbstractSession {
                     additionalDetails: "For CLI usage, see '<your-cli> auth login <service> --help'"
                 });
             }
-            ImperativeExpect.keysToBeUndefined(populatedSession, ["tokenType", "tokenValue", "cert", "certKey"]);
+            ImperativeExpect.keysToBeUndefined(populatedSession, ["tokenValue", "cert", "certKey"]);
         }
 
         // if bearer auth, must have token

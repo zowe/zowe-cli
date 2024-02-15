@@ -64,16 +64,6 @@ describe("Session tests", () => {
         expect(error.message).toMatchSnapshot();
     });
 
-    it("should not allow tokenType for 'basic' type", () => {
-        let error;
-        try {
-            const session = new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", tokenType: "LtpaToken2"});
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error.message).toMatchSnapshot();
-    });
-
     it("should not allow tokenValue for 'basic' type", () => {
         let error;
         try {

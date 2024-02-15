@@ -81,11 +81,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
         expect(sessCfgWithConnProps.password).toBe("FakePassword");
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
         expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
+        expect(sessCfgWithConnProps.storeCookie).toBe(true);
     });
 
     it("authenticate with user, pass, and *NO* tokenType to get token", async() => {
@@ -106,11 +107,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
         expect(sessCfgWithConnProps.password).toBe("FakePassword");
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
         expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
+        expect(sessCfgWithConnProps.storeCookie).toBe(true);
     });
 
     it("authenticate with token value", async() => {
@@ -204,11 +206,11 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args
         );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
-        expect(sessCfgWithConnProps.user).toBe("FakeUser");
-        expect(sessCfgWithConnProps.password).toBe("FakePassword");
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
-        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+        expect(sessCfgWithConnProps.user).toBeUndefined();
+        expect(sessCfgWithConnProps.password).toBeUndefined();
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
+        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(sessCfgWithConnProps.tokenValue).toBe("FakeToken");
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });

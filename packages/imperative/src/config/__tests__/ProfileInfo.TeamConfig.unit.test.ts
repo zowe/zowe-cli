@@ -151,6 +151,8 @@ describe("TeamConfig ProfileInfo tests", () => {
             const userInx = 2;
             const passInx = 3;
             const rejectInx = 4;
+            const tokenTypeInx = 5;
+            const tokenValueInx = 6;
 
             const profArgs: IProfArgAttrs[] = [
                 {
@@ -207,17 +209,17 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const newSess = ProfileInfo.createSession(profArgs);
                 expect(newSess.ISession.hostname).toBe(profArgs[hostInx].argValue);
                 expect(newSess.ISession.port).toBe(profArgs[portInx].argValue);
-                expect(newSess.ISession.user).toBe(profArgs[userInx].argValue);
-                expect(newSess.ISession.password).toBe(profArgs[passInx].argValue);
+                expect(newSess.ISession.user).toBeUndefined();
+                expect(newSess.ISession.password).toBeUndefined();
                 expect(newSess.ISession.rejectUnauthorized).toBe(profArgs[rejectInx].argValue);
-                expect(newSess.ISession.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+                expect(newSess.ISession.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
                 expect(newSess.ISession.protocol).toBe(SessConstants.HTTPS_PROTOCOL);
                 expect(newSess.ISession.secureProtocol).toBe(AbstractSession.DEFAULT_SECURE_PROTOCOL);
                 expect(newSess.ISession.basePath).toBe(AbstractSession.DEFAULT_BASE_PATH);
-                expect(newSess.ISession.base64EncodedAuth).toBe(b64TestAuth);
-                // Auth token should be undefined because user and password takes precedence
-                expect(newSess.ISession.tokenType).toBeUndefined();
-                expect(newSess.ISession.tokenValue).toBeUndefined();
+                expect(newSess.ISession.base64EncodedAuth).toBeUndefined();
+                // Auth token should be defined because it takes precedence
+                expect(newSess.ISession.tokenType).toBe(profArgs[tokenTypeInx].argValue);
+                expect(newSess.ISession.tokenValue).toBe(profArgs[tokenValueInx].argValue);
             });
         });
     });

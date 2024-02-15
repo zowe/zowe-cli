@@ -236,39 +236,18 @@ export class ConnectionPropsForSessCfg {
         if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.port)) {
             sessCfg.port = cmdArgs.port;
         }
-        if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.user)) {
-            sessCfg.user = cmdArgs.user;
-        }
-        if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.password)) {
-            sessCfg.password = cmdArgs.password;
-        }
 
         if (connOpts.requestToken) {
             // deleting any tokenValue, ensures that basic creds are used to authenticate and get token
             delete sessCfg.tokenValue;
-        } else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.user) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfg.password) === false &&
-            ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenValue)) {
+            sessCfg.storeCookie = true;
+            sessCfg.tokenType = cmdArgs.tokenType || sessCfg.tokenType || connOpts.defaultTokenType;
+        }
+    
+        if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenValue)) {
             // set tokenValue if token is in args, and user and password are NOT supplied.
             sessCfg.tokenValue = cmdArgs.tokenValue;
-        }
 
-        // we use a cert when none of user, password, or token are supplied
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfg.user) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfg.password) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) === false &&
-            ConnectionPropsForSessCfg.propHasValue(cmdArgs.certFile)) {
-            if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.certKeyFile)) {
-                sessCfg.cert = cmdArgs.certFile;
-                sessCfg.certKey = cmdArgs.certKeyFile;
-            }
-            // else if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.certFilePassphrase)) {
-            //     sessCfg.cert = cmdArgs.certFile;
-            //     sessCfg.passphrase = cmdArgs.certFilePassphrase;
-            // }
-        }
-
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue)) {
             // when tokenValue is set at this point, we are definitely using the token.
             impLogger.debug("Using token authentication");
 
@@ -284,22 +263,40 @@ export class ConnectionPropsForSessCfg {
                 // When no tokenType supplied, user wants bearer
                 sessCfg.type = SessConstants.AUTH_TYPE_BEARER;
             }
-        } else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.cert)) {
-            // when cert property is set at this point, we will use the certificate
-            if (ConnectionPropsForSessCfg.propHasValue(sessCfg.certKey)) {
-                impLogger.debug("Using PEM Certificate authentication");
-                sessCfg.type = SessConstants.AUTH_TYPE_CERT_PEM;
-            }
+        }
+
+        // we use a cert when none of user, password, or token are supplied
+        else if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.certFile) && ConnectionPropsForSessCfg.propHasValue(cmdArgs.certKeyFile)) {
+            sessCfg.cert = cmdArgs.certFile;
+            sessCfg.certKey = cmdArgs.certKeyFile;
+
+            // else if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.certFilePassphrase)) {
+            //     sessCfg.cert = cmdArgs.certFile;
+            //     sessCfg.passphrase = cmdArgs.certFilePassphrase;
+            // }
+
+            // when cert property is set at this point, we will use the certificatr
+
+            impLogger.debug("Using PEM Certificate authentication");
+            sessCfg.type = SessConstants.AUTH_TYPE_CERT_PEM;
+
             // else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.passphrase)) {
             //  impLogger.debug("Using PFX Certificate authentication");
             //  sessCfg.type = SessConstants.AUTH_TYPE_CERT_PFX;
             // }
-        } else {
+        }
+
+        else {
             // we are using basic auth
             impLogger.debug("Using basic authentication");
+            if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.user)) {
+                sessCfg.user = cmdArgs.user;
+            }
+            if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.password)) {
+                sessCfg.password = cmdArgs.password;
+            }
             sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
         }
-        ConnectionPropsForSessCfg.setTypeForTokenRequest(sessCfg, connOpts, cmdArgs.tokenType);
         ConnectionPropsForSessCfg.logSessCfg(sessCfg);
     }
 
@@ -397,36 +394,6 @@ export class ConnectionPropsForSessCfg {
             return opts.parms.response.console.prompt(promptText, opts);
         } else {
             return CliUtils.readPrompt(promptText, opts);
-        }
-    }
-
-    // ***********************************************************************
-    /**
-     * Determine if we want to request a token.
-     * Set the session's type and tokenType accordingly.
-     *
-     * @param sessCfg
-     *       The session configuration to be updated.
-     *
-     * @param options
-     *       Options that alter our actions. See IOptionsForAddConnProps.
-     *
-     * @param tokenType
-     *       The type of token that we expect to receive.
-     */
-    private static setTypeForTokenRequest(
-        sessCfg: any,
-        options: IOptionsForAddConnProps,
-        tokenType: SessConstants.TOKEN_TYPE_CHOICES
-    ) {
-        const impLogger = Logger.getImperativeLogger();
-        if (options.requestToken) {
-            impLogger.debug("Requesting a token");
-            if (sessCfg.type === SessConstants.AUTH_TYPE_BASIC) {
-                // Set our type to token to get a token from user and pass
-                sessCfg.type = SessConstants.AUTH_TYPE_TOKEN;
-            }
-            sessCfg.tokenType = tokenType || sessCfg.tokenType || options.defaultTokenType;
         }
     }
 

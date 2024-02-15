@@ -78,6 +78,10 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
         const sessCfg: ISession = this.createSessCfgFromArgs(
             params.arguments
         );
+
+        // You cannot login to get a token with a token
+        params.arguments.tokenValue = undefined;
+
         const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
             sessCfg, params.arguments,
             { requestToken: true, defaultTokenType: this.mDefaultTokenType, parms: params, autoStore: false }
