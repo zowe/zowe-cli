@@ -51,8 +51,8 @@ export default class ListHandler implements ICommandHandler {
             }
         }
 
-        // If requested, only include the root property
-        if (params.arguments.root && lodash.isObject(obj)) {
+        // If requested, only include the root property name
+        if (params.arguments.nameOnly && lodash.isObject(obj)) {
             obj = Object.keys(obj);
         }
 
