@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
+
 ## `5.22.3`
 
 - BugFix: Resolved issue in `ProfileInfo` where schema comparisons fail, specifically when comparing the cached schema against a command-based schema during registration.

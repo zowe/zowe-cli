@@ -167,7 +167,6 @@ export class Shell {
     private static authenticationHandler(authsAllowed: string[]) {
         let authPos = 0;
         return (methodsLeft: string[], partialSuccess: boolean, callback: any) => {
-            partialSuccess = true;
             if (authPos === authsAllowed.length) {
                 return false;
             }
