@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.23.3`
 
 - BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
 
