@@ -22,14 +22,10 @@ export * from "./src/doc/api/IProfileManagerFactory";
 
 export * from "./src/doc/parms/ILoadProfile";
 export * from "./src/doc/parms/IProfileManager";
-export * from "./src/doc/parms/IValidateProfile";
-export * from "./src/doc/parms/IValidateProfileForCLI";
-export * from "./src/doc/parms/IValidateProfileWithSchema";
 
 export * from "./src/doc/api/IProfileManagerFactory";
 
 export * from "./src/doc/response/IProfileLoaded";
-export * from "./src/doc/response/IProfileValidated";
 
 export * from "./src/utils/ProfileIO";
 export * from "./src/utils/ProfileUtils";

@@ -12,6 +12,3 @@
 export * from "./ILoadAllProfiles";
 export * from "./ILoadProfile";
 export * from "./IProfileManager";
-export * from "./IValidateProfile";
-export * from "./IValidateProfileForCLI";
-export * from "./IValidateProfileWithSchema";

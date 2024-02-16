@@ -23,15 +23,9 @@ import {
     IProfileManager,
     IProfileSchema,
     IProfileTypeConfiguration,
-    IProfileValidated,
-    IValidateProfile,
-    IValidateProfileWithSchema,
     ILoadAllProfiles
 } from "../doc/";
 import { ProfileIO, ProfileUtils } from "../utils";
-import { ImperativeConfig } from "../../../utilities";
-
-const SchemaValidator = require("jsonschema").Validator;
 
 /**
  * The abstract profile manager contains most (if not all in some cases) methods to manage Imperative profiles. Profiles
@@ -376,13 +370,14 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     }
 
     /**
-     * Load a profile from disk. Ensures that the parameters are valid and loads the profile specified by name OR the default profile if
-     * requested. If load default is requested, any name supplied is ignored.
+     * This function no longer processes V1 profiles from disk. It now only processes any profile
+     * information that was obtained from the command definition.
      * @template L
      * @param {ILoadProfile} parms - See the interface for details.
-     * @returns {Promise<IProfileLoaded>} - The promise that is fulfilled with the response object (see interface for details) or rejected
-     * with an Imperative Error.
-     * @memberof AbstractProfileManager
+     * @returns {Promise<IProfileLoaded>} - The promise that is fulfilled with the response object.
+     *      Since we no longer read V1 profiles from disk, the response will be an undefined profile
+     *      with a message about V1 profiles.
+     * @throws An ImperativeError when invalid parameters are supplied.
      */
     public async load<L extends ILoadProfile>(parms: L): Promise<IProfileLoaded> {
         // Ensure the correct parameters were supplied
@@ -396,31 +391,23 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // Log the API call
         this.log.info(`Loading profile "${parms.name || "default"}" of type "${this.profileType}"...`);
 
-        // If load default is true, avoid the name check - if loading the default, we ignore the name
-        if (!parms.loadDefault) {
-            ImperativeExpect.keysToBeDefined(parms, ["name"], `A profile load was requested for type "${this.profileType}", ` +
-                `but no profile name was specified.`);
-        } else {
-            parms.name = this.getDefaultProfileName();
-            this.log.debug(`The default profile for type "${this.profileType}" is "${parms.name}".`);
-
-            // If we don't find the default name and we know fail not found is false, then return here
-            if (parms.name == null) {
-                if (!parms.failNotFound) {
-                    return this.failNotFoundDefaultResponse("default was requested");
-                } else {
-                    this.log.error(`No default profile exists for type "${this.profileType}".`);
-                    throw new ImperativeError({msg: `No default profile set for type "${this.profileType}".`});
-                }
-            } else if (!this.locateExistingProfile(parms.name)) {
-                this.log.error(`Default profile "${parms.name}" does not exist for type "${this.profileType}".`);
-                throw new ImperativeError({
-                    msg: `Your default profile named ${parms.name} does not exist for type ${this.profileType}.\n` +
-                        `To change your default profile, run "${ImperativeConfig.instance.rootCommandName} profiles set-default ` +
-                        `${this.profileType} <profileName>".`
-                });
-            }
+        let noV1ProfilesMsg = `We no longer read a default profile from disk using V1 profiles. Type = ` +
+            `"${this.profileType}". The profile returned is undefined.`;
+        if (parms.loadDefault) {
+            this.log.debug(noV1ProfilesMsg);
+            return {
+                message: noV1ProfilesMsg,
+                type: this.profileType,
+                failNotFound: false,
+                dependenciesLoaded: false,
+                dependencyLoadResponses: []
+            };
         }
+
+        // When our caller has not asked for the default profile, we expect the caller to supply the profile name
+        ImperativeExpect.keysToBeDefined(parms, ["name"],
+            `A profile load was requested for type "${this.profileType}", ` + `but no profile name was specified.`
+        );
 
         // Attempt to protect against circular dependencies - if the load count increases to 2 for the same type/name
         // Then some profile in the chain attempted to re-load this profile.
@@ -441,61 +428,19 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
             });
         }
 
-        // Invoke the implementation
-        let response;
-        try {
-            this.log.debug(`Invoking the implementation to load profile "${parms.name}" of type "${this.profileType}".`);
-            response = await this.loadProfile(parms);
-        } catch (e) {
-            this.log.error(`Load implementation error: ${e.message}`);
-            this.loadCounter.set(mapKey, 0);
-            throw e;
-        }
-
         // Reset the load counter
         this.loadCounter.set(mapKey, 0);
 
-        this.log.info(`Load API completed for profile "${parms.name}" of type "${this.profileType}".`);
-        return response;
-    }
-
-    /**
-     * Validate a profile. Includes basic and schema validation. Can be called explicitly, but is also called during
-     * loads and saves to protect the integrity of the profiles against the type definitions.
-     * @template V
-     * @param {IValidateProfile} parms - See the interface for details
-     * @returns {Promise<IProfileValidated>} - The promise that is fulfilled with the response object (see interface for details) or rejected
-     * with an Imperative Error.
-     * @memberof AbstractProfileManager
-     */
-    public async validate<V extends IValidateProfile>(parms: V): Promise<IProfileValidated> {
-        // Ensure that parms are passed
-        ImperativeExpect.toNotBeNullOrUndefined(parms, `A request was made to validate a profile ` +
-            `(of type "${this.profileType}"), but no parameters were specified.`);
-
-        // Ensure defaults are set
-        parms.strict = (parms.strict == null) ? false : parms.strict;
-
-        // Pass the schema to the implementations validate
-        const validateParms = JSON.parse(JSON.stringify(parms));
-        validateParms.schema = this.profileTypeSchema;
-
-        // Log the API call
-        this.log.info(`Validating profile of type "${this.profileType}"...`);
-
-        // Validate the profile object is correct for our usage here - does not include schema validation
-        this.validateProfileObject(parms.name, this.profileType, parms.profile);
-
-        // Invoke the implementation
-        this.log.trace(`Invoking the profile validation implementation for profile "${parms.name}" of type "${this.profileType}".`);
-
-        const response = await this.validateProfile(validateParms);
-        if (isNullOrUndefined(response)) {
-            throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile validate response.`},
-                {tag: `Internal Profile Management Error`});
-        }
-
-        return response;
+        noV1ProfilesMsg = `We no longer read profiles from disk using V1 profiles. Type = ` +
+            `"${this.profileType}". The profile returned is undefined.`;
+        this.log.debug(noV1ProfilesMsg);
+        return {
+            message: noV1ProfilesMsg,
+            type: this.profileType,
+            failNotFound: false,
+            dependenciesLoaded: false,
+            dependencyLoadResponses: []
+        };
     }
 
     /**
@@ -607,28 +552,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     public abstract loadAll(parms?: ILoadAllProfiles): Promise<IProfileLoaded[]>;
 
     /**
-     * Save profile - performs the profile load according to the implementation - invoked when all parameters are valid
-     * (according the abstract manager).
-     * @protected
-     * @abstract
-     * @param {ILoadProfile} parms - See interface for details
-     * @returns {Promise<IProfileLoaded>} - The promise fulfilled with response or rejected with an ImperativeError.
-     * @memberof AbstractProfileManager
-     */
-    protected abstract loadProfile(parms: ILoadProfile): Promise<IProfileLoaded>;
-
-    /**
-     * Validate profile - performs the profile validation according to the implementation - invoked when all parameters are valid
-     * (according the abstract manager).
-     * @protected
-     * @abstract
-     * @param {IValidateProfileWithSchema} parms - See interface for details
-     * @returns {Promise<IProfileValidated>} - The promise fulfilled with response or rejected with an ImperativeError.
-     * @memberof AbstractProfileManager
-     */
-    protected abstract validateProfile(parms: IValidateProfileWithSchema): Promise<IProfileValidated>;
-
-    /**
      * Load a profiles dependencies - dictacted by the implementation.
      * @protected
      * @abstract
@@ -639,111 +562,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      * @memberof AbstractProfileManager
      */
     protected abstract loadDependencies(name: string, profile: IProfile, failNotFound: boolean): Promise<IProfileLoaded[]>;
-
-    /**
-     * Performs basic validation of a profile object - ensures that all fields are present (if required).
-     * @protected
-     * @param name - the name of the profile to validate
-     * @param type - the type of profile to validate
-     * @param {IProfile} profile - The profile to validate.
-     * @memberof AbstractProfileManager
-     */
-    protected validateProfileObject(name: string, type: string, profile: IProfile) {
-        // Throw an error on type mismatch - if the profile manager type does not match the input profile
-        ImperativeExpect.toBeEqual(type, this.profileType,
-            `The profile passed on the create indicates a type ("${type}") that differs from ` +
-            `the type specified on this instance of the profile manager ("${this.profileType}").`);
-
-        // Ensure that the profile name is specified and non-blank
-        ImperativeExpect.toBeDefinedAndNonBlank(name, "name",
-            `The profile passed does not contain a name (type: "${this.profileType}") OR the name property specified is ` +
-            `not of type "string".`);
-
-        // Ensure that the profile name passed does NOT match the meta profile name
-        ImperativeExpect.toNotBeEqual(name, this.profileTypeMetaFileName,
-            `You cannot specify "${name}" as a profile name. ` +
-            `This profile name is reserved for internal Imperative usage.`);
-
-
-        // Validate the dependencies specification
-        if (!isNullOrUndefined(profile.dependencies)) {
-            ImperativeExpect.keysToBeAnArray(profile, false, ["dependencies"], `The profile passed ` +
-                `(name "${name}" of type "${type}") has dependencies as a property, ` +
-                `but it is NOT an array (ill-formed)`);
-
-            for (const dep of profile.dependencies) {
-
-                // check for name on the dependency
-                ImperativeExpect.keysToBeDefinedAndNonBlank(dep, ["name"], `The profile passed ` +
-                    `(name "${name}" of type "${type}") has dependencies as a property, ` +
-                    `but an entry does not contain "name".`);
-
-                // check for name on the dependency
-                ImperativeExpect.keysToBeDefinedAndNonBlank(dep, ["type"], `The profile passed ` +
-                    `(name "${name}" of type "${type}") has dependencies as a property, ` +
-                    `but an entry does not contain "type".`);
-            }
-        }
-    }
-
-    /**
-     * Validates the profile against the schema for its type and reports and errors located.
-     * @protected
-     * @param name - the name of the profile to validate
-     * @param {IProfile} profile - The profile to validate.
-     * @param {boolean} [strict=false] - Set to true to enable the "ban unknown properties" specification of the JSON schema spec. In other words,
-     * prevents profiles with "unknown" or "not defined" proeprties according to the schema document.
-     * @memberof AbstractProfileManager
-     */
-    protected validateProfileAgainstSchema(name: string, profile: IProfile, strict = false) {
-
-
-        // Instance of the validator
-        const validator = new SchemaValidator();
-
-        // don't make the user specify this internal field of "dependencies"
-        // they specify the dependencies on their profile config object,
-        // and the profile manager will construct them there
-        const schemaWithDependencies = JSON.parse(JSON.stringify(this.profileTypeSchema)); // copy the schema without modifying
-        // const dependencyProperty: IProfileProperty = {
-        //   type: "array",
-        //   items: {
-        //     description: "The dependencies",
-        //     type: "object",
-        //     properties: {
-        //       type: {
-        //         description: "The type of dependent profile.",
-        //         type: "string"
-        //       },
-        //       name: {
-        //         description: "The name of the dependent profile.",
-        //         type: "string"
-        //       },
-        //     }
-        //   }
-        // };
-
-        // If strict mode is requested, then we will remove name and type (because they are inserted by the manager) and
-        // set the additional properties flag false, which, according to the JSON schema specification, indicates that
-        // no unknown properties should be present on the document.
-        if (strict || (!isNullOrUndefined(schemaWithDependencies.additionalProperties) && schemaWithDependencies.additionalProperties === false)) {
-            schemaWithDependencies.additionalProperties = false;
-        }
-
-        // TODO - @ChrisB, is this supposed to be commented out?
-        // schemaWithDependencies.dependencies = dependencyProperty;
-        const results = validator.validate(profile, schemaWithDependencies, {verbose: true});
-        if (results.errors.length > 0) {
-            let validationErrorMsg: string = `Errors located in profile "${name}" of type "${this.profileType}":\n`;
-            for (const validationError of results.errors) {
-                // make the error messages more human readable
-                const property = validationError.property.replace("instance.", "")
-                    .replace(/^instance$/, "profile");
-                validationErrorMsg += property + " " + validationError.message + "\n";
-            }
-            throw new ImperativeError({msg: validationErrorMsg, additionalDetails: results});
-        }
-    }
 
     /**
      * Constructs the full path to the profile of the managers "type".
@@ -800,100 +618,6 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         }
         return true;
     }
-
-    /**
-     * Loads a specific profile (by name).
-     * @protected
-     * @param {string} name - The name of the profile to load.
-     * @param {boolean} [failNotFound=true] - Specify false to ignore "not found" errors.
-     * @param {boolean} [loadDependencies=true] - Specify false to NOT load dependencies.
-     * @returns {Promise<IProfileLoaded>} - The promise to fulfill with the response OR reject with an ImperativeError
-     * @memberof AbstractProfileManager
-     */
-    protected async loadSpecificProfile(name: string, failNotFound: boolean = true, loadDependencies: boolean = true): Promise<IProfileLoaded> {
-        // Ensure that the profile actually exists
-        const profileFilePath: string = this.locateExistingProfile(name);
-
-        // If it doesn't exist and fail not found is false
-        if (isNullOrUndefined(profileFilePath) && !failNotFound) {
-            return this.failNotFoundDefaultResponse(name);
-        }
-
-        // Throw an error indicating that the load failed
-        if (isNullOrUndefined(profileFilePath)) {
-            this.loadFailed(name);
-        }
-
-        // Load the profile from disk
-        const profileContents = ProfileIO.readProfileFile(profileFilePath, this.profileType);
-
-        // Insert the name and type - not persisted on disk
-
-        try {
-            await this.validate({name, profile: profileContents});
-        } catch (e) {
-            throw new ImperativeError({
-                msg: `Profile validation error during load of profile "${name}" ` +
-                    `of type "${this.profileType}". Error Details: ${e.message}`,
-                additionalDetails: e
-            });
-        }
-
-        // Construct the load response for this profile.
-        const loadResponse: IProfileLoaded = {
-            message: `Profile "${name}" of type "${this.profileType}" loaded successfully.`,
-            profile: profileContents,
-            type: this.profileType,
-            name,
-            failNotFound,
-            dependenciesLoaded: false,
-            dependencyLoadResponses: []
-        };
-
-        // If requested, load the profile's dependencies
-        if (loadDependencies) {
-            const loadDependenciesResponse = await this.loadDependencies(name, profileContents, failNotFound);
-            if (!isNullOrUndefined(loadDependenciesResponse) && loadDependenciesResponse.length > 0) {
-                loadResponse.dependenciesLoaded = true;
-                loadResponse.dependencyLoadResponses = loadDependenciesResponse;
-            }
-        }
-
-        // Return the profile and dependencies to caller
-        return loadResponse;
-    }
-
-    /**
-     * Validates a profiles contents against the required dependencies specified on the profile configuration type document. If the document
-     * indicates that a dependency is required and that dependency is missing from the input profile, an error is thrown.
-     * @private
-     * @param {IProfile} profile - The profile to validate dependency specs
-     * @memberof AbstractProfileManager
-     */
-    protected validateRequiredDependenciesAreSpecified(profile: IProfile) {
-        if (!isNullOrUndefined(this.profileTypeConfiguration.dependencies) && this.profileTypeConfiguration.dependencies.length > 0) {
-            const specifiedDependencies = profile.dependencies || [];
-            for (const dependencyConfig of this.profileTypeConfiguration.dependencies) {
-                // are required dependencies present in the profile?
-                if (dependencyConfig.required) {
-                    let requiredDependencyFound = false;
-                    for (const specifiedDependency of specifiedDependencies) {
-                        if (specifiedDependency.type === dependencyConfig.type) {
-                            requiredDependencyFound = true;
-                        }
-                    }
-                    if (!requiredDependencyFound) {
-                        throw new ImperativeError({
-                            msg: `Profile type "${this.profileType}" specifies a required dependency of type "${dependencyConfig.type}" ` +
-                                `on the "${this.profileType}" profile type configuration document. A dependency of type "${dependencyConfig.type}" ` +
-                                `was NOT listed on the input profile.`
-                        });
-                    }
-                }
-            }
-        }
-    }
-
 
     /**
      * Checks if the profile (by name) is listed as a dependency of any other profile passed. The type of the profiled named is

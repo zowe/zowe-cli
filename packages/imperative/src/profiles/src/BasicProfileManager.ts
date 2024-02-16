@@ -11,12 +11,9 @@
 
 import { AbstractProfileManager } from "./abstract/AbstractProfileManager";
 import {
-    ILoadProfile,
     IProfile,
     IProfileLoaded,
     IProfileTypeConfiguration,
-    IProfileValidated,
-    IValidateProfileWithSchema
 } from "./doc";
 
 import { isNullOrUndefined } from "util";
@@ -143,49 +140,5 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
                 dependenciesLoaded([]);
             }
         });
-    }
-
-    /**
-     * Load a profile from disk - invokes the "loadSpecificProfile" method in the abstract to perform the load.
-     * @protected
-     * @param {ILoadProfile} parms - Load control params - see the interface for full details
-     * @returns {Promise<IProfileLoaded>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
-     * @memberof BasicProfileManager
-     */
-    protected async loadProfile(parms: ILoadProfile): Promise<IProfileLoaded> {
-        const loadName: string = (parms.loadDefault || false) ? this.getDefaultProfileName() : parms.name;
-        this.log.debug(`Loading profile "${loadName}" (load default: "${parms.loadDefault}") of type "${this.profileType}".`);
-        return this.loadSpecificProfile(loadName, parms.failNotFound, parms.loadDependencies);
-    }
-
-    /**
-     * Validate profile - ensures that the profile is valid against the schema and configuration document
-     * @protected
-     * @param {IValidateProfileWithSchema} parms - Validate control params - see the interface for full details
-     * @returns {Promise<IProfileValidated>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
-     * @memberof BasicProfileManager
-     */
-    protected async validateProfile(parms: IValidateProfileWithSchema): Promise<IProfileValidated> {
-        this.log.trace(`Validating profile "${parms.name}" of type "${this.profileType}"`);
-        // Ensure that the profile is not empty
-        if (this.isProfileEmpty(parms.profile)) {
-            throw new ImperativeError({
-                msg: `The profile passed (name "${parms.name}" of type ` +
-                    `"${this.profileType}") does not contain any content.`
-            });
-        }
-
-        // If the configuration indicates this profile type has required dependencies, ensure that those are specified
-        // on the profile object passed.
-        this.validateRequiredDependenciesAreSpecified(parms.profile);
-
-        // Validate the profile against the schema
-        this.validateProfileAgainstSchema(parms.name, parms.profile, parms.strict);
-
-        // Return the response
-        this.log.debug(`Profile "${parms.name}" of type "${this.profileType}" is valid.`);
-        return {
-            message: `Profile "${parms.name}" of type "${this.profileType}" is valid.`
-        };
     }
 }

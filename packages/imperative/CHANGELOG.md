@@ -7,6 +7,7 @@ All notable changes to the Imperative package will be documented in this file.
 - LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:
     - @zowe/imperative
+      - ICliLoadProfile
       - ICommandProfileTypeConfiguration.createProfileExamples
       - ICommandProfileTypeConfiguration.createProfileFromArgumentsHandler
       - ICommandProfileTypeConfiguration.updateProfileExamples
@@ -14,11 +15,15 @@ All notable changes to the Imperative package will be documented in this file.
       - IDeleteProfile
       - IProfileDeleted
       - IProfileSaved
+      - IProfileValidated
       - ISaveProfile
       - ISaveProfileFromCliArgs
       - ISetDefaultProfile
       - IUpdateProfile
       - IUpdateProfileFromCliArgs
+      - IValidateProfile
+      - IValidateProfileForCLI
+      - IValidateProfileWithSchema
     - @zowe/cli-test-utils
       - ISetupEnvironmentParms.createOldProfiles
 
@@ -28,17 +33,28 @@ All notable changes to the Imperative package will be documented in this file.
       - AbstractProfileManager.delete
       - AbstractProfileManager.deleteProfile
       - AbstractProfileManager.deleteProfileFromDisk
+      - AbstractProfileManager.loadProfile
+      - AbstractProfileManager.loadSpecificProfile
       - AbstractProfileManager.save
       - AbstractProfileManager.saveProfile
       - AbstractProfileManager.setDefault
       - AbstractProfileManager.update
       - AbstractProfileManager.updateProfile
+      - AbstractProfileManager.validate
+      - AbstractProfileManager.validateProfile
+      - AbstractProfileManager.validateProfileAgainstSchema
+      - AbstractProfileManager.validateRequiredDependenciesAreSpecified
+      - AbstractProfileManager.validateProfileObject
       - BasicProfileManager.deleteProfile
+      - BasicProfileManager.loadProfile
       - BasicProfileManager.saveProfile
       - BasicProfileManager.updateProfile
+      - BasicProfileManager.validateProfile
       - CliProfileManager.deleteProfile
+      - CliProfileManager.loadProfile
       - CliProfileManager.saveProfile
       - CliProfileManager.updateProfile
+      - CliProfileManager.validateProfile
       - CommandProfiles.getMeta
       - CommandProfiles.getAll
       - ProfileInfo.usingTeamConfig
