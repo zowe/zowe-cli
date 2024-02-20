@@ -1517,67 +1517,6 @@ describe("Command Processor", () => {
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
     });
 
-    it("should display input value for simple parm when --show-inputs-only flag is set and v1 profile exists", async () => {
-
-        // values to test
-        const parm1Key = `parm1`;
-        const parm1Value = `value1`;
-
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
-            definition: { // `object`
-                name: "banana",
-                description: "The banana command",
-                type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
-                options: [
-                    {
-                        name: parm1Key,
-                        type: "string",
-                        description: "The first parameter",
-                    }
-                ],
-            },
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
-        });
-
-        // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                [parm1Key]: parm1Value,
-                valid: true,
-                showInputsOnly: true,
-            },
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse.data.locations[0]).toContain('home');
-        expect(commandResponse.data.profileVersion).toBe('v1');
-    });
-
     it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
@@ -1679,7 +1618,6 @@ describe("Command Processor", () => {
         expect(commandResponse.data.locations.length).toBeGreaterThan(0);
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
-        expect(commandResponse.data.profileVersion).toBe('TeamConfig');
     });
 
 
