@@ -1517,35 +1517,91 @@ describe("Command Processor", () => {
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
     });
 
-    it("should mask input value for a secure parm when --show-inputs-only flag is set", async () => {
+    it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
-        const parm1Key = `user`;
-        const parm1Value = `secret`;
-        const secure = `(secure value)`;
+        const parm1Key = `parm1`;
+        const parm1Value = `value1`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow"
+                            }
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    },
+                    "secure": []
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
-            definition: { // `object`
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/__model__/TestArgHandler",
                 options: [
                     {
-                        name: parm1Key,
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
                         type: "string",
-                        description: "The first parameter",
+                        description: "The banana color.",
+                        required: true
                     }
                 ],
+                profile: {
+                    optional: ["banana"]
+                }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
             profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
+            promptPhrase: "dummydummy",
+            config:  ImperativeConfig.instance.config
+        });
+
+        // Mock the profile loader
+        (CommandProfileLoader.loader as any) = jest.fn((args) => {
+            return {
+                loadProfiles: (profArgs: any) => {
+                    return;
+                }
+            };
         });
 
         const parms: any = {
@@ -1559,8 +1615,9 @@ describe("Command Processor", () => {
             silent: true
         };
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse.data.commandValues[parm1Key]).toBe(secure);
-        expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
     it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting", async () => {
