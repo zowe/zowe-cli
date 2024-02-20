@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@types/yargs": "13.0.4",
-    "chalk": "4.1.2",
+    "chalk": "2.4.2",
     "cli-table3": "0.6.2",
     "comment-json": "4.1.1",
     "cross-spawn": "7.0.3",
