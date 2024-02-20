@@ -9,6 +9,4 @@
 *
 */
 
-export * from "./ILoadAllProfiles";
-export * from "./ILoadProfile";
 export * from "./IProfileManager";

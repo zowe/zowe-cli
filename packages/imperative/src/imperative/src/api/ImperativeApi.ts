@@ -12,7 +12,6 @@
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 import { IImperativeApi } from "./doc/IImperativeApi";
 import { Logger } from "../../../logger";
-import { ProfileUtils } from "../../../profiles";
 import { CliProfileManager } from "../../../cmd";
 
 export class ImperativeApi {
@@ -74,7 +73,6 @@ export class ImperativeApi {
         return new CliProfileManager({
             type,
             typeConfigurations: this.mConfig.profiles,
-            profileRootDirectory: ProfileUtils.constructProfilesRootDirectory(this.mHome),
             logger: this.imperativeLogger,
             productDisplayName: this.mConfig.productDisplayName
         });

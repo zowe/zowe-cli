@@ -47,7 +47,6 @@ import { YargsDefiner } from "../../cmd/src/yargs/YargsDefiner";
 import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
 import { ImperativeHelpGeneratorFactory } from "./help/ImperativeHelpGeneratorFactory";
 import { OverridesLoader } from "./OverridesLoader";
-import { ImperativeProfileManagerFactory } from "./profiles/ImperativeProfileManagerFactory";
 import { DefinitionTreeResolver } from "./DefinitionTreeResolver";
 import { EnvironmentalVariableSettings } from "./env/EnvironmentalVariableSettings";
 import { AppSettings } from "../../settings/src/AppSettings";
@@ -529,7 +528,6 @@ export class Imperative {
             preparedHostCliCmdTree,
             yargs,
             commandResponseParms,
-            new ImperativeProfileManagerFactory(this.api),
             this.mHelpGeneratorFactory,
             ImperativeConfig.instance.loadedConfig.experimentalCommandDescription,
             Imperative.rootCommandName,
@@ -549,7 +547,6 @@ export class Imperative {
             Imperative.rootCommandName,
             Imperative.commandLine,
             ImperativeConfig.instance.envVariablePrefix,
-            new ImperativeProfileManagerFactory(this.api),
             this.mHelpGeneratorFactory,
             ImperativeConfig.instance.loadedConfig.experimentalCommandDescription,
 

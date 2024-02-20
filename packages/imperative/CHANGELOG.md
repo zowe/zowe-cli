@@ -8,12 +8,18 @@ All notable changes to the Imperative package will be documented in this file.
   - Removed the following obsolete V1 profile interfaces:
     - @zowe/imperative
       - ICliLoadProfile
+      - ICliLoadAllProfiles
+      - ICommandLoadProfile
       - ICommandProfileTypeConfiguration.createProfileExamples
       - ICommandProfileTypeConfiguration.createProfileFromArgumentsHandler
       - ICommandProfileTypeConfiguration.updateProfileExamples
       - ICommandProfileTypeConfiguration.updateProfileFromArgumentsHandler
       - IDeleteProfile
+      - ILoadAllProfiles
+      - ILoadProfile
       - IProfileDeleted
+      - IProfileManager.loadCounter
+      - IProfileManagerFactory
       - IProfileSaved
       - IProfileValidated
       - ISaveProfile
@@ -27,36 +33,52 @@ All notable changes to the Imperative package will be documented in this file.
     - @zowe/cli-test-utils
       - ISetupEnvironmentParms.createOldProfiles
 
-  - Removed the following obsolete V1 profile functions:
+  - Removed the following obsolete V1 profile classes/functions:
     - @zowe/imperative
-      - AbstractProfileManager.clearDefault
-      - AbstractProfileManager.delete
-      - AbstractProfileManager.deleteProfile
-      - AbstractProfileManager.deleteProfileFromDisk
-      - AbstractProfileManager.loadProfile
-      - AbstractProfileManager.loadSpecificProfile
-      - AbstractProfileManager.save
-      - AbstractProfileManager.saveProfile
-      - AbstractProfileManager.setDefault
-      - AbstractProfileManager.update
-      - AbstractProfileManager.updateProfile
-      - AbstractProfileManager.validate
-      - AbstractProfileManager.validateProfile
-      - AbstractProfileManager.validateProfileAgainstSchema
-      - AbstractProfileManager.validateRequiredDependenciesAreSpecified
-      - AbstractProfileManager.validateProfileObject
-      - BasicProfileManager.deleteProfile
-      - BasicProfileManager.loadProfile
-      - BasicProfileManager.saveProfile
-      - BasicProfileManager.updateProfile
-      - BasicProfileManager.validateProfile
-      - CliProfileManager.deleteProfile
-      - CliProfileManager.loadProfile
-      - CliProfileManager.saveProfile
-      - CliProfileManager.updateProfile
-      - CliProfileManager.validateProfile
-      - CommandProfiles.getMeta
-      - CommandProfiles.getAll
+      - AbstractProfileManager
+        - Any remaining functions consolidated into CliProfileManager
+      - AbstractProfileManagerFactory
+      - BasicProfileManager
+        - Any remaining functions consolidated into CliProfileManager
+      - BasicProfileManagerFactory
+      - CliProfileManager
+        - clearDefault
+        - configurations
+        - constructFullProfilePath
+        - delete
+        - deleteProfile
+        - deleteProfileFromDisk
+        - getAllProfileNames
+        - getDefaultProfileName
+        - isProfileEmpty
+        - load
+        - loadAll
+        - loadCounter
+        - loadDependencies
+        - loadFailed
+        - loadProfile
+        - loadSpecificProfile
+        - locateExistingProfile
+        - managerParameters
+        - mergeProfiles
+        - META_FILE_SUFFIX
+        - PROFILE_EXTENSION
+        - profileRootDirectory
+        - profileTypeSchema
+        - save
+        - saveProfile
+        - setDefault
+        - update
+        - updateProfile
+        - validate
+        - validateProfile
+        - validateProfileAgainstSchema
+        - validateRequiredDependenciesAreSpecified
+        - validateProfileObject
+      - CommandProfiles
+        - getMeta
+        - getAll
+      - ImperativeProfileManagerFactory
       - ProfileInfo.usingTeamConfig
         - To detect if a team config exists, use ProfileInfo.getTeamConfig
         - To detect if only V1 profiles exist, use ProfileInfo.onlyV1ProfilesExist
@@ -70,9 +92,6 @@ All notable changes to the Imperative package will be documented in this file.
 
   - Annotated the following items as @internal:
     - @zowe/imperative
-      - AbstractProfileManager
-      - BasicProfileManager
-      - CliProfileManager
       - CommandProfileLoader
       - CommandProfiles
       - IHandlerParameters.profiles
@@ -155,7 +174,7 @@ All notable changes to the Imperative package will be documented in this file.
         - validateProfileNameDesc
         - validateProfileOptionDesc
 
-- LTS Breaking: Change displayed text from V1 Config to Team Config, including [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+- LTS Breaking: Change text displayed for configuration from "V2"  to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
 
 ## `8.0.0-next.202402132108`
 

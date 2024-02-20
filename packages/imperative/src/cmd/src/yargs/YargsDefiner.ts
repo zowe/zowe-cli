@@ -17,8 +17,6 @@ import { YargsCommandCompleted } from "./AbstractCommandYargs";
 import { GroupCommandYargs } from "./GroupCommandYargs";
 import { CommandYargs } from "./CommandYargs";
 import { ICommandResponseParms } from "../../../cmd/src/doc/response/parms/ICommandResponseParms";
-import { IProfileManagerFactory } from "../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 
 /**
@@ -34,7 +32,6 @@ export class YargsDefiner {
     private mCommandLine: string;
     private mEnvVariablePrefix: string;
     private mHelpFactory: IHelpGeneratorFactory;
-    private mProfileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
     private mExperimentalCommandDescription: string;
     private mPromptPhrase: string;
 
@@ -49,7 +46,6 @@ export class YargsDefiner {
      * @param primaryHighlightColor -  main color to highlight help text headings and other text with
      * @param rootCommandName - the display name of the root command (e.g. "zowe" or "sample-cli")
      * @param envVariablePrefix - the environment variable prefix
-     * @param profileManagerFactory - profile manager factory that can be used to instantiate new profile managers
      * @param helpGeneratorFactory - help generator factory that can be used to instantiate new help generators
      * @param experimentalCommandDescription - optionally overridden experimental command description to
      *                                         propagate to yargs services
@@ -59,7 +55,6 @@ export class YargsDefiner {
         rootCommandName: string,
         commandLine: string,
         envVariablePrefix: string,
-        profileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>,
         helpGeneratorFactory: IHelpGeneratorFactory,
         experimentalCommandDescription: string,
         promptPhrase: string) {
@@ -69,7 +64,6 @@ export class YargsDefiner {
         this.mCommandLine = commandLine;
         this.mEnvVariablePrefix = envVariablePrefix;
         this.mHelpFactory = helpGeneratorFactory;
-        this.mProfileManagerFactory = profileManagerFactory;
         this.mExperimentalCommandDescription = experimentalCommandDescription;
         this.mPromptPhrase = promptPhrase;
     }
@@ -96,7 +90,6 @@ export class YargsDefiner {
                     commandDefinition: definition,
                     commandResponseParms: responseParms,
                     helpGeneratorFactory: this.mHelpFactory,
-                    profileManagerFactory: this.mProfileManagerFactory,
                     experimentalCommandDescription: this.mExperimentalCommandDescription,
                     rootCommandName: this.mRootCommandName,
                     commandLine: this.mCommandLine,
@@ -110,7 +103,6 @@ export class YargsDefiner {
                     commandDefinition: definition,
                     commandResponseParms: responseParms,
                     helpGeneratorFactory: this.mHelpFactory,
-                    profileManagerFactory: this.mProfileManagerFactory,
                     experimentalCommandDescription: this.mExperimentalCommandDescription,
                     rootCommandName: this.mRootCommandName,
                     commandLine: this.mCommandLine,

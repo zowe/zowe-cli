@@ -9,82 +9,183 @@
 *
 */
 
-import { BasicProfileManager } from "../../../profiles";
+import { ImperativeExpect } from "../../../expect";
+import { inspect, isNullOrUndefined } from "util";
+import { Logger } from "../../../logger";
 import { ImperativeError } from "../../../error";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
-import { IProfileLoaded } from "../../../profiles/src/doc";
-import { ICliLoadAllProfiles } from "../doc/profiles/parms/ICliLoadAllProfiles";
+import {
+    IProfileManager,
+    IProfileSchema,
+} from "../../../profiles/src/doc";
 
 /**
- * A profile management API compatible with transforming command line arguments into
- * profiles
- * @internal
+ * The CLI profile manager contains methods to manage Zowe profiles. Profiles
+ * are user configuration documents intended to be used on commands, as a convenience, to supply a slew of additional
+ * input and configuration (normally more than would be feasible as command arguments). See the "IProfile" interface
+ * for a detailed description of profiles, their use case, and examples.
+ *
+ * The Profile Manager no longer reads V1 profile from disk. It only processes profile information from a
+ * command's definition. The Config class now handles reading profiles from disk stored in a zowe.config.json file.
  */
-export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeConfiguration> {
+export class CliProfileManager {
+    /**
+     * Parameters passed on the constructor (normally used to create additional instances of profile manager objects)
+     * @private
+     * @type {IProfileManager}
+     * @memberof CliProfileManager
+     */
+    private mConstructorParms: IProfileManager<ICommandProfileTypeConfiguration>;
 
     /**
-     * NOTE: This is just a copy of BasicProfileManager.loadAll
-     * REASON: We needed the Abstract profile manager to call the CLI profile manager to handle loading of secure properties
-     * Loads all profiles from every type. Profile types are determined by reading all directories within the
-     * profile root directory.
-     * @returns {Promise<IProfileLoaded[]>} - The list of all profiles for every type
+     * The full set of profile type configurations. The manager needs to ensure that A) the profile type configuration
+     * is among the set (because it contains schema and dependency specifications) and B) That other type configurations
+     * are available to verify/load dependencies, etc.
+     * @private
+     * @type {ICommandProfileTypeConfiguration[]}
+     * @memberof CliProfileManager
      */
-    public async loadAll(params?: ICliLoadAllProfiles): Promise<IProfileLoaded[]> {
-        this.log.trace(`Loading all profiles for type "${this.profileType}"...`);
-        // Load all the other profiles for other types
-        const loadAllProfiles: any[] = [];
+    private mProfileTypeConfigurations: ICommandProfileTypeConfiguration[];
 
-        // Load only the profiles for the type if requested
-        if (params != null && params.typeOnly) {
-            const names: string[] = this.getAllProfileNames();
-            for (const name of names) {
-                loadAllProfiles.push(this.load({
-                    name,
-                    failNotFound: true,
-                    loadDependencies: false,
-                    noSecure: params.noSecure
-                }));
-            }
-        } else {
+    /**
+     * The profile "type" for this manager - indicating the profile/schema that this manager is working directly with.
+     * @private
+     * @type {string}
+     * @memberof CliProfileManager
+     */
+    private mProfileType: string;
 
-            // Otherwise, load all profiles of all types
-            for (const typeConfig of this.profileTypeConfigurations) {
-                const typeProfileManager = new CliProfileManager({
-                    profileRootDirectory: this.profileRootDirectory,
-                    typeConfigurations: this.profileTypeConfigurations,
-                    type: typeConfig.type,
-                    logger: this.log,
-                    loadCounter: this.loadCounter
-                });
+    /**
+     * Product display name of the CLI.
+     * @private
+     * @type {string}
+     * @memberof CliProfileManager
+     */
+    private mProductDisplayName: string;
 
-                // Get all the profile names for the type and attempt to load every one
-                const names: string[] = typeProfileManager.getAllProfileNames();
-                for (const name of names) {
-                    this.log.debug(`Loading profile "${name}" of type "${typeConfig.type}".`);
-                    loadAllProfiles.push(typeProfileManager.load({
-                        name,
-                        failNotFound: true,
-                        loadDependencies: false,
-                        noSecure: (params != null) ? params.noSecure : undefined
-                    }));
-                }
+    /**
+     * Logger instance - must be log4js compatible. Can be the Imperative logger (normally), but is required for
+     * profile manager operation.
+     * @private
+     * @type {Logger}
+     * @memberof CliProfileManager
+     */
+    private mLogger: Logger = Logger.getImperativeLogger();
+
+    /**
+     * Creates an instance of ProfileManager - Performs basic parameter validation and will create the required
+     * profile root directory (if it does not exist) and will attempt to load type configurations from the
+     * existing profile root directory (unless the type definitions are passed on the constructor parameters).
+     *
+     * @param {IProfileManager} parms - See the interface for details.
+     * @memberof ProfileManager
+     */
+    constructor(parms: IProfileManager<ICommandProfileTypeConfiguration>) {
+        ImperativeExpect.toNotBeNullOrUndefined(parms, "Profile Manager input parms not supplied.");
+        ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["type"],
+            "No profile type supplied on the profile manager parameters.");
+        this.mLogger = isNullOrUndefined(parms.logger) ? this.mLogger : parms.logger;
+        this.mProfileType = parms.type;
+        this.mProfileTypeConfigurations = parms.typeConfigurations;
+        this.mProductDisplayName = parms.productDisplayName;
+        if (isNullOrUndefined(this.profileTypeConfigurations) || this.profileTypeConfigurations.length === 0) {
+            throw new ImperativeError({
+                msg: "V1 profiles are no longer read from disk. " +
+                    "You can supply the profile type configurations to the profile manager constructor."
+            });
+        }
+        this.mConstructorParms = parms;
+        ImperativeExpect.arrayToContain(this.mProfileTypeConfigurations, (entry) => {
+            return entry.type === this.mProfileType;
+        }, `Could not locate the profile type configuration for "${this.profileType}" within the input configuration list passed.` +
+        `\n${inspect(this.profileTypeConfigurations, { depth: null })}`);
+        for (const config of this.profileTypeConfigurations) {
+            this.validateConfigurationDocument(config);
+        }
+    }
+
+    /**
+     * Accessor for the logger instance - passed on the constructor
+     * @readonly
+     * @protected
+     * @type {Logger}
+     * @memberof CliProfileManager
+     */
+    protected get log(): Logger {
+        return this.mLogger;
+    }
+
+    /**
+     * Accessor for the profile type specified on the constructor.
+     * @readonly
+     * @protected
+     * @type {string}
+     * @memberof CliProfileManager
+     */
+    protected get profileType(): string {
+        return this.mProfileType;
+    }
+
+    /**
+     * Accesor for the product display name.
+     * @readonly
+     * @protected
+     * @type {string}
+     * @memberof CliProfileManager
+     */
+    protected get productDisplayName(): string {
+        return this.mProductDisplayName;
+    }
+
+    /**
+     * Accessor for the full set of type configurations - passed on the constructor or obtained from reading
+     * the profile root directories and meta files.
+     * @readonly
+     * @protected
+     * @type {ICommandProfileTypeConfiguration[]}
+     * @memberof CliProfileManager
+     */
+    protected get profileTypeConfigurations(): ICommandProfileTypeConfiguration[] {
+        return this.mProfileTypeConfigurations;
+    }
+
+    /**
+     * Validate that the schema document passed is well formed for the profile manager usage. Ensures that the
+     * schema is not overloading reserved properties.
+     * @private
+     * @param {IProfileSchema} schema - The schema document to validate.
+     * @param type - the type of profile for the schema - defaults to the current type for this manager
+     * @memberof CliProfileManager
+     */
+    private validateSchema(schema: IProfileSchema, type = this.profileType) {
+        ImperativeExpect.keysToBeDefined(schema, ["properties"], `The schema document supplied for the profile type ` +
+            `("${type}") does NOT contain properties.`);
+        ImperativeExpect.keysToBeUndefined(schema, ["properties.dependencies"], `The schema "properties" property ` +
+            `(on configuration document for type "${type}") contains "dependencies". ` +
+            `"dependencies" is must be supplied as part of the "type" configuration document (no need to formulate the dependencies ` +
+            `schema yourself).`);
+    }
+
+    /**
+     * Validates the basic configuration document to ensure it contains all the proper fields
+     * @private
+     * @param {ICommandProfileTypeConfiguration} typeConfiguration - The type configuration document
+     * @memberof CliProfileManager
+     */
+    private validateConfigurationDocument(typeConfiguration: ICommandProfileTypeConfiguration) {
+        ImperativeExpect.keysToBeDefinedAndNonBlank(typeConfiguration, ["type"], `The profile type configuration document for ` +
+            `"${typeConfiguration.type}" does NOT contain a type.`);
+        ImperativeExpect.keysToBeDefined(typeConfiguration, ["schema"], `The profile type configuration document for ` +
+            `"${typeConfiguration.type}" does NOT contain a schema.`);
+        this.validateSchema(typeConfiguration.schema, typeConfiguration.type);
+        if (!isNullOrUndefined(typeConfiguration.dependencies)) {
+            ImperativeExpect.toBeAnArray(typeConfiguration.dependencies,
+                `The profile type configuration for "${typeConfiguration.type}" contains a "dependencies" property, ` +
+                `but it is not an array (ill-formed)`);
+            for (const dep of typeConfiguration.dependencies) {
+                ImperativeExpect.keysToBeDefinedAndNonBlank(dep, ["type"], "A dependency specified for the " +
+                    "profile definitions did not contain a type.");
             }
         }
-
-        // Construct the full list for return
-        let allProfiles: IProfileLoaded[] = [];
-        try {
-            this.log.trace(`Awaiting all loads...`);
-            const theirProfiles = await Promise.all(loadAllProfiles);
-            for (const theirs of theirProfiles) {
-                allProfiles = allProfiles.concat(theirs);
-            }
-            this.log.trace(`All loads complete.`);
-        } catch (e) {
-            this.log.error(e.message);
-            throw new ImperativeError({msg: e.message, additionalDetails: e.additionalDetails, causeErrors: e});
-        }
-
-        return allProfiles;
     }
 }
