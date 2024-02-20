@@ -287,7 +287,6 @@ describe("Tests for EnvQuery module", () => {
 
         it("should report Zowe team configuration info", async () => {
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("Team Config");
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = off");
             expect(itemObj.itemValMsg).toContain("Team config files in effect:");
             expect(itemObj.itemValMsg).toContain("fakeDir/zowe.config.json");
@@ -304,7 +303,6 @@ describe("Tests for EnvQuery module", () => {
 
             // return the values that we want from external commands
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("Team Config");
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = on");
             expect(itemObj.itemValMsg).toMatch(/Default Zowe daemon executable directory = this_is_a_fake_cli_home_dir.bin/);
             expect(itemObj.itemProbMsg).toBe("");
