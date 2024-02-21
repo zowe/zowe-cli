@@ -13,7 +13,7 @@
       "devDependencies": {
         "@types/jest": "^29.5.12",
         "@types/node": "^14.18.28",
-        "@types/which": "^2.0.2",
+        "@types/which": "^3.0.3",
         "@typescript-eslint/eslint-plugin": "^7.0.0",
         "@typescript-eslint/parser": "^7.0.0",
         "ansi-colors": "^4.1.2",
@@ -5441,9 +5441,9 @@
       "license": "MIT"
     },
     "node_modules/@types/which": {
-      "version": "2.0.2",
-      "resolved": "https://registry.npmjs.org/@types/which/-/which-2.0.2.tgz",
-      "integrity": "sha512-113D3mDkZDjo+EeUEHCFy0qniNc1ZpecGiAU7WSo7YDoSzolZIQKpYFHrPpjkB2nuyahcKfrmLXeQlh7gqJYdw==",
+      "version": "3.0.3",
+      "resolved": "https://registry.npmjs.org/@types/which/-/which-3.0.3.tgz",
+      "integrity": "sha512-2C1+XoY0huExTbs8MQv1DuS5FS86+SEjdM9F/+GS61gg5Hqbtj8ZiDSx8MfWcyei907fIPbfPGCOrNUTnVHY1g==",
       "dev": true
     },
     "node_modules/@types/yargs": {
