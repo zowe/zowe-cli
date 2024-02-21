@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402211923`
 
 - Enhancement: Added new `zowe zos-jobs search job` command, which allows the user to search spool files for a specified string or regular expresion.
 - BugFix: Updated dependencies for technical currency
