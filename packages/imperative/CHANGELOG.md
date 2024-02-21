@@ -61,6 +61,11 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Major: First major version bump for V3
 
+## `5.22.0`
+
+- BugFix: Updated `mustache` and `jsonschema` dependencies for technical currency.
+- Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications. [#2012](https://github.com/zowe/zowe-cli/issues/2012)
+
 ## `5.21.0`
 
 - Enhancement: Hid the progress bar if `CI` environment variable is set, or if `FORCE_COLOR` environment variable is set to `0`. [#1845](https://github.com/zowe/zowe-cli/issues/1845)
