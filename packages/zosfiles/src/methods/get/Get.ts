@@ -10,7 +10,7 @@
 */
 
 import { PassThrough } from "stream";
-import getStream = require("get-stream");
+import { buffer } from 'stream/consumers';
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { Download } from "../download/Download";
@@ -42,7 +42,7 @@ export class Get {
             ...options,
             stream: responseStream
         });
-        return getStream.buffer(responseStream);
+        return buffer(responseStream);
     }
 
     /**
@@ -66,6 +66,6 @@ export class Get {
             ...options,
             stream: responseStream
         });
-        return getStream.buffer(responseStream);
+        return buffer(responseStream);
     }
 }

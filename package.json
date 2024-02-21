@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/node": "^14.18.28",
+    "@types/node": "^18.19.17",
     "@types/which": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
@@ -67,7 +67,6 @@
     "mustache": "^4.2.0",
     "npm-lockfile": "^3.0.7",
     "rimraf": "^5.0.0",
-    "shebang-regex": "^3.0.0",
     "symlink-dir": "^5.2.1",
     "ts-jest": "^29.1.2",
     "ts-node": "^7.0.1",

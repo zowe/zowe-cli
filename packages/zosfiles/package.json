@@ -46,7 +46,6 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "get-stream": "^6.0.1",
     "minimatch": "^9.0.3"
   },
   "devDependencies": {
