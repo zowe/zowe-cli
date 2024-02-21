@@ -5034,6 +5034,16 @@
         "@types/node": "*"
       }
     },
+    "node_modules/@types/glob": {
+      "version": "8.1.0",
+      "resolved": "https://registry.npmjs.org/@types/glob/-/glob-8.1.0.tgz",
+      "integrity": "sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==",
+      "dev": true,
+      "dependencies": {
+        "@types/minimatch": "^5.1.2",
+        "@types/node": "*"
+      }
+    },
     "node_modules/@types/graceful-fs": {
       "version": "4.1.5",
       "dev": true,
@@ -5124,6 +5134,12 @@
       "dependencies": {
         "@types/lodash": "*"
       }
+    },
+    "node_modules/@types/minimatch": {
+      "version": "5.1.2",
+      "resolved": "https://registry.npmjs.org/@types/minimatch/-/minimatch-5.1.2.tgz",
+      "integrity": "sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==",
+      "dev": true
     },
     "node_modules/@types/mustache": {
       "version": "4.2.5",
@@ -18161,6 +18177,7 @@
         "@types/cross-spawn": "^6.0.6",
         "@types/diff": "^5.0.9",
         "@types/fs-extra": "^11.0.4",
+        "@types/glob": "^8.1.0",
         "@types/jsonfile": "^6.1.4",
         "@types/lodash": "^4.14.202",
         "@types/lodash-deep": "^2.0.4",
