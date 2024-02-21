@@ -75,8 +75,20 @@ describe("NpmFunctions", () => {
             jest.spyOn(pacote, "manifest").mockResolvedValue(expectedInfo as any);
         });
 
-        it("should fetch info for package installed from registry", async () => {
+        it("should fetch info for package installed from registry 1", async () => {
             const pkgSpec = "@zowe/imperative";
+            expect(npmPackageArg(pkgSpec).type).toEqual("range");
+
+            jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({
+                PLUGIN_HOME_LOCATION: ""
+            } as any);
+            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            expect(actualInfo).toBe(expectedInfo);
+            expect(jsonfile.readFileSync).toHaveBeenCalledTimes(1);
+        });
+
+        it("should fetch info for package installed from registry 2", async () => {
+            const pkgSpec = "@zowe/imperative@latest";
             expect(npmPackageArg(pkgSpec).type).toEqual("tag");
 
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({

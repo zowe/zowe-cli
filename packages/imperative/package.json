@@ -65,7 +65,7 @@
     "log4js": "^6.9.1",
     "markdown-it": "^12.3.2",
     "mustache": "^4.0.0",
-    "npm-package-arg": "^9.1.2",
+    "npm-package-arg": "^11.0.1",
     "opener": "^1.5.2",
     "pacote": "^17.0.6",
     "prettyjson": "^1.2.5",
