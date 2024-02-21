@@ -59,7 +59,7 @@
     "jest-html-reporter": "^3.6.0",
     "jest-junit": "^16.0.0",
     "jest-sonar-reporter": "^2.0.0",
-    "jest-stare": "2.3.0",
+    "jest-stare": "^2.5.1",
     "js-yaml": "^4.1.0",
     "jsonfile": "^6.0.0",
     "lerna": "^5.4.3",

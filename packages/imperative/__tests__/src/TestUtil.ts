@@ -49,7 +49,7 @@ export { resolve, basename, dirname } from "path";
 export const rimraf = (dir: string) => {
 
     const rimrafExecutable = __dirname + "/../../../../node_modules/rimraf/dist/esm/bin.mjs";
-    const rimrafProcess = sync("node", [rimrafExecutable, dir]);
+    const rimrafProcess = sync("node", [rimrafExecutable, dir, "--glob"]);
     if (rimrafProcess.status !== 0) {
         throw new Error("Error deleting directory with rimraf CLI: \n" + rimrafProcess.output.join(" "));
     }
