@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
+
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
