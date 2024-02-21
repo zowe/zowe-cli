@@ -40,6 +40,11 @@
     "prepare": "husky install && npm run bundle:webHelp"
   },
   "devDependencies": {
+    "@lerna-lite/cli": "^3.3.0",
+    "@lerna-lite/run": "^3.3.0",
+    "@lerna-lite/changed": "^3.3.0",
+    "@lerna-lite/list": "^3.3.0",
+    "@lerna-lite/version": "^3.3.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^18.19.17",
     "@types/which": "^3.0.3",
@@ -62,7 +67,6 @@
     "jest-stare": "^2.5.1",
     "js-yaml": "^4.1.0",
     "jsonfile": "^6.0.0",
-    "lerna": "^8.1.2",
     "madge": "^6.1.0",
     "mustache": "^4.2.0",
     "npm-lockfile": "^3.0.7",
