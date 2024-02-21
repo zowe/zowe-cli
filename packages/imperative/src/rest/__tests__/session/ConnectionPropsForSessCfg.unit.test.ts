@@ -278,8 +278,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -330,8 +330,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -382,8 +382,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -433,8 +433,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -484,8 +484,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -534,7 +534,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms);
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toBeUndefined();
@@ -586,8 +586,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("someotherkeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -634,7 +634,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             }
         );
 
-        expect(commandHandlerPrompt).toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms);  // toBe is important here, parms object must be same as original
     });
 

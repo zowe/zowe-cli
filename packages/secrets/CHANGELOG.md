@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
+
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3

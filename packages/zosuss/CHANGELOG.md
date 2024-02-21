@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
+
 ## `8.0.0-next.202402021649`
 
 - LTS Breaking: Removed the following previously deprecated items:

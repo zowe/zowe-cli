@@ -68,8 +68,8 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLoginSpy).toBeCalledTimes(1);
-        expect(mockUpdateProfile).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
+        expect(mockUpdateProfile).toHaveBeenCalledTimes(1);
     });
 
     it("should process login successfully and create profile", async () => {
@@ -101,9 +101,9 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
         expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
-        expect(mockSaveProfile).toBeCalledTimes(1);
+        expect(mockSaveProfile).toHaveBeenCalledTimes(1);
     });
 
     it("should process login successfully without creating profile on timeout", async () => {
@@ -138,9 +138,9 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
         expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
-        expect(mockSaveProfile).toBeCalledTimes(0);
+        expect(mockSaveProfile).toHaveBeenCalledTimes(0);
     });
 
     it("should process logout successfully", async () => {
@@ -182,8 +182,8 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLogoutSpy).toBeCalledTimes(1);
-        expect(processLogoutOldSpy).toBeCalledTimes(1);
+        expect(doLogoutSpy).toHaveBeenCalledTimes(1);
+        expect(processLogoutOldSpy).toHaveBeenCalledTimes(1);
         expect(params.arguments.tokenType).toEqual(handler.mDefaultTokenType);
         expect(params.arguments.user).toBeUndefined();
         expect(params.arguments.password).toBeUndefined();
@@ -222,8 +222,8 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLogoutSpy).toBeCalledTimes(0);
-        expect(processLogoutOldSpy).toBeCalledTimes(1);
+        expect(doLogoutSpy).toHaveBeenCalledTimes(0);
+        expect(processLogoutOldSpy).toHaveBeenCalledTimes(1);
     });
 
     it("should fail to process invalid action name", async () => {
@@ -287,6 +287,6 @@ describe("BaseAuthHandler", () => {
 
         expect(caughtError).toBeDefined();
         expect(caughtError.message).toContain("token value");
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
     });
 });

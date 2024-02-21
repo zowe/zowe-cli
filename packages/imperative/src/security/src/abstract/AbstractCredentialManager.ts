@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { ImperativeError } from "../../../error";
 import { isNullOrUndefined } from "util";
 
