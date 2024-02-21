@@ -44,7 +44,7 @@ describe("Compare Base Helper", () => {
                 return "compared string";
             });
             helper.getResponse(string1, string2);
-            expect(DiffUtils.getDiffString).toBeCalled();
+            expect(DiffUtils.getDiffString).toHaveBeenCalled();
         });
 
 
@@ -52,8 +52,8 @@ describe("Compare Base Helper", () => {
             helper.browserView = true;
             jest.spyOn(DiffUtils, "openDiffInbrowser").mockImplementation(jest.fn());
             helper.getResponse(string1, string2);
-            expect(DiffUtils.openDiffInbrowser).toBeCalled();
-            expect(DiffUtils.openDiffInbrowser).toBeCalledWith(string1, string2, undefined);
+            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalled();
+            expect(DiffUtils.openDiffInbrowser).toHaveBeenCalledWith(string1, string2, undefined);
 
         });
     });

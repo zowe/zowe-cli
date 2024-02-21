@@ -388,8 +388,8 @@ describe("AbstractRestClient tests", () => {
             error = thrownError;
         }
 
-        expect(httpRequestFnc).toBeCalled();
-        expect(httpsRequestFnc).not.toBeCalled();
+        expect(httpRequestFnc).toHaveBeenCalled();
+        expect(httpsRequestFnc).not.toHaveBeenCalled();
     });
 
     it("should call https request for https requests", async () => {
@@ -423,8 +423,8 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).toBeCalled();
-        expect(httpRequestFnc).not.toBeCalled();
+        expect(httpsRequestFnc).toHaveBeenCalled();
+        expect(httpRequestFnc).not.toHaveBeenCalled();
     });
 
     it("should not error when streaming data", async () => {
@@ -682,7 +682,7 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).toBeCalled();
+        expect(httpsRequestFnc).toHaveBeenCalled();
     });
 
     it("should create buildOptions according to input parameter options 2", async () => {
@@ -719,7 +719,7 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).toBeCalled();
+        expect(httpsRequestFnc).toHaveBeenCalled();
         expect(error).toBeDefined();
     });
 
@@ -754,7 +754,7 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).not.toBeCalled();
+        expect(httpsRequestFnc).not.toHaveBeenCalled();
         expect(error.message).toContain("Failed to open one or more PEM certificate files");
     });
 
