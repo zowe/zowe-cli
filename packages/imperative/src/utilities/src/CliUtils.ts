@@ -484,26 +484,15 @@ export class CliUtils {
             secToWait = maxSecToWait;
         }
 
-        return new Promise((resolve, reject) => {
-            require("read")({
-                input: process.stdin,
-                output: process.stdout,
-                terminal: true,
-                prompt: message,
-                silent: opts?.hideText,
-                replace: opts?.maskChar,
-                timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
-            }, (error: any, result: string) => {
-                if (error == null) {
-                    resolve(result);
-                } else if (error.message === "canceled") {
-                    process.exit(2);
-                } else if (error.message === "timed out") {
-                    resolve(null);
-                } else {
-                    reject(error);
-                }
-            });
+        const { read } = require("read");
+        return read({
+            input: process.stdin,
+            output: process.stdout,
+            terminal: true,
+            prompt: message,
+            silent: opts?.hideText,
+            replace: opts?.maskChar,
+            timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
         });
     }
 

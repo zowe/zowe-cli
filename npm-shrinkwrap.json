@@ -14735,6 +14735,7 @@
     },
     "node_modules/mute-stream": {
       "version": "0.0.8",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/nan": {
@@ -17547,6 +17548,7 @@
     },
     "node_modules/read": {
       "version": "1.0.7",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "mute-stream": "~0.0.4"
@@ -20295,7 +20297,7 @@
         "pacote": "^17.0.6",
         "prettyjson": "^1.2.5",
         "progress": "^2.0.3",
-        "read": "^1.0.7",
+        "read": "^3.0.1",
         "semver": "^7.5.2",
         "stack-trace": "^0.0.10",
         "strip-ansi": "^6.0.1",
@@ -20391,6 +20393,14 @@
         "node": "14 || >=16.14"
       }
     },
+    "packages/imperative/node_modules/mute-stream": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/mute-stream/-/mute-stream-1.0.0.tgz",
+      "integrity": "sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==",
+      "engines": {
+        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+      }
+    },
     "packages/imperative/node_modules/npm-package-arg": {
       "version": "11.0.1",
       "license": "ISC",
@@ -20407,6 +20417,17 @@
     "packages/imperative/node_modules/proc-log": {
       "version": "3.0.0",
       "license": "ISC",
+      "engines": {
+        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+      }
+    },
+    "packages/imperative/node_modules/read": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/read/-/read-3.0.1.tgz",
+      "integrity": "sha512-SLBrDU/Srs/9EoWhU5GdbAoxG1GzpQHo/6qiGItaoLJ1thmYpcNIM1qISEUvyHBzfGlWIyd6p2DNi1oV1VmAuw==",
+      "dependencies": {
+        "mute-stream": "^1.0.0"
+      },
       "engines": {
         "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
       }
