@@ -252,13 +252,14 @@ export class Services {
                 const noConflictMessage = `
                     // Multiple base paths were detected for this service.
                     // Uncomment one of the lines below to use a different one.`;
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
                     {
                         ${basePathConflicts.length > 0 ? basepathConflictMessage : noConflictMessage}
                         ${_genCommentsHelper("basePath", basePaths)}
                         "basePath": "${defaultBasePath}"
                     }`
-                );
+                ) as any;
             }
         });
 
@@ -267,13 +268,14 @@ export class Services {
                 const trueDefault = configDefaults[defaultKey];
                 delete configDefaults[defaultKey];
 
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
                 configDefaults = JSONC.parse(`
                     ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
                     // Multiple services were detected.
                     // Uncomment one of the lines below to set a different default.
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
                     "${defaultKey}": "${trueDefault}"
-                }`);
+                }`) as any;
             }
         }
 

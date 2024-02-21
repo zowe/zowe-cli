@@ -80,7 +80,7 @@
     "@types/lodash": "^4.14.202",
     "@types/tar": "^6.1.11",
     "@zowe/cli-test-utils": "8.0.0-next.202402132108",
-    "comment-json": "~4.1.1",
+    "comment-json": "~4.2.3",
     "strip-ansi": "^6.0.1",
     "which": "^4.0.0"
   },

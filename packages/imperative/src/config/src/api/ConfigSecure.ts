@@ -45,7 +45,8 @@ export class ConfigSecure extends ConfigApi {
         try {
             const s: string = await this.mConfig.mVault.load(ConfigConstants.SECURE_ACCT);
             if (s == null) return;
-            this.mConfig.mSecure = JSONC.parse(s);
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            this.mConfig.mSecure = JSONC.parse(s) as any;
         } catch (error) {
             this.mLoadFailed = true;
             throw error;
