@@ -41,7 +41,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.0",
+    "@types/js-yaml": "^4.0.9",
     "@types/uuid": "^8.3.0",
     "@zowe/imperative": "8.0.0-next.202402132108"
   },

@@ -43,7 +43,7 @@
     "clean": "rimraf lib tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@types/yargs": "^13.0.4",
+    "@types/yargs": "^13.0.12",
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.3",
     "comment-json": "~4.1.1",
@@ -80,18 +80,18 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "@types/cross-spawn": "^6.0.2",
-    "@types/diff": "^5.0.2",
+    "@types/cross-spawn": "^6.0.6",
+    "@types/diff": "^5.0.9",
     "@types/find-up": "^2.1.1",
-    "@types/fs-extra": "^8.0.1",
+    "@types/fs-extra": "^8.1.5",
     "@types/glob": "^7.1.1",
     "@types/jsonfile": "^4.0.1",
-    "@types/lodash": "^4.14.165",
-    "@types/lodash-deep": "^2.0.0",
+    "@types/lodash": "^4.14.202",
+    "@types/lodash-deep": "^2.0.4",
     "@types/mustache": "^0.8.32",
-    "@types/npm-package-arg": "^6.1.0",
-    "@types/pacote": "^11.1.0",
-    "@types/progress": "^2.0.3",
+    "@types/npm-package-arg": "^6.1.4",
+    "@types/pacote": "^11.1.8",
+    "@types/progress": "^2.0.7",
     "@types/stack-trace": "^0.0.29",
     "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402132108",
     "concurrently": "^8.0.0",
@@ -104,13 +104,6 @@
     "uuid": "^3.3.2",
     "web-help": "file:web-help",
     "yargs-parser": "^18.1.2"
-  },
-  "overrides": {
-    "serve": {
-      "serve-handler": {
-        "minimatch": "~3.1.2"
-      }
-    }
   },
   "engines": {
     "node": ">=14.0.0"

@@ -40,9 +40,9 @@
     "prepare": "husky install && npm run bundle:webHelp"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.12",
     "@types/node": "^14.18.28",
-    "@types/which": "^2.0.1",
+    "@types/which": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "ansi-colors": "^4.1.2",
