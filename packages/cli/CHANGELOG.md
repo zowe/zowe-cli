@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated additional dependencies for technical currency
+- BugFix: Updated engine to Node 16.7.0
+
 ## `8.0.0-next.202402211923`
 
 - Enhancement: Added new `zowe zos-jobs search job` command, which allows the user to search spool files for a specified string or regular expresion.

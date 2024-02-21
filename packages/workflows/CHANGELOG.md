@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
+- BugFix: Updated engine to Node 16.7.0
+
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3

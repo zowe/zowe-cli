@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency
+- BugFix: Updated engine to Node 16.7.0
+
 ## `8.0.0-next.202402211923`
 
 - Enhancement: New `SeachJob.searchJobs` class and method, which can be used to search spool files for a specified string or regular expression. 
