@@ -74,7 +74,7 @@
     "semver": "^7.5.2",
     "stack-trace": "^0.0.10",
     "strip-ansi": "^6.0.1",
-    "which": "^3.0.1",
+    "which": "^4.0.0",
     "wrap-ansi": "^7.0.0",
     "yamljs": "^0.3.0",
     "yargs": "^15.4.1"
@@ -100,8 +100,7 @@
     "get-function-arguments": "^1.0.0",
     "serve": "^14.2.1",
     "stream-to-string": "^1.2.0",
-    "tsc-watch": "^5.0.3",
-    "uuid": "^3.3.2",
+    "uuid": "^9.0.1",
     "web-help": "file:web-help",
     "yargs-parser": "^18.1.2"
   },
