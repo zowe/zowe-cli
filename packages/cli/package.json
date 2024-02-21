@@ -72,7 +72,7 @@
     "find-process": "1.4.7",
     "get-stream": "6.0.1",
     "lodash": "4.17.21",
-    "minimatch": "5.1.6",
+    "minimatch": "9.0.3",
     "tar": "6.2.0"
   },
   "devDependencies": {
