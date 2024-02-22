@@ -6,6 +6,9 @@ All notable changes to the Imperative package will be documented in this file.
 
 - LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:
+    - @zowe/cli-test-utils
+      - ISetupEnvironmentParms.createOldProfiles
+
     - @zowe/imperative
       - ICliLoadProfile
       - ICliLoadAllProfiles
@@ -30,10 +33,16 @@ All notable changes to the Imperative package will be documented in this file.
       - IValidateProfile
       - IValidateProfileForCLI
       - IValidateProfileWithSchema
-    - @zowe/cli-test-utils
-      - ISetupEnvironmentParms.createOldProfiles
 
   - Removed the following obsolete V1 profile classes/functions:
+    - @zowe/core-for-zowe-sdk
+      - getDefaultProfile
+      - getZoweDir
+
+    - @zowe/cli-test-utils
+      - TempTestProfiles.forceOldProfiles
+      - TestUtils.stripProfileDeprecationMessages
+
     - @zowe/imperative
       - AbstractProfileManager
         - Any remaining functions consolidated into CliProfileManager
@@ -73,8 +82,8 @@ All notable changes to the Imperative package will be documented in this file.
         - validate
         - validateProfile
         - validateProfileAgainstSchema
-        - validateRequiredDependenciesAreSpecified
         - validateProfileObject
+        - validateRequiredDependenciesAreSpecified
       - CommandProfiles
         - getMeta
         - getAll
@@ -83,28 +92,12 @@ All notable changes to the Imperative package will be documented in this file.
         - To detect if a team config exists, use ProfileInfo.getTeamConfig
         - To detect if only V1 profiles exist, use ProfileInfo.onlyV1ProfilesExist
 
-    - @zowe/core-for-zowe-sdk
-      - getDefaultProfile
-      - getZoweDir
-    - @zowe/cli-test-utils
-      - TempTestProfiles.forceOldProfiles
-      - TestUtils.stripProfileDeprecationMessages
-
-  - Annotated the following items as @internal:
-    - @zowe/imperative
-      - CommandProfileLoader
-      - CommandProfiles
-      - IHandlerParameters.profiles
-      - ImperativeApi.profileManager
+    - @zowe/zos-uss-for-zowe-sdk
+        - SshBaseHandler
+            - Removed the unused, protected property ‘mSshProfile’
 
   - Removed the following obsolete V1 profile constants:
     - @zowe/imperative
-      - ProfilesConstants class
-        - DEPRECATE_TO_CONFIG_EDIT
-        - DEPRECATE_TO_CONFIG_INIT
-        - DEPRECATE_TO_CONFIG_LIST
-        - DEPRECATE_TO_CONFIG_SET
-        - PROFILES_COMMAND_TYPE_KEY
       - CoreMessages class
         - createProfileCommandSummary
         - createProfileDisableDefaultsDesc
@@ -173,6 +166,19 @@ All notable changes to the Imperative package will be documented in this file.
         - validateProfileGroupDesc
         - validateProfileNameDesc
         - validateProfileOptionDesc
+      - ProfilesConstants class
+        - DEPRECATE_TO_CONFIG_EDIT
+        - DEPRECATE_TO_CONFIG_INIT
+        - DEPRECATE_TO_CONFIG_LIST
+        - DEPRECATE_TO_CONFIG_SET
+        - PROFILES_COMMAND_TYPE_KEY
+
+  - Annotated the following items as @internal:
+    - @zowe/imperative
+      - CommandProfileLoader
+      - CommandProfiles
+      - IHandlerParameters.profiles
+      - ImperativeApi.profileManager
 
 - LTS Breaking: Change text displayed for configuration from "V2"  to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
 
