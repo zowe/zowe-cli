@@ -493,6 +493,14 @@ export class CliUtils {
             silent: opts?.hideText,
             replace: opts?.maskChar,
             timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
+        }).catch((err: any) => {
+            if (err.message === "canceled") {
+                process.exit(2);
+            } else if (err.message === "timed out") {
+                return "";
+            } else {
+                throw err;
+            }
         });
     }
 
