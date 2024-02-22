@@ -40,10 +40,10 @@
     "prepare": "husky install && npm run bundle:webHelp"
   },
   "devDependencies": {
-    "@lerna-lite/cli": "^3.3.0",
-    "@lerna-lite/run": "^3.3.0",
     "@lerna-lite/changed": "^3.3.0",
+    "@lerna-lite/cli": "^3.3.0",
     "@lerna-lite/list": "^3.3.0",
+    "@lerna-lite/run": "^3.3.0",
     "@lerna-lite/version": "^3.3.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^18.19.17",
