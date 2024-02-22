@@ -9,17 +9,32 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
-import { IZosFilesResponse, Upload, IUploadResult } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { promises as fs } from 'fs';
 
 /**
  * Handler to upload content of a directory to a PDS
  * @export
+ *
  */
 export default class DirToPdsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
         session: AbstractSession): Promise<IZosFilesResponse> {
+
+        const inputDir = commandParameters.arguments.inputdir;
+
+        // Check directory existence and accessibility
+        try {
+            const dirStats = await fs.stat(inputDir);
+            if (!dirStats.isDirectory()) {
+                throw new Error(`${inputDir} is not a directory.`);
+            }
+        } catch (error) {
+            // If the directory does not exist, is not accessible, or is not a directory, throw an error
+            throw new Error(`${error.message}`);
+        }
 
         const status: ITaskWithStatus = {
             statusMessage: "Uploading directory to PDS",
@@ -27,9 +42,10 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
         commandParameters.response.progress.startBar({task: status});
+
         const response = await Upload.dirToPds(
             session,
-            commandParameters.arguments.inputdir,
+            inputDir,
             commandParameters.arguments.dataSetName,
             {
                 volume: commandParameters.arguments.volumeSerial,
@@ -41,33 +57,7 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             }
         );
 
-        if (response.apiResponse) {
-            let skipCount: number = 0;
-            let successCount: number = 0;
-            let errorCount: number = 0;
-            response.apiResponse.forEach((element: IUploadResult) => {
-                if (element.success === true) {
-                    const formatMessage = TextUtils.prettyJson(element);
-                    commandParameters.response.console.log(formatMessage);
-                    successCount++;
-                } else if (element.success === false) {
-
-                    const formatMessage = TextUtils.prettyJson(element);
-                    commandParameters.response.console.error(TextUtils.chalk.red(formatMessage));
-                    errorCount++;
-                } else {
-                    skipCount++;
-                }
-            });
-
-            commandParameters.response.console.log(TextUtils.prettyJson({
-                file_to_upload: response.apiResponse.length,
-                success: successCount,
-                error: errorCount,
-                skipped: skipCount
-            }));
-        }
-
         return response;
     }
 }
+

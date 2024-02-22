@@ -28,7 +28,7 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
         try {
             await fs.access(inputFile, fs.constants.F_OK | fs.constants.R_OK);
         } catch (error) {
-            throw new Error(`Failed to access the input file: ${inputFile}. Error: ${error.message}`);
+            throw new Error(`${error.message}`);
         }
 
         // Then upload existing file
