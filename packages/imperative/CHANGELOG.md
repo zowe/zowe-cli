@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402221834`
 
 - Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications. [#2012](https://github.com/zowe/zowe-cli/issues/2012)
 
