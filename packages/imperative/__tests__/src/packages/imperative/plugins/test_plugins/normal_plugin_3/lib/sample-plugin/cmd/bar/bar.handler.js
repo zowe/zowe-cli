@@ -18,6 +18,7 @@ class BarHandler {
             // const impFileLogger = imperative_cli_1.Logger.getImperativeLogger();
             // impFileLogger.debug("Invoked normal-plugin-3 bar handler");
             params.response.console.log("You have executed the Bar command!");
+            yield undefined;
         });
     }
 }

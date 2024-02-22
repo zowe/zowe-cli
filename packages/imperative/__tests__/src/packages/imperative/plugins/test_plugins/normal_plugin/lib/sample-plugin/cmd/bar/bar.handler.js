@@ -15,6 +15,7 @@ class BarHandler {
     process(params) {
         return __awaiter(this, void 0, void 0, function* () {
             params.response.console.log("@TODO Complete this command: bar");
+            yield undefined;
         });
     }
 }

@@ -29,6 +29,7 @@ module.exports = class CredentialManagerOverrides extends imperative_1.AbstractC
             this.consoleLog.info("CredentialManager in sample-plugin is deleting:\n" +
                 `    service = ${this.service}\n` +
                 `    account = ${account}`);
+            yield undefined;
         });
     }
     loadCredentials(account) {
@@ -42,7 +43,7 @@ module.exports = class CredentialManagerOverrides extends imperative_1.AbstractC
                 failNotFound: true
             };
             const loadResultString = JSON.stringify(loadedProfResult, null, 2);
-            return Buffer.from(loadResultString).toString("base64");
+            yield Buffer.from(loadResultString).toString("base64");
         });
     }
     saveCredentials(account, credentials) {
@@ -51,6 +52,7 @@ module.exports = class CredentialManagerOverrides extends imperative_1.AbstractC
                 `    service     = ${this.service}\n` +
                 `    account     = ${account}\n` +
                 `    credentials = ${credentials.length * Math.random()}`);
+            yield undefined;
         });
     }
 };

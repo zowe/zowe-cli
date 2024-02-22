@@ -18,6 +18,7 @@ class GlobCmd1Handler {
             const impFileLogger = imperative_cli_1.Logger.getImperativeLogger();
             impFileLogger.debug("Invoked sample-plugin globcmd1 handler");
             params.response.console.log("You have executed the globcmd1 command. It's definition was processed by globs.");
+            yield undefined;
         });
     }
 }

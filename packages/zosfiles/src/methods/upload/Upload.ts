@@ -750,7 +750,7 @@ export class Upload {
 
         const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false, !options.includeHidden);
 
-        files.forEach(async (file) => {
+        files.forEach((file) => {
             let tempBinary = options.binary;
             // check if filesMap is specified, and verify if file is in the list
             if (options.filesMap) {

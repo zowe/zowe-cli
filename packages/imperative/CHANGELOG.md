@@ -65,6 +65,18 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Major: First major version bump for V3
 
+## `5.22.4`
+
+- BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
+
+## `5.22.3`
+
+- BugFix: Resolved issue in `ProfileInfo` where schema comparisons fail, specifically when comparing the cached schema against a command-based schema during registration.
+
+## `5.22.2`
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
 ## `5.22.0`
 
 - BugFix: Updated `mustache` and `jsonschema` dependencies for technical currency.
@@ -131,7 +143,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.14.2`
 
 - BugFix: Handle logic for if a null command handler is provided
-
 
 ## `5.14.1`
 

@@ -24,7 +24,6 @@ import { IImperativeApi } from "./api/doc/IImperativeApi";
 import { Constants } from "../../constants/src/Constants";
 import { TextUtils } from "../../utilities/src/TextUtils";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
-import { ImperativeReject } from "../../interfaces/src/types/ImperativeReject";
 import { LoggingConfigurer } from "./LoggingConfigurer";
 import { ImperativeError } from "../../error";
 import { PluginManagementFacility } from "./plugins/PluginManagementFacility";
@@ -120,211 +119,208 @@ export class Imperative {
      *
      * @returns {Promise<void>} A promise indicating that we are done here.
      */
-    public static init(config?: IImperativeConfig): Promise<void> {
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise<void>(async (initializationComplete: () => void, initializationFailed: ImperativeReject) => {
-            try {
+    public static async init(config?: IImperativeConfig): Promise<void> {
+        try {
 
-                /**
-                 * Config Logger Manager to enable log messages in memory prior to logger init.
-                 */
-                Logger.setLogInMemory(true);
+            /**
+             * Config Logger Manager to enable log messages in memory prior to logger init.
+             */
+            Logger.setLogInMemory(true);
 
-                /**
-                 * Identify caller's location on the system
-                 */
-                ImperativeConfig.instance.callerLocation = process.mainModule.filename;
+            /**
+             * Identify caller's location on the system
+             */
+            ImperativeConfig.instance.callerLocation = process.mainModule.filename;
 
-                /**
-                 * Load callers configuration, validate, and save
-                 */
-                config = ConfigurationLoader.load(config, ImperativeConfig.instance.callerPackageJson,
-                    ImperativeConfig.instance.getCallerFile
-                );
-                ConfigurationValidator.validate(config);
-                ImperativeConfig.instance.loadedConfig = config;
+            /**
+             * Load callers configuration, validate, and save
+             */
+            config = ConfigurationLoader.load(config, ImperativeConfig.instance.callerPackageJson,
+                ImperativeConfig.instance.getCallerFile
+            );
+            ConfigurationValidator.validate(config);
+            ImperativeConfig.instance.loadedConfig = config;
 
-                /**
-                 * Get the command name from the package bin.
-                 * If no command name exists, we will instead use the file name invoked
-                 * and log a debug warning.
-                 */
-                if (ImperativeConfig.instance.findPackageBinName() != null) {
-                    this.mRootCommandName = ImperativeConfig.instance.findPackageBinName();
-                } else {
-                    this.mRootCommandName = ImperativeConfig.instance.callerLocation;
-                    this.log.debug("WARNING: No \"bin\" configuration was found in your package.json," +
-                        " or your package.json could not be found. " +
-                        "Defaulting command name to filepath instead.");
-                }
-                ImperativeConfig.instance.rootCommandName = this.mRootCommandName;
-
-                let delayedEnvFileSetupError = undefined;
-                try {
-                    EnvFileUtils.setEnvironmentForApp(ImperativeConfig.instance.rootCommandName, true, ImperativeConfig.instance.envVariablePrefix);
-                } catch (err) {
-                    delayedEnvFileSetupError = err;
-                }
-
-                // Initialize our settings file
-                this.initAppSettings();
-
-                // If config group is enabled add config commands
-                if (config.allowConfigGroup) {
-                    const ConfigManagementFacility = require("./config/ConfigManagementFacility"); // Delayed load req for init help text to work
-                    ConfigManagementFacility.ConfigManagementFacility.instance.init();
-                }
-
-                let delayedConfigLoadError = undefined;
-
-                // Load the base config, save any error from config load
-                const configAppName = ImperativeConfig.instance.findPackageBinName() ? this.mRootCommandName : config.name;
-
-                try {
-                    ImperativeConfig.instance.config = await Config.load(configAppName,
-                        { homeDir: ImperativeConfig.instance.cliHome }
-                    );
-                } catch (err) {
-                    delayedConfigLoadError = err;
-                }
-
-                // If plugins are allowed, enable core plugins commands
-                if (config.allowPlugins) {
-                    PluginManagementFacility.instance.init();
-
-                    // load the configuration of every installed plugin for later processing
-                    PluginManagementFacility.instance.loadAllPluginCfgProps();
-
-                    // Override the config object with things loaded from plugins
-                    Object.assign(
-                        ImperativeConfig.instance.loadedConfig.overrides,
-                        PluginManagementFacility.instance.pluginOverrides
-                    );
-                }
-
-                /**
-                 * Once we have a complete representation of the config object, we should be able to
-                 * use that and populate all required categories and expose them on our API object
-                 * so that an app using imperative can write to the imperative log, its own log, or
-                 * even a plug-in log.
-                 *
-                 * Any other initialization added to this routine should occur after logging has been initialized.
-                 */
-                this.initLogging();
-
-                /**
-                 * If there was an error trying to load the user's environment variable configuration, tell them about it now.
-                 * Do not stop the process from running.
-                 */
-                if (delayedEnvFileSetupError) {
-                    const appLogger = Logger.getAppLogger();
-                    appLogger.logError(delayedEnvFileSetupError);
-                    new Console().error(delayedEnvFileSetupError);
-                }
-
-                /**
-                 * If there was an error trying to load the user's configuration, tell them about it now.
-                 */
-                if (delayedConfigLoadError) {
-                    if (config.daemonMode) {
-                        ImperativeConfig.instance.config = await Config.load(configAppName,
-                            {
-                                homeDir: ImperativeConfig.instance.cliHome,
-                                noLoad: true
-                            }
-                        );
-                        const imperativeLogger = Logger.getImperativeLogger();
-                        imperativeLogger.logError(delayedConfigLoadError);
-                    } else {
-                        throw delayedConfigLoadError;
-                    }
-                }
-
-                /**
-                 * Now we should apply any overrides to default Imperative functionality. This is where CLI
-                 * developers are able to really start customizing Imperative and how it operates internally.
-                 * For the "config convert-profiles" command, we skip loading the CredentialManager override
-                 * because we need to be able to uninstall the plugin that provides it.
-                 */
-                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                if (!(process.argv.length > 3 && process.argv[2] === "config" && process.argv[3].startsWith("convert"))) {
-                    await OverridesLoader.load(ImperativeConfig.instance.loadedConfig,
-                        ImperativeConfig.instance.callerPackageJson);
-                }
-
-                /**
-                 * Build API object
-                 */
-                this.mApi = this.constructApiObject();
-
-                /**
-                 * Build the help generator factory - requires the root command name and the loaded configuration document
-                 */
-                this.mHelpGeneratorFactory = new ImperativeHelpGeneratorFactory(this.rootCommandName, ImperativeConfig.instance.loadedConfig);
-
-                // resolve command module globs, forming the root of the CLI command tree
-                this.log.info(`Loaded and validated config for '${config.name}'. Config details at trace level of logging.`);
-                this.log.trace(`The config object for '${config.name}' is:\n` +
-                    JSON.stringify(config, null, 2)
-                );
-                const resolvedHostCliCmdTree: ICommandDefinition = this.getResolvedCmdTree(config);
-
-                // If plugins are allowed, add plugins' commands and profiles to the CLI command tree
-                if (config.allowPlugins) {
-                    PluginManagementFacility.instance.addAllPluginsToHostCli(resolvedHostCliCmdTree);
-                    this.log.info("Plugins added to the CLI command tree.");
-                }
-
-                // final preparation of the command tree
-                const preparedHostCliCmdTree = this.getPreparedCmdTree(resolvedHostCliCmdTree, config.baseProfile);
-
-                /**
-                 * Define all known commands
-                 */
-                this.log.info("Inherited traits applied to CLI command tree children. " +
-                    "Cmd tree details at trace level of logging."
-                );
-                this.log.trace("The CLI command tree before being defined to yargs: " +
-                    JSON.stringify(preparedHostCliCmdTree, null, 2)
-                );
-                this.defineCommands(preparedHostCliCmdTree);
-
-                /**
-                 * Notify caller initialization is complete
-                 */
-                initializationComplete();
-
-            } catch (error) {
-                const imperativeLogger = Logger.getImperativeLogger();
-                if (error?.suppressDump) {
-                    imperativeLogger.fatal(error.message); // Error generated by a bad config is printed
-                } else {
-                    imperativeLogger.fatal(require("util").inspect(error));
-                    const os = require("os");
-                    imperativeLogger.fatal("Diagnostic information:\n" +
-                        "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
-                        "Node versions: '%s'" +
-                        "Environmental variables: '%s'",
-                    os.platform(), os.arch(), process.argv.join(" "),
-                    JSON.stringify(process.versions, null, 2),
-                    JSON.stringify(process.env, null, 2));
-                    Logger.writeInMemoryMessages(Imperative.DEFAULT_DEBUG_FILE);
-                    if (error.report) {
-                        const {writeFileSync} = require("fs");
-                        writeFileSync(Imperative.DEFAULT_DEBUG_FILE, error.report);
-                    }
-                    if (!(error instanceof ImperativeError)) {
-                        const oldError = error;
-                        error = new ImperativeError({  // eslint-disable-line no-ex-assign
-                            msg: "Unexpected Error Encountered",
-                            causeErrors: error
-                        });
-                        error.stack = "\n" + oldError.stack;
-                    }
-                }
-                initializationFailed(error);
+            /**
+             * Get the command name from the package bin.
+             * If no command name exists, we will instead use the file name invoked
+             * and log a debug warning.
+             */
+            if (ImperativeConfig.instance.findPackageBinName() != null) {
+                this.mRootCommandName = ImperativeConfig.instance.findPackageBinName();
+            } else {
+                this.mRootCommandName = ImperativeConfig.instance.callerLocation;
+                this.log.debug("WARNING: No \"bin\" configuration was found in your package.json," +
+                    " or your package.json could not be found. " +
+                    "Defaulting command name to filepath instead.");
             }
-        });
+            ImperativeConfig.instance.rootCommandName = this.mRootCommandName;
+
+            let delayedEnvFileSetupError = undefined;
+            try {
+                EnvFileUtils.setEnvironmentForApp(ImperativeConfig.instance.rootCommandName, true, ImperativeConfig.instance.envVariablePrefix);
+            } catch (err) {
+                delayedEnvFileSetupError = err;
+            }
+
+            // Initialize our settings file
+            this.initAppSettings();
+
+            // If config group is enabled add config commands
+            if (config.allowConfigGroup) {
+                const ConfigManagementFacility = require("./config/ConfigManagementFacility"); // Delayed load req for init help text to work
+                ConfigManagementFacility.ConfigManagementFacility.instance.init();
+            }
+
+            let delayedConfigLoadError = undefined;
+
+            // Load the base config, save any error from config load
+            const configAppName = ImperativeConfig.instance.findPackageBinName() ? this.mRootCommandName : config.name;
+
+            try {
+                ImperativeConfig.instance.config = await Config.load(configAppName,
+                    { homeDir: ImperativeConfig.instance.cliHome }
+                );
+            } catch (err) {
+                delayedConfigLoadError = err;
+            }
+
+            // If plugins are allowed, enable core plugins commands
+            if (config.allowPlugins) {
+                PluginManagementFacility.instance.init();
+
+                // load the configuration of every installed plugin for later processing
+                PluginManagementFacility.instance.loadAllPluginCfgProps();
+
+                // Override the config object with things loaded from plugins
+                Object.assign(
+                    ImperativeConfig.instance.loadedConfig.overrides,
+                    PluginManagementFacility.instance.pluginOverrides
+                );
+            }
+
+            /**
+             * Once we have a complete representation of the config object, we should be able to
+             * use that and populate all required categories and expose them on our API object
+             * so that an app using imperative can write to the imperative log, its own log, or
+             * even a plug-in log.
+             *
+             * Any other initialization added to this routine should occur after logging has been initialized.
+             */
+            this.initLogging();
+
+            /**
+             * If there was an error trying to load the user's environment variable configuration, tell them about it now.
+             * Do not stop the process from running.
+             */
+            if (delayedEnvFileSetupError) {
+                const appLogger = Logger.getAppLogger();
+                appLogger.logError(delayedEnvFileSetupError);
+                new Console().error(delayedEnvFileSetupError);
+            }
+
+            /**
+             * If there was an error trying to load the user's configuration, tell them about it now.
+             */
+            if (delayedConfigLoadError) {
+                if (config.daemonMode) {
+                    ImperativeConfig.instance.config = await Config.load(configAppName,
+                        {
+                            homeDir: ImperativeConfig.instance.cliHome,
+                            noLoad: true
+                        }
+                    );
+                    const imperativeLogger = Logger.getImperativeLogger();
+                    imperativeLogger.logError(delayedConfigLoadError);
+                } else {
+                    throw delayedConfigLoadError;
+                }
+            }
+
+            /**
+             * Now we should apply any overrides to default Imperative functionality. This is where CLI
+             * developers are able to really start customizing Imperative and how it operates internally.
+             * For the "config convert-profiles" command, we skip loading the CredentialManager override
+             * because we need to be able to uninstall the plugin that provides it.
+             */
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            if (!(process.argv.length > 3 && process.argv[2] === "config" && process.argv[3].startsWith("convert"))) {
+                await OverridesLoader.load(ImperativeConfig.instance.loadedConfig,
+                    ImperativeConfig.instance.callerPackageJson);
+            }
+
+            /**
+             * Build API object
+             */
+            this.mApi = this.constructApiObject();
+
+            /**
+             * Build the help generator factory - requires the root command name and the loaded configuration document
+             */
+            this.mHelpGeneratorFactory = new ImperativeHelpGeneratorFactory(this.rootCommandName, ImperativeConfig.instance.loadedConfig);
+
+            // resolve command module globs, forming the root of the CLI command tree
+            this.log.info(`Loaded and validated config for '${config.name}'. Config details at trace level of logging.`);
+            this.log.trace(`The config object for '${config.name}' is:\n` +
+                JSON.stringify(config, null, 2)
+            );
+            const resolvedHostCliCmdTree: ICommandDefinition = this.getResolvedCmdTree(config);
+
+            // If plugins are allowed, add plugins' commands and profiles to the CLI command tree
+            if (config.allowPlugins) {
+                PluginManagementFacility.instance.addAllPluginsToHostCli(resolvedHostCliCmdTree);
+                this.log.info("Plugins added to the CLI command tree.");
+            }
+
+            // final preparation of the command tree
+            const preparedHostCliCmdTree = this.getPreparedCmdTree(resolvedHostCliCmdTree, config.baseProfile);
+
+            /**
+             * Define all known commands
+             */
+            this.log.info("Inherited traits applied to CLI command tree children. " +
+                "Cmd tree details at trace level of logging."
+            );
+            this.log.trace("The CLI command tree before being defined to yargs: " +
+                JSON.stringify(preparedHostCliCmdTree, null, 2)
+            );
+            this.defineCommands(preparedHostCliCmdTree);
+
+            /**
+             * Notify caller initialization is complete
+             */
+            return Promise.resolve();
+
+        } catch (error) {
+            const imperativeLogger = Logger.getImperativeLogger();
+            if (error?.suppressDump) {
+                imperativeLogger.fatal(error.message); // Error generated by a bad config is printed
+            } else {
+                imperativeLogger.fatal(require("util").inspect(error));
+                const os = require("os");
+                imperativeLogger.fatal("Diagnostic information:\n" +
+                    "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
+                    "Node versions: '%s'" +
+                    "Environmental variables: '%s'",
+                os.platform(), os.arch(), process.argv.join(" "),
+                JSON.stringify(process.versions, null, 2),
+                JSON.stringify(process.env, null, 2));
+                Logger.writeInMemoryMessages(Imperative.DEFAULT_DEBUG_FILE);
+                if (error.report) {
+                    const {writeFileSync} = require("fs");
+                    writeFileSync(Imperative.DEFAULT_DEBUG_FILE, error.report);
+                }
+                if (!(error instanceof ImperativeError)) {
+                    const oldError = error;
+                    error = new ImperativeError({  // eslint-disable-line no-ex-assign
+                        msg: "Unexpected Error Encountered",
+                        causeErrors: error
+                    });
+                    error.stack = "\n" + oldError.stack;
+                }
+            }
+            return Promise.reject(error);
+        }
     }
 
     /**
