@@ -17,7 +17,8 @@
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "stripInternal": true
   },
   "exclude": [
     "lib",

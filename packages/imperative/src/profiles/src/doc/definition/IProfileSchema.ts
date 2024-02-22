@@ -45,6 +45,9 @@ export interface IProfileSchema {
         [key: string]: IProfileProperty,
     };
 
+    // A version for the schema (optional).
+    version?: string;
+
     /**
      * An array of properties that must be present in the finished profile.
      * If any of these fields are missing, profile validation will fail.
