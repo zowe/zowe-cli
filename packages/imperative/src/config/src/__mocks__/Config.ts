@@ -9,7 +9,7 @@
 *
 */
 
-import { IConfigOpts } from "../..";
+import { IConfigOpts, IConfigSchemaInfo } from "../..";
 import { IConfigLayer } from "../../src/doc/IConfigLayer";
 
 export class Config {
@@ -54,4 +54,11 @@ export class Config {
         return config;
     }
 
+    public getSchemaInfo(): IConfigSchemaInfo {
+        return {
+            local: true,
+            resolved: "/some/path/to/schema.json",
+            original: "/some/path/to/schema.json"
+        };
+    }
 }
