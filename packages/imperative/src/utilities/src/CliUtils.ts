@@ -20,6 +20,7 @@ import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
+import { read } from "read";
 
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
@@ -484,24 +485,30 @@ export class CliUtils {
             secToWait = maxSecToWait;
         }
 
-        const { read } = require("read");
-        return read({
-            input: process.stdin,
-            output: process.stdout,
-            terminal: true,
-            prompt: message,
-            silent: opts?.hideText,
-            replace: opts?.maskChar,
-            timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
-        }).catch((err: any) => {
+        let response: string;
+        try {
+            response = await read({
+                input: process.stdin,
+                output: process.stdout,
+                terminal: true,
+                prompt: message,
+                silent: opts?.hideText,
+                replace: opts?.maskChar,
+                timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
+            });
+            if (opts?.hideText) {
+                process.stdout.write("\r\n");
+            }
+        } catch (err) {
             if (err.message === "canceled") {
                 process.exit(2);
             } else if (err.message === "timed out") {
-                return "";
+                return null;
             } else {
                 throw err;
             }
-        });
+        }
+        return response;
     }
 
     /**
