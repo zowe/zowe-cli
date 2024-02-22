@@ -40,7 +40,7 @@ export class CliProfileManager {
     /**
      * The full set of profile type configurations. The manager needs to ensure that A) the profile type configuration
      * is among the set (because it contains schema and dependency specifications) and B) That other type configurations
-     * are available to verify/load dependencies, etc.
+     * are available.
      * @private
      * @type {ICommandProfileTypeConfiguration[]}
      * @memberof CliProfileManager
@@ -73,9 +73,8 @@ export class CliProfileManager {
     private mLogger: Logger = Logger.getImperativeLogger();
 
     /**
-     * Creates an instance of ProfileManager - Performs basic parameter validation and will create the required
-     * profile root directory (if it does not exist) and will attempt to load type configurations from the
-     * existing profile root directory (unless the type definitions are passed on the constructor parameters).
+     * Creates an instance of ProfileManager - Performs basic parameter validation.
+     * It accepts the type definitions passed on the constructor parameters.
      *
      * @param {IProfileManager} parms - See the interface for details.
      * @memberof ProfileManager
@@ -138,8 +137,7 @@ export class CliProfileManager {
     }
 
     /**
-     * Accessor for the full set of type configurations - passed on the constructor or obtained from reading
-     * the profile root directories and meta files.
+     * Accessor for the full set of type configurations - passed on the constructor.
      * @readonly
      * @protected
      * @type {ICommandProfileTypeConfiguration[]}
