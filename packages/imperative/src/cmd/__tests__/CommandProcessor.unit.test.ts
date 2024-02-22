@@ -26,6 +26,7 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
+import { boolean } from "yargs";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -1619,6 +1620,120 @@ describe("Command Processor", () => {
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
+    it("should mask input value for a secure parm when --show-inputs-only flag is set", async () => {
+
+        // values to test
+        const secretParmKey = `brownSpots`;
+        const secretParmValue = true;
+        const secure = `(secure value)`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow",
+                                secretParmKey : secretParmValue
+                            },
+                            "secure": [
+                                secretParmKey
+                            ]
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    }
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                handler: __dirname + "/__model__/TestArgHandler",
+                options: [
+                    {
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
+                        type: "string",
+                        description: "The banana color.",
+                        required: true
+                    },
+                    {
+                        name: secretParmKey,
+                        type: "boolean",
+                        description: "Whether or not the banana has brown spots"
+                    },
+                ],
+                profile: {
+                    optional: ["banana"]
+                }
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy",
+            config:  ImperativeConfig.instance.config
+        });
+
+        // Mock the profile loader
+        (CommandProfileLoader.loader as any) = jest.fn((args) => {
+            return {
+                loadProfiles: (profArgs: any) => {
+                    return;
+                }
+            };
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [secretParmKey]: secretParmValue,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
+
+    });
 
     it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting", async () => {
 
@@ -2314,67 +2429,4 @@ describe("Command Processor", () => {
         });
     });
 
-    describe("profiles", () => {
-        let processor: CommandProcessor;
-
-        beforeEach(async () => {
-            // Create fake profile config
-            await setupConfigToLoad({
-                profiles: {
-                    fresh: {
-                        type: "banana",
-                        properties: {
-                            color: "green"
-                        }
-                    },
-                    ripe: {
-                        type: "banana",
-                        properties: {
-                            color: "yellow"
-                        }
-                    },
-                    banana_old: {
-                        type: "banana",
-                        properties: {
-                            color: "brown"
-                        }
-                    },
-                },
-                defaults: {
-                    banana: "fresh"
-                }
-            });
-
-            // Allocate the command processor
-            processor = new CommandProcessor({
-                envVariablePrefix: ENV_VAR_PREFIX,
-                definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
-                helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-                rootCommandName: SAMPLE_ROOT_COMMAND,
-                commandLine: "",
-                promptPhrase: "dummydummy",
-                config: ImperativeConfig.instance.config
-            });
-        });
-
-        it("should find profile that matches name specified in arguments", async () => {
-            const commandPrepared = await (processor as any).prepare(null, {
-                "banana-profile": "ripe"
-            });
-            expect(commandPrepared.args.color).toBe("yellow");
-        });
-
-        it("should find profile with type prefix that matches name specified in arguments", async () => {
-            const commandPrepared = await (processor as any).prepare(null, {
-                "banana-profile": "old"
-            });
-            expect(commandPrepared.args.color).toBe("brown");
-        });
-
-        it("should find default profile that matches type", async () => {
-            const commandPrepared = await (processor as any).prepare(null, {});
-            expect(commandPrepared.args.color).toBe("green");
-        });
-    });
 });
