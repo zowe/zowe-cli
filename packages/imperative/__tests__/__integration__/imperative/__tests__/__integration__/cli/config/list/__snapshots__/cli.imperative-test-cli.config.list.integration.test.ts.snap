@@ -62,7 +62,14 @@ base:
 "
 `;
 
-exports[`imperative-test-cli config list should list the root level property names only 1`] = `
+exports[`imperative-test-cli config list should list the root level property names only 1 1`] = `
+"profiles
+defaults
+autoStore
+"
+`;
+
+exports[`imperative-test-cli config list should list the root level property names only 2 1`] = `
 "profiles
 defaults
 autoStore

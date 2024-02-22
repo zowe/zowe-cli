@@ -10,4 +10,3 @@
 */
 
 export * from "./IProfileLoaded";
-export * from "./IProfileValidated";

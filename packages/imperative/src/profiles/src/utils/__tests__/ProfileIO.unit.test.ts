@@ -26,7 +26,7 @@ import {
     BLUEBERRY_PROFILE_TYPE,
     BLUEBERRY_TYPE_SCHEMA,
     STRAWBERRY_PROFILE_TYPE
-} from "../../../__tests__/TestConstants";
+} from "../../../../cmd/__tests__/profiles/TestConstants";
 import { IMetaProfile, IProfile } from "../../../../index";
 import { IProfileTypeConfiguration } from "../../doc/config/IProfileTypeConfiguration";
 import { ImperativeConfig } from "../../../../utilities";

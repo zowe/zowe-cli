@@ -9,154 +9,172 @@
 *
 */
 
+import { ImperativeError } from "../../../error";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
-import { ICommandProfileTypeConfiguration } from "../../src/doc/profiles/definition/ICommandProfileTypeConfiguration";
-import { ProfileIO } from "../../../profiles/src/utils/ProfileIO";
+import { APPLE_PROFILE_TYPE, ONLY_APPLE } from "./TestConstants";
 import { CliProfileManager } from "../../src/profiles/CliProfileManager";
-import { IProfile } from "../../../profiles/src/doc/definition/IProfile";
-import { IProfileLoaded } from "../../..";
+import { IProfileTypeConfiguration } from "../../../profiles/src/doc/config/IProfileTypeConfiguration";
 
-jest.mock("../../../profiles/src/utils/ProfileIO");
-jest.mock("../../../security/src/DefaultCredentialManager");
-
-describe("Cli Profile Manager", () => {
-    let writtenProfile: any;
-
-    const originalSaveProfile = (CliProfileManager.prototype as any).saveProfile;
-    afterEach(() => {
-        (CliProfileManager.prototype as any).saveProfile = originalSaveProfile;
-    });
-    ProfileIO.writeProfile = jest.fn((fullFilePath: string, profile: IProfile) => {
-        writtenProfile = profile;
+describe("Basic Profile Manager Constructor", () => {
+    it("should detect no parms when instantiating", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager(undefined as any);
+        } catch (e) {
+            error = e;
+            TestLogger.info(error);
+        }
+        expect(error instanceof ImperativeError).toBe(true);
+        expect(error.message).toContain("Expect Error: Profile Manager input parms not supplied");
     });
 
-    ProfileIO.exists = jest.fn((path: string) => {
-        return path.indexOf("meta") === -1 ? path : undefined;
+    it("should detect that no type configuration is supplied", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: undefined,
+                type: APPLE_PROFILE_TYPE,
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (e) {
+            error = e;
+            TestLogger.info(error);
+        }
+        expect(error instanceof ImperativeError).toBe(true);
+        expect(error.message).toContain("V1 profiles are no longer read from disk. " +
+            "You can supply the profile type configurations to the profile manager constructor"
+        );
     });
 
-    (ProfileIO.readMetaFile as any) = jest.fn((fullFilePath: string) => {
-        return {
-            defaultProfile: "mybana",
-            configuration: {
-                type: "",
-                schema: {
-                    type: "object",
-                    title: "test profile",
-                    description: "test profile",
-                    properties: {
-                        sum: {
-                            type: "number"
-                        }
-                    },
-                    required: ["sum"]
-                }
-            }
-        };
-    });
-    afterEach(() => {
-        writtenProfile = undefined; // clear any saved profile to not pollute results across tests
+    it("should detect that the type configuration is an empty array", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: [],
+                type: APPLE_PROFILE_TYPE,
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (e) {
+            error = e;
+            TestLogger.info(error);
+        }
+        expect(error instanceof ImperativeError).toBe(true);
+        expect(error.message).toContain("V1 profiles are no longer read from disk. " +
+            "You can supply the profile type configurations to the profile manager constructor"
+        );
     });
 
-    const profileDir = "dummy";
-    const testLogger = TestLogger.getTestLogger();
-    const profileTypeOne = "banana";
-    const profileTypeTwo = "dependencies";
-    const profileTypeThree = "differentOptions";
-    const addTwoNumbersHandler = __dirname + "/profileHandlers/AddTwoNumbersHandler";
-    const doNothingHandler = __dirname + "/profileHandlers/DoNothingHandler";
-    const throwErrorHandler = __dirname + "/profileHandlers/ThrowErrorHandler";
-    const getTypeConfigurations: () => ICommandProfileTypeConfiguration[] = () => {
-        return [{
-            type: profileTypeOne,
-            schema: {
-                type: "object",
-                title: "test profile",
-                description: "test profile",
-                properties: {
-                    sum: {
-                        type: "number"
-                    }
-                },
-                required: ["sum"]
-            },
-        }, {
-            type: profileTypeTwo,
-            schema: {
-                type: "object",
-                title: "profile with dependencies",
-                description: "profile with dependencies",
-                properties: {},
-                required: ["dependencies"]
-            },
-            dependencies: [
-                {type: profileTypeOne, description: profileTypeOne + " dependency", required: true}
-            ]
-        },
-        {
-            type: profileTypeThree,
-            title: "profile with different option names compare to schema fields",
-            schema: {
-                type: "object",
-                title: "test profile",
-                description: "test profile",
-                properties: {
-                    property1: {
-                        type: "number",
-                        optionDefinition: {
-                            name: "differentProperty1",
-                            type: "number",
-                            description: "property1"
-                        }
-                    },
-                    property2: {
-                        type: "string",
-                        optionDefinition: {
-                            name: "differentProperty2",
-                            type: "string",
-                            description: "property2"
-                        }
-                    },
-                    hasChild: {
-                        type: "object",
-                        properties: {
-                            hasGrandChild: {
-                                type: "object",
-                                properties: {
-                                    grandChild: {
-                                        optionDefinition: {
-                                            name: "myGrandChild",
-                                            type: "string",
-                                            description: "my grand child",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                required: ["property2"]
-            },
-        }];
-    };
+    it("should detect if the type is undefined", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: undefined as any,
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (e) {
+            error = e;
+            TestLogger.info(error);
+        }
+        expect(error instanceof ImperativeError).toBe(true);
+        expect(error.message).toContain("Expect Error: No profile type supplied on the profile manager parameters");
+    });
 
-    it("should only load all profiles of the manager type if requested", async () => {
-        // Mock the profile IO functions
-        ProfileIO.getAllProfileNames = jest.fn((dir, ext, meta) => {
-            expect(dir).toContain(profileTypeOne);
-            return ["prof_banana"];
-        });
+    it("should detect if the type is blank", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: " ",
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (e) {
+            error = e;
+            TestLogger.info(error);
+        }
+        expect(error instanceof ImperativeError).toBe(true);
+        expect(error.message).toContain("Expect Error: No profile type supplied on the profile manager parameters");
+    });
 
-        // Create an instance of the manager
-        const configs = getTypeConfigurations();
-        const manager = new CliProfileManager({
-            profileRootDirectory: profileDir,
-            type: profileTypeOne,
-            logger: testLogger,
-            typeConfigurations: configs
-        });
+    it("should detect that a type not found within the configurations", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: "bad_apple",
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (e) {
+            error = e;
+            TestLogger.info(error);
+        }
+        expect(error instanceof ImperativeError).toBe(true);
+        expect(error.message).toContain(
+            "Expect Error: Could not locate the profile type configuration for \"bad_apple\" within the input configuration list passed."
+        );
+    });
 
-        // Load "all" profiles
-        const loads: IProfileLoaded[] = await manager.loadAll({typeOnly: true});
-        expect(ProfileIO.getAllProfileNames).toHaveBeenCalledTimes(1);
+    it("should allow us to instantiate the cli profile manager", () => {
+        let error;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: APPLE_PROFILE_TYPE,
+                logger: TestLogger.getTestLogger()
+            });
+            TestLogger.info("Profile Manager Created");
+        } catch (e) {
+            error = e;
+            TestLogger.error(e);
+        }
+        expect(error).toBeUndefined();
+    });
+
+    it("should detect that a schema definition document is attempting to overload 'type'", () => {
+        const copy: IProfileTypeConfiguration[] = JSON.parse(JSON.stringify(ONLY_APPLE));
+        copy[0].schema.properties.type = {type: "boolean"};
+        let caughtError;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: APPLE_PROFILE_TYPE,
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
+    });
+
+    it("should detect that a schema definition document is attempting to overload 'name'", () => {
+        const copy: IProfileTypeConfiguration[] = JSON.parse(JSON.stringify(ONLY_APPLE));
+        copy[0].schema.properties.name = {type: "boolean"};
+        let caughtError;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: APPLE_PROFILE_TYPE,
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
+    });
+
+    it("should detect that a schema definition document is attempting to overload 'dependencies'", () => {
+        const copy: IProfileTypeConfiguration[] = JSON.parse(JSON.stringify(ONLY_APPLE));
+        copy[0].schema.properties.dependencies = {type: "boolean"};
+        let caughtError;
+        try {
+            const prof = new CliProfileManager({
+                typeConfigurations: ONLY_APPLE,
+                type: APPLE_PROFILE_TYPE,
+                logger: TestLogger.getTestLogger()
+            });
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
     });
 });

@@ -9,388 +9,181 @@
 *
 */
 
-import {
-    BasicProfileManager,
-    IProfile,
-    IProfileValidated,
-    IValidateProfileForCLI,
-    ProfilesConstants,
-    ProfileUtils
-} from "../../../profiles";
-import { inspect } from "util";
+import { ImperativeExpect } from "../../../expect";
+import { inspect, isNullOrUndefined } from "util";
+import { Logger } from "../../../logger";
 import { ImperativeError } from "../../../error";
-import { Arguments } from "yargs";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
-import { ICommandProfileProperty } from "../doc/profiles/definition/ICommandProfileProperty";
-import { CredentialManagerFactory } from "../../../security";
-import { IProfileLoaded } from "../../../profiles/src/doc";
-import { SecureOperationFunction } from "../types/SecureOperationFunction";
-import { ICliLoadProfile } from "../doc/profiles/parms/ICliLoadProfile";
-import { ICliLoadAllProfiles } from "../doc/profiles/parms/ICliLoadAllProfiles";
+import {
+    IProfileManager,
+    IProfileSchema,
+} from "../../../profiles/src/doc";
 
 /**
- * A profile management API compatible with transforming command line arguments into
- * profiles
- * @internal
+ * The CLI profile manager contains methods to manage Zowe profiles. Profiles
+ * are user configuration documents intended to be used on commands, as a convenience, to supply a slew of additional
+ * input and configuration (normally more than would be feasible as command arguments). See the "IProfile" interface
+ * for a detailed description of profiles, their use case, and examples.
+ *
+ * The Profile Manager no longer reads V1 profile from disk. It only processes profile information from a
+ * command's definition. The Config class now handles reading profiles from disk stored in a zowe.config.json file.
  */
-export class CliProfileManager extends BasicProfileManager<ICommandProfileTypeConfiguration> {
-
+export class CliProfileManager {
     /**
-     * NOTE: This is just a copy of BasicProfileManager.loadAll
-     * REASON: We needed the Abstract profile manager to call the CLI profile manager to handle loading of secure properties
-     * Loads all profiles from every type. Profile types are determined by reading all directories within the
-     * profile root directory.
-     * @returns {Promise<IProfileLoaded[]>} - The list of all profiles for every type
+     * Parameters passed on the constructor (normally used to create additional instances of profile manager objects)
+     * @private
+     * @type {IProfileManager}
+     * @memberof CliProfileManager
      */
-    public async loadAll(params?: ICliLoadAllProfiles): Promise<IProfileLoaded[]> {
-        this.log.trace(`Loading all profiles for type "${this.profileType}"...`);
-        // Load all the other profiles for other types
-        const loadAllProfiles: any[] = [];
-
-        // Load only the profiles for the type if requested
-        if (params != null && params.typeOnly) {
-            const names: string[] = this.getAllProfileNames();
-            for (const name of names) {
-                loadAllProfiles.push(this.load({
-                    name,
-                    failNotFound: true,
-                    loadDependencies: false,
-                    noSecure: params.noSecure
-                }));
-            }
-        } else {
-
-            // Otherwise, load all profiles of all types
-            for (const typeConfig of this.profileTypeConfigurations) {
-                const typeProfileManager = new CliProfileManager({
-                    profileRootDirectory: this.profileRootDirectory,
-                    typeConfigurations: this.profileTypeConfigurations,
-                    type: typeConfig.type,
-                    logger: this.log,
-                    loadCounter: this.loadCounter
-                });
-
-                // Get all the profile names for the type and attempt to load every one
-                const names: string[] = typeProfileManager.getAllProfileNames();
-                for (const name of names) {
-                    this.log.debug(`Loading profile "${name}" of type "${typeConfig.type}".`);
-                    loadAllProfiles.push(typeProfileManager.load({
-                        name,
-                        failNotFound: true,
-                        loadDependencies: false,
-                        noSecure: (params != null) ? params.noSecure : undefined
-                    }));
-                }
-            }
-        }
-
-        // Construct the full list for return
-        let allProfiles: IProfileLoaded[] = [];
-        try {
-            this.log.trace(`Awaiting all loads...`);
-            const theirProfiles = await Promise.all(loadAllProfiles);
-            for (const theirs of theirProfiles) {
-                allProfiles = allProfiles.concat(theirs);
-            }
-            this.log.trace(`All loads complete.`);
-        } catch (e) {
-            this.log.error(e.message);
-            throw new ImperativeError({msg: e.message, additionalDetails: e.additionalDetails, causeErrors: e});
-        }
-
-        return allProfiles;
-    }
+    private mConstructorParms: IProfileManager<ICommandProfileTypeConfiguration>;
 
     /**
-     * Overridden loadProfile functionality
-     * After the BasicProfileManager loads the profile, we process the secured properties for the CLi to use
+     * The full set of profile type configurations. The manager needs to ensure that A) the profile type configuration
+     * is among the set (because it contains schema and dependency specifications) and B) That other type configurations
+     * are available.
+     * @private
+     * @type {ICommandProfileTypeConfiguration[]}
+     * @memberof CliProfileManager
+     */
+    private mProfileTypeConfigurations: ICommandProfileTypeConfiguration[];
+
+    /**
+     * The profile "type" for this manager - indicating the profile/schema that this manager is working directly with.
+     * @private
+     * @type {string}
+     * @memberof CliProfileManager
+     */
+    private mProfileType: string;
+
+    /**
+     * Product display name of the CLI.
+     * @private
+     * @type {string}
+     * @memberof CliProfileManager
+     */
+    private mProductDisplayName: string;
+
+    /**
+     * Logger instance - must be log4js compatible. Can be the Imperative logger (normally), but is required for
+     * profile manager operation.
+     * @private
+     * @type {Logger}
+     * @memberof CliProfileManager
+     */
+    private mLogger: Logger = Logger.getImperativeLogger();
+
+    /**
+     * Creates an instance of ProfileManager - Performs basic parameter validation.
+     * It accepts the type definitions passed on the constructor parameters.
      *
-     * @param {ICliLoadProfile} parms - Load control params - see the interface for full details
-     * @returns {Promise<IProfileLoaded>} - Promise that is fulfilled when complete (or rejected with an Imperative Error)
+     * @param {IProfileManager} parms - See the interface for details.
+     * @memberof ProfileManager
      */
-    protected async loadProfile(parms: ICliLoadProfile): Promise<IProfileLoaded> {
-        const loadedProfile = await super.loadProfile(parms);
-        const profile = loadedProfile.profile;
-
-        // If noSecure is specified, skip secure loading
-        let securelyLoadValue: SecureOperationFunction;
-        if (!parms.noSecure && CredentialManagerFactory.initialized) {
-            /**
-             * Securely load a property associated with a given profile
-             * @param {string} propertyNamePath - The path to the property
-             * @return {Promise<string>}
-             */
-            securelyLoadValue = async (propertyNamePath: string, _: any, optional?: boolean): Promise<any> => {
-                let ret;
-                try {
-                    this.log.debug(
-                        `Loading secured field with key ${propertyNamePath} for profile` +
-                        ` ("${parms.name}" of type "${this.profileType}").`
-                    );
-                    // Use the Credential Manager to store the credentials
-                    ret = await CredentialManagerFactory.manager.load(
-                        ProfileUtils.getProfilePropertyKey(this.profileType, parms.name, propertyNamePath),
-                        optional
-                    );
-                } catch (err) {
-                    this.log.error(
-                        `Unable to load secure field "${propertyNamePath}" ` +
-                        `associated with profile "${parms.name}" of type "${this.profileType}".`
-                    );
-
-                    let additionalDetails: string = err.message + (err.additionalDetails ? `\n${err.additionalDetails}` : "");
-                    additionalDetails = this.addProfileInstruction(additionalDetails);
-
-                    this.log.error(`Error: ${additionalDetails}`);
-                    if (err.causeErrors != null) {
-                        this.log.error("Cause errors: " + inspect(err.causeErrors));
-                    }
-                    throw new ImperativeError({
-                        msg: `Unable to load the secure field "${propertyNamePath}" associated with ` +
-                            `the profile "${parms.name}" of type "${this.profileType}".`,
-                        additionalDetails,
-                        causeErrors: err
-                    });
-                }
-
-                return (ret != null) ? JSON.parse(ret) : undefined; // Parse it after loading it. We stringify-ed before saving it
-            };
+    constructor(parms: IProfileManager<ICommandProfileTypeConfiguration>) {
+        ImperativeExpect.toNotBeNullOrUndefined(parms, "Profile Manager input parms not supplied.");
+        ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["type"],
+            "No profile type supplied on the profile manager parameters.");
+        this.mLogger = isNullOrUndefined(parms.logger) ? this.mLogger : parms.logger;
+        this.mProfileType = parms.type;
+        this.mProfileTypeConfigurations = parms.typeConfigurations;
+        this.mProductDisplayName = parms.productDisplayName;
+        if (isNullOrUndefined(this.profileTypeConfigurations) || this.profileTypeConfigurations.length === 0) {
+            throw new ImperativeError({
+                msg: "V1 profiles are no longer read from disk. " +
+                    "You can supply the profile type configurations to the profile manager constructor."
+            });
         }
-
-        if (profile != null) {
-            for (const prop of Object.keys(this.profileTypeConfiguration.schema.properties)) {
-                profile[prop] = await this.findOptions(this.profileTypeConfiguration.schema.properties[prop], prop, profile[prop], securelyLoadValue);
-            }
-        }
-
-        // Return the loaded profile
-        loadedProfile.profile = profile || {};
-        return loadedProfile;
-    }
-
-    /**
-     * Validate a profile's structure, skipping the validation if we haven't built the
-     * profile's fields from the CLI arguments yet.
-     * @param {IValidateProfileForCLI} parms - validate profile parameters. if these don't
-     *                                         have readyForValidation = true, validation is
-     *                                         skipped
-     * @returns {Promise<IProfileValidated>}
-     */
-    protected async validateProfile(parms: IValidateProfileForCLI): Promise<IProfileValidated> {
-        if (parms.readyForValidation) {
-            this.log.debug(`Invoking the basic profile manager validate for profile: "${parms.name}"`);
-            return super.validateProfile(parms);
-        } else {
-            this.log.trace(`Skipping the validate for profile (as it's being built): "${parms.name}"`);
-            return {message: "Skipping validation until profile is built"};
+        this.mConstructorParms = parms;
+        ImperativeExpect.arrayToContain(this.mProfileTypeConfigurations, (entry) => {
+            return entry.type === this.mProfileType;
+        }, `Could not locate the profile type configuration for "${this.profileType}" within the input configuration list passed.` +
+        `\n${inspect(this.profileTypeConfigurations, { depth: null })}`);
+        for (const config of this.profileTypeConfigurations) {
+            this.validateConfigurationDocument(config);
         }
     }
 
     /**
-     * After the DefaultCredentialManager reports an error resolution of recreating
-     * a credential, add instruction to recreate the profile.
-     *
-     * @param {String} errDetails - The additional details of an error thrown
-     *      by DefaultCredentialManager.
-     *
-     * @returns {string} An error details string that contains an instruction to
-     *      recreate the profile (when appropriate).
+     * Accessor for the logger instance - passed on the constructor
+     * @readonly
+     * @protected
+     * @type {Logger}
+     * @memberof CliProfileManager
      */
-    private addProfileInstruction(errDetails: string): string {
-        const recreateCredText: string = "Recreate the credentials in the vault";
-        const recreateProfileText: string =
-            "  To recreate credentials, issue a 'profiles create' sub-command with the --ow flag.\n";
-        if (errDetails.includes(recreateCredText)) {
-            errDetails += recreateProfileText;
-        } else {
-            const additionalDetails = CredentialManagerFactory.manager.secureErrorDetails();
-            if (additionalDetails != null) {
-                errDetails += "\n\n" + additionalDetails;
-            }
-        }
-        return errDetails;
+    protected get log(): Logger {
+        return this.mLogger;
     }
 
     /**
-     * Helper routine to find nested properties
-     * Inspired by the inner function of insertCliArgumentsIntoProfile
-     *
-     * @param {ICommandProfileProperty} prop - profile property
-     * @param {string} propNamePath - Dot notation path of a property (e.g. my.nested.property)
-     * @param {*} propValue - Current value of the property while traversing down the object tree
-     * @param {SecureOperationFunction} secureOp - Function to be executed if we are supposed to process secure properties
-     * @returns {Promise<any>} Processed version of a property
+     * Accessor for the profile type specified on the constructor.
+     * @readonly
+     * @protected
+     * @type {string}
+     * @memberof CliProfileManager
      */
-    private async findOptions(prop: ICommandProfileProperty, propNamePath: string, propValue: any, secureOp?: SecureOperationFunction): Promise<any> {
-        if (prop.optionDefinition != null) {
-            // once we reach a property with an option definition,
-            // we now have the complete path to the property
-            // so we will set the value on the property from the profile
-            const optionName = prop.optionDefinition.name;
-            this.log.debug("Setting profile field %s from command line option %s", propNamePath, optionName);
-            if (secureOp && prop.secure) {
-                this.log.debug("Performing secure operation on property %s", propNamePath);
-                return secureOp(propNamePath, propValue, !prop.optionDefinition.required);
-            }
-            return Promise.resolve(propValue);
-        }
-        if (prop.properties != null) {
-            if (secureOp && prop.secure) {
-                if (!propValue || Object.keys(propValue).length === 0) { // prevents from performing operations on empty objects
-                    return Promise.resolve(null);
-                }
-
-                this.log.debug("Performing secure operation on property %s", propNamePath);
-                return secureOp(propNamePath, propValue);
-            }
-            const tempProperties: any = {};
-            for (const childPropertyName of Object.keys(prop.properties)) {
-                tempProperties[childPropertyName] =
-                    await this.findOptions(
-                        prop.properties[childPropertyName],
-                        propNamePath + "." + childPropertyName,
-                        ((propValue != null) && (propValue[childPropertyName] != null)) ?
-                            JSON.parse(JSON.stringify(propValue[childPropertyName])) : null,
-                        secureOp
-                    );
-            }
-            return Promise.resolve(tempProperties);
-        }
-
-        return Promise.resolve(propValue);
+    protected get profileType(): string {
+        return this.mProfileType;
     }
 
     /**
-     * Process and store all secure properties and replace them with a constant for display purposes
-     * @param name - the name of the profile with which the secure properties are associated
-     * @param {IProfile} profile - Profile contents to be processed
-     * @return {Promise<IProfile>}
+     * Accesor for the product display name.
+     * @readonly
+     * @protected
+     * @type {string}
+     * @memberof CliProfileManager
      */
-    private async processSecureProperties(name: string, profile: IProfile): Promise<IProfile> {
-        // If the credential manager is null, skip secure props and the profile will default to plain text
-        let securelyStoreValue: SecureOperationFunction;
-        if (CredentialManagerFactory.initialized) {
-            /**
-             * Securely store a property associated with a given profile
-             * @param {string} propertyNamePath - The path to the property
-             * @param {string} propertyValue - The value associated with the given profile property
-             * @return {Promise<string>}
-             */
-            securelyStoreValue = async (propertyNamePath: string, propertyValue: string): Promise<string> => {
-                if (propertyValue == null) {
-                    // don't store null values but still remove value that may have been stored previously
-                    this.log.debug(`Deleting secured field with key ${propertyNamePath}` +
-                        ` for profile (of type "${this.profileType}").`);
-
-                    // In this particular case, do not throw an error if delete doesn't work.
-                    try {
-                        await CredentialManagerFactory.manager.delete(
-                            ProfileUtils.getProfilePropertyKey(this.profileType, name, propertyNamePath)
-                        );
-                    } catch (err) {
-                        // If delete did not work here, it is probably okay.
-                    }
-
-                    return undefined;
-                }
-                try {
-                    this.log.debug(`Associating secured field with key ${propertyNamePath}` +
-                        ` for profile (of type "${this.profileType}").`);
-                    // Use the Credential Manager to store the credentials
-                    await CredentialManagerFactory.manager.save(
-                        ProfileUtils.getProfilePropertyKey(this.profileType, name, propertyNamePath),
-                        JSON.stringify(propertyValue) // Stringify it before saving it. We will parse after loading it
-                    );
-                } catch (err) {
-                    this.log.error(`Unable to store secure field "${propertyNamePath}" ` +
-                        `associated with profile "${name}" of type "${this.profileType}".`);
-
-                    let additionalDetails: string = err.message + (err.additionalDetails ? `\n${err.additionalDetails}` : "");
-                    additionalDetails = this.addProfileInstruction(additionalDetails);
-                    this.log.error(`Error: ${additionalDetails}`);
-
-                    throw new ImperativeError({
-                        msg: `Unable to store the secure field "${propertyNamePath}" associated with ` +
-                            `the profile "${name}" of type "${this.profileType}".`,
-                        additionalDetails,
-                        causeErrors: err
-                    });
-                }
-
-                // The text in the profile will read "managed by <credential manager name>"
-                return `${ProfilesConstants.PROFILES_OPTION_SECURELY_STORED} ${CredentialManagerFactory.manager.name}`;
-            };
-        }
-
-        for (const prop of Object.keys(this.profileTypeConfiguration.schema.properties)) {
-            profile[prop] = await this.findOptions(this.profileTypeConfiguration.schema.properties[prop], prop, profile[prop], securelyStoreValue);
-        }
-
-        return profile;
+    protected get productDisplayName(): string {
+        return this.mProductDisplayName;
     }
 
     /**
-     * Default style of building of profile fields to option definitions defined in the schema
-     * Will only work if there is a one-to-one option definition mapping for schema fields
-     * @param {yargs.Arguments} args - the arguments specified by the user
-     * @param {IProfile} profile -  the profile so far, which will be updated
+     * Accessor for the full set of type configurations - passed on the constructor.
+     * @readonly
+     * @protected
+     * @type {ICommandProfileTypeConfiguration[]}
+     * @memberof CliProfileManager
      */
-    private async insertCliArgumentsIntoProfile(args: Arguments, profile: IProfile): Promise<void> {
-        /**
-         * Helper routine to find nested properties
-         * @param {Object} property - profile property
-         * @param {ICommandProfileProperty} property - profile property
-         * @param {string} propertyNamePath - Dot notation path of a property (e.g. my.nested.property)
-         */
-        const findOptions = async (property: ICommandProfileProperty, propertyNamePath: string): Promise<any> => {
-            if (property.optionDefinition != null) {
-                // once we reach a property with an option definition,
-                // we now have the complete path to the property
-                // so we will set the value on the property from the profile
-                this.log.debug("Setting profile field %s from command line option %s", propertyNamePath, property.optionDefinition.name);
-                return args[property.optionDefinition.name];
-            }
-
-            if (property.properties != null) {
-                const tempProperties: any = {};
-                for (const childPropertyName of Object.keys(property.properties)) {
-                    tempProperties[childPropertyName] =
-                        await findOptions(property.properties[childPropertyName], propertyNamePath + "." + childPropertyName);
-                }
-                return tempProperties;
-            }
-
-            // Don't define any value here if the profile field cannot be set by a CLI option
-            return undefined;
-        };
-
-        for (const propertyName of Object.keys(this.profileTypeConfiguration.schema.properties)) {
-            profile[propertyName] =
-                await findOptions(this.profileTypeConfiguration.schema.properties[propertyName], propertyName);
-        }
+    protected get profileTypeConfigurations(): ICommandProfileTypeConfiguration[] {
+        return this.mProfileTypeConfigurations;
     }
 
     /**
-     * Build the "dependencies" field of a profile object from command line arguments
-     * @param {yargs.Arguments} args - the command line arguments from the user
-     * @param {IProfile} profile - the profile object so far.
+     * Validate that the schema document passed is well formed for the profile manager usage. Ensures that the
+     * schema is not overloading reserved properties.
+     * @private
+     * @param {IProfileSchema} schema - The schema document to validate.
+     * @param type - the type of profile for the schema - defaults to the current type for this manager
+     * @memberof CliProfileManager
      */
-    private insertDependenciesIntoProfileFromCLIArguments(args: Arguments, profile: IProfile): void {
-        if (this.profileTypeConfiguration.dependencies != null) {
-            const dependencies: Array<{ type: string, name: string }> = [];
-            for (const dependency of this.profileTypeConfiguration.dependencies) {
-                const optionName = ProfileUtils.getProfileOption(dependency.type);
-                if (args[optionName] != null) {
-                    const dependentProfileName = args[optionName];
-                    this.log.debug("Inserting dependency profile named \"%s\" of type \"%s\"", dependentProfileName, dependency.type);
-                    dependencies.push({
-                        type: dependency.type,
-                        name: dependentProfileName as string
-                    });
-                }
-            }
-            profile.dependencies = dependencies;
-        }
+    private validateSchema(schema: IProfileSchema, type = this.profileType) {
+        ImperativeExpect.keysToBeDefined(schema, ["properties"], `The schema document supplied for the profile type ` +
+            `("${type}") does NOT contain properties.`);
+        ImperativeExpect.keysToBeUndefined(schema, ["properties.dependencies"], `The schema "properties" property ` +
+            `(on configuration document for type "${type}") contains "dependencies". ` +
+            `"dependencies" is must be supplied as part of the "type" configuration document (no need to formulate the dependencies ` +
+            `schema yourself).`);
     }
 
+    /**
+     * Validates the basic configuration document to ensure it contains all the proper fields
+     * @private
+     * @param {ICommandProfileTypeConfiguration} typeConfiguration - The type configuration document
+     * @memberof CliProfileManager
+     */
+    private validateConfigurationDocument(typeConfiguration: ICommandProfileTypeConfiguration) {
+        ImperativeExpect.keysToBeDefinedAndNonBlank(typeConfiguration, ["type"], `The profile type configuration document for ` +
+            `"${typeConfiguration.type}" does NOT contain a type.`);
+        ImperativeExpect.keysToBeDefined(typeConfiguration, ["schema"], `The profile type configuration document for ` +
+            `"${typeConfiguration.type}" does NOT contain a schema.`);
+        this.validateSchema(typeConfiguration.schema, typeConfiguration.type);
+        if (!isNullOrUndefined(typeConfiguration.dependencies)) {
+            ImperativeExpect.toBeAnArray(typeConfiguration.dependencies,
+                `The profile type configuration for "${typeConfiguration.type}" contains a "dependencies" property, ` +
+                `but it is not an array (ill-formed)`);
+            for (const dep of typeConfiguration.dependencies) {
+                ImperativeExpect.keysToBeDefinedAndNonBlank(dep, ["type"], "A dependency specified for the " +
+                    "profile definitions did not contain a type.");
+            }
+        }
+    }
 }

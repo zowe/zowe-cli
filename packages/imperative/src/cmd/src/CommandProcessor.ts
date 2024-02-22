@@ -17,10 +17,9 @@ import { ICommandHandler } from "./doc/handler/ICommandHandler";
 import { couldNotInstantiateCommandHandler, unexpectedCommandError } from "../../messages";
 import { SharedOptions } from "./utils/SharedOptions";
 import { IImperativeError, ImperativeError } from "../../error";
-import { IProfileManagerFactory, ProfileUtils } from "../../profiles";
+import { ProfileUtils } from "../../profiles";
 import { SyntaxValidator } from "./syntax/SyntaxValidator";
 import { CommandProfileLoader } from "./profiles/CommandProfileLoader";
-import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGenerator } from "./help/doc/IHelpGenerator";
 import { ICommandPrepared } from "./doc/response/response/ICommandPrepared";
 import { CommandResponse } from "./response/CommandResponse";
@@ -164,13 +163,6 @@ export class CommandProcessor {
      */
     private mHelpGenerator: IHelpGenerator;
     /**
-     * The profile manager to use when loading profiles for commands
-     * @private
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof CommandProcessor
-     */
-    private mProfileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
-    /**
      * Imperative Logger instance for logging from the command processor.
      * @private
      * @type {Logger}
@@ -204,8 +196,6 @@ export class CommandProcessor {
         this.mFullDefinition = (params.fullDefinition == null) ? this.mDefinition : params.fullDefinition;
         this.mHelpGenerator = params.helpGenerator;
         ImperativeExpect.toNotBeNullOrUndefined(this.mHelpGenerator, `${CommandProcessor.ERROR_TAG} No help generator supplied.`);
-        this.mProfileManagerFactory = params.profileManagerFactory;
-        ImperativeExpect.toNotBeNullOrUndefined(this.mProfileManagerFactory, `${CommandProcessor.ERROR_TAG} No profile manager factory supplied.`);
         if (this.mDefinition.type === "command" && this.mDefinition.chainedHandlers == null) {
             ImperativeExpect.keysToBeDefinedAndNonBlank(this.mDefinition, ["handler"], `${CommandProcessor.ERROR_TAG} ` +
                 `The definition supplied is of type "command", ` +
@@ -281,16 +271,6 @@ export class CommandProcessor {
      */
     get config(): Config {
         return this.mConfig;
-    }
-
-    /**
-     * Accessor for the profile manager factory in use for this command processor.
-     * @readonly
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof CommandProcessor
-     */
-    get profileFactory(): IProfileManagerFactory<ICommandProfileTypeConfiguration> {
-        return this.mProfileManagerFactory;
     }
 
     /**
@@ -1002,8 +982,7 @@ export class CommandProcessor {
             `Profile definitions: ${inspect(this.definition.profile, { depth: null })}`);
 
         const profiles = await CommandProfileLoader.loader({
-            commandDefinition: this.definition,
-            profileManagerFactory: this.profileFactory
+            commandDefinition: this.definition
         }).loadProfiles(args);
         this.log.trace(`Profiles loaded for "${this.definition.name}" command:\n${inspect(profiles, { depth: null })}`);
 

@@ -28,7 +28,7 @@ import {
     ORANGE_PROFILE_TYPE,
     STRAWBERRY_PROFILE_TYPE,
     STRAWBERRY_TYPE_SCHEMA
-} from "../../../__tests__/TestConstants";
+} from "../../../../cmd/__tests__/profiles/TestConstants";
 import { IProfileTypeConfiguration } from "../../doc/config/IProfileTypeConfiguration";
 
 /**

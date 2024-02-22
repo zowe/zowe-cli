@@ -143,7 +143,7 @@ describe("imperative-test-cli config list", () => {
         expect(parsedResponse.exitCode).toEqual(0);
         expect(parsedResponse.data).toEqual(expectedResponse.data);
     });
-    it("should list the root level property names only", () => {
+    it("should list the root level property names only 1", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--root"]);
         expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("defaults");
@@ -151,8 +151,25 @@ describe("imperative-test-cli config list", () => {
         expect(response.stderr.toString()).toEqual("");
         expect(response.error).toBeFalsy();
     });
-    it("should get a list of config file paths", () => {
+    it("should list the root level property names only 2", () => {
+        const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--name-only"]);
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("defaults");
+        expect(response.stdout.toString()).toContain("profiles");
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.error).toBeFalsy();
+    });
+    it("should get a list of config file paths 1", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--locations --root"]);
+        expect(response.stdout.toString()).toContain(expectedProjectConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedUserConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedGlobalProjectConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedGlobalUserConfigLocation);
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.error).toBeFalsy();
+    });
+    it("should get a list of config file paths 2", () => {
+        const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--locations --name-only"]);
         expect(response.stdout.toString()).toContain(expectedProjectConfigLocation);
         expect(response.stdout.toString()).toContain(expectedUserConfigLocation);
         expect(response.stdout.toString()).toContain(expectedGlobalProjectConfigLocation);

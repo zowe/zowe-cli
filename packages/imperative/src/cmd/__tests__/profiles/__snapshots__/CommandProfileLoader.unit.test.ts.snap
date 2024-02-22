@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Command Profile Loader should percolate the error if a required profile for one type is not found 1`] = `"Not found"`;
-
-exports[`Command Profile Loader should percolate the load error to the caller 1`] = `"An error occurred during the load."`;
-
-exports[`Command Profile Loader should react properly if the profile manager does not return an expected result 1`] = `"Unexpected internal load error: The profile \\"tasty\\" was not loaded by the profile manager."`;
-
-exports[`Command Profile Loader should react properly if the profile manager does not return an expected result for default 1`] = `"Unexpected internal load error: The profile \\"default requested\\" was not loaded by the profile manager."`;

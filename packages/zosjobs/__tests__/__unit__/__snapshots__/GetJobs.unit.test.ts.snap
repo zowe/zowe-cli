@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GetJobs tests getJcl APIs should be able to get JCL 1`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=KELDA16//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
+exports[`GetJobs tests getJcl APIs should be able to get JCL 1`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=IBMUSER//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
 
-exports[`GetJobs tests getJcl APIs should be able to get JCL 2`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=KELDA16//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
+exports[`GetJobs tests getJcl APIs should be able to get JCL 2`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=IBMUSER//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
 
-exports[`GetJobs tests getJcl APIs should be able to get JCL 3`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=KELDA16//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
+exports[`GetJobs tests getJcl APIs should be able to get JCL 3`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=IBMUSER//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
 
 exports[`GetJobs tests getJcl APIs should error for missing jobname in callback scheme for jcl 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
 
@@ -32,8 +32,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -67,8 +67,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -102,8 +102,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -137,8 +137,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -172,8 +172,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -207,8 +207,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -242,8 +242,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -277,8 +277,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -312,8 +312,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -347,8 +347,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -382,8 +382,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -463,8 +463,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -498,8 +498,8 @@ Array [
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
-    "jobname": "KELDA16$",
-    "owner": "KELDA16",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
     "phase": 130,
     "phase-name": "Job is actively converting",
     "retcode": null,
@@ -511,9 +511,9 @@ Array [
 ]
 `;
 
-exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 1`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I KELDA16 Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=KELOSKY, DANIEL L 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
+exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 1`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I IBMUSER Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=USER, IBM 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
 
-exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 2`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I KELDA16 Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=KELOSKY, DANIEL L 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
+exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 2`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I IBMUSER Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=USER, IBM 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
 
 exports[`GetJobs tests getSpoolContent APIs should error for missing jobname in callback scheme for spool content 1`] = `"Expect Error: Required job file object must be defined"`;
 
