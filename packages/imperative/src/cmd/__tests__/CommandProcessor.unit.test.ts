@@ -2296,8 +2296,9 @@ describe("Command Processor", () => {
             // will just check that the syntax generated hasn't changed.
             expect(getConsoleErrorFromMock(dummyResponseObject)).toMatchSnapshot();
         });
+    });
 
-        describe("profiles", () => {
+    describe("profiles", () => {
         let processor: CommandProcessor;
 
         beforeEach(async () => {
