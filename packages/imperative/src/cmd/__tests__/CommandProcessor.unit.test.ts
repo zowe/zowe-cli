@@ -25,7 +25,6 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
-import { boolean } from "yargs";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
