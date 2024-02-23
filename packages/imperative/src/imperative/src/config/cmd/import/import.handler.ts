@@ -124,7 +124,8 @@ export default class ImportHandler implements ICommandHandler {
         } else {
             const response = await RestClient.getExpectString(this.buildSession(url), url.pathname);
             try {
-                JSONC.parse(response);
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                JSONC.parse(response) as any;
             } catch (error) {
                 throw new ImperativeError({
                     msg: "Failed to parse schema JSON: URL must point to a valid JSON file\n" + error.message,

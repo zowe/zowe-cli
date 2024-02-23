@@ -71,10 +71,8 @@ describe("Download Jobs - System tests", () => {
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
 
-    afterEach((done: any) => {  // eslint-disable-line jest/no-done-callback
-        require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
-            done(err);
-        });
+    afterEach(() => {
+        require("rimraf").sync(outputDirectory, {maxBusyRetries: 10});
     });
 
     afterAll(async () => {
