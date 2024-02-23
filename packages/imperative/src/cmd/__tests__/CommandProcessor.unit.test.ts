@@ -2334,7 +2334,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy",
