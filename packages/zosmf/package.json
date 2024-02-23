@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zosmf-for-zowe-sdk",
-  "version": "8.0.0-next.202402132108",
+  "version": "8.0.0-next.202402221834",
   "description": "Zowe SDK to interact with the z/OS Management Facility",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -44,12 +44,15 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.0.0-next.202402132108",
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202402132108",
-    "@zowe/imperative": "8.0.0-next.202402132108"
+    "@zowe/cli-test-utils": "8.0.0-next.202402221834",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
+    "@zowe/imperative": "8.0.0-next.202402221834"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
     "@zowe/imperative": "^8.0.0-next"
+  },
+  "engines": {
+    "node": ">=16.7.0"
   }
 }

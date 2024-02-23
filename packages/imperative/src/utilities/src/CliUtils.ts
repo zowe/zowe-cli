@@ -20,6 +20,7 @@ import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
+import { read } from "read";
 
 
 /**
@@ -485,8 +486,9 @@ export class CliUtils {
             secToWait = maxSecToWait;
         }
 
-        return new Promise((resolve, reject) => {
-            require("read")({
+        let response: string;
+        try {
+            response = await read({
                 input: process.stdin,
                 output: process.stdout,
                 terminal: true,
@@ -494,18 +496,20 @@ export class CliUtils {
                 silent: opts?.hideText,
                 replace: opts?.maskChar,
                 timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
-            }, (error: any, result: string) => {
-                if (error == null) {
-                    resolve(result);
-                } else if (error.message === "canceled") {
-                    process.exit(2);
-                } else if (error.message === "timed out") {
-                    resolve(null);
-                } else {
-                    reject(error);
-                }
             });
-        });
+            if (opts?.hideText) {
+                process.stdout.write("\r\n");
+            }
+        } catch (err) {
+            if (err.message === "canceled") {
+                process.exit(2);
+            } else if (err.message === "timed out") {
+                return null;
+            } else {
+                throw err;
+            }
+        }
+        return response;
     }
 
     /**

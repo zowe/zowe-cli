@@ -182,8 +182,8 @@ describe("Profile IO", () => {
         const profname: string = "bad_apple";
         const fullPath: string = TEST_DIR_PATH + "/" + profname + ".yaml";
         ProfileIO.deleteProfile("bad_apple", fullPath);
-        expect(mocks.unlinkSync).toBeCalledWith(fullPath);
-        expect(mocks.existsSync).toBeCalledWith(fullPath);
+        expect(mocks.unlinkSync).toHaveBeenCalledWith(fullPath);
+        expect(mocks.existsSync).toHaveBeenCalledWith(fullPath);
     });
 
     it("should throw an imperative error if the file is not deleted", () => {
@@ -201,8 +201,8 @@ describe("Profile IO", () => {
         } catch (e) {
             error = e;
         }
-        expect(mocks.unlinkSync).toBeCalledWith(fullPath);
-        expect(mocks.existsSync).toBeCalledWith(fullPath);
+        expect(mocks.unlinkSync).toHaveBeenCalledWith(fullPath);
+        expect(mocks.existsSync).toHaveBeenCalledWith(fullPath);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toContain("Profile IO Error: The profile bad_apple was unable to be deleted. Please check " +
@@ -224,7 +224,7 @@ describe("Profile IO", () => {
         } catch (e) {
             error = e;
         }
-        expect(mocks.unlinkSync).toBeCalledWith(fullPath);
+        expect(mocks.unlinkSync).toHaveBeenCalledWith(fullPath);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toContain("Profile IO Error: An unexpected profile delete error occurred for profile");
@@ -239,7 +239,7 @@ describe("Profile IO", () => {
         const fullPath: string = TEST_DIR_PATH + "/" + profname + ".yaml";
         const path = ProfileIO.exists(fullPath);
         expect(path).toBeUndefined();
-        expect(mocks.existsSync).toBeCalledWith(fullPath);
+        expect(mocks.existsSync).toHaveBeenCalledWith(fullPath);
     });
 
     it("should throw an imperative error if an exists IO error occurs", () => {
@@ -254,7 +254,7 @@ describe("Profile IO", () => {
         } catch (e) {
             error = e;
         }
-        expect(mocks.existsSync).toBeCalledWith(fullPath);
+        expect(mocks.existsSync).toHaveBeenCalledWith(fullPath);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toContain("Profile IO Error: An error occurred checking for the existance of");
@@ -279,7 +279,7 @@ describe("Profile IO", () => {
         }) as any);
         const metaPath = TEST_DIR_PATH + "/" + BLUEBERRY_PROFILE_TYPE + "_meta.yaml";
         const writeMeta = ProfileIO.writeMetaFile(meta, metaPath);
-        expect(mocks.writeFileSync).toBeCalledWith(metaPath, meta, {encoding: "utf8"});
+        expect(mocks.writeFileSync).toHaveBeenCalledWith(metaPath, meta, {encoding: "utf8"});
         expect(written).toBeDefined();
         expect(written).toEqual(meta);
     });
@@ -307,7 +307,7 @@ describe("Profile IO", () => {
         }
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
-        expect(mocks.writeFileSync).toBeCalledWith(metaPath, meta, {encoding: "utf8"});
+        expect(mocks.writeFileSync).toHaveBeenCalledWith(metaPath, meta, {encoding: "utf8"});
         expect(error.message).toContain("Profile IO Error: An error occurred converting and writing the meta profile to");
         expect(error.message).toContain("Error Details: IO ERROR!");
     });
@@ -331,7 +331,7 @@ describe("Profile IO", () => {
             };
         }) as any);
         const returnedTypes: string[] = ProfileIO.getAllProfileDirectories(TEST_DIR_PATH);
-        expect(mocks.readdirSync).toBeCalledWith(TEST_DIR_PATH);
+        expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(returnedTypes).toEqual(types);
     });
 
@@ -349,7 +349,7 @@ describe("Profile IO", () => {
             };
         }) as any);
         const returnedTypes: string[] = ProfileIO.getAllProfileDirectories(TEST_DIR_PATH);
-        expect(mocks.readdirSync).toBeCalledWith(TEST_DIR_PATH);
+        expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(returnedTypes).toEqual(types.filter((type) => {
             // results shouldn't contain banana
             return type !== BANANA_PROFILE_TYPE;
@@ -367,7 +367,7 @@ describe("Profile IO", () => {
         } catch (e) {
             error = e;
         }
-        expect(mocks.readdirSync).toBeCalledWith(TEST_DIR_PATH);
+        expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toContain("An error occurred attempting to read all profile directories from");
@@ -381,7 +381,7 @@ describe("Profile IO", () => {
             return fileNames;
         }) as any);
         const returnedTypes: string[] = ProfileIO.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
-        expect(mocks.readdirSync).toBeCalledWith(TEST_DIR_PATH);
+        expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(returnedTypes).toEqual(names);
     });
 
@@ -397,7 +397,7 @@ describe("Profile IO", () => {
         } catch (e) {
             error = e;
         }
-        expect(mocks.readdirSync).toBeCalledWith(TEST_DIR_PATH);
+        expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toContain("An error occurred attempting to read all profile names from");

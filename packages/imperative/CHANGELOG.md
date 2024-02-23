@@ -3,7 +3,11 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
+
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 - BugFix: Fixing issue [1689](https://github.com/zowe/zowe-cli/issues/1689) by removing `profileVersion` from response given `--show-inputs-only`. Extended that change to `EnvQuery.ts` where similar soon-to-be obsolete v1 considerations occur
+- BugFix: Change text displayed for configuration from "V2"  to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
 
 - LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:
@@ -177,11 +181,16 @@ All notable changes to the Imperative package will be documented in this file.
   - Annotated the following items as @internal:
     - @zowe/imperative
       - CommandProfileLoader
-      - CommandProfiles
-      - IHandlerParameters.profiles
       - ImperativeApi.profileManager
+      - ProfileValidator
 
-- LTS Breaking: Change text displayed for configuration from "V2"  to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+## `8.0.0-next.202402221834`
+
+- Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications. [#2012](https://github.com/zowe/zowe-cli/issues/2012)
+
+## `8.0.0-next.202402211923`
+
+- BugFix: Updated dependencies for technical currency. [#2057](https://github.com/zowe/zowe-cli/pull/2057)
 
 ## `8.0.0-next.202402132108`
 
@@ -237,6 +246,11 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.22.0`
+
+- BugFix: Updated `mustache` and `jsonschema` dependencies for technical currency.
+- Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications. [#2012](https://github.com/zowe/zowe-cli/issues/2012)
 
 ## `5.21.0`
 

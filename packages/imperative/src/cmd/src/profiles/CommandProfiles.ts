@@ -15,8 +15,7 @@ import { ImperativeExpect } from "../../../expect";
 
 /**
  * Profiles map created by the command profile loader and passed to the handler via parameters. Handlers can
- * retreive loaded profiles from the map via the profile type.
- * @internal
+ * retrieve loaded profiles from the map via the profile type.
  * @class CommandProfiles
  */
 export class CommandProfiles {

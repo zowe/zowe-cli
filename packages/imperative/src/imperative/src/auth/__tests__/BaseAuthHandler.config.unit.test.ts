@@ -99,9 +99,9 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).not.toHaveBeenCalled();
-                expect(mockSetObj).toBeCalledTimes(1);
+                expect(mockSetObj).toHaveBeenCalledTimes(1);
                 expect(mockSetObj.mock.calls[0][0]).toEqual({ tokenType: handler.mDefaultTokenType, tokenValue: "fakeToken" });
             });
 
@@ -120,10 +120,10 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(params.response.console.prompt).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).not.toHaveBeenCalled();
-                expect(mockSetObj).toBeCalledTimes(1);
+                expect(mockSetObj).toHaveBeenCalledTimes(1);
                 expect(mockSetObj.mock.calls[0][0]).toEqual({ tokenType: handler.mDefaultTokenType, tokenValue: "fakeToken" });
             });
 
@@ -143,10 +143,10 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(params.response.console.prompt).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).not.toHaveBeenCalled();
-                expect(mockSetObj).toBeCalledTimes(1);
+                expect(mockSetObj).toHaveBeenCalledTimes(1);
                 expect(mockSetObj.mock.calls[0][0]).toEqual({ tokenType: handler.mDefaultTokenType, tokenValue: "fakeToken" });
             });
 
@@ -170,7 +170,7 @@ describe("BaseAuthHandler config", () => {
                 expect(caughtError.message).toBe("Unable to securely save credentials.");
                 expect(caughtError).toBeInstanceOf(ImperativeError);
                 expect(caughtError.additionalDetails).toContain("FAKE_OPT_TOKEN_VALUE");
-                expect(doLoginSpy).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).not.toHaveBeenCalled();
             });
 
@@ -191,10 +191,10 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(params.response.console.prompt).toBeCalledTimes(1);
-                expect(writeFileSpy).toBeCalledTimes(1);
-                expect(fakeVault.save).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(fakeVault.save).toHaveBeenCalledTimes(1);
 
                 expect(fakeVault.save.mock.calls[0][1]).toContain(`"profiles.fruit_creds.properties.tokenValue":"fakeToken"`);
                 expect(fakeConfig.properties.profiles.fruit_creds.properties).toEqual({
@@ -229,10 +229,10 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(params.response.console.prompt).toBeCalledTimes(1);
-                expect(writeFileSpy).toBeCalledTimes(1);
-                expect(fakeVault.save).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(fakeVault.save).toHaveBeenCalledTimes(1);
 
                 expect(fakeVault.save.mock.calls[0][1]).toContain(`"profiles.fruit_creds.properties.tokenValue":"fakeToken"`);
                 expect(fakeConfig.properties.profiles.fruit_creds.properties).toEqual({
@@ -266,9 +266,9 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(writeFileSpy).toBeCalledTimes(1);
-                expect(fakeVault.save).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(fakeVault.save).toHaveBeenCalledTimes(1);
                 expect(fakeConfig.properties.profiles.fruit_creds).toBeUndefined();
 
                 expect(fakeVault.save.mock.calls[0][1]).toContain(`"profiles.fruit.properties.tokenValue":"fakeToken"`);
@@ -313,9 +313,9 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(writeFileSpy).toBeCalledTimes(1);
-                expect(fakeVault.save).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(fakeVault.save).toHaveBeenCalledTimes(1);
                 expect(fakeConfig.properties.profiles.fruit_creds).toBeUndefined();
 
                 expect(fakeVault.save.mock.calls[0][1]).toContain(`"profiles.fruit.properties.tokenValue":"fakeToken"`);
@@ -361,9 +361,9 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(writeFileSpy).toBeCalledTimes(1);
-                expect(fakeVault.save).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(fakeVault.save).toHaveBeenCalledTimes(1);
                 expect(fakeConfig.properties.profiles.fruit_creds).toBeUndefined();
 
                 expect(fakeVault.save.mock.calls[0][1]).toContain(`"profiles.fruit.properties.tokenValue":"fakeToken"`);
@@ -409,9 +409,9 @@ describe("BaseAuthHandler config", () => {
                 }
 
                 expect(caughtError).toBeUndefined();
-                expect(doLoginSpy).toBeCalledTimes(1);
-                expect(writeFileSpy).toBeCalledTimes(1);
-                expect(fakeVault.save).toBeCalledTimes(1);
+                expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(fakeVault.save).toHaveBeenCalledTimes(1);
                 expect(fakeConfig.properties.profiles.fruit_creds).toBeUndefined();
 
                 expect(fakeVault.save.mock.calls[0][1]).toContain(`"profiles.fruit.properties.tokenValue":"fakeToken"`);
@@ -484,9 +484,9 @@ describe("BaseAuthHandler config", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(doLogoutSpy).toBeCalledTimes(1);
-            expect(writeFileSpy).toBeCalledTimes(1);
-            expect(fakeVault.save).toBeCalledTimes(1);
+            expect(doLogoutSpy).toHaveBeenCalledTimes(1);
+            expect(writeFileSpy).toHaveBeenCalledTimes(1);
+            expect(fakeVault.save).toHaveBeenCalledTimes(1);
             expect(fakeVault.save.mock.calls[0][1]).toBe("{}");
             expect(fakeConfig.properties.profiles.fruit.properties.tokenType).toBeUndefined();
             expect(fakeConfig.properties.profiles.fruit.properties.tokenValue).toBeUndefined();
@@ -510,9 +510,9 @@ describe("BaseAuthHandler config", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(doLogoutSpy).toBeCalledTimes(1);
-            expect(writeFileSpy).toBeCalledTimes(1);
-            expect(fakeVault.save).toBeCalledTimes(1);
+            expect(doLogoutSpy).toHaveBeenCalledTimes(1);
+            expect(writeFileSpy).toHaveBeenCalledTimes(1);
+            expect(fakeVault.save).toHaveBeenCalledTimes(1);
             expect(fakeVault.save.mock.calls[0][1]).toBe("{}");
             expect(fakeConfig.properties.profiles.fruit.properties.tokenType).toBeUndefined();
             expect(fakeConfig.properties.profiles.fruit.properties.tokenValue).toBeUndefined();
@@ -537,8 +537,8 @@ describe("BaseAuthHandler config", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(doLogoutSpy).toBeCalledTimes(1);
-            expect(writeFileSpy).toBeCalledTimes(0);
+            expect(doLogoutSpy).toHaveBeenCalledTimes(1);
+            expect(writeFileSpy).toHaveBeenCalledTimes(0);
             expect(fakeConfig.properties.profiles.fruit.properties.tokenType).toBeDefined();
             expect(fakeConfig.properties.profiles.fruit.properties.tokenValue).toBeDefined();
         });
@@ -558,7 +558,7 @@ describe("BaseAuthHandler config", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(doLogoutSpy).toBeCalledTimes(1);
+            expect(doLogoutSpy).toHaveBeenCalledTimes(1);
             expect(writeFileSpy).not.toHaveBeenCalled();
         });
 

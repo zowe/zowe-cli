@@ -102,9 +102,9 @@ describe("BaseAutoInitHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
         expect(mockConfigApi.layers.get).toHaveBeenCalledTimes(1);
@@ -164,14 +164,14 @@ describe("BaseAutoInitHandler", () => {
         const mSession: Session = doInitSpy.mock.calls[0][0] as any;
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
         expect(mSession.ISession.user).toBeUndefined();
         expect(mSession.ISession.password).toBeUndefined();
         expect(mSession.ISession.base64EncodedAuth).toBeUndefined();
         expect(mSession.ISession.cert).toBeUndefined();
         expect(mSession.ISession.certKey).toBeUndefined();
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
         expect(mockConfigApi.layers.get).toHaveBeenCalledTimes(1);
@@ -220,9 +220,9 @@ describe("BaseAutoInitHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(promptFunction).toHaveBeenCalledTimes(2);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
@@ -284,9 +284,9 @@ describe("BaseAutoInitHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
         expect(mockSave).toHaveBeenCalledTimes(0);
@@ -341,9 +341,9 @@ describe("BaseAutoInitHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
         expect(mockSave).toHaveBeenCalledTimes(1);
@@ -396,9 +396,9 @@ describe("BaseAutoInitHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(0);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
         expect(mockSave).toHaveBeenCalledTimes(1);
@@ -472,9 +472,9 @@ describe("BaseAutoInitHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doInitSpy).toBeCalledTimes(1);
-        expect(processAutoInitSpy).toBeCalledTimes(1);
-        expect(createSessCfgFromArgsSpy).toBeCalledTimes(1);
+        expect(doInitSpy).toHaveBeenCalledTimes(1);
+        expect(processAutoInitSpy).toHaveBeenCalledTimes(1);
+        expect(createSessCfgFromArgsSpy).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.merge).toHaveBeenCalledTimes(1);
         expect(mockConfigApi.layers.write).toHaveBeenCalledTimes(0);
         expect(mockSave).toHaveBeenCalledTimes(0);

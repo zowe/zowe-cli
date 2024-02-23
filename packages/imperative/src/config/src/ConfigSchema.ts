@@ -104,8 +104,9 @@ export class ConfigSchema {
      * Transform a JSON schema to an Imperative profile schema.
      * @param schema The JSON schema for profile properties
      * @returns Imperative profile schema
+     * @internal
      */
-    private static parseSchema(schema: any): IProfileSchema {
+    public static parseSchema(schema: any): IProfileSchema {
         const properties: { [key: string]: IProfileProperty } = {};
         for (const [k, v] of Object.entries((schema.properties.properties || {}) as { [key: string]: any })) {
             properties[k] = { type: v.type };

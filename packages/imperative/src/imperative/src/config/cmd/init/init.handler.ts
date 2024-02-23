@@ -63,7 +63,8 @@ export default class InitHandler implements ICommandHandler {
             if (original.exists === false) {
                 originalProperties = {};
             } else {
-                originalProperties = JSONC.parse(JSONC.stringify(original.properties, null, ConfigConstants.INDENT));
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                originalProperties = JSONC.parse(JSONC.stringify(original.properties, null, ConfigConstants.INDENT)) as any;
 
                 // Hide secure stuff
                 for (const secureProp of ImperativeConfig.instance.config.api.secure.secureFields(original)) {
@@ -72,8 +73,8 @@ export default class InitHandler implements ICommandHandler {
                     }
                 }
             }
-
-            const dryRunProperties = JSONC.parse(JSONC.stringify(dryRun.properties, null, ConfigConstants.INDENT));
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            const dryRunProperties = JSONC.parse(JSONC.stringify(dryRun.properties, null, ConfigConstants.INDENT)) as any;
 
             // Hide secure stuff
             for (const secureProp of ImperativeConfig.instance.config.api.secure.findSecure(dryRun.properties.profiles, "profiles")) {

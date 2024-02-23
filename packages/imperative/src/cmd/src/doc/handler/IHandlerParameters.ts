@@ -56,7 +56,6 @@ export interface IHandlerParameters {
      * The set of profiles loaded for this command handler - the map is built with the key being the type and it
      * returns the set of profiles loaded of that type. Multiple profiles can be loaded of the same type - depending
      * on the request and the 0th entry is the first loaded.
-     * @internal
      * @type {Map<string, IProfile[]>}
      * @memberof IHandlerParameters
      */

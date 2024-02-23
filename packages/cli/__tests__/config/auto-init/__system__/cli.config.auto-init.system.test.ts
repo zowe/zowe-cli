@@ -47,7 +47,8 @@ describe("config auto-init without profile", () => {
         );
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const profiles = JSONC.parse(config).profiles;
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        const profiles = (JSONC.parse(config) as any).profiles ;
         let zosmfExists = false;
         let baseExists = false;
         let baseProperties;
@@ -90,7 +91,8 @@ describe("config auto-init without profile", () => {
 
     it("should successfully issue the auto-init command and merge with existing config", () => {
         let config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const configJson = JSONC.parse(config);
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        const configJson = JSONC.parse(config) as any;
         configJson.profiles.base.properties = {};
         config = JSONC.stringify(configJson, null, 4);
         fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json"), config);
@@ -107,7 +109,8 @@ describe("config auto-init without profile", () => {
         );
 
         config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const profiles = JSONC.parse(config).profiles;
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        const profiles = (JSONC.parse(config) as any).profiles;
         let zosmfExists = false;
         let baseExists = false;
         let baseProperties;
@@ -185,7 +188,8 @@ describe("config auto-init without profile and with certificates", () => {
             );
 
             const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-            const profiles = JSONC.parse(config).profiles;
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            const profiles = (JSONC.parse(config) as any).profiles;
             let zosmfExists = false;
             let baseExists = false;
             let baseProperties;
@@ -233,7 +237,8 @@ describe("config auto-init without profile and with certificates", () => {
             process.stdout.write("Skipping test because pem cert file is undefined\n");
         } else {
             let config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-            const configJson = JSONC.parse(config);
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            const configJson = JSONC.parse(config) as any;
             configJson.profiles.base.properties = {};
             configJson.profiles.base.secure = [];
             config = JSONC.stringify(configJson, null, 4);
@@ -251,7 +256,8 @@ describe("config auto-init without profile and with certificates", () => {
             );
 
             config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-            const profiles = JSONC.parse(config).profiles;
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            const profiles = (JSONC.parse(config) as any).profiles;
             let zosmfExists = false;
             let baseExists = false;
             let baseProperties;
@@ -315,7 +321,8 @@ describe("config auto-init with profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const profiles = JSONC.parse(config).profiles;
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        const profiles = (JSONC.parse(config) as any).profiles;
         let zosmfExists = false;
         let baseExists = false;
         let baseProperties;
@@ -374,7 +381,8 @@ describe("config auto-init with profile and certificates", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const profiles = JSONC.parse(config).profiles;
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        const profiles = (JSONC.parse(config) as any).profiles;
         let zosmfExists = false;
         let baseExists = false;
         let baseProperties;

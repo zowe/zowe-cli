@@ -371,7 +371,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             await EditUtilities.fileComparison(REAL_SESSION, commandParametersDs, localFileDS);
-            expect(getFile2DsSpy).toBeCalledWith(undefined, expect.anything(), expect.objectContaining({
+            expect(getFile2DsSpy).toHaveBeenCalledWith(undefined, expect.anything(), expect.objectContaining({
                 "browserView": true
             }));
         });
@@ -428,12 +428,12 @@ describe("Files Edit Utilities", () => {
         it("should open in editor if one specified, otherwise skip to prompting", async () => {
             const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
             await EditUtilities.makeEdits(localFile, 'editorPath');
-            expect(openInEditorSpy).toBeCalledTimes(1);
+            expect(openInEditorSpy).toHaveBeenCalledTimes(1);
         });
         it("should skip to prompting if no supplied editor", async () => {
             const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
             await EditUtilities.makeEdits(localFile, 'editorPath');
-            expect(promptUserSpy).toBeCalledTimes(1);
+            expect(promptUserSpy).toHaveBeenCalledTimes(1);
         });
     });
     describe("uploadEdits()", () => {

@@ -342,6 +342,6 @@ describe("BaseAuthHandler", () => {
 
         expect(caughtError).toBeDefined();
         expect(caughtError.message).toContain("token value");
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
     });
 });

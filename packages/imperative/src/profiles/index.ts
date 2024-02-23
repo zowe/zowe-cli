@@ -26,8 +26,6 @@ export * from "./src/utils/ProfileIO";
 export * from "./src/utils/ProfileUtils";
 export * from "./src/utils";
 
-export * from "./src/validation/api/ProfileValidator";
-
 export * from "./src/validation/doc/IProfileValidationPlan";
 export * from "./src/validation/doc/IProfileValidationReport";
 export * from "./src/validation/doc/IProfileValidationTask";
