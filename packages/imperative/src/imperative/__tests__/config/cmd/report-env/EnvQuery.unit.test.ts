@@ -9,12 +9,10 @@
 *
 */
 
-import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 
 import { CommandResponse } from "../../../../../cmd/src/response/CommandResponse";
-import { IO } from "../../../../../io";
 import { ImperativeConfig } from "../../../../../utilities";
 import { PluginIssues } from "../../../../src/plugins/utilities/PluginIssues";
 
@@ -289,9 +287,7 @@ describe("Tests for EnvQuery module", () => {
 
         it("should report Zowe team configuration info", async () => {
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("Team Config");
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = off");
-            expect(itemObj.itemValMsg).toContain("Zowe config type = Team Config");
             expect(itemObj.itemValMsg).toContain("Team config files in effect:");
             expect(itemObj.itemValMsg).toContain("fakeDir/zowe.config.json");
             expect(itemObj.itemValMsg).toMatch(/base = +fakeBaseProfNm/);
@@ -307,69 +303,11 @@ describe("Tests for EnvQuery module", () => {
 
             // return the values that we want from external commands
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("Team Config");
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = on");
             expect(itemObj.itemValMsg).toMatch(/Default Zowe daemon executable directory = this_is_a_fake_cli_home_dir.bin/);
             expect(itemObj.itemProbMsg).toBe("");
         });
 
-        it("should report Zowe V1 configuration info", async () => {
-            // set ImperativeConfig properties to what we want
-            Object.defineProperty(impCfg, "config", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return {
-                        exists: false
-                    };
-                })
-            });
-
-            const isDirSpy = jest.spyOn(IO as any, "isDir")
-                .mockReturnValue(true);
-
-            const endvProfDir = "endevor";
-            const tsoProfDir = "tso";
-            const zosmfProfDir = "zosmf";
-            const prof1 = "_prof_1";
-            const prof2 = "_prof_2";
-            const prof3 = "_prof_3";
-            const readDirSyncSpy = jest.spyOn(fs, "readdirSync")
-                .mockReturnValueOnce([
-                    endvProfDir as unknown as fs.Dirent,
-                    tsoProfDir as unknown as fs.Dirent,
-                    zosmfProfDir as unknown as fs.Dirent
-                ]).mockReturnValueOnce([
-                    endvProfDir + prof1 as unknown as fs.Dirent,
-                    endvProfDir + prof2 as unknown as fs.Dirent,
-                    endvProfDir + prof3 as unknown as fs.Dirent
-                ]).mockReturnValueOnce([
-                    tsoProfDir + prof1 as unknown as fs.Dirent,
-                    tsoProfDir + prof2 as unknown as fs.Dirent,
-                    tsoProfDir + prof3 as unknown as fs.Dirent
-                ]).mockReturnValueOnce([
-                    zosmfProfDir + prof1 as unknown as fs.Dirent,
-                    zosmfProfDir + prof2 as unknown as fs.Dirent,
-                    zosmfProfDir + prof3 as unknown as fs.Dirent
-                ]);
-
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
-            expect(itemObj.itemVal).toContain("V1 Profiles");
-            expect(itemObj.itemValMsg).toContain("Zowe config type = V1 Profiles");
-            expect(itemObj.itemValMsg).toContain("Available profiles:");
-            expect(itemObj.itemValMsg).toContain(endvProfDir + " profiles:");
-            expect(itemObj.itemValMsg).toContain(endvProfDir + prof1);
-            expect(itemObj.itemValMsg).toContain(endvProfDir + prof2);
-            expect(itemObj.itemValMsg).toContain(endvProfDir + prof3);
-            expect(itemObj.itemValMsg).toContain(tsoProfDir + " profiles:");
-            expect(itemObj.itemValMsg).toContain(tsoProfDir + prof1);
-            expect(itemObj.itemValMsg).toContain(tsoProfDir + prof2);
-            expect(itemObj.itemValMsg).toContain(tsoProfDir + prof3);
-            expect(itemObj.itemValMsg).toContain(zosmfProfDir + " profiles:");
-            expect(itemObj.itemValMsg).toContain(zosmfProfDir + prof1);
-            expect(itemObj.itemValMsg).toContain(zosmfProfDir + prof2);
-            expect(itemObj.itemValMsg).toContain(zosmfProfDir + prof3);
-            expect(itemObj.itemProbMsg).toBe("");
-        });
     }); // end getEnvItemVal function
 
     describe("test getCmdOutput", () => {

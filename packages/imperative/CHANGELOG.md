@@ -3,6 +3,7 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
+- BugFix: Fixing issue [1689](https://github.com/zowe/zowe-cli/issues/1689) by removing `profileVersion` from response given `--show-inputs-only`. Extended that change to `EnvQuery.ts` where similar soon-to-be obsolete v1 considerations occur
 
 - LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:

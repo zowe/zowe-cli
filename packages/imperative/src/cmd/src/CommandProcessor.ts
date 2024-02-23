@@ -24,7 +24,7 @@ import { IHelpGenerator } from "./help/doc/IHelpGenerator";
 import { ICommandPrepared } from "./doc/response/response/ICommandPrepared";
 import { CommandResponse } from "./response/CommandResponse";
 import { ICommandResponse } from "./doc/response/response/ICommandResponse";
-import { Logger, LoggerUtils } from "../../logger";
+import { Logger } from "../../logger";
 import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
@@ -767,21 +767,12 @@ export class CommandProcessor {
             showSecure = true;
         }
 
-        // if config exists and a layer exists, use config
-        let useConfig = false;
-        this.mConfig?.layers.forEach((layer) => {
-            if (layer.exists) {
-                useConfig = true;
-            }
-        });
-
         /**
          * Begin building response object
          */
         const showInputsOnly: IResolvedArgsResponse =
         {
-            commandValues: {} as ICommandArguments,
-            profileVersion: useConfig ? `TeamConfig` : `v1`,
+            commandValues: {} as ICommandArguments
         };
 
         /**
@@ -794,28 +785,20 @@ export class CommandProcessor {
         const configSecureProps: string[] = [];
 
         /**
-         * If using config, then we need to get the secure properties from the config
+         * Need to get the secure properties from the config
          */
-        if (useConfig) {
+        const combinedProfiles = [ ...showInputsOnly.requiredProfiles ?? [], ...showInputsOnly.optionalProfiles ?? [] ];
+        combinedProfiles.forEach((profile) => {
+            const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
+            const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
+            configSecureProps.push(...props); // add to list
+        });
 
-            const combinedProfiles = [ ...showInputsOnly.requiredProfiles ?? [], ...showInputsOnly.optionalProfiles ?? [] ];
-            combinedProfiles.forEach((profile) => {
-                const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
-                const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
-                configSecureProps.push(...props); // add to list
-            });
-        }
 
         /**
-         * Determine if Zowe Team Config is in effect.  If it is, then we will construct
-         * a Set of secure fields from its API.  If it is not, then we will construct
-         * a Set of secure fields from the `ConnectionPropsForSessCfg` defaults.
+         * Construct a Set of secure fields from Zowe Team Config API.
          */
-        const secureInputs: Set<string> =
-        useConfig ?
-            new Set([...configSecureProps]) :
-            new Set([...LoggerUtils.CENSORED_OPTIONS, ...LoggerUtils.SECURE_PROMPT_OPTIONS]);
-
+        const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
 
         /**
@@ -838,15 +821,11 @@ export class CommandProcessor {
         /**
          * Add profile location info
          */
-        if (useConfig) {
-            this.mConfig.mLayers.forEach((layer) => {
-                if (layer.exists) {
-                    showInputsOnly.locations.push(layer.path);
-                }
-            });
-        } else {
-            showInputsOnly.locations.push(nodePath.normalize(ImperativeConfig.instance.cliHome));
-        }
+        this.mConfig?.mLayers?.forEach((layer) => {
+            if (layer.exists) {
+                showInputsOnly.locations.push(layer.path);
+            }
+        });
 
         /**
          * Show warning if we censored output and we were not instructed to show secure values
