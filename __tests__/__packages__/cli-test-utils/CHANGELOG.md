@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI test utils package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Updated dependencies for technical currency
+- BugFix: Updated dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 
 ## `8.0.0-next.202311132045`
 
