@@ -5,7 +5,7 @@
         "**/__tests__/**"
     ],
     "cleanOutputDir": true,
-    "entryPoints": ["./"],
+    "entryPoints": ["./packages/*"],
     "entryPointStrategy": "packages",
     "readme": "./README.md"
 }

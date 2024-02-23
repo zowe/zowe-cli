@@ -1,5 +1,6 @@
 {
     "out": "./docs/typedoc/",
-    "exclude": "**/__tests__/**",
+    "exclude": ["**/__tests__/**"],
+    "entryPoints": ["src/index.ts"],
     "cleanOutputDir": true
 }
