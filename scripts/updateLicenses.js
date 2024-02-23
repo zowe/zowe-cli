@@ -35,7 +35,7 @@ require("glob")(
                 alreadyContainedCopyright++;
                 continue; // already has copyright
             }
-            const shebangPattern = require("shebang-regex");
+            const shebangPattern = /^#!(.*)/;
                 let usedShebang = "";
             result = result.replace(shebangPattern, (fullMatch) => {
                 usedShebang = fullMatch + "\n"; // save the shebang that was used, if any

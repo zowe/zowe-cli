@@ -61,8 +61,8 @@ const mockShell = jest.fn().mockImplementation((callback) => {
 const stdoutHandler = jest.fn();
 
 function checkMockFunctionsWithCommand(command: string) {
-    expect(mockConnect).toBeCalled();
-    expect(mockShell).toBeCalled();
+    expect(mockConnect).toHaveBeenCalled();
+    expect(mockShell).toHaveBeenCalled();
 
     // Check the stream.end() function is called with an argument containing the SSH command
     expect(mockStreamWrite.mock.calls[0][0]).toMatch(command);
@@ -118,9 +118,9 @@ describe("Shell", () => {
                 caughtError = error;
             }
 
-            expect(mockConnect).toBeCalled();
-            expect(mockShell).toBeCalled();
-            expect(mockStreamEnd).toBeCalled();
+            expect(mockConnect).toHaveBeenCalled();
+            expect(mockShell).toHaveBeenCalled();
+            expect(mockStreamEnd).toHaveBeenCalled();
             expect(caughtError.message).toBe(ZosUssMessages.expiredPassword.message);
         });
 
@@ -138,9 +138,9 @@ describe("Shell", () => {
                 caughtError = error;
             }
 
-            expect(mockConnect).toBeCalled();
-            expect(mockShell).toBeCalled();
-            expect(mockStreamEnd).toBeCalled();
+            expect(mockConnect).toHaveBeenCalled();
+            expect(mockShell).toHaveBeenCalled();
+            expect(mockStreamEnd).toHaveBeenCalled();
             expect(caughtError.message).toBe(ZosUssMessages.allAuthMethodsFailed.message);
         });
 
@@ -158,9 +158,9 @@ describe("Shell", () => {
                 caughtError = error;
             }
 
-            expect(mockConnect).toBeCalled();
-            expect(mockShell).toBeCalled();
-            expect(mockStreamEnd).toBeCalled();
+            expect(mockConnect).toHaveBeenCalled();
+            expect(mockShell).toHaveBeenCalled();
+            expect(mockStreamEnd).toHaveBeenCalled();
             expect(caughtError.message).toBe(ZosUssMessages.handshakeTimeout.message);
         });
 
@@ -178,9 +178,9 @@ describe("Shell", () => {
                 caughtError = error;
             }
 
-            expect(mockConnect).toBeCalled();
-            expect(mockShell).toBeCalled();
-            expect(mockStreamEnd).toBeCalled();
+            expect(mockConnect).toHaveBeenCalled();
+            expect(mockShell).toHaveBeenCalled();
+            expect(mockStreamEnd).toHaveBeenCalled();
             expect(caughtError.message).toContain(ZosUssMessages.connectionRefused.message);
         });
 
@@ -198,9 +198,9 @@ describe("Shell", () => {
                 caughtError = error;
             }
 
-            expect(mockConnect).toBeCalled();
-            expect(mockShell).toBeCalled();
-            expect(mockStreamEnd).toBeCalled();
+            expect(mockConnect).toHaveBeenCalled();
+            expect(mockShell).toHaveBeenCalled();
+            expect(mockStreamEnd).toHaveBeenCalled();
             expect(caughtError.message).toContain(ZosUssMessages.unexpected.message);
         });
     });

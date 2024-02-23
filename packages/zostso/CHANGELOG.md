@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
 ## `8.0.0-next.202402021649`
 
 - LTS Breaking: Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to `@zowe/zos-tso-for-zowe-sdk`

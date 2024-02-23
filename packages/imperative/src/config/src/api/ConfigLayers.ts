@@ -45,7 +45,8 @@ export class ConfigLayers extends ConfigApi {
                 });
             }
             try {
-                layer.properties = JSONC.parse(fileContents.toString());
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                layer.properties = JSONC.parse(fileContents.toString()) as any;
                 layer.exists = true;
             } catch (e) {
                 throw new ImperativeError({
@@ -78,7 +79,8 @@ export class ConfigLayers extends ConfigApi {
 
         // If fields are marked as secure
         const layer = opts ? this.mConfig.findLayer(opts.user, opts.global) : this.mConfig.layerActive();
-        const layerCloned = JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT));
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        const layerCloned = JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT)) as any;
         this.mConfig.api.secure.cacheAndPrune(layerCloned);
 
         // Write the layer
@@ -123,7 +125,8 @@ export class ConfigLayers extends ConfigApi {
     public get(): IConfigLayer {
         // Note: Add indentation to allow comments to be accessed via config.api.layers.get(), otherwise use layerActive()
         // return JSONC.parse(JSONC.stringify(this.mConfig.layerActive(), null, ConfigConstants.INDENT));
-        return JSONC.parse(JSONC.stringify(this.mConfig.layerActive(), null, ConfigConstants.INDENT));
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        return JSONC.parse(JSONC.stringify(this.mConfig.layerActive(), null, ConfigConstants.INDENT)) as any;
     }
 
     // _______________________________________________________________________
@@ -155,14 +158,16 @@ export class ConfigLayers extends ConfigApi {
     public merge(cnfg: IConfig, dryRun: boolean = false): void | IConfigLayer {
         let layer: IConfigLayer;
         if (dryRun) {
-            layer = JSONC.parse(JSONC.stringify(this.mConfig.layerActive(), null, ConfigConstants.INDENT));
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            layer = JSONC.parse(JSONC.stringify(this.mConfig.layerActive(), null, ConfigConstants.INDENT)) as any;
         } else {
             layer = this.mConfig.layerActive();
         }
 
         layer.properties.profiles = lodash.mergeWith(cnfg.profiles, layer.properties.profiles, (obj, src) => {
             if (lodash.isArray(obj) && lodash.isArray(src)) {
-                const temp = JSONC.parse(JSONC.stringify(obj, null, ConfigConstants.INDENT));
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                const temp = JSONC.parse(JSONC.stringify(obj, null, ConfigConstants.INDENT)) as any;
                 src.forEach((val, idx) => {
                     if (!temp.includes(val)) {
                         temp.splice(idx, 0, val);

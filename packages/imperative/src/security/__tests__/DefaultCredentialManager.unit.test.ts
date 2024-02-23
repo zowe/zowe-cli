@@ -162,7 +162,7 @@ describe("DefaultCredentialManager", () => {
 
                     expect(() => {
                         privateManager.checkForKeytar();
-                    }).toThrowError(privateManager.loadError);
+                    }).toThrow(privateManager.loadError);
                 });
                 it("should throw an error if keytar and load error are missing", () => {
                     privateManager.keytar = null;
@@ -170,7 +170,7 @@ describe("DefaultCredentialManager", () => {
 
                     expect(() => {
                         privateManager.checkForKeytar();
-                    }).toThrowError(ImperativeError);
+                    }).toThrow(ImperativeError);
                 });
             });
 

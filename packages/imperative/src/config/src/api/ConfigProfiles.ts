@@ -55,7 +55,8 @@ export class ConfigProfiles extends ConfigApi {
     public get(path: string, mustExist?: boolean): { [key: string]: string } {
         if (mustExist !== false && !this.exists(path))
             return null;
-        return JSONC.parse(JSONC.stringify(this.buildProfile(path, this.mConfig.mProperties.profiles), null, ConfigConstants.INDENT));
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        return JSONC.parse(JSONC.stringify(this.buildProfile(path, this.mConfig.mProperties.profiles), null, ConfigConstants.INDENT)) as any;
     }
 
     // _______________________________________________________________________
