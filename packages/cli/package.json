@@ -70,9 +70,8 @@
     "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202402221834",
     "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202402221834",
     "find-process": "1.4.7",
-    "get-stream": "6.0.1",
     "lodash": "4.17.21",
-    "minimatch": "5.1.6",
+    "minimatch": "9.0.3",
     "tar": "6.2.0"
   },
   "devDependencies": {
@@ -80,14 +79,14 @@
     "@types/lodash": "^4.14.202",
     "@types/tar": "^6.1.11",
     "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-    "comment-json": "~4.1.1",
+    "comment-json": "^4.2.3",
     "strip-ansi": "^6.0.1",
-    "which": "^3.0.1"
+    "which": "^4.0.0"
   },
   "optionalDependencies": {
     "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402221834"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.7.0"
   }
 }

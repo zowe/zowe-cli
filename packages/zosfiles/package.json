@@ -46,8 +46,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "get-stream": "^6.0.1",
-    "minimatch": "^5.1.6"
+    "minimatch": "^9.0.3"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "8.0.0-next.202402221834",
