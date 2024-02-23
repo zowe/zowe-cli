@@ -19,7 +19,6 @@ import { isNullOrUndefined } from "util";
 import { TestLogger } from "../../../../src/TestLogger";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { BasicProfileManagerFactory } from "../../../../../src/index";
 
 const logger = TestLogger.getTestLogger();
 const PROFILE_CONFIGURATIONS: ICommandProfileTypeConfiguration[] = [{
@@ -100,7 +99,6 @@ describe("Imperative should allow CLI implementations to configure their own pro
         const cmdProcessorParms: ICommandProcessorParms = {
             definition: SAMPLE_CONFIG?.definitions?.[0] as ICommandDefinition,
             helpGenerator: helpGenerator,
-            profileManagerFactory: new BasicProfileManagerFactory(T.createUniqueTestDataDir(), PROFILE_CONFIGURATIONS),
             rootCommandName: "zoweCmdName",
             commandLine: "/path/to/zoweCmdName",
             envVariablePrefix: "ZOWE_CLI",

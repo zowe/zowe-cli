@@ -9,7 +9,6 @@
 *
 */
 
-// These tests require access to the same values on the keyring, therefore they cannot run in parallel
 // The test order is important - some tests depend on other tests not running first - do not change it
 /* eslint-disable max-len */
 
