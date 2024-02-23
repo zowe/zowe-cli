@@ -11,7 +11,7 @@ exports[`Default Help Generator help text builder buildUsageDiagram test 1`] = `
 exports[`Default Help Generator help text builder buildUsageDiagram test 2`] = `"test-help a_experimental_parent hello <positional_argument> [options]"`;
 
 exports[`Default Help Generator help text builder buildUsageDiagram test 3`] = `
-"test-help child <command>
+"test-help a_experimental_parent child <command>
 
    Where <command> is one of the following:"
 `;
@@ -162,7 +162,7 @@ exports[`Default Help Generator help text builder getGroupHelpText test 2`] = `
  USAGE
  -----
 
-   test-help child <command>
+   test-help a_experimental_parent child <command>
 
    Where <command> is one of the following:
 
@@ -415,7 +415,7 @@ exports[`Default Help Generator help text builder should getCommandHelpText with
  USAGE
  -----
 
-   test-help hello [options]
+   test-help a_experimental_parent hello [options]
 
  GLOBAL OPTIONS
  --------------
