@@ -14,7 +14,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.0.0-next.202402211923`
 
-- BugFix: Updated dependencies for technical currency
+- BugFix: Updated dependencies for technical currency. [#2057](https://github.com/zowe/zowe-cli/pull/2057)
 
 ## `8.0.0-next.202402132108`
 

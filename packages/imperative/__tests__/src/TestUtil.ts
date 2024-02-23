@@ -38,7 +38,7 @@ import { sync } from "cross-spawn";
 const yargs = require("yargs").argv;
 const yaml = require("js-yaml");
 const diff = require("deep-diff").diff;
-const uuidv4 = require("uuid/v4");
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Exports for usage in tests

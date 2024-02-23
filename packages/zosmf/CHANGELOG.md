@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
 ## `8.0.0-next.202402021649`
 
 - LTS Breaking: Removed the following constants from ZosmfSession
