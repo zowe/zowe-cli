@@ -10,10 +10,15 @@
 */
 
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_PROFILE_MAP_ZOSMF_TSO, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import * as DirToPdsHandler from "../../../../../src/zosfiles/upload/dtp/DirToPds.handler"
 
 describe("Upload dir-to-pds handler", () => {
     describe("process method", () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
         it("should upload a directory to a PDS if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/upload/dtp/DirToPds.handler");
@@ -94,6 +99,10 @@ describe("Upload dir-to-pds handler", () => {
             expect(logMessage).toMatchSnapshot();
         });
 
+        // it("shouldn't attempt to upload a file that hasnt been found", async () => {
+
+        // })
+
         it("should upload a directory to a PDS in binary format if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/upload/dtp/DirToPds.handler");
@@ -101,6 +110,10 @@ describe("Upload dir-to-pds handler", () => {
             const inputdir = "test-dir";
             const dataSetName = "testing";
             const binary = true;
+
+            // Mocks
+            const checkDirectoryExistenceSpy = jest.spyOn(DirToPdsHandler, "checkDirectoryExistence");
+            checkDirectoryExistenceSpy.mockResolvedValue();
 
             // Vars populated by the mocked function
             let error;

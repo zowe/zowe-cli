@@ -26,15 +26,7 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
         const inputDir = commandParameters.arguments.inputdir;
 
         // Check directory existence and accessibility
-        try {
-            const dirStats = await fs.stat(inputDir);
-            if (!dirStats.isDirectory()) {
-                throw new Error(`${inputDir} is not a directory.`);
-            }
-        } catch (error) {
-            // If the directory does not exist, is not accessible, or is not a directory, throw an error
-            throw new Error(`${error.message}`);
-        }
+        await checkDirectoryExistence(inputDir);
 
         const status: ITaskWithStatus = {
             statusMessage: "Uploading directory to PDS",
@@ -61,3 +53,14 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
     }
 }
 
+// Function to check directory existence and accessibility
+export async function checkDirectoryExistence(directoryPath: string): Promise<void> {
+    try {
+        const dirStats = await fs.stat(directoryPath);
+        if (!dirStats.isDirectory()) {
+            throw new Error(`${directoryPath} is not a directory.`);
+        }
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
+}
