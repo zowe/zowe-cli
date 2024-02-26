@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202402261705`
 
 - BugFix: Correct the examples displayed by the `--help-examples` command. [#1865](https://github.com/zowe/zowe-cli/issues/1865) and [#1715](https://github.com/zowe/zowe-cli/issues/1715)
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
