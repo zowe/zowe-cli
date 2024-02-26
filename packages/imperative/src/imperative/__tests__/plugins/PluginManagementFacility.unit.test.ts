@@ -1902,7 +1902,7 @@ describe("Plugin Management Facility", () => {
     describe("comparePluginVersionToCli function", () => {
         beforeEach(() => {
             PMF.currPluginName = pluginName;
-            PMF.semver.intersects = jest.fn();
+            PMF.semver.satisfies = jest.fn();
 
             // impCfg.getCliCmdName is a getter of a property, so mock the property
             Object.defineProperty(impCfg, "cliCmdName", {
@@ -1914,7 +1914,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should record no issue when version is compatible", () => {
-            PMF.semver.intersects.mockReturnValueOnce(true);
+            PMF.semver.satisfies.mockReturnValueOnce(true);
 
             PMF.comparePluginVersionToCli(pluginName, "pluginVerVal", "cliVerPropNm", "CliVerVal");
 
@@ -1922,7 +1922,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should record issue when exception threw by semver", () => {
-            PMF.semver.intersects.mockImplementationOnce(() => {
+            PMF.semver.satisfies.mockImplementationOnce(() => {
                 throw new Error("dummy error");
             });
 
