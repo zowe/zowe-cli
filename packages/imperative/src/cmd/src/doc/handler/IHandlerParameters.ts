@@ -48,7 +48,7 @@ export interface IHandlerParameters {
     /**
      * The positional options specified by the user on the command line.
      * @type {(string | number)[]}
-     * @memberof IHandler Parameters
+     * @memberof IHandlerParameters
      */
     positionals: (string | number)[];
 
