@@ -76,7 +76,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^7.0.1",
     "typedoc": "^0.25.8",
-    "typescript": "^4.9.5"
+    "typescript": "^5.3.3"
   },
   "jestSonar": {
     "reportPath": "__tests__/__results__/jest-sonar"

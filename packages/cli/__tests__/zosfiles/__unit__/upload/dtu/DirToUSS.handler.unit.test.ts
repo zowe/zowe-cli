@@ -113,7 +113,7 @@ describe("Upload dir-to-uss handler", () => {
         // eslint-disable-next-line jest/expect-expect
         it("should give an error if --attributes specifies a non-existent file", async () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
-            const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+            const params = Object.assign({arguments: {attributes: undefined}}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "non-existent-file";
 
             await testHandlerGivesExpectedErrorWithParams("Attributes file non-existent-file does not exist", params);
@@ -125,7 +125,7 @@ describe("Upload dir-to-uss handler", () => {
             jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
                 throw new Error("File not found");
             });
-            const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+            const params = Object.assign({arguments: {attributes: undefined}}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "dodgy file";
 
             await testHandlerGivesExpectedErrorWithParams("Could not read attributes file dodgy file: File not found", params);
@@ -142,7 +142,7 @@ describe("Upload dir-to-uss handler", () => {
                 }
             });
 
-            const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+            const params = Object.assign({arguments: {attributes: undefined}}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "real file";
 
             await testHandlerWorksWithParameters(params);
