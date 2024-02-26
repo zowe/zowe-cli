@@ -59,7 +59,7 @@ describe("List systems behavior", () => {
         parmsToUse.response.console.log = jest.fn((logs) => {
             expect(logs).toMatchSnapshot();
             expect(logs).toContain("Number of retreived system definitions:");
-        });
+        }) as any;
 
         await listSystemsHandler.process(parmsToUse);
         expect(ListDefinedSystems.listDefinedSystems).toHaveBeenCalledTimes(1);
@@ -89,7 +89,7 @@ describe("List systems behavior", () => {
         parmsToUse.response.console.error = jest.fn((errors) => {
             expect(errors).toMatchSnapshot();
             expect(errors).toContain("Mock GetInfo Error");
-        });
+        }) as any;
 
         let error;
         try {

@@ -26,6 +26,7 @@ class HealthCheckHandler {
             const impFileLogger = imperative_cli_1.Logger.getImperativeLogger();
             impFileLogger.debug("Invoked health check handler");
             params.response.console.log("You would report problems identified by healthCheck.");
+            yield undefined;
         });
     }
 }

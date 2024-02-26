@@ -184,6 +184,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.0.0-next.202402261705`
 
+- LTS Breaking: Updated `ICommandArguments` and `IHandlerParameters` to accept strings or numbers per Yargs changes. [#2069](https://github.com/zowe/zowe-cli/pull/2069)
 - BugFix: Correct the examples displayed by the `--help-examples` command. [#1865](https://github.com/zowe/zowe-cli/issues/1865) and [#1715](https://github.com/zowe/zowe-cli/issues/1715)
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 - BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
@@ -251,6 +252,18 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Major: First major version bump for V3
 
+## `5.22.4`
+
+- BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
+
+## `5.22.3`
+
+- BugFix: Resolved issue in `ProfileInfo` where schema comparisons fail, specifically when comparing the cached schema against a command-based schema during registration.
+
+## `5.22.2`
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
 ## `5.22.0`
 
 - BugFix: Updated `mustache` and `jsonschema` dependencies for technical currency.
@@ -317,7 +330,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.14.2`
 
 - BugFix: Handle logic for if a null command handler is provided
-
 
 ## `5.14.1`
 
