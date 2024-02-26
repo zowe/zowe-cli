@@ -520,8 +520,7 @@ export class PluginManagementFacility {
      * Compare the version of a plugin version property with a version property
      * of its base CLI.
      *
-     * If the versions do not satisfies (according so semver rules), then a
-     * PluginIssue is recorded.
+     * If the versions do not satisfy the semver rules, then a PluginIssue is recorded.
      *
      * @param  pluginName - The name of the plugin.
      * @param  pluginVerPropNm - The name of the plugin property containing a version.
@@ -931,8 +930,8 @@ export class PluginManagementFacility {
      * with those specified in the host CLI.
      *
      * Both range strings come from the package.json files of the plugin and the
-     * hosting CLI. We consider the version ranges to be compatible if the two
-     * ranges satisfies. This should allow npm to download one common version
+     * hosting CLI. We consider the version ranges to be compatible if they satisfy
+     * the CLI version range. This should allow npm to download one common version
      * of core and of imperative to be owned by the base CLI and shared by the plugin.
      *
      * Any errors are recorded in PluginIssues.
