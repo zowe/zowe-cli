@@ -12,16 +12,13 @@
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import DirToPdsHandler from "../../../../../src/zosfiles/upload/dtp/DirToPds.handler";
-
 describe("Upload dir-to-pds handler", () => {
     describe("process method", () => {
         let handler: DirToPdsHandler;
         beforeEach(() => {
             jest.resetAllMocks();
             handler = new DirToPdsHandler();
-            jest.mock('../../../../../src/zosfiles/upload/dtp/DirToPds.handler', () => ({
-                checkDirectoryExistence: jest.fn().mockResolvedValue(undefined)
-            }));
+            (handler as any).checkDirectoryExistence = jest.fn().mockResolvedValue(undefined);
         });
 
         it("should upload a directory to a PDS if requested", async () => {

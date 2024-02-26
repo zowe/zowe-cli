@@ -46,16 +46,12 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             // Handle errors from directory check or upload
             status.statusMessage = "Error during upload";
             commandParameters.response.console.error(`Error: ${error.message}`);
-            return {
-                success: false,
-                commandResponse: `Failed to upload directory to PDS: ${error.message}`
-            };
+            throw new Error(error.message); // Corrected line
         } finally {
-            // Clean up or finalize tasks, such as ending a progress bar
+            // Clean up
             commandParameters.response.progress.endBar();
         }
     }
-
 
     /**
      * Checks if the specified directory exists and is accessible
@@ -63,9 +59,13 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
      * @returns Promise<void>
      */
     private async checkDirectoryExistence(directoryPath: string): Promise<void> {
-        const dirStats = await fs.stat(directoryPath);
-        if (!dirStats.isDirectory()) {
-            throw new Error(`${directoryPath} is not a directory.`);
+        try {
+            const dirStats = await fs.stat(directoryPath);
+            if (!dirStats.isDirectory()) {
+                throw new Error(`${directoryPath} is not a directory.`);
+            }
+        } catch (error) {
+            throw new Error(`Failed to access directory: ${error.message}`);
         }
     }
 }
