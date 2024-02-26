@@ -16,6 +16,7 @@ class FooHandler {
             const successMsg = "You executed the Foo command with size = " +
                 profile.size + " and duration = " + profile.duration;
             params.response.console.log(successMsg);
+            yield undefined;
         });
     }
 }

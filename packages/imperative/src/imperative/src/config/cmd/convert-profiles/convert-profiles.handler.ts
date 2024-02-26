@@ -173,7 +173,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
                     const accounts = await this.findOldSecureProps(service, params);
                     for (const account of accounts) {
                         if (!account.includes("secure_config_props")) {
-                            const success = this.deleteOldSecureProps(service, account, params);
+                            const success = await this.deleteOldSecureProps(service, account, params);
                             params.response.console.log(`Deleting secure value for "${service}/${account}"... ${success ? "done" : "failed"}`);
                         }
                     }

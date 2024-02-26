@@ -997,7 +997,7 @@ describe("Create data set", () => {
         it("should fail if passed an unexpected command type", async () => {
             let error;
             try {
-                await Create.dataSet(dummySession, -1, dataSetName, dsOptions);
+                await Create.dataSet(dummySession, -1 as CreateDataSetTypeEnum, dataSetName, dsOptions);
             } catch (err) {
                 error = err.message;
             }

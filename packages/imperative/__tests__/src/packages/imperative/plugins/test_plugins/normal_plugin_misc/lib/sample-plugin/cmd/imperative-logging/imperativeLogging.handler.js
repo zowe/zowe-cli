@@ -33,6 +33,7 @@ class ImperativeLoggingHandler {
             params.response.console.log(`${params.arguments.test}: Messages logged successfully to the following locations`);
             params.response.console.log(path.join(config.defaultHome, "imperative", "logs", "imperative.log"));
             params.response.console.log(path.join(config.defaultHome, config.name, "logs", config.name + ".log"));
+            yield undefined;
         });
     }
 }
