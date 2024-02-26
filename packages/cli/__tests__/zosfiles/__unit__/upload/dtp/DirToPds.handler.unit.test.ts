@@ -10,19 +10,21 @@
 */
 
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
-import { UNIT_TEST_PROFILE_MAP_ZOSMF_TSO, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import * as DirToPdsHandler from "../../../../../src/zosfiles/upload/dtp/DirToPds.handler"
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import DirToPdsHandler from "../../../../../src/zosfiles/upload/dtp/DirToPds.handler";
 
 describe("Upload dir-to-pds handler", () => {
     describe("process method", () => {
+        let handler: DirToPdsHandler;
         beforeEach(() => {
-            jest.clearAllMocks();
+            jest.resetAllMocks();
+            handler = new DirToPdsHandler();
+            jest.mock('../../../../../src/zosfiles/upload/dtp/DirToPds.handler', () => ({
+                checkDirectoryExistence: jest.fn().mockResolvedValue(undefined)
+            }));
         });
 
         it("should upload a directory to a PDS if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/dtp/DirToPds.handler");
-            const handler = new handlerReq.default();
             const inputdir = "test-dir";
             const dataSetName = "testing";
 
@@ -104,16 +106,9 @@ describe("Upload dir-to-pds handler", () => {
         // })
 
         it("should upload a directory to a PDS in binary format if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/dtp/DirToPds.handler");
-            const handler = new handlerReq.default();
             const inputdir = "test-dir";
             const dataSetName = "testing";
             const binary = true;
-
-            // Mocks
-            const checkDirectoryExistenceSpy = jest.spyOn(DirToPdsHandler, "checkDirectoryExistence");
-            checkDirectoryExistenceSpy.mockResolvedValue();
 
             // Vars populated by the mocked function
             let error;
@@ -191,9 +186,6 @@ describe("Upload dir-to-pds handler", () => {
         });
 
         it("should upload a directory to a PDS in record format if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/dtp/DirToPds.handler");
-            const handler = new handlerReq.default();
             const inputdir = "test-dir";
             const dataSetName = "testing";
             const record = true;
