@@ -43,7 +43,7 @@
     "clean": "rimraf lib tsconfig.tsbuildinfo"
   },
   "dependencies": {
-    "@types/yargs": "^13.0.12",
+    "@types/yargs": "^17.0.32",
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.3",
     "comment-json": "~4.2.3",

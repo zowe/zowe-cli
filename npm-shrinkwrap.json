@@ -1755,14 +1755,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/@jest/types/node_modules/@types/yargs": {
-      "version": "17.0.13",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/yargs-parser": "*"
-      }
-    },
     "node_modules/@jridgewell/gen-mapping": {
       "version": "0.3.3",
       "dev": true,
@@ -4695,8 +4687,9 @@
       "license": "MIT"
     },
     "node_modules/@types/yargs": {
-      "version": "13.0.12",
-      "license": "MIT",
+      "version": "17.0.32",
+      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.32.tgz",
+      "integrity": "sha512-xQ67Yc/laOG5uMfX/093MRlGGCIBzZMarVa+gfNKJxWAIgykYpVGkBdbqEzGDDfCrVUj6Hiff4mTZ5BA6TmAog==",
       "dependencies": {
         "@types/yargs-parser": "*"
       }
@@ -17450,7 +17443,7 @@
       "version": "8.0.0-next.202402221834",
       "license": "EPL-2.0",
       "dependencies": {
-        "@types/yargs": "^13.0.12",
+        "@types/yargs": "^17.0.32",
         "chalk": "^4.1.2",
         "cli-table3": "^0.6.3",
         "comment-json": "~4.2.3",

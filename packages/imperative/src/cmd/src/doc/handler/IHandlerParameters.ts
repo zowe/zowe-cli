@@ -47,10 +47,10 @@ export interface IHandlerParameters {
 
     /**
      * The positional options specified by the user on the command line.
-     * @type {string[]}
-     * @memberof IHandlerParameters
+     * @type {(string | number)[]}
+     * @memberof IHandler Parameters
      */
-    positionals: string[];
+    positionals: (string | number)[];
 
     /**
      * The set of profiles loaded for this command handler - the map is built with the key being the type and it
