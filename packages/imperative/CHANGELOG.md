@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed chalk functionality that was broken due to the use of the removed `.enabled` property. [#2071](https://github.com/zowe/zowe-cli/issues/2071)
+
 ## `8.0.0-next.202402261705`
 
 - LTS Breaking: Updated `ICommandArguments` and `IHandlerParameters` to accept strings or numbers per Yargs changes. [#2069](https://github.com/zowe/zowe-cli/pull/2069)
