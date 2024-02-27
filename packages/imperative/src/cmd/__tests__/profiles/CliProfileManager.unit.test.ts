@@ -19,7 +19,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should detect no parms when instantiating", () => {
         let error;
         try {
-            const prof = new CliProfileManager(undefined as any);
+            new CliProfileManager(undefined as any);
         } catch (e) {
             error = e;
             TestLogger.info(error);
@@ -31,7 +31,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should detect that no type configuration is supplied", () => {
         let error;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: undefined,
                 type: APPLE_PROFILE_TYPE,
                 logger: TestLogger.getTestLogger()
@@ -49,7 +49,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should detect that the type configuration is an empty array", () => {
         let error;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: [],
                 type: APPLE_PROFILE_TYPE,
                 logger: TestLogger.getTestLogger()
@@ -67,7 +67,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should detect if the type is undefined", () => {
         let error;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: undefined as any,
                 logger: TestLogger.getTestLogger()
@@ -83,7 +83,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should detect if the type is blank", () => {
         let error;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: " ",
                 logger: TestLogger.getTestLogger()
@@ -99,7 +99,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should detect that a type not found within the configurations", () => {
         let error;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: "bad_apple",
                 logger: TestLogger.getTestLogger()
@@ -117,7 +117,7 @@ describe("Basic Profile Manager Constructor", () => {
     it("should allow us to instantiate the cli profile manager", () => {
         let error;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: APPLE_PROFILE_TYPE,
                 logger: TestLogger.getTestLogger()
@@ -135,7 +135,7 @@ describe("Basic Profile Manager Constructor", () => {
         copy[0].schema.properties.type = {type: "boolean"};
         let caughtError;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: APPLE_PROFILE_TYPE,
                 logger: TestLogger.getTestLogger()
@@ -151,7 +151,7 @@ describe("Basic Profile Manager Constructor", () => {
         copy[0].schema.properties.name = {type: "boolean"};
         let caughtError;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: APPLE_PROFILE_TYPE,
                 logger: TestLogger.getTestLogger()
@@ -167,7 +167,7 @@ describe("Basic Profile Manager Constructor", () => {
         copy[0].schema.properties.dependencies = {type: "boolean"};
         let caughtError;
         try {
-            const prof = new CliProfileManager({
+            new CliProfileManager({
                 typeConfigurations: ONLY_APPLE,
                 type: APPLE_PROFILE_TYPE,
                 logger: TestLogger.getTestLogger()
