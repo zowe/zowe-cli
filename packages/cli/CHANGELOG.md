@@ -75,7 +75,22 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+  
+## `7.23.3`
 
+- BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
+
+## `7.23.2`
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
+## `7.23.1`
+
+- Enhancement: Adding `--binary` and `--encoding` options to `zosfiles edit` to zowe V2
+
+## `7.23.0`
+
+- BugFix: Update zos-files copy dsclp system tests to include large mock files.
 ## `7.22.0`
 
 - Enhancement: Hid the progress bar if `CI` environment variable is set, or if `FORCE_COLOR` environment variable is set to `0`. [#1845](https://github.com/zowe/zowe-cli/issues/1845)
