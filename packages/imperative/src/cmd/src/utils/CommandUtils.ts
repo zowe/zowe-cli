@@ -182,7 +182,12 @@ export class CommandUtils {
             const def = omit(treeEntry.command, "children");
             if (isEqual(def, command)) { return treeEntry.fullName; }
         }
+
         // otherwise, couldn't find it, just return the current name
-        return commandDef.name;
+        if(commandTree.name === undefined){
+            return commandDef.name;
+        } else {
+            return commandTree.name + " " + commandDef.name;
+        }
     }
 }

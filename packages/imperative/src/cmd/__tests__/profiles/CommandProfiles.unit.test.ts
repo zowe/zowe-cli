@@ -65,7 +65,7 @@ describe("Command Profiles", () => {
     it("should detect missing parameters", () => {
         let error;
         try {
-            const profiles = new CommandProfiles(undefined);
+            new CommandProfiles(undefined);
         } catch (e) {
             error = e;
         }

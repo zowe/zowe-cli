@@ -64,7 +64,6 @@ describe("Cli Profile Manager", () => {
     it("should be able to retrieve all defined types after init", async function () {
         const Imperative = require("../../../../../src/imperative/src/Imperative").Imperative;
         const ImperativeConfig = require("../../../../../src/utilities/src/ImperativeConfig").ImperativeConfig;
-        const ImperativeError = require("../../../../../src/error/src/ImperativeError").ImperativeError;
 
         const config = getConfig(TEST_ENVIRONMENT.workingDir);
         await Imperative.init(config);

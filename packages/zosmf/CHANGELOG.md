@@ -4,6 +4,12 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 ## Recent Changes
 
+- LTS Breaking: Removed the following obsolete V1 profile constants from ZosmfProfile.schema.properties
+  - createProfileExamples
+  - updateProfileExamples
+
+## `8.0.0-next.202402261705`
+
 - BugFix: Updated dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 - BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 

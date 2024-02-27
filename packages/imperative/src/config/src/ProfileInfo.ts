@@ -34,7 +34,7 @@ import { ConfigSchema } from "./ConfigSchema";
 import { IConfigOpts } from "./doc/IConfigOpts";
 
 import { ICommandProfileProperty, ICommandArguments } from "../../cmd";
-import { IProfileLoaded, IProfileSchema } from "../../profiles";
+import { IProfileLoaded, IProfileProperty, IProfileSchema } from "../../profiles";
 
 // for imperative operations
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
@@ -55,6 +55,7 @@ import { ConfigUtils } from "./ConfigUtils";
 import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
 import { IConfigLayer } from "..";
+import { Constants } from "../../constants";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -1115,10 +1116,16 @@ export class ProfileInfo {
 
         const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].lastIndexOf(":")) : this.getTeamConfig().layerActive().path;
         const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
+        if (layerToUpdate == null) {
+            return;
+        }
         const cacheKey = `${layerPath}:${profileType}`;
 
-        const sameSchemaExists = versionChanged ? false :
-            this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(this.mProfileSchemaCache.get(cacheKey), schema);
+        const transformedSchemaProps = this.omitCmdPropsFromSchema(schema.properties);
+        const transformedCacheProps = this.mProfileSchemaCache.has(cacheKey) ?
+            this.omitCmdPropsFromSchema(this.mProfileSchemaCache.get(cacheKey)) : {};
+
+        const sameSchemaExists = this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(transformedSchemaProps, transformedCacheProps);
         // Update the cache with the newest schema for this profile type
         this.mProfileSchemaCache.set(cacheKey, schema);
 
@@ -1129,9 +1136,27 @@ export class ProfileInfo {
         const schemaPath = url.fileURLToPath(schemaUri);
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
-        if (!sameSchemaExists && fs.existsSync(schemaPath)) {
+        if (versionChanged || !sameSchemaExists && fs.existsSync(schemaPath)) {
             jsonfile.writeFileSync(schemaPath, this.buildSchema([], layerToUpdate), { spaces: 4 });
         }
+    }
+
+    /**
+     * This helper function removes all command-related properties from the given schema properties object and returns it.
+     * This is so we can easily compare schemas from disk with those that are registered with type ICommandProfileSchema.
+     * It's also been added to avoid a breaking change (as we currently allow ICommandProfileSchema objects to be registered).
+     * @param obj The properties object from the schema
+     * @returns The properties object, but with all of the command-related properties removed
+     */
+    private omitCmdPropsFromSchema(obj: Record<string, any>): Record<string, IProfileProperty> {
+        const result: Record<string, any> = lodash.omit(obj, Constants.COMMAND_PROF_TYPE_PROPS);
+        Object.keys(result).forEach((key) => {
+            if (lodash.isObject(result[key])) {
+                result[key] = this.omitCmdPropsFromSchema(result[key]);
+            }
+        });
+
+        return result;
     }
 
     /**
@@ -1208,9 +1233,12 @@ export class ProfileInfo {
                     };
                 }
 
+                const schemaProps = this.omitCmdPropsFromSchema(typeInfo.schema.properties);
+                const cachedSchemaProps = this.omitCmdPropsFromSchema(this.getSchemaForType(profileType)?.properties || {});
+
                 // If the old schema doesn't have a tracked version and its different from the one passed into this function, warn the user
                 if (this.mExtendersJson.profileTypes[profileType].version == null &&
-                    !lodash.isEqual(typeInfo.schema, this.getSchemaForType(profileType))) {
+                    !lodash.isEqual(schemaProps, cachedSchemaProps)) {
                     return {
                         success: false,
                         info: `Both the old and new schemas are unversioned for ${profileType}, but the schemas are different. `.concat(

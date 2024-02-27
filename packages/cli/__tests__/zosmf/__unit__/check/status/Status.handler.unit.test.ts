@@ -56,7 +56,7 @@ describe("check status behavior", () => {
         parmsToUse.response.console.log = jest.fn((logs) => {
             expect(logs).toMatchSnapshot();
             expect(logs).toContain("successfully connected to z/OSMF");
-        });
+        }) as any;
 
         await checkStatHandler.process(parmsToUse);
         expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(1);
@@ -83,7 +83,7 @@ describe("check status behavior", () => {
         parmsToUse.response.console.error = jest.fn((errors) => {
             expect(errors).toMatchSnapshot();
             expect(errors).toContain("Mock GetInfo Error");
-        });
+        }) as any;
 
         let error;
         try {

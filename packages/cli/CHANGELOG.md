@@ -4,6 +4,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
+- Enhancement: Replaced the term "Team configuration" with "Zowe client configuration" in the `zowe config report-env` command.
+
+## `8.0.0-next.202402261705`
+
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 - BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 
@@ -37,7 +42,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
     - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
-  
+
 
 ## `8.0.0-next.202401262128`
 
@@ -72,6 +77,22 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.23.3`
+
+- BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
+
+## `7.23.2`
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
+## `7.23.1`
+
+- Enhancement: Adding `--binary` and `--encoding` options to `zosfiles edit` to zowe V2
+
+## `7.23.0`
+
+- BugFix: Update zos-files copy dsclp system tests to include large mock files.
 
 ## `7.22.0`
 

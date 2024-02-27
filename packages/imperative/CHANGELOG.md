@@ -6,9 +6,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 - BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
-- BugFix: Fixed issue with peerDep warnings showing when a plug-in is installed and the version ranges satisfy the semver requirements.
+- BugFix: Fixed issue with peerDep warnings showing when a plug-in is installed and the version ranges satisfy the semver requirements. [#2067](https://github.com/zowe/zowe-cli/pull/2067)
 - BugFix: Fixed issue [#1689](https://github.com/zowe/zowe-cli/issues/1689) by removing `profileVersion` from response given `--show-inputs-only`. Extended that change to `EnvQuery.ts` where similar soon-to-be obsolete v1 considerations occur
-- BugFix: Change text displayed for configuration from "V2"  to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+- BugFix: Removed `profileVersion` from the response given by `--show-inputs-only` to fix [#1689](https://github.com/zowe/zowe-cli/issues/1689). Extended that change to the `config report-env` command, where similar soon-to-be obsolete v1 considerations occur.
+- BugFix: Changed text displayed for configuration from "V2" to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+- BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
+- Enhancement: Replaced the term "Team configuration" with "Zowe client configuration" in the `zowe config report-env` command.
 
 - LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:
@@ -185,6 +188,17 @@ All notable changes to the Imperative package will be documented in this file.
       - ImperativeApi.profileManager
       - ProfileValidator
 
+## `8.0.0-next.202402271901`
+
+- BugFix: Fixed chalk functionality that was broken due to the use of the removed `.enabled` property. [#2071](https://github.com/zowe/zowe-cli/issues/2071)
+
+## `8.0.0-next.202402261705`
+
+- LTS Breaking: Updated `ICommandArguments` and `IHandlerParameters` to accept strings or numbers per Yargs changes. [#2069](https://github.com/zowe/zowe-cli/pull/2069)
+- BugFix: Correct the examples displayed by the `--help-examples` command. [#1865](https://github.com/zowe/zowe-cli/issues/1865) and [#1715](https://github.com/zowe/zowe-cli/issues/1715)
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
 ## `8.0.0-next.202402221834`
 
 - Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications. [#2012](https://github.com/zowe/zowe-cli/issues/2012)
@@ -247,6 +261,18 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.22.4`
+
+- BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
+
+## `5.22.3`
+
+- BugFix: Resolved issue in `ProfileInfo` where schema comparisons fail, specifically when comparing the cached schema against a command-based schema during registration.
+
+## `5.22.2`
+
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
 
 ## `5.22.0`
 
@@ -314,7 +340,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.14.2`
 
 - BugFix: Handle logic for if a null command handler is provided
-
 
 ## `5.14.1`
 
