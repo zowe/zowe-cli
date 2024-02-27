@@ -81,7 +81,7 @@ describe("Imperative should allow CLI implementations to configure their own pro
     });
 
     function issueCommand(optionString: string, shouldSucceed: boolean, expectedText?: string[]) {
-        const options = yargs.parse(optionString);
+        const options: any = yargs.parse(optionString);
         // options._ = ["test", "validation-test"].concat(options._); // fake out command structure
         options[Constants.JSON_OPTION] = true;
         const fakeParent: ICommandDefinition = {

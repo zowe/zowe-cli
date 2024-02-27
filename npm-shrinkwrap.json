@@ -46,12 +46,12 @@
         "ts-jest": "^29.1.2",
         "ts-node": "^7.0.1",
         "typedoc": "^0.25.8",
-        "typescript": "^4.9.5"
+        "typescript": "^5.3.3"
       }
     },
     "__tests__/__packages__/cli-test-utils": {
       "name": "@zowe/cli-test-utils",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
         "find-up": "^5.0.0",
@@ -62,22 +62,10 @@
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
         "@types/uuid": "^9.0.8",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "peerDependencies": {
         "@zowe/imperative": "^8.0.0-next"
-      }
-    },
-    "__tests__/__packages__/cli-test-utils/node_modules/@zowe/imperative/node_modules/find-up": {
-      "version": "4.1.0",
-      "extraneous": true,
-      "license": "MIT",
-      "dependencies": {
-        "locate-path": "^5.0.0",
-        "path-exists": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=8"
       }
     },
     "__tests__/__packages__/cli-test-utils/node_modules/uuid": {
@@ -1765,14 +1753,6 @@
       },
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/types/node_modules/@types/yargs": {
-      "version": "17.0.13",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/yargs-parser": "*"
       }
     },
     "node_modules/@jridgewell/gen-mapping": {
@@ -4707,8 +4687,9 @@
       "license": "MIT"
     },
     "node_modules/@types/yargs": {
-      "version": "13.0.12",
-      "license": "MIT",
+      "version": "17.0.32",
+      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.32.tgz",
+      "integrity": "sha512-xQ67Yc/laOG5uMfX/093MRlGGCIBzZMarVa+gfNKJxWAIgykYpVGkBdbqEzGDDfCrVUj6Hiff4mTZ5BA6TmAog==",
       "dependencies": {
         "@types/yargs-parser": "*"
       }
@@ -6896,6 +6877,7 @@
     },
     "node_modules/camelcase": {
       "version": "5.3.1",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=6"
@@ -7150,6 +7132,7 @@
     },
     "node_modules/cliui": {
       "version": "6.0.0",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "string-width": "^4.2.0",
@@ -7159,6 +7142,7 @@
     },
     "node_modules/cliui/node_modules/wrap-ansi": {
       "version": "6.2.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "ansi-styles": "^4.0.0",
@@ -7980,6 +7964,7 @@
     },
     "node_modules/decamelize": {
       "version": "1.2.0",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=0.10.0"
@@ -8168,6 +8153,19 @@
         "node": "^12.20.0 || >=14"
       }
     },
+    "node_modules/dependency-tree/node_modules/typescript": {
+      "version": "4.9.5",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz",
+      "integrity": "sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==",
+      "dev": true,
+      "bin": {
+        "tsc": "bin/tsc",
+        "tsserver": "bin/tsserver"
+      },
+      "engines": {
+        "node": ">=4.2.0"
+      }
+    },
     "node_modules/deprecation": {
       "version": "2.3.1",
       "dev": true,
@@ -8318,6 +8316,19 @@
       },
       "engines": {
         "node": "^12.20.0 || ^14.14.0 || >=16.0.0"
+      }
+    },
+    "node_modules/detective-typescript/node_modules/typescript": {
+      "version": "4.9.5",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz",
+      "integrity": "sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==",
+      "dev": true,
+      "bin": {
+        "tsc": "bin/tsc",
+        "tsserver": "bin/tsserver"
+      },
+      "engines": {
+        "node": ">=4.2.0"
       }
     },
     "node_modules/dezalgo": {
@@ -8522,7 +8533,6 @@
     },
     "node_modules/escalade": {
       "version": "3.1.1",
-      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=6"
@@ -13673,6 +13683,7 @@
     },
     "node_modules/p-try": {
       "version": "2.2.0",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=6"
@@ -15245,6 +15256,7 @@
     },
     "node_modules/require-main-filename": {
       "version": "2.0.0",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/requirejs": {
@@ -15609,6 +15621,7 @@
     },
     "node_modules/set-blocking": {
       "version": "2.0.0",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/set-function-length": {
@@ -16787,15 +16800,16 @@
       }
     },
     "node_modules/typescript": {
-      "version": "4.9.5",
+      "version": "5.3.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.3.3.tgz",
+      "integrity": "sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==",
       "dev": true,
-      "license": "Apache-2.0",
       "bin": {
         "tsc": "bin/tsc",
         "tsserver": "bin/tsserver"
       },
       "engines": {
-        "node": ">=4.2.0"
+        "node": ">=14.17"
       }
     },
     "node_modules/uc.micro": {
@@ -17047,6 +17061,7 @@
     },
     "node_modules/which-module": {
       "version": "2.0.0",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/wide-align": {
@@ -17216,6 +17231,7 @@
     },
     "node_modules/y18n": {
       "version": "4.0.3",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/yallist": {
@@ -17243,6 +17259,7 @@
     },
     "node_modules/yargs": {
       "version": "15.4.1",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "cliui": "^6.0.0",
@@ -17263,7 +17280,6 @@
     },
     "node_modules/yargs-parser": {
       "version": "21.1.1",
-      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=12"
@@ -17271,6 +17287,7 @@
     },
     "node_modules/yargs/node_modules/find-up": {
       "version": "4.1.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "locate-path": "^5.0.0",
@@ -17282,6 +17299,7 @@
     },
     "node_modules/yargs/node_modules/locate-path": {
       "version": "5.0.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "p-locate": "^4.1.0"
@@ -17292,6 +17310,7 @@
     },
     "node_modules/yargs/node_modules/p-limit": {
       "version": "2.3.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "p-try": "^2.0.0"
@@ -17305,6 +17324,7 @@
     },
     "node_modules/yargs/node_modules/p-locate": {
       "version": "4.1.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "p-limit": "^2.2.0"
@@ -17315,6 +17335,7 @@
     },
     "node_modules/yargs/node_modules/yargs-parser": {
       "version": "18.1.3",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "camelcase": "^5.0.0",
@@ -17344,21 +17365,21 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834",
-        "@zowe/provisioning-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-console-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-logs-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-tso-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202402221834",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901",
+        "@zowe/provisioning-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-console-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-logs-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-tso-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202402271901",
         "find-process": "1.4.7",
         "lodash": "4.17.21",
         "minimatch": "9.0.3",
@@ -17371,7 +17392,7 @@
         "@types/diff": "^5.0.9",
         "@types/lodash": "^4.14.202",
         "@types/tar": "^6.1.11",
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
         "comment-json": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "which": "^4.0.0"
@@ -17380,7 +17401,7 @@
         "node": ">=16.7.0"
       },
       "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402221834"
+        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402271901"
       }
     },
     "packages/cli/node_modules/brace-expansion": {
@@ -17427,15 +17448,15 @@
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
         "comment-json": "~4.2.3",
         "string-width": "^4.2.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17446,10 +17467,10 @@
     },
     "packages/imperative": {
       "name": "@zowe/imperative",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
-        "@types/yargs": "^13.0.12",
+        "@types/yargs": "^17.0.32",
         "chalk": "^4.1.2",
         "cli-table3": "^0.6.3",
         "comment-json": "~4.2.3",
@@ -17483,7 +17504,7 @@
         "which": "^4.0.0",
         "wrap-ansi": "^7.0.0",
         "yamljs": "^0.3.0",
-        "yargs": "^15.4.1"
+        "yargs": "^17.7.2"
       },
       "devDependencies": {
         "@types/cross-spawn": "^6.0.6",
@@ -17498,7 +17519,7 @@
         "@types/pacote": "^11.1.8",
         "@types/progress": "^2.0.7",
         "@types/stack-trace": "^0.0.29",
-        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402221834",
+        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402271901",
         "concurrently": "^8.0.0",
         "cowsay": "^1.6.0",
         "deep-diff": "^1.0.0",
@@ -17507,10 +17528,23 @@
         "stream-to-string": "^1.2.0",
         "uuid": "^9.0.1",
         "web-help": "file:web-help",
-        "yargs-parser": "^18.1.2"
+        "yargs-parser": "^21.1.1"
       },
       "engines": {
         "node": ">=16.7.0"
+      }
+    },
+    "packages/imperative/node_modules/cliui": {
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/cliui/-/cliui-8.0.1.tgz",
+      "integrity": "sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==",
+      "dependencies": {
+        "string-width": "^4.2.0",
+        "strip-ansi": "^6.0.1",
+        "wrap-ansi": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=12"
       }
     },
     "packages/imperative/node_modules/diff": {
@@ -17606,16 +17640,29 @@
         "node": "^16.13.0 || >=18.0.0"
       }
     },
-    "packages/imperative/node_modules/yargs-parser": {
-      "version": "18.1.3",
-      "dev": true,
-      "license": "ISC",
+    "packages/imperative/node_modules/y18n": {
+      "version": "5.0.8",
+      "resolved": "https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz",
+      "integrity": "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==",
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "packages/imperative/node_modules/yargs": {
+      "version": "17.7.2",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-17.7.2.tgz",
+      "integrity": "sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==",
       "dependencies": {
-        "camelcase": "^5.0.0",
-        "decamelize": "^1.2.0"
+        "cliui": "^8.0.1",
+        "escalade": "^3.1.1",
+        "get-caller-file": "^2.0.5",
+        "require-directory": "^2.1.1",
+        "string-width": "^4.2.3",
+        "y18n": "^5.0.5",
+        "yargs-parser": "^21.1.1"
       },
       "engines": {
-        "node": ">=6"
+        "node": ">=12"
       }
     },
     "packages/imperative/web-help": {
@@ -17641,16 +17688,16 @@
     },
     "packages/provisioning": {
       "name": "@zowe/provisioning-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
         "js-yaml": "^4.1.0"
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17662,7 +17709,7 @@
     },
     "packages/secrets": {
       "name": "@zowe/secrets-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "devDependencies": {
@@ -17675,15 +17722,15 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202402221834"
+        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202402271901"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17695,12 +17742,12 @@
     },
     "packages/zosconsole": {
       "name": "@zowe/zos-console-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17712,16 +17759,16 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
         "minimatch": "^9.0.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834",
-        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901",
+        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202402271901"
       },
       "peerDependencies": {
         "@zowe/core-for-zowe-sdk": "^8.0.0-next",
@@ -17750,15 +17797,15 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202402221834"
+        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202402271901"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17770,12 +17817,12 @@
     },
     "packages/zoslogs": {
       "name": "@zowe/zos-logs-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17787,12 +17834,12 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17804,15 +17851,15 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202402221834"
+        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202402271901"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"
@@ -17824,15 +17871,15 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "8.0.0-next.202402221834",
+      "version": "8.0.0-next.202402271901",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "^1.15.0"
       },
       "devDependencies": {
         "@types/ssh2": "^1.11.19",
-        "@zowe/cli-test-utils": "8.0.0-next.202402221834",
-        "@zowe/imperative": "8.0.0-next.202402221834"
+        "@zowe/cli-test-utils": "8.0.0-next.202402271901",
+        "@zowe/imperative": "8.0.0-next.202402271901"
       },
       "engines": {
         "node": ">=16.7.0"

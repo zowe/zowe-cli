@@ -619,8 +619,6 @@ export class Config {
     /**
      * Obtain the layer object that is currently active.
      *
-     * @internal
-     *
      * @returns The active layer object
      */
     public layerActive(): IConfigLayer {

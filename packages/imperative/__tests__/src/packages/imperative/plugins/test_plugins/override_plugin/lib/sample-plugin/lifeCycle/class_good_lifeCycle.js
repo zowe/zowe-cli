@@ -18,12 +18,14 @@ class PluginLifeCycle extends imperative_1.AbstractPluginLifeCycle {
         return __awaiter(this, void 0, void 0, function* () {
             imperative_1.CredentialManagerOverride.recordCredMgrInConfig(credMgrDisplayName);
             imperative_1.Logger.getImperativeLogger().debug("The plugin did a post-install action");
+            yield undefined;
         });
     }
     async preUninstall() {
         return __awaiter(this, void 0, void 0, function* () {
             imperative_1.CredentialManagerOverride.recordDefaultCredMgrInConfig(credMgrDisplayName);
             imperative_1.Logger.getImperativeLogger().debug("The plugin did a pre-uninstall action");
+            yield undefined;
         });
     }
 }

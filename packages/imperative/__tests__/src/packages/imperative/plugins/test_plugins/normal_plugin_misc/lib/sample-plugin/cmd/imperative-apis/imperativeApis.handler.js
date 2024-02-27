@@ -35,6 +35,7 @@ class ImperativeApisHandler {
             } else {
                 throw new T.ImperativeError({msg: "Imperative APIs appLogger is not accessible from the test plugin"});
             }
+            yield undefined;
         });
     }
 }

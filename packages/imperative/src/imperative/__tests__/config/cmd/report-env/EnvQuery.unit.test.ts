@@ -283,7 +283,7 @@ describe("Tests for EnvQuery module", () => {
         });
 
         it("should report an unknown item id", async () => {
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(999);
+            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(999 as ItemId);
             expect(itemObj.itemProbMsg).toBe("An unknown item ID was supplied = 999");
         });
 

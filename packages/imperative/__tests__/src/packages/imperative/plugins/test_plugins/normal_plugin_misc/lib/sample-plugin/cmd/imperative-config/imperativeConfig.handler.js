@@ -54,6 +54,7 @@ class ImperativeConfigHandler {
             } else {
                 throw new T.ImperativeError({msg: "Imperative configuration does not contain the expected profiles"});
             }
+            yield undefined;
         });
     }
 }
