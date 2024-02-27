@@ -6,7 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - BugFix: Update error handling in zosfiles to resemble that in zosjobs. [#2062](https://github.com/zowe/zowe-cli/pull/2062)
 
-## `8.0.0-next.202402271901`
+## `8.0.0-next.202402261705`
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 - BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
 
