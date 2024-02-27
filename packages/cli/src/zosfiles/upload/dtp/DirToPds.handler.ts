@@ -13,6 +13,7 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
         session: AbstractSession): Promise<IZosFilesResponse> {
 
         const inputDir = commandParameters.arguments.inputdir;
+        const dataSetName = commandParameters.arguments.dataSetName;
         const status: ITaskWithStatus = {
             statusMessage: "Uploading directory to PDS",
             percentComplete: 0,
@@ -29,7 +30,7 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             const response = await Upload.dirToPds(
                 session,
                 inputDir,
-                commandParameters.arguments.dataSetName,
+                dataSetName,
                 {
                     volume: commandParameters.arguments.volumeSerial,
                     binary: commandParameters.arguments.binary,
@@ -39,16 +40,13 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
                     responseTimeout: commandParameters.arguments.responseTimeout
                 }
             );
-            status.statusMessage = "Uploading directory to PDS";
-            status.percentComplete = 0;
             return response;
         } catch (error) {
             // Handle errors from directory check or upload
             status.statusMessage = "Error during upload";
             commandParameters.response.console.error(`Error: ${error.message}`);
-            throw new Error(error.message); // Corrected line
+            throw new Error(error.message);
         } finally {
-            // Clean up
             commandParameters.response.progress.endBar();
         }
     }

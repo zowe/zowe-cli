@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Upload dir-to-pds handler process method should not attempt to upload a dir that hasn't been found 1`] = `undefined`;
+
+exports[`Upload dir-to-pds handler process method should not attempt to upload a dir that hasn't been found 2`] = `""`;
+
+exports[`Upload dir-to-pds handler process method should not attempt to upload a dir that hasn't been found 3`] = `
+"
+Error: Failed to access directory"
+`;
+
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS if requested 1`] = `
 Object {
   "apiResponse": Array [

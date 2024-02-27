@@ -11,16 +11,19 @@
 
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import FileToDataSet from "../../../../../src/zosfiles/upload/ftds/FileToDataSet.handler";
 
 describe("Upload file-to-data-set handler", () => {
     describe("process method", () => {
+        let handler: FileToDataSet;
+        const inputfile = "test-file";
+        const dataSetName = "testing";
+        beforeEach(() => {
+            jest.resetAllMocks();
+            handler = new FileToDataSet();
+            (handler as any).checkFileExistence = jest.fn().mockResolvedValue(undefined);
+        });
         it("should upload a file to a data set if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/ftds/FileToDataSet.handler");
-            const handler = new handlerReq.default();
-            const inputfile = "test-file";
-            const dataSetName = "testing";
-
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
@@ -35,7 +38,9 @@ describe("Upload file-to-data-set handler", () => {
                     success: true,
                     commandResponse: "uploaded",
                     apiResponse: [
-                        {success: true, from: inputfile, to: dataSetName}
+                        {success: true, from: inputfile, to: dataSetName},
+                        {success: false, from: "testfrom", to: "testto"},
+                        {success: undefined, from: "dummy", to: "nowhere"}
                     ]
                 };
             });
@@ -93,11 +98,6 @@ describe("Upload file-to-data-set handler", () => {
         });
 
         it("should upload a file to a data set in binary format if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/ftds/FileToDataSet.handler");
-            const handler = new handlerReq.default();
-            const inputfile = "test-file";
-            const dataSetName = "testing";
             const binary = true;
 
             // Vars populated by the mocked function
@@ -174,11 +174,6 @@ describe("Upload file-to-data-set handler", () => {
         });
 
         it("should upload a file to a data set in record format if requested", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/ftds/FileToDataSet.handler");
-            const handler = new handlerReq.default();
-            const inputfile = "test-file";
-            const dataSetName = "testing";
             const record = true;
 
             // Vars populated by the mocked function
@@ -254,13 +249,7 @@ describe("Upload file-to-data-set handler", () => {
             expect(logMessage).toMatchSnapshot();
         });
 
-        it("should display error when upload file to data set", async () => {
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../../../src/zosfiles/upload/ftds/FileToDataSet.handler");
-            const handler = new handlerReq.default();
-            const inputfile = "test-file";
-            const dataSetName = "testing";
-
+        it("should display error when uploading found file to data set", async () => {
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
@@ -331,13 +320,63 @@ describe("Upload file-to-data-set handler", () => {
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
-            expect(logMessage).toMatch(/success:.*false/);
-            expect(logMessage).toMatch(/from:.*test-file/);
-            expect(logMessage).toMatch(/file_to_upload:.*1/);
-            expect(logMessage).toMatch(/success:.*0/);
-            expect(logMessage).toMatch(/error:.*1/);
-            expect(logMessage).toMatch(/skipped:.*0/);
-            expect(logMessage).toMatch(/uploaded/);
+            expect(logMessage).toMatchSnapshot();
+        });
+
+        it("should not attempt to upload a file that hasn't been found", async () => {
+            (handler as any).checkFileExistence = jest.fn().mockRejectedValue(new Error("File does not exist or is not accessible"));
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+
+            // Mock the submit JCL function
+            Upload.fileToDataset = jest.fn();
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        inputfile,
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
+                    },
+                    response: {
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            }),
+                            error: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        },
+                        progress: {
+                            startBar: jest.fn(),
+                            endBar: jest.fn()
+                        }
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toContain("File does not exist or is not accessible");
+            expect(Upload.fileToDataset).toHaveBeenCalledTimes(0);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toMatchSnapshot();
+            expect(logMessage).toMatchSnapshot();
         });
     });
 });

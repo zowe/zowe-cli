@@ -15,6 +15,8 @@ import DirToPdsHandler from "../../../../../src/zosfiles/upload/dtp/DirToPds.han
 describe("Upload dir-to-pds handler", () => {
     describe("process method", () => {
         let handler: DirToPdsHandler;
+        const inputdir = "test-dir";
+        const dataSetName = "testing";
         beforeEach(() => {
             jest.resetAllMocks();
             handler = new DirToPdsHandler();
@@ -22,9 +24,6 @@ describe("Upload dir-to-pds handler", () => {
         });
 
         it("should upload a directory to a PDS if requested", async () => {
-            const inputdir = "test-dir";
-            const dataSetName = "testing";
-
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
@@ -98,13 +97,63 @@ describe("Upload dir-to-pds handler", () => {
             expect(logMessage).toMatchSnapshot();
         });
 
-        // it("shouldn't attempt to upload a file that hasnt been found", async () => {
+        it("should not attempt to upload a dir that hasn't been found", async () => {
+            (handler as any).checkDirectoryExistence = jest.fn().mockRejectedValue(new Error("Failed to access directory"));
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
 
-        // })
+            // Mock the submit JCL function
+            Upload.dirToPds = jest.fn();
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        inputdir,
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
+                    },
+                    response: {
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            }),
+                            error: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        },
+                        progress: {
+                            startBar: jest.fn(),
+                            endBar: jest.fn()
+                        }
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toContain("Failed to access directory");
+            expect(Upload.dirToPds).toHaveBeenCalledTimes(0);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toMatchSnapshot();
+            expect(logMessage).toMatchSnapshot();
+        });
 
         it("should upload a directory to a PDS in binary format if requested", async () => {
-            const inputdir = "test-dir";
-            const dataSetName = "testing";
             const binary = true;
 
             // Vars populated by the mocked function
@@ -183,8 +232,6 @@ describe("Upload dir-to-pds handler", () => {
         });
 
         it("should upload a directory to a PDS in record format if requested", async () => {
-            const inputdir = "test-dir";
-            const dataSetName = "testing";
             const record = true;
 
             // Vars populated by the mocked function
