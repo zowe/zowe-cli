@@ -134,15 +134,6 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemProbMsg).toBe("");
         });
 
-        it("should report the NVM version", async () => {
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.NVM_VER);
-            if (!itemObj.itemVal.includes("nvm failed to display any output")) {
-                expect(itemObj.itemVal).toMatch(/[0-9]+.[0-9]+.[0-9]+/);
-                expect(itemObj.itemValMsg).toContain("Node Version Manager version =");
-            }
-            expect(itemObj.itemProbMsg).toBe("");
-        });
-
         it("should report the platform", async () => {
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.PLATFORM);
             expect(itemObj.itemVal === "win32" || itemObj.itemVal === "linux" || itemObj.itemVal === "darwin").toBeTruthy();
@@ -286,9 +277,9 @@ describe("Tests for EnvQuery module", () => {
         });
 
         it("should report Zowe team configuration info", async () => {
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
+            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_INFO);
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = off");
-            expect(itemObj.itemValMsg).toContain("Team config files in effect:");
+            expect(itemObj.itemValMsg).toContain("Zowe client config files in use:");
             expect(itemObj.itemValMsg).toContain("fakeDir/zowe.config.json");
             expect(itemObj.itemValMsg).toMatch(/base = +fakeBaseProfNm/);
             expect(itemObj.itemValMsg).toMatch(/zosmf = +fakeZosmfProfNm/);
@@ -302,7 +293,7 @@ describe("Tests for EnvQuery module", () => {
             (impCfg.loadedConfig as any) = { daemonMode: true };
 
             // return the values that we want from external commands
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
+            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_INFO);
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = on");
             expect(itemObj.itemValMsg).toMatch(/Default Zowe daemon executable directory = this_is_a_fake_cli_home_dir.bin/);
             expect(itemObj.itemProbMsg).toBe("");

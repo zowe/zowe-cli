@@ -4,8 +4,10 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed issue [1689](https://github.com/zowe/zowe-cli/issues/1689) by removing `profileVersion` from response given `--show-inputs-only`. Extended that change to the `config report-env` command, where similar soon-to-be obsolete v1 considerations occur.
+- BugFix: Fixed issue [1689](https://github.com/zowe/zowe-cli/issues/1689) by removing `profileVersion` from the response given by `--show-inputs-only`. Extended that change to the `config report-env` command, where similar soon-to-be obsolete v1 considerations occur.
 - BugFix: Changed text displayed for configuration from "V2" to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+- BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
+- Enhancement: Replaced the term "Team configuration" with "Zowe client configuration" in the `zowe config report-env` command.
 
 - LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Removed the following obsolete V1 profile interfaces:

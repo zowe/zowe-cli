@@ -86,7 +86,6 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.error).toBeFalsy();
             expect(response.output.toString()).toContain("Zowe CLI version =");
             expect(response.output.toString()).toContain("Node.js version =");
-            expect(response.output.toString()).toContain("Node Version Manager version =");
             expect(response.output.toString()).toContain("O.S. platform =");
             expect(response.output.toString()).toContain("O.S. architecture =");
             expect(response.output.toString()).toContain("O.S. PATH =");
@@ -101,7 +100,7 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.output.toString()).toContain("HOME =");
             expect(response.output.toString()).toContain("Zowe CLI configuration information");
             expect(response.output.toString()).toContain("Zowe daemon mode =");
-            expect(response.output.toString()).toContain("Team config files in effect:");
+            expect(response.output.toString()).toContain("Zowe client config files in use:");
             expect(response.output.toString()).toContain("imperative-test-cli.config.json");
             expect(response.output.toString()).toContain("Default profile names:");
             expect(response.output.toString()).toContain("base = myBase");
@@ -142,7 +141,6 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.error).toBeFalsy();
             expect(response.stdout.toString()).toContain("Zowe CLI version =");
             expect(response.stdout.toString()).toContain("Node.js version =");
-            expect(response.stdout.toString()).toContain("Node Version Manager version =");
             expect(response.stdout.toString()).toContain("O.S. platform =");
             expect(response.stdout.toString()).toContain("O.S. architecture =");
             expect(response.stdout.toString()).toContain("O.S. PATH =");
@@ -158,7 +156,7 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.stdout.toString()).toContain("HOME =");
             expect(response.stdout.toString()).toContain("Zowe CLI configuration information");
             expect(response.stdout.toString()).toContain("Zowe daemon mode =");
-            expect(response.stdout.toString()).toContain("Team config files in effect:");
+            expect(response.stdout.toString()).toContain("Zowe client config files in use:");
             expect(response.stdout.toString()).toContain("imperative-test-cli.config.json");
             expect(response.stdout.toString()).toContain("Default profile names:");
             expect(response.stdout.toString()).toContain("base = myBase");
@@ -201,7 +199,6 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.error).toBeFalsy();
             expect(response.stdout.toString()).toContain("Zowe CLI version =");
             expect(response.stdout.toString()).toContain("Node.js version =");
-            expect(response.stdout.toString()).toContain("Node Version Manager version =");
             expect(response.stdout.toString()).toContain("O.S. platform =");
             expect(response.stdout.toString()).toContain("O.S. architecture =");
             expect(response.stdout.toString()).toContain("O.S. PATH =");
@@ -217,7 +214,7 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.stdout.toString()).toContain("HOME =");
             expect(response.stdout.toString()).toContain("Zowe CLI configuration information");
             expect(response.stdout.toString()).toContain("Zowe daemon mode =");
-            expect(response.stdout.toString()).toContain("Team config files in effect:");
+            expect(response.stdout.toString()).toContain("Zowe client config files in use:");
             expect(response.stdout.toString()).toContain("imperative-test-cli.config.json");
             expect(response.stdout.toString()).toContain("Default profile names:");
             expect(response.stdout.toString()).toContain("base = myBase");
@@ -261,7 +258,6 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.error).toBeFalsy();
             expect(response.stdout.toString()).toContain("Zowe CLI version =");
             expect(response.stdout.toString()).toContain("Node.js version =");
-            expect(response.stdout.toString()).toContain("Node Version Manager version =");
             expect(response.stdout.toString()).toContain("O.S. platform =");
             expect(response.stdout.toString()).toContain("O.S. architecture =");
             expect(response.stdout.toString()).toContain("O.S. PATH =");
@@ -277,7 +273,7 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.stdout.toString()).toContain("HOME =");
             expect(response.stdout.toString()).toContain("Zowe CLI configuration information");
             expect(response.stdout.toString()).toContain("Zowe daemon mode =");
-            expect(response.stdout.toString()).toContain("Team config files in effect:");
+            expect(response.stdout.toString()).toContain("Zowe client config files in use:");
             expect(response.stdout.toString()).toContain("imperative-test-cli.config.json");
             expect(response.stdout.toString()).toContain("Default profile names:");
             expect(response.stdout.toString()).toContain("base = myBase");
@@ -320,7 +316,6 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.error).toBeFalsy();
             expect(response.stdout.toString()).toContain("Zowe CLI version =");
             expect(response.stdout.toString()).toContain("Node.js version =");
-            expect(response.stdout.toString()).toContain("Node Version Manager version =");
             expect(response.stdout.toString()).toContain("O.S. platform =");
             expect(response.stdout.toString()).toContain("O.S. architecture =");
             expect(response.stdout.toString()).toContain("O.S. PATH =");
@@ -337,7 +332,7 @@ describe("imperative-test-cli config report-env", () => {
             expect(response.stdout.toString()).toContain("HOME =");
             expect(response.stdout.toString()).toContain("Zowe CLI configuration information");
             expect(response.stdout.toString()).toContain("Zowe daemon mode =");
-            expect(response.stdout.toString()).toContain("Team config files in effect:");
+            expect(response.stdout.toString()).toContain("Zowe client config files in use:");
             expect(response.stdout.toString()).toContain("imperative-test-cli.config.json");
             expect(response.stdout.toString()).toContain("Default profile names:");
             expect(response.stdout.toString()).toContain("base = myBase");

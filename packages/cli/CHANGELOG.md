@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
+- Enhancement: Replaced the term "Team configuration" with "Zowe client configuration" in the `zowe config report-env` command.
+
 ## `8.0.0-next.202402261705`
 
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
@@ -37,7 +42,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
     - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
-  
+
 
 ## `8.0.0-next.202401262128`
 

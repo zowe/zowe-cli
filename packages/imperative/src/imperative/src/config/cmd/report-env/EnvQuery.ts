@@ -9,7 +9,6 @@
 *
 */
 
-import * as fs from "fs";
 import * as os from "os";
 import * as lodash from "lodash";
 import * as path from "path";
@@ -18,7 +17,6 @@ import { StdioOptions } from "child_process";
 
 import { ConfigConstants, IConfigProfile } from "../../../../../config";
 import { IHandlerProgressApi } from "../../../../../cmd";
-import { IO } from "../../../../../io";
 import { ImperativeConfig , TextUtils } from "../../../../../utilities";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../../../operations";
 import { CliUtils } from "../../../../../utilities/src/CliUtils";
@@ -83,11 +81,6 @@ export class EnvQuery {
                 getResult.itemValMsg = "Node.js version = " + getResult.itemVal;
                 break;
             }
-            case ItemId.NVM_VER: {
-                getResult.itemVal = EnvQuery.getCmdOutput("nvm", ["version"]);
-                getResult.itemValMsg = "Node Version Manager version = " + getResult.itemVal;
-                break;
-            }
             case ItemId.PLATFORM: {
                 getResult.itemVal = os.platform();
                 getResult.itemValMsg = "O.S. platform = " + getResult.itemVal;
@@ -130,7 +123,7 @@ export class EnvQuery {
                 await EnvQuery.getNpmInfo(getResult, getItemOpts);
                 break;
             }
-            case ItemId.ZOWE_CONFIG_TYPE: {
+            case ItemId.ZOWE_CONFIG_INFO: {
                 await EnvQuery.getConfigInfo(getResult, getItemOpts);
                 break;
             }
@@ -219,7 +212,6 @@ export class EnvQuery {
         getResult: IGetItemVal, getItemOpts: IGetItemOpts
     ): Promise<void> {
         const teamCfg: string = "Team Config";
-        const v1Profiles = "V1 Profiles";
         const doesProgBarExist: boolean = (getItemOpts?.progressApi) ? true: false;
 
         // setup progress bar
@@ -231,12 +223,8 @@ export class EnvQuery {
 
         if (ImperativeConfig.instance.config?.exists) {
             getResult.itemVal = teamCfg;
-            configProgress.statusMessage = "Retrieving Team configuration";
+            configProgress.statusMessage = "Retrieving Zowe client configuration";
             configProgress.percentComplete = TaskProgress.TWENTY_PERCENT;
-        } else {
-            getResult.itemVal = v1Profiles;
-            configProgress.statusMessage = "Retrieving V1 configuration";
-            configProgress.percentComplete = TaskProgress.FIFTY_PERCENT;
         }
 
         if (doesProgBarExist) {
@@ -265,7 +253,7 @@ export class EnvQuery {
 
         if ( getResult.itemVal == teamCfg) {
             // Display all relevant zowe team config files.
-            configProgress.statusMessage = "Retrieving active team config files";
+            configProgress.statusMessage = "Retrieving active Zowe client config files";
             configProgress.percentComplete = TaskProgress.THIRTY_PERCENT;
             await EnvQuery.updateProgressBar(doesProgBarExist);
             const config = ImperativeConfig.instance.config;
@@ -287,7 +275,7 @@ export class EnvQuery {
                 }
             }
 
-            getResult.itemValMsg += `${os.EOL}Team config files in effect:${os.EOL}`;
+            getResult.itemValMsg += `${os.EOL}Zowe client config files in use:${os.EOL}`;
             for (const configLoc  of Object.keys(configListObj)) {
                 getResult.itemValMsg += EnvQuery.indent + configLoc + os.EOL;
             }
@@ -340,40 +328,7 @@ export class EnvQuery {
                 getResult.itemValMsg += EnvQuery.indent + profPathNm + os.EOL;
             }
         } else {
-            // display V1 profile information
-            configProgress.statusMessage = "Retrieving available profile names";
-            configProgress.percentComplete = TaskProgress.NINETY_PERCENT;
-            await EnvQuery.updateProgressBar(doesProgBarExist);
-
-            getResult.itemValMsg += `${os.EOL}Available profiles:${os.EOL}`;
-            const v1ProfilesDir = path.normalize(ImperativeConfig.instance.cliHome + "/profiles");
-            if (IO.isDir(v1ProfilesDir)) {
-                // read all of the subdirectories of the profiles directory
-                fs.readdirSync(v1ProfilesDir).forEach((nextProfileTypeNm) => {
-                    const profileTypeDir = path.normalize(v1ProfilesDir + "/" + nextProfileTypeNm);
-                    let profilesOfCurrType: string = "";
-
-                    // is the next candidate for nextProfileTypeNm a directory?
-                    if (IO.isDir(profileTypeDir)) {
-                        // does the next profile type directory have any profiles?
-                        fs.readdirSync(profileTypeDir).forEach((nextProfileNm) => {
-                            // exclude the meta files
-                            if (nextProfileNm.endsWith("_meta.yaml")) {
-                                return;
-                            }
-                            profilesOfCurrType += EnvQuery.indent + EnvQuery.indent +
-                                nextProfileNm.replace(".yaml", "") + os.EOL;
-                        });
-                    }
-
-                    // did we find any profiles?
-                    if (profilesOfCurrType.length > 0) {
-                        getResult.itemValMsg += EnvQuery.indent + nextProfileTypeNm +
-                        " profiles: " + os.EOL + profilesOfCurrType;
-
-                    }
-                });
-            }
+            getResult.itemValMsg += `${os.EOL}No Zowe client configuration detected.${os.EOL}`;
         }
 
         // add indent to each line
