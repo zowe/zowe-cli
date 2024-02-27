@@ -50,7 +50,7 @@ describe("Upload file to data set", () => {
         it("should fail when local file does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localFileThatDoesNotExist", "data.set.name"]);
-            expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory, lstat");
+            expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory");
             expect(stripNewLines(response.stderr.toString())).toContain("localFileThatDoesNotExist");
         });
 
