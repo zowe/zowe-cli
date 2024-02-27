@@ -62,7 +62,7 @@ describe("Upload directory to PDS", () => {
         it("should fail when local directory does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localDirThatDoesNotExist", "mf.data.set"]);
-            expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory");
+            expect(stripNewLines(response.stderr.toString())).toContain("File does not exist or is not accessible");
             expect(stripNewLines(response.stderr.toString())).toContain("localDirThatDoesNotExist");
         });
 
