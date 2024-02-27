@@ -1,40 +1,94 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upload dir-to-pds handler process method should upload a directory to a PDS if requested 1`] = `undefined`;
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-dir",
+      "success": true,
+      "to": "testing",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
 
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS if requested 2`] = `""`;
 
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS if requested 3`] = `
 "
-[33msuccess: [39m[32mtrue[39m
-[33mfrom: [39m   test-dir
-[33mto: [39m     testing
-
-"
+uploaded"
 `;
 
-exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 1`] = `undefined`;
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-dir",
+      "success": true,
+      "to": "testing",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
 
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 2`] = `""`;
 
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 3`] = `
 "
-[33msuccess: [39m[32mtrue[39m
-[33mfrom: [39m   test-dir
-[33mto: [39m     testing
-
-"
+uploaded"
 `;
 
-exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 1`] = `undefined`;
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-dir",
+      "success": true,
+      "to": "testing",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
 
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 2`] = `""`;
 
 exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 3`] = `
 "
-[33msuccess: [39m[32mtrue[39m
-[33mfrom: [39m   test-dir
-[33mto: [39m     testing
-
-"
+uploaded"
 `;

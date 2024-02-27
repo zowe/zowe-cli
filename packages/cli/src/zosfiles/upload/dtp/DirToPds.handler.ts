@@ -39,8 +39,8 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
                     responseTimeout: commandParameters.arguments.responseTimeout
                 }
             );
-            status.statusMessage = "Upload complete";
-            status.percentComplete = 100;
+            status.statusMessage = "Uploading directory to PDS";
+            status.percentComplete = 0;
             return response;
         } catch (error) {
             // Handle errors from directory check or upload
