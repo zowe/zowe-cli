@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Removed the following obsolete V1 profile constant from ZosUssProfile.schema.properties
+  - createProfileExamples
+
 ## `8.0.0-next.202402261705`
 
 - BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
