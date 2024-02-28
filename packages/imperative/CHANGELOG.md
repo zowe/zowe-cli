@@ -41,8 +41,9 @@ All notable changes to the Imperative package will be documented in this file.
 
   - Removed the following obsolete V1 profile classes/functions:
     - @zowe/core-for-zowe-sdk
-      - getDefaultProfile
-      - getZoweDir
+      - File ProfileUtils.ts, which includes these functions:
+        - getDefaultProfile
+        - getZoweDir - moved to ProfileInfo.getZoweDir
 
     - @zowe/cli-test-utils
       - TempTestProfiles.forceOldProfiles
