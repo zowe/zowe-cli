@@ -58,6 +58,6 @@
     "@zowe/imperative": "^8.0.0-next"
   },
   "engines": {
-    "node": ">=16.7.0"
+    "node": ">=18.12.0"
   }
 }
