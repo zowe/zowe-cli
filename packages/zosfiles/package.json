@@ -57,5 +57,8 @@
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
     "@zowe/imperative": "^8.0.0-next"
+  },
+  "engines": {
+    "node": ">=18.12.0"
   }
 }

@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+
 ## `8.0.0-next.202402271901`
 
 - BugFix: Fixed chalk functionality that was broken due to the use of the removed `.enabled` property. [#2071](https://github.com/zowe/zowe-cli/issues/2071)

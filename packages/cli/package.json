@@ -87,6 +87,6 @@
     "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202402271901"
   },
   "engines": {
-    "node": ">=16.7.0"
+    "node": ">=18.12.0"
   }
 }
