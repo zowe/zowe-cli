@@ -62,13 +62,6 @@ interface IResolvedArgsResponse {
     commandValues?: ICommandArguments;
 
     /**
-     * Whether we're using old profiles or config
-     * @type {(`v1` | `TeamConfig`)}
-     * @memberof IResolvedArgsResponse
-     */
-    profileVersion?: `v1` | `TeamConfig`;
-
-    /**
      * The profiles that are required
      * @type {string[]}
      * @memberof IResolvedArgsResponse
