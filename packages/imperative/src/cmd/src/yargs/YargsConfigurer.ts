@@ -18,8 +18,6 @@ import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { ICommandResponseParms } from "../doc/response/parms/ICommandResponseParms";
 import { CommandProcessor } from "../CommandProcessor";
 import { CommandUtils } from "../utils/CommandUtils";
-import { IProfileManagerFactory } from "../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { ImperativeConfig } from "../../../utilities";
 import { closest } from "fastest-levenshtein";
@@ -33,7 +31,6 @@ export class YargsConfigurer {
     constructor(private rootCommand: ICommandDefinition,
         private yargs: any,
         private commandRespParms: ICommandResponseParms,
-        private profileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>,
         private helpGeneratorFactory: IHelpGeneratorFactory,
         private experimentalCommandDescription: string,
         private rootCommandName: string,
@@ -74,7 +71,6 @@ export class YargsConfigurer {
                     new CommandProcessor({
                         definition: this.rootCommand, fullDefinition: this.rootCommand,
                         helpGenerator: rootHelpGenerator,
-                        profileManagerFactory: this.profileManagerFactory,
                         rootCommandName: this.rootCommandName,
                         commandLine: this.commandLine,
                         envVariablePrefix: this.envVariablePrefix,
@@ -108,7 +104,6 @@ export class YargsConfigurer {
                         definition: failedCommandDefinition,
                         fullDefinition: failedCommandDefinition,
                         helpGenerator: rootHelpGenerator,
-                        profileManagerFactory: this.profileManagerFactory,
                         rootCommandName: this.rootCommandName,
                         commandLine: ImperativeConfig.instance.commandLine,
                         envVariablePrefix: this.envVariablePrefix,
@@ -144,7 +139,6 @@ export class YargsConfigurer {
                 definition: failedCommandDefinition,
                 fullDefinition: failedCommandDefinition,
                 helpGenerator: failHelpGenerator,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: this.commandLine,
                 envVariablePrefix: this.envVariablePrefix,
@@ -187,7 +181,6 @@ export class YargsConfigurer {
                 definition: failedCommandDefinition,
                 fullDefinition: failedCommandDefinition,
                 helpGenerator: failHelpGenerator,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: ImperativeConfig.instance.commandLine,
                 envVariablePrefix: this.envVariablePrefix,

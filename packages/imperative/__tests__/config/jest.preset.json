@@ -1,14 +1,11 @@
 {
-    "globals": {
-        "ts-jest": {
-            "diagnostics": false,
-            "tsconfig": "tsconfig-tests.json"
-        }
-    },
     "moduleFileExtensions": ["ts","js"],
     "testResultsProcessor": "jest-stare",
     "testEnvironment": "node",
     "transform": {
-        ".(ts)": "ts-jest"
+        ".(ts)": ["ts-jest", {
+            "diagnostics": false,
+            "tsconfig": "packages/imperative/tsconfig-tests.json"
+        }]
     }
 }

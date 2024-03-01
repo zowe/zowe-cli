@@ -53,10 +53,4 @@ export interface ISetupEnvironmentParms {
      * you are trying to execute plugin commands installed into Zowe CLI.
      */
     installPlugin?: boolean;
-
-    /**
-     * Should old-school profiles be created instead of team config?
-     * Default: false
-     */
-    createOldProfiles?: boolean;
 }

@@ -12,8 +12,7 @@
 import * as T from "../../../TestUtil";
 import { IImperativeConfig } from "../../../../../src/imperative";
 
-describe("We should provide the ability to create, manage, and use profiles, " +
-    "tested through an example CLI", function () {
+describe("We should provide the ability access profiles from an example CLI definition", function () {
 
     const config: IImperativeConfig = require(__dirname + "/../ProfileExampleConfiguration");
     it("We should be able to get --help for our example CLI", function () {

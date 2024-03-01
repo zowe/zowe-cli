@@ -15,12 +15,9 @@ import {
     ConnectionPropsForSessCfg,
     ISession,
     RestConstants,
-    SessConstants,
     Session
 } from "../../../../rest";
-import { Imperative } from "../../Imperative";
 import { IImperativeError, ImperativeError } from "../../../../error";
-import { ISaveProfileFromCliArgs } from "../../../../profiles";
 import { ImperativeConfig } from "../../../../utilities";
 import { ConfigUtils } from "../../../../config/src/ConfigUtils";
 import { AbstractAuthHandler } from "./AbstractAuthHandler";
@@ -98,9 +95,6 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
         if (params.arguments.showToken) {
             // show token instead of updating profile
             this.showToken(params.response, tokenValue);
-        } else if (!ImperativeConfig.instance.config.exists) {
-            // process login for old school profiles
-            await this.processLoginOld(params, tokenValue);
         } else if (ImperativeConfig.instance.config.api.secure.loadFailed) {
             throw ConfigUtils.secureSaveError(`Instead of secure storage, ` +
                 `rerun this command with the "--show-token" flag to print the token to console. ` +
@@ -217,146 +211,45 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
             }
         }
 
-        if (!ImperativeConfig.instance.config.exists) {
-            if (sessCfgWithCreds.tokenValue == null) {
-                // Provide dummy token information to prevent multiple V1 logout operations from failing
-                sessCfgWithCreds.type = SessConstants.AUTH_TYPE_TOKEN;
-                sessCfgWithCreds.tokenType = this.mDefaultTokenType;
-                sessCfgWithCreds.tokenValue = SessConstants.AUTH_TYPE_TOKEN;
-            }
-            this.mSession = new Session(sessCfgWithCreds);
-            await this.processLogoutOld(params);
-        } else {
-            const config = ImperativeConfig.instance.config;
-            const profileName = this.getBaseProfileName(params);
-            const profileProps = config.api.profiles.get(profileName, false);
-            let profileWithToken: string = null;
-
-            let noDeleteReason = "";
-            // If you specified a token on the command line, then don't delete the one in the profile if it doesn't match
-            if (Object.keys(profileProps).length > 0 && profileProps.tokenType != null && profileProps.tokenValue != null &&
-                profileProps.tokenType === params.arguments.tokenType && profileProps.tokenValue === params.arguments.tokenValue) {
-                const profilePath = config.api.profiles.getProfilePathFromName(profileName);
-                config.delete(`${profilePath}.properties.tokenType`);
-                config.delete(`${profilePath}.properties.tokenValue`);
-
-                await config.save();
-                profileWithToken = profileName;
-            } else {
-                if (Object.keys(profileProps).length === 0) noDeleteReason = "Empty profile was provided.";
-                else if (profileProps.tokenType == null) noDeleteReason = "Token type was not provided.";
-                else if (profileProps.tokenValue == null) noDeleteReason = "Token value was not provided.";
-                else if (profileProps.tokenType !== params.arguments.tokenType)
-                    noDeleteReason = "Token type does not match the authentication service";
-                else if (profileProps.tokenValue !== params.arguments.tokenValue)
-                    noDeleteReason = "Token value does not match the securely stored value";
-            }
-
-            if (params.arguments.tokenValue != null) {
-                let logoutMessage = "Logout successful. The authentication token has been revoked.";
-                if (logoutError?.errorCode === RestConstants.HTTP_STATUS_401.toString()) {
-                    logoutMessage = "Token is not valid or expired.";
-                }
-                logoutMessage += `\nToken was${profileWithToken == null ? " not" : ""} removed from ` +
-                    `your '${profileName}' ${this.mProfileType} profile.`;
-                logoutMessage += `${!noDeleteReason ? "" : "\nReason: " + noDeleteReason}`;
-                params.response.console.log(logoutMessage);
-            } else {
-                params.response.console.errorHeader("Command Error");
-                params.response.console.error("Token was not provided, so can't log out."+
-                    "\nYou need to authenticate first using `zowe auth login`.");
-                params.response.data.setExitCode(1);
-            }
-        }
-    }
-
-    /* Methods for old-school profiles below */
-    private async processLoginOld(params: IHandlerParameters, tokenValue: string) {
-        const loadedProfile = params.profiles.getMeta(this.mProfileType, false);
+        const config = ImperativeConfig.instance.config;
+        const profileName = this.getBaseProfileName(params);
+        const profileProps = config.api.profiles.get(profileName, false);
         let profileWithToken: string = null;
 
-        if (loadedProfile != null && loadedProfile.name != null) {
-            await Imperative.api.profileManager(this.mProfileType).update({
-                name: loadedProfile.name,
-                args: {
-                    "token-type": this.mSession.ISession.tokenType,
-                    "token-value": tokenValue
-                },
-                merge: true
-            });
-            profileWithToken = loadedProfile.name;
-        } else {
-
-            // Do not store non-profile arguments, user, or password. Set param arguments for prompted values from session.
-
-            const copyArgs = {...params.arguments};
-            copyArgs.createProfile = undefined;
-            copyArgs.showToken = undefined;
-            copyArgs.user = undefined;
-            copyArgs.password = undefined;
-
-            copyArgs.host = this.mSession.ISession.hostname;
-            copyArgs.port = this.mSession.ISession.port;
-
-            copyArgs.tokenType = this.mSession.ISession.tokenType;
-            copyArgs["token-type"] = this.mSession.ISession.tokenType;
-
-            copyArgs.tokenValue = tokenValue;
-            copyArgs["token-value"] = tokenValue;
-
-            const createParms: ISaveProfileFromCliArgs = {
-                name: "default",
-                type: this.mProfileType,
-                args: copyArgs,
-                overwrite: false,
-                profile: {}
-            };
-
-            if (await this.promptForBaseProfile(params, createParms.name)) {
-                await Imperative.api.profileManager(this.mProfileType).save(createParms);
-                profileWithToken = createParms.name;
-            } else {
-                this.showToken(params.response, tokenValue);
-            }
-        }
-
-        if (profileWithToken != null) {
-            params.response.console.log(`\n` +
-                `Login successful. The authentication token is stored in the '${profileWithToken}' ` +
-                `${this.mProfileType} profile for future use. To revoke this token and remove it from your profile, review the ` +
-                `'zowe auth logout' command.`);
-        }
-    }
-
-    private async processLogoutOld(params: IHandlerParameters) {
-        const loadedProfile = params.profiles.getMeta(this.mProfileType, false);
-
+        let noDeleteReason = "";
         // If you specified a token on the command line, then don't delete the one in the profile if it doesn't match
-        let profileWithToken: string = null;
-        if (loadedProfile != null &&
-            loadedProfile.name != null &&
-            loadedProfile.profile != null &&
-            loadedProfile.profile.tokenValue != null &&
-            params.arguments.tokenValue === loadedProfile.profile.tokenValue) {
-            await Imperative.api.profileManager(this.mProfileType).save({
-                name: loadedProfile.name,
-                type: loadedProfile.type,
-                overwrite: true,
-                profile: {
-                    ...loadedProfile.profile,
-                    tokenType: undefined,
-                    tokenValue: undefined
-                }
-            });
-            profileWithToken = loadedProfile.name;
+        if (Object.keys(profileProps).length > 0 && profileProps.tokenType != null && profileProps.tokenValue != null &&
+            profileProps.tokenType === params.arguments.tokenType && profileProps.tokenValue === params.arguments.tokenValue) {
+            const profilePath = config.api.profiles.getProfilePathFromName(profileName);
+            config.delete(`${profilePath}.properties.tokenType`);
+            config.delete(`${profilePath}.properties.tokenValue`);
+
+            await config.save();
+            profileWithToken = profileName;
+        } else {
+            if (Object.keys(profileProps).length === 0) noDeleteReason = "Empty profile was provided.";
+            else if (profileProps.tokenType == null) noDeleteReason = "Token type was not provided.";
+            else if (profileProps.tokenValue == null) noDeleteReason = "Token value was not provided.";
+            else if (profileProps.tokenType !== params.arguments.tokenType)
+                noDeleteReason = "Token type does not match the authentication service";
+            else if (profileProps.tokenValue !== params.arguments.tokenValue)
+                noDeleteReason = "Token value does not match the securely stored value";
         }
 
-        this.mSession.ISession.type = SessConstants.AUTH_TYPE_BASIC;
-        this.mSession.ISession.tokenType = undefined;
-        this.mSession.ISession.tokenValue = undefined;
-
-        params.response.console.log("Logout successful. The authentication token has been revoked" +
-            (profileWithToken != null ? ` and removed from your '${profileWithToken}' ${this.mProfileType} profile` : "") +
-            ".");
+        if (params.arguments.tokenValue != null) {
+            let logoutMessage = "Logout successful. The authentication token has been revoked.";
+            if (logoutError?.errorCode === RestConstants.HTTP_STATUS_401.toString()) {
+                logoutMessage = "Token is not valid or expired.";
+            }
+            logoutMessage += `\nToken was${profileWithToken == null ? " not" : ""} removed from ` +
+                `your '${profileName}' ${this.mProfileType} profile.`;
+            logoutMessage += `${!noDeleteReason ? "" : "\nReason: " + noDeleteReason}`;
+            params.response.console.log(logoutMessage);
+        } else {
+            params.response.console.errorHeader("Command Error");
+            params.response.console.error("Token was not provided, so can't log out."+
+                "\nYou need to authenticate first using `zowe auth login`.");
+            params.response.data.setExitCode(1);
+        }
     }
 }

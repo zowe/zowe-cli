@@ -5,6 +5,9 @@ All notable changes to the Zowe z/OS TSO SDK package will be documented in this 
 ## Recent Changes
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+- LTS Breaking: Removed the following obsolete V1 profile constants from ZosTsoProfile.schema.properties
+  - createProfileExamples
+  - updateProfileExamples
 
 ## `8.0.0-next.202402261705`
 

@@ -22,6 +22,7 @@ import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 import { read } from "read";
 
+
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
  * @export
@@ -105,7 +106,7 @@ export class CliUtils {
     /**
      * Accepts the full set of loaded profiles and attempts to match the option names supplied with profile keys.
      *
-     * @param {Map<string, IProfile[]>} profileMap - the map of type to loaded profiles. The key is the profile type
+     * @param {Map<string, IProfile[]>} profiles - the map of type to loaded profiles. The key is the profile type
      * and the value is an array of profiles loaded for that type.
      *
      * @param {definitions} definitions - the profile definition on the command.

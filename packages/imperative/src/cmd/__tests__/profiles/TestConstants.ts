@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfileTypeConfiguration } from "../src/doc/config/IProfileTypeConfiguration";
+import { IProfileTypeConfiguration } from "../../../profiles/src/doc/config/IProfileTypeConfiguration";
 
 export const TEST_PROFILE_ROOT_DIR: string = "__tests__/__results__/test_profiles/root/dir/";
 

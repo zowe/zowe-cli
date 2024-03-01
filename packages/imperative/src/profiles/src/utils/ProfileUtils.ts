@@ -18,6 +18,7 @@ import * as nodePath from "path";
  * Set of static utility methods to assist with creating profile option names from profile types, constructing the
  * root directory, reforming responses for different purposes, etc.
  *
+ * @internal
  * @export
  * @class ProfileUtils
  */

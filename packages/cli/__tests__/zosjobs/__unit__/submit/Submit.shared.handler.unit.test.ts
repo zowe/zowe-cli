@@ -71,7 +71,7 @@ describe("submit shared handler", () => {
 
             expect(error).toBeDefined();
             expect(error instanceof ImperativeError).toBe(true);
-            expect(error.message).toMatchSnapshot();
+            expect(error.message).toContain("Unable to determine the JCL source. Please contact support");
         });
 
         it("should not transform an error thrown by the submit JCL API", async () => {

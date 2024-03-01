@@ -81,16 +81,14 @@ export class ConfigurationValidator {
 
                         const property: ICommandProfileProperty = profileConfig.schema.properties[propertyName];
                         if (!isNullOrUndefined(property.optionDefinitions) &&
-                            property.optionDefinitions.length > 1 &&
-                            isNullOrUndefined(profileConfig.createProfileFromArgumentsHandler)) {
+                            property.optionDefinitions.length > 1)
+                        {
                             throw new ImperativeError({
                                 msg: TextUtils.formatMessage(
-                                    "Your Imperative profile configuration of type \"{{type}}\"" +
-                                        " has the schema property \"{{property}}\", which has multiple " +
-                                        "option definitions, but no handler for creating a profile from " +
-                                        "command line arguments. Imperative will not be able to determine " +
-                                        "how to map multiple command line arguments to a single profile property " +
-                                        "unless you provide a custom handler.",
+                                    "Your Imperative profile configuration of type \"{{type}}\" " +
+                                    "has the schema property \"{{property}}\", which has multiple " +
+                                    "option definitions. Imperative is not be able to " +
+                                    "map multiple command line arguments to a single profile property.",
                                     {
                                         type: profileConfig.type,
                                         property: propertyName

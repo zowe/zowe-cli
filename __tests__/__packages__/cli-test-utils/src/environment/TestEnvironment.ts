@@ -75,8 +75,7 @@ export class TestEnvironment {
         }
 
         // the result of the test environment setup so far is used to create profiles
-        TempTestProfiles.forceOldProfiles = params.createOldProfiles ?? false;
-        if (TempTestProfiles.forceOldProfiles || (params.tempProfileTypes?.length ?? 0 > 0)) {
+        if (params.tempProfileTypes?.length ?? 0 > 0) {
             result.tempProfiles = await TempTestProfiles.createProfiles(result, params.tempProfileTypes);
         }
 
