@@ -135,11 +135,13 @@ export class ConnectionPropsForSessCfg {
         }
 
         // check what properties are needed to be prompted
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false && !doNotPromptForValues.includes("hostname")) {
+        if ((ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false || sessCfgToUse.hostname === "") &&
+            !doNotPromptForValues.includes("hostname")) {
             promptForValues.push("hostname");
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false && !doNotPromptForValues.includes("port")) {
+        if ((ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false || sessCfgToUse.port === 0) &&
+            !doNotPromptForValues.includes("port")) {
             promptForValues.push("port");
         }
 
