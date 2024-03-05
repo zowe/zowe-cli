@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.22.4`
 
 - BugFix: Fixed race condition in `config convert-profiles` command that may fail to delete secure values for old profiles
 
