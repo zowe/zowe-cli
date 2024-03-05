@@ -116,11 +116,17 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             // Submit the JCL from a local file
             case "local-file": {
                 parms.jclSource = this.mArguments.localFile;
-                const JclString = fs.readFileSync(this.mArguments.localFile).toString();
-                apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
-                source = this.mArguments.localFile;
-                if (parms.viewAllSpoolContent) {
-                    spoolFilesResponse = apiObj;
+                try {
+                    const JclString = fs.readFileSync(this.mArguments.localFile).toString();
+                    apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
+                    source = this.mArguments.localFile;
+                    if (parms.viewAllSpoolContent) {
+                        spoolFilesResponse = apiObj;
+                    }
+                } catch (err) {
+                    const errMsg =
+                        `Failed to access the input file: ${this.mArguments.localFile}.`;
+                    throw new ImperativeError({msg: errMsg});
                 }
                 break;
             }
