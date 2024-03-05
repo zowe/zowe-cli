@@ -24,6 +24,8 @@ use tokio::io::BufReader;
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
 use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
+
+extern crate base64;
 use base64::prelude::*;
 
 extern crate is_terminal;
