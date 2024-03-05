@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated dependencies of the daemon client for technical currency.
+- BugFix: Updated dependencies of the daemon client for technical currency [#2076](https://github.com/zowe/zowe-cli/pull/2076)
 
 ## `7.23.3`
 
