@@ -20,7 +20,7 @@ use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
 
 extern crate sysinfo;
-use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
+use sysinfo::{Pid, System};
 
 extern crate simple_error;
 use simple_error::SimpleError;

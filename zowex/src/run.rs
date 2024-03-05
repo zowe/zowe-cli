@@ -21,7 +21,7 @@ use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
 
-use base64::encode;
+use base64::prelude::*;
 use is_terminal::IsTerminal;
 
 #[cfg(target_family = "windows")]
@@ -278,7 +278,7 @@ pub async fn run_daemon_command(
                 env: None,
                 stdinLength: Some(0),
                 stdin: Some(control_c),
-                user: Some(encode(executor)),
+                user: Some(BASE64_STANDARD.encode(executor)),
             }
         } else {
             DaemonResponse {
@@ -287,7 +287,7 @@ pub async fn run_daemon_command(
                 env: Some(util_get_zowe_env()),
                 stdinLength: Some(stdin.len() as i32),
                 stdin: None,
-                user: Some(encode(executor)),
+                user: Some(BASE64_STANDARD.encode(executor)),
             }
         };
 
