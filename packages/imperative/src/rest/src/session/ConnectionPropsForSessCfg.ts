@@ -135,8 +135,7 @@ export class ConnectionPropsForSessCfg {
         }
 
         // check what properties are needed to be prompted
-        if ((ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false || sessCfgToUse.hostname === "") &&
-            !doNotPromptForValues.includes("hostname")) {
+        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false && !doNotPromptForValues.includes("hostname")) {
             promptForValues.push("hostname");
         }
 
