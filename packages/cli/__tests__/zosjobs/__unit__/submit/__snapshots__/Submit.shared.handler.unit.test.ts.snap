@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`submit shared handler error handling should detect if the JCL source type (data set, etc.) could not be determined 1`] = `undefined`;
+exports[`submit shared handler error handling should detect if the JCL source type (data set, etc.) could not be determined 1`] = `"Internal submit error: Unable to determine the JCL source. Please contact support."`;
 
 exports[`submit shared handler process method should submit JCL contained within a data-set if requested 1`] = `
 Object {

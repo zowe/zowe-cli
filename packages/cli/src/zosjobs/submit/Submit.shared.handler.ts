@@ -182,7 +182,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             params.response.progress.endBar();
             this.data.setMessage(`Submitted JCL contained in "${sourceType}": "${source}"`);
         }catch (err){
-            throw new ImperativeError({ msg: err.mMessage.message });
+            throw new ImperativeError({ msg: err?.mMessage?.message ?? err?.message });
         }
     }
 }
