@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Provide more legible errors to user when they are missing user/password credentials while
+running `zowe zos-uss issue ssh` commands. [#2080](https://github.com/zowe/zowe-cli/pull/2080)
+
 ## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
