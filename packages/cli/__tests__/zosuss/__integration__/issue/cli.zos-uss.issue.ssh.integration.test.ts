@@ -9,7 +9,7 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
@@ -44,6 +44,23 @@ describe("zos-uss issue ssh command", () => {
         expect(response.stderr.toString()).toContain('Did you mean: zos-uss issue ssh');
         expect(response.stderr.toString()).toContain('Command entered: "zos-uss issue ss"');
         expect(response.stderr.toString()).toContain('Use "zowe --help" to view groups, commands, and options.');
+    });
+
+    it("should fail without trace when improper credentials", async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            testName: "testl"
+        });
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "base", {
+            host: TEST_ENVIRONMENT.systemTestProperties.base.host,
+            port: TEST_ENVIRONMENT.systemTestProperties.base.port,
+        });
+
+        const response = runCliScript(__dirname + "/__scripts__/bad_user_ssh.sh",
+            TEST_ENVIRONMENT,
+            ["--host fakeHost --port 1234 --user fakeUser --password fakePass"]);
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('authentication methods failed');
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
 });

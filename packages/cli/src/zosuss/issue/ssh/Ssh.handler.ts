@@ -10,6 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { Shell, SshBaseHandler } from "@zowe/zos-uss-for-zowe-sdk";
 
 /**
@@ -24,14 +25,19 @@ export default class Handler extends SshBaseHandler {
 
     public async processCmd(commandParameters: IHandlerParameters) {
         let rc;
-        this.parameters = commandParameters;
-        if (commandParameters.arguments.cwd) {
-            rc = await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd,
-                this.handleStdout.bind(this));
-        } else {
-            rc = await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.handleStdout.bind(this));
+        try {
+            this.parameters = commandParameters;
+            if (commandParameters.arguments.cwd) {
+                rc = await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd,
+                    this.handleStdout.bind(this));
+            } else {
+                rc = await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.handleStdout.bind(this));
+            }
+            commandParameters.response.data.setExitCode(rc);
+        } catch (err) {
+            throw new ImperativeError({ msg: err?.mMessage?.message ?? err?.message ?? err?.stderr });
         }
-        commandParameters.response.data.setExitCode(rc);
+
     }
 
     public handleStdout(data: string) {
