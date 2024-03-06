@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202403061549`
 
 - BugFix: Update daemon dependencies for technical currency [#2077](https://github.com/zowe/zowe-cli/pull/2077)
 
