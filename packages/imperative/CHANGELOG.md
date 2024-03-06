@@ -4,10 +4,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
-- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- V3 Breaking: Changed prompting logic to prompt for port if port provided is 0 [#2075](https://github.com/zowe/zowe-cli/issues/2075)
 - BugFix: Fixed issue with peerDep warnings showing when a plug-in is installed and the version ranges satisfy the semver requirements. [#2067](https://github.com/zowe/zowe-cli/pull/2067)
-- BugFix: Fixed issue [#1689](https://github.com/zowe/zowe-cli/issues/1689) by removing `profileVersion` from response given `--show-inputs-only`. Extended that change to `EnvQuery.ts` where similar soon-to-be obsolete v1 considerations occur
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
 - BugFix: Removed `profileVersion` from the response given by `--show-inputs-only` to fix [#1689](https://github.com/zowe/zowe-cli/issues/1689). Extended that change to the `config report-env` command, where similar soon-to-be obsolete v1 considerations occur.
 - BugFix: Changed text displayed for configuration from "V2" to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
 - BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
@@ -45,8 +47,9 @@ All notable changes to the Imperative package will be documented in this file.
 
   - Removed the following obsolete V1 profile classes/functions:
     - @zowe/core-for-zowe-sdk
-      - getDefaultProfile
-      - getZoweDir
+      - File ProfileUtils.ts, which includes these functions:
+        - getDefaultProfile
+        - getZoweDir - moved to ProfileInfo.getZoweDir
 
     - @zowe/cli-test-utils
       - TempTestProfiles.forceOldProfiles

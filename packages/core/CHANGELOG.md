@@ -2,11 +2,12 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202403041352`
 
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
 - LTS Breaking: Removed the file ProfileUtils.ts which contains the following obsolete V1 profile functions:
   - getDefaultProfile
-  - getZoweDir
+  - getZoweDir - moved to ProfileInfo.getZoweDir
 
 ## `8.0.0-next.202402261705`
 

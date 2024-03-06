@@ -730,6 +730,23 @@ export class ProfileInfo {
     }
 
     /**
+     * Retrieves the Zowe CLI home directory. In the situation Imperative has
+     * not initialized it we use a default value.
+     * @returns {string} - Returns the Zowe home directory
+     */
+    public static getZoweDir(): string {
+        const defaultHome = path.join(os.homedir(), ".zowe");
+        if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
+            ImperativeConfig.instance.loadedConfig = {
+                name: "zowe",
+                defaultHome,
+                envVariablePrefix: "ZOWE"
+            };
+        }
+        return ImperativeConfig.instance.cliHome;
+    }
+
+    /**
      * Returns an indicator that the user has no team configuration, but we
      * detected the existence of old-school V1 profiles. We will not work with the
      * V1 profiles. This function can let you tell a user that they are incorrectly

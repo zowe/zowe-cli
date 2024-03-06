@@ -26,7 +26,7 @@ use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
 
 extern crate base64;
-use base64::encode;
+use base64::prelude::*;
 
 extern crate is_terminal;
 use is_terminal::IsTerminal;
@@ -251,7 +251,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                             env: None,
                             stdinLength: None,
                             stdin: Some(s),
-                            user: Some(encode(executor)),
+                            user: Some(BASE64_STANDARD.encode(executor)),
                         };
                         let v = serde_json::to_string(&response)?;
                         reader.get_mut().write_all(v.as_bytes()).await?;
