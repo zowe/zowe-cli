@@ -3,7 +3,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
-
+- BugFix: Removing stack trace for zosjobs errors. [#2078](https://github.com/zowe/zowe-cli/pull/2078)
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
 
 ## `8.0.0-next.202402261705`
