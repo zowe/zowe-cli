@@ -520,42 +520,36 @@ export class PluginManagementFacility {
      * Compare the version of a plugin version property with a version property
      * of its base CLI.
      *
-     * If the versions do not intersect (according so semver rules), then a
-     * PluginIssue is recorded.
+     * If the versions do not satisfy the semver rules, then a PluginIssue is recorded.
      *
      * @param  pluginName - The name of the plugin.
-     *
      * @param  pluginVerPropNm - The name of the plugin property containing a version.
-     *
-     * @param  pluginVerVal - value of the plugin's version.
-     *
+     * @param  pluginVerRange - value of the plugin's version.
      * @param  cliVerPropNm - The name of the base CLI property containing a version.
-     *
-     * @param  cliVerVal - value of the base CLI's version.
-     *
+     * @param  cliVerValue - value of the base CLI's version.
      */
     private comparePluginVersionToCli(
         pluginName: string,
         pluginVerPropNm: string,
-        pluginVerVal: string,
+        pluginVerRange: string,
         cliVerPropNm: string,
-        cliVerVal: string
+        cliVerValue: string
     ): void {
         const cliCmdName = ImperativeConfig.instance.rootCommandName;
         try {
-            if (!this.semver.intersects(cliVerVal, pluginVerVal, false)) {
+            if (!this.semver.satisfies(cliVerValue, pluginVerRange)) {
                 this.pluginIssues.recordIssue(pluginName, IssueSeverity.WARNING,
-                    "The version value (" + pluginVerVal + ") of the plugin's '" +
+                    "The version value (" + pluginVerRange + ") of the plugin's '" +
                     pluginVerPropNm + "' property is incompatible with the version value (" +
-                    cliVerVal + ") of the " + cliCmdName + " command's '" +
+                    cliVerValue + ") of the " + cliCmdName + " command's '" +
                     cliVerPropNm + "' property."
                 );
             }
         } catch (semverExcept) {
             PluginIssues.instance.recordIssue(pluginName, IssueSeverity.WARNING,
                 "Failed to compare the version value (" +
-                pluginVerVal + ") of the plugin's '" + pluginVerPropNm +
-                "' property with the version value (" + cliVerVal +
+                pluginVerRange + ") of the plugin's '" + pluginVerPropNm +
+                "' property with the version value (" + cliVerValue +
                 ") of the " + cliCmdName + " command's '" + cliVerPropNm + "' property.\n" +
                 "This can occur when one of the specified values is not a valid version string.\n" +
                 "Reported reason = " + semverExcept.message
@@ -936,8 +930,8 @@ export class PluginManagementFacility {
      * with those specified in the host CLI.
      *
      * Both range strings come from the package.json files of the plugin and the
-     * hosting CLI. We consider the version ranges to be compatible if the two
-     * ranges intersect. This should allow npm to download one common version
+     * hosting CLI. We consider the version ranges to be compatible if they satisfy
+     * the CLI version range. This should allow npm to download one common version
      * of core and of imperative to be owned by the base CLI and shared by the plugin.
      *
      * Any errors are recorded in PluginIssues.
