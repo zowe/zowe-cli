@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- V3 Breaking: Changed prompting logic to prompt for port if port provided is 0 [#2075](https://github.com/zowe/zowe-cli/issues/2075)
+
 ## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)

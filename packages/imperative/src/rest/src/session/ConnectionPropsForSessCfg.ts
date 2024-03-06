@@ -139,7 +139,8 @@ export class ConnectionPropsForSessCfg {
             promptForValues.push("hostname");
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false && !doNotPromptForValues.includes("port")) {
+        if ((ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false || sessCfgToUse.port === 0) &&
+            !doNotPromptForValues.includes("port")) {
             promptForValues.push("port");
         }
 
