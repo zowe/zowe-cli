@@ -10,12 +10,14 @@
 */
 
 import { ICommandHandler, IHandlerParameters } from "../../../../../../src/cmd";
+import { ImperativeConfig } from "../../../../../../src/utilities";
 import { isNullOrUndefined } from "util";
 import { ImperativeError } from "../../../../../../src/error";
 
 export default class SampleHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
-        const profile: any = commandParameters.profiles.get("banana");
+        const profile: any = ImperativeConfig.instance.config.api.profiles.get("banana");
+
         if (isNullOrUndefined(profile)) {
             const errMsg = commandParameters.response.console.error("Failed to load a profile of type banana");
             throw new ImperativeError({msg: errMsg});

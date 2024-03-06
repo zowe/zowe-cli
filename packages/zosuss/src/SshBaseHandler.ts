@@ -15,7 +15,6 @@ import {
     ICommandHandler,
     IOverridePromptConnProps,
     IHandlerParameters,
-    IProfile,
     IHandlerResponseConsoleApi,
     IHandlerFormatOutputApi,
     IHandlerResponseDataApi,
@@ -39,11 +38,6 @@ export abstract class SshBaseHandler implements ICommandHandler {
     protected mSession: SshSession;
 
     /**
-     * Loaded z/OS SSH profile if needed
-     */
-    protected mSshProfile: IProfile;
-
-    /**
      * Command line arguments passed
      */
     protected mArguments: ICommandArguments;
@@ -63,7 +57,6 @@ export abstract class SshBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
-        this.mSshProfile = commandParameters.profiles.get("ssh", false);
 
         const sshSessCfgOverride: IOverridePromptConnProps[] = [{
             propertyName: "privateKey",

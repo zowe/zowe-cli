@@ -9,47 +9,66 @@
 *
 */
 
-jest.mock("../../../../../src/utilities/src/ImperativeConfig");
-
+import * as TestUtil from "../../../TestUtil";
 import { TestLogger } from "../../../../src/TestLogger";
 import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";
 import { ICommandProfileTypeConfiguration } from "../../../../../src/cmd";
+import { ProfileUtils } from "../../../../../src/profiles";
+import { ITestEnvironment } from "../../../../__src__/environment/doc/response/ITestEnvironment";
+import { SetupTestEnvironment } from "../../../../__src__/environment/SetupTestEnvironment";
+import { bananaProfile, getConfig, PROFILE_TYPE } from "./CliProfileManagerTestConstants";
+
+let TEST_ENVIRONMENT: ITestEnvironment;
 
 describe("Cli Profile Manager", () => {
-    const profileDir = __dirname + "/__resources__/cliprofilemanager";
-    const addTwoNumbersHandler = __dirname + "/../profileHandlers/AddTwoNumbersHandler";
+    const mainModule = process.mainModule;
     const testLogger = TestLogger.getTestLogger();
     const profileTypeOne = "banana";
 
-    const getTypeConfigurations: () => ICommandProfileTypeConfiguration[] = () => {
-        return [{
-            type: profileTypeOne,
-            schema: {
-                type: "object",
-                title: "test profile",
-                description: "test profile",
-                properties: {
-                    sum: {
-                        type: "number"
-                    }
-                },
-                required: ["sum"]
-            },
-        }];
-    };
+    beforeAll(async () => {
+        (process.mainModule as any) = {
+            filename: __filename
+        };
 
-    it("should be able to load properties from an existing profile", async () => {
-        const profileName = "myprofile";
-        const configs = getTypeConfigurations();
-        configs[0].createProfileFromArgumentsHandler = addTwoNumbersHandler;
-        const manager = new CliProfileManager({
-            profileRootDirectory: profileDir,
-            type: profileTypeOne,
-            logger: testLogger,
-            typeConfigurations: configs
+        TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
+            cliHomeEnvVar: "CMD_CLI_CLI_HOME",
+            testName: "basic_profile_mgr"
         });
-        const loadedProfile: any = await manager.load({name: profileName});
-        expect(loadedProfile.profile.sum).toEqual(3);
+    });
+
+    afterAll(() => {
+        process.mainModule = mainModule;
+        TestUtil.rimraf(TEST_ENVIRONMENT.workingDir);
+    });
+
+    it("should create a profile manager", async () => {
+        let caughtError: Error = new Error("");
+        let newProfMgr;
+
+        try {
+            // Create a manager instance
+            newProfMgr = new CliProfileManager({
+                logger: TestLogger.getTestLogger(),
+                type: PROFILE_TYPE.BANANA,
+                typeConfigurations: [bananaProfile]
+            });
+        } catch (e) {
+            caughtError = e;
+            TestLogger.error(caughtError.message);
+        }
+
+        expect(newProfMgr).not.toBeNull();
+        expect(caughtError.message).toEqual("");
+    });
+
+    it("should be able to retrieve all defined types after init", async function () {
+        const Imperative = require("../../../../../src/imperative/src/Imperative").Imperative;
+        const ImperativeConfig = require("../../../../../src/utilities/src/ImperativeConfig").ImperativeConfig;
+
+        const config = getConfig(TEST_ENVIRONMENT.workingDir);
+        await Imperative.init(config);
+        expect(ProfileUtils.getAllTypeNames(ImperativeConfig.instance.loadedConfig.profiles).length).toEqual(Object.keys(PROFILE_TYPE).length);
+        expect(ProfileUtils.getAllTypeNames(ImperativeConfig.instance.loadedConfig.profiles)).toContain("banana");
     });
 
     it("should be able to automatically map command line options to " +
@@ -85,7 +104,6 @@ describe("Cli Profile Manager", () => {
         let caughtError;
         try {
             new CliProfileManager({
-                profileRootDirectory: profileDir,
                 type: profileTypeOne,
                 logger: testLogger,
                 typeConfigurations: configs

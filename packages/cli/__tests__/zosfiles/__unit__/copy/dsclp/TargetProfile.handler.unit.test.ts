@@ -79,47 +79,6 @@ describe("TargetProfileHandler", () => {
         });
     });
 
-    it("should merge properties from v1 profiles and command arguments", async () => {
-        const commandParameters = {
-            ...DEFAULT_PARAMETERS,
-            arguments: {
-                ...DEFAULT_PARAMETERS.arguments,
-                host: "example1.com",
-                user: "user1",
-                password: "password1",
-                targetUser: "user2",
-                targetPassword: "password3",
-                targetZosmfProfile: "target_zosmf"
-            }
-        };
-
-        commandParameters.response.data.setObj = jest.fn();
-        const getProfileMock = jest.fn().mockReturnValue({
-            password: "password2",
-            port: 123
-        });
-        commandParameters.profiles.get = getProfileMock;
-        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: { exists: false }
-        } as any);
-
-        const handler = new TargetProfileHandler();
-        await handler.process(commandParameters);
-
-        expect(getProfileMock).toHaveBeenCalledTimes(1);
-        expect(commandParameters.response.data.setObj).toHaveBeenCalledWith({
-            apiResponse: {
-                sessCfg: expect.objectContaining({
-                    hostname: "example1.com",
-                    port: 123,
-                    user: "user2",
-                    password: "password3"
-                })
-            },
-            success: true
-        });
-    });
-
     it("should handle error loading target z/OSMF profile", async () => {
         const commandParameters = {
             ...DEFAULT_PARAMETERS,

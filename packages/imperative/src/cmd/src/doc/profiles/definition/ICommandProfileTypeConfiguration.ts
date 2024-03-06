@@ -11,7 +11,6 @@
 
 import { ICommandProfileSchema } from "./ICommandProfileSchema";
 import { IProfileTypeConfiguration } from "../../../../..";
-import { ICommandExampleDefinition } from "../../ICommandExampleDefinition";
 import { ICommandProfileAuthConfig } from "./ICommandProfileAuthConfig";
 
 /**
@@ -22,56 +21,6 @@ import { ICommandProfileAuthConfig } from "./ICommandProfileAuthConfig";
  * @extends {IProfileTypeConfiguration}
  */
 export interface ICommandProfileTypeConfiguration extends IProfileTypeConfiguration {
-    /**
-     * A handler module which Imperative will require().
-     * The module's default export should be a  handler that calls
-     * appendResponseObject on the provided commandParameters.response
-     * You do NOT have to implement writing the profile to disk -- you only have to produce
-     * the final profile object that you would like to be written.
-     *
-     *
-     * This is only required if finished profile can't be created directly from the arguments, e.g.
-     * if you have --user and --password and need to always transform it into a basic auth
-     *
-     *
-     * If omitted, Imperative will just write all fields present from the schema into the profile
-     * without requiring a module
-     *
-     * @type {string}
-     * @memberof IProfileTypeConfiguration
-     */
-    createProfileFromArgumentsHandler?: string;
-    /**
-     * The module's default export should be a handler that calls appendResponseObject on the provided
-     * commandParameters.response You do NOT have to implement writing the profile to disk -- you only have to produce
-     * the final profile object that you would like to be written.
-     *
-     * This is only required if finished updated profile can't be created directly from the arguments, e.g.
-     * if certain fields that the user might specify mean that other fields should be deleted or updated.
-     *
-     * If omitted, Imperative will load the old profile, overwrite any fields specified by the user,
-     * and write the updated profile to disk.
-     *
-     * @type {string}
-     * @memberof IProfileTypeConfiguration
-     */
-    updateProfileFromArgumentsHandler?: string;
-    /**
-     * Examples to be displayed in the help text for the auto generated create profile command.
-     *
-     * @type {ICommandExampleDefinition[]}
-     * @memberof IProfileTypeConfiguration
-     */
-    createProfileExamples?: ICommandExampleDefinition[];
-
-    /**
-     * Examples to be displayed in the help text for the auto generated update profile command.
-     *
-     * @type {ICommandExampleDefinition[]}
-     * @memberof IProfileTypeConfiguration
-     */
-    updateProfileExamples?: ICommandExampleDefinition[];
-
     /**
      * The JSON schema document. The schema document provides a way to enforce the contents of a profile. The schema
      * conforms exactly to the JSON schema specification. You must supply all properties you would like validated

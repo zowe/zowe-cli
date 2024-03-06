@@ -19,7 +19,7 @@ describe("YargsConfigurer tests", () => {
     it("should build a failure message", () => {
 
         const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
-            undefined, undefined, undefined, undefined, undefined, "fake", "fake", "ZOWE", "fake");
+            undefined, undefined as any, undefined as any, undefined as any, "fake", "fake", "ZOWE", "fake");
 
         ImperativeConfig.instance.commandLine = "some-command";
 
@@ -30,13 +30,13 @@ describe("YargsConfigurer tests", () => {
 
     it("should get response format from --response-format-json option", () => {
         const mockedYargs = require("yargs");
-        const invokeSpy = jest.spyOn(CommandProcessor.prototype, "invoke").mockResolvedValue(undefined);
+        const invokeSpy = jest.spyOn(CommandProcessor.prototype, "invoke").mockResolvedValue(undefined as any);
         jest.spyOn(mockedYargs, "command").mockImplementation((obj: any) => {
             obj.handler({ _: ["abc"], [Constants.JSON_OPTION]: true });
         });
 
         const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
-            mockedYargs, undefined, undefined, { getHelpGenerator: jest.fn() }, undefined, "fake", "fake", "ZOWE", "fake");
+            mockedYargs, undefined as any, { getHelpGenerator: jest.fn() }, undefined as any, "fake", "fake", "ZOWE", "fake");
         config.configure();
 
         expect(invokeSpy).toHaveBeenCalledTimes(1);
@@ -52,7 +52,7 @@ describe("YargsConfigurer tests", () => {
          */
         const configureYargsTwice = () => {
             const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
-                mockedYargs, undefined, undefined, { getHelpGenerator: jest.fn() }, undefined, "fake", "fake", "ZOWE", "fake");
+                mockedYargs, undefined as any, { getHelpGenerator: jest.fn() }, undefined as any, "fake", "fake", "ZOWE", "fake");
             buildFailedCmdDefSpy = jest.spyOn(config as any, "buildFailedCommandDefinition");
 
             ImperativeConfig.instance.commandLine = "first-command";

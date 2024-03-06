@@ -13,10 +13,5 @@
  * Constants used within the auto-generated profiles group
  */
 export class ProfilesConstants {
-    public static readonly PROFILES_COMMAND_TYPE_KEY = "profileTypeIdentifier";
     public static readonly PROFILES_OPTION_SECURELY_STORED = "managed by";
-    public static readonly DEPRECATE_TO_CONFIG_INIT = "The 'config init' command";
-    public static readonly DEPRECATE_TO_CONFIG_LIST = "The 'config list' command";
-    public static readonly DEPRECATE_TO_CONFIG_EDIT = "Edit your Zowe V2 configuration";
-    public static readonly DEPRECATE_TO_CONFIG_SET = "The 'config set' command";
 }

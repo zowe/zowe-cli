@@ -2,9 +2,194 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202403061549`
+
+- V3 Breaking: Changed prompting logic to prompt for port if port provided is 0 [#2075](https://github.com/zowe/zowe-cli/issues/2075)
+- BugFix: Fixed issue with peerDep warnings showing when a plug-in is installed and the version ranges satisfy the semver requirements. [#2067](https://github.com/zowe/zowe-cli/pull/2067)
+
+## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+- BugFix: Removed `profileVersion` from the response given by `--show-inputs-only` to fix [#1689](https://github.com/zowe/zowe-cli/issues/1689). Extended that change to the `config report-env` command, where similar soon-to-be obsolete v1 considerations occur.
+- BugFix: Changed text displayed for configuration from "V2" to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+- BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
+- Enhancement: Replaced the term "Team configuration" with "Zowe client configuration" in the `zowe config report-env` command.
+
+- LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
+  - Removed the following obsolete V1 profile interfaces:
+    - @zowe/cli-test-utils
+      - ISetupEnvironmentParms.createOldProfiles
+
+    - @zowe/imperative
+      - ICliLoadProfile
+      - ICliLoadAllProfiles
+      - ICommandLoadProfile
+      - ICommandProfileTypeConfiguration.createProfileExamples
+      - ICommandProfileTypeConfiguration.createProfileFromArgumentsHandler
+      - ICommandProfileTypeConfiguration.updateProfileExamples
+      - ICommandProfileTypeConfiguration.updateProfileFromArgumentsHandler
+      - IDeleteProfile
+      - ILoadAllProfiles
+      - ILoadProfile
+      - IProfileDeleted
+      - IProfileManager.loadCounter
+      - IProfileManagerFactory
+      - IProfileSaved
+      - IProfileValidated
+      - ISaveProfile
+      - ISaveProfileFromCliArgs
+      - ISetDefaultProfile
+      - IUpdateProfile
+      - IUpdateProfileFromCliArgs
+      - IValidateProfile
+      - IValidateProfileForCLI
+      - IValidateProfileWithSchema
+
+  - Removed the following obsolete V1 profile classes/functions:
+    - @zowe/core-for-zowe-sdk
+      - File ProfileUtils.ts, which includes these functions:
+        - getDefaultProfile
+        - getZoweDir - moved to ProfileInfo.getZoweDir
+
+    - @zowe/cli-test-utils
+      - TempTestProfiles.forceOldProfiles
+      - TestUtils.stripProfileDeprecationMessages
+
+    - @zowe/imperative
+      - AbstractProfileManager
+        - Any remaining functions consolidated into CliProfileManager
+      - AbstractProfileManagerFactory
+      - BasicProfileManager
+        - Any remaining functions consolidated into CliProfileManager
+      - BasicProfileManagerFactory
+      - CliProfileManager
+        - clearDefault
+        - configurations
+        - constructFullProfilePath
+        - delete
+        - deleteProfile
+        - deleteProfileFromDisk
+        - getAllProfileNames
+        - getDefaultProfileName
+        - isProfileEmpty
+        - load
+        - loadAll
+        - loadCounter
+        - loadDependencies
+        - loadFailed
+        - loadProfile
+        - loadSpecificProfile
+        - locateExistingProfile
+        - managerParameters
+        - mergeProfiles
+        - META_FILE_SUFFIX
+        - PROFILE_EXTENSION
+        - profileRootDirectory
+        - profileTypeSchema
+        - save
+        - saveProfile
+        - setDefault
+        - update
+        - updateProfile
+        - validate
+        - validateProfile
+        - validateProfileAgainstSchema
+        - validateProfileObject
+        - validateRequiredDependenciesAreSpecified
+      - CommandProfiles
+        - getMeta
+        - getAll
+      - ImperativeProfileManagerFactory
+      - ProfileInfo.usingTeamConfig
+        - To detect if a team config exists, use ProfileInfo.getTeamConfig
+        - To detect if only V1 profiles exist, use ProfileInfo.onlyV1ProfilesExist
+
+    - @zowe/zos-uss-for-zowe-sdk
+        - SshBaseHandler
+            - Removed the unused, protected property ‘mSshProfile’
+
+  - Removed the following obsolete V1 profile constants:
+    - @zowe/imperative
+      - CoreMessages class
+        - createProfileCommandSummary
+        - createProfileDisableDefaultsDesc
+        - createProfileOptionDesc
+        - createProfileOptionOverwriteDesc
+        - createProfilesCommandDesc
+        - createProfilesCommandSummary
+        - deleteProfileActionDesc
+        - deleteProfileCommandDesc
+        - deleteProfileDepsDesc
+        - deleteProfileExample
+        - deleteProfileForceOptionDesc
+        - deleteProfileNameDesc
+        - deleteProfilesCommandDesc
+        - deleteProfilesCommandSummary
+        - detailProfileCommandDesc
+        - listGroupWithOnlyProfileCommandSummary
+        - listGroupWithOnlyProfileDefaultDesc
+        - listGroupWithOnlyProfilesDefinition
+        - listGroupWithOnlyProfileSetDesc
+        - listGroupWithOnlyProfilesSummary
+        - listProfileCommandDesc
+        - listProfileCommandSummary
+        - listProfileExample
+        - listProfileExampleShowContents
+        - listProfileLoadedModulesOptionDesc
+        - listProfilesFoundMessage
+        - listProfilesNotFoundMessage
+        - listProfileVerboseOptionDesc
+        - locateProfilesDesc
+        - overroteProfileMessage
+        - profileCreatedSuccessfully
+        - profileCreatedSuccessfullyAndPath
+        - profileCreateErrorDetails
+        - profileCreateErrorHeader
+        - profileDeletedSuccessfully
+        - profileDeleteErrorDetails
+        - profileDeleteErrorHeader
+        - profileDesc
+        - profileLoadError
+        - profileNotDeletedMessage
+        - profileReviewMessage
+        - profileUpdatedSuccessfullyAndPath
+        - selectProfileNameDesc
+        - setGroupWithOnlyProfilesCommandDesc
+        - setGroupWithOnlyProfilesListDesc
+        - setGroupWithOnlyProfilesSummary
+        - setProfileActionDesc
+        - setProfileActionSummary
+        - setProfileExample
+        - setProfileOptionDesc
+        - showDependenciesCommandDesc
+        - unableToCreateProfile
+        - unableToDeleteProfile
+        - unableToFindProfile
+        - unableToLoadRequestedProfilesError
+        - unexpectedProfileCreationError
+        - unexpectedProfileLoadError
+        - unexpectedProfilesLoadError
+        - unexpectedProfileUpdateError
+        - updateProfileActionDesc
+        - updateProfileCommandDesc
+        - updateProfileCommandSummary
+        - validateProfileCommandDesc
+        - validateProfileCommandSummary
+        - validateProfileGroupDesc
+        - validateProfileNameDesc
+        - validateProfileOptionDesc
+      - ProfilesConstants class
+        - DEPRECATE_TO_CONFIG_EDIT
+        - DEPRECATE_TO_CONFIG_INIT
+        - DEPRECATE_TO_CONFIG_LIST
+        - DEPRECATE_TO_CONFIG_SET
+        - PROFILES_COMMAND_TYPE_KEY
+
+  - Annotated the following items as @internal:
+    - @zowe/imperative
+      - CommandProfileLoader
+      - ImperativeApi.profileManager
+      - ProfileValidator
 
 ## `8.0.0-next.202402271901`
 

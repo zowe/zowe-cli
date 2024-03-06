@@ -15,7 +15,6 @@ import { CommandProcessor } from "../src/CommandProcessor";
 import { ICommandResponse } from "../src/doc/response/response/ICommandResponse";
 import { CommandResponse } from "../src/response/CommandResponse";
 import { IHelpGenerator } from "../src/help/doc/IHelpGenerator";
-import { BasicProfileManager, IProfileManagerFactory, IProfileTypeConfiguration } from "../../profiles";
 import { ImperativeError } from "../../error";
 import { ICommandValidatorResponse } from "../src/doc/response/response/ICommandValidatorResponse";
 import { SharedOptions } from "../src/utils/SharedOptions";
@@ -182,59 +181,6 @@ const SAMPLE_COMMAND_REAL_HANDLER_WITH_DEFAULT_OPT: ICommandDefinition = {
     }
 };
 
-// A fake instance of the profile manager factory
-const FAKE_PROFILE_MANAGER_FACTORY: IProfileManagerFactory<IProfileTypeConfiguration> = {
-    getManager: () => {
-        return new BasicProfileManager({
-            profileRootDirectory: "FAKE_ROOT",
-            type: "banana",
-            typeConfigurations: [
-                {
-                    type: "banana",
-                    schema: {
-                        title: "fake banana schema",
-                        type: "object",
-                        description: "",
-                        properties: {}
-                    }
-                }
-            ]
-        });
-    }
-};
-
-// A fake instance of the profile manager factory with props
-const FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS: IProfileManagerFactory<IProfileTypeConfiguration> = {
-    getManager: () => {
-        return new BasicProfileManager({
-            profileRootDirectory: "FAKE_ROOT",
-            type: "banana",
-            typeConfigurations: [
-                {
-                    type: "banana",
-                    schema: {
-                        title: "fake banana schema",
-                        type: "object",
-                        description: "",
-                        properties: {
-                            color: {
-                                type: "string",
-                                optionDefinition: {
-                                    name: "color",
-                                    aliases: ["c"],
-                                    description: "The color of the banana.",
-                                    type: "string",
-                                    required: true,
-                                },
-                            }
-                        }
-                    }
-                }
-            ]
-        });
-    }
-};
-
 // A fake instance of the help generator
 const FAKE_HELP_GENERATOR: IHelpGenerator = {
     buildHelp: function buildHelp(): string {
@@ -260,7 +206,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -291,7 +236,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: undefined,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -311,27 +255,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: undefined,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-                rootCommandName: SAMPLE_ROOT_COMMAND,
-                commandLine: "",
-                promptPhrase: "dummydummy"
-            });
-        } catch (e) {
-            error = e;
-        }
-        expect(error).toBeDefined();
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
-    it("should detect no profile manager factory supplied", () => {
-        let error;
-        try {
-            const processor: CommandProcessor = new CommandProcessor({
-                envVariablePrefix: ENV_VAR_PREFIX,
-                definition: SAMPLE_COMMAND_DEFINITION,
-                helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: undefined,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -351,7 +274,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: undefined,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -371,7 +293,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: "",
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -391,7 +312,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: undefined,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -409,7 +329,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -422,7 +341,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -435,7 +353,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -448,7 +365,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -461,7 +377,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -474,12 +389,14 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
         });
-        expect(processor.profileFactory).toEqual(FAKE_PROFILE_MANAGER_FACTORY);
+        expect(processor instanceof CommandProcessor).toBe(true);
+        expect(processor.envVariablePrefix).toEqual(ENV_VAR_PREFIX);
+        expect(processor.definition).toEqual(SAMPLE_COMMAND_DEFINITION);
+        expect(processor.promptPhrase).toEqual("dummydummy");
     });
 
     it("should build the help if requested", () => {
@@ -491,7 +408,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -516,7 +432,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -542,7 +457,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -568,7 +482,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -590,7 +503,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -610,7 +522,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -633,7 +544,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -660,7 +570,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -683,7 +592,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -706,7 +614,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -730,7 +637,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -754,7 +660,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -778,7 +683,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -805,7 +709,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -833,7 +736,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -858,7 +760,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "--user fakeUser --password fakePass --token-value fakeToken " +
                 "--cert-file-passphrase fakePassphrase --cert-key-file /fake/path",
@@ -893,7 +794,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -931,7 +831,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -986,7 +885,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: commandDef,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1038,7 +936,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: commandDef,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1099,7 +996,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: commandDef,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1142,7 +1038,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1193,7 +1088,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1244,7 +1138,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1295,7 +1188,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1349,7 +1241,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1398,7 +1289,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1440,7 +1330,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1497,7 +1386,6 @@ describe("Command Processor", () => {
                 ],
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1517,68 +1405,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
     });
 
-    it("should display input value for simple parm when --show-inputs-only flag is set and v1 profile exists", async () => {
-
-        // values to test
-        const parm1Key = `parm1`;
-        const parm1Value = `value1`;
-
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
-            definition: { // `object`
-                name: "banana",
-                description: "The banana command",
-                type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
-                options: [
-                    {
-                        name: parm1Key,
-                        type: "string",
-                        description: "The first parameter",
-                    }
-                ],
-            },
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
-        });
-
-        // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                [parm1Key]: parm1Value,
-                valid: true,
-                showInputsOnly: true,
-            },
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse.data.locations[0]).toContain('home');
-        expect(commandResponse.data.profileVersion).toBe('v1');
-    });
-
-    it("should display input value for simple parm when --show-inputs-only flag is set and v2 config exists", async () => {
+    it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
         const parm1Key = `parm1`;
@@ -1649,7 +1476,6 @@ describe("Command Processor", () => {
                 }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
@@ -1679,54 +1505,118 @@ describe("Command Processor", () => {
         expect(commandResponse.data.locations.length).toBeGreaterThan(0);
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
-        expect(commandResponse.data.profileVersion).toBe('v2');
     });
-
-
     it("should mask input value for a secure parm when --show-inputs-only flag is set", async () => {
 
         // values to test
-        const parm1Key = `user`;
-        const parm1Value = `secret`;
+        const secretParmKey = `brownSpots`;
+        const secretParmValue = true;
         const secure = `(secure value)`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow",
+                                secretParmKey : secretParmValue
+                            },
+                            "secure": [
+                                secretParmKey
+                            ]
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    }
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
-            definition: { // `object`
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/__model__/TestArgHandler",
                 options: [
                     {
-                        name: parm1Key,
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
                         type: "string",
-                        description: "The first parameter",
-                    }
+                        description: "The banana color.",
+                        required: true
+                    },
+                    {
+                        name: secretParmKey,
+                        type: "boolean",
+                        description: "Whether or not the banana has brown spots"
+                    },
                 ],
+                profile: {
+                    optional: ["banana"]
+                }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
+            promptPhrase: "dummydummy",
+            config:  ImperativeConfig.instance.config
+        });
+
+        // Mock the profile loader
+        (CommandProfileLoader.loader as any) = jest.fn((args) => {
+            return {
+                loadProfiles: (profArgs: any) => {
+                    return;
+                }
+            };
         });
 
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
                 $0: "",
-                [parm1Key]: parm1Value,
+                [secretParmKey]: secretParmValue,
                 valid: true,
                 showInputsOnly: true,
             },
             silent: true
         };
+
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse.data.commandValues[parm1Key]).toBe(secure);
-        expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
     it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting", async () => {
@@ -1755,7 +1645,6 @@ describe("Command Processor", () => {
                 ],
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1785,7 +1674,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
@@ -1852,7 +1740,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
@@ -1920,7 +1807,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1969,7 +1855,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_DEFAULT_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2015,7 +1900,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2064,7 +1948,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2114,7 +1997,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2165,7 +2047,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMPLEX_COMMAND,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2183,7 +2064,6 @@ describe("Command Processor", () => {
                 fullDefinition: SAMPLE_COMPLEX_COMMAND,
                 definition: SAMPLE_COMMAND_WIH_NO_HANDLER,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2204,7 +2084,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2249,7 +2128,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2332,7 +2210,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2359,7 +2236,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2386,7 +2262,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION_WITH_EXAMPLES,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2459,7 +2334,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy",

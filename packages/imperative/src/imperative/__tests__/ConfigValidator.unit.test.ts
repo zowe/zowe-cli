@@ -92,10 +92,11 @@ describe("Imperative should validate config provided by the consumer", () => {
             expect(false).toBe(true);
         }
         catch (e) {
-            expect(e.message)
-                .toContain("myProperty");
-            expect(e.message)
-                .toContain("handler");
+            expect(e.message).toContain(
+                'Your Imperative profile configuration of type "myprofile" ' +
+                'has the schema property "myProperty", which has multiple option definitions.'
+            );
+            expect(e.message).toContain("Imperative is not be able to map multiple command line arguments to a single profile property.");
         }
     });
 });

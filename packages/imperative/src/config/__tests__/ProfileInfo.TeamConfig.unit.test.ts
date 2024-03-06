@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
@@ -24,6 +25,7 @@ import { ProfLocType } from "../src/doc/IProfLoc";
 import { IProfileSchema } from "../../profiles";
 import { AbstractSession, SessConstants } from "../../rest";
 import { ConfigAutoStore } from "../src/ConfigAutoStore";
+import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error";
 import { IProfInfoUpdatePropOpts } from "../src/doc/IProfInfoUpdatePropOpts";
@@ -135,6 +137,76 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(profLoaded.profile.profLoc.osLoc[1]).toBe(profAttrs.profLoc.osLoc[1]);
                 expect(profLoaded.profile.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
                 expect(profLoaded.profile.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
+            });
+
+            it("should detect that only V1 profiles exist", async () => {
+                // onlyV1ProfilesExist is a getter of a property, so mock the property
+                Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return true;
+                    })
+                });
+                expect(ProfileInfo.onlyV1ProfilesExist).toBe(true);
+            });
+        });
+
+        describe("getZoweDir", () => {
+            const expectedLoadedConfig = {
+                name: "zowe",
+                defaultHome: path.join("z", "zowe"),
+                envVariablePrefix: "ZOWE"
+            };
+            let defaultHome: string;
+            let envReadSpy: any;
+            let homeDirSpy: any;
+            let loadedConfigOrig: any;
+
+            beforeAll(() => {
+                loadedConfigOrig = ImperativeConfig.instance.loadedConfig;
+            });
+
+            beforeEach(() => {
+                envReadSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+                    cliHome: { value: null }
+                } as any);
+                homeDirSpy = jest.spyOn(os, "homedir").mockReturnValue(expectedLoadedConfig.defaultHome);
+                ImperativeConfig.instance.loadedConfig = undefined as any;
+                defaultHome = path.join(expectedLoadedConfig.defaultHome, ".zowe");
+            });
+
+            afterAll(() => {
+                ImperativeConfig.instance.loadedConfig = loadedConfigOrig;
+                envReadSpy.mockRestore();
+                homeDirSpy.mockRestore();
+            });
+
+            it("should return the ENV cliHome even if loadedConfig is set in the process", () => {
+                jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ cliHome: { value: "test" } } as any);
+                expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+                expect(ProfileInfo.getZoweDir()).toEqual("test");
+                expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+            });
+
+            it("should return the defaultHome and set loadedConfig if undefined", () => {
+                expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+                expect(ProfileInfo.getZoweDir()).toEqual(defaultHome);
+                expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+            });
+
+            it("should return the defaultHome and reset loadedConfig if defaultHome changes", () => {
+                expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+                ImperativeConfig.instance.loadedConfig = { ...expectedLoadedConfig, defaultHome: "test" };
+                expect(ImperativeConfig.instance.loadedConfig?.defaultHome).toEqual("test");
+                expect(ProfileInfo.getZoweDir()).toEqual(defaultHome);
+                expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+            });
+
+            it("should return the defaultHome without resetting loadedConfig", () => {
+                expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+                ImperativeConfig.instance.loadedConfig = expectedLoadedConfig;
+                expect(ProfileInfo.getZoweDir()).toEqual(defaultHome);
+                expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
             });
         });
 
@@ -256,7 +328,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             "getTeamConfig",
             "mergeArgsForProfile",
             "mergeArgsForProfileType",
-            "usingTeamConfig",
             "getOsLocInfo",
             "loadSecureArg"
         ];
@@ -279,7 +350,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
-            expect(profInfo.usingTeamConfig).toBe(true);
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
@@ -292,7 +362,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             const teamCfgOpts: IConfigOpts = { projectDir: teamProjDir };
             await profInfo.readProfilesFromDisk(teamCfgOpts);
 
-            expect(profInfo.usingTeamConfig).toBe(true);
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
@@ -906,6 +975,9 @@ describe("TeamConfig ProfileInfo tests", () => {
     describe("loadSchema", () => {
         it("should return null if schema is not found", () => {
             const profInfo = createNewProfInfo(teamProjDir);
+            profInfo["mLoadedConfig"] = {
+                mLayers: []
+            } as any;
             let schema: IProfileSchema;
             let caughtError;
 

@@ -223,7 +223,6 @@ export class CommandYargs extends AbstractCommandYargs {
                                 fullCommandTree: this.constructDefinitionTree(),
                                 experimentalCommandsDescription: this.yargsParms.experimentalCommandDescription
                             }),
-                            profileManagerFactory: this.profileManagerFactory,
                             rootCommandName: this.rootCommandName,
                             commandLine: ImperativeConfig.instance.commandLine,
                             envVariablePrefix: this.envVariablePrefix,
