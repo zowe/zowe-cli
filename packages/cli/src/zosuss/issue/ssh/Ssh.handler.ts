@@ -35,7 +35,7 @@ export default class Handler extends SshBaseHandler {
             }
             commandParameters.response.data.setExitCode(rc);
         } catch (err) {
-            throw new ImperativeError({ msg: err?.mMessage?.message ?? err?.message ?? err?.stderr });
+            throw new ImperativeError({msg: err?.mMessage?.message ?? err?.message ?? err?.stderr, causeErrors: err?.causeErrors});
         }
 
     }
