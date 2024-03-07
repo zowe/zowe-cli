@@ -19,7 +19,7 @@ import { TestLogger } from "../../../../src/TestLogger";
 import { createUniqueTestDataDir, rimraf } from "../../../TestUtil";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { BasicProfileManagerFactory, IProfileTypeConfiguration } from "../../../../../src/index";
+import { IProfileTypeConfiguration } from "../../../../../src/index";
 
 const ENV_PREFIX = "INTEGRATION_TEST";
 const TEST_HOME = createUniqueTestDataDir();
@@ -93,7 +93,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: ValidationTestCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME, DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fakeroot",
                     commandLine: "fakecommand",
                     promptPhrase: "fakefakefake"
@@ -450,8 +449,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "fakefakefake"
@@ -481,8 +478,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "fakefakefake"
@@ -535,8 +530,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "dummydummy"
@@ -569,8 +562,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "fakefakefake"
@@ -600,8 +591,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "dummydummy"

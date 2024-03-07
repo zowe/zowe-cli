@@ -87,16 +87,14 @@ export class ProfileCredentials {
             }
         }
 
-        if (this.mProfileInfo.usingTeamConfig) {
-            await this.mProfileInfo.getTeamConfig().api.secure.load({
-                load: ((key: string): Promise<string> => {
-                    return CredentialManagerFactory.manager.load(key, true);
-                }),
-                save: ((key: string, value: any): Promise<void> => {
-                    return CredentialManagerFactory.manager.save(key, value);
-                })
-            });
-        }
+        await this.mProfileInfo.getTeamConfig().api.secure.load({
+            load: ((key: string): Promise<string> => {
+                return CredentialManagerFactory.manager.load(key, true);
+            }),
+            save: ((key: string, value: any): Promise<void> => {
+                return CredentialManagerFactory.manager.save(key, value);
+            })
+        });
     }
 
     /**
@@ -104,7 +102,6 @@ export class ProfileCredentials {
      * @returns False if not using teamConfig or there are no secure fields
      */
     private isTeamConfigSecure(): boolean {
-        if (!this.mProfileInfo.usingTeamConfig) return false;
         if (this.mProfileInfo.getTeamConfig().api.secure.secureFields().length === 0) return false;
         return true;
     }

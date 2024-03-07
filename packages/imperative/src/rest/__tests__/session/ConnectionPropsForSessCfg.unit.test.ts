@@ -833,6 +833,50 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
+    it("get port from prompt - zero", async() => {
+        const hostFromArgs = "FakeHost";
+        const portFromArgs = 0;
+        const portFromPrompt = 11;
+        const userFromArgs = "FakeUser";
+        const passFromArgs = "FakePassword";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(portFromPrompt.toString());
+        });
+        jest.spyOn(ConnectionPropsForSessCfg as any, "loadSchemaForSessCfgProps").mockReturnValueOnce({
+            port: { type: "number" }
+        });
+
+        const initialSessCfg = {
+            rejectUnauthorized: true
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            host: hostFromArgs,
+            port: portFromArgs,
+            user: userFromArgs,
+            password: passFromArgs
+        };
+
+        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg, args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.user).toBe(userFromArgs);
+        expect(sessCfgWithConnProps.password).toBe(passFromArgs);
+        expect(sessCfgWithConnProps.hostname).toBe(hostFromArgs);
+        expect(sessCfgWithConnProps.port).toBe(portFromPrompt);
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+    });
+
     it("get host name from prompt with custom service description", async() => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;

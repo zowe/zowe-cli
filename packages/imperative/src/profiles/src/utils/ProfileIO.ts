@@ -312,7 +312,7 @@ export class ProfileIO {
     private static crashInTeamConfigMode() {
         if (ImperativeConfig.instance.config?.exists) {
             try {
-                throw new Error("A Zowe V1 profile operation was attempted with a Zowe V2 configuration in use.");
+                throw new Error("A Zowe V1 profile operation was attempted with a Zowe team configuration in use.");
             } catch (err) {
                 throw new ImperativeError({
                     msg: err.message,

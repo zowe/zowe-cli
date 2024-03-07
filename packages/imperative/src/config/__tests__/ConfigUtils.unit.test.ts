@@ -9,6 +9,8 @@
 *
 */
 
+import * as fs from "fs";
+
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { CredentialManagerFactory } from "../../security";
 import { ImperativeConfig } from "../../utilities";
@@ -90,6 +92,61 @@ describe("Config Utils", () => {
             const error = ConfigUtils.secureSaveError(solution);
             expect(error.message).toBe("Unable to securely save credentials.");
             expect(error.additionalDetails).toBe(solution);
+        });
+    });
+
+    describe("onlyV1ProfilesExist", () => {
+        afterEach(() => {
+            jest.restoreAllMocks(); // restore spies
+            jest.clearAllMocks();   // set counts back to zero
+        });
+
+        it("should return false when a team config exists", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValueOnce({
+                config: {
+                    exists: true
+                }
+            } as any);
+
+            expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
+        });
+
+        it("should return false when neither team config or v1 profiles exist", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: false
+                },
+                cliHome: "/fake/cli/home/dir",
+                loadedConfig: jest.fn(() => {
+                    return {
+                        envVariablePrefix: "Fake_cli_prefix"
+                    };
+                })
+            } as any);
+
+            const fsExistsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+
+            expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
+            expect(fsExistsSyncSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return true when only V1 profiles exist", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: false
+                },
+                cliHome: "/fake/cli/home/dir",
+                loadedConfig: jest.fn(() => {
+                    return {
+                        envVariablePrefix: "Fake_cli_prefix"
+                    };
+                })
+            } as any);
+
+            const fsExistsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+
+            expect(ConfigUtils.onlyV1ProfilesExist).toBe(true);
+            expect(fsExistsSyncSpy).toHaveBeenCalledTimes(1);
         });
     });
 });
