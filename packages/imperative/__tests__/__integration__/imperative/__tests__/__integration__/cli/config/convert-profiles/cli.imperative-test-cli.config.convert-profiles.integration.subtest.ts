@@ -63,9 +63,9 @@ describe("imperative-test-cli config convert-profiles", () => {
 
             const response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["y"]);
             expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toContain("Detected 2 old profile(s) to convert");
+            expect(response.stdout.toString()).toContain("Detected 2 old V1 profile(s) to convert to a current Zowe client configuration");
             expect(response.stdout.toString()).toContain("Your new profiles have been saved");
-            expect(response.stdout.toString()).toContain("Your old profiles have been moved");
+            expect(response.stdout.toString()).toContain("Your old V1 profiles have been moved");
             expect(response.status).toBe(0);
 
             // Check contents of config JSON
@@ -120,9 +120,9 @@ describe("imperative-test-cli config convert-profiles", () => {
 
         response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["y"]);
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Detected 1 old profile(s) to convert");
+        expect(response.stdout.toString()).toContain("Detected 1 old V1 profile(s) to convert to a current Zowe client configuration.");
         expect(response.stdout.toString()).toContain("Your new profiles have been saved");
-        expect(response.stdout.toString()).toContain("Your old profiles have been moved");
+        expect(response.stdout.toString()).toContain("Your old V1 profiles have been moved");
         expect(response.stderr.toString()).toEqual("");
 
         // Check contents of config JSON
@@ -154,9 +154,9 @@ describe("imperative-test-cli config convert-profiles", () => {
         it("should not convert profiles if prompt is rejected", () => {
             const response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["n"]);
             expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toContain("Detected 2 old profile(s) to convert");
+            expect(response.stdout.toString()).toContain("Detected 2 old V1 profile(s) to convert to a current Zowe client configuration");
             expect(response.stdout.toString()).not.toContain("Your new profiles have been saved");
-            expect(response.stdout.toString()).not.toContain("Your old profiles have been moved");
+            expect(response.stdout.toString()).not.toContain("Your old V1 profiles have been moved");
             expect(response.status).toBe(0);
             expect(fs.existsSync(configJsonPath)).toBe(false);
         });
@@ -168,7 +168,7 @@ describe("imperative-test-cli config convert-profiles", () => {
 
             response = runCliScript(__dirname + "/__scripts__/convert_profiles_delete.sh", TEST_ENVIRONMENT.workingDir, ["n"]);
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("No old profiles were found");
+            expect(response.stdout.toString()).toContain("Found no old V1 profiles to convert to a current Zowe client configuration");
             expect(response.stdout.toString()).toContain("Are you sure you want to delete your v1 profiles?");
             expect(response.stdout.toString()).not.toContain("Your new profiles have been saved");
             expect(response.stdout.toString()).not.toContain("Your old profiles have been moved");
