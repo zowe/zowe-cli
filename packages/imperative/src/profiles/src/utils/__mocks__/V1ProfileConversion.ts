@@ -32,199 +32,20 @@ import {
 import { IProfileTypeConfiguration } from "../../doc/config/IProfileTypeConfiguration";
 
 /**
- * Mocked profile IO class - for the most part, just reacts differently based on the profile name/path specified
+ * Mocked V1ProfileConversion class - for the most part, just reacts differently based on the profile name/path specified
  * to simulate certain profile conditions for testing the manager.
  *
  * @export
- * @class ProfileIO
+ * @class V1ProfileConversion
  */
-export class ProfileIO {
-    /**
-     * Mocked exists checks if the constructed file path contains the profile or meta file name and
-     * returns the path to the caller. Allows you to indicate what profiles should exist just by the name
-     * in your tests.
-     * @static
-     * @param {string} path
-     * @returns {string}
-     * @memberof ProfileIO
-     */
-    public static exists(path: string): string {
-        if (path.indexOf("green_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("red_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("green_dependency_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("sweet_strawberry") >= 0) {
-            return path;
-        }
-        if (path.indexOf("mackintosh_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("mackintosh_error_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("sugar_coated_strawberry") >= 0) {
-            return path;
-        }
-        if (path.indexOf("tasty_apples") >= 0) {
-            return path;
-        }
-        if (path.indexOf("chocolate_covered") >= 0) {
-            return path;
-        }
-        if (path.indexOf("old_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("banana_with_grape_dep") >= 0) {
-            return path;
-        }
-        if (path.indexOf("grape_with_banana_circular_dep") >= 0) {
-            return path;
-        }
-        if (path.indexOf("apple_with_two_req_dep_circular") >= 0) {
-            return path;
-        }
-        if (path.indexOf("grape_with_apple_circular_dep") >= 0) {
-            return path;
-        }
-        if (path.indexOf("throw_the_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("bad_mango") >= 0) {
-            return path;
-        }
-        if (path.indexOf("good_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("misshapen_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf(BLUEBERRY_PROFILE_TYPE + "_meta") >= 0) {
-            return path;
-        }
-        if (path.indexOf("sweet_blueberry") >= 0) {
-            return path;
-        }
-        if (path.indexOf("apples_and_strawberries_and_bananas") >= 0) {
-            return path;
-        }
-        if (path.indexOf("bundle_of_bananas") >= 0) {
-            return path;
-        }
-        if (path.indexOf("chocolate_strawberries") >= 0) {
-            return path;
-        }
-        if (path.indexOf("apples_and_grapes_and_strawberries_and_bananas") >= 0) {
-            return path;
-        }
-        if (path.indexOf("green_grapes") >= 0) {
-            return path;
-        }
-        if (path.indexOf("bananas_and_grapes") >= 0) {
-            return path;
-        }
-        if (path.indexOf("apples_and_grapes_with_error_and_strawberries_and_bananas") >= 0) {
-            return path;
-        }
-        if (path.indexOf("bananas_and_error_grapes") >= 0) {
-            return path;
-        }
-        if (path.indexOf("bad_grapes") >= 0) {
-            return path;
-        }
-        if (path.indexOf("bananas_error_and_grapes") >= 0) {
-            return path;
-        }
-        if (path.indexOf("apples_and_grapes_not_found_and_strawberries_and_bananas") >= 0) {
-            return path;
-        }
-        if (path.indexOf("apple_has_circular") >= 0) {
-            return path;
-        }
-        if (path.indexOf("strawberry_and_apple") >= 0) {
-            return path;
-        }
-        if (path.indexOf("tart_blueberry") >= 0) {
-            return path;
-        }
-
-        // The following group is for detecting if configurations already exist
-        if (path.indexOf(FRUIT_BASKET) >= 0 && path.indexOf(STRAWBERRY_PROFILE_TYPE) >= 0) {
-            return path;
-        }
-        if (path.indexOf(FRUIT_BASKET) >= 0 && path.indexOf(BLUEBERRY_PROFILE_TYPE) >= 0) {
-            return path;
-        }
-        if (path.indexOf(FRUIT_BASKET) >= 0 && path.indexOf(APPLE_PROFILE_TYPE) >= 0) {
-            return path;
-        }
-        if (path.indexOf(FRUIT_BASKET) >= 0 && path.indexOf(GRAPE_PROFILE_TYPE) >= 0) {
-            return path;
-        }
-
-        // Used on an optional dependency load
-        if (path.indexOf("strawberry_no_apple") >= 0) {
-            return path;
-        }
-
-        // Used on an optional dependency load - where the dependency is not found
-        if (path.indexOf("strawberry_not_found_apple") >= 0) {
-            return path;
-        }
-
-        return null;
-    }
-
-    /**
-     * Usually just succeeds - but throws an error depending on profile name
-     * @static
-     * @param {string} name
-     * @param {string} fullFilePath
-     * @memberof ProfileIO
-     */
-    public static deleteProfile(name: string, fullFilePath: string) {
-        if (name.indexOf("mackintosh_error_apple") >= 0) {
-            throw new Error("IO ERROR DELETING THE APPLE");
-        }
-    }
-
-    /**
-     * Just here to "succeed"
-     * @static
-     * @param {string} path
-     * @memberof ProfileIO
-     */
-    public static createProfileDirs(path: string) {
-        // Nothing needs to happen here during the tests - just needs to "succeed"
-    }
-
-    /**
-     * Write profile usually succeeds (unless told to throw an error - based on the input profile name)
-     * @static
-     * @param {string} fullFilePath
-     * @param {IProfile} profile
-     * @memberof ProfileIO
-     */
-    public static writeProfile(fullFilePath: string, profile: IProfile) {
-        // A profile name of "throw_the_apple", simulates a write failure
-        // throwing a simple error - just to ensure that there are no unhandled promise rejections, etc
-        // and that the error is returned to the caller of the "save" API
-        if (fullFilePath.indexOf("throw_the_apple") >= 0) {
-            throw new Error("Write file unexpected failure");
-        }
-    }
-
+export class V1ProfileConversion {
     /**
      * Mocks the get all profile directores - for the most part, if a certain string is found within the path
      * input, a certain list will be responded.
      * @static
      * @param {string} profileRootDirectory
      * @returns {string[]}
-     * @memberof ProfileIO
+     * @memberof V1ProfileConversion
      */
     public static getAllProfileDirectories(profileRootDirectory: string): string[] {
         if (profileRootDirectory.indexOf(FRUIT_BASKET_BAD) >= 0 || profileRootDirectory.indexOf(FRUIT_BASKET_WORSE) >= 0) {
@@ -241,7 +62,7 @@ export class ProfileIO {
      * @static
      * @param {string} path
      * @returns {IMetaProfile}
-     * @memberof ProfileIO
+     * @memberof V1ProfileConversion
      */
     public static readMetaFile(path: string): IMetaProfile<IProfileTypeConfiguration> {
 
@@ -336,27 +157,13 @@ export class ProfileIO {
     }
 
     /**
-     * Write meta file mocked - only throws and error if the path indicates a particular fruit type
-     * @static
-     * @param {IMetaProfile} meta
-     * @param {string} path
-     * @memberof ProfileIO
-     */
-    public static writeMetaFile(meta: IMetaProfile<IProfileTypeConfiguration>, path: string) {
-        // Mango type causes a throw error from writing the meta file
-        if (path.indexOf(MANGO_PROFILE_TYPE) >= 0) {
-            throw new Error("Error writing the meta file");
-        }
-    }
-
-    /**
      * Returns "all" mocked profile names. Used in delete and other tests to check for dependencies, etc.
      * @static
      * @param {string} profileTypeDir
      * @param {string} ext
      * @param {string} metaNameForType
      * @returns {string[]}
-     * @memberof ProfileIO
+     * @memberof V1ProfileConversion
      */
     public static getAllProfileNames(profileTypeDir: string, ext: string, metaNameForType: string): string[] {
         if (profileTypeDir.indexOf("apple") >= 0) {
@@ -376,7 +183,7 @@ export class ProfileIO {
      * @param {string} filePath
      * @param {string} type
      * @returns {IProfile}
-     * @memberof ProfileIO
+     * @memberof V1ProfileConversion
      */
     public static readProfileFile(filePath: string, type: string): IProfile {
 
@@ -693,6 +500,6 @@ export class ProfileIO {
             };
         }
 
-        throw new Error("Profile IO Mock did NOT have a profile for: " + filePath);
+        throw new Error("V1ProfileConversion Mock did NOT have a profile for: " + filePath);
     }
 }

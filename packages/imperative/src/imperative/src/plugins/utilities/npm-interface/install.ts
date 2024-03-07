@@ -167,7 +167,7 @@ export async function install(packageLocation: string, registry: string, install
         const requirerFunction = PluginManagementFacility.instance.requirePluginModuleCallback(packageName);
         const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
-        iConsole.debug(`Checking for global team configuration files to update.`);
+        iConsole.debug(`Checking for global Zowe client configuration files to update.`);
         if (PMFConstants.instance.PLUGIN_USING_CONFIG)
         {
             // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin

@@ -211,7 +211,7 @@ export class EnvQuery {
     private static async getConfigInfo(
         getResult: IGetItemVal, getItemOpts: IGetItemOpts
     ): Promise<void> {
-        const teamCfg: string = "Team Config";
+        const teamCfg: string = "Zowe Client Config";
         const doesProgBarExist: boolean = (getItemOpts?.progressApi) ? true: false;
 
         // setup progress bar

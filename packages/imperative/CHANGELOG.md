@@ -2,6 +2,19 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
+  - Renamed class ProfileIO to V1ProfileConversion in package @zowe/imperative class.
+    - Removed the following obsolete V1 profile functions:
+      - createProfileDirs
+      - deleteProfile
+      - exists
+      - writeMetaFile
+      - writeProfile
+    - Removed the following obsolete V1 profile constant:
+      - MAX_YAML_DEPTH
+    - Changed fileToProfileName from public to private
+
 ## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
