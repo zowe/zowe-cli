@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Provide more legible errors to user when they are missing user/password credentials while
+running `zowe zos-uss issue ssh` commands. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+
 ## `8.0.0-next.202403061549`
 
 - BugFix: Update daemon dependencies for technical currency [#2077](https://github.com/zowe/zowe-cli/pull/2077)
