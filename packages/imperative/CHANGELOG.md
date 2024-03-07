@@ -15,6 +15,11 @@ All notable changes to the Imperative package will be documented in this file.
       - MAX_YAML_DEPTH
     - Changed fileToProfileName from public to private
 
+## `8.0.0-next.202403061549`
+
+- V3 Breaking: Changed prompting logic to prompt for port if port provided is 0 [#2075](https://github.com/zowe/zowe-cli/issues/2075)
+- BugFix: Fixed issue with peerDep warnings showing when a plug-in is installed and the version ranges satisfy the semver requirements. [#2067](https://github.com/zowe/zowe-cli/pull/2067)
+
 ## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)

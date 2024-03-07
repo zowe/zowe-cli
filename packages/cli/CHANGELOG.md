@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Changed references in command output from 'Team Configuration' to 'Zowe client configuration'.
 
+## `8.0.0-next.202403061549`
+
+- BugFix: Update daemon dependencies for technical currency [#2077](https://github.com/zowe/zowe-cli/pull/2077)
+
 ## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)

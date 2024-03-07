@@ -27,8 +27,7 @@ import {
     BLUEBERRY_TYPE_SCHEMA,
     STRAWBERRY_PROFILE_TYPE
 } from "../../../../cmd/__tests__/profiles/TestConstants";
-import { IMetaProfile, IProfile } from "../../../../index";
-import { IProfileTypeConfiguration } from "../../doc/config/IProfileTypeConfiguration";
+import { IProfile } from "../../../../index";
 import { ImperativeConfig } from "../../../../utilities";
 
 const readYaml = require("js-yaml");
