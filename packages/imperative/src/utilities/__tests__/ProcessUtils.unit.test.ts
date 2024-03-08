@@ -10,7 +10,7 @@
 */
 
 import * as spawn from "cross-spawn";
-import { ExecUtils, GuiResult, ImperativeConfig, ProcessUtils } from "../../utilities";
+import { GuiResult, ImperativeConfig, ProcessUtils } from "../../utilities";
 
 jest.mock("cross-spawn");
 jest.mock("opener");
@@ -265,23 +265,6 @@ describe("ProcessUtils tests", () => {
             } as any);
             await ProcessUtils.openInEditor("filePath");
             expect(spawn.spawn).toHaveBeenCalledWith("vi", ["filePath"], { stdio: "inherit" });
-        });
-    });
-
-    // TODO: Remove this entire 'describe' section in V3 when the @deprecated execAndCheckOutput function is removed
-    describe("execAndCheckOutput", () => {
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
-
-        it("should just pass through to ExecUtils.spawnAndGetOutput", () => {
-            const message = "Hello world!";
-            const options: any = { cwd: __dirname };
-            const stdoutBuffer = Buffer.from(message + "\n");
-            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(stdoutBuffer as any);
-            const execOutput = ProcessUtils.execAndCheckOutput("echo", [message], options);
-            expect(spawnSpy).toHaveBeenCalledWith("echo", [message], options);
-            expect(execOutput).toBe(stdoutBuffer);
         });
     });
 });
