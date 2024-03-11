@@ -135,7 +135,6 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         }
 
         if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
-            profileConfig.defaults[this.mProfileType] = activeBaseProfile;
             const baseProfileConfig = lodash.get(profileConfig, config.api.profiles.getProfilePathFromName(activeBaseProfile));
             baseProfileConfig.properties.tokenType = session.ISession.tokenType;
             baseProfileConfig.properties.tokenValue = session.ISession.tokenValue;
@@ -144,6 +143,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             }
         }
 
+        profileConfig.defaults[this.mProfileType] = activeBaseProfile;
         this.recordProfilesFound(profileInfos);
 
         // Report whether or not we created a base profile in this auto-init execution
