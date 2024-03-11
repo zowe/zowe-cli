@@ -15,7 +15,7 @@ import * as lodash from "lodash";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
-    ImperativeError, RestClientError, TextUtils
+    ImperativeError, RestClientError, TextUtils, Config
 } from "@zowe/imperative";
 import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
@@ -118,27 +118,30 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 },
                 secure: []
             };
-            profileConfig.defaults[this.mProfileType] = this.mProfileType;
             activeBaseProfile = this.mProfileType;
             baseProfileCreated = true;
         } else {
+            const oldBaseProfile = this.getOldBaseProfileProps(config, activeBaseProfile);
             lodash.set(profileConfig, config.api.profiles.getProfilePathFromName(activeBaseProfile), {
                 type: this.mProfileType,
                 properties: {
-                    ...config.api.profiles.get(activeBaseProfile),
+                    ...oldBaseProfile.properties,
                     host: session.ISession.hostname,
                     port: session.ISession.port,
                     rejectUnauthorized: session.ISession.rejectUnauthorized,
                 },
-                secure: []
+                secure: oldBaseProfile.secure ?? []
             });
         }
 
         if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
-            const expandedBaseProfilePath = config.api.profiles.getProfilePathFromName(activeBaseProfile);
-            lodash.get(profileConfig, expandedBaseProfilePath).properties.tokenType = session.ISession.tokenType;
-            lodash.get(profileConfig, expandedBaseProfilePath).properties.tokenValue = session.ISession.tokenValue;
-            lodash.get(profileConfig, expandedBaseProfilePath).secure.push("tokenValue");
+            profileConfig.defaults[this.mProfileType] = activeBaseProfile;
+            const baseProfileConfig = lodash.get(profileConfig, config.api.profiles.getProfilePathFromName(activeBaseProfile));
+            baseProfileConfig.properties.tokenType = session.ISession.tokenType;
+            baseProfileConfig.properties.tokenValue = session.ISession.tokenValue;
+            if (!baseProfileConfig.secure.includes("tokenValue")) {
+                baseProfileConfig.secure.push("tokenValue");
+            }
         }
 
         this.recordProfilesFound(profileInfos);
@@ -514,5 +517,18 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 }
             }
         }
+    }
+
+    private getOldBaseProfileProps(config: Config, baseProfileName: string): IConfigProfile {
+        const propsToRemove = ["user", "password", "certFile", "certKeyFile"];
+        const properties = config.api.profiles.get(baseProfileName);
+        for (const propName of propsToRemove) {
+            properties[propName] = undefined;
+        }
+        const secureProps = config.api.secure.securePropsForProfile(baseProfileName);
+        return {
+            properties,
+            secure: secureProps.filter((propName) => !propsToRemove.includes(propName))
+        };
     }
 }
