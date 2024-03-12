@@ -127,6 +127,9 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                             causeErrors: err
                         });
                     }
+                    if (parms.viewAllSpoolContent) {
+                        spoolFilesResponse = apiObj;
+                    }
                     apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
                     source = this.mArguments.localFile;
                     break;
