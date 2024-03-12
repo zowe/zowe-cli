@@ -11,8 +11,8 @@
 
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
 import * as  fs from "fs";
-import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
-import { IDownloadOptions, Get, ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
+import { ISubmitParms, SubmitJobs, IJob, ISpoolFile, ZosJobsMessages } from "@zowe/zos-jobs-for-zowe-sdk";
+import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { text } from "stream/consumers";
 
@@ -117,18 +117,18 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                 // Submit the JCL from a local file
                 case "local-file": {
                     parms.jclSource = this.mArguments.localFile;
+                    let JclString: string;
                     try {
-                        const JclString = fs.readFileSync(this.mArguments.localFile).toString();
-                        apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
-                        source = this.mArguments.localFile;
+                        JclString = fs.readFileSync(this.mArguments.localFile).toString();
                     } catch (err) {
                         throw new ImperativeError({
-                            msg: ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosJobsMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
                             causeErrors: err
                         });
                     }
-
+                    apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
+                    source = this.mArguments.localFile;
                     break;
                 }
                 // Submit the JCL piped in on stdin
@@ -187,7 +187,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             if (err instanceof ImperativeError){
                 throw err;
             } else {
-                throw new ImperativeError({msg: err?.mMessage?.message ?? err?.message ?? err?.stderr, causeErrors: err?.causeErrors});
+                throw new ImperativeError({msg: err.message, causeErrors: err});
             }
         }
     }
