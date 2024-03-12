@@ -12,7 +12,7 @@
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
 import * as  fs from "fs";
 import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
-import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
+import { IDownloadOptions, Get, ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { text } from "stream/consumers";
 
@@ -121,12 +121,14 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                         const JclString = fs.readFileSync(this.mArguments.localFile).toString();
                         apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
                         source = this.mArguments.localFile;
-                        if (parms.viewAllSpoolContent) {
-                            spoolFilesResponse = apiObj;
-                        }
                     } catch (err) {
-                        throw new ImperativeError({msg: err});
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.nodeJsFsError.message,
+                            additionalDetails: err.toString(),
+                            causeErrors: err
+                        });
                     }
+
                     break;
                 }
                 // Submit the JCL piped in on stdin
@@ -182,7 +184,11 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             params.response.progress.endBar();
             this.data.setMessage(`Submitted JCL contained in "${sourceType}": "${source}"`);
         }catch (err){
-            throw new ImperativeError({msg: err?.mMessage?.message ?? err?.message ?? err?.stderr, causeErrors: err?.causeErrors});
+            if (err instanceof ImperativeError){
+                throw err;
+            } else {
+                throw new ImperativeError({msg: err?.mMessage?.message ?? err?.message ?? err?.stderr, causeErrors: err?.causeErrors});
+            }
         }
     }
 }
