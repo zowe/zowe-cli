@@ -1550,6 +1550,10 @@ describe("z/OS Files - Upload", () => {
 
     describe("bufferToUssFile", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
+        const fakeResponseWithEtag = {
+            data: Buffer.from(dsName),
+            response: { headers: { etag: etagValue } }
+        };
         let USSresponse: IZosFilesResponse;
         beforeEach(() => {
             USSresponse = undefined;
@@ -1678,6 +1682,27 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
+        });
+        it("should return with proper response when upload USS file and request Etag back", async () => {
+            const data: Buffer = Buffer.from("testing");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
+            zosmfExpectSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
+            try {
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {returnEtag: true});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(USSresponse.apiResponse.etag).toBeDefined();
+            expect(USSresponse.apiResponse.etag).toEqual(etagValue);
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data,
+                dataToReturn: [CLIENT_PROPERTY.response] });
         });
         it("should set local encoding if specified", async () => {
             const data: Buffer = Buffer.from("testing");
