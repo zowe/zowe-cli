@@ -1324,18 +1324,15 @@ export class ProfileInfo {
      * @param [versionChanged] Whether the version has changed for the schema (optional)
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
-    private updateSchemaAtLayer(profileType: string, schema: IProfileSchema, versionChanged?: boolean): void {
+    private updateSchemaAtLayer(profileType: string, schema: IProfileSchema, versionChanged?: boolean): boolean {
         // Check if type already exists in schema cache; if so, update schema at the same layer.
         // Otherwise, update schema at the active layer.
-        const cachedType = [...this.mProfileSchemaCache.entries()]
-            .find(([typePath, _schema]) => typePath.includes(`:${profileType}`));
-
-        const layerPath = cachedType != null ? cachedType[0].substring(0, cachedType[0].lastIndexOf(":")) : this.getTeamConfig().layerActive().path;
-        const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.path === layerPath);
+        const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.global);
         if (layerToUpdate == null) {
-            return;
+            this.mImpLogger.trace("ProfileInfo.updateSchemaAtLayer returned false: global schema was not found.");
+            return false;
         }
-        const cacheKey = `${layerPath}:${profileType}`;
+        const cacheKey = `${layerToUpdate.path}:${profileType}`;
 
         const transformedSchemaProps = this.omitCmdPropsFromSchema(schema.properties);
         const transformedCacheProps = this.mProfileSchemaCache.has(cacheKey) ?
@@ -1345,16 +1342,27 @@ export class ProfileInfo {
         // Update the cache with the newest schema for this profile type
         this.mProfileSchemaCache.set(cacheKey, schema);
 
-        const schemaUri = new url.URL(layerToUpdate.properties.$schema, url.pathToFileURL(layerPath));
+        const schemaUri = new url.URL(layerToUpdate.properties.$schema, url.pathToFileURL(layerToUpdate.path));
         if (schemaUri.protocol !== "file:") {
-            return;
+            this.mImpLogger.trace(
+                "ProfileInfo.updateSchemaAtLayer returned false as it cannot update web-based schemas."
+            );
+            return false;
         }
         const schemaPath = url.fileURLToPath(schemaUri);
+        if (!fs.existsSync(schemaPath)) {
+            this.mImpLogger.trace(
+                "ProfileInfo.updateSchemaAtLayer returned false: global schema was not found."
+            );
+            return false;
+        }
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
-        if (versionChanged || !sameSchemaExists && fs.existsSync(schemaPath)) {
+        if (versionChanged || !sameSchemaExists) {
             jsonfile.writeFileSync(schemaPath, this.buildSchema([], layerToUpdate), { spaces: 4 });
         }
+
+        return true;
     }
 
     /**
@@ -1382,7 +1390,7 @@ export class ProfileInfo {
      *
      * @param {string} profileType The new profile type to add to the schema
      * @param {IExtenderTypeInfo} typeInfo Type metadata for the profile type (schema, source app., optional version)
-     * @returns {boolean} `true` if added to the schema; `false` otherwise
+     * @returns {IAddProfTypeResult} the result of adding the profile type to the schema
      */
     public addProfileTypeToSchema(profileType: string, typeInfo: IExtenderTypeInfo): IAddProfTypeResult {
         // Get the active team config layer
@@ -1397,6 +1405,7 @@ export class ProfileInfo {
         // copy last value for `extenders.json` to compare against updated object
         const oldExtendersJson = lodash.cloneDeep(this.mExtendersJson);
         let successMsg = "";
+        let addedToSchema = false;
 
         if (profileType in this.mExtendersJson.profileTypes) {
             // Profile type was already contributed, determine whether its metadata should be updated
@@ -1414,7 +1423,7 @@ export class ProfileInfo {
                             latestFrom: typeInfo.sourceApp
                         };
 
-                        this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
+                        addedToSchema = this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
 
                         if (semver.major(typeInfo.schema.version) != semver.major(prevTypeVersion)) {
                             // Warn user if new major schema version is specified
@@ -1438,7 +1447,7 @@ export class ProfileInfo {
                         from: typeMetadata.from.filter((src) => src !== typeInfo.sourceApp).concat([typeInfo.sourceApp]),
                         latestFrom: typeInfo.sourceApp
                     };
-                    this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
+                    addedToSchema = this.updateSchemaAtLayer(profileType, typeInfo.schema, true);
                 }
             } else {
                 if (typeInfo.schema.version != null) {
@@ -1469,7 +1478,16 @@ export class ProfileInfo {
                 from: [typeInfo.sourceApp],
                 latestFrom: typeInfo.schema.version ? typeInfo.sourceApp : undefined
             };
-            this.updateSchemaAtLayer(profileType, typeInfo.schema);
+            addedToSchema = this.updateSchemaAtLayer(profileType, typeInfo.schema);
+        }
+
+        if (!addedToSchema) {
+            // Either the global schema doesn't exist, or the schema is web-based.
+            // We don't have any info to present, and both of these scenarios are technically possible, so fail silently
+            return {
+                success: false,
+                info: ""
+            };
         }
 
         // Update contents of extenders.json if it has changed
