@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added to `IOptionsForAddConnProps` and `ConnectionPropsForSessCfg` to allow logic around `supportedAuthTypes?: AUTH_TYPE_CHOICES[];` so that plugins which aren't supported by apiml can default to user/password even when apiml token is present. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+- Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
 
 ## `8.0.0-next.202403061549`
 
