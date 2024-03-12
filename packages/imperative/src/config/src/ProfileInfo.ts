@@ -1327,7 +1327,7 @@ export class ProfileInfo {
     private updateSchemaAtLayer(profileType: string, schema: IProfileSchema, versionChanged?: boolean): boolean {
         // Check if type already exists in schema cache; if so, update schema at the same layer.
         // Otherwise, update schema at the active layer.
-        const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.global);
+        const layerToUpdate = this.getTeamConfig().mLayers.find((l) => l.global && l.exists);
         if (layerToUpdate == null) {
             this.mImpLogger.trace("ProfileInfo.updateSchemaAtLayer returned false: global schema was not found.");
             return false;

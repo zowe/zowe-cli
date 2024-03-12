@@ -1419,12 +1419,15 @@ describe("TeamConfig ProfileInfo tests", () => {
             it("does nothing if there are no layers that match the built layer path", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-                (profInfo as any).mProfileSchemaCache = new Map();
-                (profInfo as any).mProfileSchemaCache.set("/some/nonexistent/layer/path:someUnregisteredProfType", {});
-                const writeFileSync = jest.spyOn(jsonfile, "writeFileSync");
-                writeFileSync.mockReset();
+                const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+                const getTeamCfgMock = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({
+                    mLayers: []
+                } as any);
+                writeFileSyncSpy.mockReset();
                 (profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any);
-                expect(writeFileSync).not.toHaveBeenCalled();
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+                expect(getTeamCfgMock).toHaveBeenCalled();
+                getTeamCfgMock.mockRestore();
             });
 
             // case 1: schema is the same as the cached one; do not write to disk
@@ -1537,7 +1540,19 @@ describe("TeamConfig ProfileInfo tests", () => {
                         profileTypes: {}
                     };
                 }
-                const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer").mockImplementation();
+                const activeLayer = {
+                    path: "/some/nonexistent/layer/path",
+                    exists: true,
+                    properties: { profiles: {}, defaults: {} },
+                    global: true,
+                    user: false,
+                };
+                const mockGetTeamConfig = jest.spyOn(ProfileInfo.prototype, "getTeamConfig").mockReturnValue({
+                    mLayers: [activeLayer],
+                    layerActive: () => activeLayer
+                } as any);
+                const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer")
+                    .mockReturnValue(expected.res.success);
                 const writeExtendersJsonMock = jest.spyOn(ProfileInfo, "writeExtendersJson").mockImplementation();
                 const res = profInfo.addProfileTypeToSchema("some-type", { ...testCase, sourceApp: "Zowe Client App" });
                 if (expected.res.success) {
@@ -1552,6 +1567,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 if (expected.res.info) {
                     expect(res.info).toBe(expected.res.info);
                 }
+                mockGetTeamConfig.mockRestore();
             };
             // case 1: Profile type did not exist
             it("adds a new profile type to the schema", async () => {
@@ -1683,12 +1699,18 @@ describe("TeamConfig ProfileInfo tests", () => {
             it("excludes types that do not match a given source", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-                profInfo.addProfileTypeToSchema("some-type-with-source", {
-                    sourceApp: "A Zowe App",
-                    schema: {} as any
-                });
+                (profInfo as any).mProfileSchemaCache.set("/some/nonexistent/layer/path:some-type-with-source", {} as any);
+                (profInfo as any).mExtendersJson.profileTypes["some-type-with-source"] = {
+                    from: ["A Zowe App"]
+                };
                 const cfgSchemaBuildMock = jest.spyOn(ConfigSchema, "buildSchema").mockImplementation();
-                profInfo.buildSchema(["A Zowe App"]);
+                profInfo.buildSchema(["A Zowe App"], {
+                    path: "/some/nonexistent/layer/path",
+                    exists: true,
+                    properties: { profiles: {}, defaults: {} },
+                    global: true,
+                    user: false,
+                });
                 expect(cfgSchemaBuildMock).toHaveBeenCalledWith([{
                     type: "some-type-with-source",
                     schema: {}
