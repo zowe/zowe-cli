@@ -31,6 +31,7 @@ import { ConfigUtils } from "../src/ConfigUtils";
 import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
+import { Logger } from "../..";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -1356,6 +1357,14 @@ describe("TeamConfig ProfileInfo tests", () => {
     });
 
     describe("Schema management", () => {
+        const testCfgLayer = {
+            path: "/some/nonexistent/layer/path",
+            exists: true,
+            properties: { profiles: {}, defaults: {} },
+            global: true,
+            user: false,
+        };
+
         // begin schema management tests
         describe("readExtendersJsonFromDisk", () => {
             // case 1: the JSON file doesn't exist at time of read
@@ -1428,6 +1437,46 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(writeFileSyncSpy).not.toHaveBeenCalled();
                 expect(getTeamCfgMock).toHaveBeenCalled();
                 getTeamCfgMock.mockRestore();
+            });
+
+            it("does nothing if the global layer is present, but the schema does not exist on disk", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+                const getTeamCfgMock = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({
+                    mLayers: [testCfgLayer]
+                } as any);
+                const loggerSpy = jest.spyOn(Logger.prototype, "trace");
+                const existsSyncMock = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+                existsSyncMock.mockReset();
+                writeFileSyncSpy.mockReset();
+                expect((profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any)).toBe(false);
+                expect(existsSyncMock).toHaveBeenCalled();
+                expect(loggerSpy).toHaveBeenCalledWith("ProfileInfo.updateSchemaAtLayer returned false: global schema was not found.");
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+                expect(getTeamCfgMock).toHaveBeenCalled();
+                getTeamCfgMock.mockRestore();
+                existsSyncMock.mockRestore();
+            });
+
+            it("does nothing if the global layer is present, but the schema is web-based", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+                const getTeamCfgMock = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({
+                    mLayers: [{ ...testCfgLayer, properties: { "$schema": "https://some-site-where-you-get-your-zowe-schema.com" } }]
+                } as any);
+                const loggerSpy = jest.spyOn(Logger.prototype, "trace");
+                const existsSyncMock = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+                existsSyncMock.mockReset();
+                writeFileSyncSpy.mockReset();
+                expect((profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any)).toBe(false);
+                expect(existsSyncMock).not.toHaveBeenCalled();
+                expect(loggerSpy).toHaveBeenCalledWith("ProfileInfo.updateSchemaAtLayer returned false as it cannot update web-based schemas.");
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+                expect(getTeamCfgMock).toHaveBeenCalled();
+                getTeamCfgMock.mockRestore();
+                existsSyncMock.mockRestore();
             });
 
             // case 1: schema is the same as the cached one; do not write to disk
@@ -1540,16 +1589,9 @@ describe("TeamConfig ProfileInfo tests", () => {
                         profileTypes: {}
                     };
                 }
-                const activeLayer = {
-                    path: "/some/nonexistent/layer/path",
-                    exists: true,
-                    properties: { profiles: {}, defaults: {} },
-                    global: true,
-                    user: false,
-                };
                 const mockGetTeamConfig = jest.spyOn(ProfileInfo.prototype, "getTeamConfig").mockReturnValue({
-                    mLayers: [activeLayer],
-                    layerActive: () => activeLayer
+                    mLayers: [testCfgLayer],
+                    layerActive: () => testCfgLayer
                 } as any);
                 const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer")
                     .mockReturnValue(expected.res.success);
