@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+- BugFix: Removing stack trace for zosjobs errors. [#2078](https://github.com/zowe/zowe-cli/pull/2078)
 
 ## `8.0.0-next.202403122137`
 

@@ -50,5 +50,12 @@ export const ZosJobsMessages: { [key: string]: IMessageDefinition } = {
     */
     missingSearchOption: {
         message: "You must specify either the `--search-string` or `--search-regex` option"
+    },
+
+    /**
+    * Message indicating that a failure has happened in the NodeJS File System API
+    */
+    nodeJsFsError: {
+        message: "Node.js File System API error"
     }
 };
