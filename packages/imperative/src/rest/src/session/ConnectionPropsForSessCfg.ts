@@ -144,8 +144,11 @@ export class ConnectionPropsForSessCfg {
             promptForValues.push("port");
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false) {
+        const isTokenIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false ||
+            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
+        const isCertIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false ||
+            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
+        if (isTokenIrrelevant && isCertIrrelevant) {
             if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.user) === false && !doNotPromptForValues.includes("user")) {
                 promptForValues.push("user");
             }
@@ -269,7 +272,11 @@ export class ConnectionPropsForSessCfg {
             // }
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue)) {
+        const isTokenUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) &&
+            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
+        const isCertUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.cert) &&
+            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
+        if (isTokenUsed) {
             // when tokenValue is set at this point, we are definitely using the token.
             impLogger.debug("Using token authentication");
 
@@ -285,7 +292,7 @@ export class ConnectionPropsForSessCfg {
                 // When no tokenType supplied, user wants bearer
                 sessCfg.type = SessConstants.AUTH_TYPE_BEARER;
             }
-        } else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.cert)) {
+        } else if (isCertUsed) {
             // when cert property is set at this point, we will use the certificate
             if (ConnectionPropsForSessCfg.propHasValue(sessCfg.certKey)) {
                 impLogger.debug("Using PEM Certificate authentication");

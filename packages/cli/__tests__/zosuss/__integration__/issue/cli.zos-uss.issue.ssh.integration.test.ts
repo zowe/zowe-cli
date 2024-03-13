@@ -45,5 +45,4 @@ describe("zos-uss issue ssh command", () => {
         expect(response.stderr.toString()).toContain('Command entered: "zos-uss issue ss"');
         expect(response.stderr.toString()).toContain('Use "zowe --help" to view groups, commands, and options.');
     });
-
 });
