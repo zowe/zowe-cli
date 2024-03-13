@@ -168,7 +168,7 @@ export class ConfigBuilder {
             ["pass", "password"]
         ];
 
-        // interate through all of the recorded profiles
+        // iterate through all of the recorded profiles
         for (const currProfNm of Object.keys(conversionResult.config.profiles)) {
             // iterate through the non-secure properties of the current profile
             const profPropsToConvert = [];

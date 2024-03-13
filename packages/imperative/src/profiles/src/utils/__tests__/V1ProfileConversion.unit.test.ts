@@ -9,8 +9,6 @@
 *
 */
 
-import Mock = jest.Mock;
-
 jest.mock("fs");
 jest.mock("../../../../io/src/IO");
 jest.mock("js-yaml");
@@ -76,24 +74,13 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if an error occurs reading the meta file", () => {
-        const meta = {
-            defaultProfile: [{
-                name: "sweet_blueberry",
-                type: BLUEBERRY_PROFILE_TYPE
-            }],
-            configuration: {
-                type: BLUEBERRY_PROFILE_TYPE,
-                schema: BLUEBERRY_TYPE_SCHEMA
-            }
-        };
-
         mocks.safeLoad.mockImplementation((args: any) => {
             throw new Error(err);
         });
 
         let error;
         try {
-            const readMeta = V1ProfileConversion.readMetaFile(TEST_DIR_PATH);
+            V1ProfileConversion.readMetaFile(TEST_DIR_PATH);
         } catch (e) {
             error = e;
         }
@@ -142,7 +129,6 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if the read directory IO error occurs", () => {
-        const types: string[] = [BLUEBERRY_PROFILE_TYPE, STRAWBERRY_PROFILE_TYPE, BANANA_PROFILE_TYPE];
         mocks.readdirSync.mockImplementation((path: any) => {
             throw new Error(err);
         });
@@ -171,14 +157,12 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if an IO error occurs getting profile names", () => {
-        const fileNames: string[] = ["rotten.yaml", "fresh.yaml", "apple_meta.yaml"];
-        const names: string[] = ["rotten", "fresh"];
         mocks.readdirSync.mockImplementation((path: any) => {
             throw new Error(err);
         });
         let error;
         try {
-            const returnedTypes: string[] = V1ProfileConversion.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
+            V1ProfileConversion.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
         } catch (e) {
             error = e;
         }
@@ -204,17 +188,12 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if a V1 Profile Conversion read error occurs", () => {
-        const prof: IProfile = {
-            name: "strawberries",
-            type: "strawberry",
-            amount: 1000
-        };
         mocks.safeLoad.mockImplementation((args: any) => {
             throw new Error(err);
         });
         let error;
         try {
-            const profile = V1ProfileConversion.readProfileFile(TEST_DIR_PATH, "strawberry");
+            V1ProfileConversion.readProfileFile(TEST_DIR_PATH, "strawberry");
         } catch (e) {
             error = e;
         }
