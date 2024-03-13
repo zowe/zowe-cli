@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202403132009`
 
 - LTS Breaking: Changed return type of `Upload.bufferToUssFile` to return `IZosFilesResponse` object instead of string. [#2089](https://github.com/zowe/zowe-cli/pull/2089)
 - BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2089](https://github.com/zowe/zowe-cli/pull/2089)

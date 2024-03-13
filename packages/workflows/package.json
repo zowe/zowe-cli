@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-workflows-for-zowe-sdk",
-  "version": "8.0.0-next.202403131702",
+  "version": "8.0.0-next.202403132009",
   "description": "Zowe SDK to interact with the z/OS workflows APIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,12 +45,12 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202403131702"
+    "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202403132009"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.0.0-next.202403131702",
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202403131702",
-    "@zowe/imperative": "8.0.0-next.202403131702"
+    "@zowe/cli-test-utils": "8.0.0-next.202403132009",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202403132009",
+    "@zowe/imperative": "8.0.0-next.202403132009"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
