@@ -273,9 +273,9 @@ export class ConnectionPropsForSessCfg {
         }
 
         const isTokenUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) &&
-            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes("token"));
+            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
         const isCertUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.cert) &&
-            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes("cert-pem"));
+            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
         if (isTokenUsed) {
             // when tokenValue is set at this point, we are definitely using the token.
             impLogger.debug("Using token authentication");

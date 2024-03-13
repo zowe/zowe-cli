@@ -21,11 +21,11 @@ import {
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError,
-    ConnectionPropsForSessCfg
+    ConnectionPropsForSessCfg,
+    SessConstants
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
-
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -67,7 +67,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
             sshSessCfg, commandParameters.arguments, {
                 parms: commandParameters,
                 propertyOverrides: sshSessCfgOverride,
-                supportedAuthTypes: ["basic"]
+                supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC]
             }
         );
         this.mSession = new SshSession(sshSessCfgWithCreds);
