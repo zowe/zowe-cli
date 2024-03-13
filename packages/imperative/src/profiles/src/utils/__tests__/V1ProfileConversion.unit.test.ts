@@ -134,7 +134,7 @@ describe("V1 Profile Conversion", () => {
         });
         let error;
         try {
-            const returnedTypes: string[] = V1ProfileConversion.getAllProfileDirectories(TEST_DIR_PATH);
+            V1ProfileConversion.getAllProfileDirectories(TEST_DIR_PATH);
         } catch (e) {
             error = e;
         }
