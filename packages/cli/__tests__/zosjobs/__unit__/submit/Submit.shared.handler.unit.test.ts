@@ -612,7 +612,7 @@ describe("submit shared handler", () => {
 
             expect(error).toBeUndefined();
             expect(SubmitJobs.submitJclString).toHaveBeenCalledTimes(1);
-            // expect(copy.response.console.log).toHaveBeenCalledTimes(4);
+            expect(copy.response.console.log).toHaveBeenCalledTimes(4);
             expect(LocalFileSpecified).toBe(`${badJCL}`);
             IO.deleteFile(theLocalFile);
         });
