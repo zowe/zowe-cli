@@ -1500,11 +1500,6 @@ export class ProfileInfo {
             wasGlobalUpdated = result.success;
         }
 
-        // If we could not add to the schema, return early
-        if (!result.success && !wasGlobalUpdated) {
-            return result;
-        }
-
         // Update contents of extenders.json if it has changed
         if (wasGlobalUpdated && !lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
             if (!ProfileInfo.writeExtendersJson(this.mExtendersJson)) {
