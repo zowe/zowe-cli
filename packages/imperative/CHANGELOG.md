@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed issue where `ProfileInfo.addProfileTypeToSchema` did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
+- BugFix: Fixed issue where the `ProfileInfo.addProfileTypeToSchema` function did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
 
 ## `5.22.4`
 
