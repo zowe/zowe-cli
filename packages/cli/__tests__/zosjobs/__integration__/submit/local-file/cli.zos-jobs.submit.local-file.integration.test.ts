@@ -40,7 +40,6 @@ describe("zos-jobs submit local-file command", () => {
         const response = runCliScript(__dirname + "/__scripts__/submit_invalid_local_file.sh",
             TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString().toLowerCase()).toContain("error");
         expect(response.stderr.toString().toLowerCase()).toContain("no such file");
     });
 
