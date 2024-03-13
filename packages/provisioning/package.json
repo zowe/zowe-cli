@@ -1,6 +1,6 @@
 {
   "name": "@zowe/provisioning-for-zowe-sdk",
-  "version": "8.0.0-next.202403061549",
+  "version": "8.0.0-next.202403122137",
   "description": "Zowe SDK to interact with the z/OS provisioning APIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -49,9 +49,9 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@zowe/cli-test-utils": "8.0.0-next.202403061549",
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202403061549",
-    "@zowe/imperative": "8.0.0-next.202403061549"
+    "@zowe/cli-test-utils": "8.0.0-next.202403122137",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202403122137",
+    "@zowe/imperative": "8.0.0-next.202403122137"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
