@@ -1316,11 +1316,11 @@ export class ProfileInfo {
     }
 
     /**
-     * Updates the schema to contain the new profile type.
-     * If the type exists in the cache, it will use the matching layer; if not found, it will use the schema at the active layer.
+     * Updates the schema of the provided config layer to contain the new profile type.
      *
      * @param {string} profileType The profile type to add into the schema
      * @param {IProfileSchema} typeSchema The schema for the profile type
+     * @param {IConfigLayer} layer The config layer that matches the schema to update
      * @param [versionChanged] Whether the version has changed for the schema (optional)
      * @returns {boolean} `true` if added to the schema; `false` otherwise
      */
