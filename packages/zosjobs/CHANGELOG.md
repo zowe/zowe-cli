@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202403131702`
 
 - BugFix: Removing stack trace for zosjobs errors. Added constant to JobsMessages.ts for error handling. [#2078](https://github.com/zowe/zowe-cli/pull/2078)
 
