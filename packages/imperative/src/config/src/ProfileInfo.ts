@@ -1338,8 +1338,10 @@ export class ProfileInfo {
         const sameSchemaExists = this.mProfileSchemaCache.has(cacheKey) && lodash.isEqual(transformedSchemaProps, transformedCacheProps);
         // Update the cache with the newest schema for this profile type
         this.mProfileSchemaCache.set(cacheKey, schema);
+        const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
+        const schemaPath = url.fileURLToPath(schemaUri);
 
-        if (!fs.existsSync(layer.path)) {
+        if (!fs.existsSync(schemaPath)) {
             this.mImpLogger.trace(
                 "ProfileInfo.updateSchemaAtLayer returned false: the schema does not exist on disk for this layer."
             );
@@ -1348,7 +1350,7 @@ export class ProfileInfo {
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
         if (versionChanged || !sameSchemaExists) {
-            jsonfile.writeFileSync(layer.path, this.buildSchema([], layer), { spaces: 4 });
+            jsonfile.writeFileSync(schemaPath, this.buildSchema([], layer), { spaces: 4 });
         }
 
         return true;
@@ -1499,7 +1501,7 @@ export class ProfileInfo {
         }
 
         // If we could not add to the schema, return early
-        if (!result.success) {
+        if (!result.success && !wasGlobalUpdated) {
             return result;
         }
 
