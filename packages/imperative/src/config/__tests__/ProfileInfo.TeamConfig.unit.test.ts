@@ -1425,57 +1425,31 @@ describe("TeamConfig ProfileInfo tests", () => {
                 };
             };
 
-            it("does nothing if there are no layers that match the built layer path", async () => {
+            it("does nothing if the layer parameter is invalid", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
                 const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-                const getTeamCfgMock = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({
-                    mLayers: []
-                } as any);
+                const loggerSpy = jest.spyOn(Logger.prototype, "trace");
                 writeFileSyncSpy.mockReset();
-                (profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any);
+                (profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any, null);
+                expect(loggerSpy).toHaveBeenCalledWith("ProfileInfo.updateSchemaAtLayer returned false: config layer does not exist.");
                 expect(writeFileSyncSpy).not.toHaveBeenCalled();
-                expect(getTeamCfgMock).toHaveBeenCalled();
-                getTeamCfgMock.mockRestore();
             });
 
             it("does nothing if the global layer is present, but the schema does not exist on disk", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
                 await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
                 const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-                const getTeamCfgMock = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({
-                    mLayers: [testCfgLayer]
-                } as any);
                 const loggerSpy = jest.spyOn(Logger.prototype, "trace");
                 const existsSyncMock = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
                 existsSyncMock.mockReset();
                 writeFileSyncSpy.mockReset();
-                expect((profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any)).toBe(false);
+                expect((profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any, testCfgLayer)).toBe(false);
                 expect(existsSyncMock).toHaveBeenCalled();
-                expect(loggerSpy).toHaveBeenCalledWith("ProfileInfo.updateSchemaAtLayer returned false: global schema was not found.");
+                expect(loggerSpy).toHaveBeenCalledWith(
+                    "ProfileInfo.updateSchemaAtLayer returned false: the schema does not exist on disk for this layer."
+                );
                 expect(writeFileSyncSpy).not.toHaveBeenCalled();
-                expect(getTeamCfgMock).toHaveBeenCalled();
-                getTeamCfgMock.mockRestore();
-                existsSyncMock.mockRestore();
-            });
-
-            it("does nothing if the global layer is present, but the schema is web-based", async () => {
-                const profInfo = createNewProfInfo(teamProjDir);
-                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-                const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-                const getTeamCfgMock = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({
-                    mLayers: [{ ...testCfgLayer, properties: { "$schema": "https://some-site-where-you-get-your-zowe-schema.com" } }]
-                } as any);
-                const loggerSpy = jest.spyOn(Logger.prototype, "trace");
-                const existsSyncMock = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
-                existsSyncMock.mockReset();
-                writeFileSyncSpy.mockReset();
-                expect((profInfo as any).updateSchemaAtLayer("someUnregisteredProfType", {} as any)).toBe(false);
-                expect(existsSyncMock).not.toHaveBeenCalled();
-                expect(loggerSpy).toHaveBeenCalledWith("ProfileInfo.updateSchemaAtLayer returned false as it cannot update web-based schemas.");
-                expect(writeFileSyncSpy).not.toHaveBeenCalled();
-                expect(getTeamCfgMock).toHaveBeenCalled();
-                getTeamCfgMock.mockRestore();
                 existsSyncMock.mockRestore();
             });
 
@@ -1489,7 +1463,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 const dummySchema = profInfo.getSchemaForType("dummy");
                 blockMocks.buildSchema.mockReturnValueOnce({} as any);
                 writeFileSyncMock.mockClear();
-                (profInfo as any).updateSchemaAtLayer("dummy", dummySchema);
+                (profInfo as any).updateSchemaAtLayer("dummy", dummySchema, testCfgLayer);
                 expect(writeFileSyncMock).not.toHaveBeenCalled();
             });
 
@@ -1501,7 +1475,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 // not a major adjustment to schema - mainly to test schema comparison
                 blockMocks.buildSchema.mockReturnValueOnce({} as any);
                 jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-                (profInfo as any).updateSchemaAtLayer("dummy", {});
+                (profInfo as any).updateSchemaAtLayer("dummy", {}, testCfgLayer);
                 expect(writeFileSyncMock).toHaveBeenCalled();
             });
         });
