@@ -1404,16 +1404,15 @@ export class ProfileInfo {
                         if (semver.major(typeInfo.schema.version) != semver.major(prevTypeVersion)) {
                             // Warn user if new major schema version is specified
                             infoMsg =
-                            `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n`.concat(
-                                `The following applications may be affected: ${typeMetadata.from.filter((src) => src !== typeInfo.sourceApp)}`
-                            );
+                            `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n` +
+                                `The following applications may be affected: ${typeMetadata.from.filter((src) => src !== typeInfo.sourceApp)}`;
                         }
                     } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.schema.version)) {
                         // Warn user if previous schema version is a newer major version
                         return {
                             success: false,
-                            info: `Profile type ${profileType} expects a newer schema version than provided by ${typeInfo.sourceApp}\n`.concat(
-                                `(expected: v${typeInfo.schema.version}, installed: v${prevTypeVersion})`)
+                            info: `Profile type ${profileType} expects a newer schema version than provided by ${typeInfo.sourceApp}\n` +
+                                `(expected: v${typeInfo.schema.version}, installed: v${prevTypeVersion})`
                         };
                     }
                 } else {
@@ -1442,8 +1441,8 @@ export class ProfileInfo {
                     !lodash.isEqual(schemaProps, cachedSchemaProps)) {
                     return {
                         success: false,
-                        info: `Both the old and new schemas are unversioned for ${profileType}, but the schemas are different. `.concat(
-                            "The new schema was not written to disk, but will still be accessible in-memory.")
+                        info: `Both the old and new schemas are unversioned for ${profileType}, but the schemas are different. ` +
+                            "The new schema was not written to disk, but will still be accessible in-memory."
                     };
                 }
             }
@@ -1457,10 +1456,7 @@ export class ProfileInfo {
             addedToSchema = this.updateSchemaAtLayer(profileType, typeInfo.schema, layer);
         }
 
-        return {
-            success: addedToSchema,
-            info: infoMsg
-        };
+        return { success: addedToSchema, info: infoMsg };
     }
 
     /**
@@ -1497,7 +1493,7 @@ export class ProfileInfo {
                 result.success = this.updateSchemaAtLayer(profileType, typeInfo.schema, activeLayer);
             }
             wasGlobalUpdated = this.addToGlobalSchema(profileType, typeInfo).success;
-        } else if (activeLayer.global && activeLayer.exists) {
+        } else {
             result = this.addToGlobalSchema(profileType, typeInfo);
             wasGlobalUpdated = result.success;
         }
