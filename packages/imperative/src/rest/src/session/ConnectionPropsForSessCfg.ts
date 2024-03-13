@@ -145,9 +145,9 @@ export class ConnectionPropsForSessCfg {
         }
 
         const isTokenIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false ||
-            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes("token"));
+            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
         const isCertIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false ||
-            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes("cert-pem"));
+            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
         if (isTokenIrrelevant && isCertIrrelevant) {
             if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.user) === false && !doNotPromptForValues.includes("user")) {
                 promptForValues.push("user");
