@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202403141949`
 - LTS Breaking: Modified the @zowe/imperative SDK [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Renamed class ProfileIO to V1ProfileConversion.
     - Removed the following obsolete V1 profile functions:
