@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2091](https://github.com/zowe/zowe-cli/pull/2091)
+
 ## `7.21.3`
 
 - BugFix: Corrects the behavior of `Create.dataSetLike` so that the new data set is always defined with the correct block size [#2610](https://github.com/zowe/vscode-extension-for-zowe/issues/2610)
