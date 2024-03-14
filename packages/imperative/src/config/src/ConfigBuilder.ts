@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as lodash from "lodash";
-import { ProfileIO, ProfilesConstants, ProfileUtils } from "../../profiles";
+import { V1ProfileConversion, ProfilesConstants, ProfileUtils } from "../../profiles";
 import { IImperativeConfig } from "../../imperative";
 import { Config } from "./Config";
 import { IConfig } from "./doc/IConfig";
@@ -99,9 +99,9 @@ export class ConfigBuilder {
             profilesFailed: []
         };
 
-        for (const profileType of ProfileIO.getAllProfileDirectories(profilesRootDir)) {
+        for (const profileType of V1ProfileConversion.getAllProfileDirectories(profilesRootDir)) {
             const profileTypeDir = path.join(profilesRootDir, profileType);
-            const profileNames = ProfileIO.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
+            const profileNames = V1ProfileConversion.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
             if (profileNames.length === 0) {
                 continue;
             }
@@ -109,7 +109,7 @@ export class ConfigBuilder {
             for (const profileName of profileNames) {
                 try {
                     const profileFilePath = path.join(profileTypeDir, `${profileName}.yaml`);
-                    const profileProps = ProfileIO.readProfileFile(profileFilePath, profileType);
+                    const profileProps = V1ProfileConversion.readProfileFile(profileFilePath, profileType);
                     const secureProps = [];
 
                     for (const [key, value] of Object.entries(profileProps)) {
@@ -139,7 +139,7 @@ export class ConfigBuilder {
 
             try {
                 const metaFilePath = path.join(profileTypeDir, `${profileType}_meta.yaml`);
-                const profileMetaFile = ProfileIO.readMetaFile(metaFilePath);
+                const profileMetaFile = V1ProfileConversion.readMetaFile(metaFilePath);
                 if (profileMetaFile.defaultProfile != null) {
                     result.config.defaults[profileType] = ProfileUtils.getProfileMapKey(profileType, profileMetaFile.defaultProfile);
                 }
@@ -168,7 +168,7 @@ export class ConfigBuilder {
             ["pass", "password"]
         ];
 
-        // interate through all of the recorded profiles
+        // iterate through all of the recorded profiles
         for (const currProfNm of Object.keys(conversionResult.config.profiles)) {
             // iterate through the non-secure properties of the current profile
             const profPropsToConvert = [];

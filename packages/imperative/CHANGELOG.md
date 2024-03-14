@@ -2,6 +2,23 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- LTS Breaking: Modified the @zowe/imperative SDK [#1703](https://github.com/zowe/zowe-cli/issues/1703)
+  - Renamed class ProfileIO to V1ProfileConversion.
+    - Removed the following obsolete V1 profile functions:
+      - createProfileDirs
+      - deleteProfile
+      - exists
+      - writeMetaFile
+      - writeProfile
+    - Removed the following obsolete V1 profile constant:
+      - MAX_YAML_DEPTH
+    - Changed fileToProfileName from public to private
+  - Removed deprecated function ConfigProfiles.expandPath
+    - Use ConfigProfiles.getProfilePathFromName
+  - Removed deprecated function ProcessUtils.execAndCheckOutput
+    - Use ExecUtils.spawnAndGetOutput
+
 ## `8.0.0-next.202403132009`
 
 - Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
@@ -105,7 +122,7 @@ All notable changes to the Imperative package will be documented in this file.
         - getAll
       - ImperativeProfileManagerFactory
       - ProfileInfo.usingTeamConfig
-        - To detect if a team config exists, use ProfileInfo.getTeamConfig
+        - To detect if a team config exists, use ProfileInfo.getTeamConfig().exists
         - To detect if only V1 profiles exist, use ProfileInfo.onlyV1ProfilesExist
 
     - @zowe/zos-uss-for-zowe-sdk

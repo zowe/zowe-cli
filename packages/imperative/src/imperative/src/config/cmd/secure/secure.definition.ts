@@ -35,7 +35,7 @@ export const secureDefinition: ICommandDefinition = {
         },
         {
             name: "prune",
-            description: "Delete properties stored in the vault for team config files that do not exist.",
+            description: "Delete properties stored in the vault for Zowe client config files that do not exist.",
             aliases: ["p"],
             type: "boolean",
             defaultValue: false

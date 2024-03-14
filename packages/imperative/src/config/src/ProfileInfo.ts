@@ -398,7 +398,7 @@ export class ProfileInfo {
         if (!Object.prototype.hasOwnProperty.call(configProperties.defaults, profileType)) {
             // no default exists for the requested type
             this.mImpLogger.warn("Found no profile of type '" +
-                profileType + "' in team config."
+                profileType + "' in Zowe client configuration."
             );
             return null;
         }

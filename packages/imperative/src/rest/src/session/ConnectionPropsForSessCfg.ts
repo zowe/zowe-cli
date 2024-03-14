@@ -375,7 +375,7 @@ export class ConnectionPropsForSessCfg {
                 if (ConfigUtils.onlyV1ProfilesExist) {
                     connOpts.parms.response.console.log(
                         "Only V1 profiles exist. V1 profiles are no longer supported.\n" +
-                        "You should convert your V1 profiles to a Zowe client team configuration."
+                        "You should convert your V1 profiles to a newer Zowe client configuration."
                     );
                 }
                 connOpts.parms.response.console.log(
