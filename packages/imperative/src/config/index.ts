@@ -21,7 +21,7 @@ export * from "./src/ProfInfoErr";
 export * from "./src/doc/IConfig";
 export * from "./src/doc/IConfigAutoStoreOpts";
 export * from "./src/doc/IConfigBuilderOpts";
-export * from "./src/doc/IConfigConvertResult";
+export * from "./src/doc/IConfigConvert";
 export * from "./src/doc/IConfigLayer";
 export * from "./src/doc/IConfigOpts";
 export * from "./src/doc/IConfigProfile";
