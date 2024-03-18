@@ -10,9 +10,9 @@
 */
 
 /**
- * This is the structure of the input options to be supplied to ConfigBuilder.convert.
+ * This is the structure of the input options to be supplied to ConvertV1Profiles.convert.
  */
-export interface IConfigConvertOpts {
+export interface IConvertV1ProfOpts {
     // Should V1 profiles be deleted after conversion?
     deleteV1Profs: boolean;
 }
@@ -43,9 +43,9 @@ export class ConvertMsg {
 }
 
 /**
- * This is the structure of the result from ConfigBuilder.convert.
+ * This is the structure of the result from ConvertV1Profiles.convert.
  */
-export interface IConfigConvertResult {
+export interface IConvertV1ProfResult {
     /**
      * A report of actions and any error messages are contained in msgs.
      * Each entry contains one line of text. No formatting or newlines are embedded.

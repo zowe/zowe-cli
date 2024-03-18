@@ -10,8 +10,8 @@
 */
 
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { ConfigBuilder } from "../../../../../config";
-import { IConfigConvertOpts, IConfigConvertResult } from "../../../../../config";
+import { ConvertV1Profiles } from "../../../../../config";
+import { IConvertV1ProfOpts, IConvertV1ProfResult } from "../../../../../config";
 
 /**
  * Handler for the convert profiles command.
@@ -25,7 +25,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
      * @throws {ImperativeError}
      */
     public async process(params: IHandlerParameters): Promise<void> {
-        const convertOpts: IConfigConvertOpts = {
+        const convertOpts: IConvertV1ProfOpts = {
             deleteV1Profs: false
         };
 
@@ -43,7 +43,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             }
         }
 
-        const convertResult: IConfigConvertResult = await ConfigBuilder.convertV1Profiles(convertOpts);
+        const convertResult: IConvertV1ProfResult = await ConvertV1Profiles.convert(convertOpts);
 
         // display all of the messages reported by the conversion API
         for (const nextMsg of convertResult.msgs) {
