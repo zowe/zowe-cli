@@ -449,7 +449,7 @@ export class Upload {
      * @param {string} ussname          - Name of the USS file to write to
      * @param {Buffer} buffer          - Data to be written
      * @param {IUploadOptions}  [options={}] - Uploading options
-     * @returns {Promise<object>}
+     * @returns {Promise<string>}
      */
     public static async bufferToUssFile(session: AbstractSession,
         ussname: string,
@@ -462,6 +462,10 @@ export class Upload {
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const headers: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "buffer");
 
+        if (!options.binary) {
+            buffer = ZosFilesUtils.normalizeNewline(buffer);
+        }
+
         return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
     }
 
@@ -469,11 +473,10 @@ export class Upload {
      * Upload content to USS file
      * @param {AbstractSession} session - z/OS connection info
      * @param {string} ussname          - Name of the USS file to write to
-     * @param {Buffer} uploadStream          - Data to be written
+     * @param {Stream} uploadStream          - Data to be written
      * @param {IUploadOptions}  [options={}] - Uploading options
      * @returns {Promise<IZosFilesResponse>} - A response indicating the outcome
      */
-
     public static async streamToUssFile(session: AbstractSession,
         ussname: string,
         uploadStream: Readable,
