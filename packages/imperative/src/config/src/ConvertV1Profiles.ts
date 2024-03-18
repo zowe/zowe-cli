@@ -23,11 +23,13 @@ import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { AppSettings } from "../../settings";
 import { ImperativeConfig } from "../../utilities";
 import { PluginIssues } from "../../imperative/src/plugins/utilities/PluginIssues";
-import { uninstall as uninstallPlugin } from "../../imperative/src/plugins/utilities/npm-interface";
 import { CredentialManagerOverride } from "../../security/src/CredentialManagerOverride";
 import { OverridesLoader } from "../../imperative/src/OverridesLoader";
 import { ConfigSchema } from "./ConfigSchema";
 import { Logger } from "../../logger";
+
+// avoid importing from npm-interface/index.ts to avoid circular dependency
+import { uninstall as uninstallPlugin } from "../../imperative/src/plugins/utilities/npm-interface/uninstall";
 
 interface IOldPluginInfo {
     /**
