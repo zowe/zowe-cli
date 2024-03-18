@@ -14,7 +14,7 @@ import * as fsExtra from "fs-extra";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { Config, ConfigBuilder, ConfigSchema } from "../../../../../config";
 import { IHandlerParameters } from "../../../../../cmd";
-import { V1ProfileConversion } from "../../../../../profiles";
+import { V1ProfileRead } from "../../../../../profiles";
 import { AppSettings } from "../../../../../settings";
 import { ImperativeConfig } from "../../../../../utilities";
 import * as npmInterface from "../../../../src/plugins/utilities/npm-interface";
@@ -736,8 +736,8 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("getOldProfileCount should find multiple types of profiles", () => {
-        jest.spyOn(V1ProfileConversion, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
-        jest.spyOn(V1ProfileConversion, "getAllProfileNames")
+        jest.spyOn(V1ProfileRead, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
+        jest.spyOn(V1ProfileRead, "getAllProfileNames")
             .mockReturnValueOnce(["apple", "banana", "coconut"])
             .mockReturnValueOnce(["almond", "brazil", "cashew"]);
 

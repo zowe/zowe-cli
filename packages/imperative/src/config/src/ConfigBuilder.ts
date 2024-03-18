@@ -14,7 +14,7 @@ import * as path from "path";
 import * as lodash from "lodash";
 import { removeSync } from "fs-extra";
 import stripAnsi = require("strip-ansi");
-import { V1ProfileConversion, ProfilesConstants, ProfileUtils } from "../../profiles";
+import { V1ProfileRead, ProfilesConstants, ProfileUtils } from "../../profiles";
 import { IImperativeConfig } from "../../imperative";
 import { Config } from "./Config";
 import { IConfig } from "./doc/IConfig";
@@ -223,9 +223,9 @@ export class ConfigBuilder {
          */
         await OverridesLoader.ensureCredentialManagerLoaded();
 
-        for (const profileType of V1ProfileConversion.getAllProfileDirectories(ConfigBuilder.profilesRootDir)) {
+        for (const profileType of V1ProfileRead.getAllProfileDirectories(ConfigBuilder.profilesRootDir)) {
             const profileTypeDir = path.join(ConfigBuilder.profilesRootDir, profileType);
-            const profileNames = V1ProfileConversion.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
+            const profileNames = V1ProfileRead.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
             if (profileNames.length === 0) {
                 continue;
             }
@@ -233,7 +233,7 @@ export class ConfigBuilder {
             for (const profileName of profileNames) {
                 try {
                     const profileFilePath = path.join(profileTypeDir, `${profileName}.yaml`);
-                    const profileProps = V1ProfileConversion.readProfileFile(profileFilePath, profileType);
+                    const profileProps = V1ProfileRead.readProfileFile(profileFilePath, profileType);
                     const secureProps = [];
 
                     for (const [key, value] of Object.entries(profileProps)) {
@@ -265,7 +265,7 @@ export class ConfigBuilder {
 
             try {
                 const metaFilePath = path.join(profileTypeDir, `${profileType}_meta.yaml`);
-                const profileMetaFile = V1ProfileConversion.readMetaFile(metaFilePath);
+                const profileMetaFile = V1ProfileRead.readMetaFile(metaFilePath);
                 if (profileMetaFile.defaultProfile != null) {
                     convertedConfig.defaults[profileType] = ProfileUtils.getProfileMapKey(profileType, profileMetaFile.defaultProfile);
                 }
@@ -646,11 +646,11 @@ export class ConfigBuilder {
      * @returns Number of old profiles found
      */
     private static getOldProfileCount(profilesRootDir: string): number {
-        const profileTypes = V1ProfileConversion.getAllProfileDirectories(profilesRootDir);
+        const profileTypes = V1ProfileRead.getAllProfileDirectories(profilesRootDir);
         let oldProfileCount = 0;
         for (const profileType of profileTypes) {
             const profileTypeDir = path.join(profilesRootDir, profileType);
-            const profileNames = V1ProfileConversion.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
+            const profileNames = V1ProfileRead.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
             oldProfileCount += profileNames.length;
         }
         return oldProfileCount;
