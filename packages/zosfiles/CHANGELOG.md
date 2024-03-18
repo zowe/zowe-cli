@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.23.7`
 
 - BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2091](https://github.com/zowe/zowe-cli/pull/2091)
 
