@@ -28,6 +28,7 @@ const readYaml = require("js-yaml");
  *
  * @export
  * @class V1ProfileRead
+ * @internal
  */
 export class V1ProfileRead {
     /**
