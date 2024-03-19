@@ -54,12 +54,13 @@ export interface IConvertV1ProfResult {
     msgs: ConvertMsg[];
 
     /**
-     * The following two objects contain the names of converted profiles and profiles
-     * that we failed to convert. By displaying the values in the 'msgs' property,
-     * the caller need not use the following properties. However, should the caller
-     * decide to take special action or display custom messages, the following two
-     * properties provide lists of profiles that succeeded or failed in the conversion.
+     * The following properties contain information about the success or failure of
+     * the conversion of V1 profiles. By displaying the values in the 'msgs' property,
+     * the caller need not use the following properties. However, caller could
+     * decide to take special action or display custom messages, using the following
+     * properties.
      */
+    cfgFilePathNm: string;  // existing or newly-created Zowe client config file name
     numProfilesFound: number;
     profilesConverted: { [key: string]: string[] };
     profilesFailed: {

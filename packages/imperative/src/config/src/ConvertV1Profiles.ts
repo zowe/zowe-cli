@@ -43,6 +43,9 @@ interface IOldPluginInfo {
 }
 
 export class ConvertV1Profiles {
+    private static readonly noCfgFilePathNm: string = "CouldNotGetPathToConfigFile";
+
+    private static convertOpts: IConvertV1ProfOpts = null;
     private static convertResult: IConvertV1ProfResult = null;
     private static profilesRootDir: string = "NotYetSet";
     private static oldProfilesDir: string = "NotYetSet";
@@ -64,42 +67,32 @@ export class ConvertV1Profiles {
         // initialize our result, which will be used by our utility functions, and returned by us
         ConvertV1Profiles.convertResult = {
             msgs: [],
+            cfgFilePathNm: ConvertV1Profiles.noCfgFilePathNm,
             numProfilesFound: 0,
             profilesConverted: {},
             profilesFailed: []
         };
+
+        // record our conversion options so that our utility functions can access them
+        ConvertV1Profiles.convertOpts = convertOpts;
+
         try {
             ConvertV1Profiles.profilesRootDir = ProfileUtils.constructProfilesRootDirectory(ImperativeConfig.instance.cliHome);
             ConvertV1Profiles.oldProfilesDir = `${ConvertV1Profiles.profilesRootDir.replace(/[\\/]$/, "")}-old`;
-            let newCfgFilePathNm: string;
 
             if (ConvertV1Profiles.isConversionNeeded()) {
-                newCfgFilePathNm = await ConvertV1Profiles.moveV1ProfilesToConfigFile();
+                await ConvertV1Profiles.moveV1ProfilesToConfigFile();
                 ConvertV1Profiles.removeOldOverrides();
             }
 
             if (convertOpts.deleteV1Profs){
                 await ConvertV1Profiles.deleteV1Profiles();
-            } else {
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE,
-                    `Your old V1 profiles have been moved to ${ConvertV1Profiles.oldProfilesDir}.` +
-                    `Delete them by re-running this operation and requesting deletion.`
-                );
-
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
-                    `If you want to restore your V1 profiles to convert them again, ` +
-                    `rename the 'profiles-old' directory to 'profiles' and delete the new config file ` +
-                    `located at ${newCfgFilePathNm}.`
-                );
             }
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                "Encountered the following error while trying to convert V1 profiles."
+                "Encountered the following error while trying to convert V1 profiles:"
             );
-
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 stripAnsi(error.message)
@@ -119,9 +112,11 @@ export class ConvertV1Profiles {
 
         if (ImperativeConfig.instance.config?.exists) {
             // We do not convert if we already have an existing zowe client config
+            ConvertV1Profiles.putCfgFileNmInResult(ImperativeConfig.instance.config);
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.REPORT_LINE,
-                "A current Zowe client configuration was detected. V1 profiles will not be converted."
+                `A current Zowe client configuration was found at ${ConvertV1Profiles.convertResult.cfgFilePathNm}. ` +
+                `V1 profiles will not be converted.`
             );
         } else {
             // with no client config, the existence of old V1 profiles dictates if we will convert
@@ -146,7 +141,7 @@ export class ConvertV1Profiles {
      *
      * @returns The path name to the new zowe client config file (null upon failure).
      */
-    private static async moveV1ProfilesToConfigFile(): Promise<string> {
+    private static async moveV1ProfilesToConfigFile(): Promise<void> {
         const convertedConfig: IConfig = Config.empty();
 
         /* Only the convert-profiles command is able to disable the credential manager
@@ -245,69 +240,84 @@ export class ConvertV1Profiles {
             }
         }
 
-        return await ConvertV1Profiles.createNewConfigFile(convertedConfig);
+        await ConvertV1Profiles.createNewConfigFile(convertedConfig);
     }
 
     /**
      * Create a new zowe client config file from an IConfig object.
+     * Store the name of the new config file in our convertResult object.
      *
      * @param convertedConfig IConfig object created as a result of V1 profile conversion.
      * @returns string - Path name to the newly created config file.
      */
-    private static async createNewConfigFile(convertedConfig: IConfig): Promise<string> {
+    private static async createNewConfigFile(convertedConfig: IConfig): Promise<void> {
         const newConfig = ImperativeConfig.instance.config;
         newConfig.api.layers.activate(false, true);
         newConfig.api.layers.merge(convertedConfig);
         ConfigSchema.updateSchema();
         await newConfig.save();
+        ConvertV1Profiles.putCfgFileNmInResult(newConfig);
 
-        let newParaChoice: number = ConvertMsgFmt.PARAGRAPH;
         try {
             fs.renameSync(ConvertV1Profiles.profilesRootDir, ConvertV1Profiles.oldProfilesDir);
+
+            // Only tell the user about moving the V1 profiles if we are NOT going to delete them
+            if (!ConvertV1Profiles.convertOpts.deleteV1Profs) {
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
+                    `Your old V1 profiles have been moved to ${ConvertV1Profiles.oldProfilesDir}. ` +
+                    `Delete them by re-running this operation and requesting deletion.`
+                );
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.REPORT_LINE,
+                    `If you want to restore your V1 profiles (to convert them again), ` +
+                    `rename the 'profiles-old' directory to 'profiles' and delete the new config file ` +
+                    `located at ${ConvertV1Profiles.convertResult.cfgFilePathNm}.`
+                );
+            }
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | newParaChoice,
+                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
                 `Failed to rename profiles directory to ${ConvertV1Profiles.oldProfilesDir}:`
             );
-            newParaChoice = 0;
-
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 error.message
             );
         }
 
-        let newCfgFilePathNm: string = null;
-        try {
-            newCfgFilePathNm = newConfig.layerActive().path;
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.REPORT_LINE | newParaChoice,
-                `Your new profiles have been saved to ${newCfgFilePathNm}.`
-            );
+        ConvertV1Profiles.addToConvertMsgs(
+            ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
+            `Your new profiles have been saved to ${ConvertV1Profiles.convertResult.cfgFilePathNm}.`
+        );
+        ConvertV1Profiles.addToConvertMsgs(
+            ConvertMsgFmt.REPORT_LINE,
+            "To make changes, edit that file in an editor of your choice."
+        );
+    }
 
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.REPORT_LINE,
-                "To make changes, edit that file in an editor of your choice."
-            );
+    /**
+     * Put the path name to the config file, obtained from the supplied Config object,
+     * into our result object.
+     *
+     * @param configForPath The config object from which we will extract the path.
+     */
+    private static putCfgFileNmInResult(configForPath: Config): void {
+        try {
+            ConvertV1Profiles.convertResult.cfgFilePathNm = configForPath?.layerActive().path;
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | newParaChoice,
-                "Failed to retrieve the path to the new config file."
+                ConvertMsgFmt.ERROR_LINE,
+                "Failed to retrieve the path to the config file."
             );
-
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 error.message
             );
-
-            newCfgFilePathNm = null;
         }
-
-        if (newCfgFilePathNm === null) {
-            newCfgFilePathNm = "UnableToGetPathToNewConfigFile";
+        if (!ConvertV1Profiles.convertResult.cfgFilePathNm) {
+            ConvertV1Profiles.convertResult.cfgFilePathNm = ConvertV1Profiles.noCfgFilePathNm;
         }
-
-        return newCfgFilePathNm;
     }
 
     /**
@@ -327,7 +337,6 @@ export class ConvertV1Profiles {
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
                 `Failed to delete the profiles directory '${ConvertV1Profiles.oldProfilesDir}'`
             );
-
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 error.message
@@ -390,7 +399,6 @@ export class ConvertV1Profiles {
                         ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
                         "Failed to replace credential manager override setting."
                     );
-
                     ConvertV1Profiles.addToConvertMsgs(
                         ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                         stripAnsi(error.message)
@@ -432,7 +440,6 @@ export class ConvertV1Profiles {
                     ConvertMsgFmt.ERROR_LINE | firstLineNewPara,
                     `Failed to uninstall plug-in "${pluginName}"`
                 );
-
                 ConvertV1Profiles.addToConvertMsgs(
                     ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                     stripAnsi(error.message)
@@ -611,7 +618,6 @@ export class ConvertV1Profiles {
                 ConvertMsgFmt.ERROR_LINE,
                 `Encountered an error while gathering profiles for service '${acct}':`
             );
-
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 error.message
@@ -636,7 +642,6 @@ export class ConvertV1Profiles {
                 ConvertMsgFmt.ERROR_LINE,
                 `Encountered an error while deleting secure data for service '${acct}/${propName}':`
             );
-
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 error.message
