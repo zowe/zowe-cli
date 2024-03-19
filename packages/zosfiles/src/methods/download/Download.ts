@@ -93,6 +93,9 @@ export class Download {
             }
 
             endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
+            if (options.queryParams) {
+                endpoint += options.queryParams;
+            }
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

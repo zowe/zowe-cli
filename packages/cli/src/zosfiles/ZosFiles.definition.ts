@@ -27,6 +27,7 @@ import { UnmountDefinition } from "./unmount/Unmount.definition";
 import { UploadDefinition } from "./upload/Upload.definition";
 import { ViewDefinition } from "./view/View.definition";
 import { ZosFilesOptionDefinitions } from "./ZosFiles.options";
+import { SearchDefinition } from "./search/Search.definition";
 
 /**
  * This object defines the top level command group for zosfiles. This is not
@@ -53,6 +54,7 @@ const definition: ICommandDefinition = {
         ListDefinition,
         MountDefinition,
         RenameDefinition,
+        SearchDefinition,
         UnmountDefinition,
         UploadDefinition,
         ViewDefinition

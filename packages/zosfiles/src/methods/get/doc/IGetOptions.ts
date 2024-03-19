@@ -23,4 +23,11 @@ export interface IGetOptions extends IOptions {
      * @memberof IGetOptions
      */
     range?: string;
+
+    /**
+     * Optional query parameters
+     * @type {string}
+     * @memberof IGetOptions
+     */
+    queryParams?: string
 }
