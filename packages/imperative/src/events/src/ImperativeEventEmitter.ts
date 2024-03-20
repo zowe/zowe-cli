@@ -182,6 +182,9 @@ export class ImperativeEventEmitter {
 
                 return this.mInstance;
             }
+
+            // (new imperative.ImperativeEventEmitter("onVaultChanged")).instance.registerAction(() => {})
+            // The instance should prevent multiple actions from being registered
         */
 
         return ImperativeEventEmitter.nodejsImplementation(eventType, callback);

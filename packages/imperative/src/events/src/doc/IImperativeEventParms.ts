@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import { Logger } from "../../../logger";
 import { ImperativeEventType } from "../ImperativeEventConstants";
 
