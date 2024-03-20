@@ -12,7 +12,7 @@ class HealthCheckHandler {
     process(params) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Invoked health check handler");
-            params.response.build();
+            yield params.response.build();
         });
     }
 }

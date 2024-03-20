@@ -806,7 +806,7 @@ describe("Create data set", () => {
             );
         });
 
-        it("should be able to create a partinioned data set without specifying an options object", async () => {
+        it("should be able to create a partitioned data set without specifying an options object", async () => {
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName);
 
             expect(response.success).toBe(true);
@@ -823,7 +823,7 @@ describe("Create data set", () => {
             );
         });
 
-        it("should be able to create a partinioned data set without printing the attributes", async () => {
+        it("should be able to create a partitioned data set without printing the attributes", async () => {
             const response = await Create.dataSet(
                 dummySession,
                 CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
@@ -849,7 +849,7 @@ describe("Create data set", () => {
             );
         });
 
-        it("should be able to create a partinioned data set and print all the attributes", async () => {
+        it("should be able to create a partitioned data set and print all the attributes", async () => {
             const response = await Create.dataSet(
                 dummySession,
                 CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
@@ -997,7 +997,7 @@ describe("Create data set", () => {
         it("should fail if passed an unexpected command type", async () => {
             let error;
             try {
-                await Create.dataSet(dummySession, -1, dataSetName, dsOptions);
+                await Create.dataSet(dummySession, -1 as CreateDataSetTypeEnum, dataSetName, dsOptions);
             } catch (err) {
                 error = err.message;
             }
@@ -1066,14 +1066,14 @@ describe("Create data set  Validator", () => {
             expect(testOptions.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
         });
 
-        it("recfm should default to 'F' if not specified", async () => {
+        it("recfm should not default to anything if not specified", async () => {
             const testOptions: any = {
                 recfm: undefined
             };
 
             Create.dataSetValidateOptions(testOptions);
 
-            expect(testOptions.recfm).toEqual("F");  // Should be changed during create validation to zOSMF default of 'F'
+            expect(testOptions.recfm).not.toEqual("F");  // Should not be changed during create validation to zOSMF default of 'F'
         });
     });
 
@@ -1316,8 +1316,8 @@ describe("Create VSAM Data Set", () => {
                 `\nVOLUMES(STG100) -\n)`];
             const options: IZosFilesOptions = {responseTimeout: undefined};
 
-            dsOptions.showAttributes = true;
             dsOptions.volumes = "STG100";
+            dsOptions.showAttributes = true;
 
             const response = await Create.vsam(dummySession, dataSetName, dsOptions);
 
@@ -1334,9 +1334,9 @@ describe("Create VSAM Data Set", () => {
             const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.primary = THIRTY;
-            dsOptions.showAttributes = false;
             dsOptions.alcunit = "TRK";
             dsOptions.volumes = "STG100";
+            dsOptions.showAttributes = false;
 
             const response = await Create.vsam(dummySession, dataSetName, dsOptions);
 

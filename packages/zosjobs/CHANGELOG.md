@@ -2,6 +2,27 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `8.0.0-next.202403131702`
+
+- BugFix: Removing stack trace for zosjobs errors. Added constant to JobsMessages.ts for error handling. [#2078](https://github.com/zowe/zowe-cli/pull/2078)
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+
+## `8.0.0-next.202402261705`
+
+- BugFix: Updated dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202402211923`
+
+- Enhancement: New `SeachJob.searchJobs` class and method, which can be used to search spool files for a specified string or regular expression. 
+
+## `8.0.0-next.202402021649`
+
+- LTS Breaking: Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
+
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3

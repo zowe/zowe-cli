@@ -139,12 +139,16 @@ export class ConnectionPropsForSessCfg {
             promptForValues.push("hostname");
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false && !doNotPromptForValues.includes("port")) {
+        if ((ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false || sessCfgToUse.port === 0) &&
+            !doNotPromptForValues.includes("port")) {
             promptForValues.push("port");
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false) {
+        const isTokenIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false ||
+            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
+        const isCertIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false ||
+            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
+        if (isTokenIrrelevant && isCertIrrelevant) {
             if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.user) === false && !doNotPromptForValues.includes("user")) {
                 promptForValues.push("user");
             }
@@ -268,7 +272,11 @@ export class ConnectionPropsForSessCfg {
             // }
         }
 
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue)) {
+        const isTokenUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) &&
+            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
+        const isCertUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.cert) &&
+            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
+        if (isTokenUsed) {
             // when tokenValue is set at this point, we are definitely using the token.
             impLogger.debug("Using token authentication");
 
@@ -284,7 +292,7 @@ export class ConnectionPropsForSessCfg {
                 // When no tokenType supplied, user wants bearer
                 sessCfg.type = SessConstants.AUTH_TYPE_BEARER;
             }
-        } else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.cert)) {
+        } else if (isCertUsed) {
             // when cert property is set at this point, we will use the certificate
             if (ConnectionPropsForSessCfg.propHasValue(sessCfg.certKey)) {
                 impLogger.debug("Using PEM Certificate authentication");
@@ -352,6 +360,31 @@ export class ConnectionPropsForSessCfg {
      */
     private static getValuesBack(connOpts: IOptionsForAddConnProps): (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
+            /* ToDo: Uncomment this code block to display an informative message before prompting
+             * a user for connection values. Because 219 unit test fails and 144 system tests
+             * fail due to a minor difference in output, we chose not to implement this
+             * minor enhancement until we have time to devote to correcting so many tests.
+             *
+             * The following 'if' statement is only needed for tests which do not create a mock for
+             * the connOpts.parms.response.console.log property. In the real world, that property
+             * always exists for this CLI-only path of logic.
+             *
+            if (connOpts?.parms?.response?.console?.log) {
+                // we want to prompt for connection values, but first complain if user only has V1 profiles.
+                connOpts.parms.response.console.log("No Zowe client configuration exists.");
+                if (ConfigUtils.onlyV1ProfilesExist) {
+                    connOpts.parms.response.console.log(
+                        "Only V1 profiles exist. V1 profiles are no longer supported.\n" +
+                        "You should convert your V1 profiles to a newer Zowe client configuration."
+                    );
+                }
+                connOpts.parms.response.console.log(
+                    "Therefore, you will be asked for the connection properties\n" +
+                    "that are required to complete your command.\n"
+                );
+            }
+            */
+
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";

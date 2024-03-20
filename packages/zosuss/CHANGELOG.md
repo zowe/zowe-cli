@@ -2,6 +2,34 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `8.0.0-next.202403132009`
+
+- Enhancement: Provide more legible errors to user when they are missing user/password credentials while
+running `zowe zos-uss issue ssh` commands. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+- LTS Breaking: Removed the following obsolete V1 profile constant from ZosUssProfile.schema.properties
+  - createProfileExamples
+
+## `8.0.0-next.202402261705`
+
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202402211923`
+
+- BugFix: Updated dependencies for technical currency [#2057](https://github.com/zowe/zowe-cli/pull/2057)
+
+## `8.0.0-next.202402021649`
+
+- LTS Breaking: Removed the following previously deprecated items:
+  - Removed the following constants from SshSession.ts
+    - SSH_OPTION_USER_PROFILE use SSH_OPTION_USER
+    - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
+  - Removed statCmdFlag as an export from Shell.ts
+
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)

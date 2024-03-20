@@ -310,7 +310,8 @@ export class Config {
      * Returns a clone to prevent accidental edits of the original object.
      */
     public get layers(): IConfigLayer[] {
-        return JSONC.parse(JSONC.stringify(this.mLayers, null, ConfigConstants.INDENT));
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        return JSONC.parse(JSONC.stringify(this.mLayers, null, ConfigConstants.INDENT)) as any;
     }
 
     // _______________________________________________________________________
@@ -508,7 +509,8 @@ export class Config {
         const schemaObj = (typeof schema !== "string") ? schema : null;
 
         if (layer.properties.$schema == null) {
-            layer.properties = JSONC.parse(JSONC.stringify({ $schema: schemaUri, ...layer.properties }, null, ConfigConstants.INDENT));
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            layer.properties = JSONC.parse(JSONC.stringify({ $schema: schemaUri, ...layer.properties }, null, ConfigConstants.INDENT)) as any;
         }
 
         const schemaInfo = this.getSchemaInfo();
@@ -586,7 +588,8 @@ export class Config {
     public layerProfiles(layer: IConfigLayer, opts: IConfigMergeOpts = {}): { [key: string]: IConfigProfile } {
         let properties = layer.properties;
         if (opts.cloneLayers !== false || opts.maskSecure) {
-            properties = JSONC.parse(JSONC.stringify(properties, null, ConfigConstants.INDENT));
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            properties = JSONC.parse(JSONC.stringify(properties, null, ConfigConstants.INDENT)) as any;
         }
         if (opts.maskSecure) {
             for (const secureProp of this.api.secure.secureFields(layer)) {
@@ -618,8 +621,6 @@ export class Config {
     // _______________________________________________________________________
     /**
      * Obtain the layer object that is currently active.
-     *
-     * @internal
      *
      * @returns The active layer object
      */

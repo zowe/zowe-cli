@@ -11,6 +11,7 @@
 
 import { SessConstants } from "../../..";
 import { IHandlerParameters } from "../../../../cmd";
+import { AUTH_TYPE_CHOICES } from "../SessConstants";
 import { IOverridePromptConnProps } from "./IOverridePromptConnProps";
 
 /**
@@ -82,4 +83,10 @@ export interface IOptionsForAddConnProps {
      * exists.
      */
     autoStore?: boolean;
+
+    /**
+     * Specifies list of authentication types that are supported for your
+     * service. Defaults to allow all authentication types.
+     */
+    supportedAuthTypes?: AUTH_TYPE_CHOICES[];
 }

@@ -80,7 +80,7 @@ describe("get logs handler tests", () => {
         params.arguments.startTime = "1626912000000";
         params.arguments.range = "5m";
         params.arguments.direction = "backward";
-        Imperative.console.info(params.arguments);
+        Imperative.console.info(JSON.stringify(params.arguments));
         await handler.process(params);
         expect(GetZosLog.getZosLog).toHaveBeenCalledTimes(1);
         expect(GetZosLog.getZosLog).toHaveBeenCalledWith(passedSession, passedParms);

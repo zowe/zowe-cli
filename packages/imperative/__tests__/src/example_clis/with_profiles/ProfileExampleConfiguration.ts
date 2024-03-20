@@ -106,19 +106,7 @@ const config: IImperativeConfig = {
                     }
                 },
                 required: ["animal", "numberWithDefault"]
-            },
-            createProfileExamples: [
-                {
-                    options: "--animal doggy",
-                    description: "Create a profile-a profile with a doggy as the animal"
-                }
-            ],
-            updateProfileExamples: [
-                {
-                    options: "--animal froggy",
-                    description: "Update a profile-a profile to use froggy as the animal"
-                }
-            ]
+            }
         },
         {
             type: "profile-b",

@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "8.0.0-next.202401191954",
+  "version": "8.0.0-next.202403141949",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,14 +45,17 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "comment-json": "^4.1.1",
+    "comment-json": "~4.2.3",
     "string-width": "^4.2.3"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.0.0-next.202401191954",
-    "@zowe/imperative": "8.0.0-next.202401191954"
+    "@zowe/cli-test-utils": "8.0.0-next.202403141949",
+    "@zowe/imperative": "8.0.0-next.202403141949"
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0-next"
+  },
+  "engines": {
+    "node": ">=18.12.0"
   }
 }

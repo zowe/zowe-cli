@@ -15,7 +15,7 @@ import * as path from "path";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ConfigBuilder, ConfigSchema } from "../../../../../config";
-import { ProfileIO, ProfileUtils } from "../../../../../profiles";
+import { V1ProfileConversion, ProfileUtils } from "../../../../../profiles";
 import { ImperativeConfig } from "../../../../../utilities";
 import { AppSettings } from "../../../../../settings";
 import { PluginIssues } from "../../../plugins/utilities/PluginIssues";
@@ -55,19 +55,21 @@ export default class ConvertProfilesHandler implements ICommandHandler {
         const configExists = ImperativeConfig.instance.config?.exists;
         const oldPluginInfo = this.getOldPluginInfo();
 
-        // Cannot do profiles operations w/ team config
+        // Cannot do profiles operations w/ current Zowe client config
         const oldProfileCount = configExists ? 0 : this.getOldProfileCount(profilesRootDir);
         const oldProfilesDir = `${profilesRootDir.replace(/[\\/]$/, "")}-old`;
         let skipConversion = false;
 
         if (configExists) {
-            // Warn that a team config was detected
-            params.response.console.log(`A team configuration file was detected. V1 profiles cannot be loaded for conversion.\n` +
-            `Run '${cliBin} config list --locations --root' for team configuration file locations.\n`);
+            // Warn that a current Zowe client config was detected
+            params.response.console.log(
+                `A current Zowe client configuration was detected. V1 profiles will not be converted.\n` +
+                `Run '${cliBin} config list --locations --root' for Zowe configuration file locations.\n`
+            );
         }
 
         if (oldPluginInfo.plugins.length == 0 && oldProfileCount === 0) {
-            params.response.console.log("No old profiles were found to convert from Zowe v1 to v2.");
+            params.response.console.log("Found no old V1 profiles to convert to a current Zowe client configuration.");
             // Exit if we're not deleting
             if (!(params.arguments.delete != null && params.arguments.delete === true)) {
                 return;
@@ -79,7 +81,9 @@ export default class ConvertProfilesHandler implements ICommandHandler {
         // If this is true, then we know that we want to delete, but there is nothing to convert first.
         if (!skipConversion) {
             if (oldProfileCount > 0) {
-                params.response.console.log(`Detected ${oldProfileCount} old profile(s) to convert from Zowe v1 to v2.\n`);
+                params.response.console.log(
+                    `Detected ${oldProfileCount} old V1 profile(s) to convert to a current Zowe client configuration.\n`
+                );
             }
 
             if (oldPluginInfo.plugins.length > 0) {
@@ -141,7 +145,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
                     `Run "${cliBin} config edit --global-config" to open this file in your default editor.\n`);
 
                 if (params.arguments.delete == null || params.arguments.delete === false) {
-                    params.response.console.log(`Your old profiles have been moved to ${oldProfilesDir}.\n` +
+                    params.response.console.log(`Your old V1 profiles have been moved to ${oldProfilesDir}.\n` +
                     `Run "${cliBin} config convert-profiles --delete" if you want to completely remove them.\n\n` +
                     `If you would like to revert back to v1 profiles, or convert your v1 profiles again, rename the 'profiles-old' ` +
                     `directory to 'profiles' and delete the new config file located at ${teamConfig.layerActive().path}.`);
@@ -173,7 +177,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
                     const accounts = await this.findOldSecureProps(service, params);
                     for (const account of accounts) {
                         if (!account.includes("secure_config_props")) {
-                            const success = this.deleteOldSecureProps(service, account, params);
+                            const success = await this.deleteOldSecureProps(service, account, params);
                             params.response.console.log(`Deleting secure value for "${service}/${account}"... ${success ? "done" : "failed"}`);
                         }
                     }
@@ -221,11 +225,11 @@ export default class ConvertProfilesHandler implements ICommandHandler {
      * @returns Number of old profiles found
      */
     private getOldProfileCount(profilesRootDir: string): number {
-        const profileTypes = ProfileIO.getAllProfileDirectories(profilesRootDir);
+        const profileTypes = V1ProfileConversion.getAllProfileDirectories(profilesRootDir);
         let oldProfileCount = 0;
         for (const profileType of profileTypes) {
             const profileTypeDir = path.join(profilesRootDir, profileType);
-            const profileNames = ProfileIO.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
+            const profileNames = V1ProfileConversion.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
             oldProfileCount += profileNames.length;
         }
         return oldProfileCount;

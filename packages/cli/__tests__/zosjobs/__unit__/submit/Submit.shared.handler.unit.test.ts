@@ -71,7 +71,34 @@ describe("submit shared handler", () => {
 
             expect(error).toBeDefined();
             expect(error instanceof ImperativeError).toBe(true);
-            expect(error.message).toMatchSnapshot();
+            expect(error.message).toContain("Unable to determine the JCL source. Please contact support");
+        });
+
+        it("should return any caught error, ie: ENOENT", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Vars populated by the mocked function
+            let error;
+
+            // Local file doesn't exist and should be cause of failure
+            const theLocalFile: string = "fakefile";
+
+            const copy = Object.assign({}, LOCALFILE_PARAMETERS);
+            copy.arguments.localFile = theLocalFile;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(ImperativeError);
+            expect(error.message).toContain("Node.js File System API error");
+            expect(error.additionalDetails).toContain("ENOENT: no such file or directory, open");
+            expect(error.additionalDetails).toContain("fakefile");
         });
 
         it("should not transform an error thrown by the submit JCL API", async () => {

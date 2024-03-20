@@ -34,19 +34,6 @@ export const ZosFilesCreateExtraOptions: { [key: string]: ICommandOptionDefiniti
     /**
      * The indicator that we should print all allocation attributes
      * @type {ICommandOptionDefinition}
-     * @deprecated
-     */
-    showAttributes: {
-        name: "show-attributes",
-        aliases: ["pa"],
-        description: strings.SHOWATTRIBUTES,
-        hidden: true,
-        type: "boolean"
-    },
-
-    /**
-     * The indicator that we should print all allocation attributes
-     * @type {ICommandOptionDefinition}
      */
     attributes: {
         name: "attributes",

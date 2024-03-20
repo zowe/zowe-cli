@@ -14,7 +14,7 @@ import * as fsExtra from "fs-extra";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { Config, ConfigBuilder, ConfigSchema } from "../../../../../config";
 import { IHandlerParameters } from "../../../../../cmd";
-import { ProfileIO } from "../../../../../profiles";
+import { V1ProfileConversion } from "../../../../../profiles";
 import { AppSettings } from "../../../../../settings";
 import { ImperativeConfig } from "../../../../../utilities";
 import * as npmInterface from "../../../../src/plugins/utilities/npm-interface";
@@ -87,7 +87,7 @@ describe("Configuration Convert Profiles command handler", () => {
         const params = getIHandlerParametersObject();
 
         await handler.process(params);
-        expect(stdout).toContain("No old profiles were found");
+        expect(stdout).toContain("Found no old V1 profiles to convert to a current Zowe client configuration");
         expect(stderr).toBe("");
     });
 
@@ -140,7 +140,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.prompt = false;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut");
         expect(stderr).toContain("Failed to load fruit profile \"banana\"");
         expect(stderr).toContain(profileError.message);
@@ -169,8 +169,8 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.prompt = false;
 
         await handler.process(params);
-        expect(stdout).toContain("A team configuration file was detected");
-        expect(stdout).toContain("No old profiles were found");
+        expect(stdout).toContain("A current Zowe client configuration was detected. V1 profiles will not be converted");
+        expect(stdout).toContain("Found no old V1 profiles to convert to a current Zowe client configuration");
         expect(stdout).not.toContain("Converted fruit profiles: apple, coconut");
         expect(updateSchemaSpy).not.toHaveBeenCalled();
         expect(mockImperativeConfig.config.save).not.toHaveBeenCalled();
@@ -196,10 +196,10 @@ describe("Configuration Convert Profiles command handler", () => {
         (params.response.console.prompt as any).mockResolvedValueOnce("y");
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 1 old profile(s)");
+        expect(stdout).toContain("Detected 1 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("The following plug-ins will be removed");
         expect(stdout).toContain("Your new profiles have been saved");
-        expect(stdout).toContain("Your old profiles have been moved");
+        expect(stdout).toContain("Your old V1 profiles have been moved");
         expect(stderr).toBe("");
         expect(uninstallSpy).toHaveBeenCalled();
         expect(configConvertSpy).toHaveBeenCalled();
@@ -216,7 +216,7 @@ describe("Configuration Convert Profiles command handler", () => {
         (params.response.console.prompt as any).mockResolvedValueOnce("n");
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 1 old profile(s)");
+        expect(stdout).toContain("Detected 1 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("The following plug-ins will be removed");
         expect(stderr).toBe("");
         expect(uninstallSpy).not.toHaveBeenCalled();
@@ -253,7 +253,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut, banana");
         expect(stdout).toContain("Deleting the profiles directory");
         expect(stdout).toContain("Deleting secure value for \"@brightside/core/testAcct\"");
@@ -298,7 +298,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut, banana");
         expect(stdout).toContain("Deleting the profiles directory");
         expect(stdout).toContain("Deleting secure value for \"@brightside/core/testAcct\"");
@@ -344,7 +344,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut, banana");
         expect(stdout).not.toContain("Deleting the profiles directory");
         expect(stdout).not.toContain("Deleting secure value for \"@brightside/core/testAcct\"");
@@ -392,7 +392,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut, banana");
         expect(stdout).toContain("Deleting the profiles directory");
         expect(stdout).toContain("Deleting secure value for \"@brightside/core/testAcct\"");
@@ -437,7 +437,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("No old profiles were found");
+        expect(stdout).toContain("Found no old V1 profiles to convert to a current Zowe client configuration");
         expect(stdout).toContain("Deleting the profiles directory");
         expect(stdout).toContain("Deleting secure value for \"@brightside/core/testAcct\"");
         expect(stdout).toContain("Deleting secure value for \"@zowe/cli/testAcct\"");
@@ -482,7 +482,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut, banana");
         expect(stdout).toContain("Deleting secure value for \"@brightside/core/testAcct\"");
         expect(stdout).toContain("Deleting secure value for \"@zowe/cli/testAcct\"");
@@ -524,7 +524,7 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.delete = true;
 
         await handler.process(params);
-        expect(stdout).toContain("Detected 3 old profile(s)");
+        expect(stdout).toContain("Detected 3 old V1 profile(s) to convert to a current Zowe client configuration");
         expect(stdout).toContain("Converted fruit profiles: apple, coconut, banana");
         expect(stdout).toContain("Deleting the profiles directory");
         expect(stderr).toContain("Keytar or the credential vault are unavailable.");
@@ -736,8 +736,8 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("getOldProfileCount should find multiple types of profiles", () => {
-        jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
-        jest.spyOn(ProfileIO, "getAllProfileNames")
+        jest.spyOn(V1ProfileConversion, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
+        jest.spyOn(V1ProfileConversion, "getAllProfileNames")
             .mockReturnValueOnce(["apple", "banana", "coconut"])
             .mockReturnValueOnce(["almond", "brazil", "cashew"]);
 

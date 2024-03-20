@@ -1,8 +1,0 @@
-username: 'managed by Test CLI with Profiles'
-password: 'managed by Test CLI with Profiles'
-account: 'managed by Test CLI with Profiles'
-myParent:
-    securedProperty:
-        mySecuredChild: 'managed by Test CLI with Profiles'
-    insecuredProperty:
-        myInSecuredChild: insecured

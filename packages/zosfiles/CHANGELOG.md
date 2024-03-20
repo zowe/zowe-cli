@@ -2,6 +2,35 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.0.0-next.202403132009`
+
+- LTS Breaking: Changed return type of `Upload.bufferToUssFile` to return `IZosFilesResponse` object instead of string. [#2089](https://github.com/zowe/zowe-cli/pull/2089)
+- BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2089](https://github.com/zowe/zowe-cli/pull/2089)
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+
+## `8.0.0-next.202402261705`
+
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202402211923`
+
+- BugFix: Updated dependencies for technical currency. [#2057](https://github.com/zowe/zowe-cli/pull/2057)
+
+## `8.0.0-next.202402132108`
+
+- LTS Breaking: Removed record format (recfm) validation when creating data-sets [#1699](https://github.com/zowe/zowe-cli/issues/1699)
+
+## `8.0.0-next.202402021649`
+
+- LTS Breaking: Removed the unused protected property `mSshProfile` in SshBaseHandler.
+- LTS Breaking: Removed the following previously deprecated items:
+  - Removed `ZosFilesCreateExtraOptions.showAttributes` without replacement
+  - Removed `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from ZosFiles.messages.ts
+
 ## `8.0.0-next.202311282012`
 
 - LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)

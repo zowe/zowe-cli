@@ -28,11 +28,7 @@ export default class TargetProfileHandler extends ZosFilesBaseHandler {
 
         try {
             if (targetProfileName != null) {
-                if (ImperativeConfig.instance.config?.exists) {
-                    targetCmdArgs = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
-                } else {
-                    targetCmdArgs = params.profiles.get("zosmf", false, targetProfileName);
-                }
+                targetCmdArgs = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
             }
 
             const targetPrefix = "target";

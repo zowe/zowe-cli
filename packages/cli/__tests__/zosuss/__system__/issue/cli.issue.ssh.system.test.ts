@@ -16,7 +16,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { startCmdFlag } from "@zowe/zos-uss-for-zowe-sdk";
+import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 
 
 // Test environment will be populated in the "beforeAll"
@@ -35,7 +35,7 @@ let keyPassphrase: string;
 function checkResponse(response: any, expectStatus: number) {
     expect(response.stderr.toString()).toBe("");
     expect(response.status).toBe(expectStatus);
-    expect(response.stdout.toString()).not.toMatch(startCmdFlag);
+    expect(response.stdout.toString()).not.toMatch(Shell.startCmdFlag);
 }
 
 function generateRandomString(j: number) {
@@ -271,5 +271,17 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
             [command, "--ssh-p", invalidPrivateKey]);
         expect(response.stderr.toString()).toMatch("no such file or directory, open 'bogusKey'");
+    });
+
+    it("should fail command execution without trace when improper user credentials", async () => {
+        // create a temporary zowe profile with an invalid user
+        const user = "bogusUser";
+        const invalidCreds = await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "ssh",
+            { host, port, user, password });
+
+        const command = "echo test";
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
+            [command, "--ssh-p", invalidCreds]);
+        expect(response.stderr.toString()).toMatch("All configured authentication methods failed");
     });
 });

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`V1 Profile Conversion should be able to read the meta file 1`] = `
+Object {
+  "configuration": Object {
+    "schema": Object {
+      "description": "The simple blueberry configuration",
+      "properties": Object {
+        "tart": Object {
+          "type": "boolean",
+        },
+      },
+      "required": Array [
+        "tart",
+      ],
+      "title": "The simple blueberry configuration",
+      "type": "object",
+    },
+    "type": "blueberry",
+  },
+  "defaultProfile": Array [
+    Object {
+      "name": "sweet_blueberry",
+      "type": "blueberry",
+    },
+  ],
+}
+`;

@@ -216,16 +216,16 @@ describe("Config API tests", () => {
                 expect(profile).toBeNull();
             });
         });
-        describe("expandPath", () => {
+        describe("getProfilePathFromName", () => {
             it("should expand a short proeprty path", async () => {
                 const config = await Config.load(MY_APP);
                 const profilePath = "lpar1.zosmf";
-                expect(config.api.profiles.expandPath(profilePath)).toEqual("profiles.lpar1.profiles.zosmf");
+                expect(config.api.profiles.getProfilePathFromName(profilePath)).toEqual("profiles.lpar1.profiles.zosmf");
             });
             it("should expand a path with the keyword profiles", async () => {
                 const config = await Config.load(MY_APP);
                 const profilePath = "profiles.zosmf";
-                expect(config.api.profiles.expandPath(profilePath)).toEqual("profiles.profiles.profiles.zosmf");
+                expect(config.api.profiles.getProfilePathFromName(profilePath)).toEqual("profiles.profiles.profiles.zosmf");
             });
         });
         describe("getProfileNameFromPath", () => {
@@ -568,7 +568,8 @@ describe("Config API tests", () => {
         describe("merge - dry run", () => {
             it("should merge config layers with correct priority", async () => {
                 const config = await Config.load(MY_APP);
-                const existingConfig = JSONC.parse(JSONC.stringify(config.layerActive(), null, ConfigConstants.INDENT));
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                const existingConfig = JSONC.parse(JSONC.stringify(config.layerActive(), null, ConfigConstants.INDENT)) as any;
                 const retrievedConfig = (config.api.layers.merge(mergeConfig, true) as IConfigLayer).properties;
                 expect(retrievedConfig).toMatchSnapshot();
 

@@ -52,7 +52,8 @@ export default class SetHandler implements ICommandHandler {
 
         if (params.arguments.json) {
             try {
-                value = JSONC.parse(value, null, true);
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                value = JSONC.parse(value, null, true) as any;
             } catch (e) {
                 throw new ImperativeError({ msg: `could not parse JSON value: ${e.message}` });
             }

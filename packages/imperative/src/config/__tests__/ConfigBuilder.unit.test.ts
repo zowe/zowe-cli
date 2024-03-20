@@ -11,7 +11,7 @@
 
 import { CredentialManagerFactory, IImperativeConfig } from "../..";
 import { Config, ConfigBuilder, IConfig } from "../";
-import { ProfileIO } from "../../profiles";
+import { V1ProfileConversion } from "../../profiles";
 import * as config from "../../../__tests__/__integration__/imperative/src/imperative";
 import * as lodash from "lodash";
 
@@ -247,14 +247,14 @@ describe("Config Builder tests", () => {
         });
 
         it("should successfully convert multiple v1 profiles to config object", async () => {
-            jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
-            jest.spyOn(ProfileIO, "getAllProfileNames")
+            jest.spyOn(V1ProfileConversion, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
+            jest.spyOn(V1ProfileConversion, "getAllProfileNames")
                 .mockReturnValueOnce(["apple", "banana", "coconut"])
                 .mockReturnValueOnce(["almond", "brazil", "cashew"]);
-            jest.spyOn(ProfileIO, "readMetaFile")
+            jest.spyOn(V1ProfileConversion, "readMetaFile")
                 .mockReturnValueOnce({ defaultProfile: "apple" } as any)
                 .mockReturnValueOnce({ defaultProfile: "brazil" } as any);
-            jest.spyOn(ProfileIO, "readProfileFile")
+            jest.spyOn(V1ProfileConversion, "readProfileFile")
                 .mockReturnValueOnce({ color: "green", secret: "managed by A" })
                 .mockReturnValueOnce({ color: "yellow", secret: "managed by B" })
                 .mockReturnValueOnce({ color: "brown", secret: "managed by C" })
@@ -309,12 +309,12 @@ describe("Config Builder tests", () => {
             mockSecureLoad.mockReturnValueOnce(null);
             const metaError = new Error("invalid meta file");
             const profileError = new Error("invalid profile file");
-            jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
-            jest.spyOn(ProfileIO, "getAllProfileNames")
+            jest.spyOn(V1ProfileConversion, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
+            jest.spyOn(V1ProfileConversion, "getAllProfileNames")
                 .mockReturnValueOnce(["apple", "banana", "coconut"])
                 .mockReturnValueOnce([]);
-            jest.spyOn(ProfileIO, "readMetaFile").mockImplementationOnce(() => { throw metaError; });
-            jest.spyOn(ProfileIO, "readProfileFile")
+            jest.spyOn(V1ProfileConversion, "readMetaFile").mockImplementationOnce(() => { throw metaError; });
+            jest.spyOn(V1ProfileConversion, "readProfileFile")
                 .mockImplementationOnce(() => ({ color: "green", secret: "managed by A" }))
                 .mockImplementationOnce(() => { throw profileError; })
                 .mockImplementationOnce(() => ({ color: "brown", secret: "managed by C" }));
@@ -350,12 +350,12 @@ describe("Config Builder tests", () => {
     });
 
     it("should convert v1 property names to v2 names", async () => {
-        jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["zosmf"]);
-        jest.spyOn(ProfileIO, "getAllProfileNames")
+        jest.spyOn(V1ProfileConversion, "getAllProfileDirectories").mockReturnValueOnce(["zosmf"]);
+        jest.spyOn(V1ProfileConversion, "getAllProfileNames")
             .mockReturnValueOnce(["LPAR1"]);
-        jest.spyOn(ProfileIO, "readMetaFile")
+        jest.spyOn(V1ProfileConversion, "readMetaFile")
             .mockReturnValueOnce({ defaultProfile: "LPAR1" } as any);
-        jest.spyOn(ProfileIO, "readProfileFile")
+        jest.spyOn(V1ProfileConversion, "readProfileFile")
             .mockReturnValueOnce({
                 hostname: "should change to host",
                 username: "should change to user",

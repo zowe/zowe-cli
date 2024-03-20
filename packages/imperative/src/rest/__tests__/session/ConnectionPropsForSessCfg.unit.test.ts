@@ -186,6 +186,34 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
+    it("ignore token and cert if unsupported auth types and authenticate with user and pass", async() => {
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            cert: "fakeCert",
+            certKey: "fakeCertKey",
+            tokenType: SessConstants.TOKEN_TYPE_JWT,
+            tokenValue: "fakeToken"
+        };
+        const fakePromptFn = jest.fn().mockReturnValue({
+            "user": "FakeUser",
+            "password": "FakePassword"
+        });
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg, args, {getValuesBack: fakePromptFn, supportedAuthTypes: ["basic"]}
+        );
+        expect(fakePromptFn).toHaveBeenCalledWith(["user", "password"]);
+        expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
+        expect(sessCfgWithConnProps.user).toBe("FakeUser");
+        expect(sessCfgWithConnProps.password).toBe("FakePassword");
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+    });
+
     it("not set tokenValue if user and pass are defined", async() => {
         const initialSessCfg = {
             hostname: "SomeHost",
@@ -278,8 +306,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -330,8 +358,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -382,8 +410,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -433,8 +461,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -484,8 +512,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -534,7 +562,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms);
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toBeUndefined();
@@ -586,8 +614,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
         );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("someotherkeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -634,7 +662,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             }
         );
 
-        expect(commandHandlerPrompt).toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms);  // toBe is important here, parms object must be same as original
     });
 
@@ -814,6 +842,50 @@ describe("ConnectionPropsForSessCfg tests", () => {
             $0: "zowe",
             _: [""],
             host: hostFromArgs,
+            user: userFromArgs,
+            password: passFromArgs
+        };
+
+        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg, args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.user).toBe(userFromArgs);
+        expect(sessCfgWithConnProps.password).toBe(passFromArgs);
+        expect(sessCfgWithConnProps.hostname).toBe(hostFromArgs);
+        expect(sessCfgWithConnProps.port).toBe(portFromPrompt);
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+    });
+
+    it("get port from prompt - zero", async() => {
+        const hostFromArgs = "FakeHost";
+        const portFromArgs = 0;
+        const portFromPrompt = 11;
+        const userFromArgs = "FakeUser";
+        const passFromArgs = "FakePassword";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(portFromPrompt.toString());
+        });
+        jest.spyOn(ConnectionPropsForSessCfg as any, "loadSchemaForSessCfgProps").mockReturnValueOnce({
+            port: { type: "number" }
+        });
+
+        const initialSessCfg = {
+            rejectUnauthorized: true
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            host: hostFromArgs,
+            port: portFromArgs,
             user: userFromArgs,
             password: passFromArgs
         };

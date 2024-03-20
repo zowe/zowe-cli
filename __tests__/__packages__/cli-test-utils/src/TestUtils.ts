@@ -63,26 +63,6 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
 }
 
 /**
- * Check if stderr output is empty for profiles command. Ignores any message
- * about profiles being deprecated.
- * @deprecated Use `stripProfileDeprecationMessages`
- */
-export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
-    return stripProfileDeprecationMessages(output).length === 0;
-}
-
-/**
- * Strip v1 profile deprecation messages from stderr output.
- */
-export function stripProfileDeprecationMessages(stderr: Buffer | string): string {
-    return stderr.toString()
-        .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./g, "")
-        .replace(/Recommended replacement: The 'config [a-z]+' command/g, "")
-        .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/g, "")
-        .trim();
-}
-
-/**
  * Type for handler data used to build mock IHandlerParameters object.
  * The type inherits from IHandlerParameters but is different:
  * - `arguments` omits the required properties `$0` and `_`

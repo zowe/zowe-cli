@@ -53,6 +53,7 @@ export interface ILocalFile {
     zosResp: IZosFilesResponse | null;
     conflict: boolean;
     encoding?: string | null;
+    binary?: boolean;
 }
 
 /**
@@ -158,8 +159,8 @@ export class EditUtilities {
             lfFile.fileName,
             {
                 returnEtag: true,
-                binary: null,
-                encoding: null,
+                binary: lfFile.binary,
+                encoding: lfFile.encoding,
                 file: tempPath
             }
         ];
@@ -203,7 +204,7 @@ export class EditUtilities {
         const lf: Buffer = await handlerDs.getFile1(session, commandParameters.arguments, helper);
         let mf: string | Buffer;
         try{
-            if (commandParameters.positionals[2].includes('d')){
+            if (commandParameters.positionals[2].toString().includes('d')){
                 mf = await handlerDs.getFile2(session, commandParameters.arguments, helper);
             }else{
                 mf = await handlerUss.getFile2(session, commandParameters.arguments, helper);
@@ -272,6 +273,7 @@ export class EditUtilities {
             lfFile.tempPath,
             lfFile.fileName,
             {
+                binary: lfFile.binary,
                 encoding: lfFile.encoding,
                 etag: lfFile.zosResp.apiResponse.etag,
                 returnEtag: true

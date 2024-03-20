@@ -47,16 +47,15 @@ export interface IHandlerParameters {
 
     /**
      * The positional options specified by the user on the command line.
-     * @type {string[]}
+     * @type {(string | number)[]}
      * @memberof IHandlerParameters
      */
-    positionals: string[];
+    positionals: (string | number)[];
 
     /**
      * The set of profiles loaded for this command handler - the map is built with the key being the type and it
      * returns the set of profiles loaded of that type. Multiple profiles can be loaded of the same type - depending
      * on the request and the 0th entry is the first loaded.
-     * @deprecated This API only loads v1 profiles. To load v2 profiles, use `ImperativeConfig.instance.config.api.profiles`.
      * @type {Map<string, IProfile[]>}
      * @memberof IHandlerParameters
      */

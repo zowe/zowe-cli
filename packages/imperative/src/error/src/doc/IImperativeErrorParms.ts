@@ -25,7 +25,8 @@ export interface IImperativeErrorParms {
     logger?: Logger;
     /**
      * Message tag - prepended to the error message specified. Useful for categorizing error messages
-     * (e.g. "Profile IO Error"). A ": " is appended automatically (e.g. "Profile IO Error: ")
+     * (e.g. "V1ProfileConversion Read Error").
+     * A ": " is appended automatically (e.g. "V1ProfileConversion Read Error: ")
      * @type {string}
      * @memberof IImperativeErrorParms
      */

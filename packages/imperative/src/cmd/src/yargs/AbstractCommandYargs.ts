@@ -19,8 +19,6 @@ import { IYargsParms } from "./doc/IYargsParms";
 import { ICommandResponseParms } from "../../../cmd/src/doc/response/parms/ICommandResponseParms";
 import { ImperativeYargsCommandAction, IYargsResponse } from "./doc/IYargsResponse";
 import { GroupCommandYargs } from "./GroupCommandYargs";
-import { IProfileManagerFactory } from "../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { CommandResponse } from "../response/CommandResponse";
 import { ICommandResponse } from "../../src/doc/response/response/ICommandResponse";
@@ -69,14 +67,6 @@ export abstract class AbstractCommandYargs {
     private mHelpGeneratorFactory: IHelpGeneratorFactory;
 
     /**
-     * Profile manager factory (for creating managers of certain types)
-     * @private
-     * @type {IProfileManagerFactory<any>}
-     * @memberof AbstractCommandYargs
-     */
-    private mProfileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
-
-    /**
      * The root command name for the CLI.
      * @private
      * @type {string}
@@ -117,7 +107,6 @@ export abstract class AbstractCommandYargs {
         this.mDefinition = yargsParms.commandDefinition;
         this.mParent = yargsParms.yargsParent;
         this.mCommandResponseParms = yargsParms.commandResponseParms;
-        this.mProfileManagerFactory = yargsParms.profileManagerFactory;
         this.mHelpGeneratorFactory = yargsParms.helpGeneratorFactory;
         this.mRootCommandName = yargsParms.rootCommandName;
         this.mCommandLine = yargsParms.commandLine;
@@ -184,16 +173,6 @@ export abstract class AbstractCommandYargs {
      */
     protected get helpGeneratorFactory(): IHelpGeneratorFactory {
         return this.mHelpGeneratorFactory;
-    }
-
-    /**
-     * Accessor for the profile manager factory
-     * @readonly
-     * @type {IProfileManagerFactory<any>}
-     * @memberof AbstractCommandYargs
-     */
-    protected get profileManagerFactory(): IProfileManagerFactory<any> {
-        return this.mProfileManagerFactory;
     }
 
     /**
@@ -297,7 +276,6 @@ export abstract class AbstractCommandYargs {
                 definition: tempDefinition ? tempDefinition : this.definition,
                 fullDefinition: tempDefinition ? tempDefinition : this.constructDefinitionTree(),
                 helpGenerator: newHelpGenerator,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: this.commandLine,
                 envVariablePrefix: this.envVariablePrefix,
@@ -409,7 +387,6 @@ export abstract class AbstractCommandYargs {
                 definition: this.definition,
                 fullDefinition: this.constructDefinitionTree(),
                 helpGenerator: "fake" as any,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: this.commandLine,
                 envVariablePrefix: this.envVariablePrefix,

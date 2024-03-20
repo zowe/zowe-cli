@@ -185,7 +185,7 @@ describe("Imperative", () => {
             expect(result).toBeUndefined();
             expect(mocks.Config.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledTimes(1);
-            expect(mocks.OverridesLoader.load).toHaveBeenCalledWith(defaultConfig, { version: 10000, name: "sample" });
+            expect(mocks.OverridesLoader.load).toHaveBeenCalledWith(defaultConfig, { version: 10000, name: "sample", zoweVersion: "V99" });
         });
 
         describe("AppSettings", () => {

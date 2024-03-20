@@ -116,7 +116,7 @@ describe("IO tests", () => {
             return; // do nothing but pretend to write
         }) as any);
         IO.createDirSync("pretend/to/create");
-        expect(fnFm).toBeCalled();
+        expect(fnFm).toHaveBeenCalled();
     });
 
     it("should not create a dir if file exists", () => {
@@ -126,8 +126,8 @@ describe("IO tests", () => {
             return; // do nothing but pretend to write
         }) as any);
         IO.createDirSync("pretend/already/exists");
-        expect(existsSyncSpy).toBeCalled();
-        expect(fnFm).not.toBeCalled();
+        expect(existsSyncSpy).toHaveBeenCalled();
+        expect(fnFm).not.toHaveBeenCalled();
     });
 
     it("should get an error for no input on createDirsSync", () => {

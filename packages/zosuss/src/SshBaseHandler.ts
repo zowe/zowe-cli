@@ -15,18 +15,17 @@ import {
     ICommandHandler,
     IOverridePromptConnProps,
     IHandlerParameters,
-    IProfile,
     IHandlerResponseConsoleApi,
     IHandlerFormatOutputApi,
     IHandlerResponseDataApi,
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError,
-    ConnectionPropsForSessCfg
+    ConnectionPropsForSessCfg,
+    SessConstants
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
-
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -37,11 +36,6 @@ export abstract class SshBaseHandler implements ICommandHandler {
      * The session creating from the command line arguments / profile
      */
     protected mSession: SshSession;
-
-    /**
-     * Loaded z/OS SSH profile if needed
-     */
-    protected mSshProfile: IProfile;
 
     /**
      * Command line arguments passed
@@ -63,7 +57,6 @@ export abstract class SshBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
-        this.mSshProfile = commandParameters.profiles.get("ssh", false);
 
         const sshSessCfgOverride: IOverridePromptConnProps[] = [{
             propertyName: "privateKey",
@@ -71,7 +64,11 @@ export abstract class SshBaseHandler implements ICommandHandler {
         }];
         const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
         const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-            sshSessCfg, commandParameters.arguments, {parms: commandParameters, propertyOverrides: sshSessCfgOverride}
+            sshSessCfg, commandParameters.arguments, {
+                parms: commandParameters,
+                propertyOverrides: sshSessCfgOverride,
+                supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC]
+            }
         );
         this.mSession = new SshSession(sshSessCfgWithCreds);
 

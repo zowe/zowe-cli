@@ -99,7 +99,7 @@ describe("Plugin validate command handler", () => {
 
             for (testPlugin in pluginIssues.getInstalledPlugins()){
                 if (Object.prototype.hasOwnProperty.call(pluginIssues.getInstalledPlugins(), testPlugin)){
-                    expect(mockDisplayPluginIssues).toBeCalledWith(testPlugin, params.response, false);
+                    expect(mockDisplayPluginIssues).toHaveBeenCalledWith(testPlugin, params.response, false);
                 }
             }
         });

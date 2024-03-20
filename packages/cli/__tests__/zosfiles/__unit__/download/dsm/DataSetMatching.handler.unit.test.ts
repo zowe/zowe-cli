@@ -35,7 +35,6 @@ const fakeDownloadOptions: IDownloadOptions = {
     binary: undefined,
     directory: undefined,
     encoding: undefined,
-    excludePatterns: undefined,
     extension: undefined,
     extensionMap: undefined,
     failFast: undefined,

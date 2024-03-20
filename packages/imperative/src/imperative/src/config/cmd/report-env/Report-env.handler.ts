@@ -45,7 +45,7 @@ export default class ReportEnvHandler implements ICommandHandler {
         ))
         {
             // These items have a progress bar. Output a newline beforehand.
-            if (nextItemId == ItemId.NPM_VER || nextItemId == ItemId.ZOWE_CONFIG_TYPE) {
+            if (nextItemId == ItemId.NPM_VER || nextItemId == ItemId.ZOWE_CONFIG_INFO) {
                 responseApi.console.error(EOL);
             }
             await this.displayEnvItem(nextItemId, responseApi);

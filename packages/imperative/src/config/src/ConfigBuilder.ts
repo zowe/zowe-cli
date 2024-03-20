@@ -11,13 +11,14 @@
 
 import * as path from "path";
 import * as lodash from "lodash";
-import { ProfileIO, ProfilesConstants, ProfileUtils } from "../../profiles";
+import { V1ProfileConversion, ProfilesConstants, ProfileUtils } from "../../profiles";
 import { IImperativeConfig } from "../../imperative";
 import { Config } from "./Config";
 import { IConfig } from "./doc/IConfig";
 import { IConfigBuilderOpts } from "./doc/IConfigBuilderOpts";
 import { CredentialManagerFactory } from "../../security";
 import { IConfigConvertResult } from "./doc/IConfigConvertResult";
+import { ICommandProfileTypeConfiguration } from "../../cmd";
 
 export class ConfigBuilder {
     /**
@@ -30,31 +31,10 @@ export class ConfigBuilder {
         const config: IConfig = Config.empty();
 
         for (const profile of impConfig.profiles) {
-            const properties: { [key: string]: any } = {};
-            const secureProps: string[] = [];
-            for (const [k, v] of Object.entries(profile.schema.properties)) {
-                if (opts.populateProperties && v.includeInTemplate) {
-                    if (v.secure) {
-                        secureProps.push(k);
-                    } else {
-                        if (v.optionDefinition != null) {
-                            // Use default value of ICommandOptionDefinition if present
-                            properties[k] = v.optionDefinition.defaultValue;
-                        }
-                        if (properties[k] === undefined) {
-                            // Fall back to an empty value
-                            properties[k] = this.getDefaultValue(v.type);
-                        }
-                    }
-                }
-            }
+            const defaultProfile = ConfigBuilder.buildDefaultProfile(profile, opts);
 
             // Add the profile to config and set it as default
-            lodash.set(config, `profiles.${profile.type}`, {
-                type: profile.type,
-                properties,
-                secure: secureProps
-            });
+            lodash.set(config, `profiles.${profile.type}`, defaultProfile);
 
             if (opts.populateProperties) {
                 config.defaults[profile.type] = profile.type;
@@ -76,6 +56,37 @@ export class ConfigBuilder {
         return { ...config, autoStore: true };
     }
 
+    public static buildDefaultProfile(profile: ICommandProfileTypeConfiguration, opts?: IConfigBuilderOpts): {
+        type: string;
+        properties: Record<string, any>;
+        secure: string[]
+    } {
+        const properties: { [key: string]: any } = {};
+        const secureProps: string[] = [];
+        for (const [k, v] of Object.entries(profile.schema.properties)) {
+            if (opts.populateProperties && v.includeInTemplate) {
+                if (v.secure) {
+                    secureProps.push(k);
+                } else {
+                    if (v.optionDefinition != null) {
+                        // Use default value of ICommandOptionDefinition if present
+                        properties[k] = v.optionDefinition.defaultValue;
+                    }
+                    if (properties[k] === undefined) {
+                        // Fall back to an empty value
+                        properties[k] = this.getDefaultValue(v.type);
+                    }
+                }
+            }
+        }
+
+        return {
+            type: profile.type,
+            properties,
+            secure: secureProps
+        };
+    }
+
     /**
      * Convert existing v1 profiles to a Config object and report any conversion failures.
      * @param profilesRootDir Root directory where v1 profiles are stored.
@@ -88,9 +99,9 @@ export class ConfigBuilder {
             profilesFailed: []
         };
 
-        for (const profileType of ProfileIO.getAllProfileDirectories(profilesRootDir)) {
+        for (const profileType of V1ProfileConversion.getAllProfileDirectories(profilesRootDir)) {
             const profileTypeDir = path.join(profilesRootDir, profileType);
-            const profileNames = ProfileIO.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
+            const profileNames = V1ProfileConversion.getAllProfileNames(profileTypeDir, ".yaml", `${profileType}_meta`);
             if (profileNames.length === 0) {
                 continue;
             }
@@ -98,7 +109,7 @@ export class ConfigBuilder {
             for (const profileName of profileNames) {
                 try {
                     const profileFilePath = path.join(profileTypeDir, `${profileName}.yaml`);
-                    const profileProps = ProfileIO.readProfileFile(profileFilePath, profileType);
+                    const profileProps = V1ProfileConversion.readProfileFile(profileFilePath, profileType);
                     const secureProps = [];
 
                     for (const [key, value] of Object.entries(profileProps)) {
@@ -128,7 +139,7 @@ export class ConfigBuilder {
 
             try {
                 const metaFilePath = path.join(profileTypeDir, `${profileType}_meta.yaml`);
-                const profileMetaFile = ProfileIO.readMetaFile(metaFilePath);
+                const profileMetaFile = V1ProfileConversion.readMetaFile(metaFilePath);
                 if (profileMetaFile.defaultProfile != null) {
                     result.config.defaults[profileType] = ProfileUtils.getProfileMapKey(profileType, profileMetaFile.defaultProfile);
                 }
@@ -157,7 +168,7 @@ export class ConfigBuilder {
             ["pass", "password"]
         ];
 
-        // interate through all of the recorded profiles
+        // iterate through all of the recorded profiles
         for (const currProfNm of Object.keys(conversionResult.config.profiles)) {
             // iterate through the non-secure properties of the current profile
             const profPropsToConvert = [];

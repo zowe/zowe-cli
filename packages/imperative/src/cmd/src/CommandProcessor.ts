@@ -17,15 +17,14 @@ import { ICommandHandler } from "./doc/handler/ICommandHandler";
 import { couldNotInstantiateCommandHandler, unexpectedCommandError } from "../../messages";
 import { SharedOptions } from "./utils/SharedOptions";
 import { IImperativeError, ImperativeError } from "../../error";
-import { IProfileManagerFactory, ProfileUtils } from "../../profiles";
+import { ProfileUtils } from "../../profiles";
 import { SyntaxValidator } from "./syntax/SyntaxValidator";
 import { CommandProfileLoader } from "./profiles/CommandProfileLoader";
-import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGenerator } from "./help/doc/IHelpGenerator";
 import { ICommandPrepared } from "./doc/response/response/ICommandPrepared";
 import { CommandResponse } from "./response/CommandResponse";
 import { ICommandResponse } from "./doc/response/response/ICommandResponse";
-import { Logger, LoggerUtils } from "../../logger";
+import { Logger } from "../../logger";
 import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
@@ -61,13 +60,6 @@ interface IResolvedArgsResponse {
      * @memberof IResolvedArgsResponse
      */
     commandValues?: ICommandArguments;
-
-    /**
-     * Whether we're using old profiles or config
-     * @type {(`v1` | `v2`)}
-     * @memberof IResolvedArgsResponse
-     */
-    profileVersion?: `v1` | `v2`;
 
     /**
      * The profiles that are required
@@ -164,13 +156,6 @@ export class CommandProcessor {
      */
     private mHelpGenerator: IHelpGenerator;
     /**
-     * The profile manager to use when loading profiles for commands
-     * @private
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof CommandProcessor
-     */
-    private mProfileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
-    /**
      * Imperative Logger instance for logging from the command processor.
      * @private
      * @type {Logger}
@@ -204,8 +189,6 @@ export class CommandProcessor {
         this.mFullDefinition = (params.fullDefinition == null) ? this.mDefinition : params.fullDefinition;
         this.mHelpGenerator = params.helpGenerator;
         ImperativeExpect.toNotBeNullOrUndefined(this.mHelpGenerator, `${CommandProcessor.ERROR_TAG} No help generator supplied.`);
-        this.mProfileManagerFactory = params.profileManagerFactory;
-        ImperativeExpect.toNotBeNullOrUndefined(this.mProfileManagerFactory, `${CommandProcessor.ERROR_TAG} No profile manager factory supplied.`);
         if (this.mDefinition.type === "command" && this.mDefinition.chainedHandlers == null) {
             ImperativeExpect.keysToBeDefinedAndNonBlank(this.mDefinition, ["handler"], `${CommandProcessor.ERROR_TAG} ` +
                 `The definition supplied is of type "command", ` +
@@ -281,16 +264,6 @@ export class CommandProcessor {
      */
     get config(): Config {
         return this.mConfig;
-    }
-
-    /**
-     * Accessor for the profile manager factory in use for this command processor.
-     * @readonly
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof CommandProcessor
-     */
-    get profileFactory(): IProfileManagerFactory<ICommandProfileTypeConfiguration> {
-        return this.mProfileManagerFactory;
     }
 
     /**
@@ -787,21 +760,12 @@ export class CommandProcessor {
             showSecure = true;
         }
 
-        // if config exists and a layer exists, use config
-        let useConfig = false;
-        this.mConfig?.layers.forEach((layer) => {
-            if (layer.exists) {
-                useConfig = true;
-            }
-        });
-
         /**
          * Begin building response object
          */
         const showInputsOnly: IResolvedArgsResponse =
         {
-            commandValues: {} as ICommandArguments,
-            profileVersion: useConfig ? `v2` : `v1`,
+            commandValues: {} as ICommandArguments
         };
 
         /**
@@ -814,28 +778,20 @@ export class CommandProcessor {
         const configSecureProps: string[] = [];
 
         /**
-         * If using config, then we need to get the secure properties from the config
+         * Need to get the secure properties from the config
          */
-        if (useConfig) {
+        const combinedProfiles = [ ...showInputsOnly.requiredProfiles ?? [], ...showInputsOnly.optionalProfiles ?? [] ];
+        combinedProfiles.forEach((profile) => {
+            const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
+            const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
+            configSecureProps.push(...props); // add to list
+        });
 
-            const combinedProfiles = [ ...showInputsOnly.requiredProfiles ?? [], ...showInputsOnly.optionalProfiles ?? [] ];
-            combinedProfiles.forEach((profile) => {
-                const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
-                const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
-                configSecureProps.push(...props); // add to list
-            });
-        }
 
         /**
-         * Determine if Zowe V2 Config is in effect.  If it is, then we will construct
-         * a Set of secure fields from its API.  If it is not, then we will construct
-         * a Set of secure fields from the `ConnectionPropsForSessCfg` defaults.
+         * Construct a Set of secure fields from Zowe Team Config API.
          */
-        const secureInputs: Set<string> =
-        useConfig ?
-            new Set([...configSecureProps]) :
-            new Set([...LoggerUtils.CENSORED_OPTIONS, ...LoggerUtils.SECURE_PROMPT_OPTIONS]);
-
+        const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
 
         /**
@@ -858,15 +814,11 @@ export class CommandProcessor {
         /**
          * Add profile location info
          */
-        if (useConfig) {
-            this.mConfig.mLayers.forEach((layer) => {
-                if (layer.exists) {
-                    showInputsOnly.locations.push(layer.path);
-                }
-            });
-        } else {
-            showInputsOnly.locations.push(nodePath.normalize(ImperativeConfig.instance.cliHome));
-        }
+        this.mConfig?.mLayers?.forEach((layer) => {
+            if (layer.exists) {
+                showInputsOnly.locations.push(layer.path);
+            }
+        });
 
         /**
          * Show warning if we censored output and we were not instructed to show secure values
@@ -1023,8 +975,7 @@ export class CommandProcessor {
             `Profile definitions: ${inspect(this.definition.profile, { depth: null })}`);
 
         const profiles = await CommandProfileLoader.loader({
-            commandDefinition: this.definition,
-            profileManagerFactory: this.profileFactory
+            commandDefinition: this.definition
         }).loadProfiles(args);
         this.log.trace(`Profiles loaded for "${this.definition.name}" command:\n${inspect(profiles, { depth: null })}`);
 

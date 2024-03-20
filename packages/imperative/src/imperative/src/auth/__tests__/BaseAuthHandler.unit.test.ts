@@ -10,26 +10,77 @@
 */
 
 import { IHandlerParameters } from "../../../../cmd";
-import { Imperative } from "../../Imperative";
+import { ConnectionPropsForSessCfg } from "../../../..";
 import { ImperativeConfig } from "../../../..";
 import FakeAuthHandler from "./__data__/FakeAuthHandler";
 
 describe("BaseAuthHandler", () => {
-    const mockSaveProfile = jest.fn();
-    const mockUpdateProfile = jest.fn();
+    const configSaveMock = jest.fn();
+    let teamCfgExistsMock = jest.fn(() => true);
+    let profileExistsMock = jest.fn(() => true);
 
     beforeAll(() => {
-        Object.defineProperty(Imperative, "api", {
-            get: () => ({
-                profileManager: (profType: string) => ({
-                    save: mockSaveProfile,
-                    update: mockUpdateProfile
-                })
-            })
-        });
+        // we do not want to call the real addPropsOrPrompt
+        ConnectionPropsForSessCfg.addPropsOrPrompt = jest.fn((): any => ({
+            hostname: "connHostNm",
+            port: 5678,
+            user: "connUser",
+            password: "connPassword"
+        }));
+
+        // we do not want to use the real ImperativeConfig
         Object.defineProperty(ImperativeConfig, "instance", {
             get: () => ({
-                config: { exists: false }
+                cliHome: (): string => "/fake/cli/home/path",
+                envVariablePrefix: (): string => "FAKE_ZOWE_CLI_PREFIX",
+                config: {
+                    exists: teamCfgExistsMock,
+                    set: (): any => null,
+                    save: configSaveMock,
+                    properties: {
+                        defaults: { "zosmf": "fakeProfNm" },
+                        profiles: {
+                            fakeProfNm: {
+                                type: "zosmf",
+                                host: "fakeHostNm",
+                                port: 1234
+                            }
+                        }
+                    },
+                    api: {
+                        secure: {
+                            loadFailed: false,
+                            securePropsForProfile: (): any => []
+                        },
+                        profiles: {
+                            get: () => ({
+                                fakeProfNm: {
+                                    type: "zosmf",
+                                    host: "fakeHostNm",
+                                    port: 1234
+                                }
+                            }),
+                            set: jest.fn(),
+                            defaultSet: jest.fn(),
+                            exists: profileExistsMock,
+                            getProfilePathFromName: () => "fake/path"
+                        },
+                        layers: {
+                            get: () => ({
+                                path: "fake/path",
+                                exists: true,
+                                properties: {},
+                                global: true,
+                                user: false
+                            }),
+                            find: () => ({
+                                user: false,
+                                global: true
+                            }),
+                            activate: (): any => null
+                        }
+                    }
+                }
             })
         });
     });
@@ -51,12 +102,12 @@ describe("BaseAuthHandler", () => {
                 password: "fakePass"
             },
             positionals: ["auth", "login"],
-            profiles: {
-                getMeta: jest.fn(() => ({
-                    name: "fakeName"
-                }))
-            }
+            profiles: {}
         } as any;
+
+        // report that we have a team config and a profile
+        teamCfgExistsMock = jest.fn(() => true);
+        profileExistsMock = jest.fn(() => true);
 
         const doLoginSpy = jest.spyOn(handler as any, "doLogin");
         let caughtError;
@@ -68,8 +119,8 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLoginSpy).toBeCalledTimes(1);
-        expect(mockUpdateProfile).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
+        expect(configSaveMock).toHaveBeenCalledTimes(1);
     });
 
     it("should process login successfully and create profile", async () => {
@@ -85,11 +136,15 @@ describe("BaseAuthHandler", () => {
                 user: "fakeUser",
                 password: "fakePass"
             },
-            positionals: ["auth", "login"],
-            profiles: {
-                getMeta: jest.fn()
-            }
+            positionals: ["auth", "login"]
         } as any;
+
+        // report user and password are in our secure properties
+        ImperativeConfig.instance.config.api.secure.securePropsForProfile = (): any => ["user", "password"];
+
+        // report that we have no team config and no profile
+        teamCfgExistsMock = jest.fn(() => false);
+        profileExistsMock = jest.fn(() => false);
 
         const doLoginSpy = jest.spyOn(handler as any, "doLogin");
         let caughtError;
@@ -101,9 +156,9 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
         expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
-        expect(mockSaveProfile).toBeCalledTimes(1);
+        expect(configSaveMock).toHaveBeenCalledTimes(1);
     });
 
     it("should process login successfully without creating profile on timeout", async () => {
@@ -122,11 +177,12 @@ describe("BaseAuthHandler", () => {
                 user: "fakeUser",
                 password: "fakePass"
             },
-            positionals: ["auth", "login"],
-            profiles: {
-                getMeta: jest.fn()
-            }
+            positionals: ["auth", "login"]
         } as any;
+
+        // report that we have no team config and no profile
+        teamCfgExistsMock = jest.fn(() => false);
+        profileExistsMock = jest.fn(() => false);
 
         const doLoginSpy = jest.spyOn(handler as any, "doLogin");
         let caughtError;
@@ -138,9 +194,9 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
         expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
-        expect(mockSaveProfile).toBeCalledTimes(0);
+        expect(configSaveMock).toHaveBeenCalledTimes(0);
     });
 
     it("should process logout successfully", async () => {
@@ -160,19 +216,14 @@ describe("BaseAuthHandler", () => {
                 user: "fakeUser",
                 password: "fakePass"
             },
-            positionals: ["auth", "logout"],
-            profiles: {
-                getMeta: jest.fn(() => ({
-                    name: "fakeName",
-                    profile: {
-                        tokenValue: "fakeToken"
-                    }
-                }))
-            }
+            positionals: ["auth", "logout"]
         } as any;
 
+        // report that we have a team config and a profile
+        teamCfgExistsMock = jest.fn(() => true);
+        profileExistsMock = jest.fn(() => true);
+
         const doLogoutSpy = jest.spyOn(handler as any, "doLogout");
-        const processLogoutOldSpy = jest.spyOn(handler as any, "processLogoutOld");
         let caughtError;
 
         try {
@@ -182,19 +233,33 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLogoutSpy).toBeCalledTimes(1);
-        expect(processLogoutOldSpy).toBeCalledTimes(1);
+        expect(doLogoutSpy).toHaveBeenCalledTimes(1);
         expect(params.arguments.tokenType).toEqual(handler.mDefaultTokenType);
         expect(params.arguments.user).toBeUndefined();
         expect(params.arguments.password).toBeUndefined();
+        expect(configSaveMock).toHaveBeenCalledTimes(0);
+
     });
 
-    it("should process logout successfully even when tokenValue is not provided", async () => {
+    it("should not logout when tokenValue is not provided", async () => {
+        let errMsg: string = "";
+        let exitCode: number = 0;
         const handler = new FakeAuthHandler();
         const params: IHandlerParameters = {
             response: {
                 console: {
-                    log: jest.fn()
+                    log: jest.fn(),
+                    errorHeader: jest.fn((_errMsg) => {
+                        errMsg += _errMsg + "\n";
+                    }),
+                    error: jest.fn((_errMsg) => {
+                        errMsg += _errMsg + "\n";
+                    }),
+                },
+                data: {
+                    setExitCode: jest.fn((_exitCode) => {
+                        exitCode = _exitCode;
+                    })
                 }
             },
             arguments: {
@@ -203,16 +268,14 @@ describe("BaseAuthHandler", () => {
                 tokenType: handler.mDefaultTokenType,
                 tokenValue: null,
             },
-            positionals: ["auth", "logout"],
-            profiles: {
-                getMeta: jest.fn(() => ({
-                    name: "fakeName"
-                }))
-            }
+            positionals: ["auth", "logout"]
         } as any;
 
+        // report that we have a team config and a profile
+        teamCfgExistsMock = jest.fn(() => true);
+        profileExistsMock = jest.fn(() => true);
+
         const doLogoutSpy = jest.spyOn(handler as any, "doLogout");
-        const processLogoutOldSpy = jest.spyOn(handler as any, "processLogoutOld");
         let caughtError;
 
         try {
@@ -222,8 +285,10 @@ describe("BaseAuthHandler", () => {
         }
 
         expect(caughtError).toBeUndefined();
-        expect(doLogoutSpy).toBeCalledTimes(0);
-        expect(processLogoutOldSpy).toBeCalledTimes(1);
+        expect(doLogoutSpy).toHaveBeenCalledTimes(0);
+        expect(errMsg).toContain("Token was not provided, so can't log out");
+        expect(errMsg).toContain("You need to authenticate first using `zowe auth login`");
+        expect(exitCode).toEqual(1);
     });
 
     it("should fail to process invalid action name", async () => {
@@ -235,12 +300,7 @@ describe("BaseAuthHandler", () => {
                 }
             },
             arguments: {},
-            positionals: ["auth", "invalid"],
-            profiles: {
-                getMeta: jest.fn(() => ({
-                    name: "fakeName"
-                }))
-            }
+            positionals: ["auth", "invalid"]
         } as any;
 
         let caughtError;
@@ -268,12 +328,7 @@ describe("BaseAuthHandler", () => {
                 user: "fakeUser",
                 password: "fakePass"
             },
-            positionals: ["auth", "login"],
-            profiles: {
-                getMeta: jest.fn(() => ({
-                    name: "fakeName"
-                }))
-            }
+            positionals: ["auth", "login"]
         } as any;
 
         const doLoginSpy = jest.spyOn(handler as any, "doLogin").mockResolvedValue(null);
@@ -287,6 +342,6 @@ describe("BaseAuthHandler", () => {
 
         expect(caughtError).toBeDefined();
         expect(caughtError.message).toContain("token value");
-        expect(doLoginSpy).toBeCalledTimes(1);
+        expect(doLoginSpy).toHaveBeenCalledTimes(1);
     });
 });

@@ -76,6 +76,7 @@ InheritedHelpGenerator {
     "category": "imperative",
     "initStatus": false,
     "mJsLogger": Logger {
+      "callStackSkipIndex": 0,
       "category": "imperative",
       "context": Object {},
       "parseCallStack": [Function],
@@ -132,6 +133,7 @@ InheritedHelpGenerator {
     "category": "imperative",
     "initStatus": false,
     "mJsLogger": Logger {
+      "callStackSkipIndex": 0,
       "category": "imperative",
       "context": Object {},
       "parseCallStack": [Function],
