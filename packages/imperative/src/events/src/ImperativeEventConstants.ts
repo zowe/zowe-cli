@@ -14,11 +14,33 @@ export const ImperativeUserEvents = [
 ] as const;
 export type ImperativeUserEventType = typeof ImperativeUserEvents[number];
 
-export const ImperativeZoweEvents = [
-    "onConfigChanged",
-    "onSchemaChanged",
+export const ImperativeSharedEvents = [
     "onCredentialManagerChanged"
 ] as const;
-export type ImperativeZoweEventType = typeof ImperativeZoweEvents[number];
+export type ImperativeSharedEventType = typeof ImperativeSharedEvents[number];
 
-export type ImperativeEventType = ImperativeUserEventType | ImperativeZoweEventType;
+export type ImperativeEventType = ImperativeUserEventType | ImperativeSharedEventType;
+
+/**
+ * TODO:
+ * - Implement onGlobalConfigChanged as a shared event
+ * - Implement project-level config-changed as a shared event
+ *     - These events should have their own directory structure to support multiple projects
+ *     - $ZOWE_CLI_HOME/.zowe/.events/project-id/onConfigChanged
+ * - Implement onGlobalSchemaChanged as a shared event
+ * - Implement project-level schema-changed as a shared event
+ *     - These events should have their own directory structure to support multiple projects
+ *     - $ZOWE_CLI_HOME/.zowe/.events/project-id/onSchemaChanged
+ *
+ *
+ * - Implement CustomSharedEvents
+ *     - These events should have their own directory structure to avoid conflicts between apps
+ *     - $ZOWE_CLI_HOME/.zowe/.events/<app-name>/<custom-shared-event-id>
+ * - Implement CustomUserEvents
+ *     - These events should have their own directory structure to avoid conflicts between apps
+ *     - ~/.zowe/.events/<app-name>/<custom-user-event-id>
+ *
+ *
+ * Edge cases:
+ * - What if the `path/to/.events` directory gets renamed or moved? (fs.watch stops notifying apps)
+ */

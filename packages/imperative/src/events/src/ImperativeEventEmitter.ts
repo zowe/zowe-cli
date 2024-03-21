@@ -14,7 +14,7 @@ import * as fs from "fs";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { join } from "path";
 import { ImperativeError } from "../../error";
-import { ImperativeEventType, ImperativeUserEvents, ImperativeZoweEvents as ImperativeSharedEvents } from "./ImperativeEventConstants";
+import { ImperativeEventType, ImperativeUserEvents, ImperativeSharedEvents } from "./ImperativeEventConstants";
 import { ImperativeEvent } from "./ImperativeEvent";
 import { Logger } from "../../logger";
 import { ProfileInfo } from "../../config";
@@ -99,6 +99,7 @@ export class ImperativeEventEmitter {
      * Check to see if the given event is a Custom event
      * @param eventType A string representing the type of event
      * @returns True if it is not a zowe or a user event, false otherwise
+     * @internal Not implemented in the MVP
      */
     public static isCustomEvent(eventType: string): boolean {
         return !ImperativeEventEmitter.isUserEvent(eventType) && !ImperativeEventEmitter.isSharedEvent(eventType);
@@ -128,6 +129,7 @@ export class ImperativeEventEmitter {
     /**
      * Simple method to write the events to disk
      * @param eventType The type of event to write
+     * @internal Not implemented in the MVP
      */
     public static emitCustomEvent(eventType: string) { //, isUserSpecific: boolean = false) {
         const theEvent = ImperativeEventEmitter.initializeEvent(eventType);
@@ -147,7 +149,7 @@ export class ImperativeEventEmitter {
      * Helper method to write contents out to disk
      * @param location directory to write the file (i.e. emit the event)
      * @param event the event to be written/emitted
-     * @internal
+     * @internal We do not want developers writing events directly, they should use the `emit...` methods
      */
     private static writeEvent(location: string, event: ImperativeEvent) {
         const eventPath = join(location, event.eventType);
@@ -186,12 +188,6 @@ export class ImperativeEventEmitter {
             // (new imperative.ImperativeEventEmitter("onVaultChanged")).instance.registerAction(() => {})
             // The instance should prevent multiple actions from being registered
         */
-
-        return ImperativeEventEmitter.nodejsImplementation(eventType, callback);
-        //return ImperativeEventEmitter.chokidarImplementation(eventType, callback);
-    }
-
-    private static nodejsImplementation(eventType: string, callback: (...args: any[]) => any): IImperativeRegisteredAction {
         const logger = Logger.getImperativeLogger();
         let dir: string;
         if (ImperativeEventEmitter.isUserEvent(eventType)) {
@@ -203,41 +199,10 @@ export class ImperativeEventEmitter {
         }
 
         const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change", filename: string) => {
-            console.log("ImperativeEventEmitter: ", event, filename);
             logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
             callback();
         });
 
         return { close: watcher.close };
-    }
-
-    /**
-     * Implementation with the chokidar package
-     * @note This has not be tested yet
-     * @note You may have to install the package locally in order to try this out
-     */
-    private static chokidarImplementation(eventType: ImperativeEventType, callback: (...args: any[]) => any): IImperativeRegisteredAction {
-        const chokidar = require("chokidar");
-        const logger = Logger.getImperativeLogger();
-        let dir: string;
-        if (ImperativeEventEmitter.isUserEvent(eventType)) {
-            dir = ImperativeEventEmitter.getUserEventDir();
-        } else if (ImperativeEventEmitter.isSharedEvent(eventType)) {
-            dir = ImperativeEventEmitter.getSharedEventDir();
-        } else if (ImperativeEventEmitter.isCustomEvent(eventType)) {
-            dir = ImperativeEventEmitter.getSharedEventDir();
-        }
-
-        const watcher = chokidar.watch(join(dir, eventType));
-        watcher.on("change", (filePath: string) => {
-            console.log("ImperativeEventEmitter: ", "change", filePath);
-            logger.debug(`ImperativeEventEmitter: Event "change" emitted: ${eventType}`);
-            callback();
-        });
-        return {
-            close: () => {
-                watcher.unwatch(join(dir, eventType));
-            }
-        };
     }
 }
