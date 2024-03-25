@@ -1743,6 +1743,25 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: normalizedData });
         });
+        it("should normalize new lines when upload USS file", async () => {
+            const data: Buffer = Buffer.from("testing\r\ntesting2");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
+
+            try {
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            const normalizedData = ZosFilesUtils.normalizeNewline(data);
+            expect(data.length).not.toBe(normalizedData.length);
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, normalizedData);
+        });
     });
 
     describe("streamToUssFile", () => {
