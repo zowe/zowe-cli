@@ -9,9 +9,11 @@
 *
 */
 
-import { randomUUID } from "crypto";
+import { exec } from "child_process";
 import { IImperativeEventJson, IImperativeEventParms } from "./doc";
 import { ImperativeEventType } from "./ImperativeEventConstants";
+import { ImperativeError } from "../../error/src/ImperativeError";
+import { randomUUID } from "crypto";
 
 /**
  *
@@ -26,6 +28,14 @@ export class ImperativeEvent {
      * @memberof ImperativeEvent
      */
     private mEventID: string;
+
+    /**
+     * Process ID of the event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
+    private mProcessID: string;
 
     /**
      * The application ID that caused this event
@@ -75,6 +85,7 @@ export class ImperativeEvent {
             time: this.eventTime,
             type: this.eventType,
             source: this.appName,
+            pid: this.processId,
             id: this.eventId,
             user: this.isUserSpecific,
         };
@@ -83,9 +94,45 @@ export class ImperativeEvent {
     constructor(parms: IImperativeEventParms) {
         this.mEventTime = new Date().toISOString();
         this.mEventID = randomUUID();
+        this.mProcessID = '';
         this.mAppID = parms.appName;
         this.mEventType = parms.eventType;
         parms.logger.debug("ImperativeEvent: " + this);
+
+        this.setProcessId();
+    }
+
+    /**
+     * Method retrieves process ID from application generating the event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+    */
+    private async setProcessId() {
+        try {
+            const pid = await this.findProcessID(this.mAppID);
+            this.mProcessID = pid;
+        } catch (error) {
+            throw new ImperativeError({
+                msg: `Unable to determine PID for this Event: ${this.mEventType} \t| App: ${this.mAppID} | Error: ${error}`
+            });
+        }
+    }
+
+    private findProcessID(appName: string): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            const command = `ps -A | grep ${appName} | awk '{print $1}'`;
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    return reject(error);
+                }
+                if (stderr) {
+                    return reject(stderr);
+                }
+                const pid: string = stdout.trim().split('\n')[0];
+                resolve(pid);
+            });
+        });
     }
 
     public get eventTime(): string {
@@ -98,6 +145,10 @@ export class ImperativeEvent {
 
     public get appName(): string {
         return this.mAppID;
+    }
+
+    public get processId(): string {
+        return this.mProcessID;
     }
 
     public get eventId() : string {

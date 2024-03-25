@@ -32,6 +32,10 @@ export interface IImperativeEventJson {
      */
     id?: string;
     /**
+     * The process ID of the application spawning the occurred event
+     */
+    pid?: string;
+    /**
      * The location in which the event was emitted (User vs Shared)
      */
     loc?: string;
