@@ -103,7 +103,7 @@ export class ImperativeEvent {
     }
 
     /**
-     * Method retrieves process ID from application generating the event
+     * Method sets processId for ImperativeEvent
      * @private
      * @type {string}
      * @memberof ImperativeEvent
@@ -119,6 +119,12 @@ export class ImperativeEvent {
         }
     }
 
+    /**
+     * Method retrieves process ID from application generating the event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+    */
     private findProcessID(appName: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             const command = `ps -A | grep ${appName} | awk '{print $1}'`;
