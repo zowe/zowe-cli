@@ -72,7 +72,7 @@
     "find-process": "1.4.7",
     "lodash": "4.17.21",
     "minimatch": "9.0.3",
-    "tar": "6.2.0"
+    "tar": "6.2.1"
   },
   "devDependencies": {
     "@types/diff": "^5.0.9",
