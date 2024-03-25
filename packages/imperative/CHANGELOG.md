@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed issue where the `ProfileInfo.addProfileTypeToSchema` function did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
+- BugFix: Updated debugging output for technical currency. [#2100](https://github.com/zowe/zowe-cli/pull/2100)
+
 ## `8.0.0-next.202403141949`
 - LTS Breaking: Modified the @zowe/imperative SDK [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Renamed class ProfileIO to V1ProfileConversion.
