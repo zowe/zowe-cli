@@ -4,6 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+
 - BugFix: Updated `tar` dependency to resolve technical currency [#2101](https://github.com/zowe/zowe-cli/issues/2101)
 
 ## `7.23.5`
