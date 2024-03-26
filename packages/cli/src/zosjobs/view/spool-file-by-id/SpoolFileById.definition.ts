@@ -41,6 +41,15 @@ export const SpoolFileByIdDefinition: ICommandDefinition = {
             required: true
         }
     ],
+    options: [
+        {
+            name: "encoding",
+            aliases: ["ec"],
+            description: "Download the spool file content with encoding mode, which means that " +
+                "data conversion is performed using the file encoding specified.",
+            type: "string"
+        }
+    ],
     examples: [
         {
             description: "View the spool file with ID 4 for the job with job ID JOB00123",

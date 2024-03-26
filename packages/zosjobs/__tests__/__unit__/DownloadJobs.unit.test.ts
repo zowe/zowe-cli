@@ -265,6 +265,112 @@ describe("DownloadJobs", () => {
                 expect(chunks).toEqual(["test"]);
             });
 
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (with encoding)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (s: AbstractSession, resource: string, r?: any[], stream?: Writable): Promise<any> => {
+                    uri = resource;
+                    stream?._write("test", "utf-8", jest.fn());
+                });
+                const chunks: any[] = [];
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    encoding: "IBM-037",
+                    binary: false,
+                    stream: new Writable({write: (chunk) => {
+                        chunks.push(chunk);
+                    }})
+                };
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).not.toHaveBeenCalled();
+                expect(uri).toContain("?fileEncoding=IBM-037");
+                expect(chunks).toEqual(["test"]);
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (with invalid encoding)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (s: AbstractSession, resource: string, r?: any[], stream?: Writable): Promise<any> => {
+                    uri = resource;
+                    stream?._write("test", "utf-8", jest.fn());
+                });
+                const chunks: any[] = [];
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    encoding: "       ",
+                    binary: false,
+                    stream: new Writable({write: (chunk) => {
+                        chunks.push(chunk);
+                    }})
+                };
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).not.toHaveBeenCalled();
+                expect(uri).not.toContain("fileEncoding");
+                expect(chunks).toEqual(["test"]);
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (streamed in binary mode with encoding)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (s: AbstractSession, resource: string, r?: any[], stream?: Writable): Promise<any> => {
+                    uri = resource;
+                    stream?._write("test", "utf-8", jest.fn());
+                });
+                const chunks: any[] = [];
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    encoding: "IBM-037",
+                    binary: true,
+                    stream: new Writable({write: (chunk) => {
+                        chunks.push(chunk);
+                    }})
+                };
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).not.toHaveBeenCalled();
+                expect(uri).toContain("?mode=binary");
+                expect(uri).not.toContain("fileEncoding");
+                expect(chunks).toEqual(["test"]);
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (streamed in record mode with encoding)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (s: AbstractSession, resource: string, r?: any[], stream?: Writable): Promise<any> => {
+                    uri = resource;
+                    stream?._write("test", "utf-8", jest.fn());
+                });
+                const chunks: any[] = [];
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    encoding: "IBM-037",
+                    record: true,
+                    stream: new Writable({write: (chunk) => {
+                        chunks.push(chunk);
+                    }})
+                };
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).not.toHaveBeenCalled();
+                expect(uri).toContain("?mode=record");
+                expect(uri).not.toContain("fileEncoding");
+                expect(chunks).toEqual(["test"]);
+            });
+
             it("should allow users to call downloadSpoolContentCommon with correct parameters (default outDir and record mode)", async () => {
                 let uri: string = "";
                 ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {

@@ -35,6 +35,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
 
     afterEach(() => {
         jest.resetAllMocks();
+        DEFAULT_PARAMETERS.arguments.encoding = undefined; // Why is this needed? Where are things being set???
     });
 
     it("should be able to get the content of a spool file", async () => {
@@ -58,7 +59,32 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         const fakeSession: Session = new Session(sessCfg);
 
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined);
+    });
+
+    it("should be able to get the content of a spool file with encoding", async () => {
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        GetJobs.getSpoolContentById = jest.fn(async (session, jobname, jobid, spoolId) => {
+            return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt").toString();
+        });
+        const handler = new SpoolFileByIdHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments.jobid = "j12345";
+        params.arguments.spoolfileid = "2";
+        params.arguments.encoding = "IBM-037";
+        await handler.process(params);
+        expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
+            DEFAULT_PARAMETERS.arguments
+        );
+        const fakeSession: Session = new Session(sessCfg);
+
+        expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", "IBM-037");
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -108,7 +134,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         const fakeSession: Session = new Session(sessCfg);
 
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
