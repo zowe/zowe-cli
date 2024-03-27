@@ -543,6 +543,6 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
      * @return {string} - The escaped string
      */
     private escapeMarkdown(text: string): string {
-        return stripAnsi(text).replace(/([*#\-`_[\]+.!\\])/g, "\\$1");
+        return stripAnsi(text).replace(/([*#\-`_[\]+!\\])/g, "\\$1");
     }
 }
