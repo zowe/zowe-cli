@@ -60,7 +60,7 @@ export class ImperativeEventEmitter {
 
     /**
      * Check to see if the directory exists, otherwise, create it : )
-     * @param directoryPath Zowe or User path where we will write the events
+     * @param directoryPath Zowe or User dir where we will write the events
      */
     private ensureEventsDirExists(directoryPath: string) {
         try {
@@ -69,6 +69,21 @@ export class ImperativeEventEmitter {
             }
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
+        }
+    }
+
+    /**
+     * Check to see if the file path exists, otherwise, create it : )
+     * @param filePath Zowe or User path where we will write the events
+     */
+    private ensureEventFileExists(filePath: string) {
+        try {
+            if (!fs.existsSync(filePath)) {
+                fs.closeSync(fs.openSync(filePath, 'w'));
+
+            }
+        } catch (err) {
+            throw new ImperativeError({ msg: `Unable to create file path: ${filePath}`, causeErrors: err });
         }
     }
 
@@ -193,7 +208,10 @@ export class ImperativeEventEmitter {
             throw new ImperativeError({msg: "Unable to identify the type of event"});
         }
 
+        this.ensureEventsDirExists(dir); //ensure .events exist
+
         const setupWatcher = (callbacks: Function[] = []): fs.FSWatcher => {
+            this.ensureEventFileExists(join(dir, eventType));
             const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change", filename: string) => {
                 this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
                 callbacks.forEach(cb => cb());
