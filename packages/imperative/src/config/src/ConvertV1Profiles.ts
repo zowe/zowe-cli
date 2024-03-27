@@ -531,17 +531,23 @@ export class ConvertV1Profiles {
             currCredMgr = AppSettings.instance.get("overrides", credMgrKey);
         } catch(error) {
             currCredMgr = null;
+            ConvertV1Profiles.addToConvertMsgs(
+                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
+                `Failed trying to read '${credMgrKey}' overrides.`
+            );
+            ConvertV1Profiles.addToConvertMsgs(
+                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
+                stripAnsi(error.message)
+            );
         }
-        if (currCredMgr != null) {
-            // we leave the 'false' indicator to use no credMgr in place
-            if (currCredMgr !== false) {
-                // if any of the old SCS credMgr names are found, record that we want to replace the credMgr
-                const oldScsOverrideNames = [oldScsPluginNm, "Zowe-Plugin", "Broadcom-Plugin"];
-                for (const oldOverrideName of oldScsOverrideNames) {
-                    if (currCredMgr.includes(oldOverrideName)) {
-                        pluginInfo.overrides.push(credMgrKey);
-                        break;
-                    }
+
+        // we leave the 'false' indicator unchanged to allow for the use of no credMgr
+        if (typeof currCredMgr === "string") {
+            // if any of the old SCS credMgr names are found, record that we want to replace the credMgr
+            for (const oldOverrideName of [oldScsPluginNm, "Zowe-Plugin", "Broadcom-Plugin"]) {
+                if (currCredMgr.includes(oldOverrideName)) {
+                    pluginInfo.overrides.push(credMgrKey);
+                    break;
                 }
             }
         }
@@ -554,6 +560,10 @@ export class ConvertV1Profiles {
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
+                "Failed trying to get the set of installed plugins."
+            );
+            ConvertV1Profiles.addToConvertMsgs(
+                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
                 error.message
             );
         }
@@ -616,7 +626,7 @@ export class ConvertV1Profiles {
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE,
-                `Encountered an error while gathering profiles for service '${acct}':`
+                `Encountered an error while gathering secure properties for service '${acct}':`
             );
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
