@@ -21,6 +21,7 @@ import { ProfileInfo } from "../../config";
 import { LoggerManager } from "../../logger/src/LoggerManager";
 import { IImperativeRegisteredAction } from "./doc/IImperativeRegisteredAction";
 import { IImperativeEventEmitterOpts } from "./doc/IImperativeEventEmitterOpts";
+import { IImperativeEventJson } from "./doc";
 
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
@@ -28,6 +29,7 @@ export class ImperativeEventEmitter {
     public appName: string;
     public logger: Logger;
     private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
+    private eventTimes: Map<string, string>;
 
     public static initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
         if (this.initialized) {
@@ -152,9 +154,8 @@ export class ImperativeEventEmitter {
     /**
      * Simple method to write the events to disk
      * @param eventType The type of event to write
-     * @internal Not implemented in the MVP
      */
-    public emitCustomEvent(eventType: ImperativeEventType) { //, isUserSpecific: boolean = false) {
+    public emitCustomEvent(eventType: string) { //, isUserSpecific: boolean = false) {
         const theEvent = this.initializeEvent(eventType);
 
         let dir: string;
@@ -182,19 +183,13 @@ export class ImperativeEventEmitter {
         fs.writeFileSync(eventPath, JSON.stringify(eventJson, null, 2));
     }
 
-    /**
-     * Method to register your custom actions based on when the given event is emitted
-     * @param eventType Type of event to register
-     * @param callback Action to be registered to the given event
-     */
-    public subscribe(eventType: string, callback: Function): IImperativeRegisteredAction {
-        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
-            ProfileInfo.initImpUtils("zowe");
-        }
-        if (this.subscriptions == null) {
-            this.subscriptions = new Map();
-        }
 
+    /**
+     * Obtain the directory of the event
+     * @param eventType The type of event to be emitted
+     * @returns The directory to where this event will be emitted
+     */
+    public getEventDir(eventType: string): string {
         let dir: string;
         if (this.isUserEvent(eventType)) {
             dir = this.getUserEventDir();
@@ -208,14 +203,40 @@ export class ImperativeEventEmitter {
             throw new ImperativeError({msg: "Unable to identify the type of event"});
         }
 
+        return dir;
+    }
+
+    /**
+     * Method to register your custom actions based on when the given event is emitted
+     * @param eventType Type of event to register
+     * @param callback Action to be registered to the given event
+     */
+    public subscribe(eventType: string, callback: Function): IImperativeRegisteredAction {
+        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
+            ProfileInfo.initImpUtils("zowe");
+        }
+        if (this.subscriptions == null) {
+            this.subscriptions = new Map();
+            this.eventTimes = new Map();
+        }
+
+        const dir = this.getEventDir(eventType);
         this.ensureEventsDirExists(dir); //ensure .events exist
 
         const setupWatcher = (callbacks: Function[] = []): fs.FSWatcher => {
             this.ensureEventFileExists(join(dir, eventType));
             const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change", filename: string) => {
-                this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
-                callbacks.forEach(cb => cb());
-                callback();
+                // Node.JS triggers this event 3 times
+                const eventContents = fs.readFileSync(join(this.getEventDir(eventType), filename)).toString();
+                const timeOfEvent = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
+
+                if (this.eventTimes.get(eventType) !== timeOfEvent) {
+                    this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
+                    // Promise.all([...callbacks, callback])
+                    callbacks.forEach(cb => cb());
+                    callback();
+                    this.eventTimes.set(eventType, timeOfEvent);
+                }
             });
             this.subscriptions.set(eventType, [watcher, [...callbacks, callback]]);
             return watcher;
@@ -239,8 +260,13 @@ export class ImperativeEventEmitter {
      * @param eventType Type of registered event
      */
     public unsubscribe(eventType: string): void {
-        const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
-        watcherToClose.removeAllListeners(eventType).close();
-        this.subscriptions.delete(eventType);
+        if (this.subscriptions.has(eventType)) {
+            const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
+            watcherToClose.removeAllListeners(eventType).close();
+            this.subscriptions.delete(eventType);
+        }
+        if (this.eventTimes.has(eventType)) {
+            this.eventTimes.delete(eventType);
+        }
     }
 }
