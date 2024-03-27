@@ -28,9 +28,6 @@ import { IDsmListOptions } from "./doc/IDsmListOptions";
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
  */
 export class List {
-    // eslint-disable-next-line no-control-regex
-    private static CONTROL_CHAR_REGEX = new RegExp(/[\x00-\x1f\x7f\x80-\x9f]/g);
-
     /**
      * Retrieve all members from a PDS
      *
@@ -77,35 +74,23 @@ export class List {
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
-            let data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            const data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
             let response: any;
             try {
                 response = JSONUtils.parse(data);
-            } catch {
-                const regex = /"member":\s*"/g;
-                let match;
-                const matches = [];
-
-                while ((match = regex.exec(data)) !== null) {
-                    matches.push({
-                        matchString: match[0],
-                        startIndex: match.index
-                    });
+            } catch (err) {
+                const match = /in JSON at position (\d+)/.exec(err.message);
+                if (match != null) {
+                    // Remove invalid member names from end of list and try to parse again
+                    const lineNum = data.slice(0, parseInt(match[1])).split("\n").length - 1;
+                    const lines = data.trim().split("\n");
+                    lines[lineNum - 1] = lines[lineNum - 1].replace(/,$/, "");
+                    lines.splice(lineNum, lines.length - lineNum - 1);
+                    response = JSONUtils.parse(lines.join("\n"));
+                    response.items.push({ "member": `… ${response.returnedRows - response.items.length} more members` });
+                } else {
+                    throw err;
                 }
-
-                // Iterate through matches in reverse order
-                for (let i = matches.length - 1; i >= 0; i--) {
-                    const match = matches[i];
-                    const memberStartIdx = match.startIndex + match.matchString.length;
-                    const memberNameEndIdx = data.indexOf('"', memberStartIdx + 1); // Find the end of the member name
-                    if (memberNameEndIdx !== -1) {
-                        const memberName = data.substring(memberStartIdx, memberNameEndIdx);
-                        const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
-                        data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberNameEndIdx);
-                    }
-                }
-                // parse the modified data as JSON
-                response = JSONUtils.parse(data);
             }
 
             return {

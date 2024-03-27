@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error that could occur when listing data set members that contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
+
 ## `7.23.7`
 
 - BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2091](https://github.com/zowe/zowe-cli/pull/2091)
@@ -19,6 +23,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 - BugFix: Fix behavior where a specified directory was being lowercased on non-PDS datasets when downloading all datasets [#1722](https://github.com/zowe/zowe-cli/issues/1722)
 
 ## `7.18.8`
+
 - Enhancement: Patch that adds invalidFileName to ZosFilesMessages
 
 ## `7.18.0`
