@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved technical currency by updating `markdown-it` dependency []()
+
 ## `6.40.26`
 
 - BugFix: Resolved technical currency by updating `socks` transitive dependency
