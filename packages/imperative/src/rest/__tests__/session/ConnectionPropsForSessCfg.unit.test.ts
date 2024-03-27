@@ -186,6 +186,34 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
+    it("ignore token and cert if unsupported auth types and authenticate with user and pass", async() => {
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            cert: "fakeCert",
+            certKey: "fakeCertKey",
+            tokenType: SessConstants.TOKEN_TYPE_JWT,
+            tokenValue: "fakeToken"
+        };
+        const fakePromptFn = jest.fn().mockReturnValue({
+            "user": "FakeUser",
+            "password": "FakePassword"
+        });
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg, args, {getValuesBack: fakePromptFn, supportedAuthTypes: ["basic"]}
+        );
+        expect(fakePromptFn).toHaveBeenCalledWith(["user", "password"]);
+        expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
+        expect(sessCfgWithConnProps.user).toBe("FakeUser");
+        expect(sessCfgWithConnProps.password).toBe("FakePassword");
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+    });
+
     it("not set tokenValue if user and pass are defined", async() => {
         const initialSessCfg = {
             hostname: "SomeHost",
