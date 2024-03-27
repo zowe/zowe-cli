@@ -35,7 +35,7 @@ export class ImperativeEventEmitter {
         }
         this.initialized = true;
         ImperativeEventEmitter.instance.appName = appName;
-        ImperativeEventEmitter.instance.logger = options.logger ?? Logger.getImperativeLogger();
+        ImperativeEventEmitter.instance.logger = options?.logger ?? Logger.getImperativeLogger();
     }
     public static get instance(): ImperativeEventEmitter {
         if (this.mInstance == null) {
