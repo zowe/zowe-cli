@@ -233,4 +233,13 @@ export class ImperativeEventEmitter {
         }
         return { close: watcher.close };
     }
+
+    /**
+     * Method to unsubscribe from custom and regular events
+     * @param eventType Type of registered event
+     */
+    public unsubscribe(eventType: string): void {
+        const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
+        watcherToClose.removeAllListeners(eventType).close();
+    }
 }
