@@ -9,17 +9,24 @@
 *
 */
 
-export const ImperativeUserEvents = [
-    "onVaultChanged"
-] as const;
-export type ImperativeUserEventType = typeof ImperativeUserEvents[number];
+export enum ImperativeUserEvents {
+    ON_VAULT_CHANGED = "onVaultChanged"
+}
+export enum ImperativeSharedEvents {
+    ON_CREDENTIAL_MANAGER_CHANGED = "onCredentialManagerChanged"
+}
 
-export const ImperativeSharedEvents = [
-    "onCredentialManagerChanged"
-] as const;
-export type ImperativeSharedEventType = typeof ImperativeSharedEvents[number];
+export type ImperativeEventType = ImperativeUserEvents | ImperativeSharedEvents;
 
-export type ImperativeEventType = ImperativeUserEventType | ImperativeSharedEventType;
+// export const ImperativeUserEvents = [
+//     "onVaultChanged"
+// ] as const;
+// export type ImperativeUserEventType = typeof ImperativeUserEvents;
+// export const ImperativeSharedEvents = [
+//     "onCredentialManagerChanged"
+// ] as const;
+// export type ImperativeSharedEventType = typeof ImperativeSharedEvents[number];
+// export type ImperativeEventType = ImperativeUserEventType | ImperativeSharedEventType;
 
 /**
  * TODO:
