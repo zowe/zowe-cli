@@ -180,7 +180,6 @@ export class ImperativeEventEmitter {
             this.subscriptions = new Map();
         }
 
-        const logger = Logger.getImperativeLogger();
         let dir: string;
         if (this.isUserEvent(eventType)) {
             dir = this.getUserEventDir();
@@ -196,7 +195,7 @@ export class ImperativeEventEmitter {
 
         const setupWatcher = (callbacks: Function[] = []): fs.FSWatcher => {
             const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change", filename: string) => {
-                logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
+                this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
                 callbacks.forEach(cb => cb());
                 callback();
             });
