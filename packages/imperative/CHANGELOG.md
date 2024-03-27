@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.22.7`
 
 - BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2106](https://github.com/zowe/zowe-cli/pull/2106)
 
