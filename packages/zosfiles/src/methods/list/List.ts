@@ -87,7 +87,8 @@ export class List {
                     lines[lineNum - 1] = lines[lineNum - 1].replace(/,$/, "");
                     lines.splice(lineNum, lines.length - lineNum - 1);
                     response = JSONUtils.parse(lines.join("\n"));
-                    response.items.push({ "member": `… ${response.returnedRows - response.items.length} more members` });
+                    const invalidMemberCount = response.returnedRows - response.items.length;
+                    this.log.warn(`${invalidMemberCount} members failed to load due to invalid name errors for ${dataSetName}`);
                 } else {
                     throw err;
                 }
