@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2107](https://github.com/zowe/zowe-cli/pull/2107)
+
 ## `8.0.0-next.202403251613`
 
 - BugFix: Fixed issue where the `ProfileInfo.addProfileTypeToSchema` function did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
