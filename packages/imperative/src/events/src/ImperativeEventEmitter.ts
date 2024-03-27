@@ -241,5 +241,6 @@ export class ImperativeEventEmitter {
     public unsubscribe(eventType: string): void {
         const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
         watcherToClose.removeAllListeners(eventType).close();
+        this.subscriptions.delete(eventType);
     }
 }
