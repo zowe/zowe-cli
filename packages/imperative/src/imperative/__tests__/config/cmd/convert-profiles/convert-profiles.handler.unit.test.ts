@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
-import { Config, ConfigBuilder, ConfigSchema } from "../../../../../config";
+import { Config, ConvertV1Profiles, ConfigSchema } from "../../../../../config";
 import { IHandlerParameters } from "../../../../../cmd";
 import { V1ProfileRead } from "../../../../../profiles";
 import { AppSettings } from "../../../../../settings";
@@ -120,7 +120,7 @@ describe("Configuration Convert Profiles command handler", () => {
     it("should convert old profiles", async () => {
         const metaError = new Error("invalid meta file");
         const profileError = new Error("invalid profile file");
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut"]
@@ -151,7 +151,7 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("should not convert old profiles if team config already exists", async () => {
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
@@ -177,7 +177,7 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("should remove plug-ins and convert profiles if prompt is accepted", async () => {
-        const configConvertSpy = jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        const configConvertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {},
             profilesFailed: []
@@ -206,7 +206,7 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("should do nothing if prompt is rejected", async () => {
-        const configConvertSpy = jest.spyOn(ConfigBuilder, "convert");
+        const configConvertSpy = jest.spyOn(ConvertV1Profiles, "convert");
 
         const handler = new ConvertProfilesHandler();
         jest.spyOn(handler as any, "getOldPluginInfo").mockReturnValueOnce({ plugins: ["fake-plugin"], overrides: [] });
@@ -225,7 +225,7 @@ describe("Configuration Convert Profiles command handler", () => {
 
     it("should remove existing profiles and delete secure properties", async () => {
         const metaError = new Error("invalid meta file");
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
@@ -270,7 +270,7 @@ describe("Configuration Convert Profiles command handler", () => {
 
     it("should remove existing profiles and delete secure properties with prompt", async () => {
         const metaError = new Error("invalid meta file");
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
@@ -316,7 +316,7 @@ describe("Configuration Convert Profiles command handler", () => {
 
     it("should remove existing profiles and not delete secure properties with prompt", async () => {
         const metaError = new Error("invalid meta file");
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
@@ -362,7 +362,7 @@ describe("Configuration Convert Profiles command handler", () => {
 
     it("should remove existing profiles and delete secure properties except secure_config_props", async () => {
         const metaError = new Error("invalid meta file");
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
@@ -408,7 +408,7 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("should handle no profiles and delete secure properties except secure_config_props with prompt", async () => {
-        const configBuilderConvertSpy = jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        const convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {},
             profilesFailed: []
@@ -444,7 +444,7 @@ describe("Configuration Convert Profiles command handler", () => {
         expect(stdout).toContain("Deleting secure value for \"Zowe-Plugin/testAcct\"");
         expect(stdout).toContain("Deleting secure value for \"Broadcom-Plugin/testAcct\"");
         expect(stdout).toContain("Deleting secure value for \"Zowe/testAcct\"");
-        expect(configBuilderConvertSpy).not.toHaveBeenCalled();
+        expect(convertSpy).not.toHaveBeenCalled();
         expect(updateSchemaSpy).not.toHaveBeenCalled();
         expect(mockImperativeConfig.config.save).not.toHaveBeenCalled();
         expect(removeSyncSpy).toHaveBeenCalledTimes(1);
@@ -454,7 +454,7 @@ describe("Configuration Convert Profiles command handler", () => {
     });
 
     it("should remove existing profiles, delete secure properties, and handle a rimraf delete error", async () => {
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
@@ -499,7 +499,7 @@ describe("Configuration Convert Profiles command handler", () => {
 
     it("should throw an error if keytar unavailable", async () => {
         const metaError = new Error("invalid meta file");
-        jest.spyOn(ConfigBuilder, "convert").mockResolvedValueOnce({
+        jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValueOnce({
             config: Config.empty(),
             profilesConverted: {
                 fruit: ["apple", "coconut", "banana"]
