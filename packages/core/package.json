@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "6.40.26",
+  "version": "6.40.27",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.7",
-    "@zowe/imperative": "4.18.22",
+    "@zowe/imperative": "4.18.23",
     "chalk": "^4.1.0",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",

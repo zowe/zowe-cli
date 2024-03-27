@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.40.27`
 
 - BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2105](https://github.com/zowe/zowe-cli/pull/2105)
 
