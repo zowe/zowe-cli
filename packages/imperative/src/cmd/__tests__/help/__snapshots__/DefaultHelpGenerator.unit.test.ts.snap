@@ -389,13 +389,13 @@ exports[`Default Help Generator help text builder should construct multiple tabl
 `;
 
 exports[`Default Help Generator help text builder should escape Markdown special characters in the description when markdown is rendered 1`] = `
-"This is a command with Markdown special characters in the description \\\\# \\\\* \\\\-\\\\.
+"This is a command with Markdown special characters in the description \\\\# \\\\* \\\\-.
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua\\\\. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat\\\\.
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur\\\\. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum\\\\.
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
 
 "
 `;
@@ -424,7 +424,7 @@ exports[`Default Help Generator help text builder should getCommandHelpText with
 `;
 
 exports[`Default Help Generator help text builder should remove ANSI escape codes from the help text 1`] = `
-"Specifies whether to verify that the objects to be created do not exist on the Db2 subsystem and that the related objects that are required for successful creation of the objects exist on the Db2 subsystem or in the input DDL\\\\.
+"Specifies whether to verify that the objects to be created do not exist on the Db2 subsystem and that the related objects that are required for successful creation of the objects exist on the Db2 subsystem or in the input DDL.
  
   Default value: no "
 `;
