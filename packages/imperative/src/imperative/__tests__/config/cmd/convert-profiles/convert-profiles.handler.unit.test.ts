@@ -57,6 +57,7 @@ describe("Configuration Convert Profiles command handler", () => {
             { msgFormat: 2, msgText: "Error Msg 1" },
             { msgFormat: 2, msgText: "Error Msg 2" }
         ],
+        v1ScsPluginName: null,
         cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
         numProfilesFound: 0,
         profilesConverted: {
@@ -106,3 +107,89 @@ describe("Configuration Convert Profiles command handler", () => {
         expect(stderr).toBe("");
     });
 });
+
+/* zzz
+            it("should report and uninstall any discovered old credMgr plugin", () => {
+                // pretend that we found an old credential manager
+                const fakeOldScsPlugin = "FakeScsPlugin";
+                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
+                    { plugins: [fakeOldScsPlugin], overrides: [] }
+                );
+
+                // avoid calling the real plugin uninstall
+                const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(jest.fn());
+
+                // call the function that we want to test
+                let caughtErr: any;
+                try {
+                    ConvertV1Profiles["removeOldOverrides"]();
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                expect(caughtErr).not.toBeDefined();
+                expect(uninstallSpy).toHaveBeenCalledWith(fakeOldScsPlugin);
+
+                let numMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
+                        if (nextMsg.msgText.includes(
+                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:") ||
+                            nextMsg.msgText.includes(fakeOldScsPlugin) ||
+                            nextMsg.msgText.includes(`Uninstalled plug-in: ${fakeOldScsPlugin}`)
+                        ) {
+                            numMsgsFound++;
+                        }
+                    }
+                }
+                expect(numMsgsFound).toEqual(3);
+            });
+
+zzz
+
+            it("should catch and report an error thrown when uninstalling a plugin", () => {
+                // pretend that we found an old credential manager
+                const fakeOldScsPlugin = "FakeScsPlugin";
+                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
+                    { plugins: [fakeOldScsPlugin], overrides: [] }
+                );
+
+                // Avoid calling the real plugin uninstall. Pretend it throws an exception.
+                const fakeErrMsg = "A fake exception from plugin uninstall";
+                const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(() => {
+                    throw new Error(fakeErrMsg);
+                });
+
+                // call the function that we want to test
+                let caughtErr: any;
+                try {
+                    ConvertV1Profiles["removeOldOverrides"]();
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                expect(caughtErr).not.toBeDefined();
+                expect(uninstallSpy).toHaveBeenCalledWith(fakeOldScsPlugin);
+
+                let numMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
+                        if (nextMsg.msgText.includes(
+                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:") ||
+                            nextMsg.msgText.includes(fakeOldScsPlugin)
+                        ) {
+                            numMsgsFound++;
+                        }
+                    } else {
+                        if (nextMsg.msgText.includes(`Failed to uninstall plug-in "${fakeOldScsPlugin}"`) ||
+                            nextMsg.msgText.includes(fakeErrMsg)
+                        ) {
+                            numMsgsFound++;
+                        }
+                    }
+                }
+                expect(numMsgsFound).toEqual(4);
+            });
+        }); // end removeOldOverrides
+
+zzz */

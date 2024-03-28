@@ -19,11 +19,8 @@ import { ImperativeError } from "../../../../../error";
 import { ExecUtils, TextUtils } from "../../../../../utilities";
 import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
+import { ConfigSchema, ProfileInfo } from "../../../../../config";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
-
-// avoid importing from config/index.ts to avoid circular dependency
-import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
-import { ProfileInfo } from "../../../../../config/src/ProfileInfo";
 
 const npmCmd = findNpmOnPath();
 

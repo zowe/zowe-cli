@@ -12,6 +12,7 @@
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ConvertV1Profiles } from "../../../../../config";
 import { IConvertV1ProfOpts, IConvertV1ProfResult } from "../../../../../config";
+import { uninstall as uninstallPlugin } from "../../../plugins/utilities/npm-interface";
 
 /**
  * Handler for the convert profiles command.
@@ -50,6 +51,37 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             params.response.console.log(nextMsg.msgText);
         }
 
+        // If the V1 SCS plugin was installed, uninstall it
+        if (convertResult.v1ScsPluginName) {
+            uninstallPlugin(convertResult.v1ScsPluginName);
+        }
+        /* zzz
+        // Uninstall all detected override plugins. We never implemented anything but a CredMgr override.
+        let lineCount: number = 1;
+        let firstLineNewPara: number = ConvertMsgFmt.PARAGRAPH;
+        for (const pluginName of oldPluginInfo.plugins) {
+            if (lineCount > 1) {
+                firstLineNewPara = 0;
+            }
+            try {
+                // zzz uninstallPlugin(pluginName);
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.REPORT_LINE | firstLineNewPara,
+                    `Uninstalled plug-in: ${pluginName}`
+                );
+            } catch (error) {
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.ERROR_LINE | firstLineNewPara,
+                    `Failed to uninstall plug-in "${pluginName}"`
+                );
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
+                    stripAnsi(error.message)
+                );
+            }
+            lineCount++;
+        }
+        zzz */
         return;
     }
 }

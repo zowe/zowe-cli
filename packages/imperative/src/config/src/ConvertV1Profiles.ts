@@ -28,9 +28,6 @@ import { OverridesLoader } from "../../imperative/src/OverridesLoader";
 import { ConfigSchema } from "./ConfigSchema";
 import { Logger } from "../../logger";
 
-// avoid importing from npm-interface/index.ts to avoid circular dependency
-import { uninstall as uninstallPlugin } from "../../imperative/src/plugins/utilities/npm-interface/uninstall";
-
 interface IOldPluginInfo {
     /**
      * List of CLI plug-ins to uninstall
@@ -67,6 +64,7 @@ export class ConvertV1Profiles {
         // initialize our result, which will be used by our utility functions, and returned by us
         ConvertV1Profiles.convertResult = {
             msgs: [],
+            v1ScsPluginName: null,
             cfgFilePathNm: ConvertV1Profiles.noCfgFilePathNm,
             numProfilesFound: 0,
             profilesConverted: {},
@@ -422,31 +420,13 @@ export class ConvertV1Profiles {
             }
         }
 
-        // Uninstall all detected override plugins. We never implemented anything but a CredMgr override.
-        let lineCount: number = 1;
-        let firstLineNewPara: number = ConvertMsgFmt.PARAGRAPH;
-        for (const pluginName of oldPluginInfo.plugins) {
-            if (lineCount > 1) {
-                firstLineNewPara = 0;
-            }
-            try {
-                uninstallPlugin(pluginName);
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE | firstLineNewPara,
-                    `Uninstalled plug-in: ${pluginName}`
-                );
-            } catch (error) {
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | firstLineNewPara,
-                    `Failed to uninstall plug-in "${pluginName}"`
-                );
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                    stripAnsi(error.message)
-                );
-            }
-            lineCount++;
-        }
+        /* We only had one override in V1 - the old SCS plugin.
+         * So, despite the array for multiple plugins, we just report
+         * the first plugin name in the array as the plugin that our
+         * caller should uninstall.
+         */
+        ConvertV1Profiles.convertResult.v1ScsPluginName =
+            (oldPluginInfo.plugins.length > 0) ? oldPluginInfo.plugins[0] : null;
     }
 
     /**

@@ -54,9 +54,20 @@ export interface IConvertV1ProfResult {
     msgs: ConvertMsg[];
 
     /**
+     * If the old V1 Secure Credential Store plugin is currently installed, its
+     * name is returned in this property. The old SCS plugin will not be used,
+     * but the customer should probably uninstall it. Our caller can automatically
+     * uninstall that SCS plugin, or if our caller is unable to do so, our
+     * caller could inform the user that the plugin should be uninstalled.
+     *
+     * If the V1 SCS plugin is not installed, the property value will be null.
+     */
+    v1ScsPluginName: string | null;
+
+    /**
      * The following properties contain information about the success or failure of
      * the conversion of V1 profiles. By displaying the values in the 'msgs' property,
-     * the caller need not use the following properties. However, caller could
+     * the caller need not use the following properties. However, our caller could
      * decide to take special action or display custom messages, using the following
      * properties.
      */

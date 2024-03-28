@@ -11,7 +11,6 @@
 
 import * as fs from "fs";
 import * as fsExtra from "fs-extra";
-import * as uninstallPlugin from "../../imperative/src/plugins/utilities/npm-interface/uninstall";
 import { PluginIssues } from "../../imperative/src/plugins/utilities/PluginIssues";
 import { CredentialManagerFactory } from "../..";
 import { ConvertV1Profiles } from "../";
@@ -195,6 +194,7 @@ describe("ConvertV1Profiles tests", () => {
             // create the result normally created by the public function convert()
             ConvertV1Profiles["convertResult"] = {
                 msgs: [],
+                v1ScsPluginName: null,
                 cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
                 numProfilesFound: 0,
                 profilesConverted: {},
@@ -788,10 +788,11 @@ describe("ConvertV1Profiles tests", () => {
                 expect(appSettingsGetSpy).not.toHaveBeenCalled();
             });
 
-            it("should replace a discovered old credential manager", () => {
+            it("should replace a v1 SCS credential manager and report a v1 SCS plugin", () => {
                 // pretend that we found an old credential manager
+                const fakeV1ScsPlugin = "FakeScsPlugin";
                 jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
-                    { plugins: [], overrides: ["CredentialManager"] }
+                    { plugins: [fakeV1ScsPlugin], overrides: ["CredentialManager"] }
                 );
 
                 // pretend that we set the credMgr
@@ -822,6 +823,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(appSettingsSetSpy).toHaveBeenCalledWith(
                     "overrides", "CredentialManager", CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
                 );
+                expect(ConvertV1Profiles["convertResult"].v1ScsPluginName).toEqual(fakeV1ScsPlugin);
             });
 
             it("should catch and report an error thrown by AppSettings.instance.set", () => {
@@ -861,86 +863,6 @@ describe("ConvertV1Profiles tests", () => {
                     }
                 }
                 expect(numMsgsFound).toEqual(2);
-            });
-
-            it("should report and uninstall any discovered old credMgr plugin", () => {
-                // pretend that we found an old credential manager
-                const fakeOldScsPlugin = "FakeScsPlugin";
-                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
-                    { plugins: [fakeOldScsPlugin], overrides: [] }
-                );
-
-                // avoid calling the real plugin uninstall
-                const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(jest.fn());
-
-                // call the function that we want to test
-                let caughtErr: any;
-                try {
-                    ConvertV1Profiles["removeOldOverrides"]();
-                } catch (err) {
-                    caughtErr = err;
-                }
-
-                expect(caughtErr).not.toBeDefined();
-                expect(uninstallSpy).toHaveBeenCalledWith(fakeOldScsPlugin);
-
-                let numMsgsFound = 0;
-                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(
-                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:") ||
-                            nextMsg.msgText.includes(fakeOldScsPlugin) ||
-                            nextMsg.msgText.includes(`Uninstalled plug-in: ${fakeOldScsPlugin}`)
-                        ) {
-                            numMsgsFound++;
-                        }
-                    }
-                }
-                expect(numMsgsFound).toEqual(3);
-            });
-
-            it("should catch and report an error thrown when uninstalling a plugin", () => {
-                // pretend that we found an old credential manager
-                const fakeOldScsPlugin = "FakeScsPlugin";
-                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
-                    { plugins: [fakeOldScsPlugin], overrides: [] }
-                );
-
-                // Avoid calling the real plugin uninstall. Pretend it throws an exception.
-                const fakeErrMsg = "A fake exception from plugin uninstall";
-                const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(() => {
-                    throw new Error(fakeErrMsg);
-                });
-
-                // call the function that we want to test
-                let caughtErr: any;
-                try {
-                    ConvertV1Profiles["removeOldOverrides"]();
-                } catch (err) {
-                    caughtErr = err;
-                }
-
-                expect(caughtErr).not.toBeDefined();
-                expect(uninstallSpy).toHaveBeenCalledWith(fakeOldScsPlugin);
-
-                let numMsgsFound = 0;
-                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(
-                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:") ||
-                            nextMsg.msgText.includes(fakeOldScsPlugin)
-                        ) {
-                            numMsgsFound++;
-                        }
-                    } else {
-                        if (nextMsg.msgText.includes(`Failed to uninstall plug-in "${fakeOldScsPlugin}"`) ||
-                            nextMsg.msgText.includes(fakeErrMsg)
-                        ) {
-                            numMsgsFound++;
-                        }
-                    }
-                }
-                expect(numMsgsFound).toEqual(4);
             });
         }); // end removeOldOverrides
 
