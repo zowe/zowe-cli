@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Logger, Session } from "@zowe/imperative";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { List } from "../../../../src/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
@@ -173,15 +173,15 @@ describe("z/OS Files - List", () => {
             const memberNames = ["m1", "m2"];
             const shuffledAsciiChars = String.fromCharCode(...Array.from(Array(256).keys()).sort(() => Math.random() - 0.5));
             for (let i = 0; i < 32; i++) {
-                // Exclude double quotes for now
-                memberNames.push(shuffledAsciiChars.slice(i * 8, (i + 1) * 8).replace('"', ''));
+                memberNames.push(shuffledAsciiChars.slice(i * 8, (i + 1) * 8));
             }
             expectStringSpy.mockResolvedValueOnce(`{"items":[\n` +
                 memberNames.map((memName) => `  {"member":"${memName}"}`).join(",\n") + `\n` +
                 `],"returnedRows":${memberNames.length},"JSONversion":1}`);
+            const loggerWarnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValueOnce("");
 
             const expectedListApiResponse = {
-                items: memberNames.map((memName) => ({ member: memName.replace((List as any).CONTROL_CHAR_REGEX, "\ufffd") })),
+                items: expect.arrayContaining([{ member: "m1" }, { member: "m2" }]),
                 returnedRows: 34,
                 JSONversion: 1
             };
@@ -201,6 +201,7 @@ describe("z/OS Files - List", () => {
             });
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
             expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(loggerWarnSpy.mock.calls[0][0]).toContain("members failed to load due to invalid name errors");
         });
 
         it("should list members from given data set with a matching pattern", async () => {

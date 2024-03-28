@@ -27,11 +27,22 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         });
 
+        const invalidMemberCount = response.apiResponse.returnedRows - response.apiResponse.items.length;
+        if (invalidMemberCount > 0) {
+            const invalidMemberMsg = `${invalidMemberCount} members failed to load due to invalid name errors`;
+            response.apiResponse.items.push(commandParameters.arguments.attributes ?
+                invalidMemberMsg : { member: TextUtils.chalk.gray("... " + invalidMemberMsg) });
+        }
+
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {
             commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse.items));
         } else {
             const memberList = response.apiResponse.items.map((mem: any) => mem.member);
             commandParameters.response.console.log(memberList.join("\n"));
+        }
+
+        if (invalidMemberCount > 0) {
+            response.apiResponse.items.pop();
         }
 
         return response;
