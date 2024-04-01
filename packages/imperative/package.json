@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "5.22.6",
+  "version": "5.22.7",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -63,7 +63,7 @@
     "lodash": "4.17.21",
     "lodash-deep": "2.0.0",
     "log4js": "6.4.6",
-    "markdown-it": "12.3.2",
+    "markdown-it": "14.1.0",
     "mustache": "4.2.0",
     "npm-package-arg": "9.1.0",
     "opener": "1.5.2",
