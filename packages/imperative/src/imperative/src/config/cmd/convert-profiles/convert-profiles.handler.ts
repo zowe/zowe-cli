@@ -10,8 +10,9 @@
 */
 
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { ConvertV1Profiles } from "../../../../../config";
-import { IConvertV1ProfOpts, IConvertV1ProfResult } from "../../../../../config";
+import {
+    ConvertMsg, ConvertMsgFmt, ConvertV1Profiles, IConvertV1ProfOpts, IConvertV1ProfResult
+} from "../../../../../config";
 import { uninstall as uninstallPlugin } from "../../../plugins/utilities/npm-interface";
 
 /**
@@ -46,42 +47,41 @@ export default class ConvertProfilesHandler implements ICommandHandler {
 
         const convertResult: IConvertV1ProfResult = await ConvertV1Profiles.convert(convertOpts);
 
+        /* Uninstall the V1 SCS plugin.
+         *
+         * The uninstall cannot be done in ConvertV1Profiles.convert, because circular
+         * dependencies cause problems in other unrelated modules that import from
+         * "@zowe/imperative".
+         *
+         * Add our messages to those already in the response object so that we can
+         * display all messages together later.
+         */
+        if (convertResult.v1ScsPluginName) {
+            uninstallPlugin(convertResult.v1ScsPluginName);
+            try {
+                uninstallPlugin(convertResult.v1ScsPluginName);
+                const newMsg = new ConvertMsg(
+                    ConvertMsgFmt.REPORT_LINE, `Uninstalled plug-in "${convertResult.v1ScsPluginName}"`
+                );
+                convertResult.msgs.push(newMsg);
+            } catch (error) {
+                let newMsg = new ConvertMsg(
+                    ConvertMsgFmt.ERROR_LINE, `Failed to uninstall plug-in "${convertResult.v1ScsPluginName}"`
+                );
+                convertResult.msgs.push(newMsg);
+
+                newMsg = new ConvertMsg(
+                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT, error.message
+                );
+                convertResult.msgs.push(newMsg);
+            }
+        }
+
         // display all of the messages reported by the conversion API
         for (const nextMsg of convertResult.msgs) {
             params.response.console.log(nextMsg.msgText);
         }
 
-        // If the V1 SCS plugin was installed, uninstall it
-        if (convertResult.v1ScsPluginName) {
-            uninstallPlugin(convertResult.v1ScsPluginName);
-        }
-        /* zzz
-        // Uninstall all detected override plugins. We never implemented anything but a CredMgr override.
-        let lineCount: number = 1;
-        let firstLineNewPara: number = ConvertMsgFmt.PARAGRAPH;
-        for (const pluginName of oldPluginInfo.plugins) {
-            if (lineCount > 1) {
-                firstLineNewPara = 0;
-            }
-            try {
-                // zzz uninstallPlugin(pluginName);
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE | firstLineNewPara,
-                    `Uninstalled plug-in: ${pluginName}`
-                );
-            } catch (error) {
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | firstLineNewPara,
-                    `Failed to uninstall plug-in "${pluginName}"`
-                );
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                    stripAnsi(error.message)
-                );
-            }
-            lineCount++;
-        }
-        zzz */
         return;
     }
 }
