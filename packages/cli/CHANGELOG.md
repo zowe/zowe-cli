@@ -2,11 +2,14 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error in `zos-files list all-members` command that could occur when members contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
+
 ## `7.23.9`
 
 - BugFix: Resolved technical currency by updating `tar` dependency. [#2101](https://github.com/zowe/zowe-cli/issues/2101)
 - BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2106](https://github.com/zowe/zowe-cli/pull/2106)
-- BugFix: Fixed error in `zos-files list all-members` command that could occur when members contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
 
 ## `7.23.5`
 
