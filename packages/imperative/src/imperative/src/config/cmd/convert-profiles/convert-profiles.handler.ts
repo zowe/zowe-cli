@@ -9,12 +9,12 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
+import { ICommandHandler, IHandlerParameters, IHandlerResponseConsoleApi } from "../../../../../cmd";
 import {
     ConvertMsg, ConvertMsgFmt, ConvertV1Profiles, IConvertV1ProfOpts, IConvertV1ProfResult
 } from "../../../../../config";
 import { uninstall as uninstallPlugin } from "../../../plugins/utilities/npm-interface";
-
+import { TextUtils } from "../../../../../utilities";
 /**
  * Handler for the convert profiles command.
  */
@@ -49,7 +49,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
 
         /* Uninstall the V1 SCS plugin.
          *
-         * The uninstall cannot be done in ConvertV1Profiles.convert, because circular
+         * The uninstall cannot be done in ConvertV1Profiles.convert because circular
          * dependencies cause problems in other unrelated modules that import from
          * "@zowe/imperative".
          *
@@ -77,11 +77,54 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             }
         }
 
-        // display all of the messages reported by the conversion API
-        for (const nextMsg of convertResult.msgs) {
-            params.response.console.log(nextMsg.msgText);
-        }
+        // display all report messages followed by error messages
+        this.showMsgsByType(convertResult.msgs, ConvertMsgFmt.REPORT_LINE, params.response.console);
+        this.showMsgsByType(convertResult.msgs, ConvertMsgFmt.ERROR_LINE, params.response.console);
+    }
 
-        return;
+    /**
+     * Show all of the messages of a given type.
+     * The intent is to allow our caller to show a report of all actions,
+     * followed by a report of all errors.
+     *
+     * @param setOfMsgs The available set of messages to display.
+     * @param msgTypeToShow The type of message to display.
+     *                      Either ConvertMsgFmt.REPORT_LINE or ConvertMsgFmt.ERROR_LINE.
+     * @param consoleApiFun The IHandlerResponseConsoleApi object used to display
+     *                      messages in a CLI terminal.
+     */
+    private showMsgsByType(
+        setOfMsgs: ConvertMsg[],
+        msgTypeToShow: number,
+        consoleApiFun: IHandlerResponseConsoleApi
+    ): void {
+
+        let firstMsgLine: boolean = true;
+        for (const nextMsg of setOfMsgs) {
+            let startingMsgText = "";
+            if (nextMsg.msgFormat & msgTypeToShow) {
+                if (firstMsgLine) {
+                    if (msgTypeToShow & ConvertMsgFmt.REPORT_LINE) {
+                        startingMsgText = "The following operations were performed\n";
+                    } else {
+                        startingMsgText = "\nThe following errors occurred\n";
+                    }
+                    firstMsgLine = false;
+                }
+
+                if (nextMsg.msgFormat & ConvertMsgFmt.PARAGRAPH) {
+                    startingMsgText += "\n";
+                }
+                if (nextMsg.msgFormat & ConvertMsgFmt.INDENT) {
+                    startingMsgText += "    ";
+                }
+
+                if (msgTypeToShow & ConvertMsgFmt.REPORT_LINE) {
+                    consoleApiFun.log(startingMsgText + nextMsg.msgText);
+                } else {
+                    consoleApiFun.error(TextUtils.chalk.red(startingMsgText + nextMsg.msgText));
+                }
+            }
+        }
     }
 }

@@ -112,7 +112,7 @@ export class ConvertV1Profiles {
             // We do not convert if we already have an existing zowe client config
             ConvertV1Profiles.putCfgFileNmInResult(ImperativeConfig.instance.config);
             ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.REPORT_LINE,
+                ConvertMsgFmt.ERROR_LINE,
                 `A current Zowe client configuration was found at ${ConvertV1Profiles.convertResult.cfgFilePathNm}. ` +
                 `V1 profiles will not be converted.`
             );
@@ -123,7 +123,7 @@ export class ConvertV1Profiles {
             );
             if (ConvertV1Profiles.convertResult.numProfilesFound === 0) {
                 ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE,
+                    ConvertMsgFmt.ERROR_LINE,
                     "Found no old V1 profiles to convert to a current Zowe client configuration."
                 );
             } else {
