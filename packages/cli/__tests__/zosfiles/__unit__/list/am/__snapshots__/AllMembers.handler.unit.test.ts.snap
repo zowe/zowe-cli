@@ -21,3 +21,27 @@ exports[`List AllMembers handler process method should list all members from a P
 test-item
 listed"
 `;
+
+exports[`List AllMembers handler process method should list all members from a PDS with some errors 1`] = `
+Object {
+  "apiResponse": Object {
+    "items": Array [
+      Object {
+        "member": "test-item",
+      },
+    ],
+    "returnedRows": 3,
+  },
+  "commandResponse": "listed",
+  "success": true,
+}
+`;
+
+exports[`List AllMembers handler process method should list all members from a PDS with some errors 2`] = `""`;
+
+exports[`List AllMembers handler process method should list all members from a PDS with some errors 3`] = `
+"
+test-item
+[90m... 2 members failed to load due to invalid name errors[39m
+listed"
+`;

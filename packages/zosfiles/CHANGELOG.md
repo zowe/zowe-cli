@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error that could occur when listing data set members that contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
+
 ## `8.0.0-next.202403132009`
 
 - LTS Breaking: Changed return type of `Upload.bufferToUssFile` to return `IZosFilesResponse` object instead of string. [#2089](https://github.com/zowe/zowe-cli/pull/2089)
@@ -38,6 +42,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.24.0`
+
+- BugFix: Fixed error that could occur when listing data set members that contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
 
 ## `7.23.7`
 
