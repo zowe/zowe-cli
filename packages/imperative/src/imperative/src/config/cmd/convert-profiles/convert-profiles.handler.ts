@@ -105,9 +105,9 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             if (nextMsg.msgFormat & msgTypeToShow) {
                 if (firstMsgLine) {
                     if (msgTypeToShow & ConvertMsgFmt.REPORT_LINE) {
-                        startingMsgText = "The following operations were performed\n";
+                        startingMsgText = "The following operation(s) were accomplished:\n\n";
                     } else {
-                        startingMsgText = "\nThe following errors occurred\n";
+                        startingMsgText = "\nThe following operation(s) could not be completed:\n";
                     }
                     firstMsgLine = false;
                 }
