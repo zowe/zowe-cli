@@ -50,4 +50,5 @@ export type ImperativeEventType = ImperativeUserEvents | ImperativeSharedEvents;
  *
  * Edge cases:
  * - What if the `path/to/.events` directory gets renamed or moved? (fs.watch stops notifying apps)
+ *      - (amber) I think this is something we should just let people know about. ie warn them NOT to mess w .zowe/events
  */
