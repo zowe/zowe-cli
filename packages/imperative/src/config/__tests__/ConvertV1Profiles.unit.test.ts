@@ -225,7 +225,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(convNeeded).toEqual(false);
                 let numErrMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
+                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE &&
                         nextMsg.msgText.includes("A current Zowe client configuration was found"))
                     {
                         numErrMsgsFound++;
@@ -258,7 +258,7 @@ describe("ConvertV1Profiles tests", () => {
 
                 let numErrMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
+                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE &&
                         nextMsg.msgText.includes(
                             "Found no old V1 profiles to convert to a current Zowe client configuration"
                         )
