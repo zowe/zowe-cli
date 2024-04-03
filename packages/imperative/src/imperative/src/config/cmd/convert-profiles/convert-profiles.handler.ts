@@ -31,7 +31,8 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             deleteV1Profs: false
         };
 
-        if (params.arguments.delete != null && params.arguments.delete === true) {
+        if (params.arguments?.delete) {
+            convertOpts.deleteV1Profs = true;
             if (params.arguments.prompt == null || params.arguments.prompt === true) {
                 params.response.console.log(
                     "If you confirm the deletion of V1 profiles, they are deleted from disk\n" +
@@ -39,8 +40,8 @@ export default class ConvertProfilesHandler implements ICommandHandler {
                     "You can also delete your V1 profiles later.\n"
                 );
                 const answer = await params.response.console.prompt("Do you want to delete your V1 profiles now [y/N]: ");
-                if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
-                    convertOpts.deleteV1Profs = true;
+                if (answer.charAt(0).toLowerCase() !== "y") {
+                    convertOpts.deleteV1Profs = false;
                 }
             }
         }
