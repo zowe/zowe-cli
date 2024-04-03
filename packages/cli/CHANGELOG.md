@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202404032038`
 
 - BugFix: Fixed error in `zos-files list all-members` command that could occur when members contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
 
