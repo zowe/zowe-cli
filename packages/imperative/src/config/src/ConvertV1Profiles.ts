@@ -106,8 +106,6 @@ export class ConvertV1Profiles {
      */
     private static isConversionNeeded(): boolean {
         ConvertV1Profiles.convertResult.numProfilesFound = 0;
-        let doConversion: boolean = false;
-
         if (ImperativeConfig.instance.config?.exists) {
             // We do not convert if we already have an existing zowe client config
             ConvertV1Profiles.putCfgFileNmInResult(ImperativeConfig.instance.config);
@@ -118,20 +116,30 @@ export class ConvertV1Profiles {
             );
         } else {
             // with no client config, the existence of old V1 profiles dictates if we will convert
-            ConvertV1Profiles.convertResult.numProfilesFound = ConvertV1Profiles.getOldProfileCount(
-                ConvertV1Profiles.profilesRootDir
-            );
-            if (ConvertV1Profiles.convertResult.numProfilesFound === 0) {
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE,
-                    "Found no old V1 profiles to convert to a current Zowe client configuration."
-                );
-            } else {
-                doConversion = true;
+            try {
+                ConvertV1Profiles.convertResult.numProfilesFound =
+                    ConvertV1Profiles.getOldProfileCount(ConvertV1Profiles.profilesRootDir);
+            } catch (caughtErr) {
+                ConvertV1Profiles.convertResult.numProfilesFound = 0;
+                if (caughtErr?.additionalDetails?.code === "ENOENT") {
+                    ConvertV1Profiles.addToConvertMsgs(
+                        ConvertMsgFmt.REPORT_LINE,
+                        `Did not convert any V1 profiles because no V1 profiles exist at ` +
+                        `"${ConvertV1Profiles.profilesRootDir}".`
+                    );
+                } else {
+                    ConvertV1Profiles.addToConvertMsgs(
+                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
+                        `Failed to get V1 profiles in "${ConvertV1Profiles.profilesRootDir}".`
+                    );
+                    ConvertV1Profiles.addToConvertMsgs(
+                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
+                        stripAnsi(caughtErr.message)
+                    );
+                }
             }
         }
-
-        return doConversion;
+        return (ConvertV1Profiles.convertResult.numProfilesFound > 0);
     }
 
     /**
