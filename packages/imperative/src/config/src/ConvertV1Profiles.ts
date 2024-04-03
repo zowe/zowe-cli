@@ -112,9 +112,9 @@ export class ConvertV1Profiles {
             // We do not convert if we already have an existing zowe client config
             ConvertV1Profiles.putCfgFileNmInResult(ImperativeConfig.instance.config);
             ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE,
-                `A current Zowe client configuration was found at ${ConvertV1Profiles.convertResult.cfgFilePathNm}. ` +
-                `V1 profiles will not be converted.`
+                ConvertMsgFmt.REPORT_LINE,
+                `Did not convert any V1 profiles because a current Zowe client configuration ` +
+                `was found at ${ConvertV1Profiles.convertResult.cfgFilePathNm}.`
             );
         } else {
             // with no client config, the existence of old V1 profiles dictates if we will convert
@@ -187,6 +187,14 @@ export class ConvertV1Profiles {
                     ];
                 } catch (error) {
                     ConvertV1Profiles.convertResult.profilesFailed.push({ name: profileName, type: profileType, error });
+                    ConvertV1Profiles.addToConvertMsgs(
+                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
+                        `Failed to read "${profileType}" profile named "${profileName}"`
+                    );
+                    ConvertV1Profiles.addToConvertMsgs(
+                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
+                        stripAnsi(error.message)
+                    );
                 }
             }
 
@@ -198,6 +206,14 @@ export class ConvertV1Profiles {
                 }
             } catch (error) {
                 ConvertV1Profiles.convertResult.profilesFailed.push({ type: profileType, error });
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
+                    `Failed to find default "${profileType}" profile.`
+                );
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
+                    stripAnsi(error.message)
+                );
             }
         }
 
@@ -217,25 +233,8 @@ export class ConvertV1Profiles {
         if (ConvertV1Profiles.convertResult.profilesFailed.length > 0) {
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                `Failed to convert ${ConvertV1Profiles.convertResult.profilesFailed.length} profile(s). See details below:`
+                `Unable to convert ${ConvertV1Profiles.convertResult.profilesFailed.length} profile(s).`
             );
-            for (const { name, type, error } of ConvertV1Profiles.convertResult.profilesFailed) {
-                if (name != null) {
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE,
-                        `Failed to load ${ type } profile "${name}"`
-                    );
-                } else {
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE,
-                        `Failed to find default ${type} profile.`
-                    );
-                }
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                    stripAnsi(error.message)
-                );
-            }
         }
 
         await ConvertV1Profiles.createNewConfigFile(convertedConfig);
@@ -266,12 +265,6 @@ export class ConvertV1Profiles {
                     `Your old V1 profiles have been moved to ${ConvertV1Profiles.oldProfilesDir}. ` +
                     `Delete them by re-running this operation and requesting deletion.`
                 );
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE,
-                    `If you want to restore your V1 profiles (to convert them again), ` +
-                    `rename the 'profiles-old' directory to 'profiles' and delete the new config file ` +
-                    `located at ${ConvertV1Profiles.convertResult.cfgFilePathNm}.`
-                );
             }
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
@@ -286,11 +279,8 @@ export class ConvertV1Profiles {
 
         ConvertV1Profiles.addToConvertMsgs(
             ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
-            `Your new profiles have been saved to ${ConvertV1Profiles.convertResult.cfgFilePathNm}.`
-        );
-        ConvertV1Profiles.addToConvertMsgs(
-            ConvertMsgFmt.REPORT_LINE,
-            "To make changes, edit that file in an editor of your choice."
+            `Your new profiles have been saved to ${ConvertV1Profiles.convertResult.cfgFilePathNm}. ` +
+            `To change your configuration, update that file in an editor of your choice.`
         );
     }
 
@@ -325,11 +315,18 @@ export class ConvertV1Profiles {
     private static async deleteV1Profiles(): Promise<void> {
         // Delete the profiles directory
         try {
-            removeSync(ConvertV1Profiles.oldProfilesDir);
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
-                `Deleted the profiles directory '${ConvertV1Profiles.oldProfilesDir}'.`
-            );
+            if (fs.existsSync(ConvertV1Profiles.oldProfilesDir)) {
+                removeSync(ConvertV1Profiles.oldProfilesDir);
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
+                    `Deleted the old profiles directory '${ConvertV1Profiles.oldProfilesDir}'.`
+                );
+            } else {
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
+                    `The old profiles directory '${ConvertV1Profiles.oldProfilesDir}' did not exist.`
+                );
+            }
         } catch (error) {
             ConvertV1Profiles.addToConvertMsgs(
                 ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,

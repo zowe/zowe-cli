@@ -104,12 +104,15 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             let startingMsgText = "";
             if (nextMsg.msgFormat & msgTypeToShow) {
                 if (firstMsgLine) {
-                    if (msgTypeToShow & ConvertMsgFmt.REPORT_LINE) {
-                        startingMsgText = "The following operation(s) were accomplished:\n\n";
-                    } else {
-                        startingMsgText = "\nThe following operation(s) could not be completed:\n";
-                    }
                     firstMsgLine = false;
+                    if (msgTypeToShow & ConvertMsgFmt.ERROR_LINE) {
+                        startingMsgText = "\nThe following operation(s) were not completed:\n";
+                    }
+
+                    // We want one newline before our first message, but avoid a double newline
+                    if (!(nextMsg.msgFormat & ConvertMsgFmt.PARAGRAPH)) {
+                        startingMsgText += "\n";
+                    }
                 }
 
                 if (nextMsg.msgFormat & ConvertMsgFmt.PARAGRAPH) {
