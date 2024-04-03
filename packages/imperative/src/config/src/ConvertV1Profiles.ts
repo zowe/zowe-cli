@@ -116,18 +116,22 @@ export class ConvertV1Profiles {
             );
         } else {
             // with no client config, the existence of old V1 profiles dictates if we will convert
+            const noProfilesMsg = `Did not convert any V1 profiles because no V1 profiles were found at ` +
+                `"${ConvertV1Profiles.profilesRootDir}".`;
             try {
                 ConvertV1Profiles.convertResult.numProfilesFound =
                     ConvertV1Profiles.getOldProfileCount(ConvertV1Profiles.profilesRootDir);
+                if (ConvertV1Profiles.convertResult.numProfilesFound === 0) {
+                    ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.REPORT_LINE, noProfilesMsg);
+                }
             } catch (caughtErr) {
                 ConvertV1Profiles.convertResult.numProfilesFound = 0;
+
+                // did the profiles directory not exist?
                 if (caughtErr?.additionalDetails?.code === "ENOENT") {
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.REPORT_LINE,
-                        `Did not convert any V1 profiles because no V1 profiles exist at ` +
-                        `"${ConvertV1Profiles.profilesRootDir}".`
-                    );
+                    ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.REPORT_LINE, noProfilesMsg);
                 } else {
+                    // must have been some sort of I/O error
                     ConvertV1Profiles.addToConvertMsgs(
                         ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
                         `Failed to get V1 profiles in "${ConvertV1Profiles.profilesRootDir}".`
@@ -288,7 +292,7 @@ export class ConvertV1Profiles {
         ConvertV1Profiles.addToConvertMsgs(
             ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
             `Your new profiles have been saved to ${ConvertV1Profiles.convertResult.cfgFilePathNm}. ` +
-            `To change your configuration, update that file in an editor of your choice.`
+            `To change your configuration, update that file in your text editor.`
         );
     }
 

@@ -16,6 +16,7 @@ import { CredentialManagerFactory } from "../..";
 import { ConvertV1Profiles } from "../";
 import { ConvertMsgFmt } from "../src/doc/IConvertV1Profiles";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
+import { ImperativeError } from "../../error/src/ImperativeError";
 import { Logger } from "../../logger/src/Logger";
 import { V1ProfileRead } from "../../profiles";
 import { ConfigSchema } from "../../config/src/ConfigSchema";
@@ -225,8 +226,10 @@ describe("ConvertV1Profiles tests", () => {
                 expect(convNeeded).toEqual(false);
                 let numErrMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE &&
-                        nextMsg.msgText.includes("A current Zowe client configuration was found"))
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
+                        nextMsg.msgText.includes(
+                            "Did not convert any V1 profiles because a current Zowe client configuration was found"
+                        ))
                     {
                         numErrMsgsFound++;
                     }
@@ -258,15 +261,92 @@ describe("ConvertV1Profiles tests", () => {
 
                 let numErrMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE &&
-                        nextMsg.msgText.includes(
-                            "Found no old V1 profiles to convert to a current Zowe client configuration"
-                        )
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
+                        nextMsg.msgText.includes("Did not convert any V1 profiles because no V1 profiles were found")
                     ){
                         numErrMsgsFound++;
                     }
                 }
                 expect(numErrMsgsFound).toEqual(1);
+            });
+
+            it("should return false if no profiles directory exists", () => {
+                // Pretend that we have no zowe config.
+                Object.defineProperty(ImperativeConfig.instance, "config", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return {
+                            exists: false
+                        };
+                    })
+                });
+
+                // pretend that an error occurred because the profiles directory did not exist
+                const profileDir = "/fake/path/to/profiles/";
+                ConvertV1Profiles["profilesRootDir"] = profileDir;
+                const noDirError = new ImperativeError({
+                    additionalDetails: { code: 'ENOENT' }
+                } as any);
+                const getOldProfileCountSpy = jest.spyOn(ConvertV1Profiles as any, "getOldProfileCount")
+                    .mockImplementationOnce(() => { throw noDirError; });
+
+                // call the function that we want to test
+                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+
+                expect(getOldProfileCountSpy).toHaveBeenCalled();
+                expect(convNeeded).toEqual(false);
+
+                let numErrMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
+                        nextMsg.msgText.includes(`Did not convert any V1 profiles because ` +
+                        `no V1 profiles were found at "${profileDir}"`)
+                    ) {
+                        numErrMsgsFound++;
+                    }
+                }
+                expect(numErrMsgsFound).toEqual(1);
+            });
+
+            it("should return false if an IO error occurs while reading profiles", () => {
+                // Pretend that we have no zowe config.
+                Object.defineProperty(ImperativeConfig.instance, "config", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return {
+                            exists: false
+                        };
+                    })
+                });
+
+                // pretend that got an I/O error
+                const profileDir = "/fake/path/to/profiles/";
+                ConvertV1Profiles["profilesRootDir"] = profileDir;
+                const ioErrMsg = "Fake I/O error occurred";
+                const ioError = new ImperativeError({
+                    msg: ioErrMsg
+                });
+                const getOldProfileCountSpy = jest.spyOn(ConvertV1Profiles as any, "getOldProfileCount")
+                    .mockImplementationOnce(() => { throw ioError; });
+
+                // call the function that we want to test
+                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+
+                expect(getOldProfileCountSpy).toHaveBeenCalled();
+                expect(convNeeded).toEqual(false);
+
+                let numErrMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE &&
+                        (
+                            nextMsg.msgText.includes(`Failed to get V1 profiles in "${profileDir}"`) ||
+                            nextMsg.msgText.includes(ioErrMsg)
+                        )
+                    ) {
+                        numErrMsgsFound++;
+                    }
+                }
+                expect(numErrMsgsFound).toEqual(2);
             });
 
             it("should return true if we find some V1 profiles", () => {
@@ -372,11 +452,11 @@ describe("ConvertV1Profiles tests", () => {
                             numMsgsFound++;
                         }
                     } else {
-                        if (nextMsg.msgText.includes("Failed to convert 2 profile(s). See details below:") ||
-                            nextMsg.msgText.includes('Failed to load fruit profile "banana"') ||
+                        if (nextMsg.msgText.includes('Failed to read "fruit" profile named "banana"') ||
                             nextMsg.msgText.includes("invalid profile file")  ||
-                            nextMsg.msgText.includes("Failed to find default fruit profile")  ||
-                            nextMsg.msgText.includes("invalid meta file")
+                            nextMsg.msgText.includes('Failed to find default "fruit" profile')  ||
+                            nextMsg.msgText.includes("invalid meta file") ||
+                            nextMsg.msgText.includes("Unable to convert 2 profile(s).")
                         ) {
                             numMsgsFound++;
                         }
@@ -496,15 +576,17 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes("Your old V1 profiles have been moved") ||
-                            nextMsg.msgText.includes("Your new profiles have been saved") ||
-                            nextMsg.msgText.includes("To make changes, edit that file in an editor of your choice")
+                        if ((nextMsg.msgText.includes("Your old V1 profiles have been moved") &&
+                             nextMsg.msgText.includes("Delete them by re-running this operation and requesting deletion"))
+                            ||
+                            (nextMsg.msgText.includes("Your new profiles have been saved") &&
+                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor"))
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(3);
+                expect(numMsgsFound).toEqual(2);
             });
 
             it("should create a config file and NOT report movement of old profiles", async () => {
@@ -531,14 +613,14 @@ describe("ConvertV1Profiles tests", () => {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
                         expect(nextMsg.msgText.includes("Your old V1 profiles have been moved")).toBe(false);
 
-                        if (nextMsg.msgText.includes("Your new profiles have been saved") ||
-                            nextMsg.msgText.includes("To make changes, edit that file in an editor of your choice")
+                        if (nextMsg.msgText.includes("Your new profiles have been saved") &&
+                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor")
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(2);
+                expect(numMsgsFound).toEqual(1);
             });
 
             it("should catch and report a problem when rename throws an error", async () => {
@@ -571,8 +653,8 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes("Your new profiles have been saved") ||
-                            nextMsg.msgText.includes("To make changes, edit that file in an editor of your choice")
+                        if (nextMsg.msgText.includes("Your new profiles have been saved") &&
+                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor")
                         ) {
                             numMsgsFound++;
                         }
@@ -584,7 +666,7 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(4);
+                expect(numMsgsFound).toEqual(3);
             });
         }); // end createNewConfigFile
 
@@ -621,7 +703,11 @@ describe("ConvertV1Profiles tests", () => {
                 jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValue(Promise.resolve([]));
 
+                // pretend that the profiles directory exists
+                const existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+
                 // pretend that remove worked
+                ConvertV1Profiles["oldProfilesDir"] = "/fake/path/to/profiles-old";
                 const removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
 
                 // call the function that we want to test
@@ -631,8 +717,8 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes("Deleted the profiles directory") &&
-                            nextMsg.msgText.includes("profiles-old")
+                        if (nextMsg.msgText.includes("Deleted the old profiles directory") &&
+                            nextMsg.msgText.includes(ConvertV1Profiles["oldProfilesDir"])
                         ) {
                             numMsgsFound++;
                         }
