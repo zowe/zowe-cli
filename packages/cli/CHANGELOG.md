@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Resolved technical currency by updating `tar` transitive dependency. []()
+- BugFix: Resolved technical currency by updating `tar` transitive dependency. [#2110](https://github.com/zowe/zowe-cli/pull/2110)
 
 ## `6.40.27`
 
