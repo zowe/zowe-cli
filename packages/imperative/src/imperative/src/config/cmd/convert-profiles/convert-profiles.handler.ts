@@ -58,7 +58,6 @@ export default class ConvertProfilesHandler implements ICommandHandler {
          * display all messages together later.
          */
         if (convertResult.v1ScsPluginName) {
-            uninstallPlugin(convertResult.v1ScsPluginName);
             try {
                 uninstallPlugin(convertResult.v1ScsPluginName);
                 const newMsg = new ConvertMsg(
@@ -78,7 +77,7 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             }
         }
 
-        // display all report messages followed by error messages
+        // show all report messages followed by error messages
         this.showMsgsByType(convertResult.msgs, ConvertMsgFmt.REPORT_LINE, params.response.console);
         this.showMsgsByType(convertResult.msgs, ConvertMsgFmt.ERROR_LINE, params.response.console);
     }
