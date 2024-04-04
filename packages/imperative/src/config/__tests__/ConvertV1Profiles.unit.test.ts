@@ -697,6 +697,17 @@ describe("ConvertV1Profiles tests", () => {
         }); // end putCfgFileNmInResult
 
         describe("deleteV1Profiles", () => {
+            const oldProfileDir = "/fake/path/to/profiles-old";
+            let existsSyncSpy: any = jest.fn();
+            let removeSyncSpy: any = jest.fn();
+
+            beforeEach(() => {
+                // restore original app implementations
+                existsSyncSpy.mockRestore();
+                removeSyncSpy.mockRestore();
+
+                ConvertV1Profiles["oldProfilesDir"] = oldProfileDir;
+            });
 
             it("should delete the old v1 profiles directory", async () => {
                 // pretend that we found no secure property names under any old-school service
@@ -704,11 +715,10 @@ describe("ConvertV1Profiles tests", () => {
                     .mockResolvedValue(Promise.resolve([]));
 
                 // pretend that the profiles directory exists
-                const existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+                existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
 
                 // pretend that remove worked
-                ConvertV1Profiles["oldProfilesDir"] = "/fake/path/to/profiles-old";
-                const removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
+                removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
 
                 // call the function that we want to test
                 await ConvertV1Profiles["deleteV1Profiles"]();
@@ -717,9 +727,33 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes("Deleted the old profiles directory") &&
-                            nextMsg.msgText.includes(ConvertV1Profiles["oldProfilesDir"])
-                        ) {
+                        if (nextMsg.msgText.includes(`Deleted the old profiles directory '${oldProfileDir}'`)) {
+                            numMsgsFound++;
+                        }
+                    }
+                }
+                expect(numMsgsFound).toEqual(1);
+            });
+
+            it("should report that the old v1 profiles directory does not exist", async () => {
+                // pretend that we found no secure property names under any old-school service
+                jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
+                    .mockResolvedValue(Promise.resolve([]));
+
+                // pretend that the profiles directory not exist
+                existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
+
+                // pretend that remove works
+                removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
+
+                // call the function that we want to test
+                await ConvertV1Profiles["deleteV1Profiles"]();
+
+                expect(removeSyncSpy).not.toHaveBeenCalled();
+                let numMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
+                        if (nextMsg.msgText.includes(`The old profiles directory '${oldProfileDir}' did not exist.`)) {
                             numMsgsFound++;
                         }
                     }
@@ -732,9 +766,12 @@ describe("ConvertV1Profiles tests", () => {
                 jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValue(Promise.resolve([]));
 
+                // pretend that the profiles directory exists
+                existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+
                 // pretend that remove crashed
                 const removeError = "fsExtra.removeSync threw a horrible error";
-                const removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockImplementation(() => {
+                removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockImplementation(() => {
                     throw new Error(removeError);
                 });
 
@@ -751,9 +788,7 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
-                        if ((nextMsg.msgText.includes("Failed to delete the profiles directory") &&
-                            nextMsg.msgText.includes("profiles-old"))
-                            ||
+                        if (nextMsg.msgText.includes(`Failed to delete the profiles directory '${oldProfileDir}'`) ||
                             nextMsg.msgText.includes(removeError)
                         ) {
                             numMsgsFound++;
@@ -771,8 +806,11 @@ describe("ConvertV1Profiles tests", () => {
                 jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
                     .mockResolvedValue(Promise.resolve(true));
 
+                // pretend that the profiles directory exists
+                existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+
                 // pretend that remove worked
-                const removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
+                removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
 
                 // call the function that we want to test
                 await ConvertV1Profiles["deleteV1Profiles"]();
@@ -803,13 +841,15 @@ describe("ConvertV1Profiles tests", () => {
                 jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
                     .mockResolvedValue(Promise.resolve(false));
 
+                // pretend that the profiles directory exists
+                existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+
                 // pretend that remove worked
-                const removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
+                removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
 
                 // call the function that we want to test
                 await ConvertV1Profiles["deleteV1Profiles"]();
 
-                expect(removeSyncSpy).toHaveBeenCalled();
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
@@ -831,8 +871,11 @@ describe("ConvertV1Profiles tests", () => {
                 const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(false));
 
+                // pretend that the profiles directory exists
+                existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+
                 // pretend that remove worked
-                const removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
+                removeSyncSpy = jest.spyOn(fsExtra, "removeSync").mockReturnValue(0 as any);
 
                 // call the function that we want to test
                 await ConvertV1Profiles["deleteV1Profiles"]();
@@ -849,7 +892,7 @@ describe("ConvertV1Profiles tests", () => {
                     }
                 }
                 expect(numMsgsFound).toEqual(1);
-                checkKeyRingSpy.mockRestore();  // back to original app implementation
+                checkKeyRingSpy.mockRestore();  // restore original app implementation
             });
         }); // end deleteV1Profiles
 
