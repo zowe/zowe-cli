@@ -11,6 +11,7 @@
 
 import { ConvertV1Profiles } from "../../../../../config";
 import { IHandlerParameters } from "../../../../../cmd";
+
 import ConvertProfilesHandler from "../../../../src/config/cmd/convert-profiles/convert-profiles.handler";
 
 let stdout: string = "";
@@ -47,17 +48,17 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
 };
 
 describe("Configuration Convert Profiles command handler", () => {
-    const handler = new ConvertProfilesHandler();
+    const convProfHandler = new ConvertProfilesHandler();
+    let convertSpy: any;
 
-    // pretend that convert worked
-    const convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValue(Promise.resolve({
+    const fakeConvertResult = {
         msgs: [
             { msgFormat: 1, msgText: "Report Msg 1" },
             { msgFormat: 1, msgText: "Report Msg 2" },
             { msgFormat: 2, msgText: "Error Msg 1" },
             { msgFormat: 2, msgText: "Error Msg 2" }
         ],
-        v1ScsPluginName: null,
+        v1ScsPluginName: null as any,
         cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
         numProfilesFound: 0,
         profilesConverted: {
@@ -69,12 +70,15 @@ describe("Configuration Convert Profiles command handler", () => {
             { name: "zosmfProfNm4:", type: "zosmf", error: new Error("This profile stinks") },
             { name: "zosmfProfNm5:", type: "zosmf", error: new Error("This profile also stinks") }
         ]
-    }));
+    };
 
     it("should report a set of converted profiles and NOT do any prompt", async () => {
-        const params = getIHandlerParametersObject();
+        // pretend that convert works
+        convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValue(Promise.resolve(fakeConvertResult));
 
-        await handler.process(params);
+        // call the function that we want to test
+        const params = getIHandlerParametersObject();
+        await convProfHandler.process(params);
 
         expect(stdout).not.toContain("If you confirm the deletion of V1 profiles, they are deleted from disk");
         expect(stdout).not.toContain("after a successful conversion. Otherwise, they remain but no longer used.");
@@ -83,113 +87,105 @@ describe("Configuration Convert Profiles command handler", () => {
 
         expect(stdout).toContain("Report Msg 1");
         expect(stdout).toContain("Report Msg 2");
-        expect(stdout).toContain("Error Msg 1");
-        expect(stdout).toContain("Error Msg 2");
-        expect(stderr).toBe("");
+        expect(stderr).toContain("Error Msg 1");
+        expect(stderr).toContain("Error Msg 2");
     });
 
-    it("should prompt for confirmation when delete is requested", async () => {
+    it("should prompt for confirmation and delete profiles when requested", async () => {
+        // pretend that convert works
+        convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValue(Promise.resolve(fakeConvertResult));
+
+        // call the function that we want to test
         const params = getIHandlerParametersObject();
         params.arguments.delete = true;
         params.arguments.prompt = true;
-
-        await handler.process(params);
+        await convProfHandler.process(params);
 
         expect(stdout).toContain("If you confirm the deletion of V1 profiles, they are deleted from disk");
         expect(stdout).toContain("after a successful conversion. Otherwise, they remain but no longer used.");
         expect(stdout).toContain("You can also delete your V1 profiles later.");
         expect(stdout).toContain("Do you want to delete your V1 profiles now [y/N]:");
 
+        expect(convertSpy).toHaveBeenCalledWith({ deleteV1Profs: true });
+
         expect(stdout).toContain("Report Msg 1");
         expect(stdout).toContain("Report Msg 2");
-        expect(stdout).toContain("Error Msg 1");
-        expect(stdout).toContain("Error Msg 2");
-        expect(stderr).toBe("");
+        expect(stderr).toContain("Error Msg 1");
+        expect(stderr).toContain("Error Msg 2");
+    });
+
+    it("should not delete profiles when answer to prompt is to not delete", async () => {
+        // pretend that convert works
+        convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValue(Promise.resolve(fakeConvertResult));
+
+        // pretend that the user answers no when prompted
+        const params = getIHandlerParametersObject();
+        params.arguments.delete = true;
+        params.arguments.prompt = true;
+        params.response.console.prompt = jest.fn((promptString) => {
+            stdout += promptString;
+            return "n";
+        }) as any;
+
+        // call the function that we want to test
+        await convProfHandler.process(params);
+
+        expect(stdout).toContain("If you confirm the deletion of V1 profiles, they are deleted from disk");
+        expect(stdout).toContain("after a successful conversion. Otherwise, they remain but no longer used.");
+        expect(stdout).toContain("You can also delete your V1 profiles later.");
+        expect(stdout).toContain("Do you want to delete your V1 profiles now [y/N]:");
+
+        expect(convertSpy).toHaveBeenCalledWith({ deleteV1Profs: false });
+
+        expect(stdout).toContain("Report Msg 1");
+        expect(stdout).toContain("Report Msg 2");
+        expect(stderr).toContain("Error Msg 1");
+        expect(stderr).toContain("Error Msg 2");
+    });
+
+    it("should report any discovered old SCS plugin and uninstall it", async () => {
+        // pretend convert reported an SCS plugin
+        fakeConvertResult.v1ScsPluginName = "fakeScsPluginName" as any;
+        convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValue(Promise.resolve(fakeConvertResult));
+
+        // avoid calling the real plugin uninstall
+        const uninstallPlugin = require("../../../../src/plugins/utilities/npm-interface/uninstall");
+        const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockReturnValue(0);
+
+        // call the function that we want to test
+        const params = getIHandlerParametersObject();
+        await convProfHandler.process(params);
+
+        expect(uninstallSpy).toHaveBeenCalled();
+        expect(stdout).toContain("Report Msg 1");
+        expect(stdout).toContain("Report Msg 2");
+        expect(stdout).toContain('Uninstalled plug-in "fakeScsPluginName"');
+        expect(stderr).toContain("Error Msg 1");
+        expect(stderr).toContain("Error Msg 2");
+    });
+
+    it("should catch an error from uninstalling an old SCS plugin and report it", async () => {
+        // pretend convert reported an SCS plugin
+        fakeConvertResult.v1ScsPluginName = "fakeScsPluginName" as any;
+        convertSpy = jest.spyOn(ConvertV1Profiles, "convert").mockResolvedValue(Promise.resolve(fakeConvertResult));
+
+        // pretend that plugin uninstall crashes
+        const fakeUninstallErr = "Plugin uninstall crashed and burned";
+        const uninstallPlugin = require("../../../../src/plugins/utilities/npm-interface/uninstall");
+        const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(() => {
+            throw new Error(fakeUninstallErr);
+        });
+
+        // call the function that we want to test
+        const params = getIHandlerParametersObject();
+        await convProfHandler.process(params);
+
+        expect(uninstallSpy).toHaveBeenCalled();
+        expect(stdout).toContain("Report Msg 1");
+        expect(stdout).toContain("Report Msg 2");
+        expect(stderr).toContain("Error Msg 1");
+        expect(stderr).toContain("Error Msg 2");
+        expect(stderr).toContain('Failed to uninstall plug-in "fakeScsPluginName"');
+        expect(stderr).toContain(fakeUninstallErr);
     });
 });
-
-/* zzz
-            it("should report and uninstall any discovered old credMgr plugin", () => {
-                // pretend that we found an old credential manager
-                const fakeOldScsPlugin = "FakeScsPlugin";
-                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
-                    { plugins: [fakeOldScsPlugin], overrides: [] }
-                );
-
-                // avoid calling the real plugin uninstall
-                const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(jest.fn());
-
-                // call the function that we want to test
-                let caughtErr: any;
-                try {
-                    ConvertV1Profiles["removeOldOverrides"]();
-                } catch (err) {
-                    caughtErr = err;
-                }
-
-                expect(caughtErr).not.toBeDefined();
-                expect(uninstallSpy).toHaveBeenCalledWith(fakeOldScsPlugin);
-
-                let numMsgsFound = 0;
-                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(
-                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:") ||
-                            nextMsg.msgText.includes(fakeOldScsPlugin) ||
-                            nextMsg.msgText.includes(`Uninstalled plug-in: ${fakeOldScsPlugin}`)
-                        ) {
-                            numMsgsFound++;
-                        }
-                    }
-                }
-                expect(numMsgsFound).toEqual(3);
-            });
-
-zzz
-
-            it("should catch and report an error thrown when uninstalling a plugin", () => {
-                // pretend that we found an old credential manager
-                const fakeOldScsPlugin = "FakeScsPlugin";
-                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
-                    { plugins: [fakeOldScsPlugin], overrides: [] }
-                );
-
-                // Avoid calling the real plugin uninstall. Pretend it throws an exception.
-                const fakeErrMsg = "A fake exception from plugin uninstall";
-                const uninstallSpy = jest.spyOn(uninstallPlugin, "uninstall").mockImplementation(() => {
-                    throw new Error(fakeErrMsg);
-                });
-
-                // call the function that we want to test
-                let caughtErr: any;
-                try {
-                    ConvertV1Profiles["removeOldOverrides"]();
-                } catch (err) {
-                    caughtErr = err;
-                }
-
-                expect(caughtErr).not.toBeDefined();
-                expect(uninstallSpy).toHaveBeenCalledWith(fakeOldScsPlugin);
-
-                let numMsgsFound = 0;
-                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(
-                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:") ||
-                            nextMsg.msgText.includes(fakeOldScsPlugin)
-                        ) {
-                            numMsgsFound++;
-                        }
-                    } else {
-                        if (nextMsg.msgText.includes(`Failed to uninstall plug-in "${fakeOldScsPlugin}"`) ||
-                            nextMsg.msgText.includes(fakeErrMsg)
-                        ) {
-                            numMsgsFound++;
-                        }
-                    }
-                }
-                expect(numMsgsFound).toEqual(4);
-            });
-        }); // end removeOldOverrides
-
-zzz */
