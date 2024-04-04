@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `4.18.24`
 
 - BugFix: Resolved technical currency by updating `tar` transitive dependency. [#2110](https://github.com/zowe/zowe-cli/pull/2110)
 

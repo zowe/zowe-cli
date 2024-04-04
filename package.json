@@ -38,7 +38,7 @@
     "prepare": "husky install && npm run bundle:webHelp"
   },
   "dependencies": {
-    "@zowe/imperative": "4.18.23"
+    "@zowe/imperative": "4.18.24"
   },
   "devDependencies": {
     "@types/babel__traverse": "7.17.1",
