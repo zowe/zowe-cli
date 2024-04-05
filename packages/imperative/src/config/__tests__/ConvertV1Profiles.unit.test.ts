@@ -829,6 +829,7 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     }
                 }
+                // eslint-disable-next-line no-console
                 console.log("zzz: convertResult:\n " + JSON.stringify(ConvertV1Profiles["convertResult"], null, 2));
                 expect(numMsgsFound).toEqual(2);
             });
@@ -864,6 +865,7 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     }
                 }
+                // eslint-disable-next-line no-console
                 console.log("zzz: convertResult:\n " + JSON.stringify(ConvertV1Profiles["convertResult"], null, 2));
                 expect(numMsgsFound).toEqual(2);
             });
