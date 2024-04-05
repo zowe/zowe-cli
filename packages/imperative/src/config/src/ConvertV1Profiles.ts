@@ -546,15 +546,18 @@ export class ConvertV1Profiles {
             if (oldScsPluginNm in PluginIssues.instance.getInstalledPlugins()) {
                 pluginInfo.plugins.push(oldScsPluginNm);
             }
-        } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                "Failed trying to get the set of installed plugins."
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                error.message
-            );
+        } catch (caughtErr) {
+            // report all errors except the absence of the plugins.json file
+            if (!caughtErr.message.includes("ENOENT")) {
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
+                    "Failed trying to get the set of installed plugins."
+                );
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
+                    caughtErr.message
+                );
+            }
         }
 
         return pluginInfo;
