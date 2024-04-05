@@ -829,6 +829,7 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     }
                 }
+                console.log("zzz: convertResult:\n " + JSON.stringify(ConvertV1Profiles["convertResult"], null, 2));
                 expect(numMsgsFound).toEqual(2);
             });
 
@@ -863,6 +864,7 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     }
                 }
+                console.log("zzz: convertResult:\n " + JSON.stringify(ConvertV1Profiles["convertResult"], null, 2));
                 expect(numMsgsFound).toEqual(2);
             });
 
@@ -1162,7 +1164,7 @@ describe("ConvertV1Profiles tests", () => {
 
         describe("checkZoweKeyRingAvailable", () => {
 
-            it("should return true if it finds credentials in the value", async () => {
+            it("should return true if it finds credentials in the vault", async () => {
                 // call the function that we want to test
                 const result = await ConvertV1Profiles["checkZoweKeyRingAvailable"]();
                 expect(result).toEqual(true);
