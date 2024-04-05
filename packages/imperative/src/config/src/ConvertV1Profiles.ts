@@ -586,12 +586,8 @@ export class ConvertV1Profiles {
      */
     private static async checkZoweKeyRingAvailable(): Promise<boolean> {
         let success: boolean = false;
-        const requireOpts: any = {};
-        if (process.mainModule?.filename != null) {
-            requireOpts.paths = [process.mainModule.filename];
-        }
         try {
-            const zoweSecretsPath = require.resolve("@zowe/secrets-for-zowe-sdk", requireOpts);
+            const zoweSecretsPath = require.resolve("@zowe/secrets-for-zowe-sdk");
             ConvertV1Profiles.zoweKeyRing = (await import(zoweSecretsPath)).keyring;
             await ConvertV1Profiles.zoweKeyRing.findCredentials(CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
             success = true;
