@@ -1,25 +1,36 @@
-// shared    (~/.zowe/.events/<project-name>/<event-id>)
-// it should create a file to watch on instantiation of the subscription
-// it should generate a notification when credential manager is changed
-// it should generate a notification when onGlobalConfigChanged is changed
-// should generate .event files under a folder with the project name ~/.zowe/.events/<project-name>/<event-id>
-// it should generate multiple notifications(3) if multiple subscriptions(3) to the same event
-// unsubscribing from subscriptions should not affect another user's subscriptions
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
-// custom    (~/.zowe/.events/<app-name>/<event-id>)
-// it should create a file to watch on instantiation of the subscription
-// it should generate a notification when a custom event occurs
-// should generate .event files under a folder with the app name ~/.zowe/.events/<app-name>/<event-id>
-// it should generate multiple notifications(3) if multiple subscription events(3)
+describe("Event Emitter", () => {
+    describe("Base structure and emission", () => {
+        it("should be written to a file with all required properties in IImperativeEventJson", () => {});
+        it("should write details to the correct event file", () => {});
+        it("should not delete event files when unsubscribing", () => {});
+    });
 
-// user
-// it should create a file to watch on instantiation of the subscription
-// it should generate a notification when vault is changed
-// it should generate a notification when configuration is changed
-// it should generate a notification when schema is changed
-// it should generate multiple notifications(3) if multiple subscriptions(3) to the same event
+    describe("Shared Events", () => {
+        it("should create an event file upon first subscription if the file does not exist", () => {});
+        it("should trigger subscriptions for all instances watching for onCredentialManagerChanged", () => {});
+        it("should not affect subscriptions from another instance when unsubscribing from events", () => {});
+    });
 
-// event emission/file
-// event should be written to file with all required properties in IImperativeEventJson
-// event details should be written to the correct event file
-// deleting a subscription should result in the deletion of the corresponding event file only
+    describe("User Events", () => {
+        it("should create an event file upon first subscription if the file does not exist", () => {});
+        it("should trigger subscriptions for all instances watching for onVaultChanged", () => {});
+        it("should not affect subscriptions from another instance when unsubscribing from events", () => {});
+    });
+
+    describe("Custom Events", () => {
+        it("should create an event file upon first subscription if the file does not exist", () => {});
+        it("should trigger subscriptions for all instances watching for onMyCustomEvent", () => {});
+        it("should not affect subscriptions from another instance when unsubscribing from events", () => {});
+    });
+});

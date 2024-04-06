@@ -34,6 +34,8 @@ import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
 
+jest.mock("../../events/src/ImperativeEventEmitter");
+
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
 const profileTypes = ["zosmf", "tso", "base", "dummy"];

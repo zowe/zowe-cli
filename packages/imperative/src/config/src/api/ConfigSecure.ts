@@ -21,7 +21,7 @@ import { IConfigProfile } from "../doc/IConfigProfile";
 import { CredentialManagerFactory } from "../../../security";
 import { ConfigUtils } from "../ConfigUtils";
 import { ImperativeEventEmitter } from "../../../events/src/ImperativeEventEmitter";
-import { ImperativeUserEvents } from "../../../events";
+import { ImperativeUserEvents } from "../../../events/src/ImperativeEventConstants";
 
 /**
  * API Class for manipulating config layers.

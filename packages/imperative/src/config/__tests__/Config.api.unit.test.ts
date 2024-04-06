@@ -19,6 +19,8 @@ import { IConfig } from "../src/doc/IConfig";
 import { IConfigLayer } from "../src/doc/IConfigLayer";
 import { IConfigProfile } from "../src/doc/IConfigProfile";
 
+jest.mock("../../events/src/ImperativeEventEmitter");
+
 const MY_APP = "my_app";
 
 const mergeConfig: IConfig = {

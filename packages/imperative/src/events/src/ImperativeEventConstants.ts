@@ -18,37 +18,33 @@ export enum ImperativeSharedEvents {
 
 export type ImperativeEventType = ImperativeUserEvents | ImperativeSharedEvents;
 
-// export const ImperativeUserEvents = [
-//     "onVaultChanged"
-// ] as const;
-// export type ImperativeUserEventType = typeof ImperativeUserEvents;
-// export const ImperativeSharedEvents = [
-//     "onCredentialManagerChanged"
-// ] as const;
-// export type ImperativeSharedEventType = typeof ImperativeSharedEvents[number];
-// export type ImperativeEventType = ImperativeUserEventType | ImperativeSharedEventType;
-
 /**
  * TODO:
- * - Implement onGlobalConfigChanged as a shared event
- * - Implement project-level config-changed as a shared event
- *     - These events should have their own directory structure to support multiple projects
- *     - $ZOWE_CLI_HOME/.zowe/.events/project-id/onConfigChanged
- * - Implement onGlobalSchemaChanged as a shared event
- * - Implement project-level schema-changed as a shared event
- *     - These events should have their own directory structure to support multiple projects
- *     - $ZOWE_CLI_HOME/.zowe/.events/project-id/onSchemaChanged
+ * The following list of event types will only be implemented upon request
  *
+ * Shared events:
+ *   Global:
+ *      - $ZOWE_CLI_HOME/.events/onConfigChanged
+ *      - $ZOWE_CLI_HOME/.events/onSchemaChanged
+ *   Project:
+ *      - $ZOWE_CLI_HOME/.events/<project-hash-based-on-path>/onConfigChanged
+ *      - $ZOWE_CLI_HOME/.events/<project-hash-based-on-path>/onSchemaChanged
  *
- * - Implement CustomSharedEvents
- *     - These events should have their own directory structure to avoid conflicts between apps
- *     - $ZOWE_CLI_HOME/.zowe/.events/<app-name>/<custom-shared-event-id>
- * - Implement CustomUserEvents
- *     - These events should have their own directory structure to avoid conflicts between apps
- *     - ~/.zowe/.events/<app-name>/<custom-user-event-id>
+ * User events:
+ *   Global:
+ *      - ~/.zowe/.events/onUserConfigChanged
+ *   Project:
+ *      - ~/.zowe/.events/<project-hash-based-on-path>/onUserConfigChanged
  *
- *
- * Edge cases:
- * - What if the `path/to/.events` directory gets renamed or moved? (fs.watch stops notifying apps)
- *      - (amber) I think this is something we should just let people know about. ie warn them NOT to mess w .zowe/events
+ * Custom events:
+ *   Shared:
+ *     Global:
+ *      - $ZOWE_CLI_HOME/.events/<hash-based-on-app-name>/<event-id>
+ *     Project:
+ *      - $ZOWE_CLI_HOME/.events/<hash-based-on-app-name>/<project-hash-based-on-path>/<event-id>
+ *   User:
+ *     Global:
+ *      - ~/.zowe/.events/<hash-based-on-app-name>/<user-event-id>
+ *     Project:
+ *      - ~/.zowe/.events/<hash-based-on-app-name>/<project-hash-based-on-path>/<user-event-id>
  */

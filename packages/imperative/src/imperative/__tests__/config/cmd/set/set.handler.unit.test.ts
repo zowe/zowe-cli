@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "../../../../..";
+import { IHandlerParameters, ImperativeEventEmitter } from "../../../../..";
 import { Config } from "../../../../../config/src/Config";
 import { IConfigOpts } from "../../../../../config";
 import { ImperativeConfig } from "../../../../../utilities";
@@ -25,6 +25,9 @@ import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
+
+jest.mock("../../../../../events/src/ImperativeEventEmitter");
+
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
@@ -95,6 +98,7 @@ describe("Configuration Set command handler", () => {
     };
 
     beforeAll( async() => {
+        Object.defineProperty(ImperativeEventEmitter, "instance", { value: { emitEvent: jest.fn() }, configurable: true});
         keytarGetPasswordSpy = jest.spyOn(keytar, "getPassword");
         keytarSetPasswordSpy = jest.spyOn(keytar, "setPassword");
         keytarDeletePasswordSpy = jest.spyOn(keytar, "deletePassword");

@@ -16,7 +16,7 @@ import { IImperativeConfig } from "../../imperative";
 import { Config } from "./Config";
 import { IConfig } from "./doc/IConfig";
 import { IConfigBuilderOpts } from "./doc/IConfigBuilderOpts";
-import { CredentialManagerFactory } from "../../security";
+import { CredentialManagerFactory } from "../../security/src/CredentialManagerFactory";
 import { IConfigConvertResult } from "./doc/IConfigConvertResult";
 import { ICommandProfileTypeConfiguration } from "../../cmd";
 

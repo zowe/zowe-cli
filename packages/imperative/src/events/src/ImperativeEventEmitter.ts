@@ -9,19 +9,17 @@
 *
 */
 
-import { homedir } from "os";
 import * as fs from "fs";
-import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
+import { homedir } from "os";
 import { join } from "path";
-import { ImperativeError } from "../../error";
+import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
+import { ImperativeError } from "../../error/src/ImperativeError";
 import { ImperativeEventType, ImperativeUserEvents, ImperativeSharedEvents } from "./ImperativeEventConstants";
 import { ImperativeEvent } from "./ImperativeEvent";
-import { Logger } from "../../logger";
-import { ProfileInfo } from "../../config";
+import { Logger } from "../../logger/src/Logger";
 import { LoggerManager } from "../../logger/src/LoggerManager";
-import { IImperativeRegisteredAction } from "./doc/IImperativeRegisteredAction";
-import { IImperativeEventEmitterOpts } from "./doc/IImperativeEventEmitterOpts";
-import { IImperativeEventJson } from "./doc";
+import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEventJson } from "./doc";
+import { ConfigUtils } from "../../config/src/ConfigUtils";
 
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
@@ -82,7 +80,6 @@ export class ImperativeEventEmitter {
         try {
             if (!fs.existsSync(filePath)) {
                 fs.closeSync(fs.openSync(filePath, 'w'));
-
             }
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create file path: ${filePath}`, causeErrors: err });
@@ -96,7 +93,7 @@ export class ImperativeEventEmitter {
      */
     private initializeEvent(eventType: ImperativeEventType | string): ImperativeEvent {
         if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
-            ProfileInfo.initImpUtils("zowe");
+            ConfigUtils.initImpUtils("zowe");
         }
 
         return new ImperativeEvent({ appName: this.appName, eventType, logger: this.logger });
@@ -154,13 +151,13 @@ export class ImperativeEventEmitter {
     /**
      * Simple method to write the events to disk
      * @param eventType The type of event to write
+     * @internal We won't support custom events as part of the MVP
      */
     public emitCustomEvent(eventType: string) { //, isUserSpecific: boolean = false) {
         const theEvent = this.initializeEvent(eventType);
 
         let dir: string;
         if (this.isCustomEvent(eventType)) {
-            // TODO: Allow for user specific custom events (this applies everywhere we call `isCustomEvent`)
             dir = this.getSharedEventDir();
         } else {
             throw new ImperativeError({ msg: `Operation not allowed. Event is considered protected. Event: ${eventType}` });
@@ -190,20 +187,13 @@ export class ImperativeEventEmitter {
      * @returns The directory to where this event will be emitted
      */
     public getEventDir(eventType: string): string {
-        let dir: string;
         if (this.isUserEvent(eventType)) {
-            dir = this.getUserEventDir();
+            return this.getUserEventDir();
         } else if (this.isSharedEvent(eventType)) {
-            dir = this.getSharedEventDir();
-        } else if (this.isCustomEvent(eventType)) {
-            dir = this.getSharedEventDir();
+            return this.getSharedEventDir();
         }
 
-        if (dir == null) {
-            throw new ImperativeError({msg: "Unable to identify the type of event"});
-        }
-
-        return dir;
+        return this.getSharedEventDir();
     }
 
     /**
@@ -213,7 +203,7 @@ export class ImperativeEventEmitter {
      */
     public subscribe(eventType: string, callback: Function): IImperativeRegisteredAction {
         if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
-            ProfileInfo.initImpUtils("zowe");
+            ConfigUtils.initImpUtils("zowe");
         }
         if (this.subscriptions == null) {
             this.subscriptions = new Map();
@@ -228,14 +218,14 @@ export class ImperativeEventEmitter {
             const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change", filename: string) => {
                 // Node.JS triggers this event 3 times
                 const eventContents = fs.readFileSync(join(this.getEventDir(eventType), filename)).toString();
-                const timeOfEvent = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
+                const eventTime = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
 
-                if (this.eventTimes.get(eventType) !== timeOfEvent) {
+                if (this.eventTimes.get(eventType) !== eventTime) {
                     this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
                     // Promise.all([...callbacks, callback])
                     callbacks.forEach(cb => cb());
                     callback();
-                    this.eventTimes.set(eventType, timeOfEvent);
+                    this.eventTimes.set(eventType, eventTime);
                 }
             });
             this.subscriptions.set(eventType, [watcher, [...callbacks, callback]]);
