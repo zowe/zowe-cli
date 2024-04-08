@@ -24,16 +24,21 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
     private static initialized = false;
-    public appName: string;
-    public logger: Logger;
     private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
     private eventTimes: Map<string, string>;
+    public appName: string;
+    public logger: Logger;
 
     public static initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
         if (this.initialized) {
             throw new ImperativeError({msg: "Only one instance of the Imperative Event Emitter is allowed"});
         }
         this.initialized = true;
+
+        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
+            ConfigUtils.initImpUtils("zowe");
+        }
+
         ImperativeEventEmitter.instance.appName = appName;
         ImperativeEventEmitter.instance.logger = options?.logger ?? Logger.getImperativeLogger();
     }
@@ -42,20 +47,6 @@ export class ImperativeEventEmitter {
             this.mInstance = new ImperativeEventEmitter();
         }
         return this.mInstance;
-    }
-
-    /**
-     * ZOWE HOME directory to search for system wide ImperativeEvents like `configChanged`
-     */
-    public getSharedEventDir(): string {
-        return join(ImperativeConfig.instance.cliHome, ".events");
-    }
-
-    /**
-     * USER HOME directory to search for user specific ImperativeEvents like `vaultChanged`
-     */
-    public getUserEventDir(): string {
-        return join(homedir(), ".zowe", ".events");
     }
 
     /**
@@ -91,12 +82,22 @@ export class ImperativeEventEmitter {
      * @param eventType The type of event to initialize
      * @returns The initialized ImperativeEvent
      */
-    private initializeEvent(eventType: ImperativeEventType | string): ImperativeEvent {
-        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
-            ConfigUtils.initImpUtils("zowe");
-        }
+    private initEvent(eventType: ImperativeEventType | string): ImperativeEvent {
+        return new ImperativeEvent({ appName: this.appName, eventType, isUser: this.isUserEvent(eventType), logger: this.logger });
+    }
 
-        return new ImperativeEvent({ appName: this.appName, eventType, logger: this.logger });
+    /**
+     * Helper method to write contents out to disk
+     * @param location directory to write the file (i.e. emit the event)
+     * @param event the event to be written/emitted
+     * @internal We do not want developers writing events directly, they should use the `emit...` methods
+     */
+    private writeEvent(location: string, event: ImperativeEvent) {
+        const eventPath = join(location, event.eventType);
+        const eventJson = { ...event.toJson(), loc: location };
+
+        this.ensureEventsDirExists(location);
+        fs.writeFileSync(eventPath, JSON.stringify(eventJson, null, 2));
     }
 
     /**
@@ -128,58 +129,18 @@ export class ImperativeEventEmitter {
     }
 
     /**
-     * Simple method to write the events to disk
-     * @param eventType The type of event to write
-     * @internal We do not want to make this function accessible to any application developers
+     * ZOWE HOME directory to search for system wide ImperativeEvents like `configChanged`
      */
-    public emitEvent(eventType: ImperativeEventType) {
-        const theEvent = this.initializeEvent(eventType);
-
-        let dir: string;
-        if (this.isUserEvent(eventType)) {
-            dir = this.getUserEventDir();
-            theEvent.isUserSpecific = true;
-        } else if (this.isSharedEvent(eventType)) {
-            dir = this.getSharedEventDir();
-        } else {
-            throw new ImperativeError({ msg: `Unable to determine the type of event. Event: ${eventType}` });
-        }
-
-        this.writeEvent(dir, theEvent);
+    public getSharedEventDir(): string {
+        return join(ImperativeConfig.instance.cliHome, ".events");
     }
 
     /**
-     * Simple method to write the events to disk
-     * @param eventType The type of event to write
-     * @internal We won't support custom events as part of the MVP
+     * USER HOME directory to search for user specific ImperativeEvents like `vaultChanged`
      */
-    public emitCustomEvent(eventType: string) { //, isUserSpecific: boolean = false) {
-        const theEvent = this.initializeEvent(eventType);
-
-        let dir: string;
-        if (this.isCustomEvent(eventType)) {
-            dir = this.getSharedEventDir();
-        } else {
-            throw new ImperativeError({ msg: `Operation not allowed. Event is considered protected. Event: ${eventType}` });
-        }
-
-        this.writeEvent(dir, theEvent);
+    public getUserEventDir(): string {
+        return join(homedir(), ".zowe", ".events");
     }
-
-    /**
-     * Helper method to write contents out to disk
-     * @param location directory to write the file (i.e. emit the event)
-     * @param event the event to be written/emitted
-     * @internal We do not want developers writing events directly, they should use the `emit...` methods
-     */
-    private writeEvent(location: string, event: ImperativeEvent) {
-        const eventPath = join(location, event.eventType);
-        const eventJson = { ...event.toJson(), loc: location };
-
-        this.ensureEventsDirExists(location);
-        fs.writeFileSync(eventPath, JSON.stringify(eventJson, null, 2));
-    }
-
 
     /**
      * Obtain the directory of the event
@@ -194,6 +155,36 @@ export class ImperativeEventEmitter {
         }
 
         return this.getSharedEventDir();
+    }
+
+    /**
+     * Simple method to write the events to disk
+     * @param eventType The type of event to write
+     * @internal We do not want to make this function accessible to any application developers
+     */
+    public emitEvent(eventType: ImperativeEventType) {
+        const theEvent = this.initEvent(eventType);
+
+        if (this.isCustomEvent(eventType)) {
+            throw new ImperativeError({ msg: `Unable to determine the type of event. Event: ${eventType}` });
+        }
+
+        this.writeEvent(this.getEventDir(eventType), theEvent);
+    }
+
+    /**
+     * Simple method to write the events to disk
+     * @param eventType The type of event to write
+     * @internal We won't support custom events as part of the MVP
+     */
+    public emitCustomEvent(eventType: string) { //, isUserSpecific: boolean = false) {
+        const theEvent = this.initEvent(eventType);
+
+        if (!this.isCustomEvent(eventType)) {
+            throw new ImperativeError({ msg: `Operation not allowed. Event is considered protected. Event: ${eventType}` });
+        }
+
+        this.writeEvent(this.getSharedEventDir(), theEvent);
     }
 
     /**

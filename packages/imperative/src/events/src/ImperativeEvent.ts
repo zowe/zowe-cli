@@ -53,10 +53,11 @@ export class ImperativeEvent {
 
     /**
      * Indicator of user-specific (if true) or shared (if false) events
-     * The ImperativeEventEmitter is responsible for setting this value on all events
-     * @default false We assume that all events are shared unless the ImperativeEventEmitter says otherwise
+     * @private
+     * @type {boolean}
+     * @memberof ImperativeEvent
      */
-    public isUserSpecific: boolean = false;
+    private isUserEvent: boolean;
 
     /**
      * toString overload to be called automatically on string concatenation
@@ -76,7 +77,7 @@ export class ImperativeEvent {
             type: this.eventType,
             source: this.appName,
             id: this.eventId,
-            user: this.isUserSpecific,
+            user: this.isUserEvent,
         };
     };
 
@@ -85,6 +86,7 @@ export class ImperativeEvent {
         this.mEventID = randomUUID();
         this.mAppID = parms.appName;
         this.mEventType = parms.eventType;
+        this.isUserEvent = parms.isUser;
         parms.logger.debug("ImperativeEvent: " + this);
     }
 

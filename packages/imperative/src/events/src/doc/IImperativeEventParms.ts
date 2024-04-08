@@ -31,6 +31,12 @@ export interface IImperativeEventParms {
      */
     eventType: ImperativeEventType | string
     /**
+     * Specifies whether this is a user event or not
+     * @type {ImperativeEventType}
+     * @memberof IImperativeEventParms
+     */
+    isUser: boolean
+    /**
      * The logger to use when logging the imperative event that occurred
      * @type {Logger}
      * @memberof IImperativeEventParms
