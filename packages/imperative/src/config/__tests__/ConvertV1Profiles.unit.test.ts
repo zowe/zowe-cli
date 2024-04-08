@@ -17,6 +17,7 @@ import { ConvertV1Profiles } from "../";
 import { ConvertMsgFmt } from "../src/doc/IConvertV1Profiles";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error/src/ImperativeError";
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { Logger } from "../../logger/src/Logger";
 import { V1ProfileRead } from "../../profiles";
 import { ConfigSchema } from "../../config/src/ConfigSchema";
@@ -799,6 +800,10 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             it("should also delete credentials stored by old SCS plugin", async () => {
+                // pretend that the zowe keyring is available
+                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                    .mockResolvedValue(Promise.resolve(true));
+
                 // pretend that we found secure property names under one old-school service
                 jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]));
@@ -833,6 +838,10 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             it("should report an error when we fail to delete secure credentials", async () => {
+                // pretend that the zowe keyring is available
+                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                    .mockResolvedValue(Promise.resolve(true));
+
                 // pretend that we found secure property names under one old-school service
                 jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]));
@@ -1163,9 +1172,50 @@ describe("ConvertV1Profiles tests", () => {
         describe("checkZoweKeyRingAvailable", () => {
 
             it("should return true if it finds credentials in the vault", async () => {
+                // pretend that findCredentials found a bunch of accounts and passwords
+                const findCredentialsSpy = jest.spyOn(keyring as any, "findCredentials").mockResolvedValue([
+                    { account: "account1", password: "password1" },
+                    { account: "account2", password: "password2" },
+                    { account: "account3", password: "password3" },
+                    { account: "account4", password: "password4" },
+                ]);
+                const origZoweKeyRing = ConvertV1Profiles["zoweKeyRing"];
+                ConvertV1Profiles["zoweKeyRing"] = {
+                    findCredentials: findCredentialsSpy
+                } as any;
+
                 // call the function that we want to test
                 const result = await ConvertV1Profiles["checkZoweKeyRingAvailable"]();
+
+                ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
+                expect(findCredentialsSpy).toHaveBeenCalledWith("@zowe/cli");
                 expect(result).toEqual(true);
+            });
+
+            it("should return false if findCredentials throws an error", async () => {
+                // pretend that AppSettings.instance.set throws an exception
+                const fakeErrMsg = "A fake exception from findCredentials";
+                const findCredentialsSpy = jest.spyOn(keyring as any, "findCredentials").mockImplementation(() => {
+                    throw new Error(fakeErrMsg);
+                });
+                const origZoweKeyRing = ConvertV1Profiles["zoweKeyRing"];
+                ConvertV1Profiles["zoweKeyRing"] = {
+                    findCredentials: findCredentialsSpy
+                } as any;
+
+                // call the function that we want to test
+                let caughtErr: any;
+                let checkKeyRingResult: boolean = true;
+                try {
+                    checkKeyRingResult = await ConvertV1Profiles["checkZoweKeyRingAvailable"]();
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
+                expect(findCredentialsSpy).toHaveBeenCalledWith("@zowe/cli");
+                expect(caughtErr).not.toBeDefined();
+                expect(checkKeyRingResult).toEqual(false);
             });
         }); // end checkZoweKeyRingAvailable
 
@@ -1183,19 +1233,18 @@ describe("ConvertV1Profiles tests", () => {
                         { account: "account1", password: "password1" },
                         { account: "account2", password: "password2" },
                         { account: "account3", password: "password3" },
-                        { account: "account4", password: "password4" },
+                        { account: "account4", password: "password4" }
                     ])
                 } as any;
 
                 // call the function that we want to test
                 const oldSecurePropNames = await ConvertV1Profiles["findOldSecureProps"]("ServiceNameDoesNotMatter");
 
+                ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
                 expect(oldSecurePropNames).toContain("account1");
                 expect(oldSecurePropNames).toContain("account2");
                 expect(oldSecurePropNames).toContain("account3");
                 expect(oldSecurePropNames).toContain("account4");
-
-                ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
             });
 
             it("should catch an exception thrown by findCredentials and report the error", async () => {
