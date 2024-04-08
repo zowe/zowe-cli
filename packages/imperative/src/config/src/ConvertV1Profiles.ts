@@ -157,8 +157,6 @@ export class ConvertV1Profiles {
         /* Only the convert-profiles command is able to disable the credential manager
          * and reload it. For all other commands, the credential manager is loaded in
          * `Imperative.init` and frozen with `Object.freeze` so cannot be modified later on.
-         *
-         * Todo: Determine how we can also reload credMgr when called from ZE.
          */
         await OverridesLoader.ensureCredentialManagerLoaded();
 
@@ -655,7 +653,7 @@ export class ConvertV1Profiles {
      * @param msgText Unformatted text of the message.
      */
     private static addToConvertMsgs(msgFormat: number, msgText: string): void {
-        if (msgFormat && ConvertMsgFmt.ERROR_LINE) {
+        if (msgFormat & ConvertMsgFmt.ERROR_LINE) {
             Logger.getImperativeLogger().error(msgText);
         }
         const newMsg = new ConvertMsg(msgFormat, msgText);
