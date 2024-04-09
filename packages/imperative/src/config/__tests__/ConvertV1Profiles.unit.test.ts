@@ -70,7 +70,7 @@ describe("ConvertV1Profiles tests", () => {
             deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
-            const convertResult = await ConvertV1Profiles.convert({
+            await ConvertV1Profiles.convert({
                 deleteV1Profs: true
             });
 
@@ -87,7 +87,7 @@ describe("ConvertV1Profiles tests", () => {
             deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
-            const convertResult = await ConvertV1Profiles.convert({
+            await ConvertV1Profiles.convert({
                 deleteV1Profs: false
             });
 
@@ -104,7 +104,7 @@ describe("ConvertV1Profiles tests", () => {
             deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
-            const convertResult = await ConvertV1Profiles.convert({
+            await ConvertV1Profiles.convert({
                 deleteV1Profs: false
             });
 
@@ -121,7 +121,7 @@ describe("ConvertV1Profiles tests", () => {
             deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
-            const convertResult = await ConvertV1Profiles.convert({
+            await ConvertV1Profiles.convert({
                 deleteV1Profs: true
             });
 
@@ -141,7 +141,7 @@ describe("ConvertV1Profiles tests", () => {
             deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
-            const convertResult = await ConvertV1Profiles.convert({
+            await ConvertV1Profiles.convert({
                 deleteV1Profs: true
             });
 
@@ -803,7 +803,7 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should also delete credentials stored by old SCS plugin", async () => {
                 // pretend that the zowe keyring is available
-                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that we found secure property names under one old-school service
@@ -841,7 +841,7 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should report an error when we fail to delete secure credentials", async () => {
                 // pretend that the zowe keyring is available
-                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that we found secure property names under one old-school service
@@ -1387,7 +1387,6 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should delete the specified secure property", async () => {
                 // pretend that we successfully deleted the secure property
-                const origZoweKeyRing = ConvertV1Profiles["zoweKeyRing"];
                 ConvertV1Profiles["zoweKeyRing"] = {
                     deletePassword: jest.fn().mockResolvedValue(true)
                 } as any;
