@@ -12,6 +12,7 @@
 import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 import { PluginIssues } from "../../imperative/src/plugins/utilities/PluginIssues";
+import { OverridesLoader } from "../../imperative/src/OverridesLoader";
 import { CredentialManagerFactory } from "../..";
 import { ConvertV1Profiles } from "../";
 import { ConvertMsgFmt } from "../src/doc/IConvertV1Profiles";
@@ -20,12 +21,12 @@ import { ImperativeError } from "../../error/src/ImperativeError";
 import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { Logger } from "../../logger/src/Logger";
 import { V1ProfileRead } from "../../profiles";
+import { Config } from "../../config/src/Config";
 import { ConfigSchema } from "../../config/src/ConfigSchema";
 import { AppSettings } from "../../settings/src/AppSettings";
 import { CredentialManagerOverride } from "../../security/src/CredentialManagerOverride";
 
 jest.mock("../../imperative/src/OverridesLoader");
-
 
 describe("ConvertV1Profiles tests", () => {
 
@@ -947,6 +948,22 @@ describe("ConvertV1Profiles tests", () => {
                     }
                 } as any);
 
+                // mock getter properties, so that we avoid real ImperativeConfig actions
+                Object.defineProperty(ImperativeConfig.instance, "cliHome", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return "/fake/cliHome";
+                    })
+                });
+                Object.defineProperty(ImperativeConfig.instance, "config", {
+                    configurable: true,
+                    set: jest.fn()
+                });
+
+                // avoid running the real Config.load and OverridesLoader.load
+                const configLoadSpy = jest.spyOn(Config, "load").mockResolvedValue(Config.empty() as any);
+                const overridesLoaderLoadSpy = jest.spyOn(OverridesLoader, "load").mockResolvedValue(Promise.resolve());
+
                 // Avoid using the real secure credMgr. Pretend it works.
                 setCredMgrState("works");
 
@@ -962,7 +979,85 @@ describe("ConvertV1Profiles tests", () => {
                 expect(appSettingsSetSpy).toHaveBeenCalledWith(
                     "overrides", "CredentialManager", CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
                 );
+                expect(configLoadSpy).toHaveBeenCalled();
+                expect(overridesLoaderLoadSpy).toHaveBeenCalled();
                 expect(ConvertV1Profiles["convertResult"].v1ScsPluginName).toEqual(fakeV1ScsPlugin);
+                expect(ConvertV1Profiles["convertResult"].reInitCredMgr).toEqual(false);
+            });
+
+            it("should report when credMgr must be re-initialized", async () => {
+                // pretend that we found an old credential manager
+                const fakeV1ScsPlugin = "FakeScsPlugin";
+                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
+                    { plugins: [fakeV1ScsPlugin], overrides: ["CredentialManager"] }
+                );
+
+                // pretend that we set the credMgr
+                const appSettingsSetSpy = jest.fn();
+                jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
+                    set: appSettingsSetSpy
+                } as any);
+
+                // pretend that our loadedConfig has a credMgr override
+                jest.spyOn(ImperativeConfig.instance, "loadedConfig", "get").mockReturnValue({
+                    overrides: {
+                        CredentialManager: "CfgMgrOverride"
+                    }
+                } as any);
+
+                // mock getter properties, so that we avoid real ImperativeConfig actions
+                Object.defineProperty(ImperativeConfig.instance, "cliHome", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return "/fake/cliHome";
+                    })
+                });
+                Object.defineProperty(ImperativeConfig.instance, "config", {
+                    configurable: true,
+                    set: jest.fn()
+                });
+
+                // avoid running the real Config.load and OverridesLoader.load
+                const configLoadSpy = jest.spyOn(Config, "load").mockResolvedValue(Config.empty() as any);
+                const overridesLoaderLoadSpy = jest.spyOn(OverridesLoader, "load").mockResolvedValue(Promise.resolve());
+
+                // Avoid using the real secure credMgr. Pretend it works.
+                setCredMgrState("works");
+
+                // pretend that the CredMgr has been initialized
+                Object.defineProperty(CredentialManagerFactory, "initialized", {
+                    configurable: true,
+                    get: jest.fn(() => true)
+                });
+
+                // call the function that we want to test
+                let caughtErr: any;
+                try {
+                    await ConvertV1Profiles["removeOldOverrides"]();
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                expect(caughtErr).not.toBeDefined();
+                expect(appSettingsSetSpy).toHaveBeenCalledWith(
+                    "overrides", "CredentialManager", CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
+                );
+                expect(ConvertV1Profiles["convertResult"].v1ScsPluginName).toEqual(fakeV1ScsPlugin);
+                expect(configLoadSpy).not.toHaveBeenCalled();
+                expect(overridesLoaderLoadSpy).not.toHaveBeenCalled();
+                expect(ConvertV1Profiles["convertResult"].reInitCredMgr).toEqual(true);
+                let numMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
+                        if (nextMsg.msgText.includes(
+                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed") ||
+                            fakeV1ScsPlugin
+                        ) {
+                            numMsgsFound++;
+                        }
+                    }
+                }
+                expect(numMsgsFound).toEqual(2);
             });
 
             it("should catch and report an error thrown by AppSettings.instance.set", () => {
