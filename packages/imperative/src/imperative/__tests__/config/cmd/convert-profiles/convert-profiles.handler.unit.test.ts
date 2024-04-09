@@ -59,6 +59,7 @@ describe("Configuration Convert Profiles command handler", () => {
             { msgFormat: 2, msgText: "Error Msg 2" }
         ],
         v1ScsPluginName: null as any,
+        reInitCredMgr: false,
         cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
         numProfilesFound: 0,
         profilesConverted: {
