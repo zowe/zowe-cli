@@ -65,6 +65,14 @@ export interface IConvertV1ProfResult {
     v1ScsPluginName: string | null;
 
     /**
+     * If the old V1 Secure Credential Store plugin was supplying the credential manager
+     * override, that CredMgr has been replaced with the Zowe CLI built-in credential manager.
+     * This property indicates whether the caller must re-initialize the credential Manager
+     * by restarting its app.
+     */
+    reInitCredMgr: boolean;
+
+    /**
      * The following properties contain information about the success or failure of
      * the conversion of V1 profiles. By displaying the values in the 'msgs' property,
      * the caller need not use the following properties. However, our caller could

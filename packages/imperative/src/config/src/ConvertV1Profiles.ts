@@ -65,6 +65,7 @@ export class ConvertV1Profiles {
         ConvertV1Profiles.convertResult = {
             msgs: [],
             v1ScsPluginName: null,
+            reInitCredMgr: false,
             cfgFilePathNm: ConvertV1Profiles.noCfgFilePathNm,
             numProfilesFound: 0,
             profilesConverted: {},
@@ -80,7 +81,7 @@ export class ConvertV1Profiles {
 
             if (ConvertV1Profiles.isConversionNeeded()) {
                 await ConvertV1Profiles.moveV1ProfilesToConfigFile();
-                ConvertV1Profiles.removeOldOverrides();
+                await ConvertV1Profiles.removeOldOverrides();
             }
 
             if (convertOpts.deleteV1Profs){
@@ -383,13 +384,17 @@ export class ConvertV1Profiles {
     /**
      * Remove any old credential manager overrides.
      */
-    private static removeOldOverrides(): void {
+    private static async removeOldOverrides(): Promise<void> {
         /* Replace any detected oldCredMgr override entry in settings.json with the Zowe embedded credMgr.
          * Only the convert-profiles command is able to disable the credential manager
          * and reload it. For all other commands, the credential manager is loaded in
          * `Imperative.init` and frozen with `Object.freeze` so cannot be modified later on.
          *
-         * Todo: Determine how we can also set and reload credMgr when called from ZE.
+         * Unlike a CLI command (which gets re-initialized on the next command), long-running apps
+         * must re-initialize the credential manager with a call to CredentialManagerFactory.initialize.
+         * That initialize function can only be called once within a running process.
+         * ConvertV1Profiles.convertResult.reInitCredMgr will be set to true to tell our calling app
+         * that the app must be restarted.
          */
         const oldPluginInfo = ConvertV1Profiles.getOldPluginInfo();
         for (const override of oldPluginInfo.overrides) {
@@ -399,7 +404,26 @@ export class ConvertV1Profiles {
                     if (ImperativeConfig.instance.loadedConfig.overrides.CredentialManager != null) {
                         delete ImperativeConfig.instance.loadedConfig.overrides.CredentialManager;
                     }
+                    if (CredentialManagerFactory.initialized ) {
+                        // We cannot re-initialize CredMgr, so let our caller know.
+                        ConvertV1Profiles.convertResult.reInitCredMgr = true;
+                    } else {
+                        /* We can initialize the CredMgr.
+                         * At this point, we have a new config file. Load that new config, so that
+                         * ImperativeConfig.instance.config.exists is true when we call OverridesLoader.
+                         */
+                        ImperativeConfig.instance.config = await Config.load(ImperativeConfig.instance.rootCommandName,
+                            { homeDir: ImperativeConfig.instance.cliHome }
+                        );
+
+                        // Load the overrides that we just set. That will re-initialize the CredMgr.
+                        await OverridesLoader.load(
+                            ImperativeConfig.instance.loadedConfig,
+                            ImperativeConfig.instance.callerPackageJson
+                        );
+                    }
                 } catch (error) {
+                    ConvertV1Profiles.convertResult.reInitCredMgr = true;
                     ConvertV1Profiles.addToConvertMsgs(
                         ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
                         "Failed to replace credential manager override setting."
@@ -415,13 +439,13 @@ export class ConvertV1Profiles {
         // Report any plugin that we will uninstall
         if (oldPluginInfo.plugins.length > 0) {
             ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.REPORT_LINE,
+                ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
                 "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:"
             );
 
             for (const nextPlugin of oldPluginInfo.plugins) {
                 ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE,
+                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.INDENT,
                     nextPlugin
                 );
             }
@@ -531,7 +555,7 @@ export class ConvertV1Profiles {
         // we leave the 'false' indicator unchanged to allow for the use of no credMgr
         if (typeof currCredMgr === "string") {
             // if any of the old SCS credMgr names are found, record that we want to replace the credMgr
-            for (const oldOverrideName of [oldScsPluginNm, "Zowe-Plugin", "Broadcom-Plugin"]) {
+            for (const oldOverrideName of [oldScsPluginNm, "KeytarCredentialManager", "Zowe-Plugin", "Broadcom-Plugin"]) {
                 if (currCredMgr.includes(oldOverrideName)) {
                     pluginInfo.overrides.push(credMgrKey);
                     break;
