@@ -197,6 +197,7 @@ describe("ConvertV1Profiles tests", () => {
             ConvertV1Profiles["convertResult"] = {
                 msgs: [],
                 v1ScsPluginName: null,
+                reInitCredMgr: false,
                 cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
                 numProfilesFound: 0,
                 profilesConverted: {},
@@ -926,7 +927,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(appSettingsGetSpy).not.toHaveBeenCalled();
             });
 
-            it("should replace a v1 SCS credential manager and report a v1 SCS plugin", () => {
+            it("should replace a v1 SCS credential manager and report a v1 SCS plugin", async () => {
                 // pretend that we found an old credential manager
                 const fakeV1ScsPlugin = "FakeScsPlugin";
                 jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
@@ -952,7 +953,7 @@ describe("ConvertV1Profiles tests", () => {
                 // call the function that we want to test
                 let caughtErr: any;
                 try {
-                    ConvertV1Profiles["removeOldOverrides"]();
+                    await ConvertV1Profiles["removeOldOverrides"]();
                 } catch (err) {
                     caughtErr = err;
                 }
