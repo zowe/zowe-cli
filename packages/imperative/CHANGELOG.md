@@ -8,7 +8,7 @@ All notable changes to the Imperative package will be documented in this file.
   - Refactored logic from convert-profiles.handler and ConfigBuilder.convert into ConvertV1Profiles.convert.
   - Removed ConfigBuilder.convert.
   - Replaced IConfigConvertResult with IConvertV1Profiles (which contains IConvertV1ProfResult).
-  - Renamed class V1ProfileConversion (previously known as ProfileIO) to V1ProfileRead for consistency.
+  - Renamed class V1ProfileConversion (formerly known as ProfileIO) to V1ProfileRead for consistency.
     - Marked class V1ProfileRead as @internal.
 
 ## `8.0.0-next.202403272026`
