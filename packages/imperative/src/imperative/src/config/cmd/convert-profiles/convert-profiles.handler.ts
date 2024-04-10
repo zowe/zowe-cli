@@ -35,8 +35,8 @@ export default class ConvertProfilesHandler implements ICommandHandler {
             convertOpts.deleteV1Profs = true;
             if (params.arguments.prompt == null || params.arguments.prompt === true) {
                 params.response.console.log(
-                    "If you confirm the deletion of V1 profiles, they are deleted from disk\n" +
-                    "after a successful conversion. Otherwise, they remain but no longer used.\n" +
+                    "If you confirm the deletion of V1 profiles, they are deleted from disk after\n" +
+                    "a successful conversion. Otherwise, they remain but are no longer used.\n" +
                     "You can also delete your V1 profiles later.\n"
                 );
                 const answer = await params.response.console.prompt("Do you want to delete your V1 profiles now [y/N]: ");

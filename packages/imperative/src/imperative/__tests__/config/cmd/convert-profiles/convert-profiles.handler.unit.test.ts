@@ -102,8 +102,8 @@ describe("Configuration Convert Profiles command handler", () => {
         params.arguments.prompt = true;
         await convProfHandler.process(params);
 
-        expect(stdout).toContain("If you confirm the deletion of V1 profiles, they are deleted from disk");
-        expect(stdout).toContain("after a successful conversion. Otherwise, they remain but no longer used.");
+        expect(stdout).toContain("If you confirm the deletion of V1 profiles, they are deleted from disk after");
+        expect(stdout).toContain("a successful conversion. Otherwise, they remain but are no longer used.");
         expect(stdout).toContain("You can also delete your V1 profiles later.");
         expect(stdout).toContain("Do you want to delete your V1 profiles now [y/N]:");
 
@@ -131,8 +131,8 @@ describe("Configuration Convert Profiles command handler", () => {
         // call the function that we want to test
         await convProfHandler.process(params);
 
-        expect(stdout).toContain("If you confirm the deletion of V1 profiles, they are deleted from disk");
-        expect(stdout).toContain("after a successful conversion. Otherwise, they remain but no longer used.");
+        expect(stdout).toContain("If you confirm the deletion of V1 profiles, they are deleted from disk after");
+        expect(stdout).toContain("a successful conversion. Otherwise, they remain but are no longer used.");
         expect(stdout).toContain("You can also delete your V1 profiles later.");
         expect(stdout).toContain("Do you want to delete your V1 profiles now [y/N]:");
 
