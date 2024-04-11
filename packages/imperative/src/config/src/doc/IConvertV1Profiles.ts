@@ -22,11 +22,11 @@ export interface IConvertV1ProfOpts {
  * Do not combine REPORT_LINE and ERROR_LINE.
  */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-export class ConvertMsgFmt {
-    static readonly REPORT_LINE = 0b00001;
-    static readonly ERROR_LINE  = 0b00010;
-    static readonly PARAGRAPH   = 0b00100;
-    static readonly INDENT      = 0b01000;
+export enum ConvertMsgFmt {
+    REPORT_LINE = 0b00001,
+    ERROR_LINE  = 0b00010,
+    PARAGRAPH   = 0b00100,
+    INDENT      = 0b01000
 }
 
 /**
