@@ -45,8 +45,19 @@ export class ImperativeEventEmitter {
     public static get instance(): ImperativeEventEmitter {
         if (this.mInstance == null) {
             this.mInstance = new ImperativeEventEmitter();
+            this.mInstance.subscriptions = new Map();
+            this.mInstance.eventTimes = new Map();
         }
         return this.mInstance;
+    }
+
+    /**
+     * Check to see if the Imperative Event Emitter instance has been initialized
+     */
+    private ensureClassInitialized() {
+        if (!ImperativeEventEmitter.initialized) {
+            throw new ImperativeError({msg: "You must initialize the instance before using any of its methods."});
+        }
     }
 
     /**
@@ -73,7 +84,7 @@ export class ImperativeEventEmitter {
                 fs.closeSync(fs.openSync(filePath, 'w'));
             }
         } catch (err) {
-            throw new ImperativeError({ msg: `Unable to create file path: ${filePath}`, causeErrors: err });
+            throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
         }
     }
 
@@ -83,6 +94,7 @@ export class ImperativeEventEmitter {
      * @returns The initialized ImperativeEvent
      */
     private initEvent(eventType: ImperativeEventType | string): ImperativeEvent {
+        this.ensureClassInitialized();
         return new ImperativeEvent({ appName: this.appName, eventType, isUser: this.isUserEvent(eventType), logger: this.logger });
     }
 
@@ -99,6 +111,33 @@ export class ImperativeEventEmitter {
         this.ensureEventsDirExists(location);
         fs.writeFileSync(eventPath, JSON.stringify(eventJson, null, 2));
     }
+
+    /**
+     * Helper method to create watchers based on event strings and list of callbacks
+     * @param eventType type of event to which we will create a watcher for
+     * @param callbacks list of all callbacks for this watcher
+     * @returns The FSWatcher instance created
+     */
+    private setupWatcher(eventType: string, callbacks: Function[] = []): fs.FSWatcher {
+        const dir = this.getEventDir(eventType);
+        this.ensureEventsDirExists(dir); //ensure .events exist
+
+        this.ensureEventFileExists(join(dir, eventType));
+        const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change") => {
+            // Node.JS triggers this event 3 times
+            const eventContents = fs.readFileSync(join(this.getEventDir(eventType), eventType)).toString();
+            const eventTime = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
+
+            if (this.eventTimes.get(eventType) !== eventTime) {
+                this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
+                // Promise.all(callbacks)
+                callbacks.forEach(cb => cb());
+                this.eventTimes.set(eventType, eventTime);
+            }
+        });
+        this.subscriptions.set(eventType, [watcher, callbacks]);
+        return watcher;
+    };
 
     /**
      * Check to see if the given event is a User event
@@ -193,45 +232,16 @@ export class ImperativeEventEmitter {
      * @param callback Action to be registered to the given event
      */
     public subscribe(eventType: string, callback: Function): IImperativeRegisteredAction {
-        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
-            ConfigUtils.initImpUtils("zowe");
-        }
-        if (this.subscriptions == null) {
-            this.subscriptions = new Map();
-            this.eventTimes = new Map();
-        }
-
-        const dir = this.getEventDir(eventType);
-        this.ensureEventsDirExists(dir); //ensure .events exist
-
-        const setupWatcher = (callbacks: Function[] = []): fs.FSWatcher => {
-            this.ensureEventFileExists(join(dir, eventType));
-            const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change", filename: string) => {
-                // Node.JS triggers this event 3 times
-                const eventContents = fs.readFileSync(join(this.getEventDir(eventType), filename)).toString();
-                const eventTime = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
-
-                if (this.eventTimes.get(eventType) !== eventTime) {
-                    this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
-                    // Promise.all([...callbacks, callback])
-                    callbacks.forEach(cb => cb());
-                    callback();
-                    this.eventTimes.set(eventType, eventTime);
-                }
-            });
-            this.subscriptions.set(eventType, [watcher, [...callbacks, callback]]);
-            return watcher;
-        };
+        this.ensureClassInitialized();
 
         let watcher: fs.FSWatcher;
         if (this.subscriptions.get(eventType) != null) {
-            // throw new ImperativeError({msg: "Only one subscription per event is allowed"});
             const [watcherToClose, callbacks] = this.subscriptions.get(eventType);
             watcherToClose.removeAllListeners(eventType).close();
 
-            watcher = setupWatcher(callbacks);
+            watcher = this.setupWatcher(eventType, [...callbacks, callback]);
         } else {
-            watcher = setupWatcher();
+            watcher = this.setupWatcher(eventType, [callback]);
         }
         return { close: watcher.close };
     }
@@ -241,6 +251,8 @@ export class ImperativeEventEmitter {
      * @param eventType Type of registered event
      */
     public unsubscribe(eventType: string): void {
+        this.ensureClassInitialized();
+
         if (this.subscriptions.has(eventType)) {
             const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
             watcherToClose.removeAllListeners(eventType).close();
