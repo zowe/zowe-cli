@@ -784,9 +784,10 @@ export class CommandProcessor {
         combinedProfiles.forEach((profile) => {
             const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
             const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
-            configSecureProps.push(...props); // add to list
+            for (const propName of props) {
+                configSecureProps.push(...Object.values(CliUtils.getOptionFormat(propName))); // add multiple cases to list
+            }
         });
-
 
         /**
          * Construct a Set of secure fields from Zowe Team Config API.
@@ -814,7 +815,7 @@ export class CommandProcessor {
         /**
          * Add profile location info
          */
-        this.mConfig?.mLayers?.forEach((layer) => {
+        this.mConfig?.layers.forEach((layer) => {
             if (layer.exists) {
                 showInputsOnly.locations.push(layer.path);
             }
