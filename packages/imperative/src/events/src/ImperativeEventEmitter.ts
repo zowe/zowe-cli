@@ -137,7 +137,7 @@ export class ImperativeEventEmitter {
         });
         this.subscriptions.set(eventType, [watcher, callbacks]);
         return watcher;
-    };
+    }
 
     /**
      * Check to see if the given event is a User event

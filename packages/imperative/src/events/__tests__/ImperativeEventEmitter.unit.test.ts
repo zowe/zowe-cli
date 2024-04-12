@@ -21,7 +21,7 @@ describe("Event Emitter", () => {
     let spyFsWriteFileSync: jest.SpyInstance;
     let allCallbacks: Function[];
     let removeAllListeners: jest.SpyInstance;
-    let closeWatcher = jest.fn();
+    const closeWatcher = jest.fn();
 
     beforeEach(() => {
         jest.restoreAllMocks();
