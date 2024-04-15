@@ -33,6 +33,7 @@ import { NextVerFeatures, TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
+import { ICredOrder } from "./doc/ICredOrder";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -221,14 +222,28 @@ export abstract class AbstractRestClient {
     protected lastByteReceived: number = 0;
 
     /**
-     * Creates an instance of AbstractRestClient.
-     * @param {AbstractSession} mSession - representing connection to this api
+     * Specifies the order in which credentials will be used when multiple
+     * types of credentials exist in the zowe client configuration.
+     * @private
+     * @type {ICredOrder}
      * @memberof AbstractRestClient
      */
-    constructor(private mSession: AbstractSession) {
+    private mCredOrder: ICredOrder;
+
+    /**
+     * Creates an instance of AbstractRestClient.
+     * @param {AbstractSession} mSession - representing connection to this api
+     * @param {ICredOrder} credOrder
+     *          Specifies the order in which credentials will be used when multiple
+     *          types of credentials exist in the zowe client configuration.
+     *          When unspecified, a token will be used before user & password.
+     * @memberof AbstractRestClient
+     */
+    constructor(private mSession: AbstractSession, credOrder = ICredOrder.TOKEN_OVER_PASSWORD) {
         ImperativeExpect.toNotBeNullOrUndefined(mSession);
         this.mLogger = Logger.getImperativeLogger();
         this.mIsJson = false;
+        this.mCredOrder = credOrder;
     }
 
     /**
@@ -462,26 +477,8 @@ export abstract class AbstractRestClient {
          * Here is where we conditionally perform our HTTP REST request using basic authentication or the stored
          * cookie in our session object.
          */
-        if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC ||
-            this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
-            if (this.session.ISession.base64EncodedAuth || (this.session.ISession.user && this.session.ISession.password)) {
-                this.log.trace("Using basic authentication");
-                const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
-                const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
-                    AbstractSession.getBase64Auth(this.session.ISession.user,  this.session.ISession.password));
-                headerKeys.forEach((property) => {
-                    options.headers[property] = authentication;
-                });
-            } else if (this.session.ISession.tokenValue) {
-                this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
-                const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
-                const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
-                headerKeys.forEach((property) => {
-                    options.headers[property] = authentication;
-                });
-            } else {
-                throw new ImperativeError({msg: "No credentials for a BASIC or TOKEN type of session."});
-            }
+        if (this.setPasswordOrTokenAuth(options)) {
+            // a password or token was set by setPasswordOrTokenAuth()
         } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_BEARER) {
             this.log.trace("Using bearer authentication");
             const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
@@ -530,6 +527,110 @@ export abstract class AbstractRestClient {
             logResource, this.session.ISession.user ? "as user " + this.session.ISession.user : "");
 
         return options;
+    }
+
+    /**
+     * Set our REST request authentication, deciding between password and token.
+     * The determination of which takes prcedence is determined by an option supplied
+     * on the constructor of this class. If neither password or token type is specified
+     * in the session supplied to this class, then no REST authentication options are set.
+     *
+     * The Zowe SDK policy is to select password credentials over a token.
+     * However, this class was originally released with the token over password.
+     * The commonly-used RestClient (which extends this class) resets the order
+     * back to password over token. Consumers which directly extended this class
+     * came to rely on the unintended token over password. Later changes in this
+     * class to adhere to Zowe policy inadvertently broke such extenders.
+     * Until a means is provided for consumers (and/or end-users) to customize
+     * their credential order of precedence, we use the order that our caller
+     * specifies on the constructor of this class. If no order is specified on
+     * the constructor, we use the original order of TOKEN_OVER_PASSWORD to correct
+     * a breaking change.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @throws ImperativeError when basic or token auth is specified in the session
+     *         but no user & password or token is specified in the session.
+     * @memberof AbstractRestClient
+     */
+    private setPasswordOrTokenAuth(restOptionsToSet: any): boolean {
+        if (this.session.ISession.type !== SessConstants.AUTH_TYPE_BASIC &&
+            this.session.ISession.type !== SessConstants.AUTH_TYPE_TOKEN)
+        {
+            return false;
+        }
+
+        if (this.mCredOrder === ICredOrder.TOKEN_OVER_PASSWORD) {
+            if (this.setTokenAuth(restOptionsToSet)) {
+                return true;
+            }
+            if (this.setPasswordAuth(restOptionsToSet)) {
+                return true;
+            }
+        } else {
+            // do password over token instead
+            if (this.setPasswordAuth(restOptionsToSet)) {
+                return true;
+            }
+            if (this.setTokenAuth(restOptionsToSet)) {
+                return true;
+            }
+        }
+        throw new ImperativeError({msg: "No credentials for a BASIC or TOKEN type of session."});
+    }
+
+    /**
+     * Set token auth into our REST request authentication options
+     * if a token value is specified in the session supplied to this class.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @memberof AbstractRestClient
+     */
+    private setTokenAuth(restOptionsToSet: any): boolean {
+        if (!this.session.ISession.tokenValue) {
+            return false;
+        }
+
+        this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
+        const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
+        const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
+        headerKeys.forEach((property) => {
+            restOptionsToSet.headers[property] = authentication;
+        });
+        return true;
+    }
+
+    /**
+     * Set user and password auth (A.K.A basic authentication) into our
+     * REST request authentication options if user and password values
+     * are specified in the session supplied to this class.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @memberof AbstractRestClient
+     */
+    private setPasswordAuth(restOptionsToSet: any): boolean {
+        if (! this.session.ISession.base64EncodedAuth &&
+            !(this.session.ISession.user && this.session.ISession.password))
+        {
+            return false;
+        }
+
+        this.log.trace("Using basic authentication");
+        const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
+        const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
+            AbstractSession.getBase64Auth(this.session.ISession.user,  this.session.ISession.password));
+        headerKeys.forEach((property) => {
+            restOptionsToSet.headers[property] = authentication;
+        });
+        return true;
     }
 
     /**
