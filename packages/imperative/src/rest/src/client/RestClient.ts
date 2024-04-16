@@ -20,7 +20,6 @@ import { IRestClientResponse } from "./doc/IRestClientResponse";
 import { IOptionsFullResponse } from "./doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "./types/AbstractRestClientProperties";
 import { IRestOptions } from "./doc/IRestOptions";
-import { ICredOrder } from "./doc/ICredOrder";
 
 /**
  * Class to handle http(s) requests, build headers, collect data, report status codes, and header responses
@@ -30,16 +29,6 @@ import { ICredOrder } from "./doc/ICredOrder";
  * @extends {AbstractRestClient}
  */
 export class RestClient extends AbstractRestClient {
-
-    /**
-     * Creates an instance of AbstractRestClient.
-     * @param {AbstractSession} session - session to use to connect to desired service
-     * @memberof RestClient
-     */
-    constructor(session: AbstractSession) {
-        // The Zowe SDK policy is to select password credentials over a token.
-        super(session, ICredOrder.PASSWORD_OVER_TOKEN);
-    }
 
     /**
      * Wrap get for common error handling and supporting generic JSON types
