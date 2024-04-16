@@ -21,7 +21,6 @@ export interface IConvertV1ProfOpts {
  * Message formatting constants. They can be ORed into IConvertMsg.msgFormat.
  * Do not combine REPORT_LINE and ERROR_LINE.
  */
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 export enum ConvertMsgFmt {
     REPORT_LINE = 0b00001,
     ERROR_LINE  = 0b00010,
