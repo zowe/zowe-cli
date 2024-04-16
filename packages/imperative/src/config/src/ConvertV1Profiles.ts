@@ -607,16 +607,14 @@ export class ConvertV1Profiles {
      * @returns true if credential vault is available, false if it is not
      */
     private static async checkZoweKeyRingAvailable(): Promise<boolean> {
-        let success: boolean = false;
         try {
             const zoweSecretsPath = require.resolve("@zowe/secrets-for-zowe-sdk");
             ConvertV1Profiles.zoweKeyRing = (await import(zoweSecretsPath)).keyring;
             await ConvertV1Profiles.zoweKeyRing.findCredentials(CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
-            success = true;
         } catch (err) {
-            success = false;
+            return false;
         }
-        return success;
+        return true;
     }
 
     /**
