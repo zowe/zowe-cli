@@ -486,25 +486,20 @@ export abstract class AbstractRestClient {
         let credsAreSet: boolean = false;
         for (const nextAuthType of this.session.ISession.authTypeOrder) {
             if (nextAuthType === SessConstants.AUTH_TYPE_TOKEN) {
-                if (this.setTokenAuth(options)) {
-                    credsAreSet = true;
-                    break;
-                }
+                credsAreSet ||= this.setTokenAuth(options);
+
             } else if (nextAuthType === SessConstants.AUTH_TYPE_BASIC) {
-                if (this.setPasswordAuth(options)) {
-                    credsAreSet = true;
-                    break;
-                }
+                credsAreSet ||= this.setPasswordAuth(options);
+
             } else if (nextAuthType === SessConstants.AUTH_TYPE_BEARER) {
-                if (this.setBearerAuth(options)) {
-                    credsAreSet = true;
-                    break;
-                }
+                credsAreSet ||= this.setBearerAuth(options);
+
             } else if (nextAuthType === SessConstants.AUTH_TYPE_CERT_PEM) {
-                if (this.setCertPemAuth(options)) {
-                    credsAreSet = true;
-                    break;
-                }
+                credsAreSet ||= this.setCertPemAuth(options);
+            }
+
+            if (credsAreSet) {
+                break;
             }
             // else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PFX) {
             //     this.log.trace("Using PFX Certificate authentication");
