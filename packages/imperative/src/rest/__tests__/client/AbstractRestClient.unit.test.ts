@@ -34,12 +34,17 @@ import { IO } from "../../../io";
  */
 
 describe("AbstractRestClient tests", () => {
+    let setPasswordAuthSpy: any;
 
     beforeEach(() => {
         /* This avoids having to mock ImperativeConfig.envVariablePrefix.
          * Unless overridden, tests will use our legacy format for errors.
          */
         jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
+
+        // pretend that basic auth was successfully set
+        setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
+        setPasswordAuthSpy.mockReturnValue(true);
     });
 
     it("should not append any headers to a request by default", () => {
@@ -729,6 +734,9 @@ describe("AbstractRestClient tests", () => {
 
         (https.request as any) = httpsRequestFnc;
 
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
+
         let error;
         try {
             await RestClient.getExpectString(
@@ -762,6 +770,9 @@ describe("AbstractRestClient tests", () => {
         });
 
         (https.request as any) = httpsRequestFnc;
+
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
 
         let error;
         try {
@@ -799,6 +810,9 @@ describe("AbstractRestClient tests", () => {
         });
 
         (https.request as any) = httpsRequestFnc;
+
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
 
         let error;
         try {
