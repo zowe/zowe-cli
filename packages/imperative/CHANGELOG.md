@@ -2,6 +2,24 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.0-next.202404191414`
+
+- Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
+  - Refactored logic from convert-profiles.handler and ConfigBuilder.convert into ConvertV1Profiles.convert.
+  - Removed ConfigBuilder.convert.
+  - Replaced IConfigConvertResult with IConvertV1Profiles (which contains IConvertV1ProfResult).
+  - Renamed class V1ProfileConversion (formerly known as ProfileIO) to V1ProfileRead for consistency.
+    - Marked class V1ProfileRead as @internal.
+
+## `8.0.0-next.202403272026`
+
+- BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2107](https://github.com/zowe/zowe-cli/pull/2107)
+
+## `8.0.0-next.202403251613`
+
+- BugFix: Fixed issue where the `ProfileInfo.addProfileTypeToSchema` function did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
+- BugFix: Updated debugging output for technical currency. [#2100](https://github.com/zowe/zowe-cli/pull/2100)
+
 ## `8.0.0-next.202403141949`
 - LTS Breaking: Modified the @zowe/imperative SDK [#1703](https://github.com/zowe/zowe-cli/issues/1703)
   - Renamed class ProfileIO to V1ProfileConversion.
@@ -285,6 +303,22 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.23.0`
+
+- Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+
+## `5.22.7`
+
+- BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2106](https://github.com/zowe/zowe-cli/pull/2106)
+
+## `5.22.6`
+
+- BugFix: Updated debugging output for technical currency. [#2098](https://github.com/zowe/zowe-cli/pull/2098)
+
+## `5.22.5`
+
+- BugFix: Fixed issue where the `ProfileInfo.addProfileTypeToSchema` function did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
 
 ## `5.22.4`
 

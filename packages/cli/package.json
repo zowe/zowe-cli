@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "8.0.0-next.202403141949",
+  "version": "8.0.0-next.202404191414",
   "zoweVersion": "V3",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Zowe",
@@ -58,33 +58,33 @@
     "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
   },
   "dependencies": {
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/imperative": "8.0.0-next.202403141949",
-    "@zowe/provisioning-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-console-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-jobs-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-logs-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-tso-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202403141949",
-    "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202403141949",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/imperative": "8.0.0-next.202404191414",
+    "@zowe/provisioning-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-console-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-jobs-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-logs-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-tso-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202404191414",
+    "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202404191414",
     "find-process": "1.4.7",
     "lodash": "4.17.21",
     "minimatch": "9.0.3",
-    "tar": "6.2.0"
+    "tar": "6.2.1"
   },
   "devDependencies": {
     "@types/diff": "^5.0.9",
     "@types/lodash": "^4.14.202",
     "@types/tar": "^6.1.11",
-    "@zowe/cli-test-utils": "8.0.0-next.202403141949",
+    "@zowe/cli-test-utils": "8.0.0-next.202404191414",
     "comment-json": "^4.2.3",
     "strip-ansi": "^6.0.1",
     "which": "^4.0.0"
   },
   "optionalDependencies": {
-    "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202403141949"
+    "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202404191414"
   },
   "engines": {
     "node": ">=18.12.0"

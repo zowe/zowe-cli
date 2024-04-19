@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./V1ProfileConversion";
+export * from "./V1ProfileRead";
 export * from "./ProfileUtils";

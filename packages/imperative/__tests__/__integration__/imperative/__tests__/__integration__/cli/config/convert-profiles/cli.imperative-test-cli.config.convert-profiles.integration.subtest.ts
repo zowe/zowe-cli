@@ -29,7 +29,7 @@ describe("imperative-test-cli config convert-profiles", () => {
             cliHomeEnvVar: "IMPERATIVE_TEST_CLI_CLI_HOME",
             testName: "imperative_test_cli_test_config_convert_profiles_command"
         });
-        configJsonPath = path.join(process.env.IMPERATIVE_TEST_CLI_CLI_HOME, "imperative-test-cli.config.json");
+        configJsonPath = path.join(process.env.IMPERATIVE_TEST_CLI_CLI_HOME as string, "imperative-test-cli.config.json");
     });
 
     beforeEach(() => {
@@ -47,67 +47,66 @@ describe("imperative-test-cli config convert-profiles", () => {
         fsExtra.removeSync(TEST_ENVIRONMENT.workingDir + "/profiles-old");
     });
 
-    describe("success scenarios", () => {
-        it("should display the help", () => {
-            const response = runCliScript(__dirname + "/../__scripts__/get_help.sh", TEST_ENVIRONMENT.workingDir, ["convert-profiles"]);
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Convert v1 profiles to a global imperative-test-cli.config.json file.");
-            expect(response.stderr.toString()).toEqual("");
+    it("should display the help", () => {
+        const response = runCliScript(__dirname + "/../__scripts__/get_help.sh", TEST_ENVIRONMENT.workingDir, ["convert-profiles"]);
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Convert v1 profiles to a global imperative-test-cli.config.json file.");
+        expect(response.stderr.toString()).toEqual("");
+    });
+
+    it("should convert profiles to team config and keep old profiles", async () => {
+        // set a value in the secure vault that would have been created for the V1 secured profile
+        await keyring.setPassword("imperative-test-cli", "secured_test_secret",
+            Buffer.from('"world"').toString("base64")
+        );
+
+        const response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir);
+        expect(response.stdout.toString()).toContain("Your old V1 profiles have been moved");
+        expect(response.stdout.toString()).toContain("Delete them by re-running this operation and requesting deletion");
+        expect(response.stdout.toString()).toContain("Your new profiles have been saved");
+        expect(response.stdout.toString()).toContain("To change your configuration, update that file in your text editor");
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.status).toBe(0);
+
+        // Check contents of config JSON
+        const configJson = JSON.parse(fs.readFileSync(configJsonPath, "utf-8"));
+        expect(configJson).toMatchObject({
+            profiles: {
+                secured_test: {
+                    type: "secured",
+                    properties: {
+                        info: "hello"
+                    },
+                    secure: ["secret"]
+                },
+                base_test: {
+                    type: "base",
+                    properties: {
+                        host: "example.com"
+                    },
+                    secure: []
+                },
+            },
+            defaults: {
+                secured: "secured_test",
+                base: "base_test"
+            },
+            autoStore: true
         });
 
-        it("should convert profiles to team config", async () => {
-            // set a value in the secure vault that would have been created for the V1 secured profile
-            await keyring.setPassword("imperative-test-cli", "secured_test_secret",
-                Buffer.from('"world"').toString("base64")
-            );
-
-            const response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["y"]);
-            expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toContain("Detected 2 old V1 profile(s) to convert to a current Zowe client configuration");
-            expect(response.stdout.toString()).toContain("Your new profiles have been saved");
-            expect(response.stdout.toString()).toContain("Your old V1 profiles have been moved");
-            expect(response.status).toBe(0);
-
-            // Check contents of config JSON
-            const configJson = JSON.parse(fs.readFileSync(configJsonPath, "utf-8"));
-            expect(configJson).toMatchObject({
-                profiles: {
-                    secured_test: {
-                        type: "secured",
-                        properties: {
-                            info: "hello"
-                        },
-                        secure: ["secret"]
-                    },
-                    base_test: {
-                        type: "base",
-                        properties: {
-                            host: "example.com"
-                        },
-                        secure: []
-                    },
-                },
-                defaults: {
-                    secured: "secured_test",
-                    base: "base_test"
-                },
-                autoStore: true
-            });
-
-            // Check secure credentials stored in vault
-            const securedValue = await keyring.getPassword("imperative-test-cli", "secure_config_props");
-            const secureConfigProps = JSON.parse(Buffer.from(securedValue, "base64").toString());
-            expect(secureConfigProps).toMatchObject({
-                [configJsonPath]: {
-                    "profiles.secured_test.properties.secret": "world"
-                }
-            });
-
-            // Ensure that profiles directory was renamed
-            const cliHomeDirContents = fs.readdirSync(process.env.IMPERATIVE_TEST_CLI_CLI_HOME);
-            expect(cliHomeDirContents.includes("profiles")).toBe(false);
-            expect(cliHomeDirContents.includes("profiles-old")).toBe(true);
+        // Check secure credentials stored in vault
+        const securedValue = await keyring.getPassword("imperative-test-cli", "secure_config_props");
+        const secureConfigProps = JSON.parse(Buffer.from(securedValue as string, "base64").toString());
+        expect(secureConfigProps).toMatchObject({
+            [configJsonPath]: {
+                "profiles.secured_test.properties.secret": "world"
+            }
         });
+
+        // Ensure that profiles directory was renamed
+        const cliHomeDirContents = fs.readdirSync(process.env.IMPERATIVE_TEST_CLI_CLI_HOME as string);
+        expect(cliHomeDirContents.includes("profiles")).toBe(false);
+        expect(cliHomeDirContents.includes("profiles-old")).toBe(true);
     });
 
     it("should convert v1 profile property names to v2 names", async () => {
@@ -118,12 +117,13 @@ describe("imperative-test-cli config convert-profiles", () => {
 
         fsExtra.copySync(__dirname + "/../../config/__resources__/profiles_with_v1_names", TEST_ENVIRONMENT.workingDir + "/profiles");
 
-        response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["y"]);
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Detected 1 old V1 profile(s) to convert to a current Zowe client configuration.");
-        expect(response.stdout.toString()).toContain("Your new profiles have been saved");
+        response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.stdout.toString()).toContain("Your old V1 profiles have been moved");
+        expect(response.stdout.toString()).toContain("Delete them by re-running this operation and requesting deletion");
+        expect(response.stdout.toString()).toContain("Your new profiles have been saved");
+        expect(response.stdout.toString()).toContain("To change your configuration, update that file in your text editor");
         expect(response.stderr.toString()).toEqual("");
+        expect(response.status).toBe(0);
 
         // Check contents of config JSON
         const configJson = JSON.parse(fs.readFileSync(configJsonPath, "utf-8"));
@@ -145,38 +145,39 @@ describe("imperative-test-cli config convert-profiles", () => {
         });
 
         // Ensure that profiles directory was renamed
-        const cliHomeDirContents = fs.readdirSync(process.env.IMPERATIVE_TEST_CLI_CLI_HOME);
+        const cliHomeDirContents = fs.readdirSync(process.env.IMPERATIVE_TEST_CLI_CLI_HOME as string);
         expect(cliHomeDirContents.includes("profiles")).toBe(false);
         expect(cliHomeDirContents.includes("profiles-old")).toBe(true);
     });
 
-    describe("failure scenarios", () => {
-        it("should not convert profiles if prompt is rejected", () => {
-            const response = runCliScript(__dirname + "/__scripts__/convert_profiles.sh", TEST_ENVIRONMENT.workingDir, ["n"]);
-            expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toContain("Detected 2 old V1 profile(s) to convert to a current Zowe client configuration");
-            expect(response.stdout.toString()).not.toContain("Your new profiles have been saved");
-            expect(response.stdout.toString()).not.toContain("Your old V1 profiles have been moved");
-            expect(response.status).toBe(0);
-            expect(fs.existsSync(configJsonPath)).toBe(false);
-        });
-        it("should not delete profiles if prompt is rejected", () => {
-            // delete profiles previously created, but leave the profile type definitions
-            let response = runCliScript(__dirname + "/__scripts__/delete_profiles.sh", TEST_ENVIRONMENT.workingDir);
-            expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toEqual("");
+    it("should delete profiles if deletion prompt is accepted", () => {
+        const response = runCliScript(__dirname + "/__scripts__/convert_profiles_delete.sh", TEST_ENVIRONMENT.workingDir, ["y"]);
+        expect(response.stdout.toString()).toContain("Do you want to delete your V1 profiles now [y/N]:");
+        expect(response.stdout.toString()).toContain("Your new profiles have been saved");
+        expect(response.stdout.toString()).toContain("To change your configuration, update that file in your text editor");
+        expect(response.stdout.toString()).toContain("Deleted the old profiles directory");
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.status).toBe(0);
 
-            response = runCliScript(__dirname + "/__scripts__/convert_profiles_delete.sh", TEST_ENVIRONMENT.workingDir, ["n"]);
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Found no old V1 profiles to convert to a current Zowe client configuration");
-            expect(response.stdout.toString()).toContain("Are you sure you want to delete your v1 profiles?");
-            expect(response.stdout.toString()).not.toContain("Your new profiles have been saved");
-            expect(response.stdout.toString()).not.toContain("Your old profiles have been moved");
-            expect(response.stdout.toString()).not.toContain("Deleting the profiles directory");
-            expect(response.stderr.toString()).not.toContain("Failed to delete the profiles directory");
-            expect(response.stderr.toString()).not.toContain("Deleting secure value for");
-            expect(response.stderr.toString()).not.toContain("Keytar or the credential vault are unavailable");
-            expect(fs.existsSync(configJsonPath)).toBe(false);
-        });
+        // Ensure that profiles directory was deleted
+        const cliHomeDirContents = fs.readdirSync(process.env.IMPERATIVE_TEST_CLI_CLI_HOME as string);
+        expect(cliHomeDirContents.includes("profiles")).toBe(false);
+        expect(cliHomeDirContents.includes("profiles-old")).toBe(false);
+    });
+
+    it("should keep profiles if deletion prompt is rejected", () => {
+        const response = runCliScript(__dirname + "/__scripts__/convert_profiles_delete.sh", TEST_ENVIRONMENT.workingDir, ["n"]);
+        expect(response.stdout.toString()).toContain("Do you want to delete your V1 profiles now [y/N]:");
+        expect(response.stdout.toString()).toContain("Your old V1 profiles have been moved");
+        expect(response.stdout.toString()).toContain("Delete them by re-running this operation and requesting deletion");
+        expect(response.stdout.toString()).toContain("Your new profiles have been saved");
+        expect(response.stdout.toString()).toContain("To change your configuration, update that file in your text editor");
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.status).toBe(0);
+
+        // Ensure that profiles-old directory was kept
+        const cliHomeDirContents = fs.readdirSync(process.env.IMPERATIVE_TEST_CLI_CLI_HOME as string);
+        expect(cliHomeDirContents.includes("profiles")).toBe(false);
+        expect(cliHomeDirContents.includes("profiles-old")).toBe(true);
     });
 });

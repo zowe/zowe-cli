@@ -32,20 +32,20 @@ import {
 import { IProfileTypeConfiguration } from "../../doc/config/IProfileTypeConfiguration";
 
 /**
- * Mocked V1ProfileConversion class - for the most part, just reacts differently based on the profile name/path specified
+ * Mocked V1ProfileRead class - for the most part, just reacts differently based on the profile name/path specified
  * to simulate certain profile conditions for testing the manager.
  *
  * @export
- * @class V1ProfileConversion
+ * @class V1ProfileRead
  */
-export class V1ProfileConversion {
+export class V1ProfileRead {
     /**
      * Mocks the get all profile directores - for the most part, if a certain string is found within the path
      * input, a certain list will be responded.
      * @static
      * @param {string} profileRootDirectory
      * @returns {string[]}
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static getAllProfileDirectories(profileRootDirectory: string): string[] {
         if (profileRootDirectory.indexOf(FRUIT_BASKET_BAD) >= 0 || profileRootDirectory.indexOf(FRUIT_BASKET_WORSE) >= 0) {
@@ -62,7 +62,7 @@ export class V1ProfileConversion {
      * @static
      * @param {string} path
      * @returns {IMetaProfile}
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static readMetaFile(path: string): IMetaProfile<IProfileTypeConfiguration> {
 
@@ -163,7 +163,7 @@ export class V1ProfileConversion {
      * @param {string} ext
      * @param {string} metaNameForType
      * @returns {string[]}
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static getAllProfileNames(profileTypeDir: string, ext: string, metaNameForType: string): string[] {
         if (profileTypeDir.indexOf("apple") >= 0) {
@@ -183,7 +183,7 @@ export class V1ProfileConversion {
      * @param {string} filePath
      * @param {string} type
      * @returns {IProfile}
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static readProfileFile(filePath: string, type: string): IProfile {
 
@@ -500,6 +500,6 @@ export class V1ProfileConversion {
             };
         }
 
-        throw new Error("V1ProfileConversion Mock did NOT have a profile for: " + filePath);
+        throw new Error("V1ProfileRead Mock did NOT have a profile for: " + filePath);
     }
 }
