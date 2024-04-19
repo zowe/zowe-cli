@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202404191414`
 
 - Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
   - Refactored logic from convert-profiles.handler and ConfigBuilder.convert into ConvertV1Profiles.convert.
