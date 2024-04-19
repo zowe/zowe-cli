@@ -22,7 +22,7 @@ export * from "./src/doc/definition/IProfileSchema";
 export * from "./src/doc/parms/IProfileManager";
 export * from "./src/doc/response/IProfileLoaded";
 
-export * from "./src/utils/V1ProfileConversion";
+export * from "./src/utils/V1ProfileRead";
 export * from "./src/utils/ProfileUtils";
 export * from "./src/utils";
 

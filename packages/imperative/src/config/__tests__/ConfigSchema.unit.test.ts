@@ -316,7 +316,7 @@ describe("Config Schema", () => {
             global: false,
             user: false,
             path: fakeProjPath,
-            properties: null,
+            properties: null as any,
         };
         const spyConfigApiLayersActivate: any = jest.fn();
         const spyConfigLayerActive: any = jest.fn();
@@ -416,10 +416,10 @@ describe("Config Schema", () => {
 
         it("should throw an error if the layer is unknown", () => {
             const mySpy = jest.spyOn((ConfigSchema as any), "_updateSchemaAll").mockReturnValue(fakeUpdatesPaths_active);
-            let caughtError = null;
+            let caughtError = new Error("NoErrorYet");
             let result = null;
             try {
-                result = ConfigSchema.updateSchema({ schema: fakeSchema, layer: "fake" } as any);
+                result = ConfigSchema.updateSchema({ schema: fakeSchema, layer: "fake" } as any) as any;
             } catch (err) {
                 caughtError = err;
             }
@@ -499,7 +499,7 @@ describe("Config Schema", () => {
 
         describe("Helper: _All", () => {
             it("should update only the global layer if no other layers were found in the directory structure", () => {
-                jest.spyOn(Config, "search").mockReturnValue(null);
+                jest.spyOn(Config, "search").mockReturnValue(null as any);
                 const spyActive = jest.spyOn((ConfigSchema as any), "_updateSchemaActive").mockReturnValue(fakeUpdatesPaths_active);
                 const spyGlobal = jest.spyOn((ConfigSchema as any), "_updateSchemaGlobal").mockReturnValue(fakeUpdatesPaths_global);
                 const copyHelperOptions = cloneDeep(helperOptions);
@@ -515,7 +515,7 @@ describe("Config Schema", () => {
             });
 
             it("should update the project and global schemas if nothing else was found in the directory structure", () => {
-                jest.spyOn(Config, "search").mockReturnValue(null);
+                jest.spyOn(Config, "search").mockReturnValue(null as any);
                 const spyActive = jest.spyOn((ConfigSchema as any), "_updateSchemaActive").mockReturnValue(fakeUpdatesPaths_active);
                 const spyGlobal = jest.spyOn((ConfigSchema as any), "_updateSchemaGlobal").mockReturnValue(fakeUpdatesPaths_global);
 
@@ -529,7 +529,7 @@ describe("Config Schema", () => {
             });
 
             it("should update all schemas found up the directory structure and down to the given depth", () => {
-                jest.spyOn(Config, "search").mockReturnValueOnce(fakeUserPath).mockReturnValueOnce(null);
+                jest.spyOn(Config, "search").mockReturnValueOnce(fakeUserPath).mockReturnValueOnce(null as any);
                 const spyActive = jest.spyOn((ConfigSchema as any), "_updateSchemaActive")
                     .mockReturnValueOnce(fakeUpdatesPaths_active)
                     .mockReturnValueOnce(fakeUpdatesPaths_active_1)

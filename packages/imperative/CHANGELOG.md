@@ -2,6 +2,15 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
+  - Refactored logic from convert-profiles.handler and ConfigBuilder.convert into ConvertV1Profiles.convert.
+  - Removed ConfigBuilder.convert.
+  - Replaced IConfigConvertResult with IConvertV1Profiles (which contains IConvertV1ProfResult).
+  - Renamed class V1ProfileConversion (formerly known as ProfileIO) to V1ProfileRead for consistency.
+    - Marked class V1ProfileRead as @internal.
+
 ## `8.0.0-next.202403272026`
 
 - BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2107](https://github.com/zowe/zowe-cli/pull/2107)
