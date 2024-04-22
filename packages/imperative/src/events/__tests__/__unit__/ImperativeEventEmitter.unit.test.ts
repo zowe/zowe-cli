@@ -12,7 +12,8 @@
 import * as fs from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents, Logger } from "../..";
+import { Logger } from "../../../logger/src/Logger";
+import { ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../..";
 
 describe("Event Emitter", () => {
     const iee = ImperativeEventEmitter;
