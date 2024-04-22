@@ -122,4 +122,4 @@ packages/imperative/web-help/dist/js/
 
 jest-stare/
 
-./jest.personal.config.js 
+jest.personal.config.js 
