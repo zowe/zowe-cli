@@ -586,6 +586,47 @@ export default {
         RESPONSETIMEOUT: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
         " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
     },
+    SEARCH: {
+        SUMMARY: "Search Files",
+        DESCRIPTION: "Search files for a search term.",
+        ACTIONS: {
+            DS: {
+                SUMMARY: "Search Data Sets and PDS Members",
+                DESCRIPTION: "Search all data sets and PDS members that match the data set name for a search term.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set(s) to perform the search against"
+                },
+                OPTIONS: {
+                    CASESENSITIVE: "The search should be case sensitive",
+                    MAINFRAMESEARCH: "Perform a preliminary search on the mainframe, reducing network traffic",
+                    THREADS: "The number of simultaneous search tasks to perform. Higher values finish faster, " +
+                    "but increase mainframe and computer load.",
+                    TIMEOUT: "The number of seconds to search before timing out"
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE'",
+                        OPTIONS: "'IBMUSER.*' 'ZOWE'"
+                    },
+                    EX2: {
+                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE' in uppercase only",
+                        OPTIONS: "'IBMUSER.*' 'ZOWE' --case-sensitive"
+                    },
+                    EX3: {
+                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE', and time out in 1 minute",
+                        OPTIONS: "'IBMUSER.*' 'ZOWE' --timeout 60"
+                    },
+                    EX4: {
+                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
+                        OPTIONS: "'IBMUSER.*' 'ZOWE' --threads 8"
+                    }
+                }
+            }
+        },
+        OPTIONS: {
+            SEARCHSTRING: "The parameter to search for"
+        }
+    },
     UNMOUNT: {
         SUMMARY: "Unmount file systems",
         DESCRIPTION: "Unmount file systems, such as HFS, ZFS, and more. This disconnects you from USS file systems.",

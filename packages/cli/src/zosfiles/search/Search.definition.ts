@@ -10,12 +10,12 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { AllMembersDefinition } from "./am/AllMembers.definition";
+import { DataSetsDefinition } from "./ds/DataSets.definition";
 
 import i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../-strings-/en").default as typeof i18nTypings).LIST;
+const strings = (require("../-strings-/en").default as typeof i18nTypings).SEARCH;
 
 /**
  * Download group definition containing its description and children
@@ -27,6 +27,6 @@ export const SearchDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
-        AllMembersDefinition
+        DataSetsDefinition
     ]
 };

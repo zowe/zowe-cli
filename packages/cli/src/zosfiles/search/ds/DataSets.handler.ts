@@ -17,7 +17,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to list a data set members
  * @export
  */
-export default class AllMembersHandler extends ZosFilesBaseHandler {
+export default class DataSetsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const filesResponse: IZosFilesResponse = {
             success: false,
