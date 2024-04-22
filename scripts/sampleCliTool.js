@@ -12,18 +12,22 @@
 const childProcess = require("child_process");
 const path = require("path");
 const glob = require("glob");
+const isDir = (filePath) => require("fs").statSync(filePath).isDirectory();
 
 process.chdir(__dirname + "/..");
 const npmPrefix = path.join(process.cwd(), ".npm-global");
 
-function runAll(callback, parallel=false) {
+function runAll(callback, parallel = false) {
     if (!parallel) {
         glob.sync("packages/imperative/__tests__/__integration__/*").forEach((dir) => {
-            const command = callback(dir);
+            const command = isDir(dir) ? callback(dir) : `echo 'File is not a directory: ${dir}'`;
             childProcess.execSync(command.command, { cwd: command.cwd, stdio: "inherit" });
         });
     } else {
-        require("concurrently")(glob.sync("packages/imperative/__tests__/__integration__/*").map((dir) => callback(dir)));
+        require("concurrently")(glob.sync("packages/imperative/__tests__/__integration__/*").map((dir) => {
+            if (isDir(dir)) return callback(dir);
+            else return `echo 'File is not a directory: ${dir}'`;
+        }));
     }
 }
 
