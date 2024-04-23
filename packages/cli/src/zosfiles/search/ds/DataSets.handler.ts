@@ -19,13 +19,6 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DataSetsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const filesResponse: IZosFilesResponse = {
-            success: false,
-            commandResponse: undefined,
-            apiResponse: undefined,
-            errorMessage: undefined
-        };
-
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Starting search...",
@@ -46,20 +39,6 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
         const response = await Search.search(session, searchOptions);
         commandParameters.response.progress.endBar();
 
-        let message = "Found \"" + commandParameters.arguments.searchString + "\" in " + response.length + " data sets and PDS members:\n";
-        for (const resp of response) {
-            message += "\nData Set \"" + resp.dsname + "\"";
-
-            if (resp.memname) { message += " | Member \"" + resp.memname + "\":\n"; }
-            else { message += ":\n"; }
-
-            for (const {line, column, contents} of resp.matchList) {
-                message += "Line: " + line + ", Column: " + column + ", Contents: " + contents + "\n";
-            }
-        }
-        filesResponse.success = true;
-        filesResponse.commandResponse = message;
-        filesResponse.apiResponse = response;
-        return filesResponse;
+        return response;
     }
 }

@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Search data sets should display the help 1`] = `
+"================Z/OS FILES SEARCH DATA SETS HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-sets | ds
+
+ DESCRIPTION
+ -----------
+
+   Search all data sets and PDS members that match the data set name for a search
+   term.
+
+ USAGE
+ -----
+
+   zowe zos-files search data-sets <dataSetName> <searchString> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   dataSetName		 (string)
+
+      The name of the data set(s) to perform the search against
+
+   searchString		 (string)
+
+      The parameter to search for
+
+ OPTIONS
+ -------
+
+   --caseSensitive | --cs (boolean)
+
+      The search should be case sensitive
+
+      Default value: false
+
+   --mainframeSearch | --ms (boolean)
+
+      Perform a preliminary search on the mainframe, reducing network traffic
+
+      Default value: false
+
+   --threads | --th (number)
+
+      The number of simultaneous search tasks to perform. Higher values finish faster,
+      but increase mainframe and computer load.
+
+   --timeout | --to (number)
+
+      The number of seconds to search before timing out
+
+   --response-timeout | --rto (number)
+
+      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run
+      before returning a response. Any request exceeding this amount of time will be
+      terminated and return an error. Allowed values: 5 - 600
+
+ ZOSMF CONNECTION OPTIONS
+ ------------------------
+
+   --host | -H (string)
+
+      The z/OSMF server host name.
+
+   --port | -P (number)
+
+      The z/OSMF server port.
+
+      Default value: 443
+
+   --user | -u (string)
+
+      Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+   --password | --pass | --pw (string)
+
+      Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+   --reject-unauthorized | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+   --base-path | --bp (string)
+
+      The base path for your API mediation layer instance. Specify this option to
+      prepend the base path to all z/OSMF resources when making REST requests. Do not
+      specify this option if you are not using an API mediation layer.
+
+   --protocol (string)
+
+      The protocol used (HTTP or HTTPS)
+
+      Default value: https
+      Allowed values: http, https
+
+   --cert-file (local file path)
+
+      The file path to a certificate file to use for authentication
+
+   --cert-key-file (local file path)
+
+      The file path to a certificate key file to use for authentication
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+   --base-profile | --base-p (string)
+
+      The name of a (base) profile to load for this command execution.
+
+ BASE CONNECTION OPTIONS
+ -----------------------
+
+   --token-type | --tt (string)
+
+      The type of token to get and use for the API. Omit this option to use the
+      default token type, which is provided by 'zowe auth login'.
+
+   --token-value | --tv (string)
+
+      The value of the token to pass to the API.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Search all of IBMUSER's, data sets for 'ZOWE':
+
+      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE'
+
+   - Search all of IBMUSER's, data sets for 'ZOWE' in uppercase
+   only:
+
+      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --case-sensitive
+
+   - Search all of IBMUSER's, data sets for 'ZOWE', and time out
+   in 1 minute:
+
+      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --timeout 60
+
+   - Search all of IBMUSER's, data sets for 'ZOWE', and perform
+   8 parallel tasks:
+
+      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --threads 8
+
+================Z/OS FILES SEARCH DATA SETS HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: data-sets.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-sets | ds\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Search all data sets and PDS members that match the data set name for a search\\\\n   term.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files search data-sets <dataSetName> <searchString> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set(s) to perform the search against\\\\n\\\\n   searchString\\\\t\\\\t (string)\\\\n\\\\n      The parameter to search for\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --caseSensitive | --cs (boolean)\\\\n\\\\n      The search should be case sensitive\\\\n\\\\n      Default value: false\\\\n\\\\n   --mainframeSearch | --ms (boolean)\\\\n\\\\n      Perform a preliminary search on the mainframe, reducing network traffic\\\\n\\\\n      Default value: false\\\\n\\\\n   --threads | --th (number)\\\\n\\\\n      The number of simultaneous search tasks to perform. Higher values finish faster,\\\\n      but increase mainframe and computer load.\\\\n\\\\n   --timeout | --to (number)\\\\n\\\\n      The number of seconds to search before timing out\\\\n\\\\n   --response-timeout | --rto (number)\\\\n\\\\n      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run\\\\n      before returning a response. Any request exceeding this amount of time will be\\\\n      terminated and return an error. Allowed values: 5 - 600\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE':\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE'\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE' in uppercase\\\\n   only:\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --case-sensitive\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE', and time out\\\\n   in 1 minute:\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --timeout 60\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE', and perform\\\\n   8 parallel tasks:\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --threads 8\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-sets | ds\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Search all data sets and PDS members that match the data set name for a search\\\\n   term.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files search data-sets <dataSetName> <searchString> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set(s) to perform the search against\\\\n\\\\n   searchString\\\\t\\\\t (string)\\\\n\\\\n      The parameter to search for\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --caseSensitive | --cs (boolean)\\\\n\\\\n      The search should be case sensitive\\\\n\\\\n      Default value: false\\\\n\\\\n   --mainframeSearch | --ms (boolean)\\\\n\\\\n      Perform a preliminary search on the mainframe, reducing network traffic\\\\n\\\\n      Default value: false\\\\n\\\\n   --threads | --th (number)\\\\n\\\\n      The number of simultaneous search tasks to perform. Higher values finish faster,\\\\n      but increase mainframe and computer load.\\\\n\\\\n   --timeout | --to (number)\\\\n\\\\n      The number of seconds to search before timing out\\\\n\\\\n   --response-timeout | --rto (number)\\\\n\\\\n      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run\\\\n      before returning a response. Any request exceeding this amount of time will be\\\\n      terminated and return an error. Allowed values: 5 - 600\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE':\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE'\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE' in uppercase\\\\n   only:\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --case-sensitive\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE', and time out\\\\n   in 1 minute:\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --timeout 60\\\\n\\\\n   - Search all of IBMUSER's, data sets for 'ZOWE', and perform\\\\n   8 parallel tasks:\\\\n\\\\n      $ zowe zos-files search data-sets 'IBMUSER.*' 'ZOWE' --threads 8\\\\n\\\\n\\"
+}"
+`;

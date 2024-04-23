@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files search ds command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "cs",
+    ],
+    "defaultValue": false,
+    "description": "The search should be case sensitive",
+    "name": "caseSensitive",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "ms",
+    ],
+    "defaultValue": false,
+    "description": "Perform a preliminary search on the mainframe, reducing network traffic",
+    "name": "mainframeSearch",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "th",
+    ],
+    "description": "The number of simultaneous search tasks to perform. Higher values finish faster, but increase mainframe and computer load.",
+    "name": "threads",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "to",
+    ],
+    "description": "The number of seconds to search before timing out",
+    "name": "timeout",
+    "type": "number",
+  },
+]
+`;
+
+exports[`zos-files search ds command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE'",
+    "options": "'IBMUSER.*' 'ZOWE'",
+  },
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE' in uppercase only",
+    "options": "'IBMUSER.*' 'ZOWE' --case-sensitive",
+  },
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE', and time out in 1 minute",
+    "options": "'IBMUSER.*' 'ZOWE' --timeout 60",
+  },
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
+    "options": "'IBMUSER.*' 'ZOWE' --threads 8",
+  },
+]
+`;

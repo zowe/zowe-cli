@@ -17,6 +17,7 @@ import { Get } from "../get";
 import { ISearchMatchLocation } from "./doc/ISearchMatchLocation";
 import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ISearchOptions } from "./doc/ISearchOptions";
+import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 
 interface ISearchResponse {
     responses: ISearchItem[],
@@ -43,7 +44,7 @@ export class Search {
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
 
-    public static async search(session: AbstractSession, searchOptions: ISearchOptions): Promise<ISearchItem[]> {
+    public static async search(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
 
         let timer: NodeJS.Timeout = undefined;
         const failedDatasets: string[] = [];
@@ -147,7 +148,34 @@ export class Search {
             }
         });
 
-        return matchResponses;
+        const apiResponse: IZosFilesResponse = {
+            success: failedDatasets.length >= 1 ? true : false,
+            commandResponse: "Found \"" + searchOptions.query + "\" in " + matchResponses.length + " data sets and PDS members",
+            apiResponse: matchResponses
+        };
+
+        if (matchResponses.length >= 1) {
+            apiResponse.commandResponse += ":\n";
+            for (const entry of matchResponses) {
+                apiResponse.commandResponse += "\nData Set \"" + entry.dsname + "\"";
+
+                if (entry.memname) { apiResponse.commandResponse += " | Member \"" + entry.memname + "\":\n"; }
+                else { apiResponse.commandResponse += ":\n"; }
+
+                for (const {line, column, contents} of entry.matchList) {
+                    apiResponse.commandResponse += "Line: " + line + ", Column: " + column + ", Contents: " + contents + "\n";
+                }
+            }
+        } else {
+            apiResponse.commandResponse += ".";
+        }
+
+        if (apiResponse.success != true ) {
+            apiResponse.errorMessage = "The following data set(s) failed to be searched: \n";
+            for (const entry of failedDatasets) { apiResponse.errorMessage += entry + "\n"; }
+        }
+
+        return apiResponse;
     }
 
     /**
