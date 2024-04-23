@@ -120,9 +120,9 @@ const projectConfig = {
     ]
 }
 
-let personalConfig = () => {
+let userConfig = () => {
     try {
-        return require("./jest.personal.config");
+        return require("./jest.user.config");
     } catch (err) {
         return {};
     }
@@ -161,5 +161,5 @@ module.exports = {
     // You may need to specify maxWorkers if you run out of RAM
     // GHA should use 75% due to high ram, low core count, end user systems ~67%
     "maxWorkers": process.env.GITHUB_ACTIONS != null ? "75%" : "67%",
-    ...personalConfig()
+    ...userConfig()
 }
