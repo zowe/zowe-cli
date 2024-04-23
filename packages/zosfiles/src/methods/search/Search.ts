@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, TaskStage } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, TaskStage } from "@zowe/imperative";
 
 import { List } from "../list";
 import { ISearchItem } from "./doc/ISearchItem";
@@ -17,6 +17,11 @@ import { Get } from "../get";
 import { ISearchMatchLocation } from "./doc/ISearchMatchLocation";
 import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ISearchOptions } from "./doc/ISearchOptions";
+
+interface ISearchResponse {
+    responses: ISearchItem[],
+    failures: string[]
+}
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -41,6 +46,7 @@ export class Search {
     public static async search(session: AbstractSession, searchOptions: ISearchOptions): Promise<ISearchItem[]> {
 
         let timer: NodeJS.Timeout = undefined;
+        const failedDatasets: string[] = [];
         this.timerExpired = false;
 
         // Handle timeouts
@@ -67,38 +73,52 @@ export class Search {
         // List all data sets that match the search term
         let searchItems: ISearchItem[] = [];
         const partitionedDataSets: string[] = [];
-        let response = await List.dataSetsMatchingPattern(session, [searchOptions.dataSetName], {
-            ...searchOptions.listOptions,
-            maxConcurrentRequests: searchOptions.threads
-        });
-        for (const resp of response.apiResponse) {
-            // Skip anything that doesn't have a DSORG or is migrated
-            if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
-                if (resp.dsorg === "PS") {                                      // Sequential
-                    searchItems.push({dsname: resp.dsname});
-                } else if (resp.dsorg === "PO" || resp.dsorg === "PO-E") {      // Partitioned
-                    partitionedDataSets.push(resp.dsname);
+
+        // We are in trouble if list fails - exit if it does
+        try {
+            const response = await List.dataSetsMatchingPattern(session, [searchOptions.dataSetName], {
+                ...searchOptions.listOptions,
+                maxConcurrentRequests: searchOptions.threads
+            });
+            for (const resp of response.apiResponse) {
+                // Skip anything that doesn't have a DSORG or is migrated
+                if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
+                    if (resp.dsorg === "PS") {                                      // Sequential
+                        searchItems.push({dsname: resp.dsname});
+                    } else if (resp.dsorg === "PO" || resp.dsorg === "PO-E") {      // Partitioned
+                        partitionedDataSets.push(resp.dsname);
+                    }
                 }
             }
+        } catch (err) {
+            throw new ImperativeError({msg: "Failed to get list of data sets to search", causeErrors: err});
         }
 
         // Get a list of members if a data set is a PDS
         for (const pds of partitionedDataSets) {
-            response = await List.allMembers(session, pds, searchOptions.listOptions);
-            if (response.apiResponse.items.length > 0) {
-                for (const item of response.apiResponse.items) {
-                    if (item.member != undefined) { searchItems.push({dsname: pds, memname: item.member}); }
+            try {
+                const response = await List.allMembers(session, pds, searchOptions.listOptions);
+                if (response.apiResponse.items.length > 0) {
+                    for (const item of response.apiResponse.items) {
+                        if (item.member != undefined) { searchItems.push({dsname: pds, memname: item.member}); }
+                    }
                 }
+            } catch (err) {
+                failedDatasets.push(pds);
             }
         }
 
         // Start searching on the mainframe if applicable
         if (searchOptions.mainframeSearch) {
-            searchItems = await this.searchOnMainframe(session, searchOptions, searchItems);
+            const response = await this.searchOnMainframe(session, searchOptions, searchItems);
+            searchItems = response.responses;
+            failedDatasets.push(...response.failures);
         }
 
         // Start searching locally
-        const matchResponses = await this.searchLocal(session, searchOptions, searchItems);
+        const response = await this.searchLocal(session, searchOptions, searchItems);
+        const matchResponses = response.responses;
+        failedDatasets.push(...response.failures);
 
         if (timer) {
             clearTimeout(timer);
@@ -142,8 +162,9 @@ export class Search {
      * @throws {ImperativeError} when a download fails, or timeout is exceeded.
      */
     private static async searchOnMainframe(session: AbstractSession, searchOptions: ISearchOptions, searchItems: ISearchItem[]):
-    Promise<ISearchItem[]> {
+    Promise<ISearchResponse> {
         const matches: ISearchItem[] = [];
+        const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
 
@@ -163,16 +184,30 @@ export class Search {
                 if (searchItem.memname) { dsname += "(" + searchItem.memname + ")"; }
 
                 // Get the response from the mainframe
-                const getResponseBuffer = await Get.dataSet(session, dsname, {...searchOptions.getOptions, queryParams});
+                let getResponseBuffer: Buffer;
+                try {
+                    getResponseBuffer = await Get.dataSet(session, dsname, {...searchOptions.getOptions, queryParams});
+                } catch (err) {
+                    failures.push(dsname);
+                    complete++;
+                    return;
+                }
                 if (!(getResponseBuffer == null || getResponseBuffer.byteLength === 0)) {
                     matches.push(searchItem);
+                }
+                complete++;
+            } else {
+                if (searchItem.memname) {
+                    failures.push(searchItem.dsname + "(" + searchItem.memname + ")");
+                } else {
+                    failures.push(searchItem.dsname);
                 }
                 complete++;
             }
         };
 
         if (!this.timerExpired) { await asyncPool(searchOptions.threads || 1, searchItems, createSearchPromise); }
-        return matches;
+        return {responses: matches, failures};
     }
 
     /**
@@ -185,8 +220,9 @@ export class Search {
      *
      * @throws {ImperativeError} when a download fails, or timeout is exceeded.
      */
-    private static async searchLocal(session: AbstractSession, searchOptions: ISearchOptions, searchItems: ISearchItem[]): Promise<ISearchItem[]> {
+    private static async searchLocal(session: AbstractSession, searchOptions: ISearchOptions, searchItems: ISearchItem[]): Promise<ISearchResponse> {
         const matchedItems: ISearchItem[] = [];
+        const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
         const createFindPromise = async (searchItem: ISearchItem) => {
@@ -209,7 +245,14 @@ export class Search {
                 if (searchItem.memname) { dsname += "(" + searchItem.memname + ")"; }
 
                 // Get the item
-                const getResponseBuffer = await Get.dataSet(session, dsname, searchOptions.getOptions);
+                let getResponseBuffer: Buffer;
+                try {
+                    getResponseBuffer = await Get.dataSet(session, dsname, searchOptions.getOptions);
+                } catch (err) {
+                    failures.push(dsname);
+                    complete++;
+                    return;
+                }
                 let getResponseString = getResponseBuffer.toString();
                 if (searchOptions.caseSensitive == undefined || searchOptions.caseSensitive === false) {
                     getResponseString = getResponseString.toLowerCase();
@@ -237,9 +280,16 @@ export class Search {
                     matchedItems.push(searchItem);
                 }
                 complete++;
+            } else {
+                if (searchItem.memname) {
+                    failures.push(searchItem.dsname + "(" + searchItem.memname + ")");
+                } else {
+                    failures.push(searchItem.dsname);
+                }
+                complete++;
             }
         };
         if (!this.timerExpired) { await asyncPool(searchOptions.threads || 1, searchItems, createFindPromise); }
-        return matchedItems;
+        return {responses: matchedItems, failures};
     }
 }

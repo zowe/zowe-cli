@@ -573,6 +573,38 @@ describe("z/OS Files - Download", () => {
             expect(ioCreateDirSpy).not.toHaveBeenCalled();
             expect(ioWriteStreamSpy).not.toHaveBeenCalled();
         });
+
+        it("should download a data set with additional query parameters", async () => {
+            let response;
+            let caughtError;
+            const destination = dsFolder + ".txt";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { queryParams: "?test=true" });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe("allMembers", () => {
