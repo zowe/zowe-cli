@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Search Datasets handler process method should list a data set if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsname": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": "TESTMEM",
+    },
+    Object {
+      "dsname": "TEST2.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": undefined,
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should list a data set if requested 2`] = `""`;
+
+exports[`Search Datasets handler process method should list a data set if requested 3`] = `
+"
+Found \\"test\\" in 2 data sets and PDS members"
+`;
