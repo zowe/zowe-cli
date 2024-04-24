@@ -360,30 +360,31 @@ export class ConnectionPropsForSessCfg {
      */
     private static getValuesBack(connOpts: IOptionsForAddConnProps): (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
-            /* ToDo: Uncomment this code block to display an informative message before prompting
-             * a user for connection values. Because 219 unit test fails and 144 system tests
-             * fail due to a minor difference in output, we chose not to implement this
-             * minor enhancement until we have time to devote to correcting so many tests.
-             *
-             * The following 'if' statement is only needed for tests which do not create a mock for
-             * the connOpts.parms.response.console.log property. In the real world, that property
-             * always exists for this CLI-only path of logic.
-             *
-            if (connOpts?.parms?.response?.console?.log) {
-                // we want to prompt for connection values, but first complain if user only has V1 profiles.
-                connOpts.parms.response.console.log("No Zowe client configuration exists.");
-                if (ConfigUtils.onlyV1ProfilesExist) {
+            /* The check for console.log in the following 'if' statement is only needed for tests
+             * which do not create a mock for the connOpts.parms.response.console.log property.
+             * In the real world, that property always exists for this CLI-only path of logic.
+             */
+            if (promptForValues.length > 0 && connOpts?.parms?.response?.console?.log) {
+                // We need to prompt for some values. Determine why we need to prompt.
+                if (ImperativeConfig.instance.config?.exists) {
+                    connOpts.parms.response.console.log(
+                        "Some required connection properties have not been specified\n" +
+                        "in your Zowe client configuration."
+                    );
+                } else if (ConfigUtils.onlyV1ProfilesExist) {
+                    // complain if user only has V1 profiles.
                     connOpts.parms.response.console.log(
                         "Only V1 profiles exist. V1 profiles are no longer supported.\n" +
                         "You should convert your V1 profiles to a newer Zowe client configuration."
                     );
+                } else {
+                    connOpts.parms.response.console.log("No Zowe client configuration exists.");
                 }
                 connOpts.parms.response.console.log(
                     "Therefore, you will be asked for the connection properties\n" +
                     "that are required to complete your command.\n"
                 );
             }
-            */
 
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
