@@ -22,7 +22,7 @@ export class Constants {
      * @static
      * @memberof Constants
      */
-    public static readonly LOG_LOCATION = "zowe/logs/zowe.log";
+    public static readonly LOG_LOCATION = "logs/zowe.log";
 
     /**
      * Display name

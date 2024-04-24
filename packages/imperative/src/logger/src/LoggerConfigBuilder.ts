@@ -105,8 +105,7 @@ export class LoggerConfigBuilder {
      * @return {string} - the default file name for the log file
      */
     public static getDefaultFileName(name: string) {
-        return LoggerConfigBuilder.DEFAULT_LOG_DIR + name + IO.FILE_DELIM +
-        LoggerConfigBuilder.DEFAULT_LOG_FILE_DIR + name + LoggerConfigBuilder.DEFAULT_LOG_FILE_EXT;
+        return LoggerConfigBuilder.DEFAULT_LOG_DIR + LoggerConfigBuilder.DEFAULT_LOG_FILE_DIR + name + LoggerConfigBuilder.DEFAULT_LOG_FILE_EXT;
     }
 
     /**
