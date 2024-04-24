@@ -20,6 +20,10 @@ import { join } from "path";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { setupConfigToLoad } from "../../../../__tests__/src/TestUtil";
 import { IOverridePromptConnProps } from "../../src/session/doc/IOverridePromptConnProps";
+import { IOptionsForAddConnProps } from "../../src/session/doc/IOptionsForAddConnProps";
+import { ImperativeConfig } from "../../../utilities";
+import { ConfigUtils } from "../../../config/src/ConfigUtils";
+
 
 const certFilePath = join(__dirname, "..", "..", "..", "..", "__tests__", "__integration__", "cmd",
     "__tests__", "integration", "cli", "auth", "__resources__", "fakeCert.cert");
@@ -1416,5 +1420,120 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenType).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
+    });
+
+    describe("getValuesBack private function", () => {
+        // pretend that console.log works, but put data into a variable
+        let consoleMsgs = "";
+        const connOpts:IOptionsForAddConnProps = {
+            parms: {
+                response: {
+                    console: {
+                        log: jest.fn((logArgs) => {
+                            consoleMsgs += "\n" + logArgs;
+                        })
+                    }
+                }
+            }
+        } as any;
+
+        let getValuesCallBack: any;
+        let clientPromptSpy: any;
+
+        beforeEach(() => {
+            // establish a callback function with our fake console.log
+            getValuesCallBack = ConnectionPropsForSessCfg["getValuesBack"](connOpts);
+
+            // pretend that clientPrompt returns an answer
+            clientPromptSpy = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt").mockResolvedValue(
+                Promise.resolve("Some fake answer")
+            );
+            // clear log messages from last test
+            consoleMsgs = "";
+        });
+
+        afterEach(() => {
+            // restore original app implementations
+            clientPromptSpy.mockRestore();
+        });
+
+        it("should state that you have no zowe config file", async () => {
+            // Pretend that we do not have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false
+                    };
+                })
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain("No Zowe client configuration exists.");
+            expect(consoleMsgs).toContain("Therefore, you will be asked for the connection properties");
+            expect(consoleMsgs).toContain("that are required to complete your command.");
+        });
+
+        it("should state that V1 profiles are not supported", async () => {
+            // Pretend that we do not have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false
+                    };
+                })
+            });
+
+            /* Pretend that we only have V1 profiles.
+             * onlyV1ProfilesExist is a getter property, so mock the property.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return true;
+                })
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain("Only V1 profiles exist. V1 profiles are no longer supported.");
+            expect(consoleMsgs).toContain("You should convert your V1 profiles to a newer Zowe client configuration.");
+            expect(consoleMsgs).toContain("Therefore, you will be asked for the connection properties");
+            expect(consoleMsgs).toContain("that are required to complete your command.");
+        });
+
+        it("should state that connection properties are missing from config", async () => {
+            // Pretend that we have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: true
+                    };
+                })
+            });
+
+            /* Pretend that we do not have any V1 profiles.
+             * onlyV1ProfilesExist is a getter property, so mock the property.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return false;
+                })
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain("Some required connection properties have not been specified");
+            expect(consoleMsgs).toContain("in your Zowe client configuration.");
+            expect(consoleMsgs).toContain("Therefore, you will be asked for the connection properties");
+            expect(consoleMsgs).toContain("that are required to complete your command.");
+        });
     });
 });
