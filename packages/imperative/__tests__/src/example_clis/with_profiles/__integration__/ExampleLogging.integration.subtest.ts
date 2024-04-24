@@ -16,7 +16,7 @@ describe("We should provide the ability to create, manage, and use profiles, " +
     "tested through an example CLI", function () {
     const cliBin = __dirname + "/../ProfileExampleCLI.ts";
     const config: IImperativeConfig = require(__dirname + "/../ProfileExampleConfiguration");
-    const logFile = config.defaultHome + "/" + config.name + "/logs/" + config.name + ".log";
+    const logFile = config.defaultHome + "/logs/" + config.name + ".log";
 
     afterEach(function () {
         T.rimraf(logFile);

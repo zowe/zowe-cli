@@ -20,9 +20,9 @@ import { LoggerConfigBuilder } from "../../../../../../../src";
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 // Log directories
-const APP_LOGS_DIR = "/imperative-test-cli/logs/";
+const APP_LOGS_DIR = "/logs/";
 const APP_LOG = APP_LOGS_DIR + "imperative-test-cli.log";
-const IMP_LOGS_DIR = "/imperative/logs/";
+const IMP_LOGS_DIR = "/logs/";
 const IMP_LOG = IMP_LOGS_DIR + "imperative.log";
 
 describe("imperative-test-cli test logging command", () => {
