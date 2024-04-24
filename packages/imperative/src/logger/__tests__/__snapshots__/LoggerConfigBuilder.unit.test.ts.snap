@@ -13,7 +13,7 @@ Object {
       },
       "sampleFile": Object {
         "backups": 5,
-        "filename": "./someHome/sampleFile/logs/sampleFile.log",
+        "filename": "./someHome/logs/sampleFile.log",
         "layout": Object {
           "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
           "type": "pattern",
@@ -55,7 +55,7 @@ Object {
     "appenders": Object {
       "sampleFile": Object {
         "backups": 5,
-        "filename": "./someHome/sampleFile/logs/sampleFile.log",
+        "filename": "./someHome/logs/sampleFile.log",
         "layout": Object {
           "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
           "type": "pattern",
@@ -96,7 +96,7 @@ Object {
       },
       "sampleFile1": Object {
         "backups": 5,
-        "filename": "./someHome/sampleFile1/logs/sampleFile1.log",
+        "filename": "./someHome/logs/sampleFile1.log",
         "layout": Object {
           "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
           "type": "pattern",
@@ -106,7 +106,7 @@ Object {
       },
       "sampleFile2": Object {
         "backups": 5,
-        "filename": "./someHome/sampleFile2/logs/sampleFile2.log",
+        "filename": "./someHome/logs/sampleFile2.log",
         "layout": Object {
           "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
           "type": "pattern",

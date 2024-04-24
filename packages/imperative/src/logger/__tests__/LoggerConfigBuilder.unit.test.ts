@@ -67,7 +67,7 @@ describe("LoggerConfigBuilder tests", () => {
 
     it("Should use getDefaultFileName to append the Imperative CLI home to a passed-in file path", () => {
         const testFile = "test";
-        const result = "/" + testFile + "/logs/" + testFile + ".log";
+        const result = "/logs/" + testFile + ".log";
         const builtPath = LoggerConfigBuilder.getDefaultFileName(testFile);
         expect(builtPath).toBe(result);
     });
