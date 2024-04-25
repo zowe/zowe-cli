@@ -501,6 +501,14 @@ export abstract class AbstractRestClient {
             if (credsAreSet) {
                 break;
             }
+            /* The following commented code was left as a place-holder for adding support
+             * for PFX certificates. The commented code was added when the order of credentials
+             * was specified using hard-coded logic. We now use authTypeOrder to specify
+             * the order. When adding support for PFX certs, move this logic into a new function
+             * (with a name like setCertPfxAuth). Some conditional logic may have to be reversed
+             * in that function. See other such functions for an example. Add a new else-if
+             * clause above to call the new setCertPfxAuth function.
+             */
             // else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PFX) {
             //     this.log.trace("Using PFX Certificate authentication");
             //     try {
