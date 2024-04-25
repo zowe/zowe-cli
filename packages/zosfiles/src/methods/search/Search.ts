@@ -19,6 +19,7 @@ import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ISearchOptions } from "./doc/ISearchOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 
+// This interface isn't used outside of the private functions, so just keeping it here.
 interface ISearchResponse {
     responses: ISearchItem[],
     failures: string[]
@@ -234,7 +235,7 @@ export class Search {
             }
         };
 
-        if (!this.timerExpired) { await asyncPool(searchOptions.threads || 1, searchItems, createSearchPromise); }
+        await asyncPool(searchOptions.threads || 1, searchItems, createSearchPromise);
         return {responses: matches, failures};
     }
 
@@ -317,7 +318,7 @@ export class Search {
                 complete++;
             }
         };
-        if (!this.timerExpired) { await asyncPool(searchOptions.threads || 1, searchItems, createFindPromise); }
+        await asyncPool(searchOptions.threads || 1, searchItems, createFindPromise);
         return {responses: matchedItems, failures};
     }
 }
