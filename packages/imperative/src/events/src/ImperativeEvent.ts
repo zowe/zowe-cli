@@ -44,6 +44,14 @@ export class ImperativeEvent {
     private mEventTime: string;
 
     /**
+     * The location of the event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
+    private mEventLoc: string;
+
+    /**
      * The type of event that occurred
      * @private
      * @type {string}
@@ -64,7 +72,7 @@ export class ImperativeEvent {
      * @returns string representation of the imperative event
      */
     public toString = (): string => {
-        return `Type: ${this.eventType} \t| Time: ${this.eventTime} \t| App: ${this.appName} \t| ID: ${this.eventId}`;
+        return `Type: ${this.type} \t| Time: ${this.time} \t| App: ${this.appName} \t| ID: ${this.id}`;
     };
 
     /**
@@ -73,10 +81,11 @@ export class ImperativeEvent {
      */
     public toJson = (): IImperativeEventJson => {
         return {
-            time: this.eventTime,
-            type: this.eventType,
+            time: this.time,
+            type: this.type,
             source: this.appName,
-            id: this.eventId,
+            id: this.id,
+            loc: this.location,
             user: this.isUserEvent,
         };
     };
@@ -85,16 +94,25 @@ export class ImperativeEvent {
         this.mEventTime = new Date().toISOString();
         this.mEventID = randomUUID();
         this.mAppID = parms.appName;
-        this.mEventType = parms.eventType;
+        this.mEventType = parms.eventName;
         this.isUserEvent = parms.isUser;
         parms.logger.debug("ImperativeEvent: " + this);
     }
 
-    public get eventTime(): string {
+    public set location(location: string) {
+        // TODO: (edge-case) Test whether we need to re-assign the location (multiple times) of an already initialized event
+        this.mEventLoc ||= location;
+    }
+
+    public get location(): string {
+        return this.mEventLoc;
+    }
+
+    public get time(): string {
         return this.mEventTime;
     }
 
-    public get eventType(): ImperativeEventType | string {
+    public get type(): ImperativeEventType | string {
         return this.mEventType;
     }
 
@@ -102,7 +120,7 @@ export class ImperativeEvent {
         return this.mAppID;
     }
 
-    public get eventId() : string {
+    public get id() : string {
         return this.mEventID;
     }
 }

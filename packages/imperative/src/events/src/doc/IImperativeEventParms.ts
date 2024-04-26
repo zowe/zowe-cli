@@ -29,7 +29,7 @@ export interface IImperativeEventParms {
      * @type {ImperativeEventType}
      * @memberof IImperativeEventParms
      */
-    eventType: ImperativeEventType | string
+    eventName: ImperativeEventType | string
     /**
      * Specifies whether this is a user event or not
      * @type {ImperativeEventType}

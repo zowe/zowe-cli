@@ -90,12 +90,12 @@ export class ImperativeEventEmitter {
 
     /**
      * Helper method to initialize the event
-     * @param eventType The type of event to initialize
+     * @param eventName The type of event to initialize
      * @returns The initialized ImperativeEvent
      */
-    private initEvent(eventType: ImperativeEventType | string): ImperativeEvent {
+    private initEvent(eventName: ImperativeEventType | string): ImperativeEvent {
         this.ensureClassInitialized();
-        return new ImperativeEvent({ appName: this.appName, eventType, isUser: this.isUserEvent(eventType), logger: this.logger });
+        return new ImperativeEvent({ appName: this.appName, eventName, isUser: this.isUserEvent(eventName), logger: this.logger });
     }
 
     /**
@@ -105,66 +105,65 @@ export class ImperativeEventEmitter {
      * @internal We do not want developers writing events directly, they should use the `emit...` methods
      */
     private writeEvent(location: string, event: ImperativeEvent) {
-        const eventPath = join(location, event.eventType);
-        const eventJson = { ...event.toJson(), loc: location };
+        event.location = location;
 
         this.ensureEventsDirExists(location);
-        fs.writeFileSync(eventPath, JSON.stringify(eventJson, null, 2));
+        fs.writeFileSync(join(location, event.type), JSON.stringify(event.toJson(), null, 2));
     }
 
     /**
      * Helper method to create watchers based on event strings and list of callbacks
-     * @param eventType type of event to which we will create a watcher for
+     * @param eventName type of event to which we will create a watcher for
      * @param callbacks list of all callbacks for this watcher
      * @returns The FSWatcher instance created
      */
-    private setupWatcher(eventType: string, callbacks: Function[] = []): fs.FSWatcher {
-        const dir = this.getEventDir(eventType);
+    private setupWatcher(eventName: string, callbacks: Function[] = []): fs.FSWatcher {
+        const dir = this.getEventDir(eventName);
         this.ensureEventsDirExists(dir); //ensure .events exist
 
-        this.ensureEventFileExists(join(dir, eventType));
-        const watcher = fs.watch(join(dir, eventType), (event: "rename" | "change") => {
+        this.ensureEventFileExists(join(dir, eventName));
+        const watcher = fs.watch(join(dir, eventName), (event: "rename" | "change") => {
             // Node.JS triggers this event 3 times
-            const eventContents = fs.readFileSync(join(this.getEventDir(eventType), eventType)).toString();
+            const eventContents = this.getEventContents(eventName);
             const eventTime = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
 
-            if (this.eventTimes.get(eventType) !== eventTime) {
-                this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventType}`);
+            if (this.eventTimes.get(eventName) !== eventTime) {
+                this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventName}`);
                 // Promise.all(callbacks)
                 callbacks.forEach(cb => cb());
-                this.eventTimes.set(eventType, eventTime);
+                this.eventTimes.set(eventName, eventTime);
             }
         });
-        this.subscriptions.set(eventType, [watcher, callbacks]);
+        this.subscriptions.set(eventName, [watcher, callbacks]);
         return watcher;
     }
 
     /**
      * Check to see if the given event is a User event
-     * @param eventType A string representing the type of event
+     * @param eventName A string representing the type of event
      * @returns True if it is a user event, false otherwise
      */
-    public isUserEvent(eventType: string): eventType is ImperativeEventType {
-        return Object.values<string>(ImperativeUserEvents).includes(eventType);
+    public isUserEvent(eventName: string): eventName is ImperativeEventType {
+        return Object.values<string>(ImperativeUserEvents).includes(eventName);
     }
 
     /**
      * Check to see if the given event is a shared event
-     * @param eventType A string representing the type of event
+     * @param eventName A string representing the type of event
      * @returns True if it is a shared event, false otherwise
      */
-    public isSharedEvent(eventType: string): eventType is ImperativeEventType {
-        return Object.values<string>(ImperativeSharedEvents).includes(eventType);
+    public isSharedEvent(eventName: string): eventName is ImperativeEventType {
+        return Object.values<string>(ImperativeSharedEvents).includes(eventName);
     }
 
     /**
      * Check to see if the given event is a Custom event
-     * @param eventType A string representing the type of event
+     * @param eventName A string representing the type of event
      * @returns True if it is not a zowe or a user event, false otherwise
      * @internal Not implemented in the MVP
      */
-    public isCustomEvent(eventType: string): eventType is ImperativeEventType {
-        return !this.isUserEvent(eventType) && !this.isSharedEvent(eventType);
+    public isCustomEvent(eventName: string): eventName is ImperativeEventType {
+        return !this.isUserEvent(eventName) && !this.isSharedEvent(eventName);
     }
 
     /**
@@ -183,13 +182,13 @@ export class ImperativeEventEmitter {
 
     /**
      * Obtain the directory of the event
-     * @param eventType The type of event to be emitted
+     * @param eventName The type of event to be emitted
      * @returns The directory to where this event will be emitted
      */
-    public getEventDir(eventType: string): string {
-        if (this.isUserEvent(eventType)) {
+    public getEventDir(eventName: string): string {
+        if (this.isUserEvent(eventName)) {
             return this.getUserEventDir();
-        } else if (this.isSharedEvent(eventType)) {
+        } else if (this.isSharedEvent(eventName)) {
             return this.getSharedEventDir();
         }
 
@@ -197,30 +196,40 @@ export class ImperativeEventEmitter {
     }
 
     /**
-     * Simple method to write the events to disk
-     * @param eventType The type of event to write
-     * @internal We do not want to make this function accessible to any application developers
+     * Obtain the contents of the event
+     * @param eventName The type of event to retrieve contents from
+     * @returns The contents of the event
+     * @internal
      */
-    public emitEvent(eventType: ImperativeEventType) {
-        const theEvent = this.initEvent(eventType);
-
-        if (this.isCustomEvent(eventType)) {
-            throw new ImperativeError({ msg: `Unable to determine the type of event. Event: ${eventType}` });
-        }
-
-        this.writeEvent(this.getEventDir(eventType), theEvent);
+    public getEventContents(eventName: string): string {
+        return fs.readFileSync(join(this.getEventDir(eventName), eventName)).toString();
     }
 
     /**
      * Simple method to write the events to disk
-     * @param eventType The type of event to write
+     * @param eventName The type of event to write
+     * @internal We do not want to make this function accessible to any application developers
+     */
+    public emitEvent(eventName: ImperativeEventType) {
+        const theEvent = this.initEvent(eventName);
+
+        if (this.isCustomEvent(eventName)) {
+            throw new ImperativeError({ msg: `Unable to determine the type of event. Event: ${eventName}` });
+        }
+
+        this.writeEvent(this.getEventDir(eventName), theEvent);
+    }
+
+    /**
+     * Simple method to write the events to disk
+     * @param eventName The type of event to write
      * @internal We won't support custom events as part of the MVP
      */
-    public emitCustomEvent(eventType: string) { //, isUserSpecific: boolean = false) {
-        const theEvent = this.initEvent(eventType);
+    public emitCustomEvent(eventName: string) { //, isUserSpecific: boolean = false) {
+        const theEvent = this.initEvent(eventName);
 
-        if (!this.isCustomEvent(eventType)) {
-            throw new ImperativeError({ msg: `Operation not allowed. Event is considered protected. Event: ${eventType}` });
+        if (!this.isCustomEvent(eventName)) {
+            throw new ImperativeError({ msg: `Operation not allowed. Event is considered protected. Event: ${eventName}` });
         }
 
         this.writeEvent(this.getSharedEventDir(), theEvent);
@@ -228,38 +237,38 @@ export class ImperativeEventEmitter {
 
     /**
      * Method to register your custom actions based on when the given event is emitted
-     * @param eventType Type of event to register
+     * @param eventName Type of event to register
      * @param callback Action to be registered to the given event
      */
-    public subscribe(eventType: string, callback: Function): IImperativeRegisteredAction {
+    public subscribe(eventName: string, callback: Function): IImperativeRegisteredAction {
         this.ensureClassInitialized();
 
         let watcher: fs.FSWatcher;
-        if (this.subscriptions.get(eventType) != null) {
-            const [watcherToClose, callbacks] = this.subscriptions.get(eventType);
-            watcherToClose.removeAllListeners(eventType).close();
+        if (this.subscriptions.get(eventName) != null) {
+            const [watcherToClose, callbacks] = this.subscriptions.get(eventName);
+            watcherToClose.removeAllListeners(eventName).close();
 
-            watcher = this.setupWatcher(eventType, [...callbacks, callback]);
+            watcher = this.setupWatcher(eventName, [...callbacks, callback]);
         } else {
-            watcher = this.setupWatcher(eventType, [callback]);
+            watcher = this.setupWatcher(eventName, [callback]);
         }
         return { close: watcher.close };
     }
 
     /**
      * Method to unsubscribe from custom and regular events
-     * @param eventType Type of registered event
+     * @param eventName Type of registered event
      */
-    public unsubscribe(eventType: string): void {
+    public unsubscribe(eventName: string): void {
         this.ensureClassInitialized();
 
-        if (this.subscriptions.has(eventType)) {
-            const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
-            watcherToClose.removeAllListeners(eventType).close();
-            this.subscriptions.delete(eventType);
+        if (this.subscriptions.has(eventName)) {
+            const [watcherToClose, _callbacks] = this.subscriptions.get(eventName);
+            watcherToClose.removeAllListeners(eventName).close();
+            this.subscriptions.delete(eventName);
         }
-        if (this.eventTimes.has(eventType)) {
-            this.eventTimes.delete(eventType);
+        if (this.eventTimes.has(eventName)) {
+            this.eventTimes.delete(eventName);
         }
     }
 }
