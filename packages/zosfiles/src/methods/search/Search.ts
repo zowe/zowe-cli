@@ -37,7 +37,7 @@ export class Search {
      * Retrieve all data sets and members to search
      *
      * @param {AbstractSession}  session          - z/OS MF connection info
-     * @param {ISearchOptions}   searchOptions    - contains the data set search options, 
+     * @param {ISearchOptions}   searchOptions    - contains the data set search options,
      *                                              including name, searchString, timeout, and maxConcurrentRequests
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
