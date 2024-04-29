@@ -27,9 +27,6 @@ import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEv
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 
 export class ImperativeEventEmitter {
-    static initialize(app: string, arg1: { logger: Logger; }) {
-        throw new Error("Method not implemented.");
-    }
     private static mInstance: ImperativeEventEmitter;
     private initialized = false;
     private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
@@ -166,15 +163,15 @@ export class ImperativeEventEmitter {
         return ImperativeCustomUser;
     }
 
+
     public static get instance(): ImperativeEventEmitter {
-        if (this.mInstance == null) {
+        if (!this.mInstance) {
             this.mInstance = new ImperativeEventEmitter();
             this.mInstance.initialize();
-            this.mInstance.subscriptions = new Map();
-            this.mInstance.eventTimes = new Map();
         }
         return this.mInstance;
     }
+
 
     /**
      * Returns the directory path based on EventType
