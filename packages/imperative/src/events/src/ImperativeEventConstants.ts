@@ -16,12 +16,31 @@ export enum ImperativeSharedEvents {
     ON_CREDENTIAL_MANAGER_CHANGED = "onCredentialManagerChanged"
 }
 
-export type ImperativeEventType = ImperativeUserEvents | ImperativeSharedEvents;
+export enum ImperativeCustomShared {
+    CUSTOM_SHARED_EVENT = "customSharedEvent"
+}
+
+export enum ImperativeCustomUser {
+    CUSTOM_USER_EVENT = "customUserEvent",
+}
+
+export type ImperativeEventTypes =
+    typeof ImperativeUserEvents |
+    typeof ImperativeSharedEvents |
+    typeof ImperativeCustomShared |
+    typeof ImperativeCustomUser;
 
 /**
  * TODO:
  * The following list of event types will only be implemented upon request
  *
+ * BRAINSTORMING - What is needed multiple times that we need to keep track of?
+ *          - project name
+ *          - event name
+ *          - app name
+ *          - shared event (boolean)
+ *
+ *          how are we determining if global or project??
  * Shared events:
  *   Global:
  *      - $ZOWE_CLI_HOME/.events/onConfigChanged

@@ -11,7 +11,7 @@
 
 import { randomUUID } from "crypto";
 import { IImperativeEventJson, IImperativeEventParms } from "./doc";
-import { ImperativeEventType } from "./ImperativeEventConstants";
+import { ImperativeEventTypes } from "./ImperativeEventConstants";
 
 /**
  *
@@ -44,20 +44,36 @@ export class ImperativeEvent {
     private mEventTime: string;
 
     /**
+     * The name of event that occurred
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
+    private mEventName: string;
+
+    /**
      * The type of event that occurred
      * @private
      * @type {string}
      * @memberof ImperativeEvent
      */
-    private mEventType: ImperativeEventType | string;
+    private mEventType: ImperativeEventTypes;
 
     /**
-     * Indicator of user-specific (if true) or shared (if false) events
+     * File path for the event
+     * @private
+     * @type {string}
+     * @memberof ImperativeEvent
+     */
+    private mLoc: string;
+
+    /**
+     * Indicator of custom ( A.K.A. 'extender') shared events as opposed to standard user or shared events
      * @private
      * @type {boolean}
      * @memberof ImperativeEvent
      */
-    private isUserEvent: boolean;
+    private isCustomShared: boolean;
 
     /**
      * toString overload to be called automatically on string concatenation
@@ -74,10 +90,12 @@ export class ImperativeEvent {
     public toJson = (): IImperativeEventJson => {
         return {
             time: this.eventTime,
+            name: this.eventName,
             type: this.eventType,
             source: this.appName,
             id: this.eventId,
-            user: this.isUserEvent,
+            loc: this.loc,
+            isCustomShared: this.isCustomShared,
         };
     };
 
@@ -86,7 +104,8 @@ export class ImperativeEvent {
         this.mEventID = randomUUID();
         this.mAppID = parms.appName;
         this.mEventType = parms.eventType;
-        this.isUserEvent = parms.isUser;
+        this.mLoc = parms.loc;
+        this.isCustomShared = parms.isCustomShared;
         parms.logger.debug("ImperativeEvent: " + this);
     }
 
@@ -94,12 +113,20 @@ export class ImperativeEvent {
         return this.mEventTime;
     }
 
-    public get eventType(): ImperativeEventType | string {
+    public get eventName(): string {
+        return this.mEventName;
+    }
+
+    public get eventType(): ImperativeEventTypes {
         return this.mEventType;
     }
 
     public get appName(): string {
         return this.mAppID;
+    }
+
+    public get loc(): string {
+        return this.mLoc;
     }
 
     public get eventId() : string {

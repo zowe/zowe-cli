@@ -9,6 +9,8 @@
 *
 */
 
+import { ImperativeEventTypes } from "../ImperativeEventConstants";
+
 /**
  * Imperative Event JSON representation
  * @export
@@ -20,9 +22,13 @@ export interface IImperativeEventJson {
      */
     time: string;
     /**
+     * The name of event that occurred
+     */
+    name: string;
+    /**
      * The type of event that occurred
      */
-    type: string;
+    type: ImperativeEventTypes;
     /**
      * The application name that triggered the event
      */
@@ -32,11 +38,11 @@ export interface IImperativeEventJson {
      */
     id?: string;
     /**
-     * The location in which the event was emitted (User vs Shared)
+     * The file path for information on the emitted event
      */
     loc?: string;
     /**
      * The indicator of user-specific (if true) or shared (if false) events
      */
-    user?: boolean;
+    isCustomShared?: boolean;
 }

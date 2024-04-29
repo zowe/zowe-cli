@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../../logger";
-import { ImperativeEventType } from "../ImperativeEventConstants";
+import { ImperativeEventTypes } from "../ImperativeEventConstants";
 
 /**
  * Imperative Standard Event
@@ -29,13 +29,19 @@ export interface IImperativeEventParms {
      * @type {ImperativeEventType}
      * @memberof IImperativeEventParms
      */
-    eventType: ImperativeEventType | string
+    eventType: ImperativeEventTypes
+    /**
+     * Path for the event file
+     * @type {ImperativeEventType}
+     * @memberof IImperativeEventParms
+     */
+    loc: string
     /**
      * Specifies whether this is a user event or not
      * @type {ImperativeEventType}
      * @memberof IImperativeEventParms
      */
-    isUser: boolean
+    isCustomShared: boolean
     /**
      * The logger to use when logging the imperative event that occurred
      * @type {Logger}
