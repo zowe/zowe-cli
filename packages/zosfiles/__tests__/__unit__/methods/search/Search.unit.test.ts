@@ -14,8 +14,7 @@ import { Get, ISearchItem, ISearchOptions, IZosFilesResponse, List, Search } fro
 import { ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 
 describe("Search", () => {
-    const listDataSetsMatchingPatternSpy = jest.spyOn(List, "dataSetsMatchingPattern");
-    const listAllMembersSpy = jest.spyOn(List, "allMembers");
+    
     const getDataSetSpy = jest.spyOn(Get, "dataSet");
     const dummySession = new Session({
         user: "ibmuser",
@@ -38,7 +37,7 @@ describe("Search", () => {
         mainframeSearch: true,
         progressTask: undefined,
         maxConcurrentRequests: 1,
-        timeout: Infinity,
+        timeout: undefined,
     };
     let searchItems: ISearchItem[] = [
         {dsn: "TEST1.DS", member: undefined, matchList: undefined},
@@ -51,7 +50,7 @@ describe("Search", () => {
     function generateDS(name: string, pds: boolean) {
         return {
             dsname: name,
-            dsorg: pds ? "PS" : "PO",
+            dsorg: pds ? "PO" : "PS",
         };
     }
     function generateMembers(members: string[]) {
@@ -67,28 +66,8 @@ describe("Search", () => {
     }
 
     beforeEach(() => {
-        listDataSetsMatchingPatternSpy.mockClear();
-        listAllMembersSpy.mockClear();
         getDataSetSpy.mockClear();
-
-        listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
-            return {
-                success: true,
-                commandResponse: "",
-                apiResponse: [generateDS("TEST1.DS", false), generateDS("TEST2.DS", false), generateDS("TEST3.PDS", true)],
-                errorMessage: undefined
-            } as IZosFilesResponse;
-        });
-
-        listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
-            return {
-                success: true,
-                commandResponse: "",
-                apiResponse: generateMembers(["MEMBER1", "MEMBER2", "MEMBER3"]),
-                errorMessage: undefined
-            } as IZosFilesResponse;
-        });
-
+        
         getDataSetSpy.mockImplementation(async (session, dsn, options) => {
             return Buffer.from(testDataString);
         });
@@ -102,7 +81,7 @@ describe("Search", () => {
             mainframeSearch: true,
             progressTask: undefined,
             maxConcurrentRequests: 1,
-            timeout: Infinity,
+            timeout: undefined,
         };
 
         searchItems = [
@@ -120,9 +99,88 @@ describe("Search", () => {
         jest.restoreAllMocks();
     });
 
-    // describe("search", () => {
+    describe("search", () => {
+        const searchOnMainframeSpy = jest.spyOn(Search as any, "searchOnMainframe");
+        const searchLocalSpy = jest.spyOn(Search as any, "searchLocal");
+        const listDataSetsMatchingPatternSpy = jest.spyOn(List, "dataSetsMatchingPattern");
+        const listAllMembersSpy = jest.spyOn(List, "allMembers");
 
-    // });
+        beforeEach(() => {
+            searchOnMainframeSpy.mockClear();
+            searchLocalSpy.mockClear();
+            listDataSetsMatchingPatternSpy.mockClear();
+            listAllMembersSpy.mockClear();
+
+            searchOnMainframeSpy.mockImplementation((session, searchOptions, searchItems) => {
+                return {
+                    responses: searchItems,
+                    failures: []
+                };
+            });
+            searchLocalSpy.mockImplementation((session, searchOptions, searchItems) => {
+                return {
+                    responses: [
+                        {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                        {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                        {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                        {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                        {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+                    ],
+                    failures: []
+                };
+            });
+            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+                return {
+                    success: true,
+                    commandResponse: "",
+                    apiResponse: [generateDS("TEST1.DS", false), generateDS("TEST2.DS", false), generateDS("TEST3.PDS", true)],
+                    errorMessage: undefined
+                } as IZosFilesResponse;
+            });
+            listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
+                return {
+                    success: true,
+                    commandResponse: "",
+                    apiResponse: generateMembers(["MEMBER1", "MEMBER2", "MEMBER3"]),
+                    errorMessage: undefined
+                } as IZosFilesResponse;
+            });    
+        });
+
+        afterAll(() => {
+            searchOnMainframeSpy.mockRestore();
+            searchLocalSpy.mockRestore();
+        });
+
+        it("Should search for the data sets containing a word", async () => {
+            const response = await Search.search(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
+            
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toEqual(true);
+            expect(response.apiResponse).toEqual([
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ]);
+            expect(response.commandResponse).toContain("Data Set \"TEST1.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST2.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER1\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER2\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER3\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+        });
+    });
 
     describe("searchOnMainframe", () => {
         it("Should return a list of members that contain the search term (all)", async () => {
@@ -318,6 +376,13 @@ describe("Search", () => {
                 {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
                 {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
             ], failures: []});
+        });
+
+        it("Should handle being passed an empty list of search entries", async () => {
+            const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, []);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(0);
+            expect(response).toEqual({responses: [], failures: []});
         });
     });
 
@@ -564,6 +629,13 @@ describe("Search", () => {
                 {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
                 {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
             ], failures: []});
+        });
+
+        it("Should handle being passed an empty list of search entries", async () => {
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, []);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(0);
+            expect(response).toEqual({responses: [], failures: []});
         });
     });
 });

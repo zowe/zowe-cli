@@ -151,7 +151,7 @@ export class Search {
         });
 
         const apiResponse: IZosFilesResponse = {
-            success: failedDatasets.length >= 1 ? true : false,
+            success: failedDatasets.length >= 1 ? false : true,
             commandResponse: "Found \"" + searchOptions.searchString + "\" in " + matchResponses.length + " data sets and PDS members",
             apiResponse: matchResponses
         };
