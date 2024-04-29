@@ -37,7 +37,7 @@ export class TextUtils {
      * @returns {number} - the width that will work best for the user's terminal
      */
     public static getRecommendedWidth(
-        preferredWidth: number = process.stdout.columns ? process.stdout.columns : TextUtils.DEFAULT_WRAP_WIDTH
+        preferredWidth: number = process?.stdout?.columns ? process.stdout.columns : TextUtils.DEFAULT_WRAP_WIDTH
     ): number {
         const widthSafeGuard = 8; // prevent partial words from continuing over lines
         const yargs = require("yargs");
