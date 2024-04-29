@@ -284,21 +284,30 @@ export class Search {
                     return;
                 }
                 let getResponseString = getResponseBuffer.toString();
-                if (searchOptions.caseSensitive == undefined || searchOptions.caseSensitive === false) {
-                    getResponseString = getResponseString.toLowerCase();
-                }
                 const getResponseStringArray = getResponseString.split(/\r?\n/);
+
+                // Lowercase the search string if we are not case sensitive
+                if (searchOptions.caseSensitive == undefined || searchOptions.caseSensitive === false) {
+                    searchOptions.searchString = searchOptions.searchString.toLowerCase();
+                }
 
                 // Perform the search
                 const indicies: ISearchMatchLocation[] = [];
                 let lineNum = 0;
                 for (const line of getResponseStringArray) {
-                    if (line.includes(searchOptions.searchString)) {
+                    // Handle temporary storage of comparison data - we want the original to return to the caller
+                    let searchLine = line;
+                    if (searchOptions.caseSensitive == undefined || searchOptions.caseSensitive === false) {
+                        searchLine = line.toLowerCase();
+                    }
+
+                    if (searchLine.includes(searchOptions.searchString)) {
                         let lastCol = 0;
                         while (lastCol != -1) {
-                            const column = line.indexOf(searchOptions.searchString, lastCol + searchOptions.searchString.length);
+                            const column = searchLine.indexOf(searchOptions.searchString, lastCol + searchOptions.searchString.length);
                             lastCol = column;
                             if (column != -1) {
+                                // Append the real line
                                 indicies.push({line: lineNum, column, contents: line});
                             }
                         }

@@ -25,6 +25,9 @@ describe("Search", () => {
         protocol: "https",
         type: "basic"
     });
+    const testDataString = "THIS DATA SET CONTAINS SOME TESTDATA";
+    const expectedCol = 28;
+    const expectedLine = 0;
 
     let searchOptions: ISearchOptions = {
         dsn: "TEST*",
@@ -87,7 +90,7 @@ describe("Search", () => {
         });
 
         getDataSetSpy.mockImplementation(async (session, dsn, options) => {
-            return Buffer.from("THIS DATA SET CONTAINS SOME TESTDATA");
+            return Buffer.from(testDataString);
         });
 
         searchOptions = {
@@ -132,7 +135,13 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
-            expect(response).toEqual({responses: [...searchItems], failures: []});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
+            ], failures: []});
         });
 
         it("Should return a list of members that contain the search term (none)", async () => {
@@ -158,11 +167,11 @@ describe("Search", () => {
             getDataSetSpy.mockImplementation(async (session, dsn, options) => {
                 return Buffer.from("");
             }).mockImplementationOnce(async (session, dsn, options) => {
-                return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
+                return Buffer.from(testDataString);
             }).mockImplementationOnce(async (session, dsn, options) => {
-                return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
+                return Buffer.from(testDataString);
             }).mockImplementationOnce(async (session, dsn, options) => {
-                return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
+                return Buffer.from(testDataString);
             });
 
             const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
@@ -195,9 +204,9 @@ describe("Search", () => {
 
         it("Should handle a data set get failure", async () => {
             getDataSetSpy.mockImplementation(async (session, dsn, options) => {
-                return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
+                return Buffer.from(testDataString);
             }).mockImplementationOnce(async (session, dsn, options) => {
-                return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
+                return Buffer.from(testDataString);
             }).mockImplementationOnce(async (session, dsn, options) => {
                 throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
             });
@@ -237,7 +246,13 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
-            expect(response).toEqual({responses: [...searchItems], failures: []});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
+            ], failures: []});
             expect(searchOptions.progressTask.stageName).toEqual(TaskStage.IN_PROGRESS);
 
             // Because the 5th entry is the last, there will have been 4 completed tasks
@@ -256,7 +271,13 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
-            expect(response).toEqual({responses: [...searchItems], failures: []});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
+            ], failures: []});
         });
 
         it("Should handle multiple concurrent requests", async () => {
@@ -270,7 +291,13 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
-            expect(response).toEqual({responses: [...searchItems], failures: []});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
+            ], failures: []});
         });
 
         it("Should handle no concurrent requests passed in", async () => {
@@ -284,11 +311,231 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
-            expect(response).toEqual({responses: [...searchItems], failures: []});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
+            ], failures: []});
         });
     });
 
-    // describe("searchLocal", () => {
+    describe("searchLocal", () => {
+        it("Should return a list of members that contain the search term (all)", async () => {
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
 
-    // });
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+
+        it("Should return a list of members that contain the search term (none)", async () => {
+            // Return non-matching buffers for all entries
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                return Buffer.from("This data set does not contain any test data.");
+            });
+
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [], failures: []});
+        });
+
+        it("Should return a list of members that contain the search term (some)", async () => {
+            // Return empty buffers for the final 2 entries
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                return Buffer.from("");
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            });
+
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+
+        it("Should return failures if the timer expired", async () => {
+            (Search as any).timerExpired = true;
+
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(0);
+            expect(response).toEqual({
+                responses: [],
+                failures: ["TEST1.DS", "TEST2.DS", "TEST3.PDS(MEMBER1)", "TEST3.PDS(MEMBER2)", "TEST3.PDS(MEMBER3)"]
+            });
+        });
+
+        it("Should handle a data set get failure", async () => {
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
+            });
+
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({
+                responses: [
+                    {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                    {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                    {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                    {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+                ],
+                failures: ["TEST2.DS"]
+            });
+        });
+
+        it("Should update the progress task, if present 1", async () => {
+            searchOptions.progressTask = {
+                percentComplete: 0,
+                statusMessage: "Getting Ready to Start",
+                stageName: TaskStage.IN_PROGRESS
+            };
+            searchOptions.mainframeSearch = false;
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+            expect(searchOptions.progressTask.stageName).toEqual(TaskStage.IN_PROGRESS);
+
+            // Because the 5th entry is the last, there will have been 4 completed tasks
+            expect(searchOptions.progressTask.statusMessage).toEqual("Performing Deep Search: 4 of 5 entries checked");
+            expect(searchOptions.progressTask.percentComplete).toEqual(80);
+        });
+
+        it("Should update the progress task, if present 2", async () => {
+            searchOptions.progressTask = {
+                percentComplete: 40,
+                statusMessage: "Initial Mainframe Search: 4 of 5 entries checked",
+                stageName: TaskStage.IN_PROGRESS
+            };
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+            expect(searchOptions.progressTask.stageName).toEqual(TaskStage.IN_PROGRESS);
+
+            // Because the 5th entry is the last, there will have been 4 completed tasks
+            expect(searchOptions.progressTask.statusMessage).toEqual("Performing Deep Search: 4 of 5 entries checked");
+            expect(searchOptions.progressTask.percentComplete).toEqual(90);
+        });
+
+        it("Should handle case sensitivity", async () => {
+            searchOptions.caseSensitive = true;
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+
+        it("Should handle multiple concurrent requests", async () => {
+            searchOptions.maxConcurrentRequests = 2;
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+
+        it("Should handle no concurrent requests passed in", async () => {
+            searchOptions.maxConcurrentRequests = undefined;
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+    });
 });
