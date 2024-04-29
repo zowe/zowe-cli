@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters } from "../../../../../cmd";
-import { ImperativeConfig, ProcessUtils } from "../../../../../utilities";
+import { ImperativeConfig, ProcessUtils, TextUtils } from "../../../../../utilities";
 import { FakeAutoInitHandler } from "./__data__/FakeAutoInitHandler";
 import * as lodash from "lodash";
 import * as jestDiff from "jest-diff";
@@ -57,6 +57,21 @@ describe("BaseAutoInitHandler", () => {
             }
         };
         stripAnsiSpy = (stripAnsi as any).mockImplementation(() => jest.requireActual("strip-ansi"));
+
+        // Pretend that wordWrap and chalk work. We do not care about their output in these tests
+        const wordWrapSpy = jest.spyOn(TextUtils, "wordWrap")
+            .mockReturnValue("Fake wrapped text");
+
+        Object.defineProperty(TextUtils, "chalk", {
+            configurable: true,
+            get: jest.fn(() => {
+                return {
+                    yellowBright: jest.fn(() => {
+                        return "Fake yellow in some text";
+                    })
+                };
+            })
+        });
     });
 
     afterEach(() => {
