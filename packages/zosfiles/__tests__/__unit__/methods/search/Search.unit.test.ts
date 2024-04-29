@@ -481,7 +481,35 @@ describe("Search", () => {
             expect(searchOptions.progressTask.percentComplete).toEqual(90);
         });
 
-        it("Should handle case sensitivity", async () => {
+        it("Should handle case sensitivity 1", async () => {
+            searchOptions.caseSensitive = true;
+            // Return empty buffers for the final 2 entries
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                return Buffer.from(testDataString.toLowerCase());
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            }).mockImplementationOnce(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            });
+
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+
+        it("Should handle case sensitivity 2", async () => {
             searchOptions.caseSensitive = true;
             const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
 

@@ -283,7 +283,7 @@ export class Search {
                     complete++;
                     return;
                 }
-                let getResponseString = getResponseBuffer.toString();
+                const getResponseString = getResponseBuffer.toString();
                 const getResponseStringArray = getResponseString.split(/\r?\n/);
 
                 // Lowercase the search string if we are not case sensitive
