@@ -1472,8 +1472,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             await getValuesCallBack(["hostname"]);
 
             expect(consoleMsgs).toContain("No Zowe client configuration exists.");
-            expect(consoleMsgs).toContain("Therefore, you will be asked for the connection properties");
-            expect(consoleMsgs).toContain("that are required to complete your command.");
+            expect(consoleMsgs).toContain("Therefore, you will be asked for the");
+            expect(consoleMsgs).toContain("connection properties that are required to complete your command.");
         });
 
         it("should state that V1 profiles are not supported", async () => {
@@ -1500,10 +1500,9 @@ describe("ConnectionPropsForSessCfg tests", () => {
             // call the function that we want to test
             await getValuesCallBack(["hostname"]);
 
-            expect(consoleMsgs).toContain("Only V1 profiles exist. V1 profiles are no longer supported.");
-            expect(consoleMsgs).toContain("You should convert your V1 profiles to a newer Zowe client configuration.");
-            expect(consoleMsgs).toContain("Therefore, you will be asked for the connection properties");
-            expect(consoleMsgs).toContain("that are required to complete your command.");
+            expect(consoleMsgs).toContain("Only V1 profiles exist. V1 profiles are no longer supported. You should convert");
+            expect(consoleMsgs).toContain("your V1 profiles to a newer Zowe client configuration. Therefore, you will be");
+            expect(consoleMsgs).toContain("asked for the connection properties that are required to complete your command.");
         });
 
         it("should state that connection properties are missing from config", async () => {
@@ -1530,10 +1529,9 @@ describe("ConnectionPropsForSessCfg tests", () => {
             // call the function that we want to test
             await getValuesCallBack(["hostname"]);
 
-            expect(consoleMsgs).toContain("Some required connection properties have not been specified");
-            expect(consoleMsgs).toContain("in your Zowe client configuration.");
-            expect(consoleMsgs).toContain("Therefore, you will be asked for the connection properties");
-            expect(consoleMsgs).toContain("that are required to complete your command.");
+            expect(consoleMsgs).toContain("Some required connection properties have not been specified in your Zowe client");
+            expect(consoleMsgs).toContain("configuration. Therefore, you will be asked for the connection properties that");
+            expect(consoleMsgs).toContain("are required to complete your command.");
         });
     });
 });
