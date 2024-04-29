@@ -244,6 +244,48 @@ describe("Search", () => {
             expect(searchOptions.progressTask.statusMessage).toEqual("Initial Mainframe Search: 4 of 5 entries checked");
             expect(searchOptions.progressTask.percentComplete).toEqual(40);
         });
+
+        it("Should handle case sensitivity", async () => {
+            searchOptions.caseSensitive = true;
+            const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1&insensitive=false";
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
+            expect(response).toEqual({responses: [...searchItems], failures: []});
+        });
+
+        it("Should handle multiple concurrent requests", async () => {
+            searchOptions.maxConcurrentRequests = 2;
+            const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
+            expect(response).toEqual({responses: [...searchItems], failures: []});
+        });
+
+        it("Should handle no concurrent requests passed in", async () => {
+            searchOptions.maxConcurrentRequests = undefined;
+            const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
+            expect(response).toEqual({responses: [...searchItems], failures: []});
+        });
     });
 
     // describe("searchLocal", () => {
