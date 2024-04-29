@@ -20,6 +20,7 @@ import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
+import { TextUtils } from "../../../utilities";
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
@@ -366,23 +367,21 @@ export class ConnectionPropsForSessCfg {
              */
             if (promptForValues.length > 0 && connOpts?.parms?.response?.console?.log) {
                 // We need to prompt for some values. Determine why we need to prompt.
+                let reasonForPrompts: string = "";
                 if (ImperativeConfig.instance.config?.exists) {
-                    connOpts.parms.response.console.log(
-                        "Some required connection properties have not been specified\n" +
-                        "in your Zowe client configuration."
-                    );
+                    reasonForPrompts += "Some required connection properties have not been specified " +
+                        "in your Zowe client configuration. ";
                 } else if (ConfigUtils.onlyV1ProfilesExist) {
-                    // complain if user only has V1 profiles.
-                    connOpts.parms.response.console.log(
-                        "Only V1 profiles exist. V1 profiles are no longer supported.\n" +
-                        "You should convert your V1 profiles to a newer Zowe client configuration."
-                    );
+                    reasonForPrompts += "Only V1 profiles exist. V1 profiles are no longer supported. " +
+                        "You should convert your V1 profiles to a newer Zowe client configuration. ";
                 } else {
-                    connOpts.parms.response.console.log("No Zowe client configuration exists.");
+                    reasonForPrompts += "No Zowe client configuration exists. ";
                 }
-                connOpts.parms.response.console.log(
-                    "Therefore, you will be asked for the connection properties\n" +
-                    "that are required to complete your command.\n"
+
+                reasonForPrompts += "Therefore, you will be asked for the connection properties " +
+                    "that are required to complete your command.\n";
+                connOpts.parms.response.console.log(TextUtils.wordWrap(
+                    TextUtils.chalk.yellowBright(reasonForPrompts))
                 );
             }
 
