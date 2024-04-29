@@ -37,7 +37,8 @@ export class Search {
      * Retrieve all data sets and members to search
      *
      * @param {AbstractSession}  session          - z/OS MF connection info
-     * @param {ISearchOptions}   searchOptions    - contains the data set search options, including name, query, timeout, and threads
+     * @param {ISearchOptions}   searchOptions    - contains the data set search options, 
+     *                                              including name, searchString, timeout, and maxConcurrentRequests
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
@@ -69,7 +70,7 @@ export class Search {
 
         // Handle case sensitivity
         if (searchOptions.caseSensitive == null || searchOptions.caseSensitive === false) {
-            searchOptions.query = searchOptions.query.toLowerCase();
+            searchOptions.searchString = searchOptions.searchString.toLowerCase();
         }
 
         // List all data sets that match the search term
@@ -78,15 +79,15 @@ export class Search {
 
         // We are in trouble if list fails - exit if it does
         try {
-            const response = await List.dataSetsMatchingPattern(session, [searchOptions.dataSetName], {
+            const response = await List.dataSetsMatchingPattern(session, [searchOptions.dsn], {
                 ...searchOptions.listOptions,
-                maxConcurrentRequests: searchOptions.threads
+                maxConcurrentRequests: searchOptions.maxConcurrentRequests
             });
             for (const resp of response.apiResponse) {
                 // Skip anything that doesn't have a DSORG or is migrated
                 if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
                     if (resp.dsorg === "PS") {                                      // Sequential
-                        searchItems.push({dsname: resp.dsname});
+                        searchItems.push({dsn: resp.dsname});
                     } else if (resp.dsorg === "PO" || resp.dsorg === "PO-E") {      // Partitioned
                         partitionedDataSets.push(resp.dsname);
                     }
@@ -102,7 +103,7 @@ export class Search {
                 const response = await List.allMembers(session, pds, searchOptions.listOptions);
                 if (response.apiResponse.items.length > 0) {
                     for (const item of response.apiResponse.items) {
-                        if (item.member != undefined) { searchItems.push({dsname: pds, memname: item.member}); }
+                        if (item.member != undefined) { searchItems.push({dsn: pds, member: item.member}); }
                     }
                 }
             } catch (err) {
@@ -141,9 +142,9 @@ export class Search {
 
         // Sort responses to make it pretty
         matchResponses.sort((a, b) => {
-            const sort = a.dsname.localeCompare(b.dsname);
+            const sort = a.dsn.localeCompare(b.dsn);
             if (sort === 0) {
-                return a.memname.localeCompare(b.memname);
+                return a.member.localeCompare(b.member);
             } else {
                 return sort;
             }
@@ -151,16 +152,16 @@ export class Search {
 
         const apiResponse: IZosFilesResponse = {
             success: failedDatasets.length >= 1 ? true : false,
-            commandResponse: "Found \"" + searchOptions.query + "\" in " + matchResponses.length + " data sets and PDS members",
+            commandResponse: "Found \"" + searchOptions.searchString + "\" in " + matchResponses.length + " data sets and PDS members",
             apiResponse: matchResponses
         };
 
         if (matchResponses.length >= 1) {
             apiResponse.commandResponse += ":\n";
             for (const entry of matchResponses) {
-                apiResponse.commandResponse += "\nData Set \"" + entry.dsname + "\"";
+                apiResponse.commandResponse += "\nData Set \"" + entry.dsn + "\"";
 
-                if (entry.memname) { apiResponse.commandResponse += " | Member \"" + entry.memname + "\":\n"; }
+                if (entry.member) { apiResponse.commandResponse += " | Member \"" + entry.member + "\":\n"; }
                 else { apiResponse.commandResponse += ":\n"; }
 
                 for (const {line, column, contents} of entry.matchList) {
@@ -207,17 +208,17 @@ export class Search {
                 }
 
                 // Set up the query
-                let queryParams = "?search=" + encodeURIComponent(searchOptions.query) + "&maxreturnsize=1";
+                let queryParams = "?search=" + encodeURIComponent(searchOptions.searchString) + "&maxreturnsize=1";
                 if (searchOptions.caseSensitive === true) { queryParams += "&insensitive=false"; }
-                let dsname = searchItem.dsname;
-                if (searchItem.memname) { dsname += "(" + searchItem.memname + ")"; }
+                let dsn = searchItem.dsn;
+                if (searchItem.member) { dsn += "(" + searchItem.member + ")"; }
 
                 // Get the response from the mainframe
                 let getResponseBuffer: Buffer;
                 try {
-                    getResponseBuffer = await Get.dataSet(session, dsname, {...searchOptions.getOptions, queryParams});
+                    getResponseBuffer = await Get.dataSet(session, dsn, {...searchOptions.getOptions, queryParams});
                 } catch (err) {
-                    failures.push(dsname);
+                    failures.push(dsn);
                     complete++;
                     return;
                 }
@@ -226,16 +227,16 @@ export class Search {
                 }
                 complete++;
             } else {
-                if (searchItem.memname) {
-                    failures.push(searchItem.dsname + "(" + searchItem.memname + ")");
+                if (searchItem.member) {
+                    failures.push(searchItem.dsn + "(" + searchItem.member + ")");
                 } else {
-                    failures.push(searchItem.dsname);
+                    failures.push(searchItem.dsn);
                 }
                 complete++;
             }
         };
 
-        await asyncPool(searchOptions.threads || 1, searchItems, createSearchPromise);
+        await asyncPool(searchOptions.maxConcurrentRequests || 1, searchItems, createSearchPromise);
         return {responses: matches, failures};
     }
 
@@ -270,15 +271,15 @@ export class Search {
                 }
 
                 // Set up the query
-                let dsname = searchItem.dsname;
-                if (searchItem.memname) { dsname += "(" + searchItem.memname + ")"; }
+                let dsn = searchItem.dsn;
+                if (searchItem.member) { dsn += "(" + searchItem.member + ")"; }
 
                 // Get the item
                 let getResponseBuffer: Buffer;
                 try {
-                    getResponseBuffer = await Get.dataSet(session, dsname, searchOptions.getOptions);
+                    getResponseBuffer = await Get.dataSet(session, dsn, searchOptions.getOptions);
                 } catch (err) {
-                    failures.push(dsname);
+                    failures.push(dsn);
                     complete++;
                     return;
                 }
@@ -292,10 +293,10 @@ export class Search {
                 const indicies: ISearchMatchLocation[] = [];
                 let lineNum = 0;
                 for (const line of getResponseStringArray) {
-                    if (line.includes(searchOptions.query)) {
+                    if (line.includes(searchOptions.searchString)) {
                         let lastCol = 0;
                         while (lastCol != -1) {
-                            const column = line.indexOf(searchOptions.query, lastCol + searchOptions.query.length);
+                            const column = line.indexOf(searchOptions.searchString, lastCol + searchOptions.searchString.length);
                             lastCol = column;
                             if (column != -1) {
                                 indicies.push({line: lineNum, column, contents: line});
@@ -310,15 +311,15 @@ export class Search {
                 }
                 complete++;
             } else {
-                if (searchItem.memname) {
-                    failures.push(searchItem.dsname + "(" + searchItem.memname + ")");
+                if (searchItem.member) {
+                    failures.push(searchItem.dsn + "(" + searchItem.member + ")");
                 } else {
-                    failures.push(searchItem.dsname);
+                    failures.push(searchItem.dsn);
                 }
                 complete++;
             }
         };
-        await asyncPool(searchOptions.threads || 1, searchItems, createFindPromise);
+        await asyncPool(searchOptions.maxConcurrentRequests || 1, searchItems, createFindPromise);
         return {responses: matchedItems, failures};
     }
 }

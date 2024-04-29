@@ -14,11 +14,11 @@ import { IGetOptions } from "../../get";
 import { IListOptions } from "../../list";
 
 export interface ISearchOptions {
-    /* The name of the PDS data set that should be searched */
-    dataSetName: string;
+    /* The name of the data set that should be searched */
+    dsn: string;
 
-    /* The string to search for in the PDS members */
-    query: string;
+    /* The string to search for in the data set / members */
+    searchString: string;
 
     /* Options for data set get requests */
     getOptions?: IGetOptions;
@@ -35,8 +35,8 @@ export interface ISearchOptions {
     /* A progress bar task if we want a progress bar */
     progressTask?: ITaskWithStatus;
 
-    /* The number of threads to use to perform the search */
-    threads?: number;
+    /* The number of concurrent requests to use to perform the search */
+    maxConcurrentRequests?: number;
 
     /* The amount of time, in seconds, before a timeout should occur */
     timeout?: number;

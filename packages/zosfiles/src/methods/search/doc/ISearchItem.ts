@@ -9,23 +9,13 @@
 *
 */
 
+import { IDataSet } from "../../../doc/IDataSet";
 import { ISearchMatchLocation } from "./ISearchMatchLocation";
 
 /**
  * This interface defines the information that is stored in the download data set API return object
  */
-export interface ISearchItem {
-
-    /**
-     * The name of the dataset
-     */
-    dsname: string;
-
-    /**
-     * The name of the member
-     */
-    memname?: string;
-
+export interface ISearchItem extends IDataSet {
     /**
      * The short content of the member
      */

@@ -16,12 +16,12 @@ import { TaskStage } from "@zowe/imperative";
 
 describe("Search Datasets handler", () => {
     describe("process method", () => {
-        it("should list a data set if requested", async () => {
+        it("should search a data set if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/search/ds/DataSets.handler");
             const handler = new handlerReq.default();
             const dataSetName = "TEST*";
-            const query = "test";
+            const searchString = "test";
 
             // Vars populated by the mocked function
             let apiMessage = "";
@@ -68,7 +68,7 @@ describe("Search Datasets handler", () => {
                     $0: "fake",
                     _: ["fake"],
                     dataSetName,
-                    searchString: query,
+                    searchString,
                     ...UNIT_TEST_ZOSMF_PROF_OPTS
                 },
                 response: {
@@ -98,11 +98,11 @@ describe("Search Datasets handler", () => {
 
             expect(Search.search).toHaveBeenCalledTimes(1);
             expect(Search.search).toHaveBeenCalledWith(fakeSession, {
-                dataSetName,
-                query,
+                dsn: dataSetName,
+                searchString,
                 caseSensitive: undefined,
                 mainframeSearch: undefined,
-                threads: undefined,
+                maxConcurrentRequests: undefined,
                 timeout: undefined,
                 progressTask: {
                     percentComplete: 0,

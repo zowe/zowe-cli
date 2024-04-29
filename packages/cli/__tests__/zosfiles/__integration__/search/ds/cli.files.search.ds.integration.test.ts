@@ -53,4 +53,24 @@ describe("Search data sets", () => {
         expect(response.stderr.toString()).toContain("searchString");
     });
 
+    it("should fail if the maximum concurrent requests are out of range 1", () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_search_data_sets.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["IBMUSER.*", "TESTDATA", "--max-concurrent-requests -1"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Invalid numeric value specified for option");
+        expect(response.stderr.toString()).toContain("max-concurrent-requests");
+        expect(response.stderr.toString()).toContain("0 and 99999");
+        expect(response.stderr.toString()).toContain("-1")
+    });
+
+    it("should fail if the maximum concurrent requests are out of range 2", () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_search_data_sets.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["IBMUSER.*", "TESTDATA", "--max-concurrent-requests 100000"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Invalid numeric value specified for option");
+        expect(response.stderr.toString()).toContain("max-concurrent-requests");
+        expect(response.stderr.toString()).toContain("0 and 99999");
+        expect(response.stderr.toString()).toContain("100000")
+    });
+
 });

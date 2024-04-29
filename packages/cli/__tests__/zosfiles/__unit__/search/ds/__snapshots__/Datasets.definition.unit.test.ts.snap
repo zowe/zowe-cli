@@ -22,10 +22,15 @@ Array [
   },
   Object {
     "aliases": Array [
-      "th",
+      "mcr",
     ],
-    "description": "The number of simultaneous search tasks to perform. Higher values finish faster, but increase mainframe and computer load.",
-    "name": "threads",
+    "defaultValue": 1,
+    "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to search files. Increasing the value results in faster searches. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests.",
+    "name": "max-concurrent-requests",
+    "numericValueRange": Array [
+      1,
+      99999,
+    ],
     "type": "number",
   },
   Object {
@@ -55,7 +60,7 @@ Array [
   },
   Object {
     "description": "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
-    "options": "'IBMUSER.*' 'ZOWE' --threads 8",
+    "options": "'IBMUSER.*' 'ZOWE' --max-concurrent-requests 8",
   },
 ]
 `;

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Search Datasets handler process method should list a data set if requested 1`] = `
+exports[`Search Datasets handler process method should search a data set if requested 1`] = `
 Object {
   "apiResponse": Array [
     Object {
@@ -31,9 +31,9 @@ Object {
 }
 `;
 
-exports[`Search Datasets handler process method should list a data set if requested 2`] = `""`;
+exports[`Search Datasets handler process method should search a data set if requested 2`] = `""`;
 
-exports[`Search Datasets handler process method should list a data set if requested 3`] = `
+exports[`Search Datasets handler process method should search a data set if requested 3`] = `
 "
 Found \\"test\\" in 2 data sets and PDS members"
 `;

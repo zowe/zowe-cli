@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../../-strings-/en";
+import { maxConcurrentRequestsMaxValue } from "../../download/Download.options";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).SEARCH;
@@ -60,10 +61,12 @@ export const DataSetsDefinition: ICommandDefinition = {
             defaultValue: false
         },
         {
-            name: "threads",
-            aliases: ["th"],
-            description: dataSetStrings.OPTIONS.THREADS,
-            type: "number"
+            name: "max-concurrent-requests",
+            aliases: ["mcr"],
+            description: dataSetStrings.OPTIONS.MAX_CONCURRENT_REQUESTS,
+            type: "number",
+            defaultValue: 1,
+            numericValueRange: [1, maxConcurrentRequestsMaxValue]
         },
         {
             name: "timeout",

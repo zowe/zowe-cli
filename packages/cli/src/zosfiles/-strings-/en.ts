@@ -599,8 +599,10 @@ export default {
                 OPTIONS: {
                     CASESENSITIVE: "The search should be case sensitive",
                     MAINFRAMESEARCH: "Perform a preliminary search on the mainframe, reducing network traffic",
-                    THREADS: "The number of simultaneous search tasks to perform. Higher values finish faster, " +
-                    "but increase mainframe and computer load.",
+                    MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to search files. " +
+                    "Increasing the value results in faster searches. " +
+                    "However, increasing the value increases resource consumption on z/OS and can be prone " +
+                    "to errors caused by making too many concurrent requests.",
                     TIMEOUT: "The number of seconds to search before timing out"
                 },
                 EXAMPLES: {
@@ -618,7 +620,7 @@ export default {
                     },
                     EX4: {
                         DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
-                        OPTIONS: "'IBMUSER.*' 'ZOWE' --threads 8"
+                        OPTIONS: "'IBMUSER.*' 'ZOWE' --max-concurrent-requests 8"
                     }
                 }
             }

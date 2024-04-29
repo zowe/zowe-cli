@@ -27,29 +27,29 @@ describe("Search", () => {
     });
 
     let searchOptions: ISearchOptions = {
-        dataSetName: "TEST*",
-        query: "TESTDATA",
+        dsn: "TEST*",
+        searchString: "TESTDATA",
         caseSensitive: false,
         getOptions: {},
         listOptions: {},
         mainframeSearch: true,
         progressTask: undefined,
-        threads: 1,
+        maxConcurrentRequests: 1,
         timeout: Infinity,
     };
     let searchItems: ISearchItem[] = [
-        {dsname: "TEST1.DS", memname: undefined, matchList: undefined},
-        {dsname: "TEST2.DS", memname: undefined, matchList: undefined},
-        {dsname: "TEST3.PDS", memname: "MEMBER1", matchList: undefined},
-        {dsname: "TEST3.PDS", memname: "MEMBER2", matchList: undefined},
-        {dsname: "TEST3.PDS", memname: "MEMBER3", matchList: undefined}
+        {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+        {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+        {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+        {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+        {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
     ];
 
     function generateDS(name: string, pds: boolean) {
         return {
             dsname: name,
             dsorg: pds ? "PS" : "PO",
-        }
+        };
     }
     function generateMembers(members: string[]) {
         const mockItems = [];
@@ -60,7 +60,7 @@ describe("Search", () => {
             items: [
                 ...mockItems
             ]
-        }
+        };
     }
 
     beforeEach(() => {
@@ -77,7 +77,7 @@ describe("Search", () => {
             } as IZosFilesResponse;
         });
 
-        listAllMembersSpy.mockImplementation(async (session, dataSetName, options) => {
+        listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
             return {
                 success: true,
                 commandResponse: "",
@@ -86,28 +86,28 @@ describe("Search", () => {
             } as IZosFilesResponse;
         });
 
-        getDataSetSpy.mockImplementation(async (session, dataSetName, options) => {
+        getDataSetSpy.mockImplementation(async (session, dsn, options) => {
             return Buffer.from("THIS DATA SET CONTAINS SOME TESTDATA");
         });
 
         searchOptions = {
-            dataSetName: "TEST*",
-            query: "TESTDATA",
+            dsn: "TEST*",
+            searchString: "TESTDATA",
             caseSensitive: false,
             getOptions: {},
             listOptions: {},
             mainframeSearch: true,
             progressTask: undefined,
-            threads: 1,
+            maxConcurrentRequests: 1,
             timeout: Infinity,
         };
-        
+
         searchItems = [
-            {dsname: "TEST1.DS", memname: undefined, matchList: undefined},
-            {dsname: "TEST2.DS", memname: undefined, matchList: undefined},
-            {dsname: "TEST3.PDS", memname: "MEMBER1", matchList: undefined},
-            {dsname: "TEST3.PDS", memname: "MEMBER2", matchList: undefined},
-            {dsname: "TEST3.PDS", memname: "MEMBER3", matchList: undefined}
+            {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+            {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+            {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+            {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+            {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
         ];
 
         (Search as any).timerExpired = false;
@@ -115,7 +115,7 @@ describe("Search", () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
-    })
+    });
 
     // describe("search", () => {
 
@@ -124,7 +124,7 @@ describe("Search", () => {
     describe("searchOnMainframe", () => {
         it("Should return a list of members that contain the search term (all)", async () => {
             const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
-            const queryParams = "?search=" + searchOptions.query + "&maxreturnsize=1";
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(5);
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
@@ -137,12 +137,12 @@ describe("Search", () => {
 
         it("Should return a list of members that contain the search term (none)", async () => {
             // Return empty buffers for all entries
-            getDataSetSpy.mockImplementation(async (session, dataSetName, options) => {
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
                 return Buffer.from("");
             });
 
             const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
-            const queryParams = "?search=" + searchOptions.query + "&maxreturnsize=1";
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(5);
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
@@ -155,18 +155,18 @@ describe("Search", () => {
 
         it("Should return a list of members that contain the search term (some)", async () => {
             // Return empty buffers for the final 2 entries
-            getDataSetSpy.mockImplementation(async (session, dataSetName, options) => {
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
                 return Buffer.from("");
-            }).mockImplementationOnce(async (session, dataSetName, options) => {
+            }).mockImplementationOnce(async (session, dsn, options) => {
                 return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
-            }).mockImplementationOnce(async (session, dataSetName, options) => {
+            }).mockImplementationOnce(async (session, dsn, options) => {
                 return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
-            }).mockImplementationOnce(async (session, dataSetName, options) => {
+            }).mockImplementationOnce(async (session, dsn, options) => {
                 return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
             });
 
             const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
-            const queryParams = "?search=" + searchOptions.query + "&maxreturnsize=1";
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(5);
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
@@ -175,9 +175,9 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {queryParams});
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
             expect(response).toEqual({responses: [
-                {dsname: "TEST1.DS", memname: undefined, matchList: undefined},
-                {dsname: "TEST2.DS", memname: undefined, matchList: undefined},
-                {dsname: "TEST3.PDS", memname: "MEMBER1", matchList: undefined}
+                {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST2.DS", member: undefined, matchList: undefined},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined}
             ], failures: []});
         });
 
@@ -194,16 +194,16 @@ describe("Search", () => {
         });
 
         it("Should handle a data set get failure", async () => {
-            getDataSetSpy.mockImplementation(async (session, dataSetName, options) => {
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
                 return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
-            }).mockImplementationOnce(async (session, dataSetName, options) => {
+            }).mockImplementationOnce(async (session, dsn, options) => {
                 return Buffer.from("THIS IS A TEST DATA SET THAT HAS TEST DATA");
-            }).mockImplementationOnce(async (session, dataSetName, options) => {
+            }).mockImplementationOnce(async (session, dsn, options) => {
                 throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
             });
 
             const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
-            const queryParams = "?search=" + searchOptions.query + "&maxreturnsize=1";
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(5);
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});
@@ -213,10 +213,10 @@ describe("Search", () => {
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {queryParams});
             expect(response).toEqual({
                 responses: [
-                    {dsname: "TEST1.DS", memname: undefined, matchList: undefined},
-                    {dsname: "TEST3.PDS", memname: "MEMBER1", matchList: undefined},
-                    {dsname: "TEST3.PDS", memname: "MEMBER2", matchList: undefined},
-                    {dsname: "TEST3.PDS", memname: "MEMBER3", matchList: undefined}
+                    {dsn: "TEST1.DS", member: undefined, matchList: undefined},
+                    {dsn: "TEST3.PDS", member: "MEMBER1", matchList: undefined},
+                    {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
+                    {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
                 ],
                 failures: ["TEST2.DS"]
             });
@@ -227,9 +227,9 @@ describe("Search", () => {
                 percentComplete: 0,
                 statusMessage: "Getting Ready to Start",
                 stageName: TaskStage.IN_PROGRESS
-            }
+            };
             const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
-            const queryParams = "?search=" + searchOptions.query + "&maxreturnsize=1";
+            const queryParams = "?search=" + searchOptions.searchString + "&maxreturnsize=1";
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(5);
             expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {queryParams});

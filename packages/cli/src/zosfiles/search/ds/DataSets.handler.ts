@@ -26,11 +26,11 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
         };
 
         const searchOptions: ISearchOptions = {
-            dataSetName: commandParameters.arguments.dataSetName,
-            query: commandParameters.arguments.searchString,
+            dsn: commandParameters.arguments.dataSetName,
+            searchString: commandParameters.arguments.searchString,
             timeout: commandParameters.arguments.timeout,
             mainframeSearch: commandParameters.arguments.mainframeSearch,
-            threads: commandParameters.arguments.threads,
+            maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             caseSensitive: commandParameters.arguments.caseSensitive,
             progressTask: task
         };
