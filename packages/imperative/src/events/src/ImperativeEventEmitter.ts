@@ -40,7 +40,7 @@ export class ImperativeEventEmitter {
     public isCustomShared: boolean;
     public logger: Logger;
 
-    private initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
+    public initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
         if (this.initialized) {
             throw new ImperativeError({msg: "Only one instance of the Imperative Event Emitter is allowed"});
         }
