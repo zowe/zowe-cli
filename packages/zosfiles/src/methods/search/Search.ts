@@ -148,7 +148,7 @@ export class Search {
         });
 
         const apiResponse: IZosFilesResponse = {
-            success: failedDatasets.length >= 1 ? false : true,
+            success: failedDatasets.length <= 0,
             commandResponse: "Found \"" + origSearchQuery + "\" in " + matchResponses.length + " data sets and PDS members",
             apiResponse: matchResponses
         };
@@ -169,7 +169,7 @@ export class Search {
             apiResponse.commandResponse += ".";
         }
 
-        if (apiResponse.success != true ) {
+        if (!apiResponse.success) {
             apiResponse.errorMessage = "The following data set(s) failed to be searched: \n";
             for (const entry of failedDatasets) { apiResponse.errorMessage += entry + "\n"; }
         }
