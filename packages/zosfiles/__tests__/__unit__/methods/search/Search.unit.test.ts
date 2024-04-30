@@ -46,10 +46,11 @@ describe("Search", () => {
         {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
     ];
 
-    function generateDS(name: string, pds: boolean) {
+    function generateDS(name: string, pds: boolean, poe: boolean = false, migr: boolean = false) {
         return {
             dsname: name,
-            dsorg: pds ? "PO" : "PS",
+            dsorg: pds ? (poe ? "PO-E" : "PO") : "PS",
+            migr: migr ? "yes" : undefined
         };
     }
     function generateMembers(members: string[]) {
@@ -215,6 +216,78 @@ describe("Search", () => {
                 return {responses: searchItemArray, failures: []};
             });
 
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toEqual(true);
+            expect(response.apiResponse).toEqual([
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ]);
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 5 data sets and PDS members");
+            expect(response.commandResponse).toContain("Data Set \"TEST1.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST2.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER1\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER2\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER3\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+        });
+
+        it("Should handle a migrated data set", async () => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+                return {
+                    success: true,
+                    commandResponse: "",
+                    apiResponse: [generateDS("TEST1.DS", false), generateDS("TEST2.DS", false), generateDS("TEST3.PDS", true, false, true)],
+                    errorMessage: undefined
+                } as IZosFilesResponse;
+            });
+            
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(0);
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toEqual(true);
+            expect(response.apiResponse).toEqual([
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ]);
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 2 data sets and PDS members");
+            expect(response.commandResponse).toContain("Data Set \"TEST1.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST2.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+        });
+        
+        it("Should handle a PO-E data set", async () => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+                return {
+                    success: true,
+                    commandResponse: "",
+                    apiResponse: [generateDS("TEST1.DS", false), generateDS("TEST2.DS", false), generateDS("TEST3.PDS", true, true)],
+                    errorMessage: undefined
+                } as IZosFilesResponse;
+            });
+            
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);

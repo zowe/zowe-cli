@@ -47,16 +47,13 @@ export class Search {
      */
 
     public static async dataSets(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
-
-        let timer: NodeJS.Timeout = undefined;
         const failedDatasets: string[] = [];
         const origSearchQuery = searchOptions.searchString;
         this.timerExpired = false;
 
         // Handle timeouts
         if (searchOptions.timeout) {
-            timer = setTimeout(() => {
-                timer = null;
+            const timer = setTimeout(() => {
                 this.timerExpired = true;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             }, searchOptions.timeout * 1000);
@@ -118,10 +115,6 @@ export class Search {
         const response = await this.searchLocal(session, searchOptions, searchItems);
         const matchResponses = response.responses;
         failedDatasets.push(...response.failures);
-
-        if (timer) {
-            clearTimeout(timer);
-        }
 
         if (searchOptions.progressTask) {
             if (this.timerExpired && failedDatasets.length >= 1) {
