@@ -53,7 +53,7 @@ export class Search {
 
         // Handle timeouts
         if (searchOptions.timeout) {
-            const timer = setTimeout(() => {
+            setTimeout(() => {
                 this.timerExpired = true;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             }, searchOptions.timeout * 1000);
