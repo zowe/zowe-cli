@@ -107,7 +107,7 @@ describe("Search", () => {
 
         beforeAll(() => {
             jest.useFakeTimers();
-        })
+        });
 
         beforeEach(() => {
             searchOnMainframeSpy.mockClear();
