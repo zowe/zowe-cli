@@ -256,7 +256,7 @@ describe("Search", () => {
                     errorMessage: undefined
                 } as IZosFilesResponse;
             });
-            
+
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
@@ -277,7 +277,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain("Data Set \"TEST2.DS\":\nLine: " +
                 expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
         });
-        
+
         it("Should handle a PO-E data set", async () => {
             listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
                 return {
@@ -287,7 +287,7 @@ describe("Search", () => {
                     errorMessage: undefined
                 } as IZosFilesResponse;
             });
-            
+
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
