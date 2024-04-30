@@ -58,9 +58,8 @@ describe("BaseAutoInitHandler", () => {
         };
         stripAnsiSpy = (stripAnsi as any).mockImplementation(() => jest.requireActual("strip-ansi"));
 
-        // Pretend that wordWrap and chalk work. We do not care about their output in these tests
-        const wordWrapSpy = jest.spyOn(TextUtils, "wordWrap")
-            .mockReturnValue("Fake wrapped text");
+        // Pretend that wordWrap and chalk work. We do not care about their output in these tests.
+        jest.spyOn(TextUtils, "wordWrap").mockReturnValue("Fake wrapped text");
 
         Object.defineProperty(TextUtils, "chalk", {
             configurable: true,
