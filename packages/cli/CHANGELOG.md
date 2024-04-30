@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202404301428`
 
 - LTS Breaking: Add informative messages identifying why a user is being prompted for connection property values during a CLI command.
 

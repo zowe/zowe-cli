@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202404301428`
 
 - Enhancement: Add informative messages before prompting for connection property values in the CLI callback function getValuesBack.
 
