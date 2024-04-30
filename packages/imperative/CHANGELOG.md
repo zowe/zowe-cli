@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.0-next.202404301428`
+
+- Enhancement: Add informative messages before prompting for connection property values in the CLI callback function getValuesBack.
+
 ## `8.0.0-next.202404191414`
 
 - Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
