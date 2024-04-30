@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { join } from "path";
+import { join, dirname } from "path";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import {
@@ -23,6 +23,7 @@ import {
 import { ImperativeEvent } from "./ImperativeEvent";
 import { Logger } from "../../logger/src/Logger";
 import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEventJson } from "./doc";
+import { ProfileInfo } from "../../config";
 
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
@@ -98,7 +99,7 @@ export class ImperativeEventEmitter {
         return new ImperativeEvent({
             appName: this.appName,
             eventType: this.getEventType(eventName, this.isCustomShared),
-            loc: this.getEventDir(eventName, this.eventType, this.appName),
+            loc: this.getEventDir(this.eventType, this.appName),
             isCustomShared: this.isCustomShared,
             logger: this.logger
         });
@@ -125,7 +126,7 @@ export class ImperativeEventEmitter {
      * @returns The FSWatcher instance created
      */
     private setupWatcher(eventName: string, callbacks: Function[] = []): fs.FSWatcher {
-        const dir = this.getEventDir(eventName, this.eventType, this.appName);
+        const dir = this.getEventDir(this.eventType, this.appName);
         this.loc = dir;
         this.ensureEventsDirExists(dir); //ensure .events exist
 
@@ -169,17 +170,17 @@ export class ImperativeEventEmitter {
      * @param eventType One of the ImperativeEventTypes from ImperativeEventConstants
      * @param appName Needed for custom event path
      */
-    public getEventDir(eventName: string, eventType: ImperativeEventTypes, appName: string): string {
+    public getEventDir(eventType: ImperativeEventTypes, appName: string): string {
         switch (eventType) {
             case ImperativeSharedEvents:
-                return join(ImperativeConfig.instance.cliHome, ".zowe", ".events", eventName);
+                return join(ProfileInfo.getZoweDir(), ".events");
             case ImperativeCustomShared:
-                return join(ImperativeConfig.instance.cliHome, ".zowe", ".events", appName, eventName);
+                return join(ProfileInfo.getZoweDir(),".events", appName);
             case ImperativeCustomUser:
-                return join(ImperativeConfig.instance.cliHome, ".events", appName, eventName);
+                return join(dirname(ProfileInfo.getZoweDir()), ".events", appName);
             default:
                 //ImperativeUserEvents
-                return join(ImperativeConfig.instance.cliHome, ".events", eventName);
+                return join(dirname(ProfileInfo.getZoweDir()), ".events");
         }
     }
 
