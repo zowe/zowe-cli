@@ -155,7 +155,7 @@ export class Config {
         myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
 
-        ImperativeEventEmitter.instance.initialize(app, { logger:Logger.getAppLogger() });
+        ImperativeEventEmitter.initialize(app, { logger:Logger.getAppLogger() });
 
         // Populate configuration file layers
         await myNewConfig.reload(opts);

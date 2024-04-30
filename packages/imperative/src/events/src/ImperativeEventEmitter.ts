@@ -22,40 +22,31 @@ import {
 } from "./ImperativeEventConstants";
 import { ImperativeEvent } from "./ImperativeEvent";
 import { Logger } from "../../logger/src/Logger";
-import { LoggerManager } from "../../logger/src/LoggerManager";
 import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEventJson } from "./doc";
-import { ConfigUtils } from "../../config/src/ConfigUtils";
 
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
     private initialized = false;
+    public appName: string;
+    public logger: Logger;
     private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
     private eventTimes: Map<string, string>;
-    public appName: string;
     public eventType: ImperativeEventTypes;
     public loc: string;
     public isCustomShared: boolean;
-    public logger: Logger;
 
-    // instance creation
     public static get instance(): ImperativeEventEmitter {
-        if (!this.mInstance) {
+        if (this.mInstance == null) {
             this.mInstance = new ImperativeEventEmitter();
         }
         return this.mInstance;
     }
 
-    // initialization
-    public initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
-        if (this.initialized) {
+    public static initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
+        if (this.instance.initialized) {
             throw new ImperativeError({msg: "Only one instance of the Imperative Event Emitter is allowed"});
         }
-        this.initialized = true;
-
-        if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
-            ConfigUtils.initImpUtils("zowe");
-        }
-
+        this.instance.initialized = true;
         ImperativeEventEmitter.instance.appName = appName;
         ImperativeEventEmitter.instance.logger = options?.logger ?? Logger.getImperativeLogger();
     }
