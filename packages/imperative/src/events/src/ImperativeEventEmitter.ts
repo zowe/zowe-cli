@@ -37,6 +37,15 @@ export class ImperativeEventEmitter {
     public isCustomShared: boolean;
     public logger: Logger;
 
+    // instance creation
+    public static get instance(): ImperativeEventEmitter {
+        if (!this.mInstance) {
+            this.mInstance = new ImperativeEventEmitter();
+        }
+        return this.mInstance;
+    }
+
+    // initialization
     public initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
         if (this.initialized) {
             throw new ImperativeError({msg: "Only one instance of the Imperative Event Emitter is allowed"});
@@ -162,16 +171,6 @@ export class ImperativeEventEmitter {
         }
         return ImperativeCustomUser;
     }
-
-
-    public static get instance(): ImperativeEventEmitter {
-        if (!this.mInstance) {
-            this.mInstance = new ImperativeEventEmitter();
-            this.mInstance.initialize();
-        }
-        return this.mInstance;
-    }
-
 
     /**
      * Returns the directory path based on EventType
