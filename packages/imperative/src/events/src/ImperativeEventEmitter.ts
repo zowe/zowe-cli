@@ -27,10 +27,10 @@ import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEv
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
     private initialized = false;
-    public appName: string;
-    public logger: Logger;
     private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
     private eventTimes: Map<string, string>;
+    public appName: string;
+    public logger: Logger;
     public eventType: ImperativeEventTypes;
     public loc: string;
     public isCustomShared: boolean;
@@ -42,11 +42,11 @@ export class ImperativeEventEmitter {
         return this.mInstance;
     }
 
-    public static initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
-        if (this.instance.initialized) {
+    public initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
+        if (this.initialized) {
             throw new ImperativeError({msg: "Only one instance of the Imperative Event Emitter is allowed"});
         }
-        this.instance.initialized = true;
+        this.initialized = true;
         ImperativeEventEmitter.instance.appName = appName;
         ImperativeEventEmitter.instance.logger = options?.logger ?? Logger.getImperativeLogger();
     }
