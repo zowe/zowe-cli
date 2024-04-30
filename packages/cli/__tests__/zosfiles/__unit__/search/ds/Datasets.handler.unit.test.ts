@@ -30,7 +30,7 @@ describe("Search Datasets handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Search.search = jest.fn(async (session) => {
+            Search.dataSets = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -96,8 +96,8 @@ describe("Search Datasets handler", () => {
                 }
             } as any);
 
-            expect(Search.search).toHaveBeenCalledTimes(1);
-            expect(Search.search).toHaveBeenCalledWith(fakeSession, {
+            expect(Search.dataSets).toHaveBeenCalledTimes(1);
+            expect(Search.dataSets).toHaveBeenCalledWith(fakeSession, {
                 dsn: dataSetName,
                 searchString,
                 caseSensitive: undefined,

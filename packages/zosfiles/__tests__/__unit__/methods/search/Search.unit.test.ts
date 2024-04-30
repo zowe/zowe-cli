@@ -99,7 +99,7 @@ describe("Search", () => {
         jest.restoreAllMocks();
     });
 
-    describe("search", () => {
+    describe("dataSets", () => {
         const searchOnMainframeSpy = jest.spyOn(Search as any, "searchOnMainframe");
         const searchLocalSpy = jest.spyOn(Search as any, "searchLocal");
         const listDataSetsMatchingPatternSpy = jest.spyOn(List, "dataSetsMatchingPattern");
@@ -153,7 +153,7 @@ describe("Search", () => {
         });
 
         it("Should search for the data sets containing a word", async () => {
-            const response = await Search.search(dummySession, searchOptions);
+            const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});

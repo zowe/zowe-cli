@@ -46,7 +46,7 @@ export class Search {
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
 
-    public static async search(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
+    public static async dataSets(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
 
         let timer: NodeJS.Timeout = undefined;
         const failedDatasets: string[] = [];

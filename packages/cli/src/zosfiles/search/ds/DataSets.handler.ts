@@ -36,7 +36,7 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
         };
 
         commandParameters.response.progress.startBar({task});
-        const response = await Search.search(session, searchOptions);
+        const response = await Search.dataSets(session, searchOptions);
         commandParameters.response.progress.endBar();
 
         return response;
