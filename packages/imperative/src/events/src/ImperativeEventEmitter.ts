@@ -27,7 +27,7 @@ import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEv
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
     private initialized = false;
-    private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
+    private subscriptions: Map<string, [fs.FSWatcher, Function[]]> = new Map();
     private eventTimes: Map<string, string>;
     public appName: string;
     public logger: Logger;
