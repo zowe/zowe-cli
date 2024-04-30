@@ -9,7 +9,7 @@
 *
 */
 
-import { CliUtils, ImperativeConfig } from "../../../utilities";
+import { CliUtils, ImperativeConfig, TextUtils } from "../../../utilities";
 import { ICommandArguments, IHandlerParameters } from "../../../cmd";
 import { ImperativeError } from "../../../error";
 import { IOptionsForAddConnProps } from "./doc/IOptionsForAddConnProps";
@@ -20,7 +20,6 @@ import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
-import { TextUtils } from "../../../utilities";
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
