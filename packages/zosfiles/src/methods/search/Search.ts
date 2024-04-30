@@ -50,6 +50,7 @@ export class Search {
 
         let timer: NodeJS.Timeout = undefined;
         const failedDatasets: string[] = [];
+        const origSearchQuery = searchOptions.searchString;
         this.timerExpired = false;
 
         // Handle timeouts
@@ -66,11 +67,6 @@ export class Search {
             searchOptions.progressTask.stageName = TaskStage.IN_PROGRESS;
             searchOptions.progressTask.percentComplete = 0;
             searchOptions.progressTask.statusMessage = "Getting search list...";
-        }
-
-        // Handle case sensitivity
-        if (searchOptions.caseSensitive == null || searchOptions.caseSensitive === false) {
-            searchOptions.searchString = searchOptions.searchString.toLowerCase();
         }
 
         // List all data sets that match the search term
@@ -127,18 +123,19 @@ export class Search {
             clearTimeout(timer);
         }
 
-        if (this.timerExpired) {
-            this.timerExpired = false;
-            if (searchOptions.progressTask) {
+        if (searchOptions.progressTask) {
+            if (this.timerExpired && failedDatasets.length >= 1) {
                 searchOptions.progressTask.stageName = TaskStage.FAILED;
                 searchOptions.progressTask.percentComplete = 100;
                 searchOptions.progressTask.statusMessage = "Operation timed out";
+            } else {
+                searchOptions.progressTask.stageName = TaskStage.COMPLETE;
+                searchOptions.progressTask.percentComplete = 100;
+                searchOptions.progressTask.statusMessage = "Search complete";
             }
-        } else if (searchOptions.progressTask) {
-            searchOptions.progressTask.stageName = TaskStage.COMPLETE;
-            searchOptions.progressTask.percentComplete = 100;
-            searchOptions.progressTask.statusMessage = "Search complete";
         }
+
+        if (this.timerExpired) { this.timerExpired = false; }
 
         // Sort responses to make it pretty
         matchResponses.sort((a, b) => {
@@ -152,7 +149,7 @@ export class Search {
 
         const apiResponse: IZosFilesResponse = {
             success: failedDatasets.length >= 1 ? false : true,
-            commandResponse: "Found \"" + searchOptions.searchString + "\" in " + matchResponses.length + " data sets and PDS members",
+            commandResponse: "Found \"" + origSearchQuery + "\" in " + matchResponses.length + " data sets and PDS members",
             apiResponse: matchResponses
         };
 
@@ -205,6 +202,11 @@ export class Search {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                     searchOptions.progressTask.percentComplete = Math.floor(((complete / total) / 2) * 100);
                     searchOptions.progressTask.statusMessage = "Initial Mainframe Search: " + complete + " of " + total + " entries checked";
+                }
+
+                // Handle case sensitivity
+                if (searchOptions.caseSensitive == undefined || searchOptions.caseSensitive === false) {
+                    searchOptions.searchString = searchOptions.searchString.toLowerCase();
                 }
 
                 // Set up the query
@@ -286,7 +288,7 @@ export class Search {
                 const getResponseString = getResponseBuffer.toString();
                 const getResponseStringArray = getResponseString.split(/\r?\n/);
 
-                // Lowercase the search string if we are not case sensitive
+                // Handle case sensitivity
                 if (searchOptions.caseSensitive == undefined || searchOptions.caseSensitive === false) {
                     searchOptions.searchString = searchOptions.searchString.toLowerCase();
                 }
