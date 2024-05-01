@@ -92,7 +92,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        targets: aarch64-apple-darwin
+        targets: x86_64-apple-darwin
 
     - uses: actions/download-artifact@v4
       with:
