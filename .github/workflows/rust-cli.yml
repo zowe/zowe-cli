@@ -74,6 +74,7 @@ jobs:
         mv ../aarch64-apple-darwin/debug/zowe zowe.aarch64 && mv ../x86_64-apple-darwin/debug/zowe zowe.x86_64
         lipo -create -output zowe zowe.aarch64 zowe.x86_64
 
+    # Use gtar instead of tar on MacOS to prevent extra `GNUSparseFile.0` directory
     - name: Create Archive
       run: |
         cd zowex/target/debug
