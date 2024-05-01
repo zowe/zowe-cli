@@ -22,6 +22,7 @@ describe("LoggingConfigurer tests", () => {
     beforeAll(() => {
         jest.spyOn(os, "homedir").mockImplementation(() => fakeHome);
         jest.spyOn(path, "normalize").mockImplementation((p: string) => p);
+        jest.spyOn(path.posix, "join").mockImplementation((...ps: string[]) => ps.join("/"));
     });
 
     afterAll(() => {

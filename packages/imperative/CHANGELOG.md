@@ -5,7 +5,8 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
-- Deprecated: The `IO.FILE_DELIM` constant. Use `path.sep` or `path.posix.sep` instead.
+- Deprecated: The `IO.FILE_DELIM` constant. Use `path.posix.sep` instead or `path.sep` for better cross-platform support.
+- Deprecated: The `LoggerConfigBuilder.DEFAULT_LOG_DIR` and `LoggerConfigBuilder.DEFAULT_LOG_FILE_DIR` constants. Use `LoggerConfigBuilder.DEFAULT_LOGS_DIR` instead.
 
 ## `8.0.0-next.202404301428`
 

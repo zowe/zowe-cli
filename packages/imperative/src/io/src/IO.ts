@@ -30,7 +30,7 @@ export class IO {
 
     /**
      * File delimiter
-     * @deprecated Use `path.sep` or `path.posix.sep` instead
+     * @deprecated Use `path.posix.sep` instead or `path.sep` for better cross-platform support
      * @static
      * @type {string}
      * @memberof IO
@@ -134,12 +134,12 @@ export class IO {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
         // we're splitting on a specific separator character, so replace \ with /
         // before splitting
-        const dirs = path.resolve(dir).replace(/\\/g, IO.FILE_DELIM).split(IO.FILE_DELIM);
+        const dirs = path.resolve(dir).replace(/\\/g, path.posix.sep).split(path.posix.sep);
 
         let createDir: string = "";
         for (const crDir of dirs) {
 
-            createDir += (crDir + IO.FILE_DELIM);
+            createDir += (crDir + path.posix.sep);
             IO.createDirSync(createDir);
         }
     }
