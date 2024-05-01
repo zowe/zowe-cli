@@ -7,6 +7,10 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
 - Deprecated: The `IO.FILE_DELIM` constant. Use `path.sep` or `path.posix.sep` instead.
 
+## `8.0.0-next.202404301428`
+
+- Enhancement: Add informative messages before prompting for connection property values in the CLI callback function getValuesBack.
+
 ## `8.0.0-next.202404191414`
 
 - Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
