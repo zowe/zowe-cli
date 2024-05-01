@@ -30,11 +30,12 @@ export class IO {
 
     /**
      * File delimiter
+     * @deprecated Use `path.sep` or `path.posix.sep` instead
      * @static
      * @type {string}
      * @memberof IO
      */
-    public static readonly FILE_DELIM: string = "/";
+    public static readonly FILE_DELIM: string = path.posix.sep;
 
     /**
      * UTF8 identifier
