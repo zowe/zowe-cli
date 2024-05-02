@@ -26,7 +26,7 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
         };
 
         const searchOptions: ISearchOptions = {
-            dsn: commandParameters.arguments.dataSetName,
+            dsn: commandParameters.arguments.pattern,
             searchString: commandParameters.arguments.searchString,
             timeout: commandParameters.arguments.timeout,
             mainframeSearch: commandParameters.arguments.mainframeSearch,

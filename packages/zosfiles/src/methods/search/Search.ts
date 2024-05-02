@@ -49,11 +49,12 @@ export class Search {
     public static async dataSets(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
         const failedDatasets: string[] = [];
         const origSearchQuery = searchOptions.searchString;
+        let timer: NodeJS.Timeout;
         this.timerExpired = false;
 
         // Handle timeouts
         if (searchOptions.timeout) {
-            setTimeout(() => {
+            timer = setTimeout(() => {
                 this.timerExpired = true;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             }, searchOptions.timeout * 1000);
@@ -129,6 +130,10 @@ export class Search {
         }
 
         if (this.timerExpired) { this.timerExpired = false; }
+        if (timer) {
+            clearTimeout(timer);
+            timer = undefined;
+        }
 
         // Sort responses to make it pretty
         matchResponses.sort((a, b) => {

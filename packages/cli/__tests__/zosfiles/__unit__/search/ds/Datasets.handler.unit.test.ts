@@ -20,7 +20,7 @@ describe("Search Datasets handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/search/ds/DataSets.handler");
             const handler = new handlerReq.default();
-            const dataSetName = "TEST*";
+            const pattern = "TEST*";
             const searchString = "test";
 
             // Vars populated by the mocked function
@@ -67,7 +67,7 @@ describe("Search Datasets handler", () => {
                 arguments: {
                     $0: "fake",
                     _: ["fake"],
-                    dataSetName,
+                    pattern,
                     searchString,
                     ...UNIT_TEST_ZOSMF_PROF_OPTS
                 },
@@ -98,7 +98,7 @@ describe("Search Datasets handler", () => {
 
             expect(Search.dataSets).toHaveBeenCalledTimes(1);
             expect(Search.dataSets).toHaveBeenCalledWith(fakeSession, {
-                dsn: dataSetName,
+                dsn: pattern,
                 searchString,
                 caseSensitive: undefined,
                 mainframeSearch: undefined,

@@ -594,7 +594,15 @@ export default {
                 SUMMARY: "Search Data Sets and PDS Members",
                 DESCRIPTION: "Search all data sets and PDS members that match the data set name for a search term.",
                 POSITIONALS: {
-                    DATASETNAME: "The name of the data set(s) to perform the search against"
+                    PATTERN: `The pattern to match data sets against. Also known as 'DSLEVEL'. The following special sequences can be ` +
+                    `used in the pattern:
+                    ${TextUtils.chalk.yellow("%")}: matches any single character
+                    ${TextUtils.chalk.yellow("*")}: matches any number of characters within a data set name qualifier ` +
+                    `(e.g. "ibmuser.j*.old" matches "ibmuser.jcl.old" but not "ibmuser.jcl.very.old")
+                    ${TextUtils.chalk.yellow("**")}: matches any number of characters within any number of data set name qualifiers ` +
+                    `(e.g. "ibmuser.**.old" matches both "ibmuser.jcl.old" and "ibmuser.jcl.very.old")
+                    However, the pattern cannot begin with any of these sequences.You can specify multiple patterns separated by commas, ` +
+                    `for example "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },
                 OPTIONS: {
                     CASESENSITIVE: "The search should be case sensitive",

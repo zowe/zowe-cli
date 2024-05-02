@@ -33,13 +33,13 @@ export const DataSetsDefinition: ICommandDefinition = {
     },
     positionals: [
         {
-            name: "dataSetName",
-            description: dataSetStrings.POSITIONALS.DATASETNAME,
+            name: "pattern",
+            description: dataSetStrings.POSITIONALS.PATTERN,
             type: "string",
             required: true
         },
         {
-            name: "searchString",
+            name: "search-string",
             description: strings.OPTIONS.SEARCHSTRING,
             type: "string",
             required: true
@@ -47,14 +47,14 @@ export const DataSetsDefinition: ICommandDefinition = {
     ],
     options: [
         {
-            name: "caseSensitive",
+            name: "case-sensitive",
             aliases: ["cs"],
             description: dataSetStrings.OPTIONS.CASESENSITIVE,
             type: "boolean",
             defaultValue: false
         },
         {
-            name: "mainframeSearch",
+            name: "mainframe-search",
             aliases: ["ms"],
             description: dataSetStrings.OPTIONS.MAINFRAMESEARCH,
             type: "boolean",

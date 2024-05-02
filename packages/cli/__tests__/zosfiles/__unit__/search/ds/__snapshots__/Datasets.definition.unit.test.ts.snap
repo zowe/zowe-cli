@@ -8,7 +8,7 @@ Array [
     ],
     "defaultValue": false,
     "description": "The search should be case sensitive",
-    "name": "caseSensitive",
+    "name": "case-sensitive",
     "type": "boolean",
   },
   Object {
@@ -17,7 +17,7 @@ Array [
     ],
     "defaultValue": false,
     "description": "Perform a preliminary search on the mainframe, reducing network traffic",
-    "name": "mainframeSearch",
+    "name": "mainframe-search",
     "type": "boolean",
   },
   Object {

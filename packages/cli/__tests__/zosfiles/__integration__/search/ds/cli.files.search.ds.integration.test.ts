@@ -42,7 +42,7 @@ describe("Search data sets", () => {
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
-        expect(response.stderr.toString()).toContain("dataSetName");
+        expect(response.stderr.toString()).toContain("pattern");
     });
 
     it("should fail due to missing search parameter", () => {
@@ -50,7 +50,7 @@ describe("Search data sets", () => {
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["IBMUSER.*"]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
-        expect(response.stderr.toString()).toContain("searchString");
+        expect(response.stderr.toString()).toContain("search-string");
     });
 
     it("should fail if the maximum concurrent requests are out of range 1", () => {
