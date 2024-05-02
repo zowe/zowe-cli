@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed packaging of daemon binary for macOS. [#2126](https://github.com/zowe/zowe-cli/pull/2126)
+- BugFix: Fixed `zowe daemon enable` installing an invalid daemon binary on macOS. [#2126](https://github.com/zowe/zowe-cli/pull/2126)
 
 ## `7.24.0`
 
