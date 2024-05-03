@@ -20503,7 +20503,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "7.24.1",
+      "version": "7.24.2",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
