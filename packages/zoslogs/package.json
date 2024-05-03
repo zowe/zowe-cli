@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-logs-for-zowe-sdk",
-  "version": "8.0.0-next.202404301428",
+  "version": "8.0.0-next.202405031512",
   "description": "Zowe SDK to interact with the z/OS logs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,9 +45,9 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.0.0-next.202404301428",
-    "@zowe/core-for-zowe-sdk": "8.0.0-next.202404301428",
-    "@zowe/imperative": "8.0.0-next.202404301428"
+    "@zowe/cli-test-utils": "8.0.0-next.202405031512",
+    "@zowe/core-for-zowe-sdk": "8.0.0-next.202405031512",
+    "@zowe/imperative": "8.0.0-next.202405031512"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0-next",
