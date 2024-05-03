@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, TaskStage } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, TaskStage } from "@zowe/imperative";
 
 import { List } from "../list";
 import { ISearchItem } from "./doc/ISearchItem";
@@ -47,6 +47,9 @@ export class Search {
      */
 
     public static async dataSets(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
+        ImperativeExpect.toBeDefinedAndNonBlank(searchOptions.pattern, "pattern");
+        ImperativeExpect.toBeDefinedAndNonBlank(searchOptions.searchString, "searchString");
+
         const failedDatasets: string[] = [];
         const origSearchQuery = searchOptions.searchString;
         let timer: NodeJS.Timeout;
@@ -73,7 +76,7 @@ export class Search {
 
         // We are in trouble if list fails - exit if it does
         try {
-            const response = await List.dataSetsMatchingPattern(session, [searchOptions.dsn], {
+            const response = await List.dataSetsMatchingPattern(session, [searchOptions.pattern], {
                 ...searchOptions.listOptions,
                 maxConcurrentRequests: searchOptions.maxConcurrentRequests
             });

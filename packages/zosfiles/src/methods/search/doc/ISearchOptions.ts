@@ -14,8 +14,8 @@ import { IGetOptions } from "../../get";
 import { IListOptions } from "../../list";
 
 export interface ISearchOptions {
-    /* The name of the data set that should be searched */
-    dsn: string;
+    /* The pattern matching the data set(s) that should be searched */
+    pattern: string;
 
     /* The string to search for in the data set / members */
     searchString: string;
@@ -28,9 +28,6 @@ export interface ISearchOptions {
 
     /* Should an initial search be done on the mainframe? */
     mainframeSearch?: boolean;
-
-    /* The members of the PDS data set that should be searched */
-    members?: string[];
 
     /* A progress bar task if we want a progress bar */
     progressTask?: ITaskWithStatus;

@@ -98,7 +98,7 @@ describe("Search Datasets handler", () => {
 
             expect(Search.dataSets).toHaveBeenCalledTimes(1);
             expect(Search.dataSets).toHaveBeenCalledWith(fakeSession, {
-                dsn: pattern,
+                pattern,
                 searchString,
                 caseSensitive: undefined,
                 mainframeSearch: undefined,

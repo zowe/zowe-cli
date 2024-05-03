@@ -53,7 +53,7 @@ describe("Search Data Sets", () => {
 
         goodDsNames = [`${dsnPrefix}.SEQ1`, `${dsnPrefix}.SEQ4`, `${dsnPrefix}.SEQ5`];
         badDsNames = [`${dsnPrefix}.SEQ2`, `${dsnPrefix}.SEQ3`];
-        
+
         pdsNames = [`${dsnPrefix}.PDS1`, `${dsnPrefix}.PDS2`];
         pdsGoodMemNames = ["MEM2", "MEM3"];
         pdsBadMemNames = ["MEM1", "MEM4"];
@@ -299,7 +299,7 @@ describe("Search Data Sets", () => {
             /**
              * Since this test is timeout based, we cannot make many assumptions about what will or will not be found.
              * The safest assumption is that something may or may not be found, but we will not find everything
-             * in under one second. 
+             * in under one second.
              */
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toContain(`Found "${searchString}" in`);
@@ -441,7 +441,7 @@ describe("Search Data Sets", () => {
             /**
              * Since this test is timeout based, we cannot make many assumptions about what will or will not be found.
              * The safest assumption is that something may or may not be found, but we will not find everything
-             * in under one second. 
+             * in under one second.
              */
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toContain(`Found "${searchString}" in`);

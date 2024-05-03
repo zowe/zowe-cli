@@ -28,7 +28,7 @@ describe("Search", () => {
     const expectedLine = 0;
 
     let searchOptions: ISearchOptions = {
-        dsn: "TEST*",
+        pattern: "TEST*",
         searchString: "TESTDATA",
         caseSensitive: false,
         getOptions: {},
@@ -73,7 +73,7 @@ describe("Search", () => {
         });
 
         searchOptions = {
-            dsn: "TEST*",
+            pattern: "TEST*",
             searchString: "TESTDATA",
             caseSensitive: false,
             getOptions: {},
