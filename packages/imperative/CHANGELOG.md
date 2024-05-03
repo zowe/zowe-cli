@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202405031808`
 
 - BugFix: Restore the previous precedence of token over password in AbstractRestClient [#2109](https://github.com/zowe/zowe-cli/issues/2109)
 
