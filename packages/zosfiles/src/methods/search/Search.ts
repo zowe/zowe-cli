@@ -163,7 +163,9 @@ export class Search {
                 else { apiResponse.commandResponse += ":\n"; }
 
                 for (const {line, column, contents} of entry.matchList) {
-                    apiResponse.commandResponse += "Line: " + line + ", Column: " + column + ", Contents: " + contents + "\n";
+                    apiResponse.commandResponse += "Line: " + line + ", Column: " + column + ", Contents: " +
+                        // eslint-disable-next-line no-control-regex
+                        contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD") + "\n";
                 }
             }
         } else {
