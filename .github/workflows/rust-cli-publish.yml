@@ -92,7 +92,7 @@ jobs:
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        targets: aarch64-apple-darwin
+        targets: x86_64-apple-darwin
 
     - uses: actions/download-artifact@v4
       with:
@@ -106,10 +106,11 @@ jobs:
         mv ../aarch64-apple-darwin/release/zowe zowe.aarch64 && mv ../x86_64-apple-darwin/release/zowe zowe.x86_64
         lipo -create -output zowe zowe.aarch64 zowe.x86_64
 
+    # Use gtar instead of tar on MacOS to prevent extra `GNUSparseFile.0` directory
     - name: Create Archive
       run: |
         cd target/release
-        tar -cvzf zowe.tgz zowe
+        gtar -cvzf zowe.tgz zowe
         mv zowe.tgz zowe-macos.tgz
 
     - name: Upload Release Asset

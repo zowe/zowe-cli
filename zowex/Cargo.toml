@@ -1,6 +1,6 @@
 [package]
 name = "zowe"
-version = "1.2.1"
+version = "1.2.2"
 authors = ["Zowe Project"]
 edition = "2018"
 license = "EPL-2.0"
@@ -11,7 +11,7 @@ repository = "https://github.com/zowe/zowe-cli"
 [dependencies]
 base64 = "0.13.1"
 home = "0.5.4"
-is-terminal = "0.4.9"
+is-terminal = "0.4.12"
 pathsearch = "0.2.0"
 rpassword = "5.0.1"
 serde = { version = "1.0.156", features = ["derive"] }
