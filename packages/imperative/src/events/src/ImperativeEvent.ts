@@ -20,21 +20,26 @@ import { ImperativeEventTypes } from "./ImperativeEventConstants";
  */
 export class ImperativeEvent {
     /**
-     * The ID of the event
+     * The name of event that occurred
      * @private
      * @type {string}
      * @memberof ImperativeEvent
      */
-    private mEventID: string;
-
+    private mEventName: string;
     /**
-     * The application ID that caused this event
+     * The application name that caused this event
      * @private
      * @type {string}
      * @memberof ImperativeEvent
      */
-    private mAppID: string;
-
+    private mAppName: string;
+    /**
+     * The type(ImperativeEventTypes) of event that occurred
+     * @private
+     * @type {string}
+     * @memberof ImperativeEventTypes
+     */
+    private mEventType: string;
     /**
      * The time of the event created with new Date().toISOString() (ISO String)
      * @private
@@ -43,37 +48,7 @@ export class ImperativeEvent {
      */
     private mEventTime: string;
 
-    /**
-     * The name of event that occurred
-     * @private
-     * @type {string}
-     * @memberof ImperativeEvent
-     */
-    private mEventName: string;
 
-    /**
-     * The type of event that occurred
-     * @private
-     * @type {string}
-     * @memberof ImperativeEvent
-     */
-    private mEventType: ImperativeEventTypes;
-
-    /**
-     * File path for the event
-     * @private
-     * @type {string}
-     * @memberof ImperativeEvent
-     */
-    private mLoc: string;
-
-    /**
-     * Indicator of custom ( A.K.A. 'extender') shared events as opposed to standard user or shared events
-     * @private
-     * @type {boolean}
-     * @memberof ImperativeEvent
-     */
-    private isCustomShared: boolean;
 
     /**
      * toString overload to be called automatically on string concatenation
@@ -91,21 +66,13 @@ export class ImperativeEvent {
         return {
             time: this.eventTime,
             name: this.eventName,
-            type: this.eventType,
             source: this.appName,
-            id: this.eventId,
-            loc: this.loc,
-            isCustomShared: this.isCustomShared,
         };
     };
 
     constructor(parms: IImperativeEventParms) {
         this.mEventTime = new Date().toISOString();
-        this.mEventID = randomUUID();
         this.mAppID = parms.appName;
-        this.mEventType = parms.eventType;
-        this.mLoc = parms.loc;
-        this.isCustomShared = parms.isCustomShared;
         parms.logger.debug("ImperativeEvent: " + this);
     }
 
@@ -117,19 +84,11 @@ export class ImperativeEvent {
         return this.mEventName;
     }
 
-    public get eventType(): ImperativeEventTypes {
-        return this.mEventType;
-    }
-
     public get appName(): string {
         return this.mAppID;
     }
 
-    public get loc(): string {
-        return this.mLoc;
-    }
-
-    public get eventId() : string {
-        return this.mEventID;
+    public get path(): string {
+        return this.mPath;
     }
 }

@@ -9,6 +9,9 @@
 *
 */
 
+
+// TO DO - flesh out these enums to include all expected user and shared events
+
 export enum ImperativeUserEvents {
     ON_VAULT_CHANGED = "onVaultChanged"
 }
@@ -31,16 +34,8 @@ export type ImperativeEventTypes =
     typeof ImperativeCustomUser;
 
 /**
- * TODO:
- * The following list of event types will only be implemented upon request
+ * EXPECTED EVENT LOCATIONS:
  *
- * BRAINSTORMING - What is needed multiple times that we need to keep track of?
- *          - project name
- *          - event name
- *          - app name
- *          - shared event (boolean)
- *
- *          how are we determining if global or project??
  * Shared events:
  *   Global:
  *      - $ZOWE_CLI_HOME/.events/onConfigChanged

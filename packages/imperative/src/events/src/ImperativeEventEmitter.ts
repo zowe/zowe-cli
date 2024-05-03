@@ -9,32 +9,21 @@
 *
 */
 
-import * as fs from "fs";
-import { join, dirname } from "path";
-import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
-import { ImperativeError } from "../../error/src/ImperativeError";
-import {
-    ImperativeEventTypes,
-    ImperativeUserEvents,
-    ImperativeSharedEvents,
-    ImperativeCustomShared,
-    ImperativeCustomUser
-} from "./ImperativeEventConstants";
-import { ImperativeEvent } from "./ImperativeEvent";
 import { Logger } from "../../logger/src/Logger";
-import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEventJson } from "./doc";
-import { ProfileInfo } from "../../config";
+import {
+    IImperativeRegisteredAction,
+    IImperativeEventEmitterOpts,
+    IEventSubscriptionParms
+} from "./doc";
+import { ImperativeError } from "../../error/src/ImperativeError";
+import * as Utilities from "./Utilities";
 
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
     private initialized = false;
-    private subscriptions: Map<string, [fs.FSWatcher, Function[]]> = new Map();
-    private eventTimes: Map<string, string>;
+    private subscriptions: Map< string, IEventSubscriptionParms> = new Map();
     public appName: string;
     public logger: Logger;
-    public eventType: ImperativeEventTypes;
-    public loc: string;
-    public isCustomShared: boolean;
 
     public static get instance(): ImperativeEventEmitter {
         if (this.mInstance == null) {
@@ -52,137 +41,6 @@ export class ImperativeEventEmitter {
         ImperativeEventEmitter.instance.logger = options?.logger ?? Logger.getImperativeLogger();
     }
 
-    /**
-     * Check to see if the Imperative Event Emitter instance has been initialized
-     */
-    private ensureClassInitialized() {
-        if (!this.initialized) {
-            throw new ImperativeError({msg: "You must initialize the instance before using any of its methods."});
-        }
-    }
-
-    /**
-     * Check to see if the directory exists, otherwise, create it : )
-     * @param directoryPath Zowe or User dir where we will write the events
-     */
-    private ensureEventsDirExists(directoryPath: string) {
-        try {
-            if (!fs.existsSync(directoryPath)) {
-                fs.mkdirSync(directoryPath);
-            }
-        } catch (err) {
-            throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
-        }
-    }
-
-    /**
-     * Check to see if the file path exists, otherwise, create it : )
-     * @param filePath Zowe or User path where we will write the events
-     */
-    private ensureEventFileExists(filePath: string) {
-        try {
-            if (!fs.existsSync(filePath)) {
-                fs.closeSync(fs.openSync(filePath, 'w'));
-            }
-        } catch (err) {
-            throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
-        }
-    }
-
-    /**
-     * Helper method to initialize the event
-     * @param eventName The name of event to initialize
-     * @returns The initialized ImperativeEvent
-     */
-    private initEvent(eventName: string): ImperativeEvent {
-        this.ensureClassInitialized();
-        return new ImperativeEvent({
-            appName: this.appName,
-            eventType: this.getEventType(eventName, this.isCustomShared),
-            loc: this.getEventDir(this.eventType, this.appName),
-            isCustomShared: this.isCustomShared,
-            logger: this.logger
-        });
-    }
-
-    /**
-     * Helper method to write contents out to disk
-     * @param location directory to write the file (i.e. emit the event)
-     * @param event the event to be written/emitted
-     * @internal We do not want developers writing events directly, they should use the `emit...` methods
-     */
-    private writeEvent(location: string, event: ImperativeEvent) {
-        const eventPath = join(location, (event.eventType).toString());
-        const eventJson = { ...event.toJson(), loc: location };
-
-        this.ensureEventsDirExists(location);
-        fs.writeFileSync(eventPath, JSON.stringify(eventJson, null, 2));
-    }
-
-    /**
-     * Helper method to create watchers based on event strings and list of callbacks
-     * @param eventName name of event to which we will create a watcher for
-     * @param callbacks list of all callbacks for this watcher
-     * @returns The FSWatcher instance created
-     */
-    private setupWatcher(eventName: string, callbacks: Function[] = []): fs.FSWatcher {
-        const dir = this.getEventDir(this.eventType, this.appName);
-        this.loc = dir;
-        this.ensureEventsDirExists(dir); //ensure .events exist
-
-        this.ensureEventFileExists(join(dir, eventName));
-        const watcher = fs.watch(join(dir, eventName), (event: "rename" | "change") => {
-            // Node.JS triggers this event 3 times
-            const eventContents = fs.readFileSync(dir).toString();
-            const eventTime = eventContents.length === 0 ? "" : (JSON.parse(eventContents) as IImperativeEventJson).time;
-
-            if (this.eventTimes.get(eventName) !== eventTime) {
-                this.logger.debug(`ImperativeEventEmitter: Event "${event}" emitted: ${eventName}`);
-                // Promise.all(callbacks)
-                callbacks.forEach(cb => cb());
-                this.eventTimes.set(eventName, eventTime);
-            }
-        });
-        this.subscriptions.set(eventName, [watcher, callbacks]);
-        return watcher;
-    }
-
-    /**
-     * Returns the eventType based on eventName
-     * @param eventName Name of event, ie: onSchemaChanged
-     * @param isCustomShared One of the ImperativeEventTypes from ImperativeEventConstants
-     */
-    private getEventType(eventName: string, isCustomShared: boolean): ImperativeEventTypes {
-        if (isCustomShared)
-            return ImperativeCustomShared;
-        if ( Object.values<string>(ImperativeUserEvents).includes(eventName)){
-            return ImperativeUserEvents;
-        }
-        if (Object.values<string>(ImperativeSharedEvents).includes(eventName)){
-            return ImperativeSharedEvents;
-        }
-        return ImperativeCustomUser;
-    }
-
-    /**
-     * Returns the directory path based on EventType
-     * @param eventName Name of event, ie: onSchemaChanged
-     * @param eventType One of the ImperativeEventTypes from ImperativeEventConstants
-     * @param appName Needed for custom event path
-     */
-    public getEventDir(eventType: ImperativeEventTypes, appName: string): string {
-        switch (eventType) {
-            case ImperativeSharedEvents:
-                return join(ProfileInfo.getZoweDir(), ".events");
-            case ImperativeCustomShared:
-                return join(ProfileInfo.getZoweDir(),".events", appName);
-            case ImperativeCustomUser:
-                return join(dirname(ProfileInfo.getZoweDir()), ".events", appName);
-            default:
-                //ImperativeUserEvents
-                return join(dirname(ProfileInfo.getZoweDir()), ".events");
-        }
-    }
 
     /**
      * Simple method to write the events to disk
@@ -190,44 +48,56 @@ export class ImperativeEventEmitter {
      * @internal We do not want to make this function accessible to any application developers
      */
     public emitEvent(eventName: string) {
-        const theEvent = this.initEvent(eventName);
-        this.writeEvent(this.loc, theEvent);
+        const event = Utilities.initEvent(eventName);
+        Utilities.writeEvent(event.path, event);
     }
 
+
     /**
-     * Method to register your custom actions based on when the given event is emitted
+     * Method to register your custom actions to a given event emission
      * @param eventName name of event to register custom action to
-     * @param callback Custom action to be registered to the given event
+     * @param eventParms passed along parms to contribute to the overall event subscription data object
      */
-    public subscribe(eventName: string, callback: Function): IImperativeRegisteredAction {
-        this.ensureClassInitialized();
-
-        let watcher: fs.FSWatcher;
-        if (this.subscriptions.get(eventName) != null) {
-            const [watcherToClose, callbacks] = this.subscriptions.get(eventName);
-            watcherToClose.removeAllListeners(eventName).close();
-
-            watcher = this.setupWatcher(eventName, [...callbacks, callback]);
+    public subscribe(eventName: string, eventParms: IEventSubscriptionParms): IImperativeRegisteredAction {
+        // HELP - why are we returning subscription.watcher.close?
+        Utilities.ensureClassInitialized();
+        const subscription = this.subscriptions.get(eventName);
+        if (subscription != null){
+            // modify existing subscription
+            if (subscription.watcher != null){
+                const watcherToClose = subscription.watcher;
+                watcherToClose.removeAllListeners(eventName).close();
+            }
+            this.subscriptions.set(eventName, {
+                ...subscription,
+                //HELP - not sure if we should keep old callbacks? or overwrite with new:
+                callbacks: [...subscription.callbacks, ...eventParms.callbacks],
+                watcher: Utilities.setupWatcher(eventName),
+                isCustomShared: eventParms.isCustomShared,
+                eventTime: new Date().toISOString(),
+            });
         } else {
-            watcher = this.setupWatcher(eventName, [callback]);
+            // create new subscription
+            this.subscriptions.set(eventName, {
+                callbacks: eventParms.callbacks, //callback has to be set before watcher
+                watcher: Utilities.setupWatcher(eventName),
+                eventType: Utilities.getEventType(eventName),
+                isCustomShared: eventParms.isCustomShared,
+                eventTime: new Date().toISOString(),
+                dir: Utilities.getEventDir(Utilities.getEventType(eventName), this.appName)
+            });
         }
-        return { close: watcher.close };
+        return { close: subscription.watcher.close };
     }
 
     /**
-     * Method to unsubscribe from any given event
-     * @param eventType Type of registered event
+     * Unsubscribe from any given event
+     * @param eventName name of event
      */
-    public unsubscribe(eventType: string): void {
-        this.ensureClassInitialized();
-
-        if (this.subscriptions.has(eventType)) {
-            const [watcherToClose, _callbacks] = this.subscriptions.get(eventType);
-            watcherToClose.removeAllListeners(eventType).close();
-            this.subscriptions.delete(eventType);
-        }
-        if (this.eventTimes.has(eventType)) {
-            this.eventTimes.delete(eventType);
+    public unsubscribe(eventName: string): void {
+        Utilities.ensureClassInitialized();
+        if (this.subscriptions.has(eventName)) {
+            this.subscriptions.get(eventName).watcher.removeAllListeners(eventName).close();
+            this.subscriptions.delete(eventName);
         }
     }
-}
