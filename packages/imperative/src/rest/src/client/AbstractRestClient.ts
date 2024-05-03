@@ -229,6 +229,27 @@ export abstract class AbstractRestClient {
         ImperativeExpect.toNotBeNullOrUndefined(mSession);
         this.mLogger = Logger.getImperativeLogger();
         this.mIsJson = false;
+
+        /* Set the order of precedence in which available credentials will be used.
+         *
+         * The Zowe SDK policy is to select password credentials over a token.
+         * However, this class was originally released with the token over password.
+         * The commonly-used ConnectionPropsForSessCfg.resolveSessCfgProps enforces the
+         * order of password over token. None-the-less, consumers which directly extended
+         * AbstractRestClient came to rely on the order of token over password.
+         *
+         * Later changes in this class to adhere to Zowe policy inadvertently broke
+         * such extenders. While we now use a generalized authTypeOrder property to
+         * determine the order, until a means is provided for consumers (and/or end-users)
+         * to customize their credential order of precedence, we hard-code the
+         * original order of token over password to correct the breaking change.
+         */
+        this.mSession.ISession.authTypeOrder = [
+            SessConstants.AUTH_TYPE_TOKEN,
+            SessConstants.AUTH_TYPE_BASIC,
+            SessConstants.AUTH_TYPE_BEARER,
+            SessConstants.AUTH_TYPE_CERT_PEM
+        ];
     }
 
     /**
@@ -451,63 +472,56 @@ export abstract class AbstractRestClient {
         }
 
         /**
-         * Here is where we conditionally perform our HTTP REST request using basic authentication or the stored
-         * cookie in our session object.
+         * Place the credentials for the desired authentication type (based on our
+         * order of precedence) into the session options.
          */
-        if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC ||
-            this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
-            if (this.session.ISession.base64EncodedAuth || (this.session.ISession.user && this.session.ISession.password)) {
-                this.log.trace("Using basic authentication");
-                const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
-                const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
-                    AbstractSession.getBase64Auth(this.session.ISession.user,  this.session.ISession.password));
-                headerKeys.forEach((property) => {
-                    options.headers[property] = authentication;
-                });
-            } else if (this.session.ISession.tokenValue) {
-                this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
-                const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
-                const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
-                headerKeys.forEach((property) => {
-                    options.headers[property] = authentication;
-                });
-            } else {
-                throw new ImperativeError({msg: "No credentials for a BASIC or TOKEN type of session."});
+        let credsAreSet: boolean = false;
+        for (const nextAuthType of this.session.ISession.authTypeOrder) {
+            if (nextAuthType === SessConstants.AUTH_TYPE_TOKEN) {
+                credsAreSet ||= this.setTokenAuth(options);
+
+            } else if (nextAuthType === SessConstants.AUTH_TYPE_BASIC) {
+                credsAreSet ||= this.setPasswordAuth(options);
+
+            } else if (nextAuthType === SessConstants.AUTH_TYPE_BEARER) {
+                credsAreSet ||= this.setBearerAuth(options);
+
+            } else if (nextAuthType === SessConstants.AUTH_TYPE_CERT_PEM) {
+                credsAreSet ||= this.setCertPemAuth(options);
             }
-        } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_BEARER) {
-            this.log.trace("Using bearer authentication");
-            const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
-            const authentication: string = AbstractSession.BEARER_PREFIX + this.session.ISession.tokenValue;
-            headerKeys.forEach((property) => {
-                options.headers[property] = authentication;
-            });
-        } else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
-            this.log.trace("Using PEM Certificate authentication");
-            try {
-                // Doing this again for SDKs using certificates
-                options.cert = readFileSync(this.session.ISession.cert);
-                options.key = readFileSync(this.session.ISession.certKey);
-            } catch (err) {
-                throw new ImperativeError({
-                    msg: "Failed to open one or more PEM certificate files, the file(s) did not exist.",
-                    causeErrors: err,
-                    additionalDetails: err.message,
-                });
+
+            if (credsAreSet) {
+                break;
             }
+            /* The following commented code was left as a place-holder for adding support
+             * for PFX certificates. The commented code was added when the order of credentials
+             * was specified using hard-coded logic. We now use authTypeOrder to specify
+             * the order. When adding support for PFX certs, move this logic into a new function
+             * (with a name like setCertPfxAuth). Some conditional logic may have to be reversed
+             * in that function. See other such functions for an example. Add a new else-if
+             * clause above to call the new setCertPfxAuth function.
+             */
+            // else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PFX) {
+            //     this.log.trace("Using PFX Certificate authentication");
+            //     try {
+            //         options.pfx = readFileSync(this.session.ISession.cert);
+            //     } catch (err) {
+            //         throw new ImperativeError({
+            //             msg: "Certificate authentication failed when trying to read files.",
+            //             causeErrors: err,
+            //             additionalDetails: err.message,
+            //         });
+            //     }
+            //     options.passphrase = this.session.ISession.passphrase;
+            // }
         }
-        // else if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PFX) {
-        //     this.log.trace("Using PFX Certificate authentication");
-        //     try {
-        //         options.pfx = readFileSync(this.session.ISession.cert);
-        //     } catch (err) {
-        //         throw new ImperativeError({
-        //             msg: "Certificate authentication failed when trying to read files.",
-        //             causeErrors: err,
-        //             additionalDetails: err.message,
-        //         });
-        //     }
-        //     options.passphrase = this.session.ISession.passphrase;
-        // }
+
+        /* There is probably a better way report this kind of problem and a better message,
+         * but we do it this way to maintain backward compatibility.
+         */
+        if (!credsAreSet) {
+            throw new ImperativeError({ msg: "No credentials for a BASIC or TOKEN type of session." });
+        }
 
         // for all headers passed into this request, append them to our options object
         reqHeaders = this.appendHeaders(reqHeaders);
@@ -522,6 +536,123 @@ export abstract class AbstractRestClient {
             logResource, this.session.ISession.user ? "as user " + this.session.ISession.user : "");
 
         return options;
+    }
+
+    /**
+     * Set token auth into our REST request authentication options
+     * if a token value is specified in the session supplied to this class.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @memberof AbstractRestClient
+     */
+    private setTokenAuth(restOptionsToSet: any): boolean {
+        if (!(this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN)) {
+            return false;
+        }
+        if (!this.session.ISession.tokenValue) {
+            return false;
+        }
+
+        this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
+        const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
+        const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
+        headerKeys.forEach((property) => {
+            restOptionsToSet.headers[property] = authentication;
+        });
+        return true;
+    }
+
+    /**
+     * Set user and password auth (A.K.A basic authentication) into our
+     * REST request authentication options if user and password values
+     * are specified in the session supplied to this class.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @memberof AbstractRestClient
+     */
+    private setPasswordAuth(restOptionsToSet: any): boolean {
+        /* When logging into APIML, our desired auth type is token. However to
+         * get that token, we login to APIML with user and password (basic auth).
+         * So, we accept either auth type when setting basic auth creds.
+         */
+        if (this.session.ISession.type !== SessConstants.AUTH_TYPE_BASIC &&
+            this.session.ISession.type !== SessConstants.AUTH_TYPE_TOKEN)
+        {
+            return false;
+        }
+        if (!this.session.ISession.base64EncodedAuth &&
+            !(this.session.ISession.user && this.session.ISession.password))
+        {
+            return false;
+        }
+
+        this.log.trace("Using basic authentication");
+        const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
+        const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
+            AbstractSession.getBase64Auth(this.session.ISession.user, this.session.ISession.password));
+        headerKeys.forEach((property) => {
+            restOptionsToSet.headers[property] = authentication;
+        });
+        return true;
+    }
+
+    /**
+     * Set bearer auth token into our REST request authentication options.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @memberof AbstractRestClient
+     */
+    private setBearerAuth(restOptionsToSet: any): boolean {
+        if (!(this.session.ISession.type === SessConstants.AUTH_TYPE_BEARER)) {
+            return false;
+        }
+        if (!this.session.ISession.tokenValue) {
+            return false;
+        }
+
+        this.log.trace("Using bearer authentication");
+        const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
+        const authentication: string = AbstractSession.BEARER_PREFIX + this.session.ISession.tokenValue;
+        headerKeys.forEach((property) => {
+            restOptionsToSet.headers[property] = authentication;
+        });
+        return true;
+    }
+
+    /**
+     * Set a PEM certificate auth into our REST request authentication options.
+     *
+     * @private
+     * @param {any} restOptionsToSet
+     *      The set of REST request options into which the credentials will be set.
+     * @returns True if this function sets authentication options. False otherwise.
+     * @memberof AbstractRestClient
+     */
+    private setCertPemAuth(restOptionsToSet: any): boolean {
+        if (!(this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM)) {
+            return false;
+        }
+        this.log.trace("Using PEM Certificate authentication");
+        try {
+            restOptionsToSet.cert = readFileSync(this.session.ISession.cert);
+            restOptionsToSet.key = readFileSync(this.session.ISession.certKey);
+        } catch (err) {
+            throw new ImperativeError({
+                msg: "Failed to open one or more PEM certificate files, the file(s) did not exist.",
+                causeErrors: err,
+                additionalDetails: err.message,
+            });
+        }
+        return true;
     }
 
     /**

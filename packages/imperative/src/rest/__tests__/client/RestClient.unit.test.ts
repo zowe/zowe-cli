@@ -23,6 +23,7 @@ import { RestClientError } from "../../src/client/RestClientError";
 import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
 import { IRestClientResponse } from "../../src/client/doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
+import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 
 /**
  * RestClient is already tested vie the AbstractRestClient test, so we will extend RestClient
@@ -30,8 +31,14 @@ import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProper
  */
 
 describe("RestClient tests", () => {
+    let setPasswordAuthSpy: any;
+
     beforeEach(() => {
         jest.clearAllMocks();
+
+        // pretend that basic auth was successfully set
+        setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
+        setPasswordAuthSpy.mockReturnValue(true);
     });
 
     it("should add our custom header", async () => {
