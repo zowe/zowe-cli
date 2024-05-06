@@ -45,8 +45,8 @@ describe("Zowe CLI Logging", () => {
         const encodedAuth = Buffer.from(zosmfUsername + ":" + zosmfPassword).toString("base64");
 
         // Grab both log files
-        const imperativeLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "/imperative/logs/imperative.log"));
-        const zoweLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "/" + Constants.LOG_LOCATION));
+        const imperativeLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "logs", "imperative.log"));
+        const zoweLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, Constants.LOG_LOCATION));
         const tempTestLog = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, TempTestProfiles.LOG_FILE_NAME));
 
         // ensure that the password and encoded auth does not appear in the imperative log
@@ -75,8 +75,8 @@ describe("Zowe CLI Logging", () => {
         expect(response.status).toBe(0);
 
         // Grab both log files
-        const imperativeLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "/imperative/logs/imperative.log"));
-        const zoweLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "/" + Constants.LOG_LOCATION));
+        const imperativeLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "logs", "imperative.log"));
+        const zoweLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, Constants.LOG_LOCATION));
         const tempTestLog = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, TempTestProfiles.LOG_FILE_NAME));
 
         // ensure that the password and encoded auth does not appear in the imperative log

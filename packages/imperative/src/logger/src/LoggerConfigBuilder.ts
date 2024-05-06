@@ -25,8 +25,15 @@ export class LoggerConfigBuilder {
     public static readonly DEFAULT_BACKEND = "NONE";
 
     public static readonly DEFAULT = "default";
+    /**
+     * @deprecated Use `DEFAULT_LOGS_DIR` instead.
+     */
     public static readonly DEFAULT_LOG_DIR = IO.FILE_DELIM;
+    /**
+     * @deprecated Use `DEFAULT_LOGS_DIR` instead.
+     */
     public static readonly DEFAULT_LOG_FILE_DIR = "logs" + IO.FILE_DELIM;
+    public static readonly DEFAULT_LOGS_DIR = "logs";
     public static readonly DEFAULT_LOG_FILE_EXT = ".log";
     public static readonly DEFAULT_LOG_FILE_MAX_SIZE = 10000000;  // 10MB log size
     public static readonly DEFAULT_LOG_FILE_BACKUPS = 5;
@@ -105,8 +112,7 @@ export class LoggerConfigBuilder {
      * @return {string} - the default file name for the log file
      */
     public static getDefaultFileName(name: string) {
-        return LoggerConfigBuilder.DEFAULT_LOG_DIR + name + IO.FILE_DELIM +
-        LoggerConfigBuilder.DEFAULT_LOG_FILE_DIR + name + LoggerConfigBuilder.DEFAULT_LOG_FILE_EXT;
+        return path.posix.sep + path.posix.join(LoggerConfigBuilder.DEFAULT_LOGS_DIR, name + LoggerConfigBuilder.DEFAULT_LOG_FILE_EXT);
     }
 
     /**

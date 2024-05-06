@@ -151,7 +151,7 @@ describe("IO tests", () => {
             return pathSegments[0];
         });
         const willBeADir = ["pretend", "to", "create"];
-        const dir = willBeADir.join(IO.FILE_DELIM);
+        const dir = willBeADir.join(path.posix.sep);
         IO.createDirsSync(dir);
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length);
     });
@@ -167,7 +167,7 @@ describe("IO tests", () => {
             return pathSegments[0];
         });
         const willBeADir = ["pretend", "to", "create"];
-        const dir = willBeADir.join(IO.FILE_DELIM);
+        const dir = willBeADir.join(path.posix.sep);
         IO.createDirsSync(dir);
         expect(fnFm).not.toHaveBeenCalled();
     });
@@ -187,7 +187,7 @@ describe("IO tests", () => {
         fnPr.mockImplementation((...pathSegments: any[]) => {
             return pathSegments[0];
         });
-        const dir = willBeADir.join(IO.FILE_DELIM);
+        const dir = willBeADir.join(path.posix.sep);
         IO.createDirsSync(dir);
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 1);
     });
@@ -204,12 +204,12 @@ describe("IO tests", () => {
         });
         const fnPd = jest.mocked(path.dirname);
         fnPd.mockImplementation(((...pathSegments: any[]) => {
-            const toDir: string[] = pathSegments[0].split(IO.FILE_DELIM);
+            const toDir: string[] = pathSegments[0].split(path.posix.sep);
             toDir.pop();
-            return toDir.join(IO.FILE_DELIM);
+            return toDir.join(path.posix.sep);
         }) as any);
         const willBeADir = ["pretend", "to", "create", "test.txt"];
-        const dir = willBeADir.join(IO.FILE_DELIM);
+        const dir = willBeADir.join(path.posix.sep);
         IO.createDirsSyncFromFilePath(dir);
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 1);
     });
@@ -226,12 +226,12 @@ describe("IO tests", () => {
         });
         const fnPd = jest.mocked(path.dirname);
         fnPd.mockImplementation(((...pathSegments: any[]) => {
-            const toDir: string[] = pathSegments[0].split(IO.FILE_DELIM);
+            const toDir: string[] = pathSegments[0].split(path.posix.sep);
             toDir.pop();
-            return toDir.join(IO.FILE_DELIM);
+            return toDir.join(path.posix.sep);
         }) as any);
         const willBeADir = ["pretend", "to", "create", "test.txt"];
-        const dir = willBeADir.join(IO.FILE_DELIM);
+        const dir = willBeADir.join(path.posix.sep);
         IO.createDirsSyncFromFilePath(dir);
         expect(fnFm).not.toHaveBeenCalled();
     });
@@ -253,11 +253,11 @@ describe("IO tests", () => {
         });
         const fnPd = jest.mocked(path.dirname);
         fnPd.mockImplementation(((...pathSegments: any[]) => {
-            const toDir: string[] = pathSegments[0].split(IO.FILE_DELIM);
+            const toDir: string[] = pathSegments[0].split(path.posix.sep);
             toDir.pop();
-            return toDir.join(IO.FILE_DELIM);
+            return toDir.join(path.posix.sep);
         }) as any);
-        const dir = willBeADir.join(IO.FILE_DELIM);
+        const dir = willBeADir.join(path.posix.sep);
         IO.createDirsSyncFromFilePath(dir);
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 2);
     });

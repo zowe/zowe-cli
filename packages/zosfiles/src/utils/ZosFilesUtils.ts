@@ -46,9 +46,9 @@ export class ZosFilesUtils {
      * @param  {string} dataSet - data set to break up into folders
      */
     public static getDirsFromDataSet(dataSet: string) {
-        let localDirectory = dataSet.replace(new RegExp(`\\${this.DSN_SEP}`, "g"), IO.FILE_DELIM).toLowerCase();
+        let localDirectory = dataSet.replace(new RegExp(`\\${this.DSN_SEP}`, "g"), path.posix.sep).toLowerCase();
         if (localDirectory.indexOf("(") >= 0 && localDirectory.indexOf(")") >= 0) {
-            localDirectory = localDirectory.replace(/\(/, IO.FILE_DELIM);
+            localDirectory = localDirectory.replace(/\(/, path.posix.sep);
             localDirectory = localDirectory.slice(0, -1);
         }
         return localDirectory;

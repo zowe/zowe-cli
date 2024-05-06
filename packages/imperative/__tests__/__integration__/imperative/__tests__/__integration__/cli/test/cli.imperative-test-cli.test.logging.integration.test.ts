@@ -9,10 +9,11 @@
 *
 */
 
+import * as fs from "fs";
+import * as path from "path";
 import { runCliScript } from "../../../../../../src/TestUtil";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
-import * as fs from "fs";
 import { TestLogger } from "../../../../../../src/TestLogger";
 import { LoggerConfigBuilder } from "../../../../../../../src";
 
@@ -20,10 +21,8 @@ import { LoggerConfigBuilder } from "../../../../../../../src";
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 // Log directories
-const APP_LOGS_DIR = "/imperative-test-cli/logs/";
-const APP_LOG = APP_LOGS_DIR + "imperative-test-cli.log";
-const IMP_LOGS_DIR = "/imperative/logs/";
-const IMP_LOG = IMP_LOGS_DIR + "imperative.log";
+const APP_LOG = path.join("logs", "imperative-test-cli.log");
+const IMP_LOG = path.join("logs", "imperative.log");
 
 describe("imperative-test-cli test logging command", () => {
 
@@ -51,10 +50,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).not.toContain("[TRACE]");
@@ -89,10 +88,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).not.toContain("[TRACE]");
@@ -132,10 +131,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).not.toContain("[TRACE]");
@@ -161,10 +160,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).not.toContain("[TRACE]");
@@ -199,10 +198,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).not.toContain("[TRACE]");
@@ -228,10 +227,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).not.toContain("[TRACE]");
@@ -271,10 +270,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logStats = fs.statSync(TEST_ENVIRONMENT.workingDir + IMP_LOG);
+                const logStats = fs.statSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG));
                 expect(logStats.size).toBe(0);
             });
 
@@ -290,10 +289,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).toContain("[TRACE]");
@@ -336,10 +335,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logStats = fs.statSync(TEST_ENVIRONMENT.workingDir + APP_LOG);
+                const logStats = fs.statSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG));
                 expect(logStats.size).toBe(0);
             });
 
@@ -355,10 +354,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const logContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(logContents).toContain("[TRACE]");
@@ -402,13 +401,13 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const appLogStats = fs.statSync(TEST_ENVIRONMENT.workingDir + APP_LOG);
+                const appLogStats = fs.statSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG));
                 expect(appLogStats.size).toBe(0);
 
-                const impLogStats = fs.statSync(TEST_ENVIRONMENT.workingDir + IMP_LOG);
+                const impLogStats = fs.statSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG));
                 expect(impLogStats.size).toBe(0);
             });
 
@@ -427,10 +426,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const appLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const appLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(appLogContents).toContain("[TRACE]");
@@ -448,7 +447,7 @@ describe("imperative-test-cli test logging command", () => {
                 expect(appLogContents).toContain("This is an app logger error message from the test logging handler!");
                 expect(appLogContents).toContain("This is an app logger fatal message from the test logging handler!");
 
-                const impLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const impLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(impLogContents).toContain("[TRACE]");
@@ -482,10 +481,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const appLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const appLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(appLogContents).not.toContain("[TRACE]");
@@ -503,7 +502,7 @@ describe("imperative-test-cli test logging command", () => {
                 expect(appLogContents).toContain("This is an app logger error message from the test logging handler!");
                 expect(appLogContents).toContain("This is an app logger fatal message from the test logging handler!");
 
-                const impLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const impLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(impLogContents).not.toContain("[TRACE]");
@@ -537,10 +536,10 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
-                const appLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const appLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(appLogContents).not.toContain("[TRACE]");
@@ -559,7 +558,7 @@ describe("imperative-test-cli test logging command", () => {
                 expect(appLogContents).toContain("This is an app logger fatal message from the test logging handler!");
 
                 // Read the imperative log contents
-                const impLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const impLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(impLogContents).not.toContain("[TRACE]");
@@ -593,15 +592,15 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
                 // Ensure that the app log is empty
-                const appLogStats = fs.statSync(TEST_ENVIRONMENT.workingDir + APP_LOG);
+                const appLogStats = fs.statSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG));
                 expect(appLogStats.size).toBe(0);
 
                 // Ensure that the imp log has all levels
-                const impLogContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + IMP_LOG).toString();
+                const impLogContents = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG)).toString();
 
                 // Check for each tag
                 expect(impLogContents).toContain("[TRACE]");
@@ -635,15 +634,15 @@ describe("imperative-test-cli test logging command", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
 
                 // Make sure the log files are present
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + APP_LOG)).toBe(true);
-                expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + IMP_LOG)).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG))).toBe(true);
+                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG))).toBe(true);
 
                 // Ensure that the app log is empty
-                const impLogStats = fs.statSync(TEST_ENVIRONMENT.workingDir + IMP_LOG);
+                const impLogStats = fs.statSync(path.join(TEST_ENVIRONMENT.workingDir, IMP_LOG));
                 expect(impLogStats.size).toBe(0);
 
                 // Ensure that the imp log has all levels
-                const appLogStats = fs.readFileSync(TEST_ENVIRONMENT.workingDir + APP_LOG).toString();
+                const appLogStats = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, APP_LOG)).toString();
 
                 // Check for each tag
                 expect(appLogStats).toContain("[TRACE]");

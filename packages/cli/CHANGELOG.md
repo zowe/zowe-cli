@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
+
 ## `8.0.0-next.202404301428`
 
 - LTS Breaking: Add informative messages identifying why a user is being prompted for connection property values during a CLI command.

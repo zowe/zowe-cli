@@ -240,7 +240,7 @@ describe("Using a Plugin", () => {
         expect(result.stdout).toContain(`${randomTest}: Messages logged successfully to the following locations`);
 
         // Check imperative logger
-        const impLogLocation = join(config.defaultHome, "imperative", "logs", "imperative.log");
+        const impLogLocation = join(config.defaultHome, "logs", "imperative.log");
         const impLogContent = readFileSync(impLogLocation).toString();
         expect(result.stdout).toContain(resolve(impLogLocation));
         expect(impLogContent).not.toContain(`Log message from test plugin: DEBUG: ${randomTest}`);
@@ -249,7 +249,7 @@ describe("Using a Plugin", () => {
         expect(impLogContent).toContain(`Log message from test plugin: ERROR: ${randomTest}`);
 
         // Check App/Plugin  logger
-        const appLogLocation = join(config.defaultHome, config.name, "logs", config.name + ".log");
+        const appLogLocation = join(config.defaultHome, "logs", config.name + ".log");
         const appLogContent = readFileSync(appLogLocation).toString();
         expect(result.stdout).toContain(resolve(appLogLocation));
         expect(appLogContent).not.toContain(`Log message from test plugin: DEBUG: ${randomTest}`);

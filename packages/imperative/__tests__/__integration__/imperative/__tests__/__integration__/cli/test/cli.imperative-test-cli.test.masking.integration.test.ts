@@ -11,6 +11,7 @@
 
 /* eslint-disable jest/expect-expect */
 import * as fs from "fs";
+import * as path from "path";
 import { runCliScript } from "../../../../../../src/TestUtil";
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";
@@ -20,10 +21,8 @@ import { TestLogger } from "../../../../../../src/TestLogger";
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 // Log directories
-const APP_LOGS_DIR = "/imperative-test-cli/logs/";
-const APP_LOG = APP_LOGS_DIR + "imperative-test-cli.log";
-const IMP_LOGS_DIR = "/imperative/logs/";
-const IMP_LOG = IMP_LOGS_DIR + "imperative.log";
+const APP_LOG = path.join("logs", "imperative-test-cli.log");
+const IMP_LOG = path.join("logs", "imperative.log");
 
 describe("imperative-test-cli test masking command", () => {
     // Create the unique test environment
@@ -63,8 +62,9 @@ describe("imperative-test-cli test masking command", () => {
     };
 
     const _testLogs = (_log: string) => {
-        expect(fs.existsSync(TEST_ENVIRONMENT.workingDir + (_log === "app" ? APP_LOG : IMP_LOG))).toBe(true);
-        const logContents = fs.readFileSync(TEST_ENVIRONMENT.workingDir + (_log === "app" ? APP_LOG : IMP_LOG)).toString();
+        const logPath = path.join(TEST_ENVIRONMENT.workingDir, _log === "app" ? APP_LOG : IMP_LOG);
+        expect(fs.existsSync(logPath)).toBe(true);
+        const logContents = fs.readFileSync(logPath).toString();
         for (const level of ["trace", "debug", "info", "warn", "error", "fatal"]) {
             expect(logContents).toContain(`[${level.toUpperCase()}]`);
             expect(logContents).toContain(_logPrefix(_log, level) + level === "trace" ? "secret" : "****");

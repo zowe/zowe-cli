@@ -31,8 +31,8 @@ class ImperativeLoggingHandler {
 
             var config = T.ImperativeConfig.instance.loadedConfig;
             params.response.console.log(`${params.arguments.test}: Messages logged successfully to the following locations`);
-            params.response.console.log(path.join(config.defaultHome, "imperative", "logs", "imperative.log"));
-            params.response.console.log(path.join(config.defaultHome, config.name, "logs", config.name + ".log"));
+            params.response.console.log(path.join(config.defaultHome, "logs", "imperative.log"));
+            params.response.console.log(path.join(config.defaultHome, "logs", config.name + ".log"));
             yield undefined;
         });
     }
