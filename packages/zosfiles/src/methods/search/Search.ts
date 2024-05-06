@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, TaskStage } from "@zowe/imperative";
+import { AbstractSession, TextUtils, ImperativeError, ImperativeExpect, TaskStage } from "@zowe/imperative";
 
 import { List } from "../list";
 import { ISearchItem } from "./doc/ISearchItem";
@@ -147,24 +147,43 @@ export class Search {
             }
         });
 
+        const chalk = TextUtils.chalk;
+
         const apiResponse: IZosFilesResponse = {
             success: failedDatasets.length <= 0,
-            commandResponse: "Found \"" + origSearchQuery + "\" in " + matchResponses.length + " data sets and PDS members",
+            commandResponse: "Found \"" + chalk.yellow(origSearchQuery) + "\" in " +
+                chalk.yellow(matchResponses.length) + " data sets and PDS members",
             apiResponse: matchResponses
         };
 
         if (matchResponses.length >= 1) {
             apiResponse.commandResponse += ":\n";
             for (const entry of matchResponses) {
-                apiResponse.commandResponse += "\nData Set \"" + entry.dsn + "\"";
+                apiResponse.commandResponse += "\n" + chalk.yellow("Data Set") + " \"" + entry.dsn + "\"";
 
-                if (entry.member) { apiResponse.commandResponse += " | Member \"" + entry.member + "\":\n"; }
+                if (entry.member) { apiResponse.commandResponse += " | " + chalk.yellow("Member") + " \"" + entry.member + "\":\n"; }
                 else { apiResponse.commandResponse += ":\n"; }
 
+                let maxLine: number = 0;
+                let maxCol: number = 0;
+                for (const {line, column} of entry.matchList) {
+                    if (line > maxLine) { maxLine = line; }
+                    if (column > maxCol) { maxCol = column; }
+                }
+
+                const lineLen = maxLine.toString().length;
+                const colLen = maxCol.toString().length;
+
                 for (const {line, column, contents} of entry.matchList) {
-                    apiResponse.commandResponse += "Line: " + line + ", Column: " + column + ", Contents: " +
-                        // eslint-disable-next-line no-control-regex
-                        contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD") + "\n";
+                    // eslint-disable-next-line no-control-regex
+                    let localContents = contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD");
+                    const beforeString = localContents.substring(0, column - 1);
+                    const selectedString = chalk.bgYellow(localContents.substring(column - 1, column - 1 + searchOptions.searchString.length));
+                    const afterString = localContents.substring(column - 1 + searchOptions.searchString.length, localContents.length + 1);
+                    localContents = beforeString + selectedString + afterString;
+                    apiResponse.commandResponse += chalk.yellow("Line:") + " " + line.toString().padStart(lineLen) +
+                        ", " + chalk.yellow("Column:") + " " + column.toString().padStart(colLen) + ", " + chalk.yellow("Contents:") +
+                        " " + localContents + "\n";
                 }
             }
         } else {
@@ -203,7 +222,7 @@ export class Search {
                 if (searchOptions.progressTask) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                     searchOptions.progressTask.percentComplete = Math.floor(((complete / total) / 2) * 100);
-                    searchOptions.progressTask.statusMessage = "Initial Mainframe Search: " + complete + " of " + total + " entries checked";
+                    searchOptions.progressTask.statusMessage = "Initial mainframe search: " + complete + " of " + total + " entries checked";
                 }
 
                 // Handle case sensitivity
@@ -266,11 +285,11 @@ export class Search {
                     if (searchOptions.mainframeSearch) {
                         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                         searchOptions.progressTask.percentComplete = Math.floor((((complete / total) / 2) * 100) + 50);
-                        searchOptions.progressTask.statusMessage = "Performing Deep Search: " + complete + " of " + total + " entries checked";
+                        searchOptions.progressTask.statusMessage = "Performing search: " + complete + " of " + total + " entries checked";
                     } else {
                         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                         searchOptions.progressTask.percentComplete = Math.floor(((complete / total) * 100));
-                        searchOptions.progressTask.statusMessage = "Performing Deep Search: " + complete + " of " + total + " entries checked";
+                        searchOptions.progressTask.statusMessage = "Performing Search: " + complete + " of " + total + " entries checked";
                     }
                 }
 
@@ -311,8 +330,8 @@ export class Search {
                             const column = searchLine.indexOf(searchOptions.searchString, lastCol + searchOptions.searchString.length);
                             lastCol = column;
                             if (column != -1) {
-                                // Append the real line
-                                indicies.push({line: lineNum, column, contents: line});
+                                // Append the real line - 1 indexed
+                                indicies.push({line: lineNum + 1, column: column + 1, contents: line});
                             }
                         }
                     }
