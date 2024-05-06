@@ -135,7 +135,6 @@ export class Search {
         if (this.timerExpired) { this.timerExpired = false; }
         if (timer) {
             clearTimeout(timer);
-            timer = undefined;
         }
 
         // Sort responses to make it pretty
