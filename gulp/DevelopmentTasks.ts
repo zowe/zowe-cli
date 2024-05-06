@@ -16,9 +16,7 @@ import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "../packages/
 
 import { CliConstants } from "../packages/cli/src/CliConstants";
 
-// "npx" command allows us to issue CLIs from node_modules dependencies
-// without globally installing.
-const npx = "npx" + (require("os").platform() === "win32" ? ".cmd" : ""); // platform dependent extension for npx command
+const npm = "npm" + (require("os").platform() === "win32" ? ".cmd" : ""); // platform dependent extension for npm command
 
 const gulp = require('gulp');
 const ansiColors = require("ansi-colors");
@@ -33,7 +31,7 @@ const clearRequire = require("clear-require");
 const lint: ITaskFunction = (done) => {
     let lintProcess: SpawnSyncReturns<string>;
     try {
-        lintProcess = childProcess.spawnSync("npm", ["run", "lint"], {stdio: "inherit", shell: true});
+        lintProcess = childProcess.spawnSync(npm, ["run", "lint"], {stdio: "inherit", shell: true});
 
     } catch (e) {
         fancylog(ansiColors.red("Error encountered trying to run eslint"));
@@ -284,8 +282,8 @@ const buildAllClis: ITaskFunction = async () => {
     cliDirs.forEach((dir) => {
         // Build them all
         fancylog(`Build "${dir}" cli...`);
-        const buildResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["run", "build"],
-            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`, stdio: "inherit"});
+        const buildResponse = childProcess.spawnSync(npm, ["run", "build"],
+            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`, stdio: "inherit", shell: true});
         if (buildResponse.stdout && buildResponse.stdout.toString().length > 0) {
             fancylog(`***BUILD "${dir}" stdout:\n${buildResponse.stdout.toString()}`);
         }
@@ -311,8 +309,8 @@ const installAllCliDependencies: ITaskFunction = async () => {
     cliDirs.forEach((dir) => {
         // Perform an NPM install
         fancylog(`Executing "npm install" for "${dir}" cli to obtain dependencies...`);
-        const installResponse = childProcess.spawnSync((process.platform === "win32") ? "npm.cmd" : "npm", ["install"],
-            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`, stdio: "inherit"});
+        const installResponse = childProcess.spawnSync(npm, ["install"],
+            {cwd: imperativeDirectory + `__tests__/__integration__/${dir}/`, stdio: "inherit", shell: true});
         if (installResponse.stdout && installResponse.stdout.toString().length > 0) {
             fancylog(`***INSTALL "${dir}" stdout:\n${installResponse.stdout.toString()}`);
         }
