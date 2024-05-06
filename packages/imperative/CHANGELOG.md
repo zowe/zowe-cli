@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202405061946`
 
 - Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
 - Deprecated: The `IO.FILE_DELIM` constant. Use `path.posix.sep` instead or `path.sep` for better cross-platform support.
