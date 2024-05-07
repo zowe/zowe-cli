@@ -21,6 +21,7 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 
 let pattern: string;
+let oldForceColor: string;
 
 const searchString = "Zowe CLI";
 const goodTestString = "This system test is brought to you by Zowe CLI!";
@@ -33,9 +34,14 @@ describe("Search", () => {
         });
         defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        // We can't test color related stuff in GitHub Actions or Jenkins
+        oldForceColor = process.env.FORCE_COLOR;
+        process.env.FORCE_COLOR = "0";
     });
 
     afterAll(async () => {
+        process.env.FORCE_COLOR = oldForceColor;
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -102,13 +108,13 @@ describe("Search", () => {
             };
 
             expectedApiResponse = [
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
             ];
         });
 
@@ -125,7 +131,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
             expect(response.apiResponse).toEqual(expectedApiResponse);
         });
 
@@ -143,7 +149,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should handle case sensitive searches 1", async () => {
@@ -160,7 +166,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should handle case sensitive searches 2", async () => {
@@ -178,7 +184,7 @@ describe("Search", () => {
             expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.commandResponse).not.toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.commandResponse).not.toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should allow for multiple concurrent requests", async () => {
@@ -195,7 +201,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should time out after some time 1", async () => {
@@ -212,7 +218,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should time out after some time 2", async () => {

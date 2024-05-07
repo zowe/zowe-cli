@@ -34,6 +34,8 @@ let pdsGoodMemNames: string[];
 let pdsBadMemNames: string[];
 
 let searchString = "Zowe CLI";
+let oldForceColor: string;
+
 const goodTestString = "This system test is brought to you by Zowe CLI!";
 const badTestString = "Sadly, this string will not match the search.";
 
@@ -47,6 +49,9 @@ describe("Search Data Sets", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         searchHLQ = defaultSystem.zosmf.user + ".SEARCH";
+
+        oldForceColor = process.env.FORCE_COLOR;
+        process.env.FORCE_COLOR = "0";
 
         dsnPrefix = getUniqueDatasetName(searchHLQ);
         pattern = dsnPrefix + ".*";
@@ -79,6 +84,7 @@ describe("Search Data Sets", () => {
     });
 
     afterAll(async () => {
+        process.env.FORCE_COLOR = oldForceColor;
         for (const dsn of [...goodDsNames, ...badDsNames, ...pdsNames]) {
             await Delete.dataSet(REAL_SESSION, dsn);
         }
@@ -127,7 +133,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should search and find the correct data sets rfj", async () => {
@@ -141,13 +147,13 @@ describe("Search Data Sets", () => {
                 "--rfj"
             ]);
             const expectedApiResponse = [
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
             ];
 
             expect(response.stderr.toString()).toBe("");
@@ -161,7 +167,7 @@ describe("Search Data Sets", () => {
             expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should perform an initial mainframe search if requested", async () => {
@@ -185,7 +191,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should handle case sensitive searches 1", async () => {
@@ -209,7 +215,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should handle case sensitive searches 2", async () => {
@@ -234,7 +240,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).not.toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).not.toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should allow for multiple concurrent requests", async () => {
@@ -258,7 +264,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should time out after some time 1", async () => {
@@ -282,7 +288,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should time out after some time 2", async () => {
@@ -325,19 +331,19 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should search and find the correct data sets rfj", async () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, searchString, "--rfj"]);
             const expectedApiResponse = [
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 0, column: 38, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
             ];
 
             expect(response.stderr.toString()).toBe("");
@@ -351,7 +357,7 @@ describe("Search Data Sets", () => {
             expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(JSON.parse(response.stdout.toString()).data.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should perform an initial mainframe search if requested", async () => {
@@ -367,7 +373,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should handle case sensitive searches 1", async () => {
@@ -383,7 +389,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should handle case sensitive searches 2", async () => {
@@ -400,7 +406,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).not.toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).not.toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should allow for multiple concurrent requests", async () => {
@@ -416,7 +422,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should time out after some time 1", async () => {
@@ -432,7 +438,7 @@ describe("Search Data Sets", () => {
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ1":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ4":`);
             expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.SEQ5":`);
-            expect(response.stdout.toString()).toContain(`Line: 0, Column: 38, Contents: ${goodTestString}`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
         });
 
         it("should time out after some time 2", async () => {
