@@ -584,7 +584,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
