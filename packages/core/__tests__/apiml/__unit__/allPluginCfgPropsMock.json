@@ -18,7 +18,7 @@
           }
         ],
         "appLogging": {
-          "logFile": "zowe/logs/zowe-endevor.log"
+          "logFile": "logs/zowe-endevor.log"
         }
       },
       "secondaryTextColor": "yellow",
