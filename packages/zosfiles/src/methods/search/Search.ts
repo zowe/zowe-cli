@@ -173,13 +173,14 @@ export class Search {
 
                 const lineLen = maxLine.toString().length;
                 const colLen = maxCol.toString().length;
+                const searchLen = searchOptions.searchString.length;
 
                 for (const {line, column, contents} of entry.matchList) {
                     // eslint-disable-next-line no-control-regex
                     let localContents = contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD");
-                    const beforeString = localContents.substring(0, column - 1);
-                    const selectedString = chalk.bgYellow(localContents.substring(column - 1, column - 1 + searchOptions.searchString.length));
-                    const afterString = localContents.substring(column - 1 + searchOptions.searchString.length, localContents.length + 1);
+                    const beforeString = chalk.grey(localContents.substring(0, column - 1));
+                    const selectedString = chalk.white.bold(localContents.substring(column - 1, column - 1 + searchLen));
+                    const afterString = chalk.grey(localContents.substring(column - 1 + searchLen, localContents.length + 1));
                     localContents = beforeString + selectedString + afterString;
                     apiResponse.commandResponse += chalk.yellow("Line:") + " " + line.toString().padStart(lineLen) +
                         ", " + chalk.yellow("Column:") + " " + column.toString().padStart(colLen) + ", " + chalk.yellow("Contents:") +
