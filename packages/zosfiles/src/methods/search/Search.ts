@@ -290,7 +290,7 @@ export class Search {
                     } else {
                         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                         searchOptions.progressTask.percentComplete = Math.floor(((complete / total) * 100));
-                        searchOptions.progressTask.statusMessage = "Performing Search: " + complete + " of " + total + " entries checked";
+                        searchOptions.progressTask.statusMessage = "Performing search: " + complete + " of " + total + " entries checked";
                     }
                 }
 

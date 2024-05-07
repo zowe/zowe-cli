@@ -24,8 +24,8 @@ describe("Search", () => {
         type: "basic"
     });
     const testDataString = "THIS DATA SET CONTAINS SOME TESTDATA";
-    const expectedCol = 28;
-    const expectedLine = 0;
+    const expectedCol = 29;
+    const expectedLine = 1;
 
     let searchOptions: ISearchOptions = {
         pattern: "TEST*",
@@ -45,6 +45,7 @@ describe("Search", () => {
         {dsn: "TEST3.PDS", member: "MEMBER2", matchList: undefined},
         {dsn: "TEST3.PDS", member: "MEMBER3", matchList: undefined}
     ];
+    let oldForceColor: string;
 
     function generateDS(name: string, pds: boolean, poe: boolean = false, migr: boolean = false) {
         return {
@@ -95,7 +96,14 @@ describe("Search", () => {
         (Search as any).timerExpired = false;
     });
 
+    beforeAll(() => {
+        // We can't test color related stuff in GitHub Actions
+        oldForceColor = process.env.FORCE_COLOR;
+        process.env.FORCE_COLOR = "0";
+    });
+
     afterAll(() => {
+        process.env.FORCE_COLOR = "0";
         jest.restoreAllMocks();
     });
 
@@ -821,7 +829,7 @@ describe("Search", () => {
             expect(searchOptions.progressTask.stageName).toEqual(TaskStage.IN_PROGRESS);
 
             // Because the 5th entry is the last, there will have been 4 completed tasks
-            expect(searchOptions.progressTask.statusMessage).toEqual("Initial Mainframe Search: 4 of 5 entries checked");
+            expect(searchOptions.progressTask.statusMessage).toEqual("Initial mainframe search: 4 of 5 entries checked");
             expect(searchOptions.progressTask.percentComplete).toEqual(40);
         });
 
@@ -1024,14 +1032,14 @@ describe("Search", () => {
             expect(searchOptions.progressTask.stageName).toEqual(TaskStage.IN_PROGRESS);
 
             // Because the 5th entry is the last, there will have been 4 completed tasks
-            expect(searchOptions.progressTask.statusMessage).toEqual("Performing Deep Search: 4 of 5 entries checked");
+            expect(searchOptions.progressTask.statusMessage).toEqual("Performing search: 4 of 5 entries checked");
             expect(searchOptions.progressTask.percentComplete).toEqual(80);
         });
 
         it("Should update the progress task, if present 2", async () => {
             searchOptions.progressTask = {
                 percentComplete: 40,
-                statusMessage: "Initial Mainframe Search: 4 of 5 entries checked",
+                statusMessage: "Initial mainframe search: 4 of 5 entries checked",
                 stageName: TaskStage.IN_PROGRESS
             };
             const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
@@ -1052,7 +1060,7 @@ describe("Search", () => {
             expect(searchOptions.progressTask.stageName).toEqual(TaskStage.IN_PROGRESS);
 
             // Because the 5th entry is the last, there will have been 4 completed tasks
-            expect(searchOptions.progressTask.statusMessage).toEqual("Performing Deep Search: 4 of 5 entries checked");
+            expect(searchOptions.progressTask.statusMessage).toEqual("Performing search: 4 of 5 entries checked");
             expect(searchOptions.progressTask.percentComplete).toEqual(90);
         });
 
