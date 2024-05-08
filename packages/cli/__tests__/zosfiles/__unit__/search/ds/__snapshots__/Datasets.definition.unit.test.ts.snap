@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files search ds command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "cs",
+    ],
+    "defaultValue": false,
+    "description": "The search should be case sensitive",
+    "name": "case-sensitive",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "ms",
+    ],
+    "defaultValue": false,
+    "description": "Perform a preliminary search on the mainframe, reducing network traffic",
+    "name": "mainframe-search",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "mcr",
+    ],
+    "defaultValue": 1,
+    "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to search files. Increasing the value results in faster searches. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests.",
+    "name": "max-concurrent-requests",
+    "numericValueRange": Array [
+      1,
+      99999,
+    ],
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "to",
+    ],
+    "description": "The number of seconds to search before timing out",
+    "name": "timeout",
+    "type": "number",
+  },
+]
+`;
+
+exports[`zos-files search ds command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE'",
+    "options": "'IBMUSER.*' 'ZOWE'",
+  },
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE' in uppercase only",
+    "options": "'IBMUSER.*' 'ZOWE' --case-sensitive",
+  },
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE', and time out in 1 minute",
+    "options": "'IBMUSER.*' 'ZOWE' --timeout 60",
+  },
+  Object {
+    "description": "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
+    "options": "'IBMUSER.*' 'ZOWE' --max-concurrent-requests 8",
+  },
+]
+`;

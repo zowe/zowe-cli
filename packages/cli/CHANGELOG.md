@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern with the `zowe zos-files search data-sets` comamnd.[#2095](https://github.com/zowe/zowe-cli/issues/2095)
+
 ## `8.0.0-next.202405061946`
 
 - Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
