@@ -29,7 +29,7 @@ Array [
     "name": "max-concurrent-requests",
     "numericValueRange": Array [
       1,
-      99999,
+      100,
     ],
     "type": "number",
   },

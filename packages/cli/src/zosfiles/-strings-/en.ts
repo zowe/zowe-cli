@@ -385,7 +385,7 @@ export default {
                     `(e.g. "ibmuser.j*.old" matches "ibmuser.jcl.old" but not "ibmuser.jcl.very.old")
                     ${TextUtils.chalk.yellow("**")}: matches any number of characters within any number of data set name qualifiers ` +
                     `(e.g. "ibmuser.**.old" matches both "ibmuser.jcl.old" and "ibmuser.jcl.very.old")
-                    However, the pattern cannot begin with any of these sequences.You can specify multiple patterns separated by commas, ` +
+                    However, the pattern cannot begin with any of these sequences. You can specify multiple patterns separated by commas, ` +
                     `for example "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },
                 EXAMPLES: {
@@ -601,7 +601,7 @@ export default {
                     `(e.g. "ibmuser.j*.old" matches "ibmuser.jcl.old" but not "ibmuser.jcl.very.old")
                     ${TextUtils.chalk.yellow("**")}: matches any number of characters within any number of data set name qualifiers ` +
                     `(e.g. "ibmuser.**.old" matches both "ibmuser.jcl.old" and "ibmuser.jcl.very.old")
-                    However, the pattern cannot begin with any of these sequences.You can specify multiple patterns separated by commas, ` +
+                    However, the pattern cannot begin with any of these sequences. You can specify multiple patterns separated by commas, ` +
                     `for example "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },
                 OPTIONS: {
