@@ -20,14 +20,17 @@ import { IProfileTypeConfiguration } from "../doc/config/IProfileTypeConfigurati
 const readYaml = require("js-yaml");
 
 /**
- * V1ProfileConversion methods for reading profiles from disk. The profile managers never invoke "fs" directly.
- * All "fs" calls are wrapped here and errors are transformed to ImperativeError for error handling/flow throughout
- * Imperative.
+ * The V1ProfileRead class is for reading V1 profiles from disk.
+ * V1 profiles are not supported as of Zowe V3. Profiles should only be read
+ * for the purpose of converting the V1 profiles to a current zowe client configuration.
+ * All "fs" calls are wrapped here and errors are transformed to ImperativeError for
+ * error handling/flow throughout Imperative.
  *
  * @export
- * @class V1ProfileConversion
+ * @class V1ProfileRead
+ * @internal
  */
-export class V1ProfileConversion {
+export class V1ProfileRead {
     /**
      * Read the profile meta file using Yaml "safeLoad" (ensures that no code executes, etc. during the load). The
      * meta profile file for a type contains the default profile specification. The meta profile is ALWAYS in YAML
@@ -35,10 +38,10 @@ export class V1ProfileConversion {
      * @static
      * @param {string} path - The path to the meta profile
      * @returns {IMetaProfile} - The meta profile
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static readMetaFile<T extends IProfileTypeConfiguration>(path: string): IMetaProfile<T> {
-        V1ProfileConversion.crashInTeamConfigMode();
+        V1ProfileRead.crashInTeamConfigMode();
 
         let meta: IMetaProfile<T>;
         try {
@@ -47,7 +50,7 @@ export class V1ProfileConversion {
             throw new ImperativeError({
                 msg: `Error reading profile file ("${path}"). Error Details: ${err.message}`,
                 additionalDetails: err
-            }, {tag: V1ProfileConversion.ERROR_ID});
+            }, {tag: V1ProfileRead.ERROR_ID});
         }
         return meta;
     }
@@ -59,10 +62,10 @@ export class V1ProfileConversion {
      * @static
      * @param {string} profileRootDirectory - The profiles root directory to obtain all profiles from.
      * @returns {string[]} - The list of profiles returned or a blank array
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static getAllProfileDirectories(profileRootDirectory: string): string[] {
-        V1ProfileConversion.crashInTeamConfigMode();
+        V1ProfileRead.crashInTeamConfigMode();
 
         let names: string[] = [];
         try {
@@ -77,7 +80,7 @@ export class V1ProfileConversion {
                 msg: `An error occurred attempting to read all profile directories from "${profileRootDirectory}". ` +
                     `Error Details: ${e.message}`,
                 additionalDetails: e
-            }, {tag: V1ProfileConversion.ERROR_ID});
+            }, {tag: V1ProfileRead.ERROR_ID});
         }
         return names;
     }
@@ -90,10 +93,10 @@ export class V1ProfileConversion {
      * @param {string} ext - the extension for the profile files (normally YAML)
      * @param {string} metaNameForType - the meta name for this type
      * @returns {string[]} - A list of all profile names (without path/ext)
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static getAllProfileNames(profileTypeDir: string, ext: string, metaNameForType: string): string[] {
-        V1ProfileConversion.crashInTeamConfigMode();
+        V1ProfileRead.crashInTeamConfigMode();
 
         const names: string[] = [];
         try {
@@ -102,17 +105,17 @@ export class V1ProfileConversion {
                 const fullFile = pathPackage.resolve(profileTypeDir, file);
                 const isYamlFile = fullFile.length > ext.length && fullFile.substring(
                     fullFile.length - ext.length) === ext;
-                return isYamlFile && V1ProfileConversion.fileToProfileName(fullFile, ext) !== metaNameForType;
+                return isYamlFile && V1ProfileRead.fileToProfileName(fullFile, ext) !== metaNameForType;
             });
             for (const file of profileFiles) {
-                names.push(V1ProfileConversion.fileToProfileName(file, ext));
+                names.push(V1ProfileRead.fileToProfileName(file, ext));
             }
         } catch (e) {
             throw new ImperativeError({
                 msg: `An error occurred attempting to read all profile names from "${profileTypeDir}". ` +
                     `Error Details: ${e.message}`,
                 additionalDetails: e
-            }, {tag: V1ProfileConversion.ERROR_ID});
+            }, {tag: V1ProfileRead.ERROR_ID});
         }
         return names;
     }
@@ -123,10 +126,10 @@ export class V1ProfileConversion {
      * @param {string} filePath - Path to the profile.
      * @param {string} type - The profile type; used to populate the "type" in the profile object (type property not persisted on disk).
      * @returns {IProfile} - The profile object.
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     public static readProfileFile(filePath: string, type: string): IProfile {
-        V1ProfileConversion.crashInTeamConfigMode();
+        V1ProfileRead.crashInTeamConfigMode();
 
         let profile: IProfile;
         try {
@@ -135,7 +138,7 @@ export class V1ProfileConversion {
             throw new ImperativeError({
                 msg: `Error reading profile file ("${filePath}"). Error Details: ${err.message}`,
                 additionalDetails: err
-            }, {tag: V1ProfileConversion.ERROR_ID});
+            }, {tag: V1ProfileRead.ERROR_ID});
         }
         return profile;
     }
@@ -156,7 +159,7 @@ export class V1ProfileConversion {
                 throw new ImperativeError({
                     msg: err.message,
                     additionalDetails: err.stack,
-                }, {tag: V1ProfileConversion.ERROR_ID});
+                }, {tag: V1ProfileRead.ERROR_ID});
             }
         }
     }
@@ -167,7 +170,7 @@ export class V1ProfileConversion {
      * @param {string} file - the file path to extract the profile name
      * @param {string} ext - the extension of the file
      * @returns {string} - the profile name
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
     private static fileToProfileName(file: string, ext: string): string {
         file = pathPackage.basename(file);
@@ -179,7 +182,7 @@ export class V1ProfileConversion {
      * @private
      * @static
      * @type {string}
-     * @memberof V1ProfileConversion
+     * @memberof V1ProfileRead
      */
-    private static ERROR_ID: string = "V1ProfileConversion Read Error";
+    private static ERROR_ID: string = "V1ProfileRead Read Error";
 }

@@ -260,7 +260,7 @@ export class Download {
                 const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
+                    file: posix.join(baseDir, fileName + IO.normalizeExtension(extension)),
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
@@ -269,7 +269,7 @@ export class Download {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
                     // Delete the file that could not be downloaded
-                    IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
+                    IO.deleteFile(join(baseDir, fileName + IO.normalizeExtension(extension)));
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
                         throw err;

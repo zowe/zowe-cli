@@ -9,6 +9,7 @@
 *
 */
 
+import * as path from "path";
 import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
@@ -141,20 +142,20 @@ export class DownloadJobs {
         let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
 
         if (parms.omitJobidDirectory == null || parms.omitJobidDirectory === false) {
-            directory += IO.FILE_DELIM + parms.jobFile.jobid;
+            directory += path.posix.sep + parms.jobFile.jobid;
         }
 
         if (parms.jobFile.procstep != null) {
-            directory += IO.FILE_DELIM + parms.jobFile.procstep;
+            directory += path.posix.sep + parms.jobFile.procstep;
         }
 
         if (parms.jobFile.stepname != null) {
-            directory += IO.FILE_DELIM + parms.jobFile.stepname;
+            directory += path.posix.sep + parms.jobFile.stepname;
         }
 
         const extension = parms.extension ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
 
-        return directory + IO.FILE_DELIM + parms.jobFile.ddname + extension;
+        return directory + path.posix.sep + parms.jobFile.ddname + extension;
     }
 
     /**

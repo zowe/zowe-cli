@@ -21,6 +21,7 @@ import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
 import { ConfigSchema, ProfileInfo } from "../../../../../config";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
+
 const npmCmd = findNpmOnPath();
 
 /**
