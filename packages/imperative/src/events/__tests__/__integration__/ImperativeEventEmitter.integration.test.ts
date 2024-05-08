@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../../..";
+import { IImperativeEventJson, ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../../..";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import * as TestUtil from "../../../../__tests__/src/TestUtil";
@@ -65,23 +65,24 @@ describe("Event Emitter", () => {
 
             expect(doesEventFileExists(theEvent)).toBeFalsy();
 
-            let testVar = "event not emitted";
             const subSpy = jest.fn();
             iee.instance.subscribe(theEvent, subSpy);
-            // iee.instance.subscribe(theEvent, (()=>{testVar = "event emitted";}).bind(this));
 
             expect(subSpy).not.toHaveBeenCalled();
-            // expect(testVar).toContain("not");
             expect(doesEventFileExists(theEvent)).toBeTruthy();
 
             expect(iee.instance.getEventContents(theEvent)).toBeFalsy();
 
             iee.instance.emitEvent(theEvent);
+
+            (iee.instance as any).subscriptions.get(theEvent)[1][0](); // simulate FSWatcher called
+
             expect(doesEventFileExists(theEvent)).toBeTruthy();
-            expect(iee.instance.getEventContents(theEvent)).toBeTruthy();
+            const eventDetails: IImperativeEventJson = JSON.parse(iee.instance.getEventContents(theEvent));
+            expect(eventDetails.type).toEqual(theEvent);
+            expect(eventDetails.user).toBeFalsy();
+
             expect(subSpy).toHaveBeenCalled();
-            // expect((iee.instance as any).subscriptions.get(theEvent)[1][0]).toHaveBeenCalled();
-            // expect(testVar).not.toContain("not");
         });
         it("should trigger subscriptions for all instances watching for onCredentialManagerChanged", () => { });
         it("should not affect subscriptions from another instance when unsubscribing from events", () => { });
