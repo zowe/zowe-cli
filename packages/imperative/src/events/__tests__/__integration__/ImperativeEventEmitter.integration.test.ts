@@ -19,8 +19,8 @@ import * as path from "path";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 const iee = ImperativeEventEmitter;
-const iee_user = ImperativeUserEvents;
-const iee_shared = ImperativeSharedEvents;
+const iee_u = ImperativeUserEvents;
+const iee_s = ImperativeSharedEvents;
 let cwd = '';
 
 describe("Event Emitter", () => {
@@ -39,6 +39,14 @@ describe("Event Emitter", () => {
         cwd = TEST_ENVIRONMENT.workingDir;
     });
 
+    beforeEach(() => {
+        iee.initialize("zowe", { logger: testLogger });
+    });
+
+    afterEach(() => {
+        iee.teardown();
+    });
+
     afterAll(() => {
         process.mainModule = mainModule;
         TestUtil.rimraf(cwd);
@@ -53,25 +61,27 @@ describe("Event Emitter", () => {
 
     describe("Shared Events", () => {
         it("should create an event file upon first subscription if the file does not exist", () => {
-            iee.initialize("zowe", { logger: testLogger });
-
-            const theEvent = iee_shared.ON_CREDENTIAL_MANAGER_CHANGED;
+            const theEvent = iee_s.ON_CREDENTIAL_MANAGER_CHANGED;
 
             expect(doesEventFileExists(theEvent)).toBeFalsy();
 
+            let testVar = "event not emitted";
             const subSpy = jest.fn();
             iee.instance.subscribe(theEvent, subSpy);
+            // iee.instance.subscribe(theEvent, (()=>{testVar = "event emitted";}).bind(this));
 
             expect(subSpy).not.toHaveBeenCalled();
+            // expect(testVar).toContain("not");
             expect(doesEventFileExists(theEvent)).toBeTruthy();
 
             expect(iee.instance.getEventContents(theEvent)).toBeFalsy();
 
             iee.instance.emitEvent(theEvent);
-
             expect(doesEventFileExists(theEvent)).toBeTruthy();
             expect(iee.instance.getEventContents(theEvent)).toBeTruthy();
             expect(subSpy).toHaveBeenCalled();
+            // expect((iee.instance as any).subscriptions.get(theEvent)[1][0]).toHaveBeenCalled();
+            // expect(testVar).not.toContain("not");
         });
         it("should trigger subscriptions for all instances watching for onCredentialManagerChanged", () => { });
         it("should not affect subscriptions from another instance when unsubscribing from events", () => { });

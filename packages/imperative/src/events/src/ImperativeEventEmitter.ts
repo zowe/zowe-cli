@@ -39,9 +39,22 @@ export class ImperativeEventEmitter {
             ConfigUtils.initImpUtils("zowe");
         }
 
-        ImperativeEventEmitter.instance.appName = appName;
-        ImperativeEventEmitter.instance.logger = options?.logger ?? Logger.getImperativeLogger();
+        this.instance.appName = appName;
+        this.instance.logger = options?.logger ?? Logger.getImperativeLogger();
     }
+
+    public static teardown() {
+        if (!this.initialized) {
+            return;
+        }
+
+        for (const sub of [...this.instance.subscriptions.keys()]) {
+            this.instance.unsubscribe(sub);
+        }
+
+        this.initialized = false;
+    }
+
     public static get instance(): ImperativeEventEmitter {
         if (this.mInstance == null) {
             this.mInstance = new ImperativeEventEmitter();
@@ -106,7 +119,6 @@ export class ImperativeEventEmitter {
      */
     private writeEvent(location: string, event: ImperativeEvent) {
         event.location = location;
-
         this.ensureEventsDirExists(location);
         fs.writeFileSync(join(location, event.type), JSON.stringify(event.toJson(), null, 2));
     }
@@ -119,9 +131,9 @@ export class ImperativeEventEmitter {
      */
     private setupWatcher(eventName: string, callbacks: Function[] = []): fs.FSWatcher {
         const dir = this.getEventDir(eventName);
-        this.ensureEventsDirExists(dir); //ensure .events exist
-
+        this.ensureEventsDirExists(dir);
         this.ensureEventFileExists(join(dir, eventName));
+
         const watcher = fs.watch(join(dir, eventName), (event: "rename" | "change") => {
             // Node.JS triggers this event 3 times
             const eventContents = this.getEventContents(eventName);
@@ -202,7 +214,9 @@ export class ImperativeEventEmitter {
      * @internal
      */
     public getEventContents(eventName: string): string {
-        return fs.readFileSync(join(this.getEventDir(eventName), eventName)).toString();
+        const eventLoc = join(this.getEventDir(eventName), eventName);
+        if (!fs.existsSync(eventLoc)) return "";
+        return fs.readFileSync(eventLoc).toString();
     }
 
     /**
