@@ -17,7 +17,7 @@ import i18nTypings from "../-strings-/en";
 const strings = (require("../-strings-/en").default as typeof i18nTypings).DOWNLOAD.OPTIONS;
 
 /** @internal */
-export const maxConcurrentRequestsMaxValue = 99999;
+export const maxConcurrentRequestsMaxValue = 100;
 
 /**
  * Object containing all options to be used by the Download data set API

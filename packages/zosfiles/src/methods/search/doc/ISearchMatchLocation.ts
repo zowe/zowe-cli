@@ -13,7 +13,6 @@
  * This interface defines the information that is stored in the download data set API return object
  */
 export interface ISearchMatchLocation {
-
     /**
      * The line number that the match was found in
      */

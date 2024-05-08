@@ -39,7 +39,7 @@ export const DataSetsDefinition: ICommandDefinition = {
             required: true
         },
         {
-            name: "search-string",
+            name: "searchString",
             description: strings.OPTIONS.SEARCHSTRING,
             type: "string",
             required: true
