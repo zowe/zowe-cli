@@ -1,6 +1,6 @@
 /*
 * This program and the accompanying materials are made available under the terms of the
-`* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
 * https://www.eclipse.org/legal/epl-v20.html
 *
 * SPDX-License-Identifier: EPL-2.0
@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import { Logger } from "../../logger/src/Logger";
 import { EventEmitterManager } from "./EventEmitterManager";
 import { EventTypes } from "./EventConstants";
@@ -40,7 +41,8 @@ export class EventEmitter {
         this.events = new Map();
         this.appName = appName;
 
-        // Ensure we have correct environmental conditions to setup logger
+        // Ensure we have correct environmental conditions to setup a custom logger,
+        // otherwise use default logger
         if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
             ConfigUtils.initImpUtils("zowe");
         }
@@ -93,15 +95,16 @@ export class EventEmitter {
     }
 
     /**
-     * Unsubscribes from a given event by removing it from the subscriptions map.
-     * Logs an error if the event name is not found in the subscriptions.
+     * Unsubscribes from a given event by closing the file watchers associated with that event THEN
+     * deleting that event from the EventEmitter's events map.
+     * Logs an error if eventName isn't found.
      *
      * @param {string} eventName
      */
     public unsubscribe(eventName: string): void {
         try{
             // find watcher list and close everything
-            this.events.get(eventName).watchers.forEach((watcher)=>{
+            this.events.get(eventName).subscriptions.forEach((watcher)=>{
                 watcher.removeAllListeners(eventName).close();
             });
             this.events.delete(eventName);

@@ -133,7 +133,7 @@ export class CredentialManagerOverride {
         settings.json.overrides.CredentialManager = newCredMgrName;
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
-            EventEmitter.instance.emitEvent(SharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
+            new EventEmitter("Zowe").emitEvent(SharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +
@@ -188,7 +188,7 @@ export class CredentialManagerOverride {
         settings.json.overrides.CredentialManager = this.DEFAULT_CRED_MGR_NAME;
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
-            EventEmitter.instance.emitEvent(SharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
+            new EventEmitter("Zowe").emitEvent(SharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +

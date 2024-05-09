@@ -1,3 +1,14 @@
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
 import { FSWatcher } from "fs";
 import { EventTypes } from "./EventConstants";
 import { IEventJson } from "./doc";
@@ -8,15 +19,15 @@ export class Event implements IEventJson {
     eventType: EventTypes;
     appName: string;
     filePath: string;
-    watchers: FSWatcher[];
+    subscriptions: FSWatcher[];
 
-    constructor({ eventTime, eventName, eventType, appName, filePath: eventFilePath, watchers}: IEventJson) {
+    constructor({ eventTime, eventName, eventType, appName, filePath: eventFilePath, subscriptions}: IEventJson) {
         this.eventTime = eventTime;
         this.eventName = eventName;
         this.eventType = eventType;
         this.appName = appName;
         this.filePath = eventFilePath;
-        this.watchers = watchers;
+        this.subscriptions = subscriptions;
     }
 
     public toJson() {

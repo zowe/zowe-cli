@@ -6,6 +6,7 @@
 * SPDX-License-Identifier: EPL-2.0
 *
 * Copyright Contributors to the Zowe Project.
+*
 */
 
 import { EventEmitter } from "./EventEmitter";
@@ -37,7 +38,7 @@ export class EventEmitterManager {
      */
     public static getEmitter(appName: string): EventEmitter | undefined {
         if (!this.instances.has(appName)) {
-            const newInstance = new EventEmitter(appName, this.logger);
+            const newInstance = new EventEmitter(appName);
             this.instances.set(appName, newInstance);
         }
         return this.instances.get(appName);
@@ -47,8 +48,7 @@ export class EventEmitterManager {
      * A collection of helper functions related to event management, including:
      * - directory management
      * - event type determination
-     * - subscription creation
-     * - watcher creation and setting callbacks
+     * - subscription creation and setting callbacks
      * - event writing
      */
     public static Helpers = {
@@ -119,7 +119,7 @@ export class EventEmitterManager {
                 eventType: eventType,
                 appName: eeInst.appName,
                 filePath: filePath,
-                watchers: []
+                subscriptions: []
             });
 
             eeInst.events.set(eventName, newEvent);
@@ -141,7 +141,7 @@ export class EventEmitterManager {
                     eeInst.eventTimes.set(eventName, event.eventTime);
                 }
             });
-            event.watchers.push(watcher);
+            event.subscriptions.push(watcher);
             return watcher;
         },
 

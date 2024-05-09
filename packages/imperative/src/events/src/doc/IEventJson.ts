@@ -41,5 +41,5 @@ export interface IEventJson {
     /**
      * List of watchers to eventually close
      */
-    watchers: fs.FSWatcher[];
+    subscriptions: fs.FSWatcher[];
 }
