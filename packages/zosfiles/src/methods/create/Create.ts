@@ -22,6 +22,8 @@ import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { List } from "../list";
+import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 // const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);
@@ -150,8 +152,36 @@ export class Create {
         if (options && options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
+
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
         Create.dataSetValidateOptions(tempOptions);
+
+        /*
+        *  This is a fix for issue https://github.com/zowe/vscode-extension-for-zowe/issues/2610.
+        *
+        *  If no block size is passed, then retrieve the attributes of the "Like" dataset and
+        *  set the block size, as the zosmf Rest API does not set the block size properly in
+        *  some instances.
+        *
+        */
+        if (tempOptions.blksize === null || tempOptions.blksize === undefined) {
+            let likeDataSetObj: IZosmfListResponse;
+            const likeDataSetList  = await List.dataSet(session, likeDataSetName, {
+                attributes: true, maxLength: 1,
+                start: likeDataSetName,
+                recall: "wait"
+            });
+
+            const dsnameIndex = likeDataSetList.apiResponse.returnedRows === 0 ? -1 :
+                likeDataSetList.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === likeDataSetName.toUpperCase());
+            if (dsnameIndex !== -1) {
+                likeDataSetObj = likeDataSetList.apiResponse.items[dsnameIndex];
+                tempOptions.blksize = parseInt(likeDataSetObj.blksz);
+            }
+            else {
+                throw new ImperativeError({ msg: ZosFilesMessages.datasetAllocateLikeNotFound.message });
+            }
+        }
         await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
         return {
             success: true,

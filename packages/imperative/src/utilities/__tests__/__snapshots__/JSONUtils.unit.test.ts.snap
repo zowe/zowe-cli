@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JSONUtils tests should parse a JSON object 1`] = `
+Object {
+  "name": "user",
+  "val": 80,
+}
+`;

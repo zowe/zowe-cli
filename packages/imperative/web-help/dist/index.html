@@ -1,0 +1,65 @@
+<!--
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Docs</title>
+    <link rel="stylesheet" href="./css/bundle.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./js/bundle.js"></script>
+    <script src="./js/tree.js"></script>
+    <script src="./tree-data.js"></script>
+</head>
+<body>
+    <div id="panel-container">
+        <div id="panel-left">
+            <div id="header">
+                <img id="header-image" alt="" src="./header-image.png" onerror="this.style.opacity='0'">
+                <a href="./index.html"><h2 id="header-text"></h2></a>
+
+                <div id="tree-tabs">
+                    <ul class="nav nav-pills nav-justified">
+                        <li class="nav-item"><a id="tree-view-link" class="nav-link active" href="#" onclick="changeView(0); return false;">Tree View</a></li>
+                        <li class="nav-item"><a id="flat-view-link" class="nav-link" href="#" onclick="changeView(1); return false;">Flat View</a></li>
+                    </ul>
+                </div>
+
+                <input id="tree-search" class="form-control" type="search" placeholder="Search">
+            </div>
+
+            <div id="cmd-tree"></div>
+
+            <div id="footer" class="text-secondary"></div>
+        </div>
+
+        <div id="panel-right">
+            <iframe id="docs-page" title="Web Help"></iframe>
+        </div>
+    </div>
+    <script>
+    document.title = headerStr + " " + document.title;
+    const splitter = Split(["#panel-left", "#panel-right"], {
+        sizes: [20, 80],
+        minSize: 0
+    });
+    loadTree();
+    $(".gutter").on("dblclick", function () {
+        toggleTree(splitter)
+    });
+    </script>
+</body>
+</html>

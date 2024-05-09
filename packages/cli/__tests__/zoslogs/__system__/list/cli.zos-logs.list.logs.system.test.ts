@@ -18,9 +18,6 @@ import * as fs from "fs";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
-// Expected length constants
-const FOLLOW_UP_ATTEMPTS: number = 3;
-
 describe("zos-logs list logs", () => {
     // Create the unique test environment with zosmf profiles
     beforeAll(async () => {

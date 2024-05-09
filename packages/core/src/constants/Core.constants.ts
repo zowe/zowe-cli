@@ -102,7 +102,9 @@ export class ProfileConstants {
      */
     public static readonly BASE_OPTION_CERT_FILE: ICommandOptionDefinition = {
         name: "cert-file",
-        description: "The file path to a certificate file to use for authentication",
+        description: "The file path to a certificate file to use for authentication.\n\nNote: " +
+        "The CLI does not support certificate files that require a password. " +
+        "For more information, search Troubleshooting PEM Certificates in Zowe Docs.",
         type: "existingLocalFile",
         group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
     };

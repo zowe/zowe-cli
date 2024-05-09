@@ -1,0 +1,29 @@
+{
+  "name": "profile-example-cli",
+  "version": "0.0.0",
+  "description": "Test Imperative CLI with Profiles",
+  "license": "EPL 2.0",
+  "repository": "",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}

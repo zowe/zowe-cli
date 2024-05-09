@@ -1,0 +1,36 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "base_glob": {
+            "type": "base",
+            "properties": {
+                "user": "globalUser",
+                "password": "globalPassword",
+                "rejectUnauthorized": false
+            }
+        },
+        "LPAR2": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR2.your.domain.net",
+                "port": 6789,
+                "responseFormatHeader": true
+            }
+        },
+        "LPAR2_home": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR2.your.domain.net",
+                "port": 6789,
+                "responseFormatHeader": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "LPAR2_home",
+        "base": "base_glob"
+    },
+    "plugins": [],
+    "secure": [],
+    "autoStore": true
+}

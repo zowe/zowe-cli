@@ -28,9 +28,6 @@ import { IDsmListOptions } from "./doc/IDsmListOptions";
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
  */
 export class List {
-    // eslint-disable-next-line no-control-regex
-    private static CONTROL_CHAR_REGEX = new RegExp(/[\x00-\x1f\x7f\x80-\x9f]/g);
-
     /**
      * Retrieve all members from a PDS
      *
@@ -77,21 +74,24 @@ export class List {
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
-            let data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            const data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
             let response: any;
             try {
                 response = JSONUtils.parse(data);
-            } catch {
-                // Escape invalid JSON characters in encrypted member names
-                for (const match of Array.from(data.matchAll(/"member":\s*"/g)).reverse()) {
-                    const memberStartIdx = match.index + match[0].length;
-                    const memberNameLength = data.substring(memberStartIdx,
-                        memberStartIdx + data.substring(memberStartIdx).match(/"[A-Za-z]{6,}"\s*:/).index).lastIndexOf(`"`);
-                    const memberName = data.substring(memberStartIdx, memberStartIdx + memberNameLength);
-                    const escapedMemberName = memberName.replace(/(["\\])/g, `\\$1`).replace(this.CONTROL_CHAR_REGEX, "\\ufffd");
-                    data = data.substring(0, memberStartIdx) + escapedMemberName + data.substring(memberStartIdx + memberNameLength);
+            } catch (err) {
+                const match = /in JSON at position (\d+)/.exec(err.message);
+                if (match != null) {
+                    // Remove invalid member names from end of list and try to parse again
+                    const lineNum = data.slice(0, parseInt(match[1])).split("\n").length - 1;
+                    const lines = data.trim().split("\n");
+                    lines[lineNum - 1] = lines[lineNum - 1].replace(/,$/, "");
+                    lines.splice(lineNum, lines.length - lineNum - 1);
+                    response = JSONUtils.parse(lines.join("\n"));
+                    const invalidMemberCount = response.returnedRows - response.items.length;
+                    this.log.warn(`${invalidMemberCount} members failed to load due to invalid name errors for ${dataSetName}`);
+                } else {
+                    throw err;
                 }
-                response = JSONUtils.parse(data);
             }
 
             return {

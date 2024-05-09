@@ -1,0 +1,21 @@
+{
+    "profiles": {
+        "secured": {
+            "type": "secured",
+            "properties": {},
+            "secure": []
+        },
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "fakeHost",
+                "port": 1234
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        }
+    },
+    "defaults": {}
+}

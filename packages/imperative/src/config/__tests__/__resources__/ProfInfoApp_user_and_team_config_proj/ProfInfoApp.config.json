@@ -1,0 +1,27 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "base_glob": {
+            "type": "base",
+            "properties": {
+                "user": "userNameBase",
+                "password": "passwordBase",
+                "rejectUnauthorized": false
+            }
+        },
+        "LPAR1": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR1.your.domain.net",
+                "port": 1234,
+                "responseFormatHeader": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "LPAR1",
+        "base": "base_glob"
+    },
+    "plugins": [],
+    "secure": []
+}

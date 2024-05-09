@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chained Handler Service should reject a getArguments call if not enough response objects are provided 1`] = `"You must provide at least as many response objects as chained handlers that have been processed so far. You provided 2 response objects  and tried to process the handler at index 3."`;

@@ -372,11 +372,11 @@ export class Download {
                 } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
                     mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
-                    mutableOptions.file = `${mutableOptions.directory}/${dataSetObj.dsname}.` +
-                        `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
+                    mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
                     if (!options.preserveOriginalLetterCase) {
                         mutableOptions.file = mutableOptions.file.toLowerCase();
                     }
+                    mutableOptions.file = `${mutableOptions.directory}/${mutableOptions.file}`;
                     mutableOptions.directory = undefined;
                     mutableOptions.extension = undefined;
                 }

@@ -9,8 +9,21 @@
 *
 */
 
+function getImperative() {
+    try {
+        return require("@zowe/imperative");
+    } catch (err) {
+        if (err.code === "ERR_MODULE_NOT_FOUND" || err.code === "MODULE_NOT_FOUND") {
+            require("ts-node/register");
+            return require(require("path").resolve(__dirname, "../../imperative/src/utilities/src/TextUtils"));
+        } else {
+            throw err;
+        }
+    }
+}
+
 function printSuccessMessage() {
-    const imperative = require("@zowe/imperative");
+    const imperative = getImperative();
 
     const installSuccessMessage = "Zowe CLI has been successfully installed. " +
     "You can safely ignore all non-plug-in related errors and warnings. " +

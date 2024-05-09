@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IO tests should get an error for no input on createDirSync 1`] = `"Expect Error: Required parameter 'dir' must not be blank"`;
+
+exports[`IO tests should get an error for no input on createDirsSync 1`] = `"Expect Error: Required parameter 'dir' must not be blank"`;
+
+exports[`IO tests should get an error for no input on createDirsSyncFromFilePath 1`] = `"Expect Error: Required parameter 'filePath' must not be blank"`;
+
+exports[`IO tests should get an error for no input on createFileSync 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on createReadStream 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on createWriteStream 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on deleteDir 1`] = `"Expect Error: Required parameter 'dir' must not be blank"`;
+
+exports[`IO tests should get an error for no input on deleteFile 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on existsSync 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on isDir 1`] = `"Expect Error: Required parameter 'dirOrFile' must not be blank"`;
+
+exports[`IO tests should get an error for no input on mkdirp 1`] = `"Expect Error: Required parameter 'dir' must not be blank"`;
+
+exports[`IO tests should get an error for no input on processNewlines 1`] = `"Expect Error: Required parameter 'original' must not be null or undefined"`;
+
+exports[`IO tests should get an error for no input on readFileSync 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on writeFile 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on writeFile second parm 1`] = `"Expect Error: Content to write to the file must not be null or undefined"`;
+
+exports[`IO tests should get an error for no input on writeFileAsync 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
+
+exports[`IO tests should get an error for no input on writeFileAsync second parm 1`] = `"Expect Error: Content to write to the file must not be null or undefined"`;
+
+exports[`IO tests should get an error for no input on writeObject 1`] = `"Expect Error: Required parameter 'configFile' must not be blank"`;
+
+exports[`IO tests should get an error for no input on writeObject second parm 1`] = `"Expect Error: content"`;
+
+exports[`IO tests should return normalized extension 1`] = `".bin"`;
+
+exports[`IO tests should return normalized extension even if input is only '.' 1`] = `"."`;
+
+exports[`IO tests should return normalized extension even if prefixed with '.' 1`] = `".bin"`;
+
+exports[`IO tests should throw imperative error when getting an IO error writing asynchronously 1`] = `"Fake IO error"`;

@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli respond with-error-headers should display a few error headers and not fail the command 1`] = `
+"Error:
+An error has occurred.
+Fatal Error!
+A fatal error has occurred.
+"
+`;
+
+exports[`cmd-cli respond with-error-headers should display a few error headers and not fail the command and produce a JSON response 1`] = `
+"Error:
+An error has occurred.
+Fatal Error!
+A fatal error has occurred.
+"
+`;
+
+exports[`cmd-cli respond with-error-headers should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   with-error-headers
+
+ DESCRIPTION
+ -----------
+
+   Responds with a few error headers (colorized in red).
+
+ USAGE
+ -----
+
+   cmd-cli respond with-error-headers [options]
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: with-error-headers.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-error-headers\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Responds with a few error headers (colorized in red).\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-error-headers [options]\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   with-error-headers\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Responds with a few error headers (colorized in red).\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond with-error-headers [options]\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

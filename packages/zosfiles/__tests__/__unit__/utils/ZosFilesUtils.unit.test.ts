@@ -13,6 +13,9 @@ import * as path from "path";
 import * as fs from "fs";
 import { IO } from "@zowe/imperative";
 import { ZosFilesUtils } from "../../../src/utils/ZosFilesUtils";
+import { ZosFilesConstants } from "../../../src/constants/ZosFiles.constants";
+import { ZosFilesMessages } from "../../../src/constants/ZosFiles.messages";
+import { IDataSet } from "../../../src/doc/IDataSet";
 
 jest.mock("fs");
 
@@ -24,6 +27,11 @@ describe("ZosFilesUtils", () => {
 
             // Default file extension
             expect(ZosFilesUtils.DEFAULT_FILE_EXTENSION).toEqual("txt");
+        });
+
+        it('should check if constant files have the expected constants loaded', () => {
+            expect(ZosFilesConstants).toMatchSnapshot();
+            expect(ZosFilesMessages).toMatchSnapshot();
         });
     });
 
@@ -200,6 +208,28 @@ describe("ZosFilesUtils", () => {
             const expectResult = Buffer.from("testing\ndummy\n");
 
             expect(ZosFilesUtils.normalizeNewline(input).toString()).toBe(expectResult.toString());
+        });
+    });
+
+    describe("getDataSetFromName", () => {
+        it("should generate an IDataSet for a dataset", () => {
+            const dataSetName = "SYS1.PARMLIB";
+            const expectedResult: IDataSet = {
+                dsn: "SYS1.PARMLIB",
+                member: undefined
+            };
+
+            expect(ZosFilesUtils.getDataSetFromName(dataSetName)).toEqual(expectedResult);
+        });
+
+        it("should generate an IDataSet for a partitioned dataset", () => {
+            const dataSetName = "SYS1.PARMLIB(SOMEMEM)";
+            const expectedResult: IDataSet = {
+                dsn: "SYS1.PARMLIB",
+                member: "SOMEMEM"
+            };
+
+            expect(ZosFilesUtils.getDataSetFromName(dataSetName)).toEqual(expectedResult);
         });
     });
 

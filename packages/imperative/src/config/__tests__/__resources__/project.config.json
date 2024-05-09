@@ -1,0 +1,46 @@
+{
+    "profiles": {
+        "fruit": {
+            "properties": {
+                "origin": "California"
+            },
+            "profiles": {
+                "apple": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "green"
+                    }
+                },
+                "orange": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "orange"
+                    }
+                },
+                "grape": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "red"
+                    },
+                    "secure": [
+                        "secret2"
+                    ]
+                },
+                "grapefruit": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "pink"
+                    }
+                }
+            },
+            "secure": [
+                "secret"
+            ]
+        }
+    },
+    "defaults": {
+        "fruit": "fruit.orange"
+    },
+    "plugins": [],
+    "autoStore": true
+}

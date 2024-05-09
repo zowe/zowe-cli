@@ -2,7 +2,8 @@ use napi::bindgen_prelude::AsyncTask;
 use napi_derive::napi;
 use workers::{DeletePassword, FindCredentials, FindPassword, GetPassword, SetPassword};
 
-mod os;
+extern crate secrets_core;
+
 mod workers;
 
 #[napi]

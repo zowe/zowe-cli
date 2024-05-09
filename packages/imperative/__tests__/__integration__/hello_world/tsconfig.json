@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "types": [
+      "node",
+      "jest"
+    ],
+    "lib": [
+      "esnext"
+    ],
+    "isolatedModules": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "declaration": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "./lib",
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "pretty": true,
+    "sourceMap": true,
+    "newLine": "lf"
+  },
+  "typeRoots": [
+    "./node_modules/@types"
+  ],
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules",
+    "../../../packages/**/__mocks__/*",
+    "../../../packages/**/__tests__/*",
+    "../../../packages/**/*.spec.ts",
+    "../../../packages/**/*-spec.ts",
+    "../../../packages/**/*.test.ts"
+  ]
+}

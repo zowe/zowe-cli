@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Plugin Management Facility list handler list packages 1`] = `
+"
+Installed plugins: 
+
+ -- pluginName: a 
+ -- package: a 
+ -- version: 22.1.0 
+ -- registry: http://imperative-npm-registry:4873/
+
+ -- pluginName: plugin1 
+ -- package: plugin1 
+ -- version: 2.0.3 
+ -- registry: http://imperative-npm-registry:4873/
+
+"
+`;
+
+exports[`Plugin Management Facility list handler list packages short 1`] = `
+"a@22.1.0
+plugin1@2.0.3
+"
+`;

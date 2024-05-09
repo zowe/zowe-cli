@@ -1,0 +1,1 @@
+^Unexpected Command Error:[\s\S]*Please review the message and stack below.[\s\S]*TestHandler\.handler[\s\S]*Message:[\s\S]*Fail with Error[\s\S]*Stack:[\s\S]*Error: Fail with Error[\s\S]*$

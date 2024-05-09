@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Shared Options should be able to handle a stdin read error 1`] = `"An Error occurred reading stdin: Error encountered while reading from stdin"`;
+
+exports[`Shared Options should be able to handle a stdin read error 2`] = `
+Object {
+  "additionalDetails": undefined,
+  "msg": "An Error occurred reading stdin: Error encountered while reading from stdin",
+}
+`;
+
+exports[`Shared Options should be able to return stdin as part of the arguments 1`] = `
+Object {
+  "data": Array [
+    116,
+    97,
+    115,
+    116,
+    121,
+  ],
+  "type": "Buffer",
+}
+`;

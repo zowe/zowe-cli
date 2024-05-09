@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli invalid no-handler should fail the command with a message if the command definition of type command omits a handler 1`] = `
+"Internal Command Error:
+Expect Error: Command Processor Error: The definition supplied is of type \\"command\\", but no handler was specified.
+"
+`;
+
+exports[`cmd-cli invalid no-handler should fail the command with a message if the command definition of type command omits a handler 2`] = `
+"{
+  \\"success\\": false,
+  \\"exitCode\\": 1,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"\\",
+  \\"stderr\\": \\"Internal Command Error:\\\\nExpect Error: Command Processor Error: The definition supplied is of type \\\\\\"command\\\\\\", but no handler was specified.\\\\n\\",
+  \\"data\\": {},
+  \\"error\\": {
+    \\"msg\\": \\"Expect Error: Command Processor Error: The definition supplied is of type \\\\\\"command\\\\\\", but no handler was specified.\\"
+  }
+}"
+`;

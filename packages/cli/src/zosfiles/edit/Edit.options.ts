@@ -32,11 +32,37 @@ export const EditOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "string",
         required: false
     },
+    /**
+     * The option to label your file's data type
+     * @type {ICommandOptionDefinition}
+     */
     extension: {
         name: "extension",
         aliases: ["ext"],
         description: strings.EXTENSION,
         type: "string",
         required: false
+    },
+    /**
+     * The binary option
+     * @type {ICommandOptionDefinition}
+     */
+    binary: {
+        name: "binary",
+        aliases: ["b"],
+        description: strings.BINARY,
+        type: "boolean"
+    },
+
+    /**
+     * The encoding option
+     * @type {ICommandOptionDefinition}
+     */
+    encoding: {
+        name: "encoding",
+        aliases: ["ec"],
+        description: strings.ENCODING,
+        type: "string",
+        conflictsWith: ["binary"]
     },
 };

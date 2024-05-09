@@ -272,4 +272,16 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
             [command, "--ssh-p", invalidPrivateKey]);
         expect(response.stderr.toString()).toMatch("no such file or directory, open 'bogusKey'");
     });
+
+    it("should fail command execution without trace when improper user credentials", async () => {
+        // create a temporary zowe profile with an invalid user
+        const user = "bogusUser";
+        const invalidCreds = await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "ssh",
+            { host, port, user, password });
+
+        const command = "echo test";
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT,
+            [command, "--ssh-p", invalidCreds]);
+        expect(response.stderr.toString()).toMatch("All configured authentication methods failed");
+    });
 });

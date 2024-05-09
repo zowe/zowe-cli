@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Validate Command Builder should provide a valid command definition for the profile validate command based on our test profile type 1`] = `
+Object {
+  "aliases": Array [
+    "type-a",
+  ],
+  "children": Array [],
+  "customize": Object {
+    "profileTypeIdentifier": "type-a",
+  },
+  "deprecatedReplacement": "Edit your Zowe V2 configuration
+    zowe.config.json",
+  "description": "Test the validity of a type-a profile.",
+  "name": "type-a-profile",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "plan",
+        "p",
+      ],
+      "description": "Instead of validating your profile, print out a table of the tasks used for validation. This will explain the different services and functionality that will be tested during profile validation.",
+      "name": "print-plan-only",
+      "type": "boolean",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "Specifies the name of the type-a  profile to be deleted. You can also load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+      "name": "profileName",
+      "required": false,
+      "type": "string",
+    },
+  ],
+  "summary": "Test the validity of a type-a profile.",
+  "type": "command",
+}
+`;

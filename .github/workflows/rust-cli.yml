@@ -18,7 +18,7 @@ jobs:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -41,7 +41,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-linux.tgz
         path: zowex/target/x86_64-unknown-linux-gnu/debug/zowe.tgz
@@ -59,12 +59,12 @@ jobs:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
       with:
-        targets: aarch64-apple-darwin
+        targets: x86_64-apple-darwin
 
     - name: Build
       run: |
@@ -74,6 +74,7 @@ jobs:
         mv ../aarch64-apple-darwin/debug/zowe zowe.aarch64 && mv ../x86_64-apple-darwin/debug/zowe zowe.x86_64
         lipo -create -output zowe zowe.aarch64 zowe.x86_64
 
+    # Use gtar instead of tar on MacOS to prevent extra `GNUSparseFile.0` directory
     - name: Create Archive
       run: |
         cd zowex/target/debug
@@ -81,7 +82,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-macos.tgz
         path: zowex/target/debug/zowe.tgz
@@ -95,7 +96,7 @@ jobs:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
@@ -112,7 +113,7 @@ jobs:
 
     - name: Archive Results
       id: upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zowe-windows.tgz
         path: zowex/target/debug/zowe.tgz

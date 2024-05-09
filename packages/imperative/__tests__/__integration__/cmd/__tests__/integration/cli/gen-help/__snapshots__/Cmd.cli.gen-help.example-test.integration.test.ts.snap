@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli gen-help example-test should display the help with allowable options 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   example-test | et
+
+ DESCRIPTION
+ -----------
+
+   Displays example inputs in the help!
+
+ USAGE
+ -----
+
+   cmd-cli gen-help example-test [options]
+
+ OPTIONS
+ -------
+
+   --Sample Option (string)
+
+      has some allowable options and a default Lorem ipsum dolor sit amet, consectetur
+      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+      aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+      ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+      voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+      occaecat cupidatat non proident, sunt in culpa qui officia deserunt.
+
+      Default value: these
+      Allowed values: these, are, the, allowable, values
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Tests no options:
+
+      $ cmd-cli gen-help example-test
+
+   - Tests one option:
+
+      $ cmd-cli gen-help example-test testop
+
+   - Tests several options:
+
+      $ cmd-cli gen-help example-test testop1 testop2 testop3
+
+   - :
+
+      $ cmd-cli gen-help example-test nodesc
+
+   - :
+
+      $ cmd-cli gen-help example-test
+
+   - has a prefix:
+
+      $ echo \\"hello world\\" | cmd-cli gen-help example-test --options
+
+"
+`;

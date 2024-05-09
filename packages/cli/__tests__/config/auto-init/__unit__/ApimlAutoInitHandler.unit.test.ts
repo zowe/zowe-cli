@@ -29,7 +29,10 @@ function mockConfigApi(properties: IConfig | undefined): any {
             },
             profiles: {
                 getProfilePathFromName: (name: string) => `profiles.${name}`,
-                get: jest.fn()
+                get: jest.fn().mockReturnValue({})
+            },
+            secure: {
+                securePropsForProfile: jest.fn().mockReturnValue([])
             }
         },
         exists: true,

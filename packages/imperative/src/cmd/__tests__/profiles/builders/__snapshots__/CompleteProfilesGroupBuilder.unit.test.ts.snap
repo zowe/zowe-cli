@@ -1,0 +1,480 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Complete Profiles Group Builder should provide a valid command definition for the complete auto generated profile group if passed a valid profile configuration document 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "aliases": Array [
+        "cre",
+      ],
+      "children": Array [
+        Object {
+          "aliases": Array [
+            "type-a",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-a",
+          },
+          "deprecatedReplacement": "The 'config init' command",
+          "description": "Type A profile for builder tests",
+          "name": "type-a-profile",
+          "options": Array [
+            Object {
+              "description": "The age of the profile",
+              "name": "age",
+              "type": "number",
+            },
+            Object {
+              "aliases": Array [
+                "ow",
+              ],
+              "description": "Overwrite the type-a profile when a profile of the same name exists.",
+              "name": "overwrite",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "dd",
+              ],
+              "description": "Disable populating profile values of undefined properties with default values.",
+              "name": "disable-defaults",
+              "type": "boolean",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the new type-a profile. You can load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Create a type-a profile",
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [
+            "type-b",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-b",
+          },
+          "deprecatedReplacement": "The 'config init' command",
+          "description": "Type B profile for builder tests",
+          "name": "type-b-profile",
+          "options": Array [
+            Object {
+              "description": "The number of legs",
+              "name": "legs",
+              "type": "number",
+            },
+            Object {
+              "aliases": Array [
+                "ow",
+              ],
+              "description": "Overwrite the type-b profile when a profile of the same name exists.",
+              "name": "overwrite",
+              "type": "boolean",
+            },
+            Object {
+              "aliases": Array [
+                "dd",
+              ],
+              "description": "Disable populating profile values of undefined properties with default values.",
+              "name": "disable-defaults",
+              "type": "boolean",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the new type-b profile. You can load this profile by using the name on commands that support the \\"--type-b-profile\\" option.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Create a type-b profile",
+          "type": "command",
+        },
+      ],
+      "deprecatedReplacement": "The 'config init' command",
+      "description": "Create new configuration profiles.",
+      "name": "create",
+      "summary": "Create new configuration profiles",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "upd",
+      ],
+      "children": Array [
+        Object {
+          "aliases": Array [
+            "type-a",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-a",
+          },
+          "deprecatedReplacement": "The 'config set' command",
+          "description": "Type A profile for builder tests",
+          "name": "type-a-profile",
+          "options": Array [
+            Object {
+              "absenceImplications": null,
+              "description": "The age of the profile",
+              "implies": null,
+              "name": "age",
+              "required": false,
+              "type": "number",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the new type-a profile. You can load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Update a type-a profile. You can update any property present within the profile configuration. The updated profile will be printed so that you can review the result of the updates.",
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [
+            "type-b",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-b",
+          },
+          "deprecatedReplacement": "The 'config set' command",
+          "description": "Type B profile for builder tests",
+          "name": "type-b-profile",
+          "options": Array [
+            Object {
+              "absenceImplications": null,
+              "description": "The number of legs",
+              "implies": null,
+              "name": "legs",
+              "required": false,
+              "type": "number",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the new type-b profile. You can load this profile by using the name on commands that support the \\"--type-b-profile\\" option.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Update a type-b profile. You can update any property present within the profile configuration. The updated profile will be printed so that you can review the result of the updates.",
+          "type": "command",
+        },
+      ],
+      "deprecatedReplacement": "The 'config set' command",
+      "description": "Update a {{type}} profile. You can update any property present within the profile configuration. The updated profile will be printed so that you can review the result of the updates.",
+      "name": "update",
+      "summary": "Update existing profiles",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "rm",
+      ],
+      "children": Array [
+        Object {
+          "aliases": Array [
+            "type-a",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-a",
+          },
+          "deprecatedReplacement": "Edit your Zowe V2 configuration
+    zowe.config.json",
+          "description": "Delete a type-a profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.",
+          "examples": Array [
+            Object {
+              "description": "Delete a type-a profile named profilename",
+              "options": "profilename",
+            },
+          ],
+          "name": "type-a-profile",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.",
+              "name": "force",
+              "required": false,
+              "type": "boolean",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the type-a  profile to be deleted. You can also load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Delete a type-a profile.",
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [
+            "type-b",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-b",
+          },
+          "deprecatedReplacement": "Edit your Zowe V2 configuration
+    zowe.config.json",
+          "description": "Delete a type-b profile. You must specify a profile name to be deleted. To find a list of available profiles for deletion, issue the profiles list command. By default, you will be prompted to confirm the profile removal.",
+          "examples": Array [
+            Object {
+              "description": "Delete a type-b profile named profilename",
+              "options": "profilename",
+            },
+          ],
+          "name": "type-b-profile",
+          "options": Array [
+            Object {
+              "aliases": Array [],
+              "description": "Force deletion of profile, and dependent profiles if specified. No prompt will be displayed before  deletion occurs.",
+              "name": "force",
+              "required": false,
+              "type": "boolean",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the type-b  profile to be deleted. You can also load this profile by using the name on commands that support the \\"--type-b-profile\\" option.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Delete a type-b profile.",
+          "type": "command",
+        },
+      ],
+      "deprecatedReplacement": "Edit your Zowe V2 configuration zowe.config.json",
+      "description": "Delete existing profiles.",
+      "name": "delete",
+      "summary": "Delete existing profiles",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "ls",
+      ],
+      "children": Array [
+        Object {
+          "aliases": Array [
+            "type-a",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-a",
+          },
+          "deprecatedReplacement": "The 'config list' command",
+          "description": "Type A profile for builder tests",
+          "examples": Array [
+            Object {
+              "description": "List profiles of type type-a",
+              "options": "",
+            },
+            Object {
+              "description": "List profiles of type type-a and display their contents",
+              "options": "--sc",
+            },
+          ],
+          "name": "type-a-profiles",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "sc",
+              ],
+              "description": "List type-a  profiles  and their contents. All profile details will be printed as part of command output.",
+              "name": "show-contents",
+              "required": false,
+              "type": "boolean",
+            },
+          ],
+          "summary": "List profiles of the type type-a.",
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [
+            "type-b",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-b",
+          },
+          "deprecatedReplacement": "The 'config list' command",
+          "description": "Type B profile for builder tests",
+          "examples": Array [
+            Object {
+              "description": "List profiles of type type-b",
+              "options": "",
+            },
+            Object {
+              "description": "List profiles of type type-b and display their contents",
+              "options": "--sc",
+            },
+          ],
+          "name": "type-b-profiles",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "sc",
+              ],
+              "description": "List type-b  profiles  and their contents. All profile details will be printed as part of command output.",
+              "name": "show-contents",
+              "required": false,
+              "type": "boolean",
+            },
+          ],
+          "summary": "List profiles of the type type-b.",
+          "type": "command",
+        },
+      ],
+      "deprecatedReplacement": "The 'config list' command",
+      "description": "List profiles of the type {{type}}.",
+      "name": "list",
+      "summary": "List existing profiles",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "set",
+      ],
+      "children": Array [
+        Object {
+          "aliases": Array [
+            "type-a",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-a",
+          },
+          "deprecatedReplacement": "The 'config set' command",
+          "description": "The type-a set default-profiles command allows you to set the default profiles for this command group. When a type-a command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.",
+          "examples": Array [
+            Object {
+              "description": "Set the default profile for type type-a to the profile named 'profilename'",
+              "options": "profilename",
+            },
+          ],
+          "name": "type-a-profile",
+          "options": Array [],
+          "positionals": Array [
+            Object {
+              "description": "Specify a
+ profile for default usage within the type-a group. When you issue commands within the type-a group without a profile specified as part of the command, the default will be loaded instead.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Set the default
+ profiles for the type-a group",
+          "type": "command",
+        },
+        Object {
+          "aliases": Array [
+            "type-b",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-b",
+          },
+          "deprecatedReplacement": "The 'config set' command",
+          "description": "The type-b set default-profiles command allows you to set the default profiles for this command group. When a type-b command is issued and no profile override options are specified, the default profiles for the command group are automatically loaded for the command based on the commands profile requirements.",
+          "examples": Array [
+            Object {
+              "description": "Set the default profile for type type-b to the profile named 'profilename'",
+              "options": "profilename",
+            },
+          ],
+          "name": "type-b-profile",
+          "options": Array [],
+          "positionals": Array [
+            Object {
+              "description": "Specify a
+ profile for default usage within the type-b group. When you issue commands within the type-b group without a profile specified as part of the command, the default will be loaded instead.",
+              "name": "profileName",
+              "required": true,
+              "type": "string",
+            },
+          ],
+          "summary": "Set the default
+ profiles for the type-b group",
+          "type": "command",
+        },
+      ],
+      "deprecatedReplacement": "The 'config set' command",
+      "description": "Set which profiles are loaded by default.",
+      "name": "set-default",
+      "summary": "Set which profiles are loaded by default",
+      "type": "group",
+    },
+    Object {
+      "aliases": Array [
+        "val",
+      ],
+      "children": Array [
+        Object {
+          "aliases": Array [
+            "type-a",
+          ],
+          "children": Array [],
+          "customize": Object {
+            "profileTypeIdentifier": "type-a",
+          },
+          "deprecatedReplacement": "Edit your Zowe V2 configuration
+    zowe.config.json",
+          "description": "Test the validity of a type-a profile.",
+          "name": "type-a-profile",
+          "options": Array [
+            Object {
+              "aliases": Array [
+                "plan",
+                "p",
+              ],
+              "description": "Instead of validating your profile, print out a table of the tasks used for validation. This will explain the different services and functionality that will be tested during profile validation.",
+              "name": "print-plan-only",
+              "type": "boolean",
+            },
+          ],
+          "positionals": Array [
+            Object {
+              "description": "Specifies the name of the type-a  profile to be deleted. You can also load this profile by using the name on commands that support the \\"--type-a-profile\\" option.",
+              "name": "profileName",
+              "required": false,
+              "type": "string",
+            },
+          ],
+          "summary": "Test the validity of a type-a profile.",
+          "type": "command",
+        },
+      ],
+      "deprecatedReplacement": "Edit your Zowe V2 configuration zowe.config.json",
+      "description": "Test the validity of your profiles.",
+      "name": "validate",
+      "summary": "Test the validity of a profile",
+      "type": "group",
+    },
+  ],
+  "deprecatedReplacement": "The 'config init' command",
+  "description": "Create and manage configuration profiles.",
+  "name": "profiles",
+  "type": "group",
+}
+`;

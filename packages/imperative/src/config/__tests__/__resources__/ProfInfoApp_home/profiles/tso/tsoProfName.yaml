@@ -1,0 +1,7 @@
+account: IZUACCT
+characterSet: '697'
+codePage: '1047'
+columns: 80
+logonProcedure: IZUFPROC
+regionSize: 4096
+rows: 24

@@ -10,9 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters, IHandlerResponseConsoleApi, Session } from "@zowe/imperative";
-import { Copy, ICrossLparCopyDatasetOptions, IDataSet, IGetOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Copy, ICrossLparCopyDatasetOptions, IDataSet, IGetOptions, IZosFilesResponse, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { getDataSet } from "../../ZosFiles.utils";
 
 /**
  * Handler to copy a data set.
@@ -20,8 +19,8 @@ import { getDataSet } from "../../ZosFiles.utils";
 
 export default class DsclpHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const sourceDataset: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
-        const targetDataset: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
+        const sourceDataset: IDataSet = ZosFilesUtils.getDataSetFromName(commandParameters.arguments.fromDataSetName);
+        const targetDataset: IDataSet = ZosFilesUtils.getDataSetFromName(commandParameters.arguments.toDataSetName);
 
         const options: ICrossLparCopyDatasetOptions = {
             "from-dataset": sourceDataset,

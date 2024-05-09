@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli invoke test-async-handler should detect if the mutually exclusive fail options are specified 1`] = `
+"
+Syntax Error:
+You may specify only one of the following options for this command:
+[--fail, --fail-with-error]
+
+You specified the following:
+[--fail, --fail-with-error]
+
+Use \\"cmd-cli invoke test-async-handler --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`cmd-cli invoke test-async-handler should detect if the mutually exclusive fail options are specified 2`] = `
+"================ISSUING INVOKE WITH ERROR===============
+================ISSUING INVOKE ERROR WITH RFJ===========
+{
+  \\"success\\": false,
+  \\"exitCode\\": 1,
+  \\"message\\": \\"Command syntax invalid\\",
+  \\"stdout\\": \\"\\",
+  \\"stderr\\": \\"\\\\nSyntax Error:\\\\nYou may specify only one of the following options for this command:\\\\n[--fail, --fail-with-error]\\\\n\\\\nYou specified the following:\\\\n[--fail, --fail-with-error]\\\\n\\\\nUse \\\\\\"cmd-cli invoke test-async-handler --help\\\\\\" to view command description, usage, and options.\\\\n\\",
+  \\"data\\": [
+    {
+      \\"message\\": \\"You may specify only one of the following options for this command:\\\\n[--fail, --fail-with-error]\\\\n\\\\nYou specified the following:\\\\n[--fail, --fail-with-error]\\\\n\\",
+      \\"optionInError\\": \\"--fail,--fail-with-error\\"
+    }
+  ]
+}"
+`;
+
+exports[`cmd-cli invoke test-async-handler should display the help 1`] = `
+"================ISSUING INVOKE WITH HELP===============
+
+ COMMAND NAME
+ ------------
+
+   test-async-handler
+
+ DESCRIPTION
+ -----------
+
+   Test async handler command tests tests a fulfill/reject from an asynchronous
+   handler.
+
+ USAGE
+ -----
+
+   cmd-cli invoke test-async-handler [options]
+
+ OPTIONS
+ -------
+
+   --fail (boolean)
+
+      Fail the handler with an 'Imperative Error'.
+
+   --fail-with-error (boolean)
+
+      Fail the handler with a generic 'Error'.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --show-inputs-only (boolean)
+
+      Show command inputs and do not run the command
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+================ISSUING INVOKE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: test-async-handler.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   test-async-handler\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test async handler command tests tests a fulfill/reject from an asynchronous\\\\n   handler.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke test-async-handler [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --fail (boolean)\\\\n\\\\n      Fail the handler with an 'Imperative Error'.\\\\n\\\\n   --fail-with-error (boolean)\\\\n\\\\n      Fail the handler with a generic 'Error'.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   test-async-handler\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test async handler command tests tests a fulfill/reject from an asynchronous\\\\n   handler.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke test-async-handler [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --fail (boolean)\\\\n\\\\n      Fail the handler with an 'Imperative Error'.\\\\n\\\\n   --fail-with-error (boolean)\\\\n\\\\n      Fail the handler with a generic 'Error'.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;
+
+exports[`cmd-cli invoke test-async-handler should fail a handler if an imperative error is thrown 1`] = `
+"Command Error:
+Fail with Imperative Error
+"
+`;
+
+exports[`cmd-cli invoke test-async-handler should fail a handler if an imperative error is thrown 2`] = `
+"===================FAIL WITH IMPERATIVE ERROR============================
+===================FAIL WITH IMPERATIVE ERROR RFJ========================
+{
+  \\"success\\": false,
+  \\"exitCode\\": 1,
+  \\"message\\": \\"Fail with Imperative Error\\",
+  \\"stdout\\": \\"\\",
+  \\"stderr\\": \\"Command Error:\\\\nFail with Imperative Error\\\\n\\",
+  \\"data\\": {},
+  \\"error\\": {
+    \\"msg\\": \\"Fail with Imperative Error\\"
+  }
+}"
+`;

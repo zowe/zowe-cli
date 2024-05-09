@@ -1,0 +1,7 @@
+{
+  "name": "TestCLI",
+  "version": "1.0.2",
+  "dependencies": {
+    "@zowe/imperative": "1.0.0"
+  }
+}

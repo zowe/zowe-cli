@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli auto-format object should allow a nested property to be targeted and formatted 1`] = `
+"name         details           
+strawberries what a great fruit
+blueberries  super tasty       
+"
+`;
+
+exports[`cmd-cli auto-format object should allow a single field to be filtered and printed as a table 1`] = `
+"name     details
+Dole     Great  
+Chiquita Awesome
+"
+`;
+
+exports[`cmd-cli auto-format object should allow a single field to be output 1`] = `
+"banana
+"
+`;
+
+exports[`cmd-cli auto-format object should allow multiple nested properties to be extract and formatted as a table and object 1`] = `
+"moreFruits.veryTasty.name specialFruits.attributes.type specialFruits.attributes.big
+mulberry                  rare                          true                        
+moreFruits: 
+  veryTasty: 
+    name: mulberry
+specialFruits: 
+  attributes: 
+    type: rare
+    big:  true
+"
+`;
+
+exports[`cmd-cli auto-format object should allow the object to be printed as a single row of a table with a header 1`] = `
+"name   details    colors            
+banana very tasty yellow,green,black
+"
+`;
+
+exports[`cmd-cli auto-format object should use the defaults coded in the handler to prettify the object 1`] = `
+"name:    banana
+details: very tasty
+colors: 
+  - yellow
+  - green
+  - black
+"
+`;

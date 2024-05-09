@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RestClient tests should add our custom header 1`] = `
+Object {
+  "headers": Object {
+    "Content-Type": "application/json",
+  },
+  "hostname": "test",
+  "method": "GET",
+  "path": "/mocked",
+  "port": 443,
+  "rejectUnauthorized": true,
+}
+`;
+
+exports[`RestClient tests should add our custom header for JSON responses 1`] = `
+Object {
+  "headers": Object {
+    "Content-Type": "application/json",
+  },
+  "hostname": "test",
+  "method": "GET",
+  "path": "/mocked",
+  "port": 443,
+  "rejectUnauthorized": true,
+}
+`;

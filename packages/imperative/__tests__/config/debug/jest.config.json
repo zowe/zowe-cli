@@ -1,0 +1,13 @@
+{
+    "modulePathIgnorePatterns": [
+        "__tests__/__snapshots__/"
+    ],
+    "preset": "./__tests__/config/jest.preset.json",
+    "reporters": ["default"],
+    "rootDir": "../../../",
+    "testPathIgnorePatterns": [
+        "/node_modules/",
+        "<rootDir>/__tests__/__results__"
+    ],
+    "testRegex": "(test|spec)\\.(ts|js)"
+}

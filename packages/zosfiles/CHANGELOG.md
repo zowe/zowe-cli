@@ -2,6 +2,30 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.24.0`
+
+- BugFix: Fixed error that could occur when listing data set members that contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
+
+## `7.23.7`
+
+- BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2091](https://github.com/zowe/zowe-cli/pull/2091)
+
+## `7.21.3`
+
+- BugFix: Corrects the behavior of `Create.dataSetLike` so that the new data set is always defined with the correct block size [#2610](https://github.com/zowe/vscode-extension-for-zowe/issues/2610)
+
+## `7.20.0`
+
+- Enhancement: Adds `ZosFilesUtils.getDataSetFromName` to create an IDataSet from a dataset name [#1696](https://github.com/zowe/zowe-cli/issues/1696)
+
+## `7.18.9`
+
+- BugFix: Fix behavior where a specified directory was being lowercased on non-PDS datasets when downloading all datasets [#1722](https://github.com/zowe/zowe-cli/issues/1722)
+
+## `7.18.8`
+
+- Enhancement: Patch that adds invalidFileName to ZosFilesMessages
+
 ## `7.18.0`
 
 - BugFix: Fixed error when listing data set members that include double quote in the name.

@@ -1,0 +1,48 @@
+{
+    "$schema": "./test.schema.good.json",
+    "profiles": {
+        "myMainZosmf": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1234
+            },
+            "secure": []
+        },
+        "mySecondaryZosmf": {
+            "type": "zosmf",
+            "properties": {
+                "hostname": "mySecondHost",
+                "port": 4567
+            },
+            "secure": []
+        },
+        "myTso": {
+            "type": "tso",
+            "properties": {
+                "account": "123456789",
+                "characterSet": "697",
+                "codePage": "1047",
+                "columns": 80,
+                "logonProcedure": "IZUFPROC",
+                "regionSize": 4096,
+                "rows": 24
+            }
+        },
+        "myBase": {
+            "type": "base",
+            "properties": {
+                "host": "fakeHost",
+                "port": 9999
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        }
+    },
+    "defaults": {
+        "base": "myBase",
+        "tso": "myTso",
+        "zosmf": "myMainZosmf"
+    }
+}

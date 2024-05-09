@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`imperative-test-cli config import failure scenarios should fail to import if location is not specified 1`] = `
+"
+Syntax Error:
+Missing Positional Argument: location
+Argument Description: File path or URL to import from.
+
+Example:
+
+ - Import config from local file on disk:
+
+      $ imperative-test-cli config import ~/Downloads/zowe.config.json
+
+Use \\"imperative-test-cli config import --help\\" to view command description, usage, and options.
+"
+`;

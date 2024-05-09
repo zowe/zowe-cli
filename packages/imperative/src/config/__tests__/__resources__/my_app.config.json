@@ -1,0 +1,44 @@
+{
+    "$schema": "./my_app.schema.json",
+    "profiles": {
+        "fruit": {
+            "properties": {
+                "origin": "California"
+            },
+            "profiles": {
+                "apple": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "green"
+                    }
+                },
+                "banana": {
+                    "type": "fruit",
+                    "properties": {
+                        "color": "yellow"
+                    }
+                }
+            },
+            "secure": []
+        },
+        "vegetable": {
+            "properties": {
+                "origin": "China"
+            },
+            "profiles": {
+                "artichoke": {
+                    "type": "vegetable",
+                    "properties": {
+                        "color": "green"
+                    }
+                }
+            }
+        }
+    },
+    "defaults": {
+        "fruit": "fruit.banana",
+        "vegetable": "vegetable.artichoke"
+    },
+    "plugins": [],
+    "autoStore": true
+}

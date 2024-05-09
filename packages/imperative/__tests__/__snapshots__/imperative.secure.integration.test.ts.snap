@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Failure Scenarios should fail if the Credential Manager is unable to retrieve a password 1`] = `
+"Command Preparation Failed:
+Unable to load the secure field \\"username\\" associated with the profile \\"profile-name-changed\\" of type \\"username-password\\".
+Error Details:
+Unable to load credentials.
+Could not find an entry in the credential vault for the following:
+  Service = example_with_profiles
+  Account = username-password_profile-name-changed_username
+
+Possible Causes:
+  This could have been caused by any manual removal of credentials from your vault.
+
+Resolutions: 
+  Recreate the credentials in the vault for the particular service in the vault.
+  To recreate credentials, issue a 'profiles create' sub-command with the --ow flag.
+
+"
+`;
+
+exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Failure Scenarios should fail if the Credential Manager is unable to retrieve a password 2`] = `
+"Your default profile named profile-name of type username-password was successfully deleted.
+Because you deleted it, the default profile for type username-password has been cleared.
+To set a new default profile, run \\"zowe profiles set-default username-password <profileName>\\".
+"
+`;
+
+exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Success Scenarios should update a password 1`] = `
+"
+Warning: The command 'profiles update' is deprecated.
+Recommended replacement: The 'config set' command
+"
+`;
+
+exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Success Scenarios should update a password 2`] = `
+"Your default profile named profile-name of type username-password was successfully deleted.
+Because you deleted it, the default profile for type username-password has been cleared.
+To set a new default profile, run \\"zowe profiles set-default username-password <profileName>\\".
+"
+`;
+
+exports[`Imperative Secure Tests imperative-test-cli config profiles should list profiles 1`] = `
+"secured
+base
+"
+`;

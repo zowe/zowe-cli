@@ -18,6 +18,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
  - [Zowe Node Client SDK](#zowe-node-client-sdk)
  - [Running System Tests](#running-system-tests)
  - [FAQs](#frequently-asked-questions)
+ - [Project Structure and Governance](#project-structure-and-governance)
 
 <br/>
 
@@ -49,7 +50,17 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 <br/>
 
 ## **Building Zowe CLI From Source**
-Zowe CLI requires NPM version 7 to install from source. Before proceeding, check your NPM version with `npm --version` and if it's older than 7.x, update with `npm install -g npm`.
+Zowe CLI requires NPM version 8 and Cargo version 1.72.0 (or newer) to build from source. Before proceeding, check your NPM version with `npm --version` and if it's older than 8.x, update with `npm install -g npm`. To check your version of Cargo, run `cargo --version`. Cargo can be installed using rustup: [https://rustup.rs/](https://rustup.rs/). To update Cargo, run the `rustup update` command.
+
+For developers using Linux, the following packages are required to build Zowe CLI from source:
+
+- Debian/Ubuntu: 
+  - `sudo apt install build-essential libsecret-1-dev`
+- Red Hat-based:
+  - `sudo dnf group install "Development Tools"`
+  - `sudo dnf install libsecret-devel`
+- Arch Linux: 
+  - `sudo pacman -S base-devel libsecret`
 
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
@@ -202,3 +213,9 @@ npm run test:system
 <br/>
 
 Don't see what you're looking for? Browse questions from the community or ask your own in the [Q&A section](https://github.com/zowe/zowe-cli/discussions/categories/q-a) of our repo.
+
+## **Project Structure and Governance**
+
+Zowe CLI is a component of the Zowe Open Mainframe Project, part of the Linux Foundation.
+
+To learn more about how Zowe is structured and governed, see the [Technical Steering Committee Structure and Governance documentation](https://github.com/zowe/community/blob/master/Technical-Steering-Committee/tsc-governance.md).

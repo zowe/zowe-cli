@@ -127,9 +127,14 @@ describe("zos-jobs view spool-file-by-id command", () => {
                 TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             expect(response.status).toBe(1);
+            // TODO:V3_ERR_FORMAT - In V3 remove the following lines
             expect(response.stderr.toString()).toContain("Command Error:");
             expect(response.stderr.toString()).toContain("Obtaining job info for a single job id J0 on");
             expect(response.stderr.toString()).toContain("failed: Job not found");
+            /* TODO:V3_ERR_FORMAT - Use the following lines instead
+            expect(response.stderr.toString()).toContain("Cannot obtain job info for job id = J0");
+            expect(response.stderr.toString()).toContain("Zero jobs were returned");
+            */
         });
 
         it("should surface an error if the spool file ID does not exist", () => {
@@ -137,11 +142,15 @@ describe("zos-jobs view spool-file-by-id command", () => {
                 TEST_ENVIRONMENT, [IEFBR14_JOB]);
             expect(response.stdout.toString()).toBe("");
             expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("does not contain spool file id 9999");
+            expect(response.stderr.toString()).toMatch(/Request: +GET/);
+            // TODO:V3_ERR_FORMAT - In V3 remove the following lines
             expect(response.stderr.toString()).toContain("Command Error:");
             expect(response.stderr.toString()).toContain("z/OSMF REST API Error:");
-            expect(response.stderr.toString()).toContain("does not contain spool file id 9999");
             expect(response.stderr.toString()).toContain("Error Details:");
-            expect(response.stderr.toString()).toContain("Request:   GET");
+            /* TODO:V3_ERR_FORMAT - Use the following lines instead
+            expect(response.stderr.toString()).toContain("HTTP(S) error 400 = Bad Request");
+            */
         });
     });
 });

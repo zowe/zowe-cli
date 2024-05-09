@@ -1,0 +1,144 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list profiles handler error handling should not transform errors from the profile manager 1`] = `"ERROR!"`;
+
+exports[`list profiles handler response should load all profiles and display all contents 1`] = `"\\"2\\" profiles loaded for type \\"fake\\""`;
+
+exports[`list profiles handler response should load all profiles and display all contents 2`] = `
+Array [
+  Object {
+    "failNotFound": true,
+    "message": "loaded",
+    "name": "fake1",
+    "profile": Object {
+      "data": "some data",
+      "info": "some info",
+      "name": "fake1",
+      "nested": Object {
+        "data": "nested data",
+      },
+      "type": "fake",
+    },
+    "type": "fake",
+  },
+  Object {
+    "failNotFound": true,
+    "message": "loaded",
+    "name": "fake",
+    "profile": Object {
+      "data": "some data",
+      "info": "some info",
+      "name": "fake2",
+      "nested": Object {
+        "data": "nested data",
+      },
+      "type": "fake",
+    },
+    "type": "fake",
+  },
+]
+`;
+
+exports[`list profiles handler response should load all profiles and display all contents 3`] = `
+Object {
+  "format": "object",
+  "output": Array [
+    Object {
+      "contents": Object {
+        "data": "some data",
+        "info": "some info",
+        "name": "fake1",
+        "nested": Object {
+          "data": "nested data",
+        },
+        "type": "fake",
+      },
+      "name": "fake1 (default) ",
+    },
+    Object {
+      "contents": Object {
+        "data": "some data",
+        "info": "some info",
+        "name": "fake2",
+        "nested": Object {
+          "data": "nested data",
+        },
+        "type": "fake",
+      },
+      "name": "fake",
+    },
+  ],
+}
+`;
+
+exports[`list profiles handler response should load all profiles and display just the names 1`] = `"\\"2\\" profiles loaded for type \\"fake\\""`;
+
+exports[`list profiles handler response should load all profiles and display just the names 2`] = `
+Array [
+  Object {
+    "failNotFound": true,
+    "message": "loaded",
+    "name": "fake1",
+    "profile": Object {
+      "data": "some data",
+      "info": "some info",
+      "name": "fake1",
+      "nested": Object {
+        "data": "nested data",
+      },
+      "type": "fake",
+    },
+    "type": "fake",
+  },
+  Object {
+    "failNotFound": true,
+    "message": "loaded",
+    "name": "fake",
+    "profile": Object {
+      "data": "some data",
+      "info": "some info",
+      "name": "fake2",
+      "nested": Object {
+        "data": "nested data",
+      },
+      "type": "fake",
+    },
+    "type": "fake",
+  },
+]
+`;
+
+exports[`list profiles handler response should load all profiles and display just the names 3`] = `
+Object {
+  "fields": Array [
+    "name",
+  ],
+  "format": "list",
+  "output": Array [
+    Object {
+      "contents": Object {
+        "data": "some data",
+        "info": "some info",
+        "name": "fake1",
+        "nested": Object {
+          "data": "nested data",
+        },
+        "type": "fake",
+      },
+      "name": "fake1 (default) ",
+    },
+    Object {
+      "contents": Object {
+        "data": "some data",
+        "info": "some info",
+        "name": "fake2",
+        "nested": Object {
+          "data": "nested data",
+        },
+        "type": "fake",
+      },
+      "name": "fake",
+    },
+  ],
+}
+`;

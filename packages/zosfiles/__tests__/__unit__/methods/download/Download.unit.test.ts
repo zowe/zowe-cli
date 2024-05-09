@@ -870,6 +870,39 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download all members specifying mixed case directory, volume, and extension", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "My/Test/Path/";
+            const extension = ".xyz";
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`
+                });
+            });
+        });
+
         it("should download all members with specified \"\" extension", async () => {
             let response;
             let caughtError;
@@ -1277,6 +1310,42 @@ describe("z/OS Files - Download", () => {
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz"});
+        });
+
+        it("should download all datasets specifying a mixed case directory", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "My/Test/Path";
+            const extensionMap = {set: "file"};
+
+            Download.dataSet = jest.fn(async (): Promise<any> => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {
+                        items: [dataSetPS]
+                    },
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extensionMap});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, {directory}),
+                apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
+            });
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "My/Test/Path/test.ps.data.set.file"});
         });
 
         it("should download all datasets specifying the directory and extension map 1", async () => {

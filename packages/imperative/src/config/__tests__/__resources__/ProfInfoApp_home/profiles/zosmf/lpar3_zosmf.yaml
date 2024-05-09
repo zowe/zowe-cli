@@ -1,0 +1,3 @@
+host: lpar3.fakehost.com
+port: 443
+rejectUnauthorized: false

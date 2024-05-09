@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Basic Profile Manager Update should allow us to update a profile 1`] = `"Profile \\"good_apple\\" of type \\"apple\\" updated successfully."`;
+
+exports[`Basic Profile Manager Update should detect missing name parameter 1`] = `"Expect Error: An update for a profile of type \\"apple\\" was requested, but no name was specified."`;
+
+exports[`Basic Profile Manager Update should detect missing parameters 1`] = `"Expect Error: An update for a profile of type \\"apple\\" was requested, but no parameters were specified."`;

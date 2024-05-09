@@ -28,6 +28,8 @@ export default class EditHandler extends ZosFilesBaseHandler {
             fileType: commandParameters.positionals[2].includes('d') ? "ds" : "uss",
             guiAvail: ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE,
             conflict: false,
+            encoding: commandParameters.arguments.encoding,
+            binary: commandParameters.arguments.binary,
             zosResp: null
         };
         lfFile.tempPath = commandParameters.arguments.localFilePath = await Utils.buildTempPath(lfFile, commandParameters);

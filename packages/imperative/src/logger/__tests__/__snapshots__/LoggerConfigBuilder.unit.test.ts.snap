@@ -1,0 +1,155 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoggerConfigBuilder tests Should add a console and file appender to basic log4js configuration 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "sampleConsole": Object {
+        "layout": Object {
+          "pattern": "%[[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m%]",
+          "type": "pattern",
+        },
+        "type": "console",
+      },
+      "sampleFile": Object {
+        "backups": 5,
+        "filename": "./someHome/sampleFile/logs/sampleFile.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "sampleConsole": Object {
+        "appenders": Array [
+          "sampleConsole",
+        ],
+        "level": "WARN",
+      },
+      "sampleFile": Object {
+        "appenders": Array [
+          "sampleFile",
+        ],
+        "level": "WARN",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggerConfigBuilder tests Should add console appender to basic log4js configuration 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {},
+    "categories": Object {},
+  },
+}
+`;
+
+exports[`LoggerConfigBuilder tests Should add file appender to basic log4js configuration 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "sampleFile": Object {
+        "backups": 5,
+        "filename": "./someHome/sampleFile/logs/sampleFile.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "sampleFile": Object {
+        "appenders": Array [
+          "sampleFile",
+        ],
+        "level": "WARN",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggerConfigBuilder tests Should add multiple appenders to basic log4js configuration 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {
+      "sampleConsole1": Object {
+        "layout": Object {
+          "pattern": "%[[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m%]",
+          "type": "pattern",
+        },
+        "type": "console",
+      },
+      "sampleConsole2": Object {
+        "layout": Object {
+          "pattern": "%[[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m%]",
+          "type": "pattern",
+        },
+        "type": "console",
+      },
+      "sampleFile1": Object {
+        "backups": 5,
+        "filename": "./someHome/sampleFile1/logs/sampleFile1.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+      "sampleFile2": Object {
+        "backups": 5,
+        "filename": "./someHome/sampleFile2/logs/sampleFile2.log",
+        "layout": Object {
+          "pattern": "[%d{yyyy/MM/dd} %d{hh:mm:ss.SSS}] [%p] %m",
+          "type": "pattern",
+        },
+        "maxLogSize": 10000000,
+        "type": "fileSync",
+      },
+    },
+    "categories": Object {
+      "sampleConsole1": Object {
+        "appenders": Array [
+          "sampleConsole1",
+        ],
+        "level": "WARN",
+      },
+      "sampleConsole2": Object {
+        "appenders": Array [
+          "sampleConsole2",
+        ],
+        "level": "WARN",
+      },
+      "sampleFile1": Object {
+        "appenders": Array [
+          "sampleFile1",
+        ],
+        "level": "WARN",
+      },
+      "sampleFile2": Object {
+        "appenders": Array [
+          "sampleFile2",
+        ],
+        "level": "WARN",
+      },
+    },
+  },
+}
+`;
+
+exports[`LoggerConfigBuilder tests Should get a basic log4js configuration from getDefaultIConfigLogging 1`] = `
+Object {
+  "log4jsConfig": Object {
+    "appenders": Object {},
+    "categories": Object {},
+  },
+}
+`;

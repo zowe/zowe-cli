@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cmd-cli respond should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   Invoke various types of handlers that will formulate different responses via
+   console messages, data objects, etc.
+
+ USAGE
+ -----
+
+   cmd-cli respond <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   with-data-array      Responds with a string array                        
+   with-data-object     Responds with a JSON object                         
+   with-error-headers   Responds with error headers to the terminal/console 
+   with-error-messages  Responds with error messages to the terminal/console
+   with-log-messages    Responds with log messages to the terminal/console  
+   with-mixed-responses Responds with error, headers, messages, etc         
+   with-syntax-errors   Responds with syntax errors                         
+   with-wrapped-text    Responds with wrapped text and non wrapped text     
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: respond.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke various types of handlers that will formulate different responses via\\\\n   console messages, data objects, etc.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   with-data-array      Responds with a string array                        \\\\n   with-data-object     Responds with a JSON object                         \\\\n   with-error-headers   Responds with error headers to the terminal/console \\\\n   with-error-messages  Responds with error messages to the terminal/console\\\\n   with-log-messages    Responds with log messages to the terminal/console  \\\\n   with-mixed-responses Responds with error, headers, messages, etc         \\\\n   with-syntax-errors   Responds with syntax errors                         \\\\n   with-wrapped-text    Responds with wrapped text and non wrapped text     \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke various types of handlers that will formulate different responses via\\\\n   console messages, data objects, etc.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli respond <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   with-data-array      Responds with a string array                        \\\\n   with-data-object     Responds with a JSON object                         \\\\n   with-error-headers   Responds with error headers to the terminal/console \\\\n   with-error-messages  Responds with error messages to the terminal/console\\\\n   with-log-messages    Responds with log messages to the terminal/console  \\\\n   with-mixed-responses Responds with error, headers, messages, etc         \\\\n   with-syntax-errors   Responds with syntax errors                         \\\\n   with-wrapped-text    Responds with wrapped text and non wrapped text     \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

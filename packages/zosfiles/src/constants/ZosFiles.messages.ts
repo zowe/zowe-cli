@@ -689,6 +689,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set allocation was aborted
+     * @type {IMessageDefinition}
+     */
+    datasetAllocateLikeNotFound: {
+        message: "Data set allocation aborted. The \"allocate like\" data set was not found."
+    },
+
+    /**
      * Message indicating that the following members failed to properly download
      * @type {IMessageDefinition}
      */
@@ -726,6 +734,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     commonFor: {
         message: "for"
+    },
+
+    /**
+     * Message indicating invalid characters in file name
+     * @type {IMessageDefinition}
+     */
+    invalidFileName: {
+        message: "Invalid file name. Please check the file name for typos."
     },
 
     /**

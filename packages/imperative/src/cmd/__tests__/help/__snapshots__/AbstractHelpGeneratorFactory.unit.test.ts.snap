@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Abstract Help Generator Factory should detect missing command definition tree when getting a factory 1`] = `"Expect Error: Get Help Generator Parameter Error: The full command tree was not supplied."`;
+
+exports[`Abstract Help Generator Factory should detect missing command definition when getting a factory 1`] = `"Expect Error: Get Help Generator Parameter Error: No command definition was supplied."`;
+
+exports[`Abstract Help Generator Factory should detect missing parameters 1`] = `"Expect Error: Help Generator Factory Creation Error: No input parameters were supplied."`;
+
+exports[`Abstract Help Generator Factory should detect missing root command name 1`] = `"Expect Error: Help Generator Factory Creation Error: No root command name was supplied."`;

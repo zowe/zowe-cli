@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextUtils should accept headers from user 1`] = `
+"header1 2      header3
+value1  value2 value3 
+value1  value2 value3 
+value1  value2 value3 "
+`;
+
+exports[`TextUtils should be able to color text red 1`] = `"[31mhighlighting with chalk[39m hello"`;
+
+exports[`TextUtils should be able to color text yellow 1`] = `"[33mhighlighting with chalk[39m hello"`;
+
+exports[`TextUtils should grab headers from object properties 1`] = `
+"2      header1 header3
+value2 value1  value3 
+value2 value1  value3 
+value2 value1  value3 "
+`;

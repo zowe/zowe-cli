@@ -15,7 +15,7 @@ const fs = require("fs");
 
 require("glob")(
     "{__mocks__,packages,__tests__,jenkins}{/**/*.js,/**/*.ts}",
-    {"ignore":['**/node_modules/**','**/lib/**','**/*.d.ts']},
+    {"ignore":['**/node_modules/**','**/lib/**','**/*.d.ts','**/__tests__/__results__/**','**/web-help/dist/**']},
     (globErr, filePaths) => {
         if (globErr) {
             throw(globErr);

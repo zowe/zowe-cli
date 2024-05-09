@@ -4,13 +4,15 @@ npm-debug.log
 lerna-debug.log
 local.json
 output/
-/logs/
+**/logs/*.log
 CCS141/
 .vscode
 .idea
+.npm-global
 src/brightside.iml
 package-lock.json
 /packages/cli/npm-shrinkwrap.json
+/dist/
 # Sonar Files
 .sonar_lock
 .scannerwork/
@@ -63,7 +65,6 @@ fabric.properties
 !/.idea/artifacts/
 /.idea/dictionaries/
 /gui/BrightSide-win32-x64/
-lib/
 typings/
 /gui/BrightSide-linux-x64/
 /gui/BrightSide-darwin-x64/
@@ -71,7 +72,7 @@ typings/
 /config/
 **/docs/typedoc/
 __tests__/__results__/
-packages/zosunix/__tests__/__results__/
+packages/**/__tests__/__results__/
 /__tests__/tmpproj/
 /__tests__/src/locales
 /.nyc_output
@@ -93,11 +94,13 @@ imperative_debug.log
 #MacOS fs
 .DS_Store
 
-/web-help/dist/
-
 *.bat
 
-/packages/cli/lib
+# we do not commit lib files
+**/lib/
+# we DO commit pre-compiled plugin test modules
+!/packages/imperative/__tests__/src/packages/imperative/plugins/test_plugins/*/lib/
+
 /packages/cli/__tests__/__results__
 /packages/cli/prebuilds
 zowe.config.json
@@ -112,3 +115,9 @@ __tests__/__packages__/*/LICENSE
 # Rust and native binaries
 target/
 *.node
+
+# Browserified bundles and compiled JS for web help
+packages/imperative/web-help/dist/css/bundle*
+packages/imperative/web-help/dist/js/
+
+jest-stare/

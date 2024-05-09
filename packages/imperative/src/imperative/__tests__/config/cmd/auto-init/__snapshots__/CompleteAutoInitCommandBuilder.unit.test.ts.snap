@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompleteAutoInitCommandBuilder should create complete auth group given only an auto init config object 1`] = `
+Object {
+  "customize": Object {},
+  "description": "A fake description",
+  "examples": Array [
+    Object {
+      "description": "fake description",
+      "options": "fake options",
+    },
+  ],
+  "handler": "fakeHandler",
+  "name": "auto-init",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "uc",
+      ],
+      "defaultValue": false,
+      "description": "Save config in the user layer",
+      "group": "Automatic Config Initialization Options",
+      "name": "user-config",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "gc",
+      ],
+      "defaultValue": false,
+      "description": "Save config in the global layer",
+      "group": "Automatic Config Initialization Options",
+      "name": "global-config",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "dr",
+        "dry",
+      ],
+      "conflictsWith": Array [
+        "edit",
+      ],
+      "description": "Display the outcome of the initialization without saving",
+      "group": "Automatic Config Initialization Options",
+      "name": "dry-run",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "e",
+      ],
+      "conflictsWith": Array [
+        "dry-run",
+      ],
+      "description": "Open in editor after initializing the configuration",
+      "group": "Automatic Config Initialization Options",
+      "name": "edit",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "ow",
+      ],
+      "defaultValue": false,
+      "description": "Replaces an existing configuration with a new configuration",
+      "group": "Automatic Config Initialization Options",
+      "implies": Array [
+        "for-sure",
+      ],
+      "name": "overwrite",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "f",
+      ],
+      "defaultValue": false,
+      "description": "Confirms the overwrite option",
+      "group": "Automatic Config Initialization Options",
+      "name": "for-sure",
+      "type": "boolean",
+    },
+    Object {
+      "description": "Fake command option",
+      "name": "fake",
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "fakeProfile",
+    ],
+  },
+  "summary": "A fake summary",
+  "type": "command",
+}
+`;

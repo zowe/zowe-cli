@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Failed Command Handler We should be able to get proper error messages on a syntax failure 1`] = `
+Object {
+  "data": Object {},
+  "error": undefined,
+  "exitCode": 0,
+  "message": "We failed syntax and we're sorry.: What a failure!",
+  "stderr": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "stdout": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
+  "success": true,
+}
+`;

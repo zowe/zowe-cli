@@ -1,0 +1,39 @@
+{
+    "profiles": {
+        "gala": {
+            "type": "apple",
+            "properties": {
+                "color": "red"
+            }
+        },
+        "mandarin": {
+            "type": "orange",
+            "properties": {
+                "color": "orange"
+            }
+        },
+        "fruit": {
+            "type": "fruit",
+            "properties": {
+                "host": "fruitoftheloom.com",
+                "port": 1337,
+                "tokenType": "jwtToken"
+            },
+            "secure": [
+                "tokenValue"
+            ]
+        },
+        "fruity": {
+            "type": "fruit",
+            "properties": {
+                "host": "example.com",
+                "port": 12345
+            },
+            "secure": [
+                "tokenValue"
+            ]
+        }
+    },
+    "defaults": {},
+    "plugins": []
+}

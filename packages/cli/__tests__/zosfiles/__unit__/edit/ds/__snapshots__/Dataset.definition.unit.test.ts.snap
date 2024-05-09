@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "ed",
     ],
-    "description": "Set the default editor that you wish to use for editing. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
+    "description": "Editor that overrides the default editor for this file type. Set the option to the editor's executable file location or the program's name: ie \\"--editor notepad\\"",
     "name": "editor",
     "required": false,
     "type": "string",
@@ -18,6 +18,25 @@ Array [
     "description": "Set the file extension of the file for editing to leverage an editor's file-type-specific formatting: ie \\"--extension jcl\\"",
     "name": "extension",
     "required": false,
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
+    "name": "binary",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "ec",
+    ],
+    "conflictsWith": Array [
+      "binary",
+    ],
+    "description": "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
+    "name": "encoding",
     "type": "string",
   },
 ]
@@ -34,8 +53,8 @@ Array [
     "options": "ibmuser.cntl(iefbr14) --editor C:\\\\Windows\\\\System32\\\\Notepad.exe",
   },
   Object {
-    "description": "Edit the contents of the USS file \\"/a/ibmuser/my_jcl.jcl\\" in notepad and set extension as \\"jcl\\"",
-    "options": "ibmuser.jcl(iefbr14) --editor notepad --extension jcl",
+    "description": "Edit the contents of the data set member \\"ibmuser.jcl(iefbr14)\\" and set extension as \\"jcl\\"",
+    "options": "ibmuser.jcl(iefbr14) --binary",
   },
 ]
 `;

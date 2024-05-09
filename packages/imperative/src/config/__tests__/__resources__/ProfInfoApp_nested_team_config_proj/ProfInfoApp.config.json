@@ -1,0 +1,24 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "TEST001": {
+            "properties": {
+                "host": "TEST001.your.domain.net",
+                "rejectUnauthorized": true
+            },
+            "secure": ["user", "password"],
+            "profiles": {
+                "first": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                }
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "TEST001.first"
+    },
+    "autoStore": true
+}

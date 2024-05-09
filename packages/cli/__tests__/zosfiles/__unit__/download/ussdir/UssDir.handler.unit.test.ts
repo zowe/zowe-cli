@@ -104,6 +104,76 @@ describe("Download uss dir handler", () => {
             expect(logMessage).toMatchSnapshot();
         });
 
+        it("should download a uss dir in an encoding", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../../src/zosfiles/download/ussdir/UssDir.handler");
+            const handler = new handlerReq.default();
+            const ussDirName = "/z/testingDirectory";
+
+            const localDownloadObj: IDownloadOptions = {...defaultDownloadObj, encoding: "IBM-037"};
+            const localListObj: IUSSListOptions = {...defaultListObj};
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            Download.ussDir = jest.fn(async (session) => {
+                fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "downloaded"
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        ussDirName,
+                        encoding: "IBM-037",
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
+                    },
+                    response: {
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        },
+                        progress: {
+                            startBar: jest.fn((parms) => {
+                                // do nothing
+                            }),
+                            endBar: jest.fn(() => {
+                                // do nothing
+                            })
+                        }
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(Download.ussDir).toHaveBeenCalledTimes(1);
+            expect(Download.ussDir).toHaveBeenCalledWith(fakeSession, ussDirName, localDownloadObj, localListObj);
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toMatchSnapshot();
+            expect(logMessage).toMatchSnapshot();
+        });
+
         it("should download a uss dir and look for a particular file", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/download/ussdir/UssDir.handler");

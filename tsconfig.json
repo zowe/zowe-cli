@@ -13,10 +13,12 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "preserveConstEnums": true,
+    "experimentalDecorators": true,
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "stripInternal": true
   },
   "exclude": [
     "lib",
@@ -26,5 +28,8 @@
     "**/*.spec.ts",
     "**/*-spec.ts",
     "**/*.test.ts"
+  ],
+  "files": [
+    "./__types__/wontache.d.ts"
   ]
 }

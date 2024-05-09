@@ -18,6 +18,7 @@ import { IZosFilesResponse } from "../doc/IZosFilesResponse";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
+import { IDataSet } from "../doc/IDataSet";
 
 /**
  * Common IO utilities
@@ -273,6 +274,24 @@ export class ZosFilesUtils {
         } catch (error) {
             Logger.getAppLogger().error(error);
             throw error;
+        }
+    }
+
+    /**
+     * Converts the name of a data set to an IDataSet
+     * @param {string} name  - the name in the form USER.DATA.SET | USER.DATA.SET(mem1)
+     */
+    public static getDataSetFromName(name: string): IDataSet {
+        const parts = name.replace(')', '').split('(');
+        if (parts.length > 1) {
+            return {
+                dsn: parts[0],
+                member: parts[1]
+            };
+        } else {
+            return {
+                dsn: name
+            };
         }
     }
 }

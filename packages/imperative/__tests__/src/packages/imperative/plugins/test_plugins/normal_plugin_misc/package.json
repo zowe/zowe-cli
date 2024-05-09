@@ -1,0 +1,59 @@
+{
+  "name": "normal-plugin-misc",
+  "version": "1.0.1",
+  "description": "Some description",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "imperative": {
+    "name": "normal-plugin-misc",
+    "rootCommandDescription": "imperative working test plugin",
+    "pluginBaseCliVersion": "^1.0.0",
+    "pluginHealthCheck": "./lib/sample-plugin/healthCheck.handler",
+    "pluginAliases": [
+      "misc"
+    ],
+    "pluginSummary": "This plugin is intended to test various Imperative features",
+    "definitions": [
+      {
+        "name": "imperative-apis", "aliases": ["ia"],
+        "description": "Test that the Imperative APIs are accessible",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/imperative-apis/imperativeApis.handler"
+      },
+      {
+        "name": "imperative-config", "aliases": ["ic"],
+        "description": "Test that the Imperative Config is accessible and correct",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/imperative-config/imperativeConfig.handler"
+      },
+      {
+        "name": "imperative-error", "aliases": ["ie"],
+        "description": "Test that Imperative can handle an Imperative error from a plugin",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/imperative-error/imperativeError.handler"
+      },
+      {
+        "name": "imperative-logging", "aliases": ["il"],
+        "description": "Test that the Imperative Logging capabilities work",
+        "type": "command",
+        "handler": "./lib/sample-plugin/cmd/imperative-logging/imperativeLogging.handler",
+        "options": [{"name": "test", "type": "string", "required": true, "description": "Test identifier"}]
+      }
+    ]
+  },
+  "peerDependencies": {
+    "@zowe/imperative": "1.0.0"
+  },
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "EPL 2.0",
+  "private": false,
+  "publishConfig": {
+    "registry": "http://imperative-npm-registry:4873"
+  }
+}

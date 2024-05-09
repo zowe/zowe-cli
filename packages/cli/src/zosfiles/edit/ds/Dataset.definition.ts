@@ -40,7 +40,9 @@ export const DatasetDefinition: ICommandDefinition = {
     ],
     options: [
         EditOptions.editor,
-        EditOptions.extension
+        EditOptions.extension,
+        EditOptions.binary,
+        EditOptions.encoding,
     ],
     examples: [
         {
@@ -52,8 +54,8 @@ export const DatasetDefinition: ICommandDefinition = {
             options: `ibmuser.cntl(iefbr14) --editor C:\\Windows\\System32\\Notepad.exe`
         },
         {
-            description: strings.ACTIONS.USS_FILE.EXAMPLES.EX2,
-            options: `ibmuser.jcl(iefbr14) --editor notepad --extension jcl`
+            description: strings.ACTIONS.DATA_SET.EXAMPLES.EX2,
+            options: `ibmuser.jcl(iefbr14) --binary`
         }
     ]
 };

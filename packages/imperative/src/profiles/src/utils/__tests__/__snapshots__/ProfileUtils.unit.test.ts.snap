@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Utils should construct the option and alias 1`] = `"blueberry-profile"`;
+
+exports[`Profile Utils should construct the option and alias 2`] = `"blueberry-p"`;
+
+exports[`Profile Utils should construct the profile option alias 1`] = `"blueberry-p"`;
+
+exports[`Profile Utils should construct the profile option name 1`] = `"blueberry-profile"`;
+
+exports[`Profile Utils should flatten dependencies 1`] = `
+Array [
+  Object {
+    "dependenciesLoaded": true,
+    "failNotFound": true,
+    "message": "",
+    "name": "tasty_apple",
+    "profile": Object {
+      "name": "tasty_apple",
+      "rotten": false,
+      "type": "apple",
+    },
+    "type": "apple",
+  },
+  Object {
+    "dependenciesLoaded": true,
+    "failNotFound": true,
+    "message": "",
+    "name": "bad_apple",
+    "profile": Object {
+      "name": "bad_apple",
+      "rotten": true,
+      "type": "apple",
+    },
+    "type": "apple",
+  },
+]
+`;
+
+exports[`Profile Utils should get all type names 1`] = `
+Array [
+  "apple",
+  "strawberry",
+  "banana",
+  "grape",
+]
+`;

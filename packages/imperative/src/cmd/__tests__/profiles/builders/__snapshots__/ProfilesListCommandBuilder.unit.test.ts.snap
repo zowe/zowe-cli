@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile List Command Builder should provide a valid command definition for the profile list command based on our test profile type 1`] = `
+Object {
+  "aliases": Array [
+    "type-a",
+  ],
+  "children": Array [],
+  "customize": Object {
+    "profileTypeIdentifier": "type-a",
+  },
+  "deprecatedReplacement": "The 'config list' command",
+  "description": "Type A profile for builder tests",
+  "examples": Array [
+    Object {
+      "description": "List profiles of type type-a",
+      "options": "",
+    },
+    Object {
+      "description": "List profiles of type type-a and display their contents",
+      "options": "--sc",
+    },
+  ],
+  "name": "type-a-profiles",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "sc",
+      ],
+      "description": "List type-a  profiles  and their contents. All profile details will be printed as part of command output.",
+      "name": "show-contents",
+      "required": false,
+      "type": "boolean",
+    },
+  ],
+  "summary": "List profiles of the type type-a.",
+  "type": "command",
+}
+`;

@@ -1,0 +1,129 @@
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+#cmd-tree {
+    flex: 1;
+    height: 100%;
+    margin: 0 5px;
+    overflow: auto;
+}
+
+#docs-page {
+    border: none;
+    display: block;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#footer {
+    flex: none;
+    font-size: small;
+    margin: 10px 0;
+    text-align: center;
+}
+
+#header {
+    flex: none;
+}
+
+#header-image {
+    height: 64px;
+    margin: 0 0 10px 5px;
+}
+
+#header-text {
+    color: black;
+    display: inline-block;
+    min-height: 64px;
+    padding-top: 20px;
+    text-decoration: none;
+}
+
+#panel-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+}
+
+#panel-left {
+    background-color: #edf2fa;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    max-width: calc(100% - 220px);
+    min-width: 220px;
+    width: 300px;
+}
+
+#panel-right {
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+#tree-search {
+    border-radius: 20px;
+    margin: 0 5px 7px 5px;
+    width: calc(100% - 10px);
+}
+
+#tree-tabs {
+    margin: 0 5px 5px 5px;
+    width: calc(100% - 10px);
+}
+
+.gutter {
+    background-color: #dddee0;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+    cursor: col-resize;
+}
+
+@media (prefers-color-scheme: dark) {
+    #header-text {
+        color: #c9d1d9;
+    }
+
+    #panel-left {
+        background-color: #161b22;
+    }
+
+    #panel-right {
+        background-color: #0d1117;
+    }
+
+    #tree-search {
+        background-color: #0d1117;
+        color: #8b949e;
+    }
+
+    .gutter {
+        background-color: #30363d;
+    }
+
+    .jstree-default-dark {
+        background-color: #161b22;
+    }
+}

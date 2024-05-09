@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`imperative-test-cli test command should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   Test that various imperative features are working
+
+ USAGE
+ -----
+
+   imperative-test-cli test <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   logging                Test imperative logging
+   masking                Test imperative masking
+   test-config-auto-store Read some config       
+   test-config-override   Override some config   
+
+ GLOBAL OPTIONS
+ --------------
+
+   --help-examples (boolean)
+
+      Display examples for all the commands in a group
+
+   --response-format-json | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help | -h (boolean)
+
+      Display help text
+
+   --help-web | --hw (boolean)
+
+      Display HTML help in browser
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: test.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test that various imperative features are working\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   imperative-test-cli test <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   logging                Test imperative logging\\\\n   masking                Test imperative masking\\\\n   test-config-auto-store Read some config       \\\\n   test-config-override   Override some config   \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test that various imperative features are working\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   imperative-test-cli test <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   logging                Test imperative logging\\\\n   masking                Test imperative masking\\\\n   test-config-auto-store Read some config       \\\\n   test-config-override   Override some config   \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;

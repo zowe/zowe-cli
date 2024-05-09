@@ -1,0 +1,203 @@
+defaultProfile: null
+configuration:
+    type: base
+    schema:
+        type: object
+        title: 'Base Profile'
+        description: 'Base profile that stores values shared by multiple service profiles'
+        properties:
+            host:
+                type: string
+                optionDefinition:
+                    name: host
+                    aliases:
+                        - H
+                    description: 'Host name of service on the mainframe.'
+                    type: string
+                    group: 'Base Connection Options'
+            port:
+                type: number
+                optionDefinition:
+                    name: port
+                    aliases:
+                        - P
+                    description: 'Port number of service on the mainframe.'
+                    type: number
+                    group: 'Base Connection Options'
+            user:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: user
+                    aliases:
+                        - u
+                    description: 'User name to authenticate to service on the mainframe.'
+                    type: string
+                    group: 'Base Connection Options'
+            password:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: password
+                    aliases:
+                        - pass
+                        - pw
+                    description: 'Password to authenticate to service on the mainframe.'
+                    type: string
+                    group: 'Base Connection Options'
+            rejectUnauthorized:
+                type: boolean
+                optionDefinition:
+                    name: reject-unauthorized
+                    aliases:
+                        - ru
+                    description: 'Reject self-signed certificates.'
+                    type: boolean
+                    defaultValue: true
+                    group: 'Base Connection Options'
+            tokenType:
+                type: string
+                optionDefinition:
+                    name: token-type
+                    aliases:
+                        - tt
+                    description: 'The type of token to get and use for the API. Omit this option to use the default token type, which is provided by ''zowe auth login''.'
+                    type: string
+                    allowableValues:
+                        values:
+                            - apimlAuthenticationToken
+                            - jwtToken
+                            - LtpaToken2
+                    group: 'Base Connection Options'
+            tokenValue:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: token-value
+                    aliases:
+                        - tv
+                    description: 'The value of the token to pass to the API.'
+                    type: string
+                    group: 'Base Connection Options'
+        required: []
+    createProfileExamples:
+        -
+            options: 'base1 --host example.com --port 443 --user admin --password 123456'
+            description: 'Create a profile called ''base1'' to connect to host example.com and port 443'
+        -
+            options: 'base2 --host example.com --user admin --password 123456 --reject-unauthorized false'
+            description: 'Create a profile called ''base2'' to connect to host example.com (default port - 443) and allow self-signed certificates'
+        -
+            options: 'base3 --host example.com --port 1443'
+            description: 'Create a profile called ''base3'' to connect to host example.com and port 1443,  not specifying a username or password so they are not stored on disk; these will need to be specified on every command'
+        -
+            options: 'base4 --reject-unauthorized false'
+            description: 'Create a zosmf profile called ''base4'' to connect to default port 443 and allow self-signed certificates, not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command'
+    updateProfileExamples:
+        -
+            options: 'base1 --user newuser --password newp4ss'
+            description: 'Update a base profile named ''base1'' with a new username and password'
+    authConfig:
+        -
+            serviceName: apiml
+            handler: 'C:\ourstuff\repos\zowe-cli\lib/auth/src/cli/ApimlAuthHandler'
+            login:
+                summary: 'Log in to API ML authentication service'
+                description: "Log in to Zowe API Mediation Layer authentication service and obtain or update a token.\n\nThe token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, you should omit username and password in service profiles so that the token in the base profile is used."
+                examples:
+                    -
+                        description: 'Log in to an API ML instance to obtain or update the token stored in your base profile'
+                        options: ""
+                    -
+                        description: 'Log in to an API ML instance to obtain a token without storing it in a profile'
+                        options: '--show-token'
+                options:
+                    -
+                        name: host
+                        aliases:
+                            - H
+                        description: 'Host name of service on the mainframe.'
+                        type: string
+                        group: 'Base Connection Options'
+                    -
+                        name: port
+                        aliases:
+                            - P
+                        description: 'Port number of service on the mainframe.'
+                        type: number
+                        group: 'Base Connection Options'
+                    -
+                        name: user
+                        aliases:
+                            - u
+                        description: 'User name to authenticate to service on the mainframe.'
+                        type: string
+                        group: 'Base Connection Options'
+                    -
+                        name: password
+                        aliases:
+                            - pass
+                            - pw
+                        description: 'Password to authenticate to service on the mainframe.'
+                        type: string
+                        group: 'Base Connection Options'
+                    -
+                        name: reject-unauthorized
+                        aliases:
+                            - ru
+                        description: 'Reject self-signed certificates.'
+                        type: boolean
+                        defaultValue: true
+                        group: 'Base Connection Options'
+            logout:
+                summary: 'Log out of API ML authentication service'
+                description: 'Log out of the Zowe API Mediation Layer authentication service and revoke the token so it can no longer authenticate. Also remove the token from the default base profile, if it is stored on disk.'
+                examples:
+                    -
+                        description: 'Log out of an API ML instance to revoke the token that was in use and remove it from your base profile'
+                        options: ""
+                    -
+                        description: 'Log out of an API ML instance to revoke a token that was not stored in a profile'
+                        options: '--token-value <token>'
+                options:
+                    -
+                        name: host
+                        aliases:
+                            - H
+                        description: 'Host name of service on the mainframe.'
+                        type: string
+                        group: 'Base Connection Options'
+                    -
+                        name: port
+                        aliases:
+                            - P
+                        description: 'Port number of service on the mainframe.'
+                        type: number
+                        group: 'Base Connection Options'
+                    -
+                        name: token-type
+                        aliases:
+                            - tt
+                        description: 'The type of token to get and use for the API. Omit this option to use the default token type, which is provided by ''zowe auth login''.'
+                        type: string
+                        allowableValues:
+                            values:
+                                - apimlAuthenticationToken
+                                - jwtToken
+                                - LtpaToken2
+                        group: 'Base Connection Options'
+                    -
+                        name: token-value
+                        aliases:
+                            - tv
+                        description: 'The value of the token to pass to the API.'
+                        type: string
+                        group: 'Base Connection Options'
+                    -
+                        name: reject-unauthorized
+                        aliases:
+                            - ru
+                        description: 'Reject self-signed certificates.'
+                        type: boolean
+                        defaultValue: true
+                        group: 'Base Connection Options'
