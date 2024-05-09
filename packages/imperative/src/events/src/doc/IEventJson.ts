@@ -37,8 +37,4 @@ export interface IEventJson {
      * The file path for information on the emitted event
      */
     eventFilePath: string;
-    /**
-     * The indicator of user-specific (if true) or shared (if false) events
-     */
-    isCustomSharedEvent: boolean;
 }

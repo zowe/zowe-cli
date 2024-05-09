@@ -9,7 +9,5 @@
 *
 */
 
-export * from "./IEventEmitterOpts";
 export * from "./IRegisteredAction";
 export * from "./IEventJson";
-export * from "./IEventSubscriptionParms";
