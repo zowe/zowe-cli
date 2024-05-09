@@ -10,7 +10,7 @@
 */
 
 /**
- * Imperative Registered Action (possibly change to IDisposableSubscription)
+ * Registered Action (possibly change to IDisposableSubscription)
  * @export
  * @interface IRegisteredAction
  */
