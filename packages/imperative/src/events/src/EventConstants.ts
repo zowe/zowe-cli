@@ -12,27 +12,22 @@
 
 // TO DO - flesh out these enums to include all expected user and shared events
 
-export enum ImperativeUserEvents {
+export enum UserEvents {
     ON_VAULT_CHANGED = "onVaultChanged"
 }
-export enum ImperativeSharedEvents {
+export enum SharedEvents {
     ON_CREDENTIAL_MANAGER_CHANGED = "onCredentialManagerChanged"
 }
 
-export enum ImperativeCustomShared {
+export enum CustomSharedEvents {
     CUSTOM_SHARED_EVENT = "customSharedEvent"
 }
 
-export enum ImperativeCustomUser {
+export enum CustomUserEvents {
     CUSTOM_USER_EVENT = "customUserEvent",
 }
 
-export type ImperativeEventTypes =
-    typeof ImperativeUserEvents |
-    typeof ImperativeSharedEvents |
-    typeof ImperativeCustomShared |
-    typeof ImperativeCustomUser;
-
+export enum EventTypes { UserEvents, SharedEvents, CustomSharedEvents, CustomUserEvents }
 /**
  * EXPECTED EVENT LOCATIONS:
  *

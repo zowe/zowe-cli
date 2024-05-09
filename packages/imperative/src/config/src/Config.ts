@@ -31,7 +31,7 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
-import { ImperativeEventEmitter } from "../../events";
+import { EventEmitter } from "../../events";
 import { Logger } from "../../logger";
 
 /**
@@ -155,7 +155,7 @@ export class Config {
         myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
 
-        ImperativeEventEmitter.instance.initialize(app, { logger:Logger.getAppLogger() });
+        EventEmitter.instance.initialize(app, { logger:Logger.getAppLogger() });
 
         // Populate configuration file layers
         await myNewConfig.reload(opts);

@@ -9,40 +9,36 @@
 *
 */
 
-import { ImperativeEventTypes } from "../ImperativeEventConstants";
+import { EventTypes } from "../EventConstants";
 
 /**
- * Imperative Event JSON representation
+ * Imperative Event JSON representation for user interpretation
  * @export
- * @interface IImperativeEventJson
+ * @interface IEventJson
  */
-export interface IImperativeEventJson {
+export interface IEventJson {
     /**
      * The time in which the event occurred
      */
-    time: string;
+    eventTime: string;
     /**
      * The name of event that occurred
      */
-    name: string;
+    eventName: string;
     /**
      * The type of event that occurred
      */
-    type: ImperativeEventTypes;
+    eventType: EventTypes;
     /**
      * The application name that triggered the event
      */
-    source: string;
-    /**
-     * The ID of the event that occurred
-     */
-    id?: string;
+    appName: string;
     /**
      * The file path for information on the emitted event
      */
-    loc?: string;
+    eventFilePath: string;
     /**
      * The indicator of user-specific (if true) or shared (if false) events
      */
-    isCustomShared?: boolean;
+    isCustomSharedEvent: boolean;
 }

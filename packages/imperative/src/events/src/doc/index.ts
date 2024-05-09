@@ -9,7 +9,7 @@
 *
 */
 
-export * from "./IImperativeEventEmitterOpts";
-export * from "./IImperativeRegisteredAction";
-export * from "./IImperativeEventJson";
+export * from "./IEventEmitterOpts";
+export * from "./IRegisteredAction";
+export * from "./IEventJson";
 export * from "./IEventSubscriptionParms";

@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeEventTypes } from "../ImperativeEventConstants";
+import { EventTypes } from "../EventConstants";
 import { FSWatcher } from "fs";
 
 /**
@@ -20,10 +20,10 @@ import { FSWatcher } from "fs";
 export interface IEventSubscriptionParms {
     /**
      * The type of event that occurred
-     * @type {ImperativeEventTypes}
+     * @type {EventTypes}
      * @memberof IEventSubscriptionParms
      */
-    eventType?: ImperativeEventTypes
+    eventType?: EventTypes
     /**
      * The time of the latest event occurrence
      * @type {string}
@@ -35,7 +35,7 @@ export interface IEventSubscriptionParms {
      * @type {boolean}
      * @memberof IEventSubscriptionParms
      */
-    isCustomShared?: boolean
+    isCustomSharedEvent?: boolean
     /**
      * Event dir for the .event file
      * Incomplete dir path to be joined with the current value stored in zoweDir

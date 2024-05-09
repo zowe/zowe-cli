@@ -10,6 +10,6 @@
 */
 
 export * from "./src/doc";
-export * from "./src/ImperativeEvent";
-export * from "./src/ImperativeEventConstants";
-export * from "./src/ImperativeEventEmitter";
+export * from "./src/Event";
+export * from "./src/EventConstants";
+export * from "./src/EventEmitter";

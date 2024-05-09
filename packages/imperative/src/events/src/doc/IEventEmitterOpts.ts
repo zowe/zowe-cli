@@ -9,15 +9,18 @@
 *
 */
 
+import { Logger } from "../../../logger";
+
 /**
- * Imperative Registered Action
+ * Imperative standard event emitter options
  * @export
- * @interface IImperativeRegisteredAction
+ * @interface IEventEmitterOpts
  */
-export interface IImperativeRegisteredAction {
+export interface IEventEmitterOpts {
     /**
-     * The method to dispose of the registered action
-     * @memberof IImperativeRegisteredAction
+     * The logger to use when logging the imperative event that occurred
+     * @type {Logger}
+     * @memberof IEventEmitterOpts
      */
-    close(): void;
+    logger?: Logger;
 }
