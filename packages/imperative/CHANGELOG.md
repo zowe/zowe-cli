@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed issue where the `ConfigSecure.securePropsForProfile` function did not list secure properties outside the active config layer. [zowe-explorer-vscode#2633](https://github.com/zowe/zowe-explorer-vscode/issues/2633)
+
 ## `5.23.1`
 
 - BugFix: Restore the previous precedence of token over password in AbstractRestClient [#2109](https://github.com/zowe/zowe-cli/issues/2109)
