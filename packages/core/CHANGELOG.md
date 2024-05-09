@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated help text for `tokenType` option to remove special regular expression character `^`. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
+
 ## `7.21.2`
 
 - BugFix: Add information about password-protected certificate file support. [#2006](https://github.com/zowe/zowe-cli/issues/2006)

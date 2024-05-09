@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated error text for invalid command options so that allowable values are displayed as strings instead of regular expressions when possible. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
+
 ## `5.23.1`
 
 - BugFix: Restore the previous precedence of token over password in AbstractRestClient [#2109](https://github.com/zowe/zowe-cli/issues/2109)
