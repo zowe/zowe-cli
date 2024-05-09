@@ -105,12 +105,12 @@ describe("Download Jobs - System tests", () => {
 
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 6;
-            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
             JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
             SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
 
-        fit("should be able to download single DD from job output with encoding", async () => {
+        it.only("should be able to download single DD from job output with encoding", async () => {
             const downloadDir = outputDirectory + "/downloadsingle/";
             await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,
