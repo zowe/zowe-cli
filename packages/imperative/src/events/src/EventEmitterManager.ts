@@ -8,7 +8,6 @@
 * Copyright Contributors to the Zowe Project.
 */
 
-import { Logger } from "../../logger/src/Logger";
 import { EventEmitter } from "./EventEmitter";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { dirname, join } from "path";
@@ -20,14 +19,13 @@ import { Event } from "./Event";
 
 /**
  * The EventEmitterManager class serves as a central hub for managing
- * event emitters and their app-specific-subscriptions.
+ * event emitters and their watched events.
  *
  * @export
  * @class EventEmitterManager
  */
 export class EventEmitterManager {
     private static instances: Map<string, EventEmitter> = new Map();
-    private static logger: Logger; //TO DO: MAKE A CONFIGURABLE LOGGER
 
     /**
      * Retrieves an existing EventEmitter instance or creates a new one if it does not exist.
@@ -47,28 +45,13 @@ export class EventEmitterManager {
 
     /**
      * A collection of helper functions related to event management, including:
-     * - directory management,
+     * - directory management
      * - event type determination
      * - subscription creation
+     * - watcher creation and setting callbacks
      * - event writing
      */
     public static Helpers = {
-        /**
-         * Ensures that the specified directory for storing event files exists.
-         * Creates the directory if not.
-         *
-         * @param {string} directoryPath
-         */
-        ensureEventsDirExists: function(directoryPath: string) {
-            try {
-                if (!fs.existsSync(directoryPath)) {
-                    fs.mkdirSync(directoryPath);
-                }
-            } catch (err) {
-                throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
-            }
-        },
-
         /**
          * Determines if the specified event name is a user event.
          *
@@ -102,6 +85,22 @@ export class EventEmitterManager {
         },
 
         /**
+         * Ensures that the specified directory for storing event files exists.
+         * Creates the directory if not.
+         *
+         * @param {string} directoryPath
+         */
+        ensureEventsDirExists: function(directoryPath: string) {
+            try {
+                if (!fs.existsSync(directoryPath)) {
+                    fs.mkdirSync(directoryPath);
+                }
+            } catch (err) {
+                throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
+            }
+        },
+
+        /**
          * Creates a subscription for an event. It configures and stores an event instance within the EventEmitter's subscription map.
          *
          * @param {EventEmitter} eeInst The instance of EventEmitter to which the event is registered.
@@ -119,14 +118,31 @@ export class EventEmitterManager {
                 eventName: eventName,
                 eventType: eventType,
                 appName: eeInst.appName,
-                eventFilePath: filePath
+                filePath: filePath,
+                watchers: []
             });
 
-            eeInst.subscriptions.set(eventName, newEvent);
+            eeInst.events.set(eventName, newEvent);
 
             return {
                 close: () => eeInst.unsubscribe(eventName)
             };
+        },
+
+        setupWatcher: function(eeInst: EventEmitter, eventName: string, callbacks: Function[] = []): fs.FSWatcher {
+            const event = eeInst.events.get(eventName);
+            const watcher = fs.watch(event.filePath, (trigger: "rename" | "change") => {
+                // Accommodates for the delay between actual file change event and fsWatcher's perception
+                //(Node.JS triggers this notification event 3 times)
+                if (eeInst.eventTimes.get(eventName) !== event.eventTime) {
+                    eeInst.logger.debug(`EventEmitter: Event "${trigger}" emitted: ${eventName}`);
+                    // Promise.all(callbacks)
+                    callbacks.forEach(cb => cb());
+                    eeInst.eventTimes.set(eventName, event.eventTime);
+                }
+            });
+            event.watchers.push(watcher);
+            return watcher;
         },
 
         /**
@@ -135,7 +151,7 @@ export class EventEmitterManager {
          * @param {Event} event
          */
         writeEvent: function(event: Event) {
-            const eventPath = join(ProfileInfo.getZoweDir(), event.eventFilePath);
+            const eventPath = join(ProfileInfo.getZoweDir(), event.filePath);
             this.ensureEventsDirExists(eventPath);
             fs.writeFileSync(eventPath, JSON.stringify(event.toJson(), null, 2));
         }

@@ -10,6 +10,7 @@
 */
 
 import { EventTypes } from "../EventConstants";
+import * as fs from "fs";
 
 /**
  * Imperative Event JSON representation for user interpretation
@@ -36,5 +37,9 @@ export interface IEventJson {
     /**
      * The file path for information on the emitted event
      */
-    eventFilePath: string;
+    filePath: string;
+    /**
+     * List of watchers to eventually close
+     */
+    watchers: fs.FSWatcher[];
 }

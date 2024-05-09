@@ -1,3 +1,4 @@
+import { FSWatcher } from "fs";
 import { EventTypes } from "./EventConstants";
 import { IEventJson } from "./doc";
 
@@ -6,14 +7,16 @@ export class Event implements IEventJson {
     eventName: string;
     eventType: EventTypes;
     appName: string;
-    eventFilePath: string;
+    filePath: string;
+    watchers: FSWatcher[];
 
-    constructor({ eventTime, eventName, eventType, appName, eventFilePath }: IEventJson) {
+    constructor({ eventTime, eventName, eventType, appName, filePath: eventFilePath, watchers}: IEventJson) {
         this.eventTime = eventTime;
         this.eventName = eventName;
         this.eventType = eventType;
         this.appName = appName;
-        this.eventFilePath = eventFilePath;
+        this.filePath = eventFilePath;
+        this.watchers = watchers;
     }
 
     public toJson() {
@@ -22,7 +25,7 @@ export class Event implements IEventJson {
             eventName: this.eventName,
             eventType: this.eventType,
             appName: this.appName,
-            eventFilePath: this.eventFilePath
+            eventFilePath: this.filePath
         };
     }
 }
