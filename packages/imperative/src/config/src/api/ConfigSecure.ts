@@ -204,7 +204,7 @@ export class ConfigSecure extends ConfigApi {
     public securePropsForProfile(profileName: string): string[] {
         const profilePath = this.mConfig.api.profiles.getProfilePathFromName(profileName);
         const secureProps = new Set<string>();
-        for (const propPath of this.secureFields()) {
+        for (const propPath of this.findSecure(this.mConfig.mProperties.profiles, "profiles")) {
             const pathSegments = propPath.split(".");  // profiles.XXX.properties.YYY
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             const propProfilePath = pathSegments.slice(0, -2).join(".");
