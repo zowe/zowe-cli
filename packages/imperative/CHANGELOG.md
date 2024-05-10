@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Updated error text for invalid command options so that allowable values are displayed as strings instead of regular expressions when possible. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
 - BugFix: Fixed issue where the `ConfigSecure.securePropsForProfile` function did not list secure properties outside the active config layer. [zowe-explorer-vscode#2633](https://github.com/zowe/zowe-explorer-vscode/issues/2633)
 
 ## `5.23.1`

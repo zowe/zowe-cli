@@ -315,7 +315,7 @@ export class SyntaxValidator {
                     const optionValueArray = Array.isArray(optionValue) ? optionValue : [optionValue];
                     optionValueArray.filter(value => !this.checkIfAllowable(optionDefCopy.allowableValues, value))
                         .forEach(value => {
-                            this.invalidOptionError(optionDefCopy, responseObject, value);
+                            this.invalidOptionError(optionDef, responseObject, value);
                             valid = false;
                         });
                 }
