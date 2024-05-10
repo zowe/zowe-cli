@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202405101931`
 
 - Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern. [#2095](https://github.com/zowe/zowe-cli/issues/2095)
 
