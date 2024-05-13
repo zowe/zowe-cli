@@ -15,6 +15,8 @@ import { homedir } from "os";
 import { Logger } from "../../../logger/src/Logger";
 import { ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../..";
 
+jest.mock("fs");
+
 describe("Event Emitter", () => {
     const iee = ImperativeEventEmitter;
     const sharedDir = join(__dirname, ".zowe", ".events");
