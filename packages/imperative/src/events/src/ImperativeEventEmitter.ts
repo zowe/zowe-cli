@@ -18,13 +18,13 @@ import { ImperativeEventType, ImperativeUserEvents, ImperativeSharedEvents } fro
 import { ImperativeEvent } from "./ImperativeEvent";
 import { Logger } from "../../logger/src/Logger";
 import { LoggerManager } from "../../logger/src/LoggerManager";
-import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEventJson } from "./doc";
+import { IImperativeRegisteredAction, IImperativeEventEmitterOpts, IImperativeEventJson, ImperativeEventCallback } from "./doc";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 
 export class ImperativeEventEmitter {
     private static mInstance: ImperativeEventEmitter;
     private static initialized = false;
-    private subscriptions: Map<string, [fs.FSWatcher, Function[]]>;
+    private subscriptions: Map<string, [fs.FSWatcher, ImperativeEventCallback[]]>;
     private eventTimes: Map<string, string>;
     public appName: string;
     public logger: Logger;
@@ -129,7 +129,7 @@ export class ImperativeEventEmitter {
      * @param callbacks list of all callbacks for this watcher
      * @returns The FSWatcher instance created
      */
-    private setupWatcher(eventName: string, callbacks: Function[] = []): fs.FSWatcher {
+    private setupWatcher(eventName: string, callbacks: ImperativeEventCallback[] = []): fs.FSWatcher {
         const dir = this.getEventDir(eventName);
         this.ensureEventsDirExists(dir);
         this.ensureEventFileExists(join(dir, eventName));
@@ -254,7 +254,7 @@ export class ImperativeEventEmitter {
      * @param eventName Type of event to register
      * @param callback Action to be registered to the given event
      */
-    public subscribe(eventName: string, callback: Function): IImperativeRegisteredAction {
+    public subscribe(eventName: string, callback: ImperativeEventCallback): IImperativeRegisteredAction {
         this.ensureClassInitialized();
 
         let watcher: fs.FSWatcher;

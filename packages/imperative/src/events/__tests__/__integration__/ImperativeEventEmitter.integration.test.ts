@@ -19,7 +19,7 @@ import * as path from "path";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 const iee = ImperativeEventEmitter;
-const iee_u = ImperativeUserEvents;
+// const iee_u = ImperativeUserEvents;
 const iee_s = ImperativeSharedEvents;
 let cwd = '';
 
