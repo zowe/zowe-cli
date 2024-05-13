@@ -110,8 +110,9 @@ describe("Imperative should provide advanced syntax validation rules", () => {
         it("If we specify an option that has a set of allowable string values," +
             " but specify a value that doesn't match any of the values, the command should fail ",
         function () {
+            const allowableValues = ValidationTestCommand.options?.find(({ name }) => name === "option-to-specify-3")?.allowableValues?.values;
             return tryOptions.bind(this, "--option-to-specify-3 badvalue --absence-implies " +
-                    alwaysRequired, false, ["must match"])();
+                    alwaysRequired, false, ["must match", inspect(allowableValues)])();
         });
         it("If we specify an option that has a set of allowable string values," +
             " but specify a value that partially match one of the values, the command should fail ",
