@@ -906,7 +906,7 @@ describe("Get spool APIs", () => {
 
         it("Should get spool content from a job with encoding", async () => {
             const idcams = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_content.jcl")).toString();
-            const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY";
+            const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY¬¬";
             const renderedJcl = TextUtils.renderWithMustache(idcams,
                 {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF, CONTENT: DATA_TO_CHECK});
             const NUM_OF_SPOOL_FILES = 4;
@@ -920,6 +920,7 @@ describe("Get spool APIs", () => {
                 if (file.ddname === DD_WITH_CONTENT) {
                     const dataContent = await GetJobs.getSpoolContent(REAL_SESSION, file, "IBM-037");
                     expect(dataContent).toContain("NUMBER OF RECORDS PROCESSED WAS 3");
+                    expect(dataContent).toContain("PUTTYPUTTYPUTTY");
                     expect(dataContent).not.toContain("¬¬");
                     expect(dataContent).toContain("^^");
                     found = true;
@@ -949,7 +950,7 @@ describe("Get spool APIs", () => {
 
         it("Should get spool content for a single job with encoding", async () => {
             const idcams = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_content.jcl")).toString();
-            const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY";
+            const DATA_TO_CHECK = "PUTTYPUTTYPUTTYPUTTY¬¬";
             const renderedJcl = TextUtils.renderWithMustache(idcams,
                 {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF, CONTENT: DATA_TO_CHECK});
             const NUM_OF_SPOOL_FILES = 4;
@@ -961,6 +962,7 @@ describe("Get spool APIs", () => {
                 if (file.ddname === DD_WITH_CONTENT) {
                     const content = await GetJobs.getSpoolContentById(REAL_SESSION, job.jobname, job.jobid, file.id, "IBM-037");
                     expect(content).toContain("NUMBER OF RECORDS PROCESSED WAS 3");
+                    expect(content).toContain("PUTTYPUTTYPUTTY");
                     expect(content).not.toContain("¬¬");
                     expect(content).toContain("^^");
                     break;

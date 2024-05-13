@@ -73,11 +73,11 @@ describe("Download Jobs - System tests", () => {
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
 
-    // afterEach((done: any) => {  // eslint-disable-line jest/no-done-callback
-    //     require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
-    //         done(err);
-    //     });
-    // });
+    afterEach((done: any) => {  // eslint-disable-line jest/no-done-callback
+        require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
+            done(err);
+        });
+    });
 
     afterAll(async () => {
         await DeleteJobs.deleteJob(REAL_SESSION, jobname, jobid);
@@ -110,21 +110,22 @@ describe("Download Jobs - System tests", () => {
             SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
 
-        it.only("should be able to download single DD from job output with encoding", async () => {
-            const downloadDir = outputDirectory + "/downloadsingle/";
+        it("should be able to download single DD from job output with encoding", async () => {
+            const downloadDir = outputDirectory + "/downloadsingleenc";
             await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,
-                jobFile: alteredjesJCLJobFile
+                jobFile: alteredjesJCLJobFile,
+                encoding: "IBM-037"
             });
 
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
+            const expectedFile = DownloadJobs.getSpoolDownloadFile(alteredjesJCLJobFile, false, downloadDir);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("^");
         });
 
         it("should be able to download all DDs from job output with encoding", async () => {
-            const downloadDir = outputDirectory + "/downloadall/";
+            const downloadDir = outputDirectory + "/downloadallenc";
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,
                 jobid: alteredjobid,
