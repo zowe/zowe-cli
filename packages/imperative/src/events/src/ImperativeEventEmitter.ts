@@ -181,14 +181,14 @@ export class ImperativeEventEmitter {
     /**
      * ZOWE HOME directory to search for system wide ImperativeEvents like `configChanged`
      */
-    public getSharedEventDir(): string {
+    private getSharedEventDir(): string {
         return join(ImperativeConfig.instance.cliHome, ".events");
     }
 
     /**
      * USER HOME directory to search for user specific ImperativeEvents like `vaultChanged`
      */
-    public getUserEventDir(): string {
+    private getUserEventDir(): string {
         return join(homedir(), ".zowe", ".events");
     }
 

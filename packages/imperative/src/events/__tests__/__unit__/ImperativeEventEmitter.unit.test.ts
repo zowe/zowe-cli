@@ -254,7 +254,7 @@ describe("Event Emitter", () => {
 
         it("should teardown the Event Emitter instance successfully", () => {
             expect((iee as any).initialized).toBeFalsy();
-            iee.teardown()
+            iee.teardown();
             expect((iee as any).initialized).toBeFalsy();
 
             iee.initialize("zowe", {logger: jest.fn() as any});

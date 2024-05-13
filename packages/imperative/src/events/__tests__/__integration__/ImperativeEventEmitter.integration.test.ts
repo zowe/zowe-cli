@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeEventJson, ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../../..";
+import { IImperativeEventJson, ImperativeEventEmitter, ImperativeSharedEvents } from "../../..";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import * as TestUtil from "../../../../__tests__/src/TestUtil";
@@ -19,7 +19,6 @@ import * as path from "path";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 const iee = ImperativeEventEmitter;
-// const iee_u = ImperativeUserEvents;
 const iee_s = ImperativeSharedEvents;
 let cwd = '';
 
