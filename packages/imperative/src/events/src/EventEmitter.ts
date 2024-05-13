@@ -10,13 +10,13 @@
 */
 
 import { Logger } from "../../logger/src/Logger";
-import { EventEmitterManager } from "./EventEmitterManager";
 import { EventTypes } from "./EventConstants";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { Event } from "./Event";
-import { ConfigUtils } from "../../config";
+import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { LoggerManager } from "../../logger/src/LoggerManager";
 import { ImperativeConfig } from "../../utilities";
+import { EventUtils } from "./EventUtils";
 
 /**
  * The EventEmitter class is responsible for managing event subscriptions and emissions for a specific application.
@@ -52,7 +52,6 @@ export class EventEmitter {
     /**
      * Utility helpers from EventEmitterManager for managing events.
      */
-    public utils = EventEmitterManager.Helpers;
 
     /**
      * Subscribes to a shared event. This method determines the event type and creates a subscription.
@@ -60,9 +59,9 @@ export class EventEmitter {
      * @param {string} eventName
      */
     public subscribeShared(eventName: string): void {
-        const isCustom = this.utils.isSharedEvent(eventName);
+        const isCustom = EventUtils.isSharedEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomSharedEvents : EventTypes.SharedEvents;
-        this.utils.createSubscription(this, eventName, eventType);
+        EventUtils.createSubscription(this, eventName, eventType);
     }
 
     /**
@@ -71,10 +70,10 @@ export class EventEmitter {
      * @param {string} eventName
      */
     public subscribeUser(eventName: string, callbacks: Function[]): void {
-        const isCustom = this.utils.isUserEvent(eventName);
+        const isCustom = EventUtils.isUserEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomUserEvents : EventTypes.UserEvents;
-        this.utils.createSubscription(this, eventName, eventType);
-        this.utils.setupWatcher(this, eventName, callbacks);
+        EventUtils.createSubscription(this, eventName, eventType);
+        EventUtils.setupWatcher(this, eventName, callbacks);
     }
 
     /**
@@ -88,7 +87,7 @@ export class EventEmitter {
         try {
             const event = this.events.get(eventName);
             event.eventTime = new Date().toISOString();
-            this.utils.writeEvent(event);
+            EventUtils.writeEvent(event);
         } catch (err) {
             throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
         }

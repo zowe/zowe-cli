@@ -13,3 +13,5 @@ export * from "./src/doc";
 export * from "./src/Event";
 export * from "./src/EventConstants";
 export * from "./src/EventEmitter";
+export * from "./src/EventEmitterManager";
+export * from "./src/EventUtils";

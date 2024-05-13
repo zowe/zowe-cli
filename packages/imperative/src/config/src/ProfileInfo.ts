@@ -730,17 +730,10 @@ export class ProfileInfo {
      * Retrieves the Zowe CLI home directory. In the situation Imperative has
      * not initialized it we use a default value.
      * @returns {string} - Returns the Zowe home directory
+     * @deprecated Use ConfigUtils.getZoweDir()
      */
     public static getZoweDir(): string {
-        const defaultHome = path.join(os.homedir(), ".zowe");
-        if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
-            ImperativeConfig.instance.loadedConfig = {
-                name: "zowe",
-                defaultHome,
-                envVariablePrefix: "ZOWE"
-            };
-        }
-        return ImperativeConfig.instance.cliHome;
+        return ConfigUtils.getZoweDir();
     }
 
     /**

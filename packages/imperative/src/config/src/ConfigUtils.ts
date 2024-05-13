@@ -24,6 +24,22 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 
 export class ConfigUtils {
     /**
+     * Retrieves the Zowe CLI home directory. In the situation Imperative has
+     * not initialized it we use a default value.
+     * @returns {string} - Returns the Zowe home directory
+     */
+    public static getZoweDir(): string {
+        const defaultHome = pathJoin(osHomedir(), ".zowe");
+        if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
+            ImperativeConfig.instance.loadedConfig = {
+                name: "zowe",
+                defaultHome,
+                envVariablePrefix: "ZOWE"
+            };
+        }
+        return ImperativeConfig.instance.cliHome;
+    }
+    /**
      * Coerces string property value to a boolean or number type.
      * @param value String value
      * @param type Property type defined in the schema
