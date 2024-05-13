@@ -27,9 +27,9 @@ export class EventEmitterManager {
      *
      * @static
      * @param {string} appName key to KVP for managed event emitter instances
-     * @return {(EventEmitter | undefined)} Returns the EventEmitter instance or undefined if it cannot be created.
+     * @return {EventEmitter} Returns the EventEmitter instance
      */
-    public static getEmitter(appName: string): EventEmitter | undefined {
+    public static getEmitter(appName: string): EventEmitter {
         if (!this.instances.has(appName)) {
             const newInstance = new EventEmitter(appName);
             this.instances.set(appName, newInstance);

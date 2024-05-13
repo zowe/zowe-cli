@@ -17,6 +17,7 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { LoggerManager } from "../../logger/src/LoggerManager";
 import { ImperativeConfig } from "../../utilities";
 import { EventUtils } from "./EventUtils";
+import { IRegisteredAction } from "./doc";
 
 /**
  * The EventEmitter class is responsible for managing event subscriptions and emissions for a specific application.
@@ -26,7 +27,7 @@ import { EventUtils } from "./EventUtils";
  * @class EventEmitter
  */
 export class EventEmitter {
-    public events: Map<string, Event> = new Map();
+    public subscribedEvents: Map<string, Event> = new Map();
     public eventTimes: Map<string, string>;
     public appName: string;
     public logger: Logger;
@@ -38,7 +39,7 @@ export class EventEmitter {
      * @param {Logger} logger The logger instance used for logging information and errors.
      */
     public constructor(appName: string, logger?: Logger) {
-        this.events = new Map();
+        this.subscribedEvents = new Map();
         this.appName = appName;
 
         // Ensure we have correct environmental conditions to setup a custom logger,
@@ -58,10 +59,12 @@ export class EventEmitter {
      *
      * @param {string} eventName
      */
-    public subscribeShared(eventName: string): void {
+    public subscribeShared(eventName: string, callbacks: Function[] | Function): IRegisteredAction {
         const isCustom = EventUtils.isSharedEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomSharedEvents : EventTypes.SharedEvents;
-        EventUtils.createSubscription(this, eventName, eventType);
+        const disposable = EventUtils.createSubscription(this, eventName, eventType);
+        EventUtils.setupWatcher(this, eventName, callbacks);
+        return disposable;
     }
 
     /**
@@ -69,11 +72,12 @@ export class EventEmitter {
      *
      * @param {string} eventName
      */
-    public subscribeUser(eventName: string, callbacks: Function[]): void {
+    public subscribeUser(eventName: string, callbacks: Function[] | Function): IRegisteredAction {
         const isCustom = EventUtils.isUserEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomUserEvents : EventTypes.UserEvents;
-        EventUtils.createSubscription(this, eventName, eventType);
+        const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
+        return disposable;
     }
 
     /**
@@ -85,7 +89,7 @@ export class EventEmitter {
      */
     public emitEvent(eventName: string): void {
         try {
-            const event = this.events.get(eventName);
+            const event = this.subscribedEvents.get(eventName);
             event.eventTime = new Date().toISOString();
             EventUtils.writeEvent(event);
         } catch (err) {
@@ -103,10 +107,10 @@ export class EventEmitter {
     public unsubscribe(eventName: string): void {
         try{
             // find watcher list and close everything
-            this.events.get(eventName).subscriptions.forEach((watcher)=>{
+            this.subscribedEvents.get(eventName).subscriptions.forEach((watcher)=>{
                 watcher.removeAllListeners(eventName).close();
             });
-            this.events.delete(eventName);
+            this.subscribedEvents.delete(eventName);
         } catch(err){
             throw new ImperativeError({ msg: `Error unsubscribing from event: ${eventName}`, causeErrors: err });
         }

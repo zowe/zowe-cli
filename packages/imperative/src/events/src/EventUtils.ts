@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError } from "../../error/src/ImperativeError";
-import { dirname, join } from "path";
+import { join } from "path";
 import { UserEvents, SharedEvents, EventTypes } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
@@ -48,7 +48,7 @@ export class EventUtils {
     }
 
     /**
-     * Retrieves the directory path for events based on the event type and application name.
+     * Modifies path to include appName if a custom event type
      *
      * @param {EventTypes} eventType
      * @param {string} appName
@@ -76,6 +76,20 @@ export class EventUtils {
     }
 
     /**
+     * Check to see if the file path exists, otherwise, create it : )
+     * @param filePath Zowe or User path where we will write the events
+     */
+    public static ensureFileExists(filePath: string) {
+        try {
+            if (!fs.existsSync(filePath)) {
+                fs.closeSync(fs.openSync(filePath, 'w'));
+            }
+        } catch (err) {
+            throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
+        }
+    }
+
+    /**
      * Creates a subscription for an event. It configures and stores an event instance within the EventEmitter's subscription map.
      *
      * @param {EventEmitter} eeInst The instance of EventEmitter to which the event is registered.
@@ -85,8 +99,11 @@ export class EventUtils {
      */
     public static createSubscription(eeInst: EventEmitter, eventName: string, eventType: EventTypes): IRegisteredAction {
         const dir = this.getEventDir(eventType, eeInst.appName);
-        this.ensureEventsDirExists(dir);
-        const filePath = join(dirname(ConfigUtils.getZoweDir()), eventName);
+        this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), '.events'));
+        this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), dir));
+
+        const filePath = join(ConfigUtils.getZoweDir(), dir, eventName);
+        this.ensureFileExists(filePath);
 
         const newEvent = new Event({
             eventTime: new Date().toISOString(),
@@ -97,22 +114,25 @@ export class EventUtils {
             subscriptions: []
         });
 
-        eeInst.events.set(eventName, newEvent);
+        eeInst.subscribedEvents.set(eventName, newEvent);
 
         return {
             close: () => eeInst.unsubscribe(eventName)
         };
     }
 
-    public static setupWatcher(eeInst: EventEmitter, eventName: string, callbacks: Function[] = []): fs.FSWatcher {
-        const event = eeInst.events.get(eventName);
+    public static setupWatcher(eeInst: EventEmitter, eventName: string, callbacks: Function[] | Function ): fs.FSWatcher {
+        const event = eeInst.subscribedEvents.get(eventName);
         const watcher = fs.watch(event.filePath, (trigger: "rename" | "change") => {
             // Accommodates for the delay between actual file change event and fsWatcher's perception
             //(Node.JS triggers this notification event 3 times)
             if (eeInst.eventTimes.get(eventName) !== event.eventTime) {
                 eeInst.logger.debug(`EventEmitter: Event "${trigger}" emitted: ${eventName}`);
-                // Promise.all(callbacks)
-                callbacks.forEach(cb => cb());
+                if (Array.isArray(callbacks)){
+                    callbacks.forEach(cb => cb());
+                }else {
+                    callbacks();
+                }
                 eeInst.eventTimes.set(eventName, event.eventTime);
             }
         });
@@ -126,8 +146,6 @@ export class EventUtils {
      * @param {Event} event
      */
     public static writeEvent(event: Event) {
-        const eventPath = join(ConfigUtils.getZoweDir(), event.filePath);
-        this.ensureEventsDirExists(eventPath);
-        fs.writeFileSync(eventPath, JSON.stringify(event.toJson(), null, 2));
+        fs.writeFileSync(event.filePath, JSON.stringify(event.toJson(), null, 2));
     }
 }
