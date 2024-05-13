@@ -72,6 +72,36 @@ Object {
       "name": "jcl-symbols",
       "type": "string",
     },
+    Object {
+      "aliases": Array [
+        "je",
+      ],
+      "description": "The encoding that should be used to read the JCL into the z/OSMF JCL reader. JCL will be converted into this codepage from UTF-8 for the JES subsystem to parse.",
+      "name": "job-encoding",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "jrl",
+      ],
+      "description": "The logical record length of the submitted JCL. Defaults to 80 if not supplied.",
+      "name": "job-record-length",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "jrf",
+      ],
+      "allowableValues": Object {
+        "values": Array [
+          "F",
+          "V",
+        ],
+      },
+      "description": "The record format of the JCL being submitted, where V is variable, and F is fixed. Defaults to F if not supplied.",
+      "name": "job-record-format",
+      "type": "string",
+    },
   ],
   "outputFormatOptions": true,
   "profile": Object {

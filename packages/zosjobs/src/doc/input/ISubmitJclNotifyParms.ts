@@ -10,13 +10,14 @@
 */
 
 import { JOB_STATUS } from "../../types/JobStatus";
+import { ISubmitParmsCommon } from "./ISubmitParmsCommon";
 
 /**
  * Interface for submiting jobs API
  * @export
  * @interface ISubmitJclNotifyParm
  */
-export interface ISubmitJclNotifyParm {
+export interface ISubmitJclNotifyParm extends ISubmitParmsCommon {
 
     /**
      * JCL to submit, for example:
@@ -26,23 +27,6 @@ export interface ISubmitJclNotifyParm {
      * @memberof ISubmitJclNotifyParm
      */
     jcl: string;
-
-    /**
-     * Specify internal reader RECFM and corresponding http(s) headers
-     * will be appended to the request accordingly
-     * "F" (fixed) or "V" (variable)
-     * @type {string}
-     * @memberof ISubmitJclNotifyParm
-     */
-    internalReaderRecfm?: string;
-
-    /**
-     * Specify internal reader LRECL and corresponding http(s) headers
-     * will be appended to the request accordingly
-     * @type {string}
-     * @memberof ISubmitJclNotifyParm
-     */
-    internalReaderLrecl?: string;
 
     /**
      * Watch delay (polling delay) that the underlying services will use
@@ -68,11 +52,4 @@ export interface ISubmitJclNotifyParm {
      * @memberof ISubmitJclNotifyParm
      */
     attempts?: number;
-
-    /**
-     * A string for JCL symbolic substitution
-     * @type {string}
-     * @memberof ISubmitJobParms
-     */
-    jclSymbols?: string;
 }

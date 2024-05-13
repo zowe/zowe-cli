@@ -46,7 +46,10 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             waitForActive: this.mArguments.waitForActive,
             waitForOutput: this.mArguments.waitForOutput,
             task: status,
-            jclSymbols: this.mArguments.jclSymbols
+            jclSymbols: this.mArguments.jclSymbols,
+            internalReaderFileEncoding: this.mArguments.jobEncoding,
+            internalReaderLrecl: this.mArguments.jobRecordLength,
+            internalReaderRecfm: this.mArguments.jobRecordFormat
         };
         const options: IDownloadOptions = {};
         params.response.progress.startBar({task: status});
