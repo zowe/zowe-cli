@@ -48,7 +48,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             task: status,
             jclSymbols: this.mArguments.jclSymbols,
             internalReaderFileEncoding: this.mArguments.jobEncoding,
-            internalReaderLrecl: this.mArguments.jobRecordLength,
+            internalReaderLrecl: this.mArguments.jobRecordLength?.toString(),
             internalReaderRecfm: this.mArguments.jobRecordFormat
         };
         const options: IDownloadOptions = {};

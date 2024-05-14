@@ -160,6 +160,35 @@ Array [
 
 exports[`submit shared handler process method should submit JCL contained within a local-file if requested and view all spool content 6`] = `"Submitted JCL contained in \\"local-file\\": \\"test.txt\\""`;
 
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested with additional parameters 1`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "object",
+  "output": Object {
+    "jobid": "JOB123",
+    "jobname": "MYJOB",
+    "retcode": "UNKNOWN",
+    "status": "INPUT",
+  },
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested with additional parameters 2`] = `
+Object {
+  "jobid": "JOB123",
+  "jobname": "MYJOB",
+  "retcode": "UNKNOWN",
+  "status": "INPUT",
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a local-file if requested with additional parameters 3`] = `"Submitted JCL contained in \\"local-file\\": \\"test.txt\\""`;
+
 exports[`submit shared handler process method should submit JCL contained within a uss-file if requested 1`] = `
 Object {
   "fields": Array [

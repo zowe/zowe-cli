@@ -63,6 +63,15 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("jobid");
         });
 
+        it("should submit a job using JCL on stdin with explicit LRECL, RECFM, and encoding", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin.sh",
+                TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--job-encoding IBM-037 --job-record-format F --job-record-length 80"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("jobname");
+            expect(response.stdout.toString()).toContain("jobid");
+        });
+
         it("should submit a job using JCL on stdin with 'view-all-spool-content' option", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_vasc.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--vasc"]);

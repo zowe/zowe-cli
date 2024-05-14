@@ -1,0 +1,2 @@
+//JOHTI04I JOB  (IZUACCT),'TIMOTHY',CLASS=A                             00010013
+//STEP1    EXEC PGM=IEFBR14                                             00020016
