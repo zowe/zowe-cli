@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to set JCL reader properties for `--jobRecordLength`, `--jobRecordFormat` and `--jobEncoding` on the `zowe jobs submit local-file` and `zowe jobs submit stdin` commands. [#2139](https://github.com/zowe/zowe-cli/pull/2139)
+
 ## `7.24.2`
 
 - BugFix: Fixed `zowe daemon enable` installing an invalid daemon binary on macOS. [#2126](https://github.com/zowe/zowe-cli/pull/2126)
