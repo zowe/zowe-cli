@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./IRegisteredAction";
+export * from "./IDisposableAction";
 export * from "./IEventJson";

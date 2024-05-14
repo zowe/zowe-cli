@@ -12,12 +12,12 @@
 /**
  * Registered Action (possibly change to IDisposableSubscription)
  * @export
- * @interface IRegisteredAction
+ * @interface IDisposableAction
  */
-export interface IRegisteredAction {
+export interface IDisposableAction {
     /**
      * The method to dispose of the registered action
-     * @memberof IRegisteredAction
+     * @memberof IDisposableAction
      */
     close(): void;
 }

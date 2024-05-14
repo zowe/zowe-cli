@@ -29,7 +29,8 @@ export enum CustomUserEvents {
 
 export enum EventTypes { UserEvents, SharedEvents, CustomSharedEvents, CustomUserEvents }
 
-export type EventCallback = () => void | Promise<void>;
+export type EventCallback = () => void | PromiseLike<void>;
+
 /**
  * EXPECTED EVENT LOCATIONS:
  *
