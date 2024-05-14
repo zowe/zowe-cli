@@ -11,7 +11,7 @@
 
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { join } from "path";
-import { UserEvents, SharedEvents, EventTypes } from "./EventConstants";
+import { UserEvents, SharedEvents, EventTypes, EventCallback } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { IRegisteredAction } from "./doc";
@@ -121,16 +121,16 @@ export class EventUtils {
         };
     }
 
-    public static setupWatcher(eeInst: EventEmitter, eventName: string, callbacks: Function[] | Function ): fs.FSWatcher {
+    public static setupWatcher(eeInst: EventEmitter, eventName: string, callbacks: EventCallback[] | EventCallback): fs.FSWatcher {
         const event = eeInst.subscribedEvents.get(eventName);
         const watcher = fs.watch(event.filePath, (trigger: "rename" | "change") => {
             // Accommodates for the delay between actual file change event and fsWatcher's perception
             //(Node.JS triggers this notification event 3 times)
             if (eeInst.eventTimes.get(eventName) !== event.eventTime) {
                 eeInst.logger.debug(`EventEmitter: Event "${trigger}" emitted: ${eventName}`);
-                if (Array.isArray(callbacks)){
+                if (Array.isArray(callbacks)) {
                     callbacks.forEach(cb => cb());
-                }else {
+                } else {
                     callbacks();
                 }
                 eeInst.eventTimes.set(eventName, event.eventTime);

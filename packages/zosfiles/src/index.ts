@@ -36,6 +36,7 @@ export * from "./methods/list";
 export * from "./methods/mount";
 export * from "./methods/hRecall";
 export * from "./methods/rename";
+export * from "./methods/search";
 export * from "./methods/unmount";
 export * from "./methods/upload";
 export * from "./methods/utilities";

@@ -17,7 +17,7 @@ jest.mock("../../../../utilities/src/ImperativeConfig");
 
 import * as fs from "fs";
 import { IO } from "../../../../io/src/IO";
-import { V1ProfileConversion } from "../V1ProfileConversion";
+import { V1ProfileRead } from "../V1ProfileRead";
 import { ImperativeError } from "../../../../error/index";
 import {
     BANANA_PROFILE_TYPE,
@@ -68,7 +68,7 @@ describe("V1 Profile Conversion", () => {
             return meta;
         });
 
-        const readMeta = V1ProfileConversion.readMetaFile(TEST_DIR_PATH);
+        const readMeta = V1ProfileRead.readMetaFile(TEST_DIR_PATH);
         expect(readMeta).toBeDefined();
         expect(readMeta).toMatchSnapshot();
     });
@@ -80,14 +80,14 @@ describe("V1 Profile Conversion", () => {
 
         let error;
         try {
-            V1ProfileConversion.readMetaFile(TEST_DIR_PATH);
+            V1ProfileRead.readMetaFile(TEST_DIR_PATH);
         } catch (e) {
             error = e;
         }
 
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toContain("V1ProfileConversion Read Error: Error reading profile file");
+        expect(error.message).toContain("V1ProfileRead Read Error: Error reading profile file");
     });
 
     it("should return a list of profile types", () => {
@@ -102,7 +102,7 @@ describe("V1 Profile Conversion", () => {
                 }),
             };
         }) as any);
-        const returnedTypes: string[] = V1ProfileConversion.getAllProfileDirectories(TEST_DIR_PATH);
+        const returnedTypes: string[] = V1ProfileRead.getAllProfileDirectories(TEST_DIR_PATH);
         expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(returnedTypes).toEqual(types);
     });
@@ -120,7 +120,7 @@ describe("V1 Profile Conversion", () => {
                 }),
             };
         }) as any);
-        const returnedTypes: string[] = V1ProfileConversion.getAllProfileDirectories(TEST_DIR_PATH);
+        const returnedTypes: string[] = V1ProfileRead.getAllProfileDirectories(TEST_DIR_PATH);
         expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(returnedTypes).toEqual(types.filter((type) => {
             // results shouldn't contain banana
@@ -134,7 +134,7 @@ describe("V1 Profile Conversion", () => {
         });
         let error;
         try {
-            V1ProfileConversion.getAllProfileDirectories(TEST_DIR_PATH);
+            V1ProfileRead.getAllProfileDirectories(TEST_DIR_PATH);
         } catch (e) {
             error = e;
         }
@@ -151,7 +151,7 @@ describe("V1 Profile Conversion", () => {
         mocks.readdirSync.mockImplementation(((path: any) => {
             return fileNames;
         }) as any);
-        const returnedTypes: string[] = V1ProfileConversion.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
+        const returnedTypes: string[] = V1ProfileRead.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
         expect(mocks.readdirSync).toHaveBeenCalledWith(TEST_DIR_PATH);
         expect(returnedTypes).toEqual(names);
     });
@@ -162,7 +162,7 @@ describe("V1 Profile Conversion", () => {
         });
         let error;
         try {
-            V1ProfileConversion.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
+            V1ProfileRead.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
         } catch (e) {
             error = e;
         }
@@ -182,7 +182,7 @@ describe("V1 Profile Conversion", () => {
         mocks.safeLoad.mockImplementation((args: any) => {
             return prof;
         });
-        const profile = V1ProfileConversion.readProfileFile(TEST_DIR_PATH, "strawberry");
+        const profile = V1ProfileRead.readProfileFile(TEST_DIR_PATH, "strawberry");
         expect(profile).toBeDefined();
         expect(profile).toEqual(prof);
     });
@@ -193,7 +193,7 @@ describe("V1 Profile Conversion", () => {
         });
         let error;
         try {
-            V1ProfileConversion.readProfileFile(TEST_DIR_PATH, "strawberry");
+            V1ProfileRead.readProfileFile(TEST_DIR_PATH, "strawberry");
         } catch (e) {
             error = e;
         }
@@ -204,7 +204,7 @@ describe("V1 Profile Conversion", () => {
     });
 
     describe("Profile operations should crash in team-config mode", () => {
-        const configModeErr = "V1ProfileConversion Read Error: " +
+        const configModeErr = "V1ProfileRead Read Error: " +
             "Attempted to convert a Zowe V1 profile when a newer Zowe client configuration already exists.";
 
         beforeEach(() => {
@@ -236,7 +236,7 @@ describe("V1 Profile Conversion", () => {
         it("should crash in readMetaFile", () => {
             let error;
             try {
-                V1ProfileConversion.readMetaFile(TEST_DIR_PATH);
+                V1ProfileRead.readMetaFile(TEST_DIR_PATH);
             } catch (e) {
                 error = e;
             }
@@ -248,7 +248,7 @@ describe("V1 Profile Conversion", () => {
         it("should crash in getAllProfileDirectories", () => {
             let error;
             try {
-                V1ProfileConversion.getAllProfileDirectories(TEST_DIR_PATH);
+                V1ProfileRead.getAllProfileDirectories(TEST_DIR_PATH);
             } catch (e) {
                 error = e;
             }
@@ -260,7 +260,7 @@ describe("V1 Profile Conversion", () => {
         it("should crash in getAllProfileNames", () => {
             let error;
             try {
-                V1ProfileConversion.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
+                V1ProfileRead.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
             } catch (e) {
                 error = e;
             }
@@ -272,7 +272,7 @@ describe("V1 Profile Conversion", () => {
         it("should crash in readProfileFile", () => {
             let error;
             try {
-                V1ProfileConversion.readProfileFile(TEST_DIR_PATH, "strawberry");
+                V1ProfileRead.readProfileFile(TEST_DIR_PATH, "strawberry");
             } catch (e) {
                 error = e;
             }

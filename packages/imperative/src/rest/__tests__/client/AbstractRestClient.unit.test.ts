@@ -9,9 +9,13 @@
 *
 */
 
+import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 import { Session } from "../../src/session/Session";
+import {
+    AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_CERT_PEM, AUTH_TYPE_TOKEN
+} from "../../src/session/SessConstants";
 import { RestClient } from "../../src/client/RestClient";
 import { Headers } from "../../src/client/Headers";
 import { ProcessUtils } from "../../../utilities";
@@ -34,6 +38,13 @@ import { IO } from "../../../io";
  */
 
 describe("AbstractRestClient tests", () => {
+    let setPasswordAuthSpy: any;
+
+    beforeEach(() => {
+        // pretend that basic auth was successfully set
+        setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
+        setPasswordAuthSpy.mockReturnValue(true);
+    });
 
     it("should not append any headers to a request by default", () => {
         const client = new RestClient(new Session({hostname: "test"}));
@@ -63,6 +74,23 @@ describe("AbstractRestClient tests", () => {
         }
 
         expect(error.message).toMatchSnapshot();
+    });
+
+    it("should throw an error when when no creds are in the session", async () => {
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
+
+        let caughtError;
+        try {
+            await RestClient.getExpectString(new Session({
+                hostname: "test"
+            }), "/resource");
+        } catch (error) {
+            caughtError = error;
+        }
+
+        expect(caughtError instanceof ImperativeError).toBe(true);
+        expect(caughtError.message).toContain("No credentials for a BASIC or TOKEN type of session");
     });
 
     it("should not error when chunking data and payload data are present in outgoing request", async () => {
@@ -667,6 +695,9 @@ describe("AbstractRestClient tests", () => {
 
         (https.request as any) = httpsRequestFnc;
 
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
+
         let error;
         try {
             await RestClient.getExpectString(
@@ -700,6 +731,9 @@ describe("AbstractRestClient tests", () => {
         });
 
         (https.request as any) = httpsRequestFnc;
+
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
 
         let error;
         try {
@@ -737,6 +771,9 @@ describe("AbstractRestClient tests", () => {
         });
 
         (https.request as any) = httpsRequestFnc;
+
+        // restore setPasswordAuth spy to its original implementation
+        setPasswordAuthSpy.mockRestore();
 
         let error;
         try {
@@ -1116,6 +1153,226 @@ describe("AbstractRestClient tests", () => {
             }), "/resource", [], responseStream, true);
             const result = await streamToString(responseStream);
             expect(result).toBe("\r\nabc\r\ndef\r\n");
+        });
+    });
+
+    describe("private functions", () => {
+        beforeEach(() => {
+            // restore setPasswordAuth spy to its original implementation
+            if (setPasswordAuthSpy) {
+                setPasswordAuthSpy.mockRestore();
+            }
+        });
+
+        describe("setTokenAuth", () => {
+            it("should return true when a session specifies a token", () => {
+                // pretend that the session was created for a token
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = restClient["setTokenAuth"](restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+
+            });
+
+            it("should return false when a token session has no token value", () => {
+                // pretend that the session was created for a token, but with no value
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+                delete restClient["mSession"]["mISession"].tokenValue;
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = restClient["setTokenAuth"](restOptions);
+                expect(tokenWasSet).toEqual(false);
+                expect(restOptions.headers["Cookie"]).not.toBeDefined();
+            });
+        });
+
+        describe("setPasswordAuth", () => {
+            it("should return true when a session specifies user and password", () => {
+                // pretend that the session was created with a user and password
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_BASIC,
+                        user: "FakeUser",
+                        password: "FakePassword"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const passwordWasSet: boolean = restClient["setPasswordAuth"](restOptions);
+                expect(passwordWasSet).toEqual(true);
+                expect(restOptions.headers["Authorization"]).toBeDefined();
+            });
+
+            it("should return true when a session specifies base64EncodedAuth", () => {
+                // pretend that the session was created with a base64 cred
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_BASIC,
+                        base64EncodedAuth: "FakeBase64EncodedCred"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const passwordWasSet: boolean = restClient["setPasswordAuth"](restOptions);
+                expect(passwordWasSet).toEqual(true);
+                expect(restOptions.headers["Authorization"]).toBeDefined();
+            });
+
+            it("should return false when a basic auth session has no user, password, or Base64Cred", () => {
+                // pretend that the session was created for basic auth, but has no creds
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_BASIC,
+                        user: "FakeUser",
+                        password: "FakePassword"
+                    })
+                );
+                delete restClient["mSession"]["mISession"].user;
+                delete restClient["mSession"]["mISession"].password;
+                delete restClient["mSession"]["mISession"].base64EncodedAuth;
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const passwordWasSet: boolean = restClient["setPasswordAuth"](restOptions);
+                expect(passwordWasSet).toEqual(false);
+                expect(restOptions.headers["Authorization"]).not.toBeDefined();
+            });
+        });
+
+        describe("setBearerAuth", () => {
+            it("should return true when a session has a bearer token", () => {
+                // pretend that the session was created for a bearer token
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_BEARER,
+                        tokenValue: "FakeBearerTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const bearerWasSet: boolean = restClient["setBearerAuth"](restOptions);
+                expect(bearerWasSet).toEqual(true);
+                expect(restOptions.headers["Authorization"]).toBeDefined();
+            });
+
+            it("should return false when a bearer token session has no token value", () => {
+                // pretend that the session was created for a bearer token, but with no value
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_BEARER,
+                        tokenValue: "FakeBearerTokenValue"
+                    })
+                );
+                delete restClient["mSession"]["mISession"].tokenValue;
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const bearerWasSet: boolean = restClient["setBearerAuth"](restOptions);
+                expect(bearerWasSet).toEqual(false);
+                expect(restOptions.headers["Authorization"]).not.toBeDefined();
+            });
+        });
+
+        describe("setCertPemAuth", () => {
+            let readFileSyncSpy: any;
+
+            beforeEach(() => {
+                // pretend that readFileSync can read the cert and the cert key
+                readFileSyncSpy = jest.spyOn(fs, "readFileSync").mockReturnValue(
+                    "Some fake data from ReadFileSync"
+                );
+            });
+
+            afterEach(() => {
+                // restore readFileSync to its original implementation
+                readFileSyncSpy.mockRestore();
+            });
+
+            it("should return true when a session has a PEM cert", () => {
+                // pretend that the session was created for a PEM cert
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_CERT_PEM,
+                        cert: "FakePemCert",
+                        certKey: "FakePemCertKey"
+                    })
+                );
+
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const pemCertWasSet: boolean = restClient["setCertPemAuth"](restOptions);
+
+                expect(readFileSyncSpy).toHaveBeenCalledWith(restClient["mSession"]["mISession"].cert);
+                expect(readFileSyncSpy).toHaveBeenCalledWith(restClient["mSession"]["mISession"].certKey);
+                expect(pemCertWasSet).toEqual(true);
+            });
+
+            it("should return false when a PEM cert session has no type", () => {
+                // pretend that the session was created for a PEM cert, but with no type
+                const restClient: any = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_CERT_PEM,
+                        cert: "FakePemCert",
+                        certKey: "FakePemCertKey"
+                    })
+                );
+                delete restClient["mSession"]["mISession"].type;
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const pemCertWasSet: boolean = restClient["setCertPemAuth"](restOptions);
+
+                expect(pemCertWasSet).toEqual(false);
+                expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].cert);
+                expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].certKey);
+            });
         });
     });
 });

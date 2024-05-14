@@ -36,4 +36,9 @@ export class EventEmitterManager {
         }
         return this.instances.get(appName);
     }
+
+    // TODO: Implement `logger` initialization for each emitter initialized
+    //      `EEM.getEmitter(appName, {logger: ...})`
+    // TODO: Implement `deleteEmitter` that applications can call when shutting down
+    //      `EEM.deleteEmitter(appName)`
 }

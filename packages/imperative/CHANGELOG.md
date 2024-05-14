@@ -2,6 +2,33 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/pull/1987)
+
+## `8.0.0-next.202405061946`
+
+- Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
+- Deprecated: The `IO.FILE_DELIM` constant. Use `path.posix.sep` instead or `path.sep` for better cross-platform support.
+- Deprecated: The `LoggerConfigBuilder.DEFAULT_LOG_DIR` and `LoggerConfigBuilder.DEFAULT_LOG_FILE_DIR` constants. Use `LoggerConfigBuilder.DEFAULT_LOGS_DIR` instead.
+
+## `8.0.0-next.202405031808`
+
+- BugFix: Restore the previous precedence of token over password in AbstractRestClient [#2109](https://github.com/zowe/zowe-cli/issues/2109)
+
+## `8.0.0-next.202404301428`
+
+- Enhancement: Add informative messages before prompting for connection property values in the CLI callback function getValuesBack.
+
+## `8.0.0-next.202404191414`
+
+- Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
+  - Refactored logic from convert-profiles.handler and ConfigBuilder.convert into ConvertV1Profiles.convert.
+  - Removed ConfigBuilder.convert.
+  - Replaced IConfigConvertResult with IConvertV1Profiles (which contains IConvertV1ProfResult).
+  - Renamed class V1ProfileConversion (formerly known as ProfileIO) to V1ProfileRead for consistency.
+    - Marked class V1ProfileRead as @internal.
+
 ## `8.0.0-next.202403272026`
 
 - BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2107](https://github.com/zowe/zowe-cli/pull/2107)

@@ -15,6 +15,8 @@ import { homedir } from "os";
 import { Logger } from "../../../logger/src/Logger";
 import { ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../..";
 
+jest.mock("fs");
+
 describe("Event Emitter", () => {
     const iee = ImperativeEventEmitter;
     const sharedDir = join(__dirname, ".zowe", ".events");
@@ -148,9 +150,9 @@ describe("Event Emitter", () => {
                 () => { iee.instance.emitCustomEvent(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED); },
 
                 // Subscribing should fail if IEE is not initialized
-                () => { iee.instance.subscribe("dummy", jest.fn); },
-                () => { iee.instance.subscribe(ImperativeUserEvents.ON_VAULT_CHANGED, jest.fn); },
-                () => { iee.instance.subscribe(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED, jest.fn); },
+                () => { iee.instance.subscribe("dummy", jest.fn()); },
+                () => { iee.instance.subscribe(ImperativeUserEvents.ON_VAULT_CHANGED, jest.fn()); },
+                () => { iee.instance.subscribe(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED, jest.fn()); },
                 () => { iee.instance.unsubscribe("dummy"); },
                 () => { iee.instance.unsubscribe(ImperativeUserEvents.ON_VAULT_CHANGED); },
                 () => { iee.instance.unsubscribe(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED); },
@@ -167,7 +169,7 @@ describe("Event Emitter", () => {
 
             const theEvent = ImperativeUserEvents.ON_VAULT_CHANGED;
             try {
-                iee.instance.subscribe(theEvent, jest.fn);
+                iee.instance.subscribe(theEvent, jest.fn());
             } catch (err) {
                 expect(err.message).toContain("Unable to create '.events' directory.");
             }
@@ -177,7 +179,7 @@ describe("Event Emitter", () => {
             jest.spyOn(fs, "closeSync").mockImplementation(() => { throw "FILE"; });
 
             try {
-                iee.instance.subscribe(theEvent, jest.fn);
+                iee.instance.subscribe(theEvent, jest.fn());
             } catch (err) {
                 expect(err.message).toContain("Unable to create event file.");
             }
@@ -248,6 +250,41 @@ describe("Event Emitter", () => {
 
             iee.instance.unsubscribe("dummy");
             expect(closeWatcher).toHaveBeenCalled();
+        });
+
+        it("should teardown the Event Emitter instance successfully", () => {
+            expect((iee as any).initialized).toBeFalsy();
+            iee.teardown();
+            expect((iee as any).initialized).toBeFalsy();
+
+            iee.initialize("zowe", {logger: jest.fn() as any});
+            expect((iee as any).initialized).toBeTruthy();
+
+            const dummyMap = {
+                has: () => (true),
+                delete: jest.fn(),
+                keys: () => ["dummy"],
+                get: () => ([{ removeAllListeners }, jest.fn()])
+            };
+            // Mocked map of subscriptions
+            (iee.instance as any).subscriptions = dummyMap;
+            (iee.instance as any).eventTimes = dummyMap;
+
+            iee.teardown();
+            expect(closeWatcher).toHaveBeenCalled();
+            expect((iee as any).initialized).toBeFalsy();
+        });
+
+        it("should retrieve event contents successfully", () => {
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            iee.initialize("zowe");
+            let contents = iee.instance.getEventContents(ImperativeUserEvents.ON_VAULT_CHANGED);
+            expect(contents).toEqual("");
+
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs, "readFileSync").mockReturnValueOnce("dummy");
+            contents = iee.instance.getEventContents(ImperativeUserEvents.ON_VAULT_CHANGED);
+            expect(contents).toEqual("dummy");
         });
     });
 });

@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../logger/src/Logger";
-import { EventTypes } from "./EventConstants";
+import { EventCallback, EventTypes } from "./EventConstants";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { Event } from "./Event";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
@@ -59,7 +59,7 @@ export class EventEmitter {
      *
      * @param {string} eventName
      */
-    public subscribeShared(eventName: string, callbacks: Function[] | Function): IRegisteredAction {
+    public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IRegisteredAction {
         const isCustom = EventUtils.isSharedEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomSharedEvents : EventTypes.SharedEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
@@ -72,7 +72,7 @@ export class EventEmitter {
      *
      * @param {string} eventName
      */
-    public subscribeUser(eventName: string, callbacks: Function[] | Function): IRegisteredAction {
+    public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IRegisteredAction {
         const isCustom = EventUtils.isUserEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomUserEvents : EventTypes.UserEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);

@@ -14,14 +14,14 @@ import { EventTypes } from "./EventConstants";
 import { IEventJson } from "./doc";
 
 export class Event implements IEventJson {
-    eventTime: string;
-    eventName: string;
-    eventType: EventTypes;
-    appName: string;
-    filePath: string;
-    subscriptions: FSWatcher[];
+    public eventTime: string;
+    public eventName: string;
+    public eventType: EventTypes;
+    public appName: string;
+    public filePath: string;
+    public subscriptions: FSWatcher[];
 
-    constructor({ eventTime, eventName, eventType, appName, filePath: eventFilePath, subscriptions}: IEventJson) {
+    constructor({ eventTime, eventName, eventType, appName, filePath: eventFilePath, subscriptions }: IEventJson) {
         this.eventTime = eventTime;
         this.eventName = eventName;
         this.eventType = eventType;
@@ -39,4 +39,12 @@ export class Event implements IEventJson {
             eventFilePath: this.filePath
         };
     }
+
+    /**
+     * toString overload to be called automatically on string concatenation
+     * @returns string representation of the imperative event
+     */
+    public toString = (): string => {
+        return `Name: ${this.eventName} \t| Time: ${this.eventTime} \t| App: ${this.appName} \t| Type: ${this.eventType}`;
+    };
 }
