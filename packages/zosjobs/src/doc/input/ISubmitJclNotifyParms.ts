@@ -10,23 +10,14 @@
 */
 
 import { JOB_STATUS } from "../../types/JobStatus";
-import { ISubmitParmsCommon } from "./ISubmitParmsCommon";
+import { ISubmitJclParms } from "./ISubmitJclParms";
 
 /**
  * Interface for submiting jobs API
  * @export
  * @interface ISubmitJclNotifyParm
  */
-export interface ISubmitJclNotifyParm extends ISubmitParmsCommon {
-
-    /**
-     * JCL to submit, for example:
-     *   "//IEFBR14 JOB ()\n" +
-     *   "//RUN     EXEC PGM=IEFBR14"
-     * @type {string}
-     * @memberof ISubmitJclNotifyParm
-     */
-    jcl: string;
+export interface ISubmitJclNotifyParm extends ISubmitJclParms {
 
     /**
      * Watch delay (polling delay) that the underlying services will use
