@@ -41,4 +41,4 @@ export interface IImperativeEventJson {
     user?: boolean;
 }
 
-export type ImperativeEventCallback = () => void | Promise<void>;
+export type ImperativeEventCallback = () => void | PromiseLike<void>;
