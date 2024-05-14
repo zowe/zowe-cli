@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added the ability to download job spool files using other codepages with `--encoding` on the `zowe jobs download output`, `zowe jobs view spool-file-by-id` and `zowe jobs view all-spool-content` commands.  [#1822](https://github.com/zowe/zowe-cli/pull/1822)
+- Enhancement: Added the ability to download job spool files using other codepages with `--encoding` on the `zowe jobs download output`, `zowe jobs view spool-file-by-id` and `zowe jobs view all-spool-content` commands. This allows users to download job spool files in other languages (i.e. IBM-1147 for French). [#1822](https://github.com/zowe/zowe-cli/pull/1822)
 
 ## `7.24.2`
 
