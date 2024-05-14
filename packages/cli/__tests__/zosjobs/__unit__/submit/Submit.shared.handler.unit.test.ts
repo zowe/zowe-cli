@@ -583,7 +583,7 @@ describe("submit shared handler", () => {
             expect(error).toBeUndefined();
             expect(SubmitJobs.submitJclString).toHaveBeenCalledTimes(1);
             expect(submitJclStringSpy.mock.calls[0][2]).toEqual(
-                expect.objectContaining({internalReaderFileEncoding: "IBM-037", internalReaderLrecl: 80, internalReaderRecfm: "F"})
+                expect.objectContaining({internalReaderFileEncoding: "IBM-037", internalReaderLrecl: "80", internalReaderRecfm: "F"})
             );
             expect(LocalFileSpecified).toBe(`${badJCL}`);
             IO.deleteFile(theLocalFile);
