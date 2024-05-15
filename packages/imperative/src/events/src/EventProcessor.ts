@@ -18,6 +18,7 @@ import { LoggerManager } from "../../logger/src/LoggerManager";
 import { ImperativeConfig } from "../../utilities";
 import { EventUtils } from "./EventUtils";
 import { IDisposableAction } from "./doc";
+import { IProcessorTypes } from "./doc/IEventInstanceTypes";
 
 /**
  * The EventEmitter class is responsible for managing event subscriptions and emissions for a specific application.
@@ -26,9 +27,10 @@ import { IDisposableAction } from "./doc";
  * @export
  * @class EventEmitter
  */
-export class EventEmitter {
+export class EventProcessor {
     public subscribedEvents: Map<string, Event> = new Map();
     public eventTimes: Map<string, string>;
+    public processorType: IProcessorTypes;
     public appName: string;
     public logger: Logger;
 
@@ -38,9 +40,10 @@ export class EventEmitter {
      * @param {string} appName The name of the application this emitter is associated with.
      * @param {Logger} logger The logger instance used for logging information and errors.
      */
-    public constructor(appName: string, logger?: Logger) {
+    public constructor(appName: string, type: IProcessorTypes, logger?: Logger) {
         this.subscribedEvents = new Map();
         this.appName = appName;
+        this.processorType = type;
 
         // Ensure we have correct environmental conditions to setup a custom logger,
         // otherwise use default logger
@@ -60,8 +63,11 @@ export class EventEmitter {
      * @param {string} eventName
      */
     public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IDisposableAction {
+        if (this.processorType === IProcessorTypes.EMITTER) {
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+        }
         const isCustom = EventUtils.isSharedEvent(eventName);
-        const eventType = isCustom ? EventTypes.CustomSharedEvents : EventTypes.SharedEvents;
+        const eventType = isCustom ? EventTypes.SharedEvents : EventTypes.ZoweSharedEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;
@@ -73,8 +79,11 @@ export class EventEmitter {
      * @param {string} eventName
      */
     public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IDisposableAction {
+        if (this.processorType === IProcessorTypes.EMITTER) {
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+        }
         const isCustom = EventUtils.isUserEvent(eventName);
-        const eventType = isCustom ? EventTypes.CustomUserEvents : EventTypes.UserEvents;
+        const eventType = isCustom ? EventTypes.UserEvents : EventTypes.ZoweUserEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;
@@ -88,6 +97,32 @@ export class EventEmitter {
      * @throws {ImperativeError}
      */
     public emitEvent(eventName: string): void {
+        if (this.processorType === IProcessorTypes.WATCHER) {
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+        }
+        if (EventUtils.isUserEvent(eventName) || EventUtils.isSharedEvent(eventName)) {
+            throw new ImperativeError({ msg: `Processor not allowed to emit Zowe events: ${eventName}`});
+        }
+        try {
+            const event = this.subscribedEvents.get(eventName);
+            event.eventTime = new Date().toISOString();
+            EventUtils.writeEvent(event);
+        } catch (err) {
+            throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
+        }
+    }
+
+    /**
+     * Emits an event by updating the event time and writing the event data to the associated event file.
+     * This method throws an error if the event cannot be written.
+     * @internal Internal Zowe emitter method
+     * @param {string} eventName
+     * @throws {ImperativeError}
+     */
+    public emitZoweEvent(eventName: string): void {
+        if (this.processorType === IProcessorTypes.WATCHER) {
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+        }
         try {
             const event = this.subscribedEvents.get(eventName);
             event.eventTime = new Date().toISOString();
@@ -105,6 +140,9 @@ export class EventEmitter {
      * @param {string} eventName
      */
     public unsubscribe(eventName: string): void {
+        if (this.processorType === IProcessorTypes.EMITTER) {
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+        }
         try{
             // find watcher list and close everything
             this.subscribedEvents.get(eventName).subscriptions.forEach((watcher)=>{

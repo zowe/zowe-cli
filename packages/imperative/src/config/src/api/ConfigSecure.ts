@@ -20,8 +20,8 @@ import { ConfigConstants } from "../ConfigConstants";
 import { IConfigProfile } from "../doc/IConfigProfile";
 import { CredentialManagerFactory } from "../../../security";
 import { ConfigUtils } from "../ConfigUtils";
-import { UserEvents } from "../../../events/src/EventConstants";
-import { EventEmitterManager } from "../../../events/src/EventEmitterManager";
+import { ZoweUserEvents } from "../../../events/src/EventConstants";
+import { EventOperator } from "../../../events/src/EventOperator";
 
 /**
  * API Class for manipulating config layers.
@@ -132,7 +132,7 @@ export class ConfigSecure extends ConfigApi {
      */
     public async directSave() {
         await this.mConfig.mVault.save(ConfigConstants.SECURE_ACCT, JSONC.stringify(this.mConfig.mSecure));
-        EventEmitterManager.getEmitter('Zowe').emitEvent(UserEvents.ON_VAULT_CHANGED);
+        EventOperator.getEmitter('Zowe').emitEvent(ZoweUserEvents.ON_VAULT_CHANGED);
     }
 
     // _______________________________________________________________________

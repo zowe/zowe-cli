@@ -11,23 +11,29 @@
 
 
 // TO DO - flesh out these enums to include all expected user and shared events
-
-export enum UserEvents {
+/**
+ * @internal
+ */
+export enum ZoweUserEvents {
     ON_VAULT_CHANGED = "onVaultChanged"
 }
-export enum SharedEvents {
+
+/**
+ * @internal
+ */
+export enum ZoweSharedEvents {
     ON_CREDENTIAL_MANAGER_CHANGED = "onCredentialManagerChanged"
 }
 
-export enum CustomSharedEvents {
+export enum SharedEvents {
     CUSTOM_SHARED_EVENT = "customSharedEvent"
 }
 
-export enum CustomUserEvents {
+export enum UserEvents {
     CUSTOM_USER_EVENT = "customUserEvent",
 }
 
-export enum EventTypes { UserEvents, SharedEvents, CustomSharedEvents, CustomUserEvents }
+export enum EventTypes { ZoweUserEvents, ZoweSharedEvents, SharedEvents, UserEvents }
 
 export type EventCallback = () => void | PromiseLike<void>;
 

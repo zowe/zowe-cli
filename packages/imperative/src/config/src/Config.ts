@@ -32,7 +32,7 @@ import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
 import { Logger } from "../../logger";
-import { EventEmitter } from "../../events/src/EventEmitter";
+import { EventProcessor } from "../../events/src/EventProcessor";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -155,7 +155,7 @@ export class Config {
         myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
 
-        new EventEmitter(app, Logger.getAppLogger());
+        new EventProcessor(app, Logger.getAppLogger());
 
         // Populate configuration file layers
         await myNewConfig.reload(opts);

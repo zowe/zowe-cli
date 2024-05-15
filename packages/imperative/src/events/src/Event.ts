@@ -18,15 +18,15 @@ export class Event implements IEventJson {
     public eventName: string;
     public eventType: EventTypes;
     public appName: string;
-    public filePath: string;
+    public eventFilePath: string;
     public subscriptions: FSWatcher[];
 
-    constructor({ eventTime, eventName, eventType, appName, filePath: eventFilePath, subscriptions }: IEventJson) {
+    constructor({ eventTime, eventName, eventType, appName, eventFilePath, subscriptions }: IEventJson) {
         this.eventTime = eventTime;
         this.eventName = eventName;
         this.eventType = eventType;
         this.appName = appName;
-        this.filePath = eventFilePath;
+        this.eventFilePath = eventFilePath;
         this.subscriptions = subscriptions;
     }
 
@@ -36,7 +36,7 @@ export class Event implements IEventJson {
             eventName: this.eventName,
             eventType: this.eventType,
             appName: this.appName,
-            eventFilePath: this.filePath
+            eventFilePath: this.eventFilePath,
         };
     }
 

@@ -11,12 +11,12 @@
 
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { join } from "path";
-import { UserEvents, SharedEvents, EventTypes, EventCallback } from "./EventConstants";
+import { ZoweUserEvents, ZoweSharedEvents, EventTypes, EventCallback } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { IDisposableAction } from "./doc";
 import { Event } from "./Event";
-import { EventEmitter } from "./EventEmitter";
+import { EventProcessor } from "./EventProcessor";
 
 /**
  * A collection of helper functions related to event management, including:
@@ -34,7 +34,7 @@ export class EventUtils {
     * @return {boolean}
     */
     public static isUserEvent(eventName: string): boolean {
-        return Object.values<string>(UserEvents).includes(eventName);
+        return Object.values<string>(ZoweUserEvents).includes(eventName);
     }
 
     /**
@@ -44,7 +44,7 @@ export class EventUtils {
      * @return {boolean}
      */
     public static isSharedEvent(eventName: string): boolean {
-        return Object.values<string>(SharedEvents).includes(eventName);
+        return Object.values<string>(ZoweSharedEvents).includes(eventName);
     }
 
     /**
@@ -55,7 +55,7 @@ export class EventUtils {
      * @return {string}
      */
     public static getEventDir(eventType: EventTypes, appName: string): string {
-        return eventType === EventTypes.CustomSharedEvents || eventType === EventTypes.CustomUserEvents ?
+        return eventType === EventTypes.SharedEvents || eventType === EventTypes.UserEvents ?
             join(".events", appName) : ".events";
     }
 
@@ -92,12 +92,12 @@ export class EventUtils {
     /**
      * Creates a subscription for an event. It configures and stores an event instance within the EventEmitter's subscription map.
      *
-     * @param {EventEmitter} eeInst The instance of EventEmitter to which the event is registered.
+     * @param {EventProcessor} eeInst The instance of EventEmitter to which the event is registered.
      * @param {string} eventName
      * @param {EventTypes} eventType
      * @return {IDisposableAction} An object that includes a method to unsubscribe from the event.
      */
-    public static createSubscription(eeInst: EventEmitter, eventName: string, eventType: EventTypes): IDisposableAction {
+    public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IDisposableAction {
         const dir = this.getEventDir(eventType, eeInst.appName);
         this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), '.events'));
         this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), dir));
@@ -110,7 +110,7 @@ export class EventUtils {
             eventName: eventName,
             eventType: eventType,
             appName: eeInst.appName,
-            filePath: filePath,
+            eventFilePath: filePath,
             subscriptions: []
         });
 
@@ -121,9 +121,9 @@ export class EventUtils {
         };
     }
 
-    public static setupWatcher(eeInst: EventEmitter, eventName: string, callbacks: EventCallback[] | EventCallback): fs.FSWatcher {
+    public static setupWatcher(eeInst: EventProcessor, eventName: string, callbacks: EventCallback[] | EventCallback): fs.FSWatcher {
         const event = eeInst.subscribedEvents.get(eventName);
-        const watcher = fs.watch(event.filePath, (trigger: "rename" | "change") => {
+        const watcher = fs.watch(event.eventFilePath, (trigger: "rename" | "change") => {
             // Accommodates for the delay between actual file change event and fsWatcher's perception
             //(Node.JS triggers this notification event 3 times)
             if (eeInst.eventTimes.get(eventName) !== event.eventTime) {
@@ -146,6 +146,6 @@ export class EventUtils {
      * @param {Event} event
      */
     public static writeEvent(event: Event) {
-        fs.writeFileSync(event.filePath, JSON.stringify(event.toJson(), null, 2));
+        fs.writeFileSync(event.eventFilePath, JSON.stringify(event.toJson(), null, 2));
     }
 }

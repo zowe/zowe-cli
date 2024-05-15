@@ -37,7 +37,7 @@ export interface IEventJson {
     /**
      * The file path for information on the emitted event
      */
-    filePath: string;
+    eventFilePath: string;
     /**
      * List of watchers to eventually close
      */
