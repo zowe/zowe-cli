@@ -38,6 +38,8 @@ describe("Download Jobs - System tests", () => {
     let jobname: string;
     let jobFiles: IJobFile[];
     let jesJCLJobFile: IJobFile;
+    let iefbr14DataSet: string;
+    let iefbr14JCL: string;
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs"
@@ -48,8 +50,8 @@ describe("Download Jobs - System tests", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         // download the valid IEFBR14 from the data set specified in the properties file
-        const iefbr14DataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14Member;
-        const iefbr14JCL = (await Get.dataSet(REAL_SESSION, iefbr14DataSet)).toString();
+        iefbr14DataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14Member;
+        iefbr14JCL = (await Get.dataSet(REAL_SESSION, iefbr14DataSet)).toString();
 
         const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {
             jcl: iefbr14JCL
@@ -79,6 +81,67 @@ describe("Download Jobs - System tests", () => {
 
     afterAll(async () => {
         await DeleteJobs.deleteJob(REAL_SESSION, jobname, jobid);
+    });
+
+    describe("Special Positive tests", () => {
+        let alteredjobid: string;
+        let alteredjobname: string;
+        let alteredjobFiles: IJobFile[];
+        let alteredjesJCLJobFile: IJobFile;
+        beforeAll(async () => {
+            const iefbr14JCLAltered = iefbr14JCL + "\n//* ^";
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {
+                jcl: iefbr14JCLAltered
+            });
+            alteredjobid = job.jobid;
+            alteredjobname = job.jobname;
+            alteredjobFiles = await GetJobs.getSpoolFiles(REAL_SESSION, alteredjobname, alteredjobid);
+            // find the specific DDs we will use in the tests
+            for (const file of alteredjobFiles) {
+                if (file.ddname === "JESJCL") {
+                    alteredjesJCLJobFile = file;
+                }
+            }
+
+            ACCOUNT = defaultSystem.tso.account;
+            const JOB_LENGTH = 6;
+            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+            JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
+            SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
+        });
+
+        it("should be able to download single DD from job output with encoding", async () => {
+            const downloadDir = outputDirectory + "/downloadsingleenc";
+            await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
+                outDir: downloadDir,
+                jobFile: alteredjesJCLJobFile,
+                encoding: "IBM-037"
+            });
+
+            const expectedFile = DownloadJobs.getSpoolDownloadFile(alteredjesJCLJobFile, false, downloadDir);
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("^");
+        });
+
+        it("should be able to download all DDs from job output with encoding", async () => {
+            const downloadDir = outputDirectory + "/downloadallenc";
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: downloadDir,
+                jobid: alteredjobid,
+                jobname: alteredjobname,
+                encoding: "IBM-037"
+            });
+
+            for (const file of alteredjobFiles) {
+                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                expect(IO.existsSync(expectedFile)).toEqual(true);
+                if (file.ddname === "JESJCL") {
+                    expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
+                    expect(IO.readFileSync(expectedFile).toString()).not.toContain("^");
+                }
+            }
+        });
     });
 
     describe("Positive tests", () => {

@@ -31,7 +31,12 @@ export default class SpoolFileByIdHandler extends ZosmfBaseHandler {
         const job: IJob = await GetJobs.getJob(this.mSession, this.mArguments.jobid);
 
         // Get the content, set the JSON response object, and print
-        const content: string = await GetJobs.getSpoolContentById(this.mSession, job.jobname, job.jobid, this.mArguments.spoolfileid);
+        const content: string = await GetJobs.getSpoolContentById(
+            this.mSession,
+            job.jobname, job.jobid,
+            this.mArguments.spoolfileid,
+            this.mArguments.encoding
+        );
         this.data.setObj(content);
         this.data.setMessage(`Spool file "${this.mArguments.spoolfileid}" content obtained for job "${job.jobname}(${job.jobid})"`);
         this.console.log(Buffer.from(content));

@@ -6,6 +6,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 - Enhancement: Added the ability to set `internalReaderFileEncoding` on the `submitJcl`, `submitJclString`, `submitJclCommon`, `submitJclNotify`, and `submitJclNotifyCommon` Jobs APIs [#2139](https://github.com/zowe/zowe-cli/pull/2139)
 - Enhancement: Added the ability to set `internalReaderRecfm` and `internalReaderLrecl` on the `submitJclString` Jobs API [#2139](https://github.com/zowe/zowe-cli/pull/2139)
+- Enhancement: Added the ability to download job spool files using other codepages [#1822](https://github.com/zowe/zowe-cli/pull/1822)
 
 ## `7.17.0`
 
