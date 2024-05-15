@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "7.24.3",
+  "version": "7.25.0",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Zowe",
   "license": "EPL-2.0",

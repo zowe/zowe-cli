@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `7.25.0`
 
 - Enhancement: Added `X_IBM_INTRDR_FILE_ENCODING` header to `ZosmfHeaders` [#2139](https://github.com/zowe/zowe-cli/pull/2139)
 

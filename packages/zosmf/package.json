@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zosmf-for-zowe-sdk",
-  "version": "7.24.3",
+  "version": "7.25.0",
   "description": "Zowe SDK to interact with the z/OS Management Facility",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "7.24.3",
-    "@zowe/core-for-zowe-sdk": "7.24.3",
+    "@zowe/core-for-zowe-sdk": "7.25.0",
     "@zowe/imperative": "5.23.2"
   },
   "peerDependencies": {
