@@ -14,7 +14,7 @@ import { join } from "path";
 import { UserEvents, SharedEvents, EventTypes, EventCallback } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
-import { IRegisteredAction } from "./doc";
+import { IDisposableAction } from "./doc";
 import { Event } from "./Event";
 import { EventEmitter } from "./EventEmitter";
 
@@ -95,9 +95,9 @@ export class EventUtils {
      * @param {EventEmitter} eeInst The instance of EventEmitter to which the event is registered.
      * @param {string} eventName
      * @param {EventTypes} eventType
-     * @return {IRegisteredAction} An object that includes a method to unsubscribe from the event.
+     * @return {IDisposableAction} An object that includes a method to unsubscribe from the event.
      */
-    public static createSubscription(eeInst: EventEmitter, eventName: string, eventType: EventTypes): IRegisteredAction {
+    public static createSubscription(eeInst: EventEmitter, eventName: string, eventType: EventTypes): IDisposableAction {
         const dir = this.getEventDir(eventType, eeInst.appName);
         this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), '.events'));
         this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), dir));

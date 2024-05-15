@@ -17,7 +17,7 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { LoggerManager } from "../../logger/src/LoggerManager";
 import { ImperativeConfig } from "../../utilities";
 import { EventUtils } from "./EventUtils";
-import { IRegisteredAction } from "./doc";
+import { IDisposableAction } from "./doc";
 
 /**
  * The EventEmitter class is responsible for managing event subscriptions and emissions for a specific application.
@@ -59,7 +59,7 @@ export class EventEmitter {
      *
      * @param {string} eventName
      */
-    public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IRegisteredAction {
+    public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IDisposableAction {
         const isCustom = EventUtils.isSharedEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomSharedEvents : EventTypes.SharedEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
@@ -72,7 +72,7 @@ export class EventEmitter {
      *
      * @param {string} eventName
      */
-    public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IRegisteredAction {
+    public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IDisposableAction {
         const isCustom = EventUtils.isUserEvent(eventName);
         const eventType = isCustom ? EventTypes.CustomUserEvents : EventTypes.UserEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);

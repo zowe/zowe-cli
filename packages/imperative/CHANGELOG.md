@@ -2,9 +2,13 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add client-side custom-event handling capabilities. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+
 ## `8.0.0-next.202405151329`
 
-- Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/pull/1987)
+- Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/issues/1987)
 
 ## `8.0.0-next.202405061946`
 
