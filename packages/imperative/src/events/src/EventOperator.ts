@@ -12,6 +12,8 @@
 import { EventProcessor } from "./EventProcessor";
 import { IEmitter, IEmitterAndWatcher, IProcessorTypes, IWatcher } from "./doc/IEventInstanceTypes";
 import { Logger } from "../../logger";
+import { ConfigUtils } from "../../config/src/ConfigUtils";
+import { ImperativeError } from "../../error/src/ImperativeError";
 
 /**
  * @internal Interface to allow for internal Zowe event emission
@@ -57,6 +59,15 @@ export class EventOperator {
      * @return {EventProcessor} Returns the EventProcessor instance
      */
     private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IZoweProcessor {
+        const appList = this.getListOfApps();
+        // Allow for the Zowe processor and processors in the list of apps installed on the system
+        if (appName !== "Zowe" && !appList.includes(appName)) {
+            throw new ImperativeError({
+                msg: `Application name not found: ${appName}` +
+                `Please use an application name from the list:\n- ${appList.join("\n- ")}`
+            });
+        }
+
         if (!this.instances.has(appName) ) {
             const newInstance = new EventProcessor(appName, type, logger);
             this.instances.set(appName, newInstance);
@@ -75,6 +86,30 @@ export class EventOperator {
         return this.createProcessor("Zowe", IProcessorTypes.BOTH, Logger.getAppLogger());
     }
 
+
+    /**
+     *
+     * @static
+     * @return {string[]}
+     */
+    public static getListOfApps(): string[] {
+        const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
+        return Object.keys(extendersJson.profileTypes);
+        /**
+         * TODO: Do we want them to use the any of the following identifiers as the appName?
+         *   - plug-in name,
+         *   - VSCode extension ID,
+         *   - a user-friendly name (e.g. Zowe Explorer)
+         *   - nothing but the profile types (e.g. sample, zftp, cics, ...)
+         */
+        // const apps: string[] = [];
+        // for (const [profileType, source] of Object.entries(extendersJson.profileTypes)) {
+        //     apps.push(profileType);
+        //     apps.push(...source.from);
+        // }
+        // return apps;
+    }
+
     /**
      *
      * @static
@@ -91,7 +126,7 @@ export class EventOperator {
      * @param {string} appName key to KVP for managed event processor instances
      * @return {EventProcessor} Returns the EventProcessor instance
      */
-    public static getWatcher(appName: string,  logger?: Logger): IWatcher {
+    public static getWatcher(appName: string = "Zowe",  logger?: Logger): IWatcher {
         return this.createProcessor(appName, IProcessorTypes.WATCHER, logger);
     }
 
