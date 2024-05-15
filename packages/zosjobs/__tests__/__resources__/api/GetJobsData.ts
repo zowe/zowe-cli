@@ -266,7 +266,7 @@ export class GetJobsData {
      * @memberof GetJobsData
      */
     public static readonly SAMPLE_JES_MSG_LG: string =
-        "    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D" +
+        "    1                   J E S 2  J O B  L O G  --  S Y S T E M  T E S T  --  N O D E  Z O W E T E S T" +
         "    0" +
         " 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ----" +
         " 08.26.22 JOB01544  TSS7000I IBMUSER Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO" +

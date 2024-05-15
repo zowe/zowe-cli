@@ -31,6 +31,14 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 - Major: First major version bump for V3
 
+## `7.25.0`
+
+- Enhancement: Added `X_IBM_INTRDR_FILE_ENCODING` header to `ZosmfHeaders` [#2139](https://github.com/zowe/zowe-cli/pull/2139)
+
+## `7.24.3`
+
+- BugFix: Updated help text for `tokenType` option to remove special regular expression character `^`. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
+
 ## `7.21.2`
 
 - BugFix: Add information about password-protected certificate file support. [#2006](https://github.com/zowe/zowe-cli/issues/2006)

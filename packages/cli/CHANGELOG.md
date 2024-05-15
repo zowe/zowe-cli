@@ -120,6 +120,15 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 - Major: First major version bump for V3
 
+## `7.25.0`
+
+- Enhancement: Added the ability to set JCL reader properties for `--jobRecordLength`, `--jobRecordFormat` and `--jobEncoding` on the `zowe jobs submit local-file` and `zowe jobs submit stdin` commands. [#2139](https://github.com/zowe/zowe-cli/pull/2139)
+- Enhancement: Added the ability to download job spool files using other codepages with `--encoding` on the `zowe jobs download output`, `zowe jobs view spool-file-by-id` and `zowe jobs view all-spool-content` commands. This allows users to download job spool files in other languages (i.e. IBM-1147 for French). [#1822](https://github.com/zowe/zowe-cli/pull/1822)
+
+## `7.24.2`
+
+- BugFix: Fixed `zowe daemon enable` installing an invalid daemon binary on macOS. [#2126](https://github.com/zowe/zowe-cli/pull/2126)
+
 ## `7.24.0`
 
 - Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
