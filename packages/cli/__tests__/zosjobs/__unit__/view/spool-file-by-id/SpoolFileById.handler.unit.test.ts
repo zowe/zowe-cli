@@ -19,6 +19,7 @@ import * as fs from "fs";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
+import { cloneDeep } from "lodash";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
@@ -35,7 +36,6 @@ describe("zos-jobs view spool-file-by-id handler", () => {
 
     afterEach(() => {
         jest.resetAllMocks();
-        DEFAULT_PARAMETERS.arguments.encoding = undefined; // Why is this needed? Where are things being set???
     });
 
     it("should be able to get the content of a spool file", async () => {
@@ -46,7 +46,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt").toString();
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        const params = cloneDeep(DEFAULT_PARAMETERS);
         params.arguments.jobid = "j12345";
         params.arguments.spoolfileid = "2";
         await handler.process(params);
@@ -70,7 +70,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt").toString();
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        const params = cloneDeep(DEFAULT_PARAMETERS);
         params.arguments.jobid = "j12345";
         params.arguments.spoolfileid = "2";
         params.arguments.encoding = "IBM-037";
@@ -94,7 +94,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        const params = cloneDeep(DEFAULT_PARAMETERS);
         params.arguments.jobid = "j12345";
         try {
             await handler.process(params);
@@ -117,8 +117,9 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        const params = cloneDeep(DEFAULT_PARAMETERS);
         params.arguments.jobid = "j12345";
+        params.arguments.spoolfileid = "2";
         try {
             await handler.process(params);
         } catch (thrownError) {
