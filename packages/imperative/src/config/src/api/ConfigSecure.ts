@@ -132,7 +132,7 @@ export class ConfigSecure extends ConfigApi {
      */
     public async directSave() {
         await this.mConfig.mVault.save(ConfigConstants.SECURE_ACCT, JSONC.stringify(this.mConfig.mSecure));
-        EventOperator.getEmitter('Zowe').emitEvent(ZoweUserEvents.ON_VAULT_CHANGED);
+        EventOperator.getZoweProcessor().emitZoweEvent(ZoweUserEvents.ON_VAULT_CHANGED);
     }
 
     // _______________________________________________________________________

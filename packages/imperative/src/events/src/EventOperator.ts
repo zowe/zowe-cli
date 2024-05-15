@@ -14,6 +14,13 @@ import { IEmitter, IEmitterAndWatcher, IProcessorTypes, IWatcher } from "./doc/I
 import { Logger } from "../../logger";
 
 /**
+ * @internal Interface to allow for internal Zowe event emission
+ */
+interface IZoweProcessor extends IEmitterAndWatcher {
+    emitZoweEvent(eventName: string): void;
+}
+
+/**
  * The EventEmitterManager class serves as a central hub for managing
  * event emitters and their watched events.
  *
@@ -49,12 +56,23 @@ export class EventOperator {
      * @param {string} appName key to KVP for managed event processor instances
      * @return {EventProcessor} Returns the EventProcessor instance
      */
-    private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IEmitterAndWatcher {
+    private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IZoweProcessor {
         if (!this.instances.has(appName) ) {
             const newInstance = new EventProcessor(appName, type, logger);
             this.instances.set(appName, newInstance);
         }
         return this.instances.get(appName);
+    }
+
+    /**
+     *
+     * @internal
+     * @static
+     * @param {string} appName key to KVP for managed event processor instances
+     * @return {EventProcessor} Returns the EventProcessor instance
+     */
+    public static getZoweProcessor(): IZoweProcessor {
+        return this.createProcessor("Zowe", IProcessorTypes.BOTH, Logger.getAppLogger());
     }
 
     /**
