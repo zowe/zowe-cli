@@ -80,6 +80,18 @@ describe("Submit Jobs API", () => {
             expect(job.jobname).toEqual(fakeJobName);
         });
 
+        it("should allow users to call submitJCLCommon with extended correct parameters", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            const job = await SubmitJobs.submitJclCommon(fakeSession, {
+                jcl: "//EXEC PGM=IEFBR14",
+                internalReaderFileEncoding: "IBM-037",
+                internalReaderLrecl: "80",
+                internalReaderRecfm: "F"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+        });
+
         it("should allow users to call submitJCL with correct parameters (no internal reader settings)",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
@@ -96,7 +108,8 @@ describe("Submit Jobs API", () => {
                 const job = await SubmitJobs.submitJcl(fakeSession,
                     "//EXEC PGM=IEFBR14",
                     "VB",
-                    "256"
+                    "256",
+                    "IBM-037"
                 );
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
@@ -240,7 +253,8 @@ describe("Submit Jobs API", () => {
                     {
                         jcl: "//EXEC PGM=IEFBR14",
                         internalReaderLrecl: "VB",
-                        internalReaderRecfm: "256"
+                        internalReaderRecfm: "256",
+                        internalReaderFileEncoding: "IBM-037"
                     }
                 );
                 // mocking worked if this fake job name is filled in
@@ -291,7 +305,8 @@ describe("Submit Jobs API", () => {
             (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
             const job = await SubmitJobs.submitJclNotify(fakeSession, "//EXEC PGM=IEFBR14",
                 "VB",
-                "256");
+                "256",
+                "IBM-037");
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
         });
@@ -369,6 +384,30 @@ describe("Submit Jobs API", () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             const submitParms: ISubmitParms = {
                 jclSource: "//EXEC PGM=IEFBR14",
+                waitForOutput: true,
+                task: {
+                    percentComplete: 70,
+                    statusMessage:"Waiting for " + fakeJobID + " to enter OUTPUT",
+                    stageName: TaskStage.IN_PROGRESS
+                } as ITaskWithStatus
+            };
+            checkSubmitOptionsSpy.mockReturnValueOnce(sampleJob as IJob);
+            SubmitJobs.checkSubmitOptions = jest.fn(async (fakeSession, parms, responseJobInfo): Promise <IJob | ISpoolFile[]> => {
+                return sampleJob as IJob;
+            });
+
+            const job = (await SubmitJobs.submitJclString(fakeSession, submitParms.jclSource, submitParms)) as IJob;
+
+            expect(job).toMatchObject(sampleJob);
+        });
+
+        it("should allow users to call submitJclString with extended correct parameters", async () => {
+            (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+            const submitParms: ISubmitParms = {
+                jclSource: "//EXEC PGM=IEFBR14",
+                internalReaderFileEncoding: "IBM-037",
+                internalReaderLrecl: "80",
+                internalReaderRecfm: "F",
                 waitForOutput: true,
                 task: {
                     percentComplete: 70,

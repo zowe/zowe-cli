@@ -540,6 +540,55 @@ describe("submit shared handler", () => {
             IO.deleteFile(theLocalFile);
         });
 
+        it("should submit JCL contained within a local-file if requested with additional parameters", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Vars populated by the mocked function
+            let error;
+            let LocalFileSpecified: string;
+
+            // Local file
+            const theLocalFile: string = "test.txt";
+
+            // Mock the submit JCL function
+            const submitJclStringSpy = jest.spyOn(SubmitJobs, "submitJclString").mockImplementation(async (session, localFile): Promise<any> => {
+                LocalFileSpecified = localFile;
+                return {
+                    jobname: "MYJOB",
+                    jobid: "JOB123",
+                    status: "INPUT",
+                    retcode: "UNKNOWN"
+                };
+            });
+
+            // The handler should fail
+            const badJCL: Buffer = Buffer.from("Bad JCL");
+            IO.createFileSync(theLocalFile);
+            IO.writeFile(theLocalFile, badJCL);
+
+            const copy = Object.assign({}, LOCALFILE_PARAMETERS);
+            copy.arguments.jobEncoding = "IBM-037";
+            copy.arguments.jobRecordLength = 80;
+            copy.arguments.jobRecordFormat = "F";
+            copy.arguments.localFile = theLocalFile;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(SubmitJobs.submitJclString).toHaveBeenCalledTimes(1);
+            expect(submitJclStringSpy.mock.calls[0][2]).toEqual(
+                expect.objectContaining({internalReaderFileEncoding: "IBM-037", internalReaderLrecl: "80", internalReaderRecfm: "F"})
+            );
+            expect(LocalFileSpecified).toBe(`${badJCL}`);
+            IO.deleteFile(theLocalFile);
+        });
+
         it("should submit JCL contained within a local-file if requested and view all spool content", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");

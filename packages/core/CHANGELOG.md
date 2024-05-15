@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `X_IBM_INTRDR_FILE_ENCODING` header to `ZosmfHeaders` [#2139](https://github.com/zowe/zowe-cli/pull/2139)
+
 ## `7.24.3`
 
 - BugFix: Updated help text for `tokenType` option to remove special regular expression character `^`. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
