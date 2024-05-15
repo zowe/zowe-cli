@@ -269,9 +269,9 @@ export class GetJobsData {
         "    1                   J E S 2  J O B  L O G  --  S Y S T E M  T E S T  --  N O D E  Z O W E T E S T" +
         "    0" +
         " 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ----" +
-        " 08.26.22 JOB01544  TSS7000I IBMUSER Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO" +
+        " 08.26.22 JOB01544  TSS7000I IBMUSER Last-Used 02 Apr 18 08:25 System=TEST Facility=TSO" +
         " 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=USER, IBM" +
-        " 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1" +
+        " 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS TEST" +
         " 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22" +
         " 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT" +
         " 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0" +
