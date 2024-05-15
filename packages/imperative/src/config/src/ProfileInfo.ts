@@ -37,12 +37,9 @@ import { ICommandProfileProperty, ICommandArguments } from "../../cmd";
 import { IProfileLoaded, IProfileProperty, IProfileSchema } from "../../profiles";
 
 // for imperative operations
-import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { CliUtils, ImperativeConfig } from "../../utilities";
 import { ImperativeExpect } from "../../expect";
 import { Logger, LoggerUtils } from "../../logger";
-import { LoggerManager } from "../../logger/src/LoggerManager";
 import {
     IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
 } from "../../rest";
@@ -180,7 +177,7 @@ export class ProfileInfo {
         this.mCredentials = new ProfileCredentials(this, profInfoOpts);
 
         // do enough Imperative stuff to let imperative utilities work
-        this.initImpUtils();
+        this.mImpLogger = ConfigUtils.initImpUtils(this.mAppName);
     }
 
     /**
@@ -967,42 +964,6 @@ export class ProfileInfo {
                 msg: "You must first call ProfileInfo.readProfilesFromDisk()."
             });
         }
-    }
-
-    // _______________________________________________________________________
-    /**
-     * Perform a rudimentary initialization of some Imperative utilities.
-     * We must do this because VSCode apps do not typically call imperative.init.
-     */
-    private initImpUtils() {
-        // create a rudimentary ImperativeConfig if it has not been initialized
-        if (ImperativeConfig.instance.loadedConfig == null) {
-            let homeDir: string = null;
-            const envVarPrefix = this.mAppName.toUpperCase();
-            const envVarNm = envVarPrefix + EnvironmentalVariableSettings.CLI_HOME_SUFFIX;
-            if (process.env[envVarNm] === undefined) {
-                // use OS home directory
-                homeDir = path.join(os.homedir(), "." + this.mAppName.toLowerCase());
-            } else {
-                // use the available environment variable
-                homeDir = path.normalize(process.env[envVarNm]);
-            }
-            ImperativeConfig.instance.loadedConfig = {
-                name: this.mAppName,
-                defaultHome: homeDir,
-                envVariablePrefix: envVarPrefix
-            };
-            ImperativeConfig.instance.rootCommandName = this.mAppName;
-        }
-
-        // initialize logging
-        if (LoggerManager.instance.isLoggerInit === false) {
-            const loggingConfig = LoggingConfigurer.configureLogger(
-                ImperativeConfig.instance.cliHome, ImperativeConfig.instance.loadedConfig
-            );
-            Logger.initLogger(loggingConfig);
-        }
-        this.mImpLogger = Logger.getImperativeLogger();
     }
 
     /**

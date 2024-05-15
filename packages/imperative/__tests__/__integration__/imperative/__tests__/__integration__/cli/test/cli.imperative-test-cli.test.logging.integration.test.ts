@@ -264,7 +264,10 @@ describe("imperative-test-cli test logging command", () => {
 
                 // Set the ENV var for the script
                 const response = runCliScript(__dirname + "/__scripts__/test_logging_cmd.sh",
-                    TEST_ENVIRONMENT.workingDir, [], { IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL: "OFF" });
+                    TEST_ENVIRONMENT.workingDir, [], {
+                        IMPERATIVE_TEST_CLI_IMPERATIVE_LOG_LEVEL: "OFF",
+                        IMPERATIVE_TEST_CLI_APP_LOG_LEVEL: "OFF"
+                    });
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();

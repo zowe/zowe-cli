@@ -20,6 +20,8 @@ import { ConfigConstants } from "../ConfigConstants";
 import { IConfigProfile } from "../doc/IConfigProfile";
 import { CredentialManagerFactory } from "../../../security";
 import { ConfigUtils } from "../ConfigUtils";
+import { ImperativeEventEmitter } from "../../../events/src/ImperativeEventEmitter";
+import { ImperativeUserEvents } from "../../../events/src/ImperativeEventConstants";
 
 /**
  * API Class for manipulating config layers.
@@ -130,6 +132,7 @@ export class ConfigSecure extends ConfigApi {
      */
     public async directSave() {
         await this.mConfig.mVault.save(ConfigConstants.SECURE_ACCT, JSONC.stringify(this.mConfig.mSecure));
+        ImperativeEventEmitter.instance.emitEvent(ImperativeUserEvents.ON_VAULT_CHANGED);
     }
 
     // _______________________________________________________________________

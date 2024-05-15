@@ -31,6 +31,8 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
+import { ImperativeEventEmitter } from "../../events";
+import { Logger } from "../../logger";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -152,6 +154,8 @@ export class Config {
         myNewConfig.mActive = { user: false, global: false };
         myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
+
+        ImperativeEventEmitter.initialize(app, { logger:Logger.getAppLogger() });
 
         // Populate configuration file layers
         await myNewConfig.reload(opts);

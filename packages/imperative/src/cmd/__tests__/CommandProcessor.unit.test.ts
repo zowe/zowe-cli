@@ -29,6 +29,7 @@ import { join } from "path";
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
 jest.mock("../../utilities/src/ImperativeConfig");
+jest.mock("../../events/src/ImperativeEventEmitter");
 
 // Persist the original definitions of process.write
 const ORIGINAL_STDOUT_WRITE = process.stdout.write;
