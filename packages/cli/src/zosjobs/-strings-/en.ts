@@ -146,9 +146,8 @@ export default {
                     "To embed a single quote in a value, use two single quotes: \"NAME=O''Brian\".",
                 JOB_ENCODING: "The encoding that should be used to read the JCL into the z/OSMF JCL reader. " +
                     "JCL will be converted into this codepage from UTF-8 for the JES subsystem to parse.",
-                JOB_RECORD_LENGTH: "The logical record length of the submitted JCL. Defaults to 80 if not supplied.",
-                JOB_RECORD_FORMAT: "The record format of the JCL being submitted, where V is variable, and F is fixed. " +
-                    "Defaults to F if not supplied."
+                JOB_RECORD_LENGTH: "The logical record length of the JCL being submitted.",
+                JOB_RECORD_FORMAT: "The record format of the JCL being submitted, where V is variable, and F is fixed."
             },
             DATA_SET: {
                 SUMMARY: "Submit a job contained in a data set",

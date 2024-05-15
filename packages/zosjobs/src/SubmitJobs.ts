@@ -150,7 +150,7 @@ export class SubmitJobs {
         }
         if (parms.internalReaderRecfm) {
             this.log.debug("Custom internal reader record format (internalReaderRecfm) '%s' specified ", parms.internalReaderRecfm);
-            headers.push({"X-IBM-Intrdr-Recfm": parms.internalReaderRecfm});
+            headers.push({[ZosmfHeaders.X_IBM_INTRDR_RECFM]: parms.internalReaderRecfm});
         } else {
             // default to fixed format records
             headers.push(ZosmfHeaders.X_IBM_INTRDR_RECFM_F);
@@ -160,7 +160,7 @@ export class SubmitJobs {
             headers.push(...extraHeaders);
         }
         if (parms.internalReaderFileEncoding) {
-            headers.push({"X-IBM-Intrdr-File-Encoding": parms.internalReaderFileEncoding});
+            headers.push({[ZosmfHeaders.X_IBM_INTRDR_FILE_ENCODING]: parms.internalReaderFileEncoding});
         }
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE, headers, parms.jcl);
     }

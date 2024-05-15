@@ -72,12 +72,14 @@ export const LocalFileDefinition: ICommandDefinition = {
             name: "job-record-length", aliases: ["jrl"],
             description: strings.COMMON_OPT.JOB_RECORD_LENGTH,
             type: "number",
+            defaultValue: 80
         },
         {
             name: "job-record-format", aliases: ["jrf"],
             description: strings.COMMON_OPT.JOB_RECORD_FORMAT,
             type: "string",
-            allowableValues: {values: ["F", "V"]}
+            allowableValues: {values: ["F", "V"]},
+            defaultValue: "F"
         }
     ]as ICommandOptionDefinition[]),
     profile: {

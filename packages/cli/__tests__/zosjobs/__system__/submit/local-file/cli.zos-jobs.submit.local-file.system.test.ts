@@ -44,15 +44,11 @@ describe("zos-jobs submit local-file command", () => {
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(__dirname + "/testFileOfLocalJCL.txt");
         IO.writeFile(__dirname + "/testFileOfLocalJCL.txt", bufferJCL);
-
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-
-        // Delete created uss file
-        const localJCL: string = `${__dirname}\\testFileOfLocalJCL.txt`;
-        IO.deleteFile(localJCL);
+        IO.deleteFile(__dirname + "/testFileOfLocalJCL.txt");
     });
 
     describe("Live system tests", () => {

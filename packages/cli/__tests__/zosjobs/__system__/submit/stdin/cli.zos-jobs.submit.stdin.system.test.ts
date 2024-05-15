@@ -47,10 +47,7 @@ describe("zos-jobs submit stdin command", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-
-        // Delete created uss file
-        const localJCL: string = `${__dirname}\\testFileOfLocalJCL.txt`;
-        IO.deleteFile(localJCL);
+        IO.deleteFile(__dirname + "/testFileOfLocalJCL.txt");
     });
 
     describe("Live system tests", () => {
