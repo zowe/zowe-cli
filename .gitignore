@@ -121,3 +121,4 @@ packages/imperative/web-help/dist/css/bundle*
 packages/imperative/web-help/dist/js/
 
 jest-stare/
+jest.user.config.js

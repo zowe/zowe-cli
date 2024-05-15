@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeExpect, IO, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
@@ -122,8 +122,12 @@ export class DownloadJobs {
             parameters += "?mode=record";
         }
 
+        if (!parms.binary && !parms.record && parms.encoding?.trim() != "") {
+            parameters += "?fileEncoding=" + parms.encoding;
+        }
+
         const writeStream = parms.stream ?? IO.createWriteStream(file);
-        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, undefined, writeStream,
+        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
             true);
     }
 
