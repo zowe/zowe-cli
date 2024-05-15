@@ -12,6 +12,7 @@
 import { homedir as osHomedir } from "os";
 import { normalize as pathNormalize, join as pathJoin } from "path";
 import { existsSync as fsExistsSync } from "fs";
+import * as jsonfile from "jsonfile";
 
 import { CredentialManagerFactory } from "../../security/src/CredentialManagerFactory";
 import { ICommandArguments } from "../../cmd";
@@ -21,6 +22,7 @@ import { LoggerManager } from "../../logger/src/LoggerManager";
 import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { Logger } from "../../logger/src/Logger";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
+import { IExtendersJsonOpts } from "./doc/IExtenderOpts";
 
 export class ConfigUtils {
     /**
@@ -39,6 +41,40 @@ export class ConfigUtils {
         }
         return ImperativeConfig.instance.cliHome;
     }
+
+    /**
+     * Reads the `extenders.json` file from the CLI home directory.
+     * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
+     * @internal
+     */
+    public static readExtendersJsonFromDisk(): IExtendersJsonOpts {
+        const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
+        if (!fsExistsSync(extenderJsonPath)) {
+            jsonfile.writeFileSync(extenderJsonPath, {
+                profileTypes: {}
+            }, { spaces: 4 });
+            return { profileTypes: {} };
+        } else {
+            return jsonfile.readFileSync(extenderJsonPath);
+        }
+    }
+
+    /**
+     * Attempts to write to the `extenders.json` file in the CLI home directory.
+     * @returns `true` if written successfully; `false` otherwise
+     * @internal
+     */
+    public static writeExtendersJson(obj: IExtendersJsonOpts): boolean {
+        try {
+            const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
+            jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
+        } catch (err) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Coerces string property value to a boolean or number type.
      * @param value String value

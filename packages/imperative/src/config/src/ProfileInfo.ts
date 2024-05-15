@@ -10,7 +10,6 @@
 */
 
 import * as fs from "fs";
-import * as path from "path";
 import * as url from "url";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
@@ -1008,33 +1007,20 @@ export class ProfileInfo {
      * Reads the `extenders.json` file from the CLI home directory.
      * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
      * @internal
+     * @deprecated Please use `ConfigUtils.readExtendersJsonFromDisk` instead
      */
     public static readExtendersJsonFromDisk(): IExtendersJsonOpts {
-        const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-        if (!fs.existsSync(extenderJsonPath)) {
-            jsonfile.writeFileSync(extenderJsonPath, {
-                profileTypes: {}
-            }, { spaces: 4 });
-            return { profileTypes: {} };
-        } else {
-            return jsonfile.readFileSync(extenderJsonPath);
-        }
+        return ConfigUtils.readExtendersJsonFromDisk();
     }
 
     /**
      * Attempts to write to the `extenders.json` file in the CLI home directory.
      * @returns `true` if written successfully; `false` otherwise
      * @internal
+     * @deprecated Please use `ConfigUtils.writeExtendersJson` instead
      */
     public static writeExtendersJson(obj: IExtendersJsonOpts): boolean {
-        try {
-            const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-            jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
-        } catch (err) {
-            return false;
-        }
-
-        return true;
+        return ConfigUtils.writeExtendersJson(obj);
     }
 
     /**
