@@ -172,9 +172,9 @@ describe("Config secure tests", () => {
     });
 
     it("should list all secure fields for a profile", async () => {
-        jest.spyOn(Config, "search").mockReturnValue(projectConfigPath);
+        jest.spyOn(Config, "search").mockReturnValue(projectConfigPath).mockReturnValueOnce(projectUserConfigPath);
         jest.spyOn(fs, "existsSync")
-            .mockReturnValueOnce(false)     // Project user layer
+            .mockReturnValueOnce(true)      // Project user layer
             .mockReturnValueOnce(true)      // Project layer
             .mockReturnValueOnce(false)     // User layer
             .mockReturnValueOnce(false);    // Global layer

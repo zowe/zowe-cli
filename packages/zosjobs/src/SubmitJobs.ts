@@ -106,16 +106,23 @@ export class SubmitJobs {
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
-    public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string, internalReaderLrecl?: string) {
+    public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string,
+        internalReaderLrecl?: string, internalReaderFileEncoding?: string) {
         this.log.trace("submitJcl called with jcl of length %d. internalReaderRecfm %s internalReaderLrecl %s",
             jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl);
-        return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl});
+        return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl, internalReaderFileEncoding});
     }
 
     public static async submitJclString(session: AbstractSession, jcl: string, parms: ISubmitParms): Promise<IJob | ISpoolFile[]> {
         ImperativeExpect.toNotBeNullOrUndefined(jcl, ZosJobsMessages.missingJcl.message);
         ImperativeExpect.toNotBeEqual(jcl, "", ZosJobsMessages.missingJcl.message);
-        const responseJobInfo: IJob = await SubmitJobs.submitJclCommon(session, {jcl, jclSymbols: parms.jclSymbols});
+        const responseJobInfo: IJob = await SubmitJobs.submitJclCommon(session, {
+            jcl,
+            jclSymbols: parms.jclSymbols,
+            internalReaderFileEncoding: parms.internalReaderFileEncoding,
+            internalReaderLrecl: parms.internalReaderLrecl,
+            internalReaderRecfm: parms.internalReaderRecfm
+        });
         const response: Promise<IJob | ISpoolFile[]> = this.checkSubmitOptions(session, parms, responseJobInfo);
         return response;
     }
@@ -143,7 +150,7 @@ export class SubmitJobs {
         }
         if (parms.internalReaderRecfm) {
             this.log.debug("Custom internal reader record format (internalReaderRecfm) '%s' specified ", parms.internalReaderRecfm);
-            headers.push({"X-IBM-Intrdr-Recfm": parms.internalReaderRecfm});
+            headers.push({[ZosmfHeaders.X_IBM_INTRDR_RECFM]: parms.internalReaderRecfm});
         } else {
             // default to fixed format records
             headers.push(ZosmfHeaders.X_IBM_INTRDR_RECFM_F);
@@ -151,6 +158,9 @@ export class SubmitJobs {
         if (parms.jclSymbols) {
             const extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);
             headers.push(...extraHeaders);
+        }
+        if (parms.internalReaderFileEncoding) {
+            headers.push({[ZosmfHeaders.X_IBM_INTRDR_FILE_ENCODING]: parms.internalReaderFileEncoding});
         }
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE, headers, parms.jcl);
     }
@@ -165,10 +175,11 @@ export class SubmitJobs {
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
-    public static async submitJclNotify(session: AbstractSession, jcl: string, internalReaderRecfm?: string, internalReaderLrecl?: string) {
-        this.log.trace("submitJclNotiy called with jcl of length %s, internalReaderRecfm %s, internalReaderLrecl %s",
-            jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl);
-        return SubmitJobs.submitJclNotifyCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl});
+    public static async submitJclNotify(session: AbstractSession, jcl: string, internalReaderRecfm?: string,
+        internalReaderLrecl?: string, internalReaderFileEncoding?: string) {
+        this.log.trace("submitJclNotiy called with jcl of length %s, internalReaderRecfm %s, internalReaderLrecl %s, internalReaderFileEncoding %s",
+            jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl, internalReaderFileEncoding);
+        return SubmitJobs.submitJclNotifyCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl, internalReaderFileEncoding});
     }
 
     /**
