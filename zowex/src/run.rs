@@ -96,17 +96,17 @@ pub async fn run_zowe_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i3
  */
 pub async fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
     if proc_get_daemon_info().is_running {
-        println!("Shutting down the running daemon ...");
+        eprintln!("Shutting down the running daemon ...");
         let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
         if let Err(err_val) = run_daemon_command(njs_zowe_path, &mut restart_cmd_args).await {
-            println!("Unable to communicate a command to the Zowe daemon.");
+            eprintln!("Unable to communicate a command to the Zowe daemon.");
             return Err(err_val);
         }
     }
 
     // Start a new daemon. Note that proc_start_daemon() exits on failure.
     proc_start_daemon(njs_zowe_path);
-    println!("A new daemon has started.");
+    eprintln!("A new daemon has started.");
     Ok(EXIT_CODE_SUCCESS)
 }
 
@@ -134,12 +134,12 @@ fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
     {
         Ok(new_proc) => new_proc.status.code().unwrap(),
         Err(error) => {
-            println!("Failed to run the following command:");
-            println!(
+            eprintln!("Failed to run the following command:");
+            eprintln!(
                 "    Program = {}\n    arguments = {:?}",
                 njs_zowe_path, zowe_cmd_args
             );
-            println!("Due to this error:\n    {}", error);
+            eprintln!("Due to this error:\n    {}", error);
             EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD
         }
     };
@@ -177,12 +177,12 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
     let (curr_cmd_shell, cmd_shell_nm) = match proc_get_cmd_shell() {
         Ok((curr_cmd_shell, cmd_shell_nm)) => (curr_cmd_shell, cmd_shell_nm),
         Err(error) => {
-            println!("{} Terminating.", error);
+            eprintln!("{} Terminating.", error);
             return Err(EXIT_CODE_CANT_FIND_CMD_SHELL);
         }
     };
     if matches!(curr_cmd_shell, CmdShell::Unknown) {
-        println!(
+        eprintln!(
             "The command shell process named '{}' is unknown to the Zowe CLI. Terminating.",
             cmd_shell_nm
         );
@@ -205,9 +205,9 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
     );
 
     // The following line gives useful debugging info when it is uncommented.
-    // println!("script_arg_vec = {:?}", script_arg_vec);
+    // eprintln!("script_arg_vec = {:?}", script_arg_vec);
 
-    println!(
+    eprintln!(
         "The '{}' command will run in the background ...",
         arg_vec_to_string(zowe_cmd_args)
     );
@@ -220,12 +220,12 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
     {
         Ok(..) => Ok(EXIT_CODE_SUCCESS),
         Err(err_val) => {
-            println!("Failed to run the following command:");
-            println!(
+            eprintln!("Failed to run the following command:");
+            eprintln!(
                 "    cmd_shell_to_launch = {}\n    arguments = {:?}",
                 njs_zowe_path, zowe_cmd_args
             );
-            println!("Due to this error:\n    {}", err_val);
+            eprintln!("Due to this error:\n    {}", err_val);
             Err(EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD)
         }
     };
@@ -252,7 +252,7 @@ pub async fn run_daemon_command(
     let cwd: PathBuf = match env::current_dir() {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
-            println!("Unable to get current directory\nDetails = {:?}", err_val);
+            eprintln!("Unable to get current directory\nDetails = {:?}", err_val);
             return Err(EXIT_CODE_ENV_ERROR);
         }
     };
@@ -260,7 +260,7 @@ pub async fn run_daemon_command(
     let mut stdin = Vec::new();
     if !std::io::stdin().is_terminal() {
         if let Err(err_val) = io::stdin().read_to_end(&mut stdin) {
-            println!("Failed reading stdin\nDetails = {}", err_val);
+            eprintln!("Failed reading stdin\nDetails = {}", err_val);
             return Err(EXIT_CODE_COMM_IO_ERROR);
         }
     }
@@ -301,7 +301,7 @@ pub async fn run_daemon_command(
             }
         }
         Err(err_val) => {
-            println!("Failed convert response to JSON\nDetails = {}", err_val);
+            eprintln!("Failed to convert response to JSON\nDetails = {}", err_val);
             return Err(EXIT_CODE_CANT_CONVERT_JSON);
         }
     }
@@ -323,7 +323,7 @@ pub async fn run_daemon_command(
             match lock_file.try_lock() {
                 Ok(result) if !result => {
                     if tries > THREE_MIN_OF_RETRIES {
-                        println!(
+                        eprintln!(
                             "Terminating after {} connection retries.",
                             THREE_MIN_OF_RETRIES
                         );
@@ -331,7 +331,7 @@ pub async fn run_daemon_command(
                     }
 
                     tries += 1;
-                    println!(
+                    eprintln!(
                         "The Zowe daemon is in use, retrying ({} of {})",
                         tries, THREE_MIN_OF_RETRIES
                     );
@@ -344,7 +344,7 @@ pub async fn run_daemon_command(
                     locked = true;
                 }
                 Err(ref e) => {
-                    println!("Problem acquiring lock: {:?}", e);
+                    eprintln!("Problem acquiring lock: {:?}", e);
                     return Err(EXIT_CODE_CANNOT_ACQUIRE_LOCK);
                 }
             }
@@ -354,7 +354,7 @@ pub async fn run_daemon_command(
         match comm_establish_connection(njs_zowe_path, &socket_string).await {
             Ok(ok_val) => stream = ok_val,
             Err(err_val) => {
-                println!(
+                eprintln!(
                     "Unable to establish communication with daemon.\nDetails = {}",
                     err_val
                 );
@@ -369,7 +369,7 @@ pub async fn run_daemon_command(
             Err(ref err_val) => {
                 if err_val.kind() == io::ErrorKind::ConnectionReset {
                     if tries > THREE_MIN_OF_RETRIES {
-                        println!(
+                        eprintln!(
                             "Terminating after {} connection retries.",
                             THREE_MIN_OF_RETRIES
                         );
@@ -377,7 +377,7 @@ pub async fn run_daemon_command(
                     }
 
                     tries += 1;
-                    println!(
+                    eprintln!(
                         "The Zowe daemon is in use, retrying ({} of {})",
                         tries, THREE_MIN_OF_RETRIES
                     );
@@ -385,7 +385,7 @@ pub async fn run_daemon_command(
                     // pause between attempts to connect
                     thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
                 } else {
-                    println!(
+                    eprintln!(
                         "I/O error during daemon communication.\nDetails = {}",
                         err_val
                     );
@@ -648,21 +648,21 @@ fn get_win_lock_file() -> Result<LockFile, i32> {
     lock_path.push("daemon.lock");
 
     if let Err(err_val) = File::create(&lock_path) {
-        println!(
+        eprintln!(
             "Unable to create zowe daemon lock file = {}.",
             &lock_path.display()
         );
-        println!("Reason = {}.", err_val);
+        eprintln!("Reason = {}.", err_val);
         return Err(EXIT_CODE_FILE_IO_ERROR);
     }
     let lock_file: LockFile = match LockFile::open(&lock_path) {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
-            println!(
+            eprintln!(
                 "Unable to open zowe daemon lock file = {}.",
                 &lock_path.display()
             );
-            println!("Reason = {}.", err_val);
+            eprintln!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
     };
