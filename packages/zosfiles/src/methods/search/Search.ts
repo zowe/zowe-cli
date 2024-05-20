@@ -327,9 +327,11 @@ export class Search {
 
                     if (searchLine.includes(searchOptions.searchString)) {
                         let lastCol = 0;
+                        let lastColIndexPlusLen = 0;
                         while (lastCol != -1) {
-                            const column = searchLine.indexOf(searchOptions.searchString, lastCol + searchOptions.searchString.length);
+                            const column = searchLine.indexOf(searchOptions.searchString, lastColIndexPlusLen);
                             lastCol = column;
+                            lastColIndexPlusLen = column + searchOptions.searchString.length;
                             if (column != -1) {
                                 // Append the real line - 1 indexed
                                 indicies.push({line: lineNum + 1, column: column + 1, contents: line});
