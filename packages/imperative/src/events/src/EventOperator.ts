@@ -12,8 +12,6 @@
 import { EventProcessor } from "./EventProcessor";
 import { IEmitter, IEmitterAndWatcher, IProcessorTypes, IWatcher } from "./doc/IEventInstanceTypes";
 import { Logger } from "../../logger";
-import { ConfigUtils } from "../../config/src/ConfigUtils";
-import { ImperativeError } from "../../error/src/ImperativeError";
 import { EventUtils } from "./EventUtils";
 
 /**
@@ -86,7 +84,6 @@ export class EventOperator {
      * @returns {IWatcher} A watcher-only event processor.
      */
     public static getWatcher(appName: string = "Zowe", logger?: Logger): IWatcher {
-        EventUtils.validateAppName(appName);
         return this.createProcessor(appName, IProcessorTypes.WATCHER, logger);
     }
 

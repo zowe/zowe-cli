@@ -46,6 +46,7 @@ export class EventUtils {
                     apps.push(profileType); // no tag indicates Zowe CLI plugin (default)
                 }
             });
+            apps.push("Zowe"); // default application name
         }
         return apps;
     }
@@ -93,6 +94,7 @@ export class EventUtils {
      * @return {string} The directory path.
      */
     public static getEventDir(eventType: EventTypes, appName: string): string {
+        this.validateAppName(appName);
         return eventType === EventTypes.SharedEvents || eventType === EventTypes.UserEvents ?
             join(".events", appName) : ".events";
     }

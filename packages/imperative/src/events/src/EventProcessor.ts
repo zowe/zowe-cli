@@ -41,6 +41,8 @@ export class EventProcessor {
      * @param {Logger} [logger] - Optional logger for recording events and errors.
      */
     public constructor(appName: string, type: IProcessorTypes, logger?: Logger) {
+        EventUtils.validateAppName(appName);
+
         this.subscribedEvents = new Map();
         this.appName = appName;
         this.processorType = type;
