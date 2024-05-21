@@ -14,6 +14,7 @@ import { IEmitter, IEmitterAndWatcher, IProcessorTypes, IWatcher } from "./doc/I
 import { Logger } from "../../logger";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ImperativeError } from "../../error/src/ImperativeError";
+import { EventUtils } from "./EventUtils";
 
 /**
  *  @internal Interface for Zowe-specific event processing, combining emitter and watcher functionalities.
@@ -33,31 +34,6 @@ export class EventOperator {
     private static instances: Map<string, EventProcessor> = new Map();
 
     /**
-     * Retrieves a list of supported applications from configuration.
-     *
-     * @static
-     * @returns {string[]} List of application names.
-     */
-
-    public static getListOfApps(): string[] {
-        const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
-        return Object.keys(extendersJson.profileTypes);
-        /**
-         * TODO: Do we want them to use the any of the following identifiers as the appName?
-         *   - plug-in name,
-         *   - VSCode extension ID,
-         *   - a user-friendly name (e.g. Zowe Explorer)
-         *   - nothing but the profile types (e.g. sample, zftp, cics, ...)
-         */
-        // const apps: string[] = [];
-        // for (const [profileType, source] of Object.entries(extendersJson.profileTypes)) {
-        //     apps.push(profileType);
-        //     apps.push(...source.from);
-        // }
-        // return apps;
-    }
-
-    /**
      * Creates an event processor for a specified application.
      *
      * @static
@@ -68,12 +44,7 @@ export class EventOperator {
      * @throws {ImperativeError} If the application name is not recognized.
      */
     private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IZoweProcessor {
-        const appList = this.getListOfApps();
-        if (appName !== "Zowe" && !appList.includes(appName)) {
-            throw new ImperativeError({
-                msg: `Application name not found: ${appName}. Please use an application name from the list:\n- ${appList.join("\n- ")}`
-            });
-        }
+        EventUtils.validateAppName(appName);
 
         if (!this.instances.has(appName)) {
             const newInstance = new EventProcessor(appName, type, logger);
@@ -102,6 +73,7 @@ export class EventOperator {
      * @returns {IEmitterAndWatcher} An event processor capable of both emitting and watching.
      */
     public static getProcessor(appName: string, logger?: Logger): IEmitterAndWatcher {
+        EventUtils.validateAppName(appName);
         return this.createProcessor(appName, IProcessorTypes.BOTH, logger);
     }
 
@@ -114,6 +86,7 @@ export class EventOperator {
      * @returns {IWatcher} A watcher-only event processor.
      */
     public static getWatcher(appName: string = "Zowe", logger?: Logger): IWatcher {
+        EventUtils.validateAppName(appName);
         return this.createProcessor(appName, IProcessorTypes.WATCHER, logger);
     }
 
@@ -126,6 +99,7 @@ export class EventOperator {
      * @returns {IEmitter} An emitter-only event processor.
      */
     public static getEmitter(appName: string, logger?: Logger): IEmitter {
+        EventUtils.validateAppName(appName);
         return this.createProcessor(appName, IProcessorTypes.EMITTER, logger);
     }
 
@@ -136,6 +110,7 @@ export class EventOperator {
      * @param {string} appName - The application name associated with the emitter to be deleted.
      */
     public static deleteEmitter(appName: string): void {
+        EventUtils.validateAppName(appName);
         this.destroyProcessor(appName);
     }
 
@@ -146,6 +121,7 @@ export class EventOperator {
      * @param {string} appName - The application name associated with the watcher to be deleted.
      */
     public static deleteWatcher(appName: string): void {
+        EventUtils.validateAppName(appName);
         this.destroyProcessor(appName);
     }
 
@@ -156,6 +132,7 @@ export class EventOperator {
      * @param {string} appName - The application name whose processor is to be deleted.
      */
     public static deleteProcessor(appName: string): void {
+        EventUtils.validateAppName(appName);
         this.destroyProcessor(appName);
     }
 
@@ -166,6 +143,7 @@ export class EventOperator {
      * @param {string} appName - The name of the application whose processor needs to be destroyed.
      */
     private static destroyProcessor(appName: string): void {
+        EventUtils.validateAppName(appName);
         const processor = this.instances.get(appName);
         if (processor) {
             processor.subscribedEvents.forEach((event, eventName) => {

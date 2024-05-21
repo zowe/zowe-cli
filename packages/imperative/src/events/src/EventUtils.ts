@@ -28,6 +28,44 @@ import { EventProcessor } from "./EventProcessor";
 export class EventUtils {
 
     /**
+     * Retrieves a list of supported applications from configuration.
+     *
+     * @static
+     * @returns {string[]} List of application names.
+     */
+    public static getListOfApps(): string[] {
+        const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
+        const apps: string[] = [];
+        // Loop through each profile type and accumulate all names and their sources based on conditions.
+        for (const [profileType, details] of Object.entries(extendersJson.profileTypes)) {
+            // Check each entry in the 'from' array to decide if a tag is needed
+            details.from.forEach(item => {
+                if (item.includes("(for VS Code)")) {
+                    apps.push(profileType, "_vsce"); // tag indicating Visual Studio Code Extension
+                } else if (item.includes("@zowe")) {
+                    apps.push(profileType); // no tag indicates Zowe CLI plugin (default)
+                }
+            });
+        }
+        return apps;
+    }
+
+    /**
+     * Won't throw an error if user entered a valid appName
+     *
+     * @static
+     * @param {string} appName - The name of the application.
+     */
+    public static validateAppName(appName: string){
+        const appList = this.getListOfApps();
+        if (appName !== "Zowe" && !appList.includes(appName)) {
+            throw new ImperativeError({
+                msg: `Application name not found: ${appName}. Please use an application name from the list:\n- ${appList.join("\n- ")}`
+            });
+        }
+    }
+
+    /**
      * Determines if the specified event name is associated with a user event.
      *
      * @param {string} eventName - The name of the event.

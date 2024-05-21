@@ -33,8 +33,6 @@ export class EventProcessor {
     public appName: string;
     public logger: Logger;
 
-
-
     /**
      * Constructor initializes a new instance of EventProcessor.
      *
