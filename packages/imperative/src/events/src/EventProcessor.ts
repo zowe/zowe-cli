@@ -17,15 +17,14 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { LoggerManager } from "../../logger/src/LoggerManager";
 import { ImperativeConfig } from "../../utilities";
 import { EventUtils } from "./EventUtils";
-import { IDisposableAction } from "./doc";
+import { IEventDisposable } from "./doc";
 import { IProcessorTypes } from "./doc/IEventInstanceTypes";
 
 /**
- * The EventEmitter class is responsible for managing event subscriptions and emissions for a specific application.
- * It maintains a map of subscriptions where each event name is associated with its corresponding Event object.
+ * Manages event subscriptions and emissions for a specific application.
  *
  * @export
- * @class EventEmitter
+ * @class EventProcessor
  */
 export class EventProcessor {
     public subscribedEvents: Map<string, Event> = new Map();
@@ -34,11 +33,14 @@ export class EventProcessor {
     public appName: string;
     public logger: Logger;
 
+
+
     /**
-     * Creates an instance of EventEmitter.
+     * Constructor initializes a new instance of EventProcessor.
      *
-     * @param {string} appName The name of the application this emitter is associated with.
-     * @param {Logger} logger The logger instance used for logging information and errors.
+     * @param {string} appName - The application's name.
+     * @param {IProcessorTypes} type - The type of processor (Emitter, Watcher, or Both).
+     * @param {Logger} [logger] - Optional logger for recording events and errors.
      */
     public constructor(appName: string, type: IProcessorTypes, logger?: Logger) {
         this.subscribedEvents = new Map();
@@ -54,15 +56,13 @@ export class EventProcessor {
     }
 
     /**
-     * Utility helpers from EventEmitterManager for managing events.
-     */
-
-    /**
-     * Subscribes to a shared event. This method determines the event type and creates a subscription.
+     * Subscribes to shared events by creating and managing a new subscription.
      *
-     * @param {string} eventName
+     * @param {string} eventName - The name of the event to subscribe to.
+     * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
+     * @returns {IEventDisposable} - Object allowing management of the subscription.
      */
-    public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IDisposableAction {
+    public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         if (this.processorType === IProcessorTypes.EMITTER) {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
         }
@@ -74,11 +74,13 @@ export class EventProcessor {
     }
 
     /**
-     * Subscribes to a user event. This method determines whether the event is custom and creates a subscription accordingly.
-     *
-     * @param {string} eventName
-     */
-    public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IDisposableAction {
+    * Subscribes to user-specific events by creating and managing a new subscription.
+    *
+    * @param {string} eventName - The name of the event to subscribe to.
+    * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
+    * @returns {IEventDisposable} - Object allowing management of the subscription.
+    */
+    public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         if (this.processorType === IProcessorTypes.EMITTER) {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
         }
@@ -90,11 +92,10 @@ export class EventProcessor {
     }
 
     /**
-     * Emits an event by updating the event time and writing the event data to the associated event file.
-     * This method throws an error if the event cannot be written.
+     * Emits an event by updating its timestamp and writing event data.
      *
-     * @param {string} eventName
-     * @throws {ImperativeError}
+     * @param {string} eventName - The name of the event to emit.
+     * @throws {ImperativeError} - If the event cannot be emitted.
      */
     public emitEvent(eventName: string): void {
         if (this.processorType === IProcessorTypes.WATCHER) {
@@ -113,11 +114,11 @@ export class EventProcessor {
     }
 
     /**
-     * Emits an event by updating the event time and writing the event data to the associated event file.
-     * This method throws an error if the event cannot be written.
+     * Specifically emits Zowe-related events, updating timestamps and handling data.
+     *
      * @internal Internal Zowe emitter method
-     * @param {string} eventName
-     * @throws {ImperativeError}
+     * @param {string} eventName - The name of the Zowe event to emit.
+     * @throws {ImperativeError} - If the event cannot be emitted.
      */
     public emitZoweEvent(eventName: string): void {
         if (this.processorType === IProcessorTypes.WATCHER) {
@@ -133,11 +134,10 @@ export class EventProcessor {
     }
 
     /**
-     * Unsubscribes from a given event by closing the file watchers associated with that event THEN
-     * deleting that event from the EventEmitter's events map.
-     * Logs an error if eventName isn't found.
+     * Unsubscribes from an event, closing file watchers and cleaning up resources.
      *
-     * @param {string} eventName
+     * @param {string} eventName - The name of the event to unsubscribe from.
+     * @throws {ImperativeError} - If unsubscribing fails.
      */
     public unsubscribe(eventName: string): void {
         if (this.processorType === IProcessorTypes.EMITTER) {

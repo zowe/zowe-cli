@@ -9,5 +9,6 @@
 *
 */
 
-export * from "./IDisposableAction";
+export * from "./IEventDisposable";
+export * from "./IEventInstanceTypes";
 export * from "./IEventJson";

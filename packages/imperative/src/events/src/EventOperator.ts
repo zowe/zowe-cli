@@ -16,82 +16,29 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ImperativeError } from "../../error/src/ImperativeError";
 
 /**
- * @internal Interface to allow for internal Zowe event emission
+ *  @internal Interface for Zowe-specific event processing, combining emitter and watcher functionalities.
  */
 interface IZoweProcessor extends IEmitterAndWatcher {
     emitZoweEvent(eventName: string): void;
 }
 
 /**
- * The EventEmitterManager class serves as a central hub for managing
- * event emitters and their watched events.
+ * Manages event processors for different applications, facilitating subscription,
+ * emission, and watching of events.
  *
  * @export
- * @class EventEmitterManager
+ * @class EventOperator
  */
 export class EventOperator {
     private static instances: Map<string, EventProcessor> = new Map();
 
     /**
-     * Closes and removes processor's file watchers.
-     * Cleans up environment by deleting the processor instance.
+     * Retrieves a list of supported applications from configuration.
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @returns {string[]} List of application names.
      */
-    private static destroyProcessor(appName: string): void {
-        if (this.instances.has(appName)) {
-            const processor = this.instances.get(appName);
-            processor.subscribedEvents.forEach((event, eventName) => {
-                event.subscriptions.forEach((subscription) => {
-                    subscription.removeAllListeners(eventName).close();
-                });
-            });
-            this.instances.delete(appName);
-        }
-    }
 
-    /**
-     *
-     * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
-     */
-    private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IZoweProcessor {
-        const appList = this.getListOfApps();
-        // Allow for the Zowe processor and processors in the list of apps installed on the system
-        if (appName !== "Zowe" && !appList.includes(appName)) {
-            throw new ImperativeError({
-                msg: `Application name not found: ${appName}` +
-                `Please use an application name from the list:\n- ${appList.join("\n- ")}`
-            });
-        }
-
-        if (!this.instances.has(appName) ) {
-            const newInstance = new EventProcessor(appName, type, logger);
-            this.instances.set(appName, newInstance);
-        }
-        return this.instances.get(appName);
-    }
-
-    /**
-     *
-     * @internal
-     * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
-     */
-    public static getZoweProcessor(): IZoweProcessor {
-        return this.createProcessor("Zowe", IProcessorTypes.BOTH, Logger.getAppLogger());
-    }
-
-
-    /**
-     *
-     * @static
-     * @return {string[]}
-     */
     public static getListOfApps(): string[] {
         const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
         return Object.keys(extendersJson.profileTypes);
@@ -111,62 +58,120 @@ export class EventOperator {
     }
 
     /**
+     * Creates an event processor for a specified application.
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @param {string} appName - The name of the application.
+     * @param {IProcessorTypes} type - The type of processor to create (emitter, watcher, or both).
+     * @param {Logger} [logger] - Optional logger instance for the processor.
+     * @returns {IZoweProcessor} A new or existing processor instance.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
-    public static getProcessor(appName: string,  logger?: Logger): IEmitterAndWatcher {
+    private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IZoweProcessor {
+        const appList = this.getListOfApps();
+        if (appName !== "Zowe" && !appList.includes(appName)) {
+            throw new ImperativeError({
+                msg: `Application name not found: ${appName}. Please use an application name from the list:\n- ${appList.join("\n- ")}`
+            });
+        }
+
+        if (!this.instances.has(appName)) {
+            const newInstance = new EventProcessor(appName, type, logger);
+            this.instances.set(appName, newInstance);
+        }
+        return this.instances.get(appName);
+    }
+
+    /**
+     * Retrieves a Zowe-specific event processor.
+     *
+     * @internal
+     * @static
+     * @returns {IZoweProcessor} The Zowe event processor instance.
+     */
+    public static getZoweProcessor(): IZoweProcessor {
+        return this.createProcessor("Zowe", IProcessorTypes.BOTH, Logger.getAppLogger());
+    }
+
+    /**
+     * Retrieves a generic event processor that can emit and watch events.
+     *
+     * @static
+     * @param {string} appName - The application name.
+     * @param {Logger} [logger] - Optional logger for the processor.
+     * @returns {IEmitterAndWatcher} An event processor capable of both emitting and watching.
+     */
+    public static getProcessor(appName: string, logger?: Logger): IEmitterAndWatcher {
         return this.createProcessor(appName, IProcessorTypes.BOTH, logger);
     }
 
     /**
+     * Retrieves a watcher-only event processor.
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @param {string} appName - The application name, defaults to "Zowe" if not specified.
+     * @param {Logger} [logger] - Optional logger for the processor.
+     * @returns {IWatcher} A watcher-only event processor.
      */
-    public static getWatcher(appName: string = "Zowe",  logger?: Logger): IWatcher {
+    public static getWatcher(appName: string = "Zowe", logger?: Logger): IWatcher {
         return this.createProcessor(appName, IProcessorTypes.WATCHER, logger);
     }
 
     /**
+     * Retrieves an emitter-only event processor.
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @param {string} appName - The application name.
+     * @param {Logger} [logger] - Optional logger for the processor.
+     * @returns {IEmitter} An emitter-only event processor.
      */
     public static getEmitter(appName: string, logger?: Logger): IEmitter {
         return this.createProcessor(appName, IProcessorTypes.EMITTER, logger);
     }
 
     /**
+     * Deletes a specific type of event processor (emitter).
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @param {string} appName - The application name associated with the emitter to be deleted.
      */
-    public static deleteProcessor(appName: string) {
+    public static deleteEmitter(appName: string): void {
         this.destroyProcessor(appName);
     }
 
     /**
+     * Deletes a specific type of event processor (watcher).
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @param {string} appName - The application name associated with the watcher to be deleted.
      */
-    public static deleteWatcher(appName: string) {
+    public static deleteWatcher(appName: string): void {
         this.destroyProcessor(appName);
     }
 
     /**
+     * Deletes an event processor, removing both its emitter and watcher capabilities.
      *
      * @static
-     * @param {string} appName key to KVP for managed event processor instances
-     * @return {EventProcessor} Returns the EventProcessor instance
+     * @param {string} appName - The application name whose processor is to be deleted.
      */
-    public static deleteEmitter(appName: string) {
+    public static deleteProcessor(appName: string): void {
         this.destroyProcessor(appName);
+    }
+
+    /**
+     * Destroys a processor by removing all associated file watchers and cleaning up resources.
+     *
+     * @static
+     * @param {string} appName - The name of the application whose processor needs to be destroyed.
+     */
+    private static destroyProcessor(appName: string): void {
+        const processor = this.instances.get(appName);
+        if (processor) {
+            processor.subscribedEvents.forEach((event, eventName) => {
+                event.subscriptions.forEach(subscription => subscription.removeAllListeners(eventName).close());
+            });
+            this.instances.delete(appName);
+        }
     }
 }

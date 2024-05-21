@@ -14,12 +14,12 @@ import { join } from "path";
 import { ZoweUserEvents, ZoweSharedEvents, EventTypes, EventCallback } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
-import { IDisposableAction } from "./doc";
+import { IEventDisposable } from "./doc";
 import { Event } from "./Event";
 import { EventProcessor } from "./EventProcessor";
 
 /**
- * A collection of helper functions related to event management, including:
+ * A collection of helper functions related to event processing, including:
  * - directory management
  * - event type determination
  * - subscription creation and setting callbacks
@@ -28,31 +28,31 @@ import { EventProcessor } from "./EventProcessor";
 export class EventUtils {
 
     /**
-    * Determines if the specified event name is a user event.
-    *
-    * @param {string} eventName
-    * @return {boolean}
-    */
+     * Determines if the specified event name is associated with a user event.
+     *
+     * @param {string} eventName - The name of the event.
+     * @return {boolean} True if it is a user event, otherwise false.
+     */
     public static isUserEvent(eventName: string): boolean {
         return Object.values<string>(ZoweUserEvents).includes(eventName);
     }
 
     /**
-     * Determines if the specified event name is a shared event.
+     * Determines if the specified event name is associated with a shared event.
      *
-     * @param {string} eventName
-     * @return {boolean}
+     * @param {string} eventName - The name of the event.
+     * @return {boolean} True if it is a shared event, otherwise false.
      */
     public static isSharedEvent(eventName: string): boolean {
         return Object.values<string>(ZoweSharedEvents).includes(eventName);
     }
 
     /**
-     * Modifies path to include appName if a custom event type
+     * Determines the directory path for storing event files based on the event type and application name.
      *
-     * @param {EventTypes} eventType
-     * @param {string} appName
-     * @return {string}
+     * @param {EventTypes} eventType - The type of event.
+     * @param {string} appName - The name of the application.
+     * @return {string} The directory path.
      */
     public static getEventDir(eventType: EventTypes, appName: string): string {
         return eventType === EventTypes.SharedEvents || eventType === EventTypes.UserEvents ?
@@ -60,10 +60,9 @@ export class EventUtils {
     }
 
     /**
-     * Ensures that the specified directory for storing event files exists.
-     * Creates the directory if not.
+     * Ensures that the specified directory for storing event files exists, creating it if necessary.
      *
-     * @param {string} directoryPath
+     * @param {string} directoryPath - The path to the directory.
      */
     public static ensureEventsDirExists(directoryPath: string) {
         try {
@@ -76,8 +75,9 @@ export class EventUtils {
     }
 
     /**
-     * Check to see if the file path exists, otherwise, create it : )
-     * @param filePath Zowe or User path where we will write the events
+     * Ensures that the specified file path for storing event data exists, creating it if necessary.
+     *
+     * @param {string} filePath - The path to the file.
      */
     public static ensureFileExists(filePath: string) {
         try {
@@ -90,14 +90,14 @@ export class EventUtils {
     }
 
     /**
-     * Creates a subscription for an event. It configures and stores an event instance within the EventEmitter's subscription map.
+     * Creates and registers a new event subscription for a specific event processor.
      *
-     * @param {EventProcessor} eeInst The instance of EventEmitter to which the event is registered.
-     * @param {string} eventName
-     * @param {EventTypes} eventType
-     * @return {IDisposableAction} An object that includes a method to unsubscribe from the event.
+     * @param {EventProcessor} eeInst - The event processor instance.
+     * @param {string} eventName - The name of the event.
+     * @param {EventTypes} eventType - The type of event.
+     * @return {IEventDisposable} An interface for managing the subscription.
      */
-    public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IDisposableAction {
+    public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IEventDisposable {
         const dir = this.getEventDir(eventType, eeInst.appName);
         this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), '.events'));
         this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), dir));
@@ -121,6 +121,14 @@ export class EventUtils {
         };
     }
 
+    /**
+     * Sets up a file watcher for a specific event, triggering callbacks when the event file is updated.
+     *
+     * @param {EventProcessor} eeInst - The event processor instance.
+     * @param {string} eventName - The name of the event.
+     * @param {EventCallback[] | EventCallback} callbacks - A single callback or an array of callbacks to execute.
+     * @return {fs.FSWatcher} A file system watcher.
+     */
     public static setupWatcher(eeInst: EventProcessor, eventName: string, callbacks: EventCallback[] | EventCallback): fs.FSWatcher {
         const event = eeInst.subscribedEvents.get(eventName);
         const watcher = fs.watch(event.eventFilePath, (trigger: "rename" | "change") => {
@@ -141,9 +149,9 @@ export class EventUtils {
     }
 
     /**
-     * Writes the specified event to its corresponding file.
+     * Writes event data to the corresponding event file in JSON format.
      *
-     * @param {Event} event
+     * @param {Event} event - The event object.
      */
     public static writeEvent(event: Event) {
         fs.writeFileSync(event.eventFilePath, JSON.stringify(event.toJson(), null, 2));
