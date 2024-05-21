@@ -31,7 +31,8 @@ export class ImperativeEventEmitter {
 
     public static initialize(appName?: string, options?: IImperativeEventEmitterOpts) {
         if (this.initialized) {
-            throw new ImperativeError({msg: "Only one instance of the Imperative Event Emitter is allowed"});
+            this.instance.logger.warn("Only one instance of the Imperative Event Emitter is allowed");
+            return;
         }
         this.initialized = true;
 

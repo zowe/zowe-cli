@@ -23,9 +23,10 @@ describe("Search", () => {
         protocol: "https",
         type: "basic"
     });
-    const testDataString = "THIS DATA SET CONTAINS SOME TESTDATA";
-    const expectedCol = 29;
-    const expectedLine = 1;
+
+    let testDataString = "THIS DATA SET CONTAINS SOME TESTDATA";
+    let expectedCol = 29;
+    let expectedLine = 1;
 
     let searchOptions: ISearchOptions = {
         pattern: "TEST*",
@@ -67,6 +68,10 @@ describe("Search", () => {
     }
 
     beforeEach(() => {
+        expectedLine = 1;
+        expectedCol = 29;
+        testDataString = "THIS DATA SET CONTAINS SOME TESTDATA";
+
         getDataSetSpy.mockClear();
 
         getDataSetSpy.mockImplementation(async (session, dsn, options) => {
@@ -112,18 +117,9 @@ describe("Search", () => {
         const searchLocalSpy = jest.spyOn(Search as any, "searchLocal");
         const listDataSetsMatchingPatternSpy = jest.spyOn(List, "dataSetsMatchingPattern");
         const listAllMembersSpy = jest.spyOn(List, "allMembers");
+
         function delay(ms: number) { jest.advanceTimersByTime(ms); }
-
-        beforeAll(() => {
-            jest.useFakeTimers();
-        });
-
-        beforeEach(() => {
-            searchOnMainframeSpy.mockClear();
-            searchLocalSpy.mockClear();
-            listDataSetsMatchingPatternSpy.mockClear();
-            listAllMembersSpy.mockClear();
-
+        function regenerateMockImplementations() {
             searchOnMainframeSpy.mockImplementation(async (session, searchOptions, searchItems: ISearchItem[]) => {
                 if ((Search as any).timerExpired != true) {
                     return {
@@ -173,6 +169,21 @@ describe("Search", () => {
                     errorMessage: undefined
                 } as IZosFilesResponse;
             });
+            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                return Buffer.from(testDataString);
+            });
+        }
+
+        beforeAll(() => {
+            jest.useFakeTimers();
+        });
+
+        beforeEach(() => {
+            searchOnMainframeSpy.mockClear();
+            searchLocalSpy.mockClear();
+            listDataSetsMatchingPatternSpy.mockClear();
+            listAllMembersSpy.mockClear();
+            regenerateMockImplementations();
         });
 
         afterAll(() => {
@@ -182,6 +193,42 @@ describe("Search", () => {
         });
 
         it("Should search for the data sets containing a word", async () => {
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toEqual(true);
+            expect(response.apiResponse).toEqual([
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ]);
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 5 data sets and PDS members");
+            expect(response.commandResponse).toContain("Data Set \"TEST1.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST2.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER1\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER2\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER3\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+        });
+
+        it("Should search for the data sets containing a word at the beginning of the string", async () => {
+            testDataString = "TESTDATA IS AT THE BEGINNING OF THE STRING";
+            expectedCol = 1;
+            expectedLine = 1;
+            regenerateMockImplementations();
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
@@ -906,6 +953,27 @@ describe("Search", () => {
 
     describe("searchLocal", () => {
         it("Should return a list of members that contain the search term (all)", async () => {
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(5);
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST1.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST2.DS", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER1)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER2)", {});
+            expect(getDataSetSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS(MEMBER3)", {});
+            expect(response).toEqual({responses: [
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ], failures: []});
+        });
+
+        it("Should return a list of members that contain the search term (all) at the beginning", async () => {
+            expectedCol = 1;
+            expectedLine = 1;
+            testDataString = "TESTDATA IS AT THE BEGINNING OF THE STRING";
             const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
 
             expect(getDataSetSpy).toHaveBeenCalledTimes(5);
