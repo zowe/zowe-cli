@@ -2,13 +2,17 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Send all Zowe Daemon informational messages, progress messages, and error messages to standard error instead of standard output [#1451](https://github.com/zowe/zowe-cli/issues/1451)
+
 ## `8.0.0-next.202405202020`
 
 - BugFix: Fixed a bug where a data set search would not return a search term if it was at the beginning of a line. [#2147](https://github.com/zowe/zowe-cli/pull/2147)
 
 ## `8.0.0-next.202405101931`
 
-- Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern with the `zowe zos-files search data-sets` comamnd.[#2095](https://github.com/zowe/zowe-cli/issues/2095)
+- Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern with the `zowe zos-files search data-sets` command.[#2095](https://github.com/zowe/zowe-cli/issues/2095)
 
 ## `8.0.0-next.202405061946`
 
