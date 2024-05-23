@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Modified command output to show appropriate error message given availible ImperativeError properties. [#1897](https://github.com/zowe/zowe-cli/issues/1897)
+
 ## `8.0.0-next.202405211929`
 
 - BugFix: Fixed error "Only one instance of the Imperative Event Emitter is allowed" when running system tests. [#2146](https://github.com/zowe/zowe-cli/issues/2146)
