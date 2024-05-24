@@ -9,7 +9,7 @@
 *
 */
 
-// Functions related to daemon cummunication.
+// Functions related to daemon communication.
 
 use std::io;
 use std::io::prelude::*;
@@ -96,11 +96,11 @@ pub async fn comm_establish_connection(
                 we_started_daemon = true;
                 cmd_to_show = proc_start_daemon(njs_zowe_path);
             } else if we_started_daemon && conn_retries > THREE_MIN_OF_RETRIES {
-                println!(
+                eprintln!(
                     "The Zowe daemon that we started is not running on socket: {}.",
                     daemon_socket
                 );
-                println!(
+                eprintln!(
                     "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
                     cmd_to_show
                 );
@@ -115,7 +115,7 @@ pub async fn comm_establish_connection(
         };
 
         if conn_retries > 0 {
-            println!(
+            eprintln!(
                 "{} ({} of {})",
                 retry_msg, conn_retries, THREE_MIN_OF_RETRIES
             );
@@ -124,7 +124,7 @@ pub async fn comm_establish_connection(
         conn_retries += 1;
 
         if conn_retries > THREE_MIN_OF_RETRIES {
-            println!(
+            eprintln!(
                 "Terminating after {} connection retries.",
                 THREE_MIN_OF_RETRIES
             );
@@ -136,13 +136,13 @@ pub async fn comm_establish_connection(
 
         // before we wait too long, show diagnostics
         if conn_retries == RETRY_TO_SHOW_DIAG {
-            println!("\nThe Zowe daemon was started with these options:");
+            eprintln!("\nThe Zowe daemon was started with these options:");
             if we_started_daemon {
-                println!("Command = {}", cmd_to_show);
+                eprintln!("Command = {}", cmd_to_show);
             } else {
-                println!("Command = {}", daemon_proc_info.cmd);
+                eprintln!("Command = {}", daemon_proc_info.cmd);
             }
-            println!(
+            eprintln!(
                 "Process name = {}  pid = {}  socket = {}\n",
                 daemon_proc_info.name, daemon_proc_info.pid, daemon_socket
             );
