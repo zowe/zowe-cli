@@ -24,8 +24,7 @@ import * as fs from "fs";
 import { CredentialManagerFactory } from "../../../../../security";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { OverridesLoader } from "../../../../src/OverridesLoader";
-import { ConfigUtils } from "../../../../..";
-import { ImperativeError } from "../../../../..";
+import { ConfigUtils, ImperativeError } from "../../../../..";
 
 jest.mock("fs");
 jest.mock("../../../../../events/src/ImperativeEventEmitter");
