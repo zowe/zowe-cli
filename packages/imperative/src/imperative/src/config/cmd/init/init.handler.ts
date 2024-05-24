@@ -104,8 +104,13 @@ export default class InitHandler implements ICommandHandler {
 
             if (params.arguments.prompt !== false && config.api.secure.loadFailed && config.api.secure.secureFields().length > 0) {
                 const warning = ConfigUtils.secureSaveError();
-                params.response.console.log(TextUtils.chalk.yellow("Warning:\n") +
-                    `${warning.message} Skipped prompting for credentials.${warning.additionalDetails ? `\n\n${warning.additionalDetails}\n` : ''}`);
+                let message = "Warning:\n" + warning.message + " Skipped prompting for credentials.";
+            
+                if (warning.additionalDetails) {
+                    message += `\n\n${warning.additionalDetails}\n`;
+                }
+            
+                params.response.console.log(TextUtils.chalk.yellow(message));
             }
 
             // Write the active created/updated config layer
