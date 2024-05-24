@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202405241520`
 
 - Patch: Modify error text in SyntaxValidator.invalidOptionError. [#2138](https://github.com/zowe/zowe-cli/issues/2138)
 
