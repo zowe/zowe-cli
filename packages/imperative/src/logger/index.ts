@@ -14,5 +14,5 @@ export * from "./src/doc/ILog4jsAppender";
 export * from "./src/doc/ILog4jsConfig";
 export * from "./src/doc/ILog4jsLayout";
 export * from "./src/Logger";
-export * from "./src/LoggerConfigBuilder";
-export * from "./src/LoggerUtils";
+// export * from "./src/LoggerConfigBuilder";
+// export * from "./src/LoggerUtils";

@@ -12,6 +12,7 @@
 /**
  * Interface to add index signature to http headers
  * @export
+ * @deprecated - use Imperative's IHeaderContent instead
  * @interface IHeaderContent
  */
 export interface IHeaderContent {

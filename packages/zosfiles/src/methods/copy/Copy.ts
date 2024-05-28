@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
-    TaskStage } from "@zowe/imperative";
+    TaskStage, IHeaderContent } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -18,7 +18,7 @@ import { Get } from "../get";
 import { Upload } from "../upload";
 import { List } from "../list";
 import { IGetOptions } from "../get/doc/IGetOptions";
-import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

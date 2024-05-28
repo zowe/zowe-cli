@@ -28,6 +28,9 @@ export type IOperationUndoCompleted =
 export type IOperationResultReady<T> =
     (output: T, operationResults: IOperationResult<any>) => void;
 
+/**
+ * @deprecated
+ */
 export abstract class Operation<T> implements ITaskWithStatus {
 
     public static readonly NO_PARMS: any = null;

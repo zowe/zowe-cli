@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
 
 import { posix } from "path";
 
-import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

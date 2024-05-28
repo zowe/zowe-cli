@@ -16,6 +16,7 @@ import { TextUtils } from "../../utilities";
 import { TaskProgress } from "./TaskProgress";
 
 /**
+ * @deprecated
  * The Operations class extends Operation and is used to create a 'string' of operations that must
  * be completed in serial order.
  *

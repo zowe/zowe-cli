@@ -10,10 +10,10 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { IHelpGenerator,
-    HelpGeneratorFactory,
-    IHelpGeneratorParms,
-    AbstractHelpGeneratorFactory } from "../../../cmd";
+import { IHelpGenerator } from "../../../cmd/src/help/doc/IHelpGenerator";
+import { HelpGeneratorFactory } from "../../../cmd/src/help/HelpGeneratorFactory";
+import { IHelpGeneratorParms } from "../../../cmd/src/help/doc/IHelpGeneratorParms";
+import { AbstractHelpGeneratorFactory } from "../../../cmd/src/help/abstract/AbstractHelpGeneratorFactory";
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 /**
  * Imperative Help generator factory passed to yargs to build help generators where needed.

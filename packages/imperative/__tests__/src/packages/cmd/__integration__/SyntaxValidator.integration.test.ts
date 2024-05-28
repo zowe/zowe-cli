@@ -11,7 +11,8 @@
 
 /* eslint-disable jest/expect-expect */
 import { isNullOrUndefined } from "util";
-import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
+import { CommandProcessor } from "../../../../../src/cmd/src/CommandProcessor";
+import { ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
 import { ValidationTestCommand } from "../ValidationTestCommand";
 import { Constants } from "../../../../../src/constants/index";
 import { Imperative } from "../../../../../src/imperative/src/Imperative";
