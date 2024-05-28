@@ -309,7 +309,7 @@ Invalid value specified for option:
 You specified:
 123@CA.COM
 
-The value must match one of the following regular options:
+The value must match one of the following options:
 [ '^[a-zA-Z0-9]+$' ].
 
 Example:
