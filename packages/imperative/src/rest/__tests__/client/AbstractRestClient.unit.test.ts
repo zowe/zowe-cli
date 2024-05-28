@@ -31,6 +31,8 @@ import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 import * as os from "os";
 import { join } from "path";
 import { IO } from "../../../io";
+import { Proxy } from "../../src/client/Proxy";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -1432,6 +1434,40 @@ describe("AbstractRestClient tests", () => {
                 expect(pemCertWasSet).toEqual(false);
                 expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].cert);
                 expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].certKey);
+            });
+        });
+
+        describe('buildOptions', () => {
+            const privateRestClient = new RestClient(
+                new Session({
+                    hostname: "FakeHostName",
+                    type: AUTH_TYPE_CERT_PEM,
+                    cert: "FakePemCert",
+                    certKey: "FakePemCertKey"
+                })
+            ) as any;
+            let getSystemProxyUrlSpy: jest.SpyInstance;
+            let getProxyAgentSpy: jest.SpyInstance;
+            let setCertPemAuthSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                jest.clearAllMocks();
+                getSystemProxyUrlSpy = jest.spyOn(Proxy, "getSystemProxyUrl");
+                getProxyAgentSpy = jest.spyOn(Proxy, "getProxyAgent");
+                setCertPemAuthSpy = jest.spyOn(privateRestClient, "setCertPemAuth");
+            });
+
+            it('Should add to options the proxy agent if proxy URL is in use', () => {
+                const resource = '/resource';
+                const request = '';
+                const reqHeaders: any[] = [];
+                const url = new URL('https://www.zowe.com');
+                const proxyAgent = new HttpsProxyAgent(url, { rejectUnauthorized: true });
+                getSystemProxyUrlSpy.mockReturnValue(url);
+                getProxyAgentSpy.mockReturnValue(proxyAgent);
+                setCertPemAuthSpy.mockReturnValue(true);
+                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                expect(Object.keys(result)).toContain('agent');
             });
         });
     });
