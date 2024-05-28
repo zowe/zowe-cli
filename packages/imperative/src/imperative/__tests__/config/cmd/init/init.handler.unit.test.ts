@@ -24,6 +24,7 @@ import * as fs from "fs";
 import { CredentialManagerFactory } from "../../../../../security";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { OverridesLoader } from "../../../../src/OverridesLoader";
+import { ConfigUtils, ImperativeError } from "../../../../..";
 
 jest.mock("fs");
 jest.mock("../../../../../events/src/ImperativeEventEmitter");
@@ -794,5 +795,87 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
         expect(params.response.console.log).toHaveBeenCalledTimes(2);
         expect((params.response.console.log as any).mock.calls[0][0]).toContain("Unable to securely save credentials");
+    });
+
+    it("should display correct error message for process() given additionalDetails property is defined in ImperativeError", async () => {
+        const handler = new InitHandler();
+        const params = getIHandlerParametersObject();
+        params.arguments.userConfig = false;
+        params.arguments.globalConfig = false;
+
+        existsSyncSpy.mockReturnValue(false); // No files exist
+        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        await setupConfigToLoad(); // Setup the config
+
+        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
+
+        // We aren't testing the config initialization - clear the spies
+        existsSyncSpy.mockClear();
+        searchSpy.mockClear();
+
+        // initWithSchema
+        const readPromptSpy = jest.fn(() => undefined);
+        (params.response.console as any).prompt = readPromptSpy;
+        writeFileSyncSpy.mockImplementation(); // Don't actually write files
+        jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
+        jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({ secureErrorDetails: jest.fn() } as any);
+
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+
+        // Mocking for logical branch intended to evaluate
+        const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");
+
+        secureSaveErrorSpy.mockImplementation(() => {
+            return new ImperativeError({
+                msg: "fake message",
+                additionalDetails: "fake additional details"
+            });
+        });
+
+        await handler.process(params as IHandlerParameters);
+
+        expect(secureSaveErrorSpy.mock.results[0].value).toBeInstanceOf(ImperativeError);
+        expect(secureSaveErrorSpy.mock.results[0].value.additionalDetails).toEqual(
+            "fake additional details");
+        expect((params.response.console.log as any).mock.calls[0][0]).toContain("fake additional details");
+    });
+    it("should display correct error message for process() given additionalDetails property is NOT defined in ImperativeError", async () => {
+        const handler = new InitHandler();
+        const params = getIHandlerParametersObject();
+        params.arguments.userConfig = false;
+        params.arguments.globalConfig = false;
+
+        existsSyncSpy.mockReturnValue(false); // No files exist
+        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        await setupConfigToLoad(); // Setup the config
+
+        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
+
+        // We aren't testing the config initialization - clear the spies
+        existsSyncSpy.mockClear();
+        searchSpy.mockClear();
+
+        // initWithSchema
+        const readPromptSpy = jest.fn(() => undefined);
+        (params.response.console as any).prompt = readPromptSpy;
+        writeFileSyncSpy.mockImplementation(); // Don't actually write files
+        jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
+        jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({ secureErrorDetails: jest.fn() } as any);
+
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+
+        // Mocking for logical branch intended to evaluate
+        const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");
+
+        secureSaveErrorSpy.mockImplementation(() => {
+            return new ImperativeError({
+                msg: "fake message"
+            });
+        });
+
+        await handler.process(params as IHandlerParameters);
+
+        expect(secureSaveErrorSpy.mock.results[0].value).toBeInstanceOf(ImperativeError);
+        expect((params.response.console.log as any).mock.calls[0][0]).not.toContain("fake additional details");
     });
 });
