@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `braces` dependency for technical currency. [#2157](https://github.com/zowe/zowe-cli/pull/2157)
+
 ## `7.25.0`
 
 - Enhancement: Added the ability to set JCL reader properties for `--jobRecordLength`, `--jobRecordFormat` and `--jobEncoding` on the `zowe jobs submit local-file` and `zowe jobs submit stdin` commands. [#2139](https://github.com/zowe/zowe-cli/pull/2139)

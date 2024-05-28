@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `braces` dependency for technical currency. [#2157](https://github.com/zowe/zowe-cli/pull/2157)
+
 ## `5.23.2`
 
 - BugFix: Updated error text for invalid command options so that allowable values are displayed as strings instead of regular expressions when possible. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
