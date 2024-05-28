@@ -68,7 +68,7 @@ describe("Download Jobs - System tests", () => {
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
-        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "DJ";
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
@@ -103,7 +103,7 @@ describe("Download Jobs - System tests", () => {
 
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 6;
-            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "DJ";
             JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
             SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
@@ -367,7 +367,7 @@ describe("Download Jobs - System tests - Encoded", () => {
         }
 
         const JOB_LENGTH = 5;
-        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "#DJ";
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "#DJ";
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });

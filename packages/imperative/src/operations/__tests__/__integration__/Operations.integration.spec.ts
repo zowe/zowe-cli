@@ -13,7 +13,6 @@
 import { TestOperations1 } from "../operation/TestOperations1";
 import { TestOperations4 } from "../operation/TestOperations4";
 
-import { isNullOrUndefined } from "util";
 import { TestOperations3 } from "../operation/TestOperations3";
 
 import { IOperationResult, Operation, Operations } from "../../index";
@@ -305,7 +304,7 @@ describe("Operation Infrastructure", () => {
 function checkResults(operationActualResults: IOperationResult<any>,
     operationExpectedResults: Array<IOperationResult<any>>) {
 
-    if (isNullOrUndefined(operationActualResults)) {
+    if (operationActualResults == null) {
         expect(0).toEqual(1);
         let currentOperationResults: IOperationResult<any> = operationActualResults;
         for (const result of operationExpectedResults) {
@@ -327,7 +326,7 @@ function checkResults(operationActualResults: IOperationResult<any>,
             currentOperationResults = currentOperationResults.nextOperationResult;
         }
 
-        if (!isNullOrUndefined(currentOperationResults)) {
+        if (!(currentOperationResults == null)) {
             // more results than expected - fail
             expect(0).toEqual(1);
         }

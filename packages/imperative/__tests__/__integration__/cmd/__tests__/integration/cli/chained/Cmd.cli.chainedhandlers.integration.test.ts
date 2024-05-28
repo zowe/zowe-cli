@@ -27,16 +27,16 @@ describe("cmd-cli chained handlers", () => {
         });
     });
 
-    const mainModule = process.mainModule;
+    const mainModule = require.main;
 
     beforeEach(() => {
-        (process.mainModule as any) = {
+        (require.main as any) = {
             filename: __filename
         };
     });
 
     afterEach(() => {
-        process.mainModule = mainModule;
+        require.main = mainModule;
     });
 
     it("should not allow us to configure chained handlers that map arguments to indices beyond " +

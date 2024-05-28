@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress, IHeaderContent } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
-import { IHeaderContent, ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
@@ -319,8 +319,8 @@ export class Upload {
                 });
             }
 
-            memberName = dataSetName.substr(dataSetName.indexOf("(")).replace(/[()]/g, "");
-            dataSetName = dataSetName.substr(0, dataSetName.indexOf("("));
+            memberName = dataSetName.substring(dataSetName.indexOf("(")).replace(/[()]/g, "");
+            dataSetName = dataSetName.substring(0, dataSetName.indexOf("("));
         }
 
 

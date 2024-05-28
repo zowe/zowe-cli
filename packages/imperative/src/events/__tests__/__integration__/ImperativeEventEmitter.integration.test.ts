@@ -23,11 +23,11 @@ const iee_s = ImperativeSharedEvents;
 let cwd = '';
 
 describe("Event Emitter", () => {
-    const mainModule = process.mainModule;
+    const mainModule = require.main;
     const testLogger = TestLogger.getTestLogger();
 
     beforeAll(async () => {
-        (process.mainModule as any) = {
+        (require.main as any) = {
             filename: __filename
         };
 
@@ -47,7 +47,7 @@ describe("Event Emitter", () => {
     });
 
     afterAll(() => {
-        process.mainModule = mainModule;
+        require.main = mainModule;
         TestUtil.rimraf(cwd);
     });
 

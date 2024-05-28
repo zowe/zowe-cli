@@ -30,8 +30,8 @@ export default class JobsHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
 
         // Obtain the list of jobs - by default uses the session user and * for owner and prefix.
-        const owner: string = (params.arguments.owner != null) ? params.arguments.owner : null;
-        const prefix: string = (params.arguments.prefix != null) ? params.arguments.prefix : JobsConstants.DEFAULT_PREFIX;
+        const owner: string = params.arguments.owner != null ? params.arguments.owner : null;
+        const prefix: string = params.arguments.prefix != null ? params.arguments.prefix : JobsConstants.DEFAULT_PREFIX;
         const execData: boolean = params.arguments.execData;
         const jobs: IJob[] = await GetJobs.getJobsCommon(this.mSession, {owner, prefix, execData});
 

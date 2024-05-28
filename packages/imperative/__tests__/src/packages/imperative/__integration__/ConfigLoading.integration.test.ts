@@ -16,17 +16,17 @@ import { ImperativeConfig } from "../../../../../src/utilities";
 describe("Imperative should validate config provided by the consumer", function () {
     const testDir = T.createUniqueTestDataDir("config-loading");
     const packageJsonPath = testDir + "/package.json";
-    const mainModule = process.mainModule;
+    const mainModule = require.main;
 
     beforeAll(() => {
         // Temporarily change the main module filename so that the test can work.
-        (process.mainModule as any) = {
+        (require.main as any) = {
             filename: packageJsonPath
         };
     });
 
     afterAll(() => {
-        process.mainModule = mainModule;
+        require.main = mainModule;
         T.unlinkSync(packageJsonPath);
     });
 

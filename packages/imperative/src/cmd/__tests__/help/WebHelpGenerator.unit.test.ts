@@ -23,7 +23,7 @@ import { ICommandDefinition } from "../../../cmd/src/doc/ICommandDefinition";
 
 describe("WebHelpGenerator", () => {
     describe("buildHelp", () => {
-        const mainModule = process.mainModule;
+        const mainModule = require.main;
         let moduleFileNm: string;
         let cliHome: string;
         let configForHelp: IImperativeConfig;
@@ -101,10 +101,10 @@ describe("WebHelpGenerator", () => {
 
             rimraf.sync(cliHome);
 
-            /* process.mainModule.filename was null, so we must give it a value.
+            /* require.main.filename was null, so we must give it a value.
              * mainModule is a getter of a property, so we mock the property.
              */
-            (process.mainModule as any) = {
+            (require.main as any) = {
                 filename: moduleFileNm
             };
 
@@ -113,7 +113,7 @@ describe("WebHelpGenerator", () => {
         });
 
         afterAll(() => {
-            process.mainModule = mainModule;
+            require.main = mainModule;
             rimraf.sync(cliHome);
         });
 

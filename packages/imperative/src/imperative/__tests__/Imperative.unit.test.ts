@@ -21,7 +21,7 @@ import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 
 describe("Imperative", () => {
-    const mainModule = process.mainModule;
+    const mainModule = require.main;
 
     const loadImperative = () => {
         return require("../src/Imperative").Imperative;
@@ -128,7 +128,7 @@ describe("Imperative", () => {
     };
 
     beforeEach(() => {
-        (process.mainModule as any) = {
+        (require.main as any) = {
             filename: __filename
         };
 
@@ -146,7 +146,7 @@ describe("Imperative", () => {
     });
 
     afterEach(() => {
-        process.mainModule = mainModule;
+        require.main = mainModule;
     });
 
     describe("init", () => {

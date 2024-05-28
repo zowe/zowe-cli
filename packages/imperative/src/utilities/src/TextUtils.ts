@@ -9,7 +9,7 @@
 *
 */
 
-import { format, isArray, isNullOrUndefined, isNumber, isString } from "util";
+import { format } from "util";
 
 /**
  * Interface of an explanation map object
@@ -41,8 +41,8 @@ export class TextUtils {
     ): number {
         const widthSafeGuard = 8; // prevent partial words from continuing over lines
         const yargs = require("yargs");
-        const maxWidth = !isNullOrUndefined(yargs.terminalWidth() && yargs.terminalWidth() > 0) ?
-            (yargs.terminalWidth() - widthSafeGuard) : preferredWidth;
+        const maxWidth = !((yargs.terminalWidth() && yargs.terminalWidth() > 0) == null) ?
+            yargs.terminalWidth() - widthSafeGuard : preferredWidth;
         return Math.min(preferredWidth, maxWidth);
     }
 
@@ -68,11 +68,11 @@ export class TextUtils {
         includeUnexplainedKeys: boolean = true): any {
 
         // no object to explain, return null
-        if (isNullOrUndefined(original)) {
+        if (original == null) {
             return null;
         }
         // no explanation map, return original
-        if (isNullOrUndefined(explanationMap)) {
+        if (explanationMap == null) {
             return original;
         }
 
@@ -131,7 +131,7 @@ export class TextUtils {
         /**
          *  Default options for printing prettyJson
          */
-        const defaultOptions = (!color || process.env.FORCE_COLOR === "0") ? {
+        const defaultOptions = !color || process.env.FORCE_COLOR === "0" ? {
             noColor: true
         } : {
             keysColor: "yellow"
@@ -165,7 +165,7 @@ export class TextUtils {
         if (!headers) {
             headers = this.buildHeaders(objects);
         }
-        if (isNullOrUndefined(maxColumnWidth)) {
+        if (maxColumnWidth == null) {
             maxColumnWidth = this.getRecommendedWidth() / headers.length;
         }
         const borderChars = includeBorders ?
@@ -276,7 +276,7 @@ export class TextUtils {
      * @returns {string} - a formatted string with the variables inserted
      */
     public static formatMessage(message: string, ...values: any[]): string {
-        if (!isNullOrUndefined(values)) {
+        if (!(values == undefined)) {
             const isPrintfValue = (value: any) => {
                 let isJson = false;
                 try {
@@ -285,9 +285,9 @@ export class TextUtils {
                 } catch (e) {
                     // not json
                 }
-                return isString(value) || isNumber(value) || isJson;
+                return typeof value === 'string' || typeof value === 'number' || isJson;
             };
-            if (isArray(values) && values.filter(isPrintfValue).length === values.length) {
+            if (Array.isArray(values) && values.filter(isPrintfValue).length === values.length) {
                 message = format.apply(this, [message, ...values]);
             }
             else {
@@ -330,7 +330,7 @@ export class TextUtils {
         const numberOfCommas = (keysAndValues.match(/[^\\],/g) || []).length;
 
         if (!/[^\\]=/g.test(keysAndValues) ||
-            (numberOfEqualsSigns > 1 && numberOfCommas !== (numberOfEqualsSigns - 1))
+            numberOfEqualsSigns > 1 && numberOfCommas !== numberOfEqualsSigns - 1
         ) {
             throw new Error("The keys and values provided are not in the expected format. Example of expected format: " + keyValueExample);
         }

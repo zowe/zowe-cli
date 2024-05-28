@@ -29,14 +29,14 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         ActiveWorkflowDetailsCommonOptions.workflowName,
         ActiveWorkflowDetailsCommonOptions.workflowKey,
         ActiveWorkflowDetailsCommonOptions.listSteps,
         ActiveWorkflowDetailsCommonOptions.stepsSummaryOnly,
         ActiveWorkflowDetailsCommonOptions.listVariables,
         ActiveWorkflowDetailsCommonOptions.skipWorkflowSummary
-    ]),
+    ],
     examples: [
         {
             description: "To list the details of an active workflow with key \"7c62c790-0340-86b2-61ce618d8f8c\" including its steps and variables",

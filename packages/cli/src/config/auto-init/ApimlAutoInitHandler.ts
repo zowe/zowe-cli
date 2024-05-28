@@ -70,7 +70,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      */
     protected async doAutoInit(session: AbstractSession, params: IHandlerParameters): Promise<IConfig> {
         // Login with token authentication first, so we can support certificates
-        if ((session.ISession.user && session.ISession.password) || (session.ISession.cert && session.ISession.certKey)) {
+        if (session.ISession.user && session.ISession.password || session.ISession.cert && session.ISession.certKey) {
             // If it is basic authentication, we need to set the auth type.
             if (session.ISession.tokenType == null) {
                 session.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
@@ -247,7 +247,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                     if (!baseOverride.secure) {
                         msg += `'${baseOverride.priorityValue}' overrides '${baseOverride.baseValue}' in`;
                     } else {
-                        msg += "secure value " + ((baseOverride.priorityValue != null) ? "overrides" : "may override");
+                        msg += "secure value " + (baseOverride.priorityValue != null ? "overrides" : "may override");
                     }
                     msg += ` profile '${baseProfileName}'`;
                 }
@@ -510,7 +510,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                         });
                     }
                 }
-                for (const name of (baseProfile.secure || [])) {
+                for (const name of baseProfile.secure || []) {
                     if (serviceProfile.secure?.includes(name)) {
                         profileRpt.baseOverrides.push({ propName: name, secure: true });
                     }

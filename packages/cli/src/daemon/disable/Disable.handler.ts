@@ -163,12 +163,12 @@ export default class DisableDaemonHandler implements ICommandHandler {
                     );
                     return null;
                 }
-                if (typeof(pidFileContents?.pid) === "number" && Number.isInteger(pidFileContents?.pid)) {
+                if (typeof pidFileContents?.pid === "number" && Number.isInteger(pidFileContents?.pid)) {
                     return pidFileContents.pid;
                 } else {
                     Logger.getAppLogger().error(`Daemon PID file '${daemonPidFileNm}' ` +
                         `contains invalid PID value = '${pidFileContents?.pid}' of type ` +
-                        typeof(pidFileContents?.pid)
+                        typeof pidFileContents?.pid
                     );
                 }
             } catch(caughtErr) {

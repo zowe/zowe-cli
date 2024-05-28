@@ -10,7 +10,6 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import { isNullOrUndefined } from "util";
 import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
 import { ValidationTestCommand } from "../ValidationTestCommand";
 import { Constants } from "../../../../../src/constants/index";
@@ -44,10 +43,10 @@ const DUMMY_PROFILE_TYPE_CONFIG: IProfileTypeConfiguration[] = [
 ];
 describe("Imperative should provide advanced syntax validation rules", function () {
     const home = __dirname + "/validationtests";
-    const mainModule = process.mainModule;
+    const mainModule = require.main;
 
     beforeAll(function () {
-        (process.mainModule as any) = {
+        (require.main as any) = {
             filename: __filename
         };
         return Imperative.init({
@@ -61,7 +60,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
         });
     });
     afterAll(() => {
-        process.mainModule = mainModule;
+        require.main = mainModule;
         rimraf(home);
     });
     describe("Advanced syntax validation for commands using a test command", function () {
@@ -105,7 +104,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
                         } else {
                             expect(completedResponse.success).toEqual(false);
                         }
-                        if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                        if (!(expectedText == undefined) && expectedText.length > 0) {
                             (completedResponse.stderr as any) = completedResponse.stderr.toString();
                             (completedResponse.stdout as any) = completedResponse.stdout.toString();
                             for (const text of expectedText) {

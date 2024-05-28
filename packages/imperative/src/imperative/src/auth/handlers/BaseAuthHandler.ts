@@ -164,7 +164,7 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
             `Do you want to store the host, port, and token on disk for use with future commands? If you answer Yes, the credentials will ` +
             `be saved to a ${this.mProfileType} profile named '${profileName}'. If you answer No, the token will be printed to the ` +
             `terminal and will not be stored on disk. [y/N]: `);
-        return (answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes"));
+        return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
     }
 
     private showToken(response: IHandlerResponseApi, tokenValue: string) {

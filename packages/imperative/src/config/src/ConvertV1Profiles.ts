@@ -144,7 +144,7 @@ export class ConvertV1Profiles {
                 }
             }
         }
-        return (ConvertV1Profiles.convertResult.numProfilesFound > 0);
+        return ConvertV1Profiles.convertResult.numProfilesFound > 0;
     }
 
     /**
@@ -194,7 +194,7 @@ export class ConvertV1Profiles {
                     };
 
                     ConvertV1Profiles.convertResult.profilesConverted[profileType] = [
-                        ...(ConvertV1Profiles.convertResult.profilesConverted[profileType] || []), profileName
+                        ...ConvertV1Profiles.convertResult.profilesConverted[profileType] || [], profileName
                     ];
                 } catch (error) {
                     ConvertV1Profiles.convertResult.profilesFailed.push({ name: profileName, type: profileType, error });
@@ -457,7 +457,7 @@ export class ConvertV1Profiles {
          * caller should uninstall.
          */
         ConvertV1Profiles.convertResult.v1ScsPluginName =
-            (oldPluginInfo.plugins.length > 0) ? oldPluginInfo.plugins[0] : null;
+            oldPluginInfo.plugins.length > 0 ? oldPluginInfo.plugins[0] : null;
     }
 
     /**

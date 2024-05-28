@@ -10,7 +10,7 @@
 */
 
 import { ImperativeExpect } from "../../../expect";
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 import { Logger } from "../../../logger";
 import { ImperativeError } from "../../../error";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
@@ -83,11 +83,11 @@ export class CliProfileManager {
         ImperativeExpect.toNotBeNullOrUndefined(parms, "Profile Manager input parms not supplied.");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["type"],
             "No profile type supplied on the profile manager parameters.");
-        this.mLogger = isNullOrUndefined(parms.logger) ? this.mLogger : parms.logger;
+        this.mLogger = parms.logger == null ? this.mLogger : parms.logger;
         this.mProfileType = parms.type;
         this.mProfileTypeConfigurations = parms.typeConfigurations;
         this.mProductDisplayName = parms.productDisplayName;
-        if (isNullOrUndefined(this.profileTypeConfigurations) || this.profileTypeConfigurations.length === 0) {
+        if (this.profileTypeConfigurations == null || this.profileTypeConfigurations.length === 0) {
             throw new ImperativeError({
                 msg: "V1 profiles are no longer read from disk. " +
                     "You can supply the profile type configurations to the profile manager constructor."
@@ -176,7 +176,7 @@ export class CliProfileManager {
         ImperativeExpect.keysToBeDefined(typeConfiguration, ["schema"], `The profile type configuration document for ` +
             `"${typeConfiguration.type}" does NOT contain a schema.`);
         this.validateSchema(typeConfiguration.schema, typeConfiguration.type);
-        if (!isNullOrUndefined(typeConfiguration.dependencies)) {
+        if (!(typeConfiguration.dependencies == null)) {
             ImperativeExpect.toBeAnArray(typeConfiguration.dependencies,
                 `The profile type configuration for "${typeConfiguration.type}" contains a "dependencies" property, ` +
                 `but it is not an array (ill-formed)`);

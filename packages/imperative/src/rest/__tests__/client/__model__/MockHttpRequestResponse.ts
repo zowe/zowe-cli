@@ -10,8 +10,6 @@
 */
 
 import { EventEmitter } from "events";
-import { isNullOrUndefined } from "util";
-
 /**
  * Simulate http(s).clientRequest or http(s).clientRequest callback invoked
  * @export
@@ -48,7 +46,7 @@ export class MockHttpRequestResponse extends EventEmitter {
      * @memberof RequestOrResponse
      */
     get statusCode() {
-        if (isNullOrUndefined(this.mStatus)) {
+        if (this.mStatus == null) {
             this.mStatus = "200";
         }
         return this.mStatus;

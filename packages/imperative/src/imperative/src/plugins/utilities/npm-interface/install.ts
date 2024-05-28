@@ -142,7 +142,7 @@ export async function install(packageLocation: string, registry: string, install
 
             const passedVersionIdx = packageLocation.indexOf("@");
             if (passedVersionIdx !== -1) {
-                packageVersion = packageLocation.substr(passedVersionIdx + 1);
+                packageVersion = packageLocation.substring(passedVersionIdx + 1);
             }
         }
 

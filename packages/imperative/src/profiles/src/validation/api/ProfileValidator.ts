@@ -17,7 +17,6 @@ import {
     VALIDATION_OUTCOME
 } from "../doc/IProfileValidationTask";
 import { IProfileValidationTaskResult } from "../doc/IProfileValidationTaskResult";
-import { isNullOrUndefined } from "util";
 import { Logger, LoggerUtils } from "../../../../logger";
 import { TextUtils } from "../../../../utilities";
 import { IPromiseWithProgress, ITaskWithStatus, TaskProgress, TaskStage } from "../../../../operations";
@@ -84,7 +83,7 @@ export class ProfileValidator {
             let numTasksToComplete = 0;
             const countTasks = (task: IProfileValidationTask) => {
                 numTasksToComplete++;
-                if (!isNullOrUndefined(task.dependentTasks)) {
+                if (!(task.dependentTasks == null)) {
                     for (const dependent of task.dependentTasks) {
                         countTasks(dependent);
                     }
@@ -117,7 +116,7 @@ export class ProfileValidator {
                     };
                     report.taskResults.push(skippedResult);
                     tasksCompleted++;
-                    if (!isNullOrUndefined(dependentTask.dependentTasks)) {
+                    if (!(dependentTask.dependentTasks == null)) {
                         for (const grandDependent of dependentTask.dependentTasks) {
                             skipDependentTask(grandDependent, result);
                         }
@@ -125,7 +124,7 @@ export class ProfileValidator {
                 };
 
                 const taskFunction: IProfileValidationTaskFunction = currentTask.taskFunction;
-                progress.percentComplete = (((tasksCompleted) / numTasksToComplete) * TaskProgress.ONE_HUNDRED_PERCENT);
+                progress.percentComplete = tasksCompleted / numTasksToComplete * TaskProgress.ONE_HUNDRED_PERCENT;
                 progress.statusMessage = TextUtils.formatMessage("Checking '%s' (%d of %d)", currentTask.name,
                     tasksCompleted + 1, numTasksToComplete);
                 try {
@@ -137,7 +136,7 @@ export class ProfileValidator {
                         report.taskResults.push(result);
                         log.debug("Profile validation task result: task name: %s, outcome %s, description %s, associated endpoints: %s",
                             result.taskName, this.outcomeToString(result.outcome), result.resultDescription,
-                            (isNullOrUndefined(result.associatedEndpoints) ? "none" : result.associatedEndpoints.join(", ")));
+                            result.associatedEndpoints == null ? "none" : result.associatedEndpoints.join(", "));
 
                         // set the overall status of the validation based on this outcome
                         // only 100% success is considered a successful validation
@@ -148,7 +147,7 @@ export class ProfileValidator {
                             // mark the validation failed if any task fails
                             report.overallResult = "Failed";
                         }
-                        if (!isNullOrUndefined(currentTask.dependentTasks)) {
+                        if (!(currentTask.dependentTasks == null)) {
                             if (result.outcome === "Failed" || result.outcome === "Warning") {
                                 log.warn("Parent task %s failed, skipping dependent tasks",
                                     currentTask.name);
@@ -278,7 +277,7 @@ export class ProfileValidator {
                 Description: description,
                 Endpoint: taskResult.associatedEndpoints ? taskResult.associatedEndpoints.join(", ") : undefined
             };
-            if (isNullOrUndefined(result.Endpoint)) {
+            if (result.Endpoint == null) {
                 // this prevents the endpoint column from showing up
                 // if there are no endpoints specified
                 delete result.Endpoint;
@@ -338,7 +337,7 @@ export class ProfileValidator {
         const allTasks: IProfileValidationTask[] = [];
         const addTasks = (task: IProfileValidationTask) => {
             allTasks.push(task);
-            if (!isNullOrUndefined(task.dependentTasks)) {
+            if (!(task.dependentTasks == null)) {
                 for (const dependent of task.dependentTasks) {
                     addTasks(dependent);
                 }

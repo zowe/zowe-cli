@@ -11,7 +11,6 @@
 
 import { IProfileTypeConfiguration } from "../doc/config/IProfileTypeConfiguration";
 import { IProfileLoaded } from "../doc/response/IProfileLoaded";
-import { isNullOrUndefined } from "util";
 import * as nodePath from "path";
 
 /**
@@ -46,9 +45,9 @@ export class ProfileUtils {
      */
     public static flattenDependencies(dependencyResponses: IProfileLoaded[]): IProfileLoaded[] {
         let flatten: IProfileLoaded[] = [];
-        if (!isNullOrUndefined(dependencyResponses)) {
+        if (!(dependencyResponses == null)) {
             for (const response of dependencyResponses) {
-                const moreDependencies = (!isNullOrUndefined(response.dependencyLoadResponses)) ?
+                const moreDependencies = !(response.dependencyLoadResponses == null) ?
                     JSON.parse(JSON.stringify(response.dependencyLoadResponses)) : [];
                 flatten.push(response);
                 delete response.dependencyLoadResponses;

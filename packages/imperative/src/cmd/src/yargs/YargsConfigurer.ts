@@ -236,11 +236,11 @@ export class YargsConfigurer {
 
         // loop through the top level groups
         for (const group of this.rootCommand.children) {
-            if ((group.name.trim() === groupValues[0]) || (group.aliases[0] === groupValues[0])) {
+            if (group.name.trim() === groupValues[0] || group.aliases[0] === groupValues[0]) {
                 groups += groupValues[0] + " ";
                 // found the top level group so loop to see if second level group valid
                 for (const group2 of group.children) {
-                    if ((group2.name.trim() === groupValues[1]) || (group2.aliases[0] === groupValues[1])) {
+                    if (group2.name.trim() === groupValues[1] || group2.aliases[0] === groupValues[1]) {
                         groups += groupValues[1] + " ";
                         // second level group valid so command provided is invalid, retrieve the valid command(s)
                         for (let i = 0; i < group2.children.length; i++) {

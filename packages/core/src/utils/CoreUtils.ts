@@ -153,7 +153,7 @@ export function readStdin(): Promise<Buffer> {
             const stdinReadError: IImperativeError = {
                 msg: "Error encountered while reading from stdin",
                 causeErrors: error,
-                additionalDetails: (error == null) ? undefined : error.message
+                additionalDetails: error == null ? undefined : error.message
             };
             reject(stdinReadError);
         });

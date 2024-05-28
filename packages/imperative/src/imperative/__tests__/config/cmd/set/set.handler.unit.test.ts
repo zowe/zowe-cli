@@ -88,12 +88,12 @@ describe("Configuration Set command handler", () => {
 
     const configOpts: IConfigOpts = {
         vault: {
-            load: ((k: string): Promise<string> => {
+            load: (k: string): Promise<string> => {
                 return CredentialManagerFactory.manager.load(k, true);
-            }),
-            save: ((k: string, v: any): Promise<void> => {
+            },
+            save: (k: string, v: any): Promise<void> => {
                 return CredentialManagerFactory.manager.save(k, v);
-            })
+            }
         }
     };
 

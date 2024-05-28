@@ -9,13 +9,13 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils, IHeaderContent } from "@zowe/imperative";
 
 import { posix, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
-import { ZosmfRestClient, IHeaderContent, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -666,7 +666,7 @@ export class Download {
 
             // For each item in the listing...
             for (const item of list) {
-                if (item.name === "." || item.name === ".." || item.name === "..." || (!fileOptions.includeHidden && /(^|\/)\./.test(item.name))) {
+                if (item.name === "." || item.name === ".." || item.name === "..." || !fileOptions.includeHidden && /(^|\/)\./.test(item.name)) {
                     // If the name is ., .., ..., or a hidden file, ignore it.
                     continue;
                 } else if (item.mode.startsWith("-")) {

@@ -127,7 +127,7 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
         arguments: {
             $0: "zowe",
             _: params.positionals || [],
-            ...(params.arguments || {})
+            ...params.arguments || {}
         },
         positionals: params.positionals || [],
         profiles: params.profiles || new CommandProfiles(new Map()),

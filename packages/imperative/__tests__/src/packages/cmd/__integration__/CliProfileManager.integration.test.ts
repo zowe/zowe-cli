@@ -21,12 +21,12 @@ import { bananaProfile, getConfig, PROFILE_TYPE } from "./CliProfileManagerTestC
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 describe("Cli Profile Manager", () => {
-    const mainModule = process.mainModule;
+    const mainModule = require.main;
     const testLogger = TestLogger.getTestLogger();
     const profileTypeOne = "banana";
 
     beforeAll(async () => {
-        (process.mainModule as any) = {
+        (require.main as any) = {
             filename: __filename
         };
 
@@ -37,7 +37,7 @@ describe("Cli Profile Manager", () => {
     });
 
     afterAll(() => {
-        process.mainModule = mainModule;
+        require.main = mainModule;
         TestUtil.rimraf(TEST_ENVIRONMENT.workingDir);
     });
 
