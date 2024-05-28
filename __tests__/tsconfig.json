@@ -17,8 +17,9 @@
     "newLine": "lf"
   },
   "include": [
-    "./**/*.ts",
-    "../packages/**/__tests__/**/*.ts"
+    "**/*.test.ts",
+    "**/*.subtest.ts",
+    "**/__tests__/**/*"
   ],
   "files": [
     "../__types__/wontache.d.ts"
