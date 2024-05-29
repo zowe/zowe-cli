@@ -2,11 +2,14 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added support for proxy servers using a proxy http agent. Supports the usage of the environment variables HTTP_PROXY, http_proxy, HTTPS_PROXY, https_proxy. If any of these env variables is set and depending how the Zowe session is configured for http or https it instantiates an appropriate http agent. If the z/OS system uses self-signed certificates then the proxy server must be configured to accept them. If the proxy server itself is configured with self-signed certificates then the user needs to either import these certificates on their workstation, use rejectUnauthorized in their Zowe profile, or use the (not recommended) nodejs variable NODE_TLS_REJECT_UNAUTHORIZED=0. Zowe also looks for the environment variables, NO_PROXY, no_proxy. These work with a simple comma separated list of hostnames that need to match with the hostname of the Zowe profile.
+
 ## `5.23.2`
 
 - BugFix: Updated error text for invalid command options so that allowable values are displayed as strings instead of regular expressions when possible. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
 - BugFix: Fixed issue where the `ConfigSecure.securePropsForProfile` function did not list secure properties outside the active config layer. [zowe-explorer-vscode#2633](https://github.com/zowe/zowe-explorer-vscode/issues/2633)
-- Enhancement: Added support for proxy servers using a proxy http agent. Supports the usage of the environment variables HTTP_PROXY, http_proxy, HTTPS_PROXY, https_proxy. If any of these env variables is set and depending how the Zowe session is configured for http or https it instantiates an appropriate http agent. If the z/OS system uses self-signed certificates then the proxy server must be configured to accept them. If the proxy server itself is configured with self-signed certificates then the user needs to either import these certificates on their workstation, use rejectUnauthorized in their Zowe profile, or use the (not recommended) nodejs variable NODE_TLS_REJECT_UNAUTHORIZED=0. Zowe also looks for the environment variables, NO_PROXY, no_proxy. These work with a simple comma separated list of hostnames that need to match with the hostname of the Zowe profile.
 
 ## `5.23.1`
 
