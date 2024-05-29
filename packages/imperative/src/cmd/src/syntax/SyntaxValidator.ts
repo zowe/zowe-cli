@@ -844,7 +844,7 @@ export class SyntaxValidator {
         const msg: string = responseObject.console.error(
             "Invalid value specified for option:\n{{long}} {{aliases}}\n\n" +
             "You specified:\n{{optionVal}}\n\n" +
-            "The value must match one of the following regular expressions:\n{{allowed}}.",
+            "The value must match one of the following options:\n{{allowed}}.",
             mustacheSummary);
         this.appendValidatorError(responseObject,
             {message: msg, optionInError: failingOption.name, definition: failingOption});

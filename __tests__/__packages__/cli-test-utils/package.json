@@ -43,7 +43,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",
     "@types/uuid": "^8.3.0",
-    "@zowe/imperative": "5.23.2"
+    "@zowe/imperative": "5.23.3"
   },
   "peerDependencies": {
     "@zowe/imperative": "^5.0.0"
