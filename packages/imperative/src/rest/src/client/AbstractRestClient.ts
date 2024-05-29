@@ -471,8 +471,12 @@ export abstract class AbstractRestClient {
 
         const proxyUrl = Proxy.getSystemProxyUrl(this.session.ISession);
         if (proxyUrl) {
-            this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
-            options.agent = Proxy.getProxyAgent(this.session.ISession);
+            if (Proxy.matchesNoProxySettings(this.session.ISession)) {
+                this.mLogger.info(`Proxy setting "${proxyUrl.href}" will not be used as hostname was found listed under "no_proxy" setting.`);
+            } else {
+                this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
+                options.agent = Proxy.getProxyAgent(this.session.ISession);
+            }
         }
 
         // NOTE(Kelosky): we can bring certificate implementation back whenever we port tests and

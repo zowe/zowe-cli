@@ -35,7 +35,21 @@ export class Proxy {
         return this.getProxySettings(session)?.proxyUrl;
     }
 
+    public static matchesNoProxySettings(session: ISession): boolean {
+        const noProxyValues = this.getNoProxyEnvVariables();
+        if (!noProxyValues) {
+            return false;
+        }
+        if (noProxyValues.includes(session.hostname.toLocaleLowerCase())) {
+            return true;
+        }
+        return false;
+    }
+
     private static getProxySettings(session: ISession): ProxySetting | undefined {
+        if (this.matchesNoProxySettings(session)) {
+            return;
+        }
         const protocol = session.protocol ?? HTTPS_PROTOCOL;
         let envVariable: string | undefined;
         if (protocol === HTTP_PROTOCOL) {
@@ -58,6 +72,14 @@ export class Proxy {
         return env.HTTPS_PROXY ?? env.https_proxy ?? this.getHttpEnvVariables() ?? undefined;
     }
 
+    private static getNoProxyEnvVariables(): string[] | undefined {
+        const noProxyValue = env.NO_PROXY ?? env.no_proxy ?? undefined;
+        if (!noProxyValue) {
+            return;
+        }
+        return noProxyValue.split(',').map(entry => entry.trim().toLocaleLowerCase());
+    }
+
     private static checkUrl(inputUrl: string): URL | undefined {
         try {
             return new URL(inputUrl);
@@ -70,4 +92,3 @@ interface ProxySetting {
     proxyUrl: URL,
     protocol: HTTP_PROTOCOL_CHOICES
 }
-
