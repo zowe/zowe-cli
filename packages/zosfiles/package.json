@@ -52,7 +52,7 @@
   "devDependencies": {
     "@zowe/cli-test-utils": "7.24.3",
     "@zowe/core-for-zowe-sdk": "7.25.0",
-    "@zowe/imperative": "5.23.2",
+    "@zowe/imperative": "5.23.3",
     "@zowe/zos-uss-for-zowe-sdk": "7.24.3"
   },
   "peerDependencies": {
