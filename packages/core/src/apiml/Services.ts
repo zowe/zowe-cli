@@ -214,13 +214,9 @@ export class Services {
                 return `//"${key}": "${elements[0]}"${endComma}`;
             }
             // format pair of kvp (add commas in expected places)
-            elements.forEach((element, index) => {
-                if (index === elements.length - 1) {
-                    kvPair += `\n//"${key}": "${element}"`;
-                } else {
-                    kvPair += `\n//"${key}": "${element}"${endComma}`;
-                }
-            });
+            const kvPair = elements.reduce((all, current: string, index) => {
+                return all.concat(index === elements.length - 1 ? `\n//"${key}": "${element}"` :  `\n//"${key}": "${element}"${endComma}`);
+            }, "");
 
             return `${kvPair}${endComma}`;
             // return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')},"`;
