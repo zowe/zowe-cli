@@ -207,7 +207,6 @@ export class Services {
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
-            let kvPair: string = "";
             // add comma to end of kvp depending on if base profile
             const endComma = key.includes("base") ? "" : ",";
             if (elements.length === 1){
@@ -215,11 +214,10 @@ export class Services {
             }
             // format pair of kvp (add commas in expected places)
             const kvPair = elements.reduce((all, current: string, index) => {
-                return all.concat(index === elements.length - 1 ? `\n//"${key}": "${element}"` :  `\n//"${key}": "${element}"${endComma}`);
+                return all.concat(index === elements.length - 1 ? `\n//"${key}": "${current}"` :  `\n//"${key}": "${current}"${endComma}`);
             }, "");
 
             return `${kvPair}${endComma}`;
-            // return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')},"`;
         };
 
         profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
