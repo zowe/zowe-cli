@@ -392,6 +392,56 @@ describe("APIML Services unit tests", () => {
             expect(actualJson).toEqual(expectedJson);
         });
 
+        it("should properly apply comments and commas to profileInfoList", () => {
+            // should apply a comma to the end of all values in profile kvp except the last value
+            // should apply a comma to all commented profile types except base
+            const expectedJsonSnippet_base = `
+                //"basePath": "test1/v2"
+                //"basePath": "test1/v3"
+                "basePath": "test1/v1"
+            `
+            const expectedJsonSnippet_notBase= `
+                //"type2": "test2.2",
+                "type2": "test2.1"
+            `
+            const testCase: IApimlProfileInfo[] = [
+                {
+                    profName: "test1",
+                    profType: "type1",
+                    basePaths: [
+                        "test1/v1",
+                        "test1/v2",
+                        "test1/v3"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "test2.1",
+                    profType: "type2",
+                    basePaths: [
+                        "test2.1/v1"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "test2.2",
+                    profType: "type2",
+                    basePaths: [
+                        "test2.2/v1"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                }           
+            ];
+            let actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+            
+            expect(actualJson.replace(/\s+/g, '')).toContain(expectedJsonSnippet_base.replace(/\s+/g, ''));
+            expect(actualJson.replace(/\s+/g, '')).toContain(expectedJsonSnippet_notBase.replace(/\s+/g, ''));
+
+        })
+
         it("should create a config object without comments about conflicts", () => {
             const testCase: IApimlProfileInfo[] = [{
                 profName: "test0",
