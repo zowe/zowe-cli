@@ -399,11 +399,11 @@ describe("APIML Services unit tests", () => {
                 //"basePath": "test1/v2"
                 //"basePath": "test1/v3"
                 "basePath": "test1/v1"
-            `
+            `;
             const expectedJsonSnippet_notBase= `
                 //"type2": "test2.2",
                 "type2": "test2.1"
-            `
+            `;
             const testCase: IApimlProfileInfo[] = [
                 {
                     profName: "test1",
@@ -433,14 +433,14 @@ describe("APIML Services unit tests", () => {
                     ],
                     pluginConfigs: new Set(),
                     gatewayUrlConflicts: {}
-                }           
+                }
             ];
-            let actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
-            
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
             expect(actualJson.replace(/\s+/g, '')).toContain(expectedJsonSnippet_base.replace(/\s+/g, ''));
             expect(actualJson.replace(/\s+/g, '')).toContain(expectedJsonSnippet_notBase.replace(/\s+/g, ''));
 
-        })
+        });
 
         it("should create a config object without comments about conflicts", () => {
             const testCase: IApimlProfileInfo[] = [{

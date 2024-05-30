@@ -209,14 +209,13 @@ export class Services {
             if (elements == null || elements.length === 0) return "";
             let kvPair: string = "";
             let endComma = "";
-                        
             // add comma to end of kvp depending on if base profile
             if(!key.includes("base")){
                 endComma = ",";
             }
             if (elements.length === 1){
                 return `//"${key}": "${elements[0]}"${endComma}`;
-            } 
+            }
             // format pair of kvp (add commas in expected places)
             elements.forEach((element, index) => {
                 if (index === elements.length - 1) {
