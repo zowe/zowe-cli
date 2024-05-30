@@ -207,7 +207,27 @@ export class Services {
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
-            return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')}"`;
+            let kvPair: string = "";
+            let endComma = "";
+                        
+            // add comma to end of kvp depending on if base profile
+            if(!key.includes("base")){
+                endComma = ",";
+            }
+            if (elements.length === 1){
+                return `//"${key}": "${elements[0]}"${endComma}`;
+            } 
+            // format pair of kvp (add commas in expected places)
+            elements.forEach((element, index) => {
+                if (index === elements.length - 1) {
+                    kvPair += `\n//"${key}": "${element}"`;
+                } else {
+                    kvPair += `\n//"${key}": "${element}"${endComma}`;
+                }
+            });
+
+            return `${kvPair}${endComma}`;
+            // return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')},"`;
         };
 
         profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
@@ -271,6 +291,7 @@ export class Services {
                     ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
                     // Multiple services were detected.
                     // Uncomment one of the lines below to set a different default.
+                    
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
                     "${defaultKey}": "${trueDefault}"
                 }`);

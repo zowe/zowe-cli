@@ -551,7 +551,7 @@ describe("APIML Services unit tests", () => {
     "defaults": {
         // Multiple services were detected.
         // Uncomment one of the lines below to set a different default.
-        //"type2": "test2.2"
+        //"type2": "test2.2",
         "type2": "test2.1"
     },
     "autoStore": true
@@ -648,7 +648,7 @@ describe("APIML Services unit tests", () => {
         "type3": "test3",
         // Multiple services were detected.
         // Uncomment one of the lines below to set a different default.
-        //"type4": "test4.2"
+        //"type4": "test4.2",
         "type4": "test4.1"
     },
     "autoStore": true
