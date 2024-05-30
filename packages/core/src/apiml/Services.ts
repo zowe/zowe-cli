@@ -208,11 +208,8 @@ export class Services {
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
             let kvPair: string = "";
-            let endComma = "";
             // add comma to end of kvp depending on if base profile
-            if(!key.includes("base")){
-                endComma = ",";
-            }
+            const endComma = key.includes("base") ? "" : ",";
             if (elements.length === 1){
                 return `//"${key}": "${elements[0]}"${endComma}`;
             }
