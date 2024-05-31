@@ -705,6 +705,150 @@ describe("APIML Services unit tests", () => {
 }`;
             expect(actualJson).toEqual(expectedJson);
         });
+        it("should produce proper default file when multiple comments for a type are passed", () => {
+            const testCase: IApimlProfileInfo[] = [
+                {
+                    profName: "test3",
+                    profType: "type3",
+                    basePaths: [
+                        "test3/v1",
+                        "test3/v2",
+                        "test3/v3"
+                    ],
+                    pluginConfigs: new Set([{
+                        apiId: "test3-apiId",
+                        connProfType: "type3",
+                        pluginName: "type3-plugin-name"
+                    }]),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "test4.1",
+                    profType: "type4",
+                    basePaths: [
+                        "test4/v1",
+                        "test4/v2"
+                    ],
+                    pluginConfigs: new Set([
+                        {
+                            apiId: "test4.1-apiId",
+                            connProfType: "type4",
+                            pluginName: "type4.1-plugin-name"
+                        },
+                        {
+                            apiId: "test4.1-apiId",
+                            connProfType: "type4",
+                            pluginName: "type4.1-plugin-name-copy"
+                        }
+                    ]),
+                    gatewayUrlConflicts: {
+                        "type4.1-plugin-name": ["test4/v1"],
+                        "type4.1-plugin-name-copy": ["test4/v2", "test4/v3"]
+                    }
+                },
+                {
+                    profName: "test4.2",
+                    profType: "type4",
+                    basePaths: [
+                        "test4/v1"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "test4.3",
+                    profType: "type4",
+                    basePaths: [
+                        "test4/v1"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "base1",
+                    profType: "base",
+                    basePaths: [
+                        "base1/v1"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "base2",
+                    profType: "base",
+                    basePaths: [
+                        "base2/v1"
+                    ],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                }
+            ];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+            const expectedJson = `{
+    "profiles": {
+        "test3": {
+            "type": "type3",
+            "properties": {
+                // Multiple base paths were detected for this service.
+                // Uncomment one of the lines below to use a different one.
+                //"basePath": "test3/v2"
+                //"basePath": "test3/v3"
+                "basePath": "test3/v1"
+            }
+        },
+        "test4.1": {
+            "type": "type4",
+            "properties": {
+                // ---
+                // Warning: basePath conflict detected!
+                // Different plugins require different versions of the same API.
+                // List:
+                //     "type4.1-plugin-name": "test4/v1"
+                //     "type4.1-plugin-name-copy": "test4/v2", "test4/v3"
+                // ---
+                //"basePath": "test4/v2"
+                "basePath": "test4/v1"
+            }
+        },
+        "test4.2": {
+            "type": "type4",
+            "properties": {
+                "basePath": "test4/v1"
+            }
+        },
+        "test4.3": {
+            "type": "type4",
+            "properties": {
+                "basePath": "test4/v1"
+            }
+        },
+        "base1": {
+            "type": "base",
+            "properties": {
+                "basePath": "base1/v1"
+            }
+        },
+        "base2": {
+            "type": "base",
+            "properties": {
+                "basePath": "base2/v1"
+            }
+        }
+    },
+    "defaults": {
+        "type3": "test3",
+        // Multiple services were detected.
+        // Uncomment one of the lines below to set a different default.
+        //"type4": "test4.2",
+        //"type4": "test4.3",
+        "type4": "test4.1",
+        //"base": "base2"
+        "base": "base1"
+    },
+    "autoStore": true
+}`;
+            expect(actualJson).toEqual(expectedJson);
+        });
     });
 
 });

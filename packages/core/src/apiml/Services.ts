@@ -207,17 +207,10 @@ export class Services {
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
-            // add comma to end of kvp depending on if base profile
-            const endComma = key.includes("base") ? "" : ",";
-            if (elements.length === 1){
-                return `//"${key}": "${elements[0]}"${endComma}`;
-            }
-            // format pair of kvp (add commas in expected places)
-            const kvPair = elements.reduce((all, current: string, index) => {
-                return all.concat(index === elements.length - 1 ? `\n//"${key}": "${current}"` :  `\n//"${key}": "${current}"${endComma}`);
-            }, "");
 
-            return `${kvPair}${endComma}`;
+            return elements.reduce((all, current: string, index) => {
+                return all.concat(key.includes("base") ? `\n//"${key}": "${current}"` : `\n//"${key}": "${current}",`);
+            }, "");
         };
 
         profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
@@ -272,19 +265,29 @@ export class Services {
             }
         });
 
+        // Establish keys for object map for index check within loop
+        const defaultKeys = Object.keys(conflictingDefaults);
+
         for (const defaultKey in conflictingDefaults) {
             if (configDefaults[defaultKey] != null) {
                 const trueDefault = configDefaults[defaultKey];
                 delete configDefaults[defaultKey];
+                let jsonString = `
+                    ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}`;
+                const defaultKeyIndex = defaultKeys.indexOf(defaultKey);
 
-                configDefaults = JSONC.parse(`
-                    ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
-                    // Multiple services were detected.
-                    // Uncomment one of the lines below to set a different default.
-                    
+                // Logic to ensure that comment block is not duplicated
+                if (defaultKeyIndex === 0) {
+                    jsonString += `
+                        // Multiple services were detected.
+                        // Uncomment one of the lines below to set a different default.`;
+                }
+                jsonString += `
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
-                    "${defaultKey}": "${trueDefault}"
-                }`);
+                    "${defaultKey}": "${trueDefault}"`;
+                // Terminate the JSON string
+                jsonString += '\n}';
+                configDefaults = JSONC.parse(jsonString);
             }
         }
 
