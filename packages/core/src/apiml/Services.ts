@@ -273,7 +273,7 @@ export class Services {
                 const trueDefault = configDefaults[defaultKey];
                 delete configDefaults[defaultKey];
                 let jsonString = `
-                    ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}`;
+                ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}`;
                 const defaultKeyIndex = defaultKeys.indexOf(defaultKey);
 
                 // Logic to ensure that comment block is not duplicated
