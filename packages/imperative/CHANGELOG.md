@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
+
 ## `8.0.0-next.202405241520`
 
 - BugFix: Modified command output to show appropriate error message given available ImperativeError properties. [#1897](https://github.com/zowe/zowe-cli/issues/1897)
