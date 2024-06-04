@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.23.4`
 
 - BugFix: Updated `braces` dependency for technical currency. [#2157](https://github.com/zowe/zowe-cli/pull/2157)
 

@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-files-for-zowe-sdk",
-  "version": "7.25.0",
+  "version": "7.25.2",
   "description": "Zowe SDK to interact with files and data sets on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -51,8 +51,8 @@
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "7.24.3",
-    "@zowe/core-for-zowe-sdk": "7.25.0",
-    "@zowe/imperative": "5.23.3",
+    "@zowe/core-for-zowe-sdk": "7.25.2",
+    "@zowe/imperative": "5.23.4",
     "@zowe/zos-uss-for-zowe-sdk": "7.24.3"
   },
   "peerDependencies": {
