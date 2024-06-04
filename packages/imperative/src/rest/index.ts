@@ -17,7 +17,7 @@ export * from "./src/client/doc/IRestClientError";
 export * from "./src/client/doc/IRestClientResponse";
 export * from "./src/client/doc/IRestOptions";
 export * from "./src/client/Headers";
-// export * from "./src/client/AbstractRestClient";
+export * from "./src/client/AbstractRestClient";
 // export * from "./src/client/CompressionUtils";
 export * from "./src/client/RestClient";
 export * from "./src/client/RestConstants";
