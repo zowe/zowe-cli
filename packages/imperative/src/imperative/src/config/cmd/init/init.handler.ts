@@ -47,13 +47,14 @@ export default class InitHandler implements ICommandHandler {
         // Load the config and set the active layer according to user options
         await OverridesLoader.ensureCredentialManagerLoaded();
         const config = ImperativeConfig.instance.config;
-        const configDir = params.arguments.globalConfig ? null : process.cwd();
-        config.api.layers.activate(params.arguments.userConfig, params.arguments.globalConfig, configDir);
+        const globalConfig: boolean = params.arguments?.globalConfig ? true : false;
+        const configDir = globalConfig ? null : process.cwd();
+        config.api.layers.activate(params.arguments.userConfig, globalConfig, configDir);
         const layer = config.api.layers.get();
 
         // Do a dry run if dryRun flag is present. Otherwise, initialize or overwrite the config
         if (params.arguments.dryRun && params.arguments.dryRun === true) {
-            let dryRun = await this.initForDryRun(config, params.arguments.userConfig);
+            let dryRun = await this.initForDryRun(config, params.arguments.userConfig, globalConfig);
 
             // Merge and display, do not save
             // Handle if the file doesn't actually exist
@@ -100,16 +101,16 @@ export default class InitHandler implements ICommandHandler {
             params.response.console.log(jsonDiff);
             params.response.data.setObj(jsonDiff);
         } else {
-            await this.initWithSchema(config, params.arguments.userConfig, params.arguments.overwrite && params.arguments.forSure);
+            await this.initWithSchema(config, params.arguments.userConfig, globalConfig, params.arguments.overwrite && params.arguments.forSure);
 
             if (params.arguments.prompt !== false && config.api.secure.loadFailed && config.api.secure.secureFields().length > 0) {
                 const warning = ConfigUtils.secureSaveError();
                 let message = "Warning:\n" + warning.message + " Skipped prompting for credentials.";
-            
+
                 if (warning.additionalDetails) {
                     message += `\n\n${warning.additionalDetails}\n`;
                 }
-            
+
                 params.response.console.log(TextUtils.chalk.yellow(message));
             }
 
@@ -128,8 +129,10 @@ export default class InitHandler implements ICommandHandler {
      * folder alongside the config.
      * @param config Config object to be populated
      * @param user If true, properties will be left empty for user config
+     * @param globalConfig Is the config to be a global config?
+     * @param overwrite Shall we overwrite an existing config?
      */
-    private async initWithSchema(config: Config, user: boolean, overwrite: boolean): Promise<void> {
+    private async initWithSchema(config: Config, user: boolean, globalConfig: boolean, overwrite: boolean): Promise<void> {
         const opts: IConfigBuilderOpts = {};
         if (!user) {
             opts.populateProperties = true;
@@ -137,17 +140,18 @@ export default class InitHandler implements ICommandHandler {
         }
 
         // Build new config and merge with existing layer or overwrite it if overwrite & forSure options are present
-        const newConfig: IConfig = await ConfigBuilder.build(ImperativeConfig.instance.loadedConfig, opts);
+        const newConfig: IConfig = await ConfigBuilder.build(ImperativeConfig.instance.loadedConfig, globalConfig, opts);
         if (overwrite) {
             config.api.layers.set(newConfig);
         } else {
             const oldConfig = config.layerActive().properties;
-            if (oldConfig.profiles.base?.properties != null) {
+            const baseProfileNm: string = ConfigUtils.formGlobOrProjProfileNm("base", globalConfig);
+            if (oldConfig.profiles[baseProfileNm]?.properties != null) {
                 // Remove values that should be overwritten from old base profile
-                for (const propName of Object.keys(oldConfig.profiles.base.properties)) {
-                    const newPropValue = newConfig.profiles.base.properties[propName];
+                for (const propName of Object.keys(oldConfig.profiles[baseProfileNm].properties)) {
+                    const newPropValue = newConfig.profiles[baseProfileNm].properties[propName];
                     if (this.promptProps.includes(propName) && newPropValue != null && newPropValue !== "") {
-                        delete oldConfig.profiles.base.properties[propName];
+                        delete oldConfig.profiles[baseProfileNm].properties[propName];
                     }
                 }
             }
@@ -163,15 +167,16 @@ export default class InitHandler implements ICommandHandler {
      * Also create a schema file in the same folder alongside the config.
      * @param config Config object to be populated
      * @param user If true, properties will be left empty for user config
+     * @param globalConfig Is the config to be a global config?
      */
-    private async initForDryRun(config: Config, user: boolean): Promise<any> {
+    private async initForDryRun(config: Config, user: boolean, globalConfig: boolean): Promise<any> {
         const opts: IConfigBuilderOpts = {};
         if (!user) {
             opts.populateProperties = true;
         }
 
         // Build new config and merge with existing layer
-        const newConfig: IConfig = await ConfigBuilder.build(ImperativeConfig.instance.loadedConfig, opts);
+        const newConfig: IConfig = await ConfigBuilder.build(ImperativeConfig.instance.loadedConfig, globalConfig, opts);
         return config.api.layers.merge(newConfig, true);
     }
 

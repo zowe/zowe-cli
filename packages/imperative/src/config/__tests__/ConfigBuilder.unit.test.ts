@@ -14,6 +14,9 @@ import { Config, ConfigBuilder, IConfig } from "../";
 import * as config from "../../../__tests__/__integration__/imperative/src/imperative";
 import * as lodash from "lodash";
 
+const CHOOSE_GLOB_CONFIG = true;
+const CHOOSE_PROJ_CONFIG = false;
+
 const expectedConfigObject: IConfig = {
     autoStore: true,
     defaults: {},
@@ -67,14 +70,14 @@ describe("Config Builder tests", () => {
     describe("build", () => {
 
         it("should build a config without populating properties", async () => {
-            const builtConfig = await ConfigBuilder.build(testConfig);
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG);
             expect(configEmptySpy).toHaveBeenCalledTimes(1);
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(0); // Not populating any properties
             expect(builtConfig).toEqual(expectedConfig);
         });
 
         it("should build a config and populate properties", async () => {
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.secure.push("secret");
             expectedConfig.defaults = { secured: "secured" };
@@ -85,7 +88,7 @@ describe("Config Builder tests", () => {
 
         it("should build a config and populate properties, even option with missing option definition", async () => {
             testConfig.profiles[0].schema.properties.fakestr = buildProfileProperty("fakestr", "string", true);
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.properties.fakestr = "";
             expectedConfig.profiles.secured.secure.push("secret");
@@ -103,7 +106,7 @@ describe("Config Builder tests", () => {
             testConfig.profiles[0].schema.properties.fakebool = buildProfileProperty("fakebool", "boolean");
             testConfig.profiles[0].schema.properties.fakedflt = buildProfileProperty("fakedflt", "IShouldntExist");
 
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.properties.fakestr = "";
             expectedConfig.profiles.secured.properties.fakenum = 0;
@@ -122,7 +125,7 @@ describe("Config Builder tests", () => {
         it("should build a config and populate an empty property that can have multiple types", async () => {
             testConfig.profiles[0].schema.properties.fakestr = buildProfileProperty("fakestr", ["string", "number", "boolean"]);
 
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.properties.fakestr = "";
             expectedConfig.profiles.secured.secure.push("secret");
@@ -133,7 +136,7 @@ describe("Config Builder tests", () => {
             expect(builtConfig).toEqual(expectedConfig);
         });
 
-        it("should build a config with a base profile", async () => {
+        it("should build a config with a project base profile", async () => {
             testConfig.baseProfile = {
                 type: "base",
                 schema: {
@@ -144,7 +147,7 @@ describe("Config Builder tests", () => {
                 }
             };
             testConfig.profiles.push(testConfig.baseProfile);
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles = {
                 secured: {
                     type: "secured",
@@ -153,7 +156,7 @@ describe("Config Builder tests", () => {
                     },
                     secure: ["secret"]
                 },
-                base: {
+                project_base: {
                     type: "base",
                     properties: {
                         host: ""
@@ -161,14 +164,14 @@ describe("Config Builder tests", () => {
                     secure: []
                 }
             };
-            expectedConfig.defaults = { base: "base", secured: "secured" };
+            expectedConfig.defaults = { base: "project_base", secured: "secured" };
 
             expect(configEmptySpy).toHaveBeenCalledTimes(1);
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(2); // Populating default value for host and info
             expect(builtConfig).toEqual(expectedConfig);
         });
 
-        it("should build a config with a base profile and prompt for missing property", async () => {
+        it("should build a config with a global base profile and prompt for missing property", async () => {
             testConfig.baseProfile = {
                 type: "base",
                 schema: {
@@ -179,7 +182,7 @@ describe("Config Builder tests", () => {
                 }
             };
             testConfig.profiles.push(testConfig.baseProfile);
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true, getValueBack});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_GLOB_CONFIG, {populateProperties: true, getValueBack});
             expectedConfig.profiles = {
                 secured: {
                     type: "secured",
@@ -188,7 +191,7 @@ describe("Config Builder tests", () => {
                     },
                     secure: ["secret"]
                 },
-                base: {
+                global_base: {
                     type: "base",
                     properties: {
                         host: "fake value",
@@ -196,14 +199,14 @@ describe("Config Builder tests", () => {
                     secure: []
                 }
             };
-            expectedConfig.defaults = { base: "base", secured: "secured" };
+            expectedConfig.defaults = { base: "global_base", secured: "secured" };
 
             expect(configEmptySpy).toHaveBeenCalledTimes(1);
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(2); // Populating default value for host and info
             expect(builtConfig).toEqual(expectedConfig);
         });
 
-        it("should build a config with a base profile and prompt for missing secure property", async () => {
+        it("should build a config with a global base profile and prompt for missing secure property", async () => {
             testConfig.profiles.push(testConfig.baseProfile);
             expectedConfig.profiles = {
                 secured: {
@@ -213,7 +216,7 @@ describe("Config Builder tests", () => {
                     },
                     secure: ["secret"]
                 },
-                base: {
+                global_base: {
                     type: "base",
                     properties: {
                         secret: "fake value"
@@ -221,11 +224,11 @@ describe("Config Builder tests", () => {
                     secure: ["secret"]
                 }
             };
-            expectedConfig.defaults = { base: "base", secured: "secured" };
+            expectedConfig.defaults = { base: "global_base", secured: "secured" };
             let builtConfig;
             let caughtError;
             try {
-                builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true, getValueBack});
+                builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_GLOB_CONFIG, {populateProperties: true, getValueBack});
             } catch (error) {
                 caughtError = error;
             }

@@ -15,35 +15,41 @@ import { Config } from "./Config";
 import { IConfig } from "./doc/IConfig";
 import { IConfigBuilderOpts } from "./doc/IConfigBuilderOpts";
 import { ICommandProfileTypeConfiguration } from "../../cmd";
+import { ConfigUtils } from "./ConfigUtils";
 
 export class ConfigBuilder {
     /**
      * Build a new Config object from an Imperative CLI app configuration.
      * @param impConfig The Imperative CLI app configuration.
+     * @param globalConfig Is the config to be a global config?
      * @param opts Options to control aspects of the builder.
      */
-    public static async build(impConfig: IImperativeConfig, opts?: IConfigBuilderOpts): Promise<IConfig> {
+    public static async build(impConfig: IImperativeConfig, globalConfig: boolean, opts?: IConfigBuilderOpts): Promise<IConfig> {
         opts = opts || {};
         const builtConfig: IConfig = Config.empty();
 
         for (const profile of impConfig.profiles) {
             const defaultProfile = ConfigBuilder.buildDefaultProfile(profile, opts);
 
+            // Name our profile differently in a global config vs a project config
+            const profileName: string = ConfigUtils.formGlobOrProjProfileNm(profile.type, globalConfig);
+
             // Add the profile to config and set it as default
-            lodash.set(builtConfig, `profiles.${profile.type}`, defaultProfile);
+            lodash.set(builtConfig, `profiles.${profileName}`, defaultProfile);
 
             if (opts.populateProperties) {
-                builtConfig.defaults[profile.type] = profile.type;
+                builtConfig.defaults[profile.type] = profileName;
             }
         }
 
         // Prompt for properties missing from base profile
         if (impConfig.baseProfile != null && opts.getValueBack != null) {
+            const baseProfileNm: string = ConfigUtils.formGlobOrProjProfileNm(impConfig.baseProfile.type, globalConfig);
             for (const [k, v] of Object.entries(impConfig.baseProfile.schema.properties)) {
                 if (v.includeInTemplate && v.optionDefinition?.defaultValue == null) {
                     const propValue = await opts.getValueBack(k, v);
                     if (propValue != null) {
-                        lodash.set(builtConfig, `profiles.${impConfig.baseProfile.type}.properties.${k}`, propValue);
+                        lodash.set(builtConfig, `profiles.${baseProfileNm}.properties.${k}`, propValue);
                     }
                 }
             }
