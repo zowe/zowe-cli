@@ -246,6 +246,9 @@ export class Services {
                     conflictingPluginsList += `
                     //     "${element}": "${profileInfo.gatewayUrlConflicts[element].join('", "')}"`;
                 });
+
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+
                 const basepathConflictMessage = `
                     // ---
                     // Warning: basePath conflict detected!
@@ -261,7 +264,7 @@ export class Services {
                         ${_genCommentsHelper("basePath", basePaths)}
                         "basePath": "${defaultBasePath}"
                     }`
-                );
+                ) as any;
             }
         });
 
@@ -287,7 +290,7 @@ export class Services {
                     "${defaultKey}": "${trueDefault}"`;
                 // Terminate the JSON string
                 jsonString += '\n}';
-                configDefaults = JSONC.parse(jsonString);
+                configDefaults = JSONC.parse(jsonString) as any;
             }
         }
 
