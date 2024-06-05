@@ -26,7 +26,7 @@ import { Session } from "../session/Session";
 import * as path from "path";
 import { IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
-import { Readable, Writable, finished } from "stream";
+import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
 import { NextVerFeatures, TextUtils } from "../../../utilities";
@@ -797,10 +797,6 @@ export abstract class AbstractRestClient {
             this.mTask.percentComplete = TaskProgress.ONE_HUNDRED_PERCENT;
             this.mTask.stageName = TaskStage.COMPLETE;
         }
-        if (this.mResponseStream != null) {
-            this.log.debug("Ending response stream");
-            this.mResponseStream.end();
-        }
         if (this.mContentEncoding != null && this.mData.length > 0) {
             this.log.debug("Decompressing encoded response");
             try {
@@ -818,7 +814,8 @@ export abstract class AbstractRestClient {
                 source: "http"
             }));
         } else if (this.mResponseStream != null) {
-            finished(this.mResponseStream, () => this.mResolve(this.dataString));
+            this.log.debug("Ending response stream");
+            this.mResponseStream.end(() => this.mResolve(this.dataString));
         } else {
             this.mResolve(this.dataString);
         }
