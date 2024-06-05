@@ -18,7 +18,7 @@ import { TestLogger } from "../../../../src/TestLogger";
 import { createUniqueTestDataDir, rimraf } from "../../../TestUtil";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { IProfileTypeConfiguration } from "../../../../../src/index";
+import { IProfileTypeConfiguration, ImperativeConfig } from "../../../../../src/index";
 
 const ENV_PREFIX = "INTEGRATION_TEST";
 const TEST_HOME = createUniqueTestDataDir();
@@ -43,13 +43,9 @@ const DUMMY_PROFILE_TYPE_CONFIG: IProfileTypeConfiguration[] = [
 ];
 describe("Imperative should provide advanced syntax validation rules", function () {
     const home = __dirname + "/validationtests";
-    const mainModule = require.main;
 
-    beforeAll(function () {
-        (require.main as any) = {
-            filename: __filename
-        };
-        return Imperative.init({
+    beforeAll(async function () {
+        await Imperative.init({
             productDisplayName: "Validation tests",
             definitions: [{
                 name: "banana",
@@ -58,9 +54,9 @@ describe("Imperative should provide advanced syntax validation rules", function 
             }],
             defaultHome: home,
         });
+        ImperativeConfig.instance.callerLocation = __filename
     });
     afterAll(() => {
-        require.main = mainModule;
         rimraf(home);
     });
     describe("Advanced syntax validation for commands using a test command", function () {

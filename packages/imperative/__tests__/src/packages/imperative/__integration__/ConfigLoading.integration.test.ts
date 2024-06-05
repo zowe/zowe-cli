@@ -14,19 +14,9 @@ import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
 import { ImperativeConfig } from "../../../../../src/utilities";
 
 describe("Imperative should validate config provided by the consumer", function () {
-    const testDir = T.createUniqueTestDataDir("config-loading");
-    const packageJsonPath = testDir + "/package.json";
-    const mainModule = require.main;
-
-    beforeAll(() => {
-        // Temporarily change the main module filename so that the test can work.
-        (require.main as any) = {
-            filename: packageJsonPath
-        };
-    });
+    const packageJsonPath = __dirname + "/package.json";
 
     afterAll(() => {
-        require.main = mainModule;
         T.unlinkSync(packageJsonPath);
     });
 

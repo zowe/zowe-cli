@@ -297,7 +297,7 @@ export class Logger {
     public logError(err: ImperativeError): void {
         this.debug("Stack at time of error logging: %s", new Error().stack);
 
-        if (!err.details.additionalDetails) {
+        if (err.details.additionalDetails) {
             this.error(err.details.additionalDetails);
         }
         if (!(err.stack == null)) {

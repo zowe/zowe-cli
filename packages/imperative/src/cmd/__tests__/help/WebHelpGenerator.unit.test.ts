@@ -23,7 +23,6 @@ import { ICommandDefinition } from "../../../cmd/src/doc/ICommandDefinition";
 
 describe("WebHelpGenerator", () => {
     describe("buildHelp", () => {
-        const mainModule = require.main;
         let moduleFileNm: string;
         let cliHome: string;
         let configForHelp: IImperativeConfig;
@@ -101,19 +100,12 @@ describe("WebHelpGenerator", () => {
 
             rimraf.sync(cliHome);
 
-            /* require.main.filename was null, so we must give it a value.
-             * mainModule is a getter of a property, so we mock the property.
-             */
-            (require.main as any) = {
-                filename: moduleFileNm
-            };
-
             // imperative.init does all the setup for WebHelp to be run
             await Imperative.init(configForHelp);
+            ImperativeConfig.instance.rootCommandName = moduleFileNm;
         });
 
         afterAll(() => {
-            require.main = mainModule;
             rimraf.sync(cliHome);
         });
 

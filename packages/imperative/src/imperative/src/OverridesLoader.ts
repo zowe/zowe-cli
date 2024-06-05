@@ -82,7 +82,8 @@ export class OverridesLoader {
         if (overrides.CredentialManager != null || this.shouldUseKeytar(packageJson, useTeamConfig)) {
             let Manager = overrides.CredentialManager;
             if (typeof overrides.CredentialManager === "string" && !isAbsolute(overrides.CredentialManager)) {
-                Manager = resolve(require.main.filename, "../", overrides.CredentialManager);
+                const resolvePath = ImperativeConfig.instance.callerLocation ?? require.main.filename;
+                Manager = resolve(resolvePath, "../", overrides.CredentialManager);
             }
 
             await CredentialManagerFactory.initialize({

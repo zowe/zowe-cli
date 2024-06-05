@@ -15,17 +15,6 @@ import { EnvironmentalVariableSettings,
     Imperative } from "../../../../../../../src";
 
 describe("environmental variable integration", () => {
-    const mainModule = require.main;
-
-    beforeEach(() => {
-        (require.main as any) = {
-            filename: __filename
-        };
-    });
-
-    afterEach(() => {
-        require.main = mainModule;
-    });
 
     it ("should be able to extract the values for the environment variables", () => {
         process.env.IMP_INTEGRATION_TESTING_IMPERATIVE_LOG_LEVEL = "THIS IS A TEST";

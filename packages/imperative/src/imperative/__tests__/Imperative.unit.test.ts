@@ -21,8 +21,6 @@ import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 
 describe("Imperative", () => {
-    const mainModule = require.main;
-
     const loadImperative = () => {
         return require("../src/Imperative").Imperative;
     };
@@ -128,10 +126,6 @@ describe("Imperative", () => {
     };
 
     beforeEach(() => {
-        (require.main as any) = {
-            filename: __filename
-        };
-
         jest.resetModules();
 
         // Refresh the imperative load every time
@@ -143,10 +137,6 @@ describe("Imperative", () => {
 
         realGetPreparedCmdTree = Imperative.getPreparedCmdTree;
         Imperative.getPreparedCmdTree = jest.fn(() => mockCmdTree);
-    });
-
-    afterEach(() => {
-        require.main = mainModule;
     });
 
     describe("init", () => {

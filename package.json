@@ -19,6 +19,7 @@
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck --  --warning --no-spinner",
     "lint": "lerna run lint --parallel --no-bail",
     "lint:packages": "lerna run lint:packages --parallel --no-bail",
+    "lint:series": "lerna run lint --no-bail",
     "lint:tests": "lerna run lint:tests --parallel --no-bail",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:act": "node scripts/testCliWorkflow.js",

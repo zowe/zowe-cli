@@ -124,7 +124,7 @@ export class SyntaxValidator {
          * Prevent empty string options, regardless of if they are
          * required or not  e.g.   --zosmf-profile (without a value)
          */
-        if (!this.mCommandDefinition.options == null) {
+        if (!(this.mCommandDefinition.options == null)) {
             for (const option of this.mCommandDefinition.options) {
                 if (!(commandArguments[option.name] == null) &&
                     (option.type !== "stringOrEmpty" && commandArguments[option.name] === "") ||

@@ -160,6 +160,7 @@ export class PluginRequireProvider {
          */
         const regex = this.regex = new RegExp(`^(${internalModules.join("|")})(?:\\/.*)?$`, "gm");
         const origRequire = this.origRequire = Module.prototype.require;
+        const origMain = this.origRequire.main;
 
         // Timerify the function if needed
         // Gave it a name so that we can more easily track it
@@ -180,7 +181,7 @@ export class PluginRequireProvider {
                 }
 
                 // Inject it from the main module dependencies
-                return origRequire.apply(require.main, args);
+                return origRequire.apply(origMain, args);
             } else {
                 // Otherwise use the package dependencies
                 return origRequire.apply(this, args);

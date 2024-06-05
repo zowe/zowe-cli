@@ -23,7 +23,6 @@ import { AppSettings } from "../../settings";
 const TEST_MANAGER_NAME = "test manager";
 
 describe("OverridesLoader", () => {
-    const mainModule = require.main;
     const mockCredMgrInitialized = jest.fn().mockReturnValue(false);
 
     beforeAll(() => {
@@ -33,13 +32,6 @@ describe("OverridesLoader", () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         jest.resetAllMocks();
-        (require.main as any) = {
-            filename: __filename
-        };
-    });
-
-    afterEach(() => {
-        require.main = mainModule;
     });
 
     afterAll(() => {
@@ -215,7 +207,7 @@ describe("OverridesLoader", () => {
 
                 // DON'T YOU EVER DO THIS AFTER THE SPY, IT WILL CAUSE YOU MASSIVE PROBLEMS
                 // I suspect that require.main.filename somehow uses path.resolve (25 times when I ran this)
-                const expectedArgs = [require.main?.filename, "../", config.overrides?.CredentialManager];
+                const expectedArgs = [__filename, "../", config.overrides?.CredentialManager];
 
                 const expectedLocation = "/some/random/dummy/location/DummyFile.ts";
                 jest.spyOn(path, "resolve").mockReturnValueOnce(expectedLocation);

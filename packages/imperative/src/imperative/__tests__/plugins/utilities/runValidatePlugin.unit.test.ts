@@ -31,16 +31,8 @@ const spawnSyncOutput = {
 };
 
 describe("runValidatePlugin", () => {
-    const mainModule = require.main;
-
-    beforeEach(() => {
-        (require.main as any) = {
-            filename: __filename
-        };
-    });
 
     afterEach(() => {
-        require.main = mainModule;
         mocks.spawnSync.mockReset();
     });
 

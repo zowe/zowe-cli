@@ -153,7 +153,7 @@ export class Create {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
-        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
+        const tempOptions = { like: likeDataSetName, ...options || {} } as ICreateDataSetOptions;
         Create.dataSetValidateOptions(tempOptions);
 
         /*

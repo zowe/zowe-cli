@@ -41,7 +41,6 @@ describe("WebHelpManager", () => {
         const webHelpDirNm = path.join(mockCliHome, "web-help");
         const impCfg: ImperativeConfig = ImperativeConfig.instance;
         const cmdReponse = new CommandResponse({ silent: false });
-        const mainModule = require.main;
         let opener: any;
         let instPluginsFileNm: string;
         let oldProcessEnv: any;
@@ -51,13 +50,6 @@ describe("WebHelpManager", () => {
             opener = require("opener");
 
             rimraf.sync(mockCliHome);
-
-            /* getResolvedCmdTree calls getCallerLocation, and we need it to return some string.
-             * getCallerLocation is a getter of a property, so we mock the property.
-             */
-            (require.main as any) = {
-                filename: "FakeCli"
-            };
 
             // cliHome is a getter of a property, so mock the property
             Object.defineProperty(impCfg, "cliHome", {
@@ -69,6 +61,7 @@ describe("WebHelpManager", () => {
 
             // imperative.init does all the setup for WebHelp to be run
             await Imperative.init(configForHelp);
+            ImperativeConfig.instance.rootCommandName = "FakeCli";
         });
 
         beforeEach(() => {
@@ -81,7 +74,6 @@ describe("WebHelpManager", () => {
         });
 
         afterAll(() => {
-            require.main = mainModule;
             rimraf.sync(mockCliHome);
         });
 
