@@ -116,7 +116,11 @@ describe("Download Jobs - System tests", () => {
                 encoding: "IBM-037"
             });
 
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(alteredjesJCLJobFile, false, downloadDir);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath({
+                jobFile: alteredjesJCLJobFile,
+                omitJobidDirectory: false,
+                outDir: downloadDir
+            });
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("^");
@@ -132,7 +136,11 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of alteredjobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({
+                    jobFile: file,
+                    omitJobidDirectory: false,
+                    outDir: downloadDir
+                });
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
