@@ -27,7 +27,6 @@ All notable changes to the Imperative package will be documented in this file.
     - ImperativeReject
     - LoggerConfigBuilder
     - LoggerUtils
-    - PluginManagementFacility
     - RestStandAloneUtils
     - SharedOptions
     - SyntaxValidator
