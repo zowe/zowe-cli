@@ -805,19 +805,25 @@ export abstract class AbstractRestClient {
                 this.mReject(err);
             }
         }
-        if (this.requestFailure) {
-            // Reject the promise with an error
-            const httpStatus = this.response == null ? undefined : this.response.statusCode;
-            this.mReject(this.populateError({
-                msg: "Rest API failure with HTTP(S) status " + httpStatus,
-                causeErrors: this.dataString,
-                source: "http"
-            }));
-        } else if (this.mResponseStream != null) {
+
+        const requestEnd = () => {
+            if (this.requestFailure) {
+                // Reject the promise with an error
+                const httpStatus = this.response == null ? undefined : this.response.statusCode;
+                this.mReject(this.populateError({
+                    msg: "Rest API failure with HTTP(S) status " + httpStatus,
+                    causeErrors: this.dataString,
+                    source: "http"
+                }));
+            } else {
+                this.mResolve(this.dataString);
+            }
+        };
+        if (this.mResponseStream != null) {
             this.log.debug("Ending response stream");
-            this.mResponseStream.end(() => this.mResolve(this.dataString));
+            this.mResponseStream.end(requestEnd);
         } else {
-            this.mResolve(this.dataString);
+            requestEnd();
         }
     }
 
