@@ -23,6 +23,7 @@ All notable changes to the Imperative package will be documented in this file.
     - GroupCommandYargs
     - HelpConstants
     - HelpGeneratorFactory
+    - ImperativeReject
     - SharedOptions
     - SyntaxValidator
     - WebHelpManager
@@ -33,6 +34,7 @@ All notable changes to the Imperative package will be documented in this file.
     - ICommandHandlerResponseValidator
     - ICommandValidatorError
     - ICommandValidatorResponse
+    - IConstructor
     - IHelpGenerator
     - IHelpGeneratorFactory
     - IYargsParms
