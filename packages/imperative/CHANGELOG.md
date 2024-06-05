@@ -15,6 +15,7 @@ All notable changes to the Imperative package will be documented in this file.
     - CommandProcessor
     - CommandUtils
     - CommandYargs
+    - CompressionUtils
     - ConfigAutoStore
     - ConfigurationLoader
     - ConfigurationValidator
@@ -24,6 +25,10 @@ All notable changes to the Imperative package will be documented in this file.
     - HelpConstants
     - HelpGeneratorFactory
     - ImperativeReject
+    - LoggerConfigBuilder
+    - LoggerUtils
+    - PluginManagementFacility
+    - RestStandAloneUtils
     - SharedOptions
     - SyntaxValidator
     - WebHelpManager
