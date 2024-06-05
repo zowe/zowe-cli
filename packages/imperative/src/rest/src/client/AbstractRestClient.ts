@@ -26,7 +26,7 @@ import { Session } from "../session/Session";
 import * as path from "path";
 import { IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
-import { Readable, Writable } from "stream";
+import { Readable, Writable, finished } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
 import { NextVerFeatures, TextUtils } from "../../../utilities";
@@ -817,12 +817,8 @@ export abstract class AbstractRestClient {
                 causeErrors: this.dataString,
                 source: "http"
             }));
-        } else if (this.mResponseStream != null && this.mResponseStream.writableEnded) {
-            // This will correct any instances where the finished event does not get emitted
-            // even though the stream processing has ended.
-            this.mResolve(this.dataString);
-        } else if (this.mResponseStream != null && !this.mResponseStream.writableFinished) {
-            this.mResponseStream.on("finish", () => this.mResolve(this.dataString));
+        } else if (this.mResponseStream != null) {
+            finished(this.mResponseStream, () => this.mResolve(this.dataString));
         } else {
             this.mResolve(this.dataString);
         }
