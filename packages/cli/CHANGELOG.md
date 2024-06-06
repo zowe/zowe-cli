@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.0.0-next.202406061600`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
+
 ## `8.0.0-next.202405231927`
 
 - LTS Breaking: Send all Zowe Daemon informational messages, progress messages, and error messages to standard error instead of standard output [#1451](https://github.com/zowe/zowe-cli/issues/1451)

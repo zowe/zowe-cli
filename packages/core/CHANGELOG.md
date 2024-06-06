@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `8.0.0-next.202406061600`
+
+- Enhancement: Modified Services.ts to have commented properties end with commas. [#1049](https://github.com/zowe/zowe-cli/issues/1049)
+
+
 ## `8.0.0-next.202403041352`
 
 - BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
