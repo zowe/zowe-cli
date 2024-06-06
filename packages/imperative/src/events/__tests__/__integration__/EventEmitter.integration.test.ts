@@ -46,7 +46,7 @@ describe("Event Emitter", () => {
         const eventType = EventUtils.isSharedEvent(eventName) ? EventTypes.ZoweSharedEvents :
             EventUtils.isUserEvent(eventName) ? EventTypes.ZoweUserEvents : EventTypes.SharedEvents;
 
-        const eventDir = EventUtils.getEventDir(eventType, appName);
+        const eventDir = EventUtils.getEventDir(appName);
         if (!fs.existsSync(eventDir)) return false;
         if (fs.existsSync(path.join(eventDir, appName, eventName))) return true;
         return false;

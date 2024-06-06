@@ -45,7 +45,7 @@ export class Event implements IEventJson {
      *
      * @returns {Object} The JSON representation of the event.
      */
-    public toJson() {
+    public toJson(): IEventJson {
         return {
             eventTime: this.eventTime,
             eventName: this.eventName,
