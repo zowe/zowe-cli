@@ -153,7 +153,7 @@ export class Create {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
-        const tempOptions = { like: likeDataSetName, ...options || {} } as ICreateDataSetOptions;
+        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
         Create.dataSetValidateOptions(tempOptions);
 
         /*
@@ -262,7 +262,7 @@ export class Create {
 
                     case "dsntype": {
                     // Key to create a PDSE.
-                        const type: string = tempOptions.dsntype.toUpperCase();
+                        const type: string = tempOptions.dsntype?.toUpperCase();
                         const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
                         if (availableTypes.indexOf(type) === -1) {
                             throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });

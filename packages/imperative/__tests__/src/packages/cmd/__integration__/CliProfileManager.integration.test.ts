@@ -25,7 +25,6 @@ describe("Cli Profile Manager", () => {
     const profileTypeOne = "banana";
 
     beforeAll(async () => {
-    
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "CMD_CLI_CLI_HOME",
             testName: "basic_profile_mgr"

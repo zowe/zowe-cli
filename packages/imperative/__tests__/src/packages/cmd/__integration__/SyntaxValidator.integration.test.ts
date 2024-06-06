@@ -54,7 +54,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
             }],
             defaultHome: home,
         });
-        ImperativeConfig.instance.callerLocation = __filename
+        ImperativeConfig.instance.callerLocation = __filename;
     });
     afterAll(() => {
         rimraf(home);

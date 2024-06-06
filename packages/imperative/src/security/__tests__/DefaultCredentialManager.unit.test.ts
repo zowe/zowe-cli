@@ -11,7 +11,6 @@
 
 jest.mock("@zowe/secrets-for-zowe-sdk");
 
-import * as path from "path";
 import { Module } from "module";
 import { DefaultCredentialManager } from "..";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
@@ -53,7 +52,7 @@ describe("DefaultCredentialManager", () => {
         describe("initialize", () => {
             afterEach(() => {
                 jest.restoreAllMocks();
-            })
+            });
             it("should properly initialize keytar", async () => {
                 await manager.initialize();
 
