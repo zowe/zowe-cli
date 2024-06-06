@@ -42,8 +42,6 @@ export class EventOperator {
      * @throws {ImperativeError} If the application name is not recognized.
      */
     private static createProcessor(appName: string, type: IProcessorTypes, logger?: Logger): IZoweProcessor {
-        EventUtils.validateAppName(appName);
-
         if (!this.instances.has(appName)) {
             const newInstance = new EventProcessor(appName, type, logger);
             this.instances.set(appName, newInstance);
@@ -71,7 +69,6 @@ export class EventOperator {
      * @returns {IEmitterAndWatcher} An event processor capable of both emitting and watching.
      */
     public static getProcessor(appName: string, logger?: Logger): IEmitterAndWatcher {
-        EventUtils.validateAppName(appName);
         return this.createProcessor(appName, IProcessorTypes.BOTH, logger);
     }
 
@@ -96,7 +93,6 @@ export class EventOperator {
      * @returns {IEmitter} An emitter-only event processor.
      */
     public static getEmitter(appName: string, logger?: Logger): IEmitter {
-        EventUtils.validateAppName(appName);
         return this.createProcessor(appName, IProcessorTypes.EMITTER, logger);
     }
 
@@ -107,7 +103,6 @@ export class EventOperator {
      * @param {string} appName - The application name associated with the emitter to be deleted.
      */
     public static deleteEmitter(appName: string): void {
-        EventUtils.validateAppName(appName);
         this.destroyProcessor(appName);
     }
 
@@ -118,7 +113,6 @@ export class EventOperator {
      * @param {string} appName - The application name associated with the watcher to be deleted.
      */
     public static deleteWatcher(appName: string): void {
-        EventUtils.validateAppName(appName);
         this.destroyProcessor(appName);
     }
 
@@ -129,7 +123,6 @@ export class EventOperator {
      * @param {string} appName - The application name whose processor is to be deleted.
      */
     public static deleteProcessor(appName: string): void {
-        EventUtils.validateAppName(appName);
         this.destroyProcessor(appName);
     }
 
@@ -140,7 +133,6 @@ export class EventOperator {
      * @param {string} appName - The name of the application whose processor needs to be destroyed.
      */
     private static destroyProcessor(appName: string): void {
-        EventUtils.validateAppName(appName);
         const processor = this.instances.get(appName);
         if (processor) {
             processor.subscribedEvents.forEach((event, eventName) => {

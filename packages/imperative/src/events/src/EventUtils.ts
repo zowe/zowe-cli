@@ -35,7 +35,11 @@ export class EventUtils {
      */
     public static getListOfApps(): string[] {
         const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
-        const apps: string[] = [];
+        // We should not need to keep a reference to their sources
+        return ["Zowe", ...Object.keys(extendersJson.profileTypes)];
+
+        /*
+        const apps: string[] = ["Zowe"]; // default application name
         // Loop through each profile type and accumulate all names and their sources based on conditions.
         for (const [profileType, details] of Object.entries(extendersJson.profileTypes)) {
             // Check each entry in the 'from' array to decide if a tag is needed
@@ -44,11 +48,13 @@ export class EventUtils {
                     apps.push(profileType, "_vsce"); // tag indicating Visual Studio Code Extension
                 } else if (item.includes("@zowe")) {
                     apps.push(profileType); // no tag indicates Zowe CLI plugin (default)
+                } else {
+                    apps.push(profileType + "_custom") // tag indicating a true Custom App
                 }
             });
-            apps.push("Zowe"); // default application name
         }
         return apps;
+        */
     }
 
     /**
@@ -57,8 +63,11 @@ export class EventUtils {
      * @static
      * @param {string} appName - The name of the application.
      */
-    public static validateAppName(appName: string){
+    public static validateAppName(appName: string) {
         const appList = this.getListOfApps();
+        // Performing `appList.find(app => app.includes(appName))` will allow for "tags" (or suffixes) coming from `getListOfApps()`
+        // However, we do not want this behavior because it will allow partial application names to be used
+        // Hence why we should probably match the application name with the exact profileType in `extenders.json`
         if (appName !== "Zowe" && !appList.includes(appName)) {
             throw new ImperativeError({
                 msg: `Application name not found: ${appName}. Please use an application name from the list:\n- ${appList.join("\n- ")}`
