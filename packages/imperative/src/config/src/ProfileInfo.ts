@@ -828,7 +828,7 @@ export class ProfileInfo {
             });
         }
 
-        this.mExtendersJson = ProfileInfo.readExtendersJsonFromDisk();
+        this.mExtendersJson = ConfigUtils.readExtendersJson();
         this.loadAllSchemas();
     }
 
@@ -1007,10 +1007,10 @@ export class ProfileInfo {
      * Reads the `extenders.json` file from the CLI home directory.
      * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
      * @internal
-     * @deprecated Please use `ConfigUtils.readExtendersJsonFromDisk` instead
+     * @deprecated Please use `ConfigUtils.readExtendersJson` instead
      */
     public static readExtendersJsonFromDisk(): IExtendersJsonOpts {
-        return ConfigUtils.readExtendersJsonFromDisk();
+        return ConfigUtils.readExtendersJson();
     }
 
     /**

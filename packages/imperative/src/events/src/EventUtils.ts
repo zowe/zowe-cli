@@ -34,7 +34,7 @@ export class EventUtils {
      * @returns {string[]} List of application names.
      */
     public static getListOfApps(): string[] {
-        const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
+        const extendersJson = ConfigUtils.readExtendersJson();
         // We should not need to keep a reference to their sources
         return ["Zowe", ...Object.keys(extendersJson.profileTypes)];
 
@@ -147,11 +147,12 @@ export class EventUtils {
      * @return {IEventDisposable} An interface for managing the subscription.
      */
     public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IEventDisposable {
-        const dir = this.getEventDir(eventType, eeInst.appName);
-        this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), '.events'));
-        this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), dir));
+        const dir = EventUtils.getEventDir(eventType, eeInst.appName);
+        const zoweDir = ConfigUtils.getZoweDir();
+        this.ensureEventsDirExists(join(zoweDir, '.events'));
+        this.ensureEventsDirExists(join(zoweDir, dir));
 
-        const filePath = join(ConfigUtils.getZoweDir(), dir, eventName);
+        const filePath = join(zoweDir, dir, eventName);
         this.ensureFileExists(filePath);
 
         const newEvent = new Event({

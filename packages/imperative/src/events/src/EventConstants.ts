@@ -10,21 +10,12 @@
 */
 
 
-// TO DO - flesh out these enums to include all expected user and shared events
 export enum ZoweUserEvents {
     ON_VAULT_CHANGED = "onVaultChanged"
 }
 
 export enum ZoweSharedEvents {
     ON_CREDENTIAL_MANAGER_CHANGED = "onCredentialManagerChanged"
-}
-
-export enum SharedEvents {
-    CUSTOM_SHARED_EVENT = "customSharedEvent"
-}
-
-export enum UserEvents {
-    CUSTOM_USER_EVENT = "customUserEvent",
 }
 
 export enum EventTypes { ZoweUserEvents, ZoweSharedEvents, SharedEvents, UserEvents }

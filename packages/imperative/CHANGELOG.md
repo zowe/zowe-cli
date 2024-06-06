@@ -5,6 +5,12 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Add client-side custom-event handling capabilities. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+- Next-Breaking: Refactored the Imperative Event Emitter class. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+  - Removed the `ImperativeEventEmitter` class.
+  - Added an `EventProcessor` class to handle event listening and emitting.
+  - Added an `EventOperator` class to handle creation and deletion of `EventProcessors`.
+  - Added an `EventUtils` class to contain all common utility methods for the Client Event Handling capabilities.
+  - Added `IEmitter`, `IWatcher`, and `IEmitterAndWatcher` interfaces to expose what application developers should see.
 
 ## `8.0.0-next.202405151329`
 

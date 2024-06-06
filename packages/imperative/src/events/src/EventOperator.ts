@@ -12,7 +12,6 @@
 import { EventProcessor } from "./EventProcessor";
 import { IEmitter, IEmitterAndWatcher, IProcessorTypes, IWatcher } from "./doc/IEventInstanceTypes";
 import { Logger } from "../../logger";
-import { EventUtils } from "./EventUtils";
 
 /**
  *  @internal Interface for Zowe-specific event processing, combining emitter and watcher functionalities.
@@ -46,13 +45,22 @@ export class EventOperator {
             const newInstance = new EventProcessor(appName, type, logger);
             this.instances.set(appName, newInstance);
         }
-        return this.instances.get(appName);
+        const procInstance = this.instances.get(appName);
+        if (procInstance.processorType !== type) {
+            procInstance.processorType = IProcessorTypes.BOTH;
+            // throw new ImperativeError({msg: "Not allowed to get the other hald"})
+        }
+        return procInstance;
     }
 
     /**
-     * Retrieves a Zowe-specific event processor.
+     * Retrieves a Zowe-specific event processor. The purpose of this method is for internal
+     * Imperative APIs to get a properly initialized processor. This processor will be used
+     * when applications (like Zowe Explorer) call Imperative APIs that trigger events. For
+     * example, when the user updates credentials from Zowe Explorer, this processor will be
+     * used to emit an `OnVaultChanged` event.
      *
-     * @internal
+     * @internal Not meant to be called by application developers
      * @static
      * @returns {IZoweProcessor} The Zowe event processor instance.
      */

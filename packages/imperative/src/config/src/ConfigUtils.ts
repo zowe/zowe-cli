@@ -47,7 +47,7 @@ export class ConfigUtils {
      * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
      * @internal
      */
-    public static readExtendersJsonFromDisk(): IExtendersJsonOpts {
+    public static readExtendersJson(): IExtendersJsonOpts {
         const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
         if (!fsExistsSync(extenderJsonPath)) {
             jsonfile.writeFileSync(extenderJsonPath, {
