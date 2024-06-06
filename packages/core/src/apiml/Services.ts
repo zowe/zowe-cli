@@ -207,7 +207,10 @@ export class Services {
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
-            return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')}"`;
+
+            return elements.reduce((all, current: string, index) => {
+                return all.concat(key.includes("base") ? `\n//"${key}": "${current}"` : `\n//"${key}": "${current}",`);
+            }, "");
         };
 
         profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
@@ -243,6 +246,9 @@ export class Services {
                     conflictingPluginsList += `
                     //     "${element}": "${profileInfo.gatewayUrlConflicts[element].join('", "')}"`;
                 });
+
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+
                 const basepathConflictMessage = `
                     // ---
                     // Warning: basePath conflict detected!
@@ -252,7 +258,6 @@ export class Services {
                 const noConflictMessage = `
                     // Multiple base paths were detected for this service.
                     // Uncomment one of the lines below to use a different one.`;
-                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
                     {
                         ${basePathConflicts.length > 0 ? basepathConflictMessage : noConflictMessage}
@@ -263,19 +268,29 @@ export class Services {
             }
         });
 
+        // Establish keys for object map for index check within loop
+        const defaultKeys = Object.keys(conflictingDefaults);
+
         for (const defaultKey in conflictingDefaults) {
             if (configDefaults[defaultKey] != null) {
                 const trueDefault = configDefaults[defaultKey];
                 delete configDefaults[defaultKey];
+                let jsonString = `
+                ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}`;
+                const defaultKeyIndex = defaultKeys.indexOf(defaultKey);
 
-                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
-                configDefaults = JSONC.parse(`
-                    ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
-                    // Multiple services were detected.
-                    // Uncomment one of the lines below to set a different default.
+                // Logic to ensure that comment block is not duplicated
+                if (defaultKeyIndex === 0) {
+                    jsonString += `
+                        // Multiple services were detected.
+                        // Uncomment one of the lines below to set a different default.`;
+                }
+                jsonString += `
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
-                    "${defaultKey}": "${trueDefault}"
-                }`) as any;
+                    "${defaultKey}": "${trueDefault}"`;
+                // Terminate the JSON string
+                jsonString += '\n}';
+                configDefaults = JSONC.parse(jsonString) as any;
             }
         }
 
