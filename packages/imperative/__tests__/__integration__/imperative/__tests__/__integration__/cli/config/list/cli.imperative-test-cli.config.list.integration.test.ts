@@ -12,18 +12,21 @@
 import { ITestEnvironment } from "../../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../../__src__/environment/SetupTestEnvironment";
 import { runCliScript } from "../../../../../../../src/TestUtil";
-import { expectedConfigObject } from "../__resources__/expectedObjects";
+import {
+    expectedGlobalConfigObject, expectedGlobalUserConfigObject,
+    expectedProjectConfigObject, expectedProjectUserConfigObject
+} from "../__resources__/expectedObjects";
 import * as path from "path";
-import * as lodash from "lodash";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 describe("imperative-test-cli config list", () => {
-    let expectedGlobalProjectConfigLocation: string;
+    let expectedGlobalConfigLocation: string;
     let expectedGlobalUserConfigLocation: string;
     let expectedProjectConfigLocation: string;
-    let expectedUserConfigLocation: string;
+    let expectedProjectUserConfigLocation: string;
+
     // Create the test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
@@ -36,14 +39,15 @@ describe("imperative-test-cli config list", () => {
         runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir,
             ["--user-config --global-config --prompt false"]);
         expectedGlobalUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.config.user.json");
-        expectedGlobalProjectConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.config.json");
-        expectedUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.user.json");
+        expectedGlobalConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.config.json");
+        expectedProjectUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.user.json");
         expectedProjectConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json");
     });
     afterAll(() => {
         runCliScript(__dirname + "/../__scripts__/delete_configs.sh", TEST_ENVIRONMENT.workingDir,
             ["-rf imperative-test-cli.config.user.json imperative-test-cli.config.json test imperative-test-cli.schema.json"]);
     });
+
     it("should display the help", () => {
         const response = runCliScript(__dirname + "/../__scripts__/get_help.sh",
             TEST_ENVIRONMENT.workingDir, ["list"]);
@@ -69,7 +73,12 @@ describe("imperative-test-cli config list", () => {
         const expectedResponse = {
             data: {
                 profiles: {
-                    base: {
+                    project_base: {
+                        type: "base",
+                        properties: {},
+                        secure: ["secret"]
+                    },
+                    global_base: {
                         properties: {},
                         type: "base",
                         secure: ["secret"]
@@ -84,7 +93,7 @@ describe("imperative-test-cli config list", () => {
                 },
                 defaults: {
                     secured: "secured",
-                    base: "base"
+                    base: "project_base"
                 },
                 autoStore: true
             }
@@ -97,8 +106,8 @@ describe("imperative-test-cli config list", () => {
     it("should list the configurations based on location", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--locations"]);
         expect(response.stdout.toString()).toContain(expectedProjectConfigLocation);
-        expect(response.stdout.toString()).toContain(expectedUserConfigLocation);
-        expect(response.stdout.toString()).toContain(expectedGlobalProjectConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedProjectUserConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedGlobalConfigLocation);
         expect(response.stdout.toString()).toContain(expectedGlobalUserConfigLocation);
         expect(response.stdout.toString()).toContain("defaults:");
         expect(response.stdout.toString()).toContain("profiles:");
@@ -113,31 +122,14 @@ describe("imperative-test-cli config list", () => {
     it("should list the configurations based on location in RFJ", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--locations --rfj"]);
         const parsedResponse = JSON.parse(response.stdout.toString());
-        const expectedUserConfig = {
-            $schema: "./imperative-test-cli.schema.json",
-            profiles: {
-                secured: {
-                    properties: {},
-                    type: "secured",
-                    secure: [] as string[]
-                },
-                base: {
-                    properties: {},
-                    type: "base",
-                    secure: [] as string[]
-                }
-            },
-            defaults: {},
-            autoStore: true
-        };
-        const expectedProjectConfig = lodash.cloneDeep(expectedConfigObject);
+
         const expectedResponse = {
             data: {} as any
         };
-        expectedResponse.data[expectedUserConfigLocation] = expectedUserConfig;
-        expectedResponse.data[expectedGlobalUserConfigLocation] = expectedUserConfig;
-        expectedResponse.data[expectedGlobalProjectConfigLocation] = expectedProjectConfig;
-        expectedResponse.data[expectedProjectConfigLocation] = expectedProjectConfig;
+        expectedResponse.data[expectedProjectUserConfigLocation] = expectedProjectUserConfigObject;
+        expectedResponse.data[expectedGlobalUserConfigLocation] = expectedGlobalUserConfigObject;
+        expectedResponse.data[expectedGlobalConfigLocation] = expectedGlobalConfigObject;
+        expectedResponse.data[expectedProjectConfigLocation] = expectedProjectConfigObject;
         expect(parsedResponse.success).toEqual(true);
         expect(parsedResponse.stderr).toEqual("");
         expect(parsedResponse.exitCode).toEqual(0);
@@ -162,8 +154,8 @@ describe("imperative-test-cli config list", () => {
     it("should get a list of config file paths 1", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--locations --root"]);
         expect(response.stdout.toString()).toContain(expectedProjectConfigLocation);
-        expect(response.stdout.toString()).toContain(expectedUserConfigLocation);
-        expect(response.stdout.toString()).toContain(expectedGlobalProjectConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedProjectUserConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedGlobalConfigLocation);
         expect(response.stdout.toString()).toContain(expectedGlobalUserConfigLocation);
         expect(response.stderr.toString()).toEqual("");
         expect(response.error).toBeFalsy();
@@ -171,8 +163,8 @@ describe("imperative-test-cli config list", () => {
     it("should get a list of config file paths 2", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--locations --name-only"]);
         expect(response.stdout.toString()).toContain(expectedProjectConfigLocation);
-        expect(response.stdout.toString()).toContain(expectedUserConfigLocation);
-        expect(response.stdout.toString()).toContain(expectedGlobalProjectConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedProjectUserConfigLocation);
+        expect(response.stdout.toString()).toContain(expectedGlobalConfigLocation);
         expect(response.stdout.toString()).toContain(expectedGlobalUserConfigLocation);
         expect(response.stderr.toString()).toEqual("");
         expect(response.error).toBeFalsy();
@@ -193,12 +185,14 @@ describe("imperative-test-cli config list", () => {
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["defaults"]);
         expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("secured: secured");
-        expect(response.stdout.toString()).toContain("base:    base");
+        expect(response.stdout.toString()).toContain("base:    project_base");
         expect(response.stderr.toString()).toEqual("");
         expect(response.error).toBeFalsy();
     });
     it("should list the configuration without showing secure values", () => {
-        runCliScript(__dirname + "/../set/__scripts__/set_secure.sh", TEST_ENVIRONMENT.workingDir, ["profiles.base.properties.secret", "area51"]);
+        runCliScript(__dirname + "/../set/__scripts__/set_secure.sh", TEST_ENVIRONMENT.workingDir,
+            ["profiles.project_base.properties.secret", "area51"]
+        );
         const response = runCliScript(__dirname + "/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, [""]);
         expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("secured: secured");

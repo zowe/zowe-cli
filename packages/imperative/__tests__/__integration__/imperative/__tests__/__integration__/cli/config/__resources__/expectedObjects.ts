@@ -196,7 +196,7 @@ export const expectedSchemaObject = {
     }
 };
 
-export const expectedConfigObject: IConfig = {
+export const expectedGlobalConfigObject: IConfig = {
     $schema: "./imperative-test-cli.schema.json",
     profiles: {
         secured: {
@@ -206,7 +206,7 @@ export const expectedConfigObject: IConfig = {
             },
             secure: []
         },
-        base: {
+        global_base: {
             type: "base",
             properties: {},
             secure: ["secret"]
@@ -214,12 +214,12 @@ export const expectedConfigObject: IConfig = {
     },
     defaults: {
         secured: "secured",
-        base: "base"
+        base: "global_base"
     },
     autoStore: true
 };
 
-export const expectedUserConfigObject: IConfig = {
+export const expectedGlobalUserConfigObject: IConfig = {
     $schema: "./imperative-test-cli.schema.json",
     profiles: {
         secured: {
@@ -227,7 +227,48 @@ export const expectedUserConfigObject: IConfig = {
             properties: {},
             secure: []
         },
-        base: {
+        global_base: {
+            type: "base",
+            properties: {},
+            secure: []
+        },
+    },
+    defaults: {},
+    autoStore: true
+};
+
+export const expectedProjectConfigObject: IConfig = {
+    $schema: "./imperative-test-cli.schema.json",
+    profiles: {
+        secured: {
+            type: "secured",
+            properties: {
+                info: ""
+            },
+            secure: []
+        },
+        project_base: {
+            type: "base",
+            properties: {},
+            secure: ["secret"]
+        },
+    },
+    defaults: {
+        secured: "secured",
+        base: "project_base"
+    },
+    autoStore: true
+};
+
+export const expectedProjectUserConfigObject: IConfig = {
+    $schema: "./imperative-test-cli.schema.json",
+    profiles: {
+        secured: {
+            type: "secured",
+            properties: {},
+            secure: []
+        },
+        project_base: {
             type: "base",
             properties: {},
             secure: []
