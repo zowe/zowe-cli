@@ -66,8 +66,8 @@ export class EventProcessor {
         if (this.processorType === IProcessorTypes.EMITTER) {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
-        const isCustom = EventUtils.isSharedEvent(eventName);
-        const eventType = isCustom ? EventTypes.SharedEvents : EventTypes.ZoweSharedEvents;
+        const isZoweEvent = EventUtils.isSharedEvent(eventName);
+        const eventType = isZoweEvent ? EventTypes.ZoweSharedEvents : EventTypes.SharedEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;
@@ -84,8 +84,8 @@ export class EventProcessor {
         if (this.processorType === IProcessorTypes.EMITTER) {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
-        const isCustom = EventUtils.isUserEvent(eventName);
-        const eventType = isCustom ? EventTypes.UserEvents : EventTypes.ZoweUserEvents;
+        const isZoweEvent = EventUtils.isUserEvent(eventName);
+        const eventType = isZoweEvent ? EventTypes.ZoweUserEvents : EventTypes.UserEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;
