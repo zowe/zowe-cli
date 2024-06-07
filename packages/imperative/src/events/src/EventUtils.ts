@@ -149,7 +149,7 @@ export class EventUtils {
         const dir = join(zoweDir, EventUtils.getEventDir(eeInst.appName));
         this.ensureEventsDirExists(dir);
 
-        const filePath = join(zoweDir, dir, eventName);
+        const filePath = join(dir, eventName);
         this.ensureFileExists(filePath);
 
         const newEvent = new Event({
