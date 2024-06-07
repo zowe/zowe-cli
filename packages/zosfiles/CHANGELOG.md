@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
 ## `8.0.0-next.202405202020`
 
 - BugFix: Fixed a bug where a data set search would not return a search term if it was at the beginning of a line. [#2147](https://github.com/zowe/zowe-cli/pull/2147)
