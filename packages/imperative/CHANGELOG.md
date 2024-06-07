@@ -12,6 +12,19 @@ All notable changes to the Imperative package will be documented in this file.
   - Added an `EventUtils` class to contain all common utility methods for the Client Event Handling capabilities.
   - Added `IEmitter`, `IWatcher`, and `IEmitterAndWatcher` interfaces to expose what application developers should see.
 
+## `8.0.0-next.202406061600`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
+
+## `8.0.0-next.202405241520`
+
+- BugFix: Modified command output to show appropriate error message given available ImperativeError properties. [#1897](https://github.com/zowe/zowe-cli/issues/1897)
+- Patch: Modify error text in SyntaxValidator.invalidOptionError. [#2138](https://github.com/zowe/zowe-cli/issues/2138)
+
+## `8.0.0-next.202405211929`
+
+- BugFix: Fixed error "Only one instance of the Imperative Event Emitter is allowed" when running system tests. [#2146](https://github.com/zowe/zowe-cli/issues/2146)
+
 ## `8.0.0-next.202405151329`
 
 - Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/issues/1987)
@@ -331,6 +344,15 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.23.2`
+
+- BugFix: Updated error text for invalid command options so that allowable values are displayed as strings instead of regular expressions when possible. [#1863](https://github.com/zowe/zowe-cli/issues/1863)
+- BugFix: Fixed issue where the `ConfigSecure.securePropsForProfile` function did not list secure properties outside the active config layer. [zowe-explorer-vscode#2633](https://github.com/zowe/zowe-explorer-vscode/issues/2633)
+
+## `5.23.1`
+
+- BugFix: Restore the previous precedence of token over password in AbstractRestClient [#2109](https://github.com/zowe/zowe-cli/issues/2109)
 
 ## `5.23.0`
 

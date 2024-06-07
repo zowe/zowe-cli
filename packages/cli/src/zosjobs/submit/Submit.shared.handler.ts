@@ -31,7 +31,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
      * @memberof SubmitDataSetHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
-        try{
+        try {
             const status: ITaskWithStatus = {
                 statusMessage: "Submitting job",
                 percentComplete: TaskProgress.TEN_PERCENT,
@@ -47,7 +47,10 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                 waitForActive: this.mArguments.waitForActive,
                 waitForOutput: this.mArguments.waitForOutput,
                 task: status,
-                jclSymbols: this.mArguments.jclSymbols
+                jclSymbols: this.mArguments.jclSymbols,
+                internalReaderFileEncoding: this.mArguments.jobEncoding,
+                internalReaderLrecl: this.mArguments.jobRecordLength?.toString(),
+                internalReaderRecfm: this.mArguments.jobRecordFormat
             };
             const options: IDownloadOptions = {};
             params.response.progress.startBar({task: status});

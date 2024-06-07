@@ -2,9 +2,21 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.0.0-next.202406061600`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
+
+## `8.0.0-next.202405231927`
+
+- LTS Breaking: Send all Zowe Daemon informational messages, progress messages, and error messages to standard error instead of standard output [#1451](https://github.com/zowe/zowe-cli/issues/1451)
+
+## `8.0.0-next.202405202020`
+
+- BugFix: Fixed a bug where a data set search would not return a search term if it was at the beginning of a line. [#2147](https://github.com/zowe/zowe-cli/pull/2147)
+
 ## `8.0.0-next.202405101931`
 
-- Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern with the `zowe zos-files search data-sets` comamnd.[#2095](https://github.com/zowe/zowe-cli/issues/2095)
+- Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern with the `zowe zos-files search data-sets` command.[#2095](https://github.com/zowe/zowe-cli/issues/2095)
 
 ## `8.0.0-next.202405061946`
 
@@ -119,6 +131,15 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.25.0`
+
+- Enhancement: Added the ability to set JCL reader properties for `--jobRecordLength`, `--jobRecordFormat` and `--jobEncoding` on the `zowe jobs submit local-file` and `zowe jobs submit stdin` commands. [#2139](https://github.com/zowe/zowe-cli/pull/2139)
+- Enhancement: Added the ability to download job spool files using other codepages with `--encoding` on the `zowe jobs download output`, `zowe jobs view spool-file-by-id` and `zowe jobs view all-spool-content` commands. This allows users to download job spool files in other languages (i.e. IBM-1147 for French). [#1822](https://github.com/zowe/zowe-cli/pull/1822)
+
+## `7.24.2`
+
+- BugFix: Fixed `zowe daemon enable` installing an invalid daemon binary on macOS. [#2126](https://github.com/zowe/zowe-cli/pull/2126)
 
 ## `7.24.0`
 

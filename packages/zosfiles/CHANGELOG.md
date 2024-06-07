@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.0.0-next.202405202020`
+
+- BugFix: Fixed a bug where a data set search would not return a search term if it was at the beginning of a line. [#2147](https://github.com/zowe/zowe-cli/pull/2147)
+
 ## `8.0.0-next.202405101931`
 
 - Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern. [#2095](https://github.com/zowe/zowe-cli/issues/2095)

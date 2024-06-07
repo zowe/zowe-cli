@@ -10,13 +10,14 @@
 */
 
 import { ITaskWithStatus } from "@zowe/imperative";
+import { ISubmitParmsCommon } from "./ISubmitParmsCommon";
 
 /**
  * Interface for submit job API
  * @export
  * @interface ISubmitParms
  */
-export interface ISubmitParms {
+export interface ISubmitParms extends ISubmitParmsCommon {
 
     /**
      * USS file which should contain syntactically correct JCL
@@ -64,11 +65,4 @@ export interface ISubmitParms {
      * Optional
      */
     task?: ITaskWithStatus;
-
-    /**
-     * A string for JCL symbolic substitution
-     * @type {string}
-     * @memberof ISubmitJobParms
-     */
-    jclSymbols?: string;
 }
