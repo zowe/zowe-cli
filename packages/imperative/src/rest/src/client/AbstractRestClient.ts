@@ -797,10 +797,6 @@ export abstract class AbstractRestClient {
             this.mTask.percentComplete = TaskProgress.ONE_HUNDRED_PERCENT;
             this.mTask.stageName = TaskStage.COMPLETE;
         }
-        if (this.mResponseStream != null) {
-            this.log.debug("Ending response stream");
-            this.mResponseStream.end();
-        }
         if (this.mContentEncoding != null && this.mData.length > 0) {
             this.log.debug("Decompressing encoded response");
             try {
@@ -809,22 +805,25 @@ export abstract class AbstractRestClient {
                 this.mReject(err);
             }
         }
-        if (this.requestFailure) {
-            // Reject the promise with an error
-            const httpStatus = this.response == null ? undefined : this.response.statusCode;
-            this.mReject(this.populateError({
-                msg: "Rest API failure with HTTP(S) status " + httpStatus,
-                causeErrors: this.dataString,
-                source: "http"
-            }));
-        } else if (this.mResponseStream != null && this.mResponseStream.writableEnded) {
-            // This will correct any instances where the finished event does not get emitted
-            // even though the stream processing has ended.
-            this.mResolve(this.dataString);
-        } else if (this.mResponseStream != null && !this.mResponseStream.writableFinished) {
-            this.mResponseStream.on("finish", () => this.mResolve(this.dataString));
+
+        const requestEnd = () => {
+            if (this.requestFailure) {
+                // Reject the promise with an error
+                const httpStatus = this.response == null ? undefined : this.response.statusCode;
+                this.mReject(this.populateError({
+                    msg: "Rest API failure with HTTP(S) status " + httpStatus,
+                    causeErrors: this.dataString,
+                    source: "http"
+                }));
+            } else {
+                this.mResolve(this.dataString);
+            }
+        };
+        if (this.mResponseStream != null) {
+            this.log.debug("Ending response stream");
+            this.mResponseStream.end(requestEnd);
         } else {
-            this.mResolve(this.dataString);
+            requestEnd();
         }
     }
 
