@@ -50,7 +50,7 @@
   "devDependencies": {
     "@types/ssh2": "^1.11.0",
     "@zowe/cli-test-utils": "7.24.3",
-    "@zowe/imperative": "5.23.4"
+    "@zowe/imperative": "5.24.0"
   },
   "peerDependencies": {
     "@zowe/imperative": "^5.2.0"
