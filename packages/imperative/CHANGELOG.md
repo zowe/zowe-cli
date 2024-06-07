@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed error in REST client that when using stream could cause small data sets to download with incomplete contents. [#744](https://github.com/zowe/zowe-cli/issues/744)
+- BugFix: Updated `braces` and `micromatch` dependencies for technical currency. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
 ## `4.18.24`
 
 - BugFix: Resolved technical currency by updating `tar` transitive dependency. [#2110](https://github.com/zowe/zowe-cli/pull/2110)
