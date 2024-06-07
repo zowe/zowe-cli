@@ -44,6 +44,7 @@ export class EventProcessor {
         EventUtils.validateAppName(appName);
 
         this.subscribedEvents = new Map();
+        this.eventTimes = new Map();
         this.appName = appName;
         this.processorType = type;
 
