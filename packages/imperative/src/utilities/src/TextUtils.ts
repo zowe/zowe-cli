@@ -276,7 +276,7 @@ export class TextUtils {
      * @returns {string} - a formatted string with the variables inserted
      */
     public static formatMessage(message: string, ...values: any[]): string {
-        if (!(values == undefined)) {
+        if (!(values == null)) {
             const isPrintfValue = (value: any) => {
                 let isJson = false;
                 try {
