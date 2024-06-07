@@ -51,6 +51,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 - Major: First major version bump for V3
 
+## `7.26.0`
+
+- BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
 ## `7.24.0`
 
 - BugFix: Fixed error that could occur when listing data set members that contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)

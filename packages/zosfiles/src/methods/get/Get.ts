@@ -9,9 +9,7 @@
 *
 */
 
-import { PassThrough } from "stream";
-import { buffer } from 'stream/consumers';
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, BufferBuilder, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { Download } from "../download/Download";
 import { IGetOptions } from "./doc/IGetOptions";
@@ -37,12 +35,12 @@ export class Get {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        const responseStream = new PassThrough();
+        const responseStream = new BufferBuilder();
         await Download.dataSet(session, dataSetName, {
             ...options,
             stream: responseStream
         });
-        return buffer(responseStream);
+        return responseStream.read();
     }
 
     /**
@@ -61,11 +59,11 @@ export class Get {
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message); // This should never exist for USS files
 
-        const responseStream = new PassThrough();
+        const responseStream = new BufferBuilder();
         await Download.ussFile(session, USSFileName, {
             ...options,
             stream: responseStream
         });
-        return buffer(responseStream);
+        return responseStream.read();
     }
 }
