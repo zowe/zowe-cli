@@ -14,7 +14,7 @@ import { join } from "path";
 import { ZoweUserEvents, ZoweSharedEvents, EventTypes, EventCallback } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
-import { IEventDisposable } from "./doc";
+import { IEventDisposable, IEventJson } from "./doc";
 import { Event } from "./Event";
 import { EventProcessor } from "./EventProcessor";
 import { IO } from "../../io";
@@ -96,6 +96,21 @@ export class EventUtils {
     }
 
     /**
+     * Retrieve the event contents form disk
+     *
+     * @internal This is not intended for application developers
+     * @param eventFilePath The path to the event file
+     * @returns The object representing the Event
+     */
+    public static getEventContents(eventFilePath: string): IEventJson {
+        try {
+            return JSON.parse(fs.readFileSync(eventFilePath).toString());
+        } catch (err) {
+            throw new ImperativeError({msg: `Unable to retrieve event contents: Path: ${eventFilePath}`});
+        }
+    }
+
+    /**
      * Determines the directory path for storing event files based on the event type and application name.
      *
      * @param {string} appName - The name of the application.
@@ -136,6 +151,32 @@ export class EventUtils {
         }
     }
 
+
+    /**
+     * Create an event with minimal information
+     *
+     * @internal This is not intended for application developers
+     * @param eventName The name of the event.
+     * @param appName The name of the application.
+     * @returns The created event
+     */
+    public static createEvent(eventName: string, appName: string): Event {
+        const zoweDir = ConfigUtils.getZoweDir();
+        const dir = join(zoweDir, EventUtils.getEventDir(appName));
+        this.ensureEventsDirExists(dir);
+
+        const filePath = join(dir, eventName);
+        this.ensureFileExists(filePath);
+
+        return new Event({
+            eventTime: new Date().toISOString(),
+            eventName: eventName,
+            appName: appName,
+            eventFilePath: filePath,
+            subscriptions: [],
+        });
+    }
+
     /**
      * Creates and registers a new event subscription for a specific event processor.
      *
@@ -145,24 +186,9 @@ export class EventUtils {
      * @return {IEventDisposable} An interface for managing the subscription.
      */
     public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IEventDisposable {
-        const zoweDir = ConfigUtils.getZoweDir();
-        const dir = join(zoweDir, EventUtils.getEventDir(eeInst.appName));
-        this.ensureEventsDirExists(dir);
-
-        const filePath = join(dir, eventName);
-        this.ensureFileExists(filePath);
-
-        const newEvent = new Event({
-            eventTime: new Date().toISOString(),
-            eventName: eventName,
-            eventType: eventType,
-            appName: eeInst.appName,
-            eventFilePath: filePath,
-            subscriptions: []
-        });
-
+        const newEvent = EventUtils.createEvent(eventName, eeInst.appName);
+        newEvent.eventType = eventType;
         eeInst.subscribedEvents.set(eventName, newEvent);
-
         return {
             close: () => eeInst.unsubscribe(eventName)
         };
@@ -181,6 +207,7 @@ export class EventUtils {
         const watcher = fs.watch(event.eventFilePath, (trigger: "rename" | "change") => {
             // Accommodates for the delay between actual file change event and fsWatcher's perception
             //(Node.JS triggers this notification event 3 times)
+            event.eventTime = EventUtils.getEventContents(event.eventFilePath).eventTime;
             if (eeInst.eventTimes.get(eventName) !== event.eventTime) {
                 eeInst.logger.debug(`EventEmitter: Event "${trigger}" emitted: ${eventName}`);
                 if (Array.isArray(callbacks)) {

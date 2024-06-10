@@ -106,7 +106,7 @@ export class EventProcessor {
             throw new ImperativeError({ msg: `Processor not allowed to emit Zowe events: ${eventName}` });
         }
         try {
-            const event = this.subscribedEvents.get(eventName);
+            const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
             event.eventTime = new Date().toISOString();
             EventUtils.writeEvent(event);
         } catch (err) {
@@ -126,7 +126,7 @@ export class EventProcessor {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
         try {
-            const event = this.subscribedEvents.get(eventName);
+            const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
             event.eventTime = new Date().toISOString();
             EventUtils.writeEvent(event);
         } catch (err) {

@@ -34,7 +34,7 @@ export class Event implements IEventJson {
     constructor({ eventTime, eventName, eventType, appName, eventFilePath, subscriptions }: IEventJson) {
         this.eventTime = eventTime;
         this.eventName = eventName;
-        this.eventType = eventType;
+        this.eventType = eventType ?? null;
         this.appName = appName;
         this.eventFilePath = eventFilePath;
         this.subscriptions = subscriptions;
