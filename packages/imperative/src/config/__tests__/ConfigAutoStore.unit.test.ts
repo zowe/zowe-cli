@@ -10,7 +10,6 @@
 */
 
 jest.mock("../../logger/src/LoggerUtils");
-jest.mock("../../events/src/ImperativeEventEmitter");
 
 import { AbstractAuthHandler } from "../../imperative";
 import { SessConstants } from "../../rest";
