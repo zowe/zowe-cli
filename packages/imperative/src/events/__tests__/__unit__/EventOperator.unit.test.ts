@@ -17,7 +17,7 @@ import { Event } from '../../..';
 import { EventTypes } from "../../src/EventConstants";
 
 jest.mock('../../src/EventProcessor');
-jest.mock('../../../Logger');
+jest.mock('../../../logger');
 
 const logger = Logger.getImperativeLogger();
 

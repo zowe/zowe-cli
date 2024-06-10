@@ -34,6 +34,7 @@ import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
 import { Logger } from "../../logger/src/Logger";
+import { EventOperator, EventUtils } from "../../events";
 
 
 const testAppNm = "ProfInfoApp";
@@ -77,6 +78,9 @@ describe("TeamConfig ProfileInfo tests", () => {
         process.env[testEnvPrefix + "_CLI_HOME"] = teamProjDir;
         // mock jsonfile.writeFileSync to avoid writing files to disk during testing
         writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
+
+        jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
     });
 
     afterAll(() => {
