@@ -27,6 +27,7 @@ import * as fs from "fs";
 import { SessConstants } from "../../../../../rest";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { IHandlerParameters } from "../../../../../cmd";
+import { EventOperator, EventUtils } from "../../../../../events";
 
 let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {
@@ -124,6 +125,9 @@ describe("Configuration Secure command handler", () => {
         keytarSetPasswordSpy = jest.spyOn(keytar, "setPassword");
         keytarDeletePasswordSpy = jest.spyOn(keytar, "deletePassword");
         readPromptSpy.mockClear();
+
+        jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
     });
 
     afterEach( () => {
