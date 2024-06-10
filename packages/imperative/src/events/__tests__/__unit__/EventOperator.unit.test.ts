@@ -12,7 +12,6 @@
 import { EventOperator } from '../../src/EventOperator';
 import { EventProcessor } from '../../src/EventProcessor';
 import { Logger } from '../../..';
-import { EventUtils } from '../../src/EventUtils';
 import { IProcessorTypes } from '../../src/doc';
 import { Event } from '../../..';
 import { EventTypes } from "../../src/EventConstants";
@@ -21,7 +20,6 @@ jest.mock('../../src/EventProcessor');
 jest.mock('../../../Logger');
 
 const logger = Logger.getImperativeLogger();
-const getListOfAppsSpy = jest.spyOn(EventUtils, 'getListOfApps');
 
 describe("EventOperator Unit Tests", () => {
     beforeEach(() => {
@@ -32,8 +30,6 @@ describe("EventOperator Unit Tests", () => {
         it("'createProcessor' should create a new 'EventProcessor' if not already existing", () => {
             const appName = 'TestApp';
             const type = IProcessorTypes.BOTH;
-
-            getListOfAppsSpy.mockImplementation(() => ["Zowe", appName]);
             const processor = EventOperator.getProcessor(appName, logger);
 
             expect(EventProcessor).toHaveBeenCalledWith(appName, type, logger);
@@ -43,14 +39,11 @@ describe("EventOperator Unit Tests", () => {
         it("'getZoweProcessor' should return the Zowe processor instance", () => {
             const processor = EventOperator.getZoweProcessor();
 
-            // expect(validateAppNameSpy).toHaveBeenCalledWith("Zowe");
             expect(processor).toBeInstanceOf(EventProcessor);
         });
 
         it("'getProcessor' should return a generic event processor", () => {
             const appName = 'GenericApp';
-
-            getListOfAppsSpy.mockImplementation(() => ["Zowe", appName]);
             const processor = EventOperator.getProcessor(appName, logger);
 
             expect(EventProcessor).toHaveBeenCalledWith(appName, IProcessorTypes.BOTH, logger);
@@ -60,7 +53,6 @@ describe("EventOperator Unit Tests", () => {
         it("'deleteProcessor' should remove the correct event processor", () => {
             const appName = 'DeleteApp';
             const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
-
             processor.subscribedEvents = new Map([
                 ['testEvent', {
                     eventTime: '',
@@ -93,7 +85,6 @@ describe("EventOperator Unit Tests", () => {
         it("'deleteWatcher' should remove the correct event processor", () => {
             const appName = 'DeleteWatcher';
             const processor = new EventProcessor(appName, IProcessorTypes.WATCHER);
-
             processor.subscribedEvents = new Map([
                 ['testEvent', {
                     eventTime: '',
@@ -127,7 +118,6 @@ describe("EventOperator Unit Tests", () => {
         it("'deleteEmitter' should remove the correct event processor", () => {
             const appName = 'DeleteEmitter';
             const processor = new EventProcessor(appName, IProcessorTypes.EMITTER);
-
             processor.subscribedEvents = new Map([
                 ['testEvent', {
                     eventTime: '',
