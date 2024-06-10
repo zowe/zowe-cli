@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `Get.dataSet` and `Get.USSFile` methods so that they return an empty buffer instead of null for empty files. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
+
 ## `7.26.0`
 
 - BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
