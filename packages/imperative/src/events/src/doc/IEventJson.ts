@@ -27,10 +27,6 @@ export interface IEventJson {
      */
     eventName: string;
     /**
-     * The type of event that occurred
-     */
-    eventType: EventTypes;
-    /**
      * The application name that triggered the event
      */
     appName: string;
@@ -38,6 +34,10 @@ export interface IEventJson {
      * The file path for information on the emitted event
      */
     eventFilePath: string;
+    /**
+     * The type of event that occurred
+     */
+    eventType?: EventTypes;
     /**
      * List of watchers to eventually close
      */
