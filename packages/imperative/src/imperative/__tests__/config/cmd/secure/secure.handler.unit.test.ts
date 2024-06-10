@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeEventEmitter, Logger } from "../../../../..";
+import { Logger } from "../../../../../logger";
 import { Config } from "../../../../../config/src/Config";
 import { IConfig, IConfigOpts, IConfigProfile } from "../../../../../config";
 import { ImperativeConfig } from "../../../../../utilities";
@@ -26,8 +26,7 @@ import * as lodash from "lodash";
 import * as fs from "fs";
 import { SessConstants } from "../../../../../rest";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
-
-jest.mock("../../../../../events/src/ImperativeEventEmitter");
+import { IHandlerParameters } from "../../../../../cmd";
 
 let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {
@@ -103,7 +102,7 @@ describe("Configuration Secure command handler", () => {
     };
 
     beforeAll( async() => {
-        Object.defineProperty(ImperativeEventEmitter, "instance", { value: { emitEvent: jest.fn() }, configurable: true});
+        // jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
         keytarGetPasswordSpy = jest.spyOn(keytar, "getPassword");
         keytarSetPasswordSpy = jest.spyOn(keytar, "setPassword");
         keytarDeletePasswordSpy = jest.spyOn(keytar, "deletePassword");

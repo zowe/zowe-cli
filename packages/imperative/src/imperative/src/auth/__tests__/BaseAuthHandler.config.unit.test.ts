@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../logger/src/LoggerUtils");
-jest.mock("../../../../events/src/ImperativeEventEmitter");
+// jest.mock("../../../../events/src/ImperativeEventEmitter");
 
 import * as fs from "fs";
 import * as path from "path";
@@ -22,7 +22,7 @@ import { Config } from "../../../../config";
 import { IConfigSecure } from "../../../../config/src/doc/IConfigSecure";
 import FakeAuthHandler from "./__data__/FakeAuthHandler";
 import { CredentialManagerFactory } from "../../../../security";
-import { ImperativeError, ImperativeEventEmitter } from "../../../..";
+import { ImperativeError } from "../../../..";
 
 const MY_APP = "my_app";
 
@@ -38,7 +38,6 @@ describe("BaseAuthHandler config", () => {
     let fakeConfig: Config;
 
     beforeAll(() => {
-        Object.defineProperty(ImperativeEventEmitter, "instance", { value: { emitEvent: jest.fn() }});
         Object.defineProperty(CredentialManagerFactory, "initialized", { get: () => true });
         Object.defineProperty(ImperativeConfig, "instance", {
             get: () => ({

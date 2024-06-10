@@ -33,9 +33,8 @@ import { ConfigUtils } from "../src/ConfigUtils";
 import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
-import { Logger } from "../..";
+import { Logger } from "../../logger/src/Logger";
 
-jest.mock("../../events/src/ImperativeEventEmitter");
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -905,7 +904,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 }
                 expect(unexpectedError).toBeUndefined();
             } else {
-                expect("Profile " + desiredProfile + "not found").toBeUndefined();
+                expect("Profile " + desiredProfile + " not found").toBeUndefined();
             }
             expect(mergedArgs.missingArgs.find(a => a.argName === "user")?.secure).toBeTruthy();
             expect(mergedArgs.missingArgs.find(a => a.argName === "password")?.secure).toBeTruthy();

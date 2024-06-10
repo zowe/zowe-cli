@@ -17,10 +17,8 @@ import { ICredentialManagerNameMap } from "../src/doc/ICredentialManagerNameMap"
 import { ImperativeConfig } from "../../utilities";
 import { ImperativeError } from "../../error";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
-import { ImperativeEventEmitter } from "../../events";
+import { EventOperator } from "../../events";
 
-
-jest.mock("../../events/src/ImperativeEventEmitter");
 
 describe("CredentialManagerOverride", () => {
     let mockImpConfig: any;
@@ -32,7 +30,7 @@ describe("CredentialManagerOverride", () => {
             cliHome: __dirname
         };
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue(mockImpConfig);
-        Object.defineProperty(ImperativeEventEmitter, "instance", { value: { emitEvent: jest.fn() }, configurable: true});
+        // jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
 
         expectedSettings = {
             fileName: path.join(mockImpConfig.cliHome, "settings", "imperative.json"),

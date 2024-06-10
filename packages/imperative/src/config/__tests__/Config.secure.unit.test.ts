@@ -18,7 +18,7 @@ import { Config } from "../src/Config";
 import { IConfig } from "../src/doc/IConfig";
 import { IConfigSecure } from "../src/doc/IConfigSecure";
 import { IConfigVault } from "../src/doc/IConfigVault";
-import { ImperativeEventEmitter } from "../../events";
+import { EventOperator } from "../../events";
 
 const MY_APP = "my_app";
 
@@ -47,8 +47,7 @@ describe("Config secure tests", () => {
     });
 
     beforeEach(() => {
-        jest.spyOn(ImperativeEventEmitter, "initialize").mockImplementation();
-        Object.defineProperty(ImperativeEventEmitter, "instance", { value: { emitEvent: jest.fn() }});
+        // jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
 
         mockSecureLoad = jest.fn();
         mockSecureSave = jest.fn();
