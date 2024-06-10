@@ -180,7 +180,11 @@ export default {
                     "For symbol values with no spaces: \"symbol1=value1 symbol2=value2 ...\". " +
                     "When a value contains spaces, enclose the value in single quotes: " +
                     "\"symbol1='value 1 with spaces' symbol2='value 2 with spaces' ...\". " +
-                    "To embed a single quote in a value, use two single quotes: \"NAME=O''Brian\"."
+                    "To embed a single quote in a value, use two single quotes: \"NAME=O''Brian\".",
+                JOB_ENCODING: "The encoding that should be used to read the JCL into the z/OSMF JCL reader. " +
+                    "JCL will be converted into this codepage from UTF-8 for the JES subsystem to parse.",
+                JOB_RECORD_LENGTH: "The logical record length of the JCL being submitted.",
+                JOB_RECORD_FORMAT: "The record format of the JCL being submitted, where V is variable, and F is fixed."
             },
             DATA_SET: {
                 SUMMARY: "Submit a job contained in a data set",

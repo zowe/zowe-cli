@@ -44,6 +44,7 @@ export class EventProcessor {
         EventUtils.validateAppName(appName);
 
         this.subscribedEvents = new Map();
+        this.eventTimes = new Map();
         this.appName = appName;
         this.processorType = type;
 
@@ -64,10 +65,10 @@ export class EventProcessor {
      */
     public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         if (this.processorType === IProcessorTypes.EMITTER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
-        const isCustom = EventUtils.isSharedEvent(eventName);
-        const eventType = isCustom ? EventTypes.SharedEvents : EventTypes.ZoweSharedEvents;
+        const isZoweEvent = EventUtils.isSharedEvent(eventName);
+        const eventType = isZoweEvent ? EventTypes.ZoweSharedEvents : EventTypes.SharedEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;
@@ -82,10 +83,10 @@ export class EventProcessor {
     */
     public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         if (this.processorType === IProcessorTypes.EMITTER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
-        const isCustom = EventUtils.isUserEvent(eventName);
-        const eventType = isCustom ? EventTypes.UserEvents : EventTypes.ZoweUserEvents;
+        const isZoweEvent = EventUtils.isUserEvent(eventName);
+        const eventType = isZoweEvent ? EventTypes.ZoweUserEvents : EventTypes.UserEvents;
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;
@@ -99,10 +100,10 @@ export class EventProcessor {
      */
     public emitEvent(eventName: string): void {
         if (this.processorType === IProcessorTypes.WATCHER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
         if (EventUtils.isUserEvent(eventName) || EventUtils.isSharedEvent(eventName)) {
-            throw new ImperativeError({ msg: `Processor not allowed to emit Zowe events: ${eventName}`});
+            throw new ImperativeError({ msg: `Processor not allowed to emit Zowe events: ${eventName}` });
         }
         try {
             const event = this.subscribedEvents.get(eventName);
@@ -122,7 +123,7 @@ export class EventProcessor {
      */
     public emitZoweEvent(eventName: string): void {
         if (this.processorType === IProcessorTypes.WATCHER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
         try {
             const event = this.subscribedEvents.get(eventName);
@@ -141,15 +142,15 @@ export class EventProcessor {
      */
     public unsubscribe(eventName: string): void {
         if (this.processorType === IProcessorTypes.EMITTER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}`});
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
-        try{
+        try {
             // find watcher list and close everything
-            this.subscribedEvents.get(eventName).subscriptions.forEach((watcher)=>{
+            this.subscribedEvents.get(eventName).subscriptions.forEach((watcher) => {
                 watcher.removeAllListeners(eventName).close();
             });
             this.subscribedEvents.delete(eventName);
-        } catch(err){
+        } catch (err) {
             throw new ImperativeError({ msg: `Error unsubscribing from event: ${eventName}`, causeErrors: err });
         }
     }

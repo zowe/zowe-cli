@@ -46,18 +46,13 @@ describe("Event Emitter", () => {
 
     describe("Base structure and emission", () => {
         it("should only allow for one instance of the event emitter", () => {
-            jest.spyOn(Logger, "getImperativeLogger").mockReturnValue("the logger" as any);
-            iee.initialize("test");
-            let caughtError: any;
-            try {
-                iee.initialize("dummy");
-            } catch (err) {
-                caughtError = err;
-            }
-            expect(caughtError).toBeDefined();
-            expect(caughtError.message).toContain("Only one instance");
+            const mockLogger: any = { warn: jest.fn() as any };
+            iee.initialize("test", { logger: mockLogger });
+            iee.initialize("dummy", { logger: mockLogger });
+            expect(mockLogger.warn).toHaveBeenCalledTimes(1);
+            expect(mockLogger.warn.mock.calls[0][0]).toContain("Only one instance");
             expect(iee.instance.appName).toEqual("test");
-            expect(iee.instance.logger).toEqual("the logger");
+            expect(iee.instance.logger).toEqual(mockLogger);
         });
 
         it("should determine the type of event", () => {

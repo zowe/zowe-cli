@@ -13,6 +13,16 @@ Object {
     },
   ],
   "name": "all-spool-content",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "ec",
+      ],
+      "description": "Download the spool file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
+      "name": "encoding",
+      "type": "string",
+    },
+  ],
   "positionals": Array [
     Object {
       "description": "The z/OS JOBID of the job containing the spool files you want to view. No pre-validation of the JOBID is performed.",

@@ -65,6 +65,14 @@ export const OutputDefinition: ICommandDefinition = {
                 "of performing text conversion. Conflicts with binary.",
             type: "boolean",
             conflictsWith: ["binary"]
+        },
+        {
+            name: "encoding",
+            aliases: ["ec"],
+            description: "Download the spool file content with encoding mode, which means that " +
+                "data conversion is performed using the file encoding specified.",
+            type: "string",
+            conflictsWith: ["binary", "record"]
         }
     ] as ICommandOptionDefinition[]),
     examples: [

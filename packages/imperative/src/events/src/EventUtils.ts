@@ -17,6 +17,7 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { IEventDisposable } from "./doc";
 import { Event } from "./Event";
 import { EventProcessor } from "./EventProcessor";
+import { IO } from "../../io";
 
 /**
  * A collection of helper functions related to event processing, including:
@@ -34,8 +35,12 @@ export class EventUtils {
      * @returns {string[]} List of application names.
      */
     public static getListOfApps(): string[] {
-        const extendersJson = ConfigUtils.readExtendersJsonFromDisk();
-        const apps: string[] = [];
+        const extendersJson = ConfigUtils.readExtendersJson();
+        // We should not need to keep a reference to their sources
+        return ["Zowe", ...Object.keys(extendersJson.profileTypes)];
+
+        /*
+        const apps: string[] = ["Zowe"]; // default application name
         // Loop through each profile type and accumulate all names and their sources based on conditions.
         for (const [profileType, details] of Object.entries(extendersJson.profileTypes)) {
             // Check each entry in the 'from' array to decide if a tag is needed
@@ -44,11 +49,13 @@ export class EventUtils {
                     apps.push(profileType, "_vsce"); // tag indicating Visual Studio Code Extension
                 } else if (item.includes("@zowe")) {
                     apps.push(profileType); // no tag indicates Zowe CLI plugin (default)
+                } else {
+                    apps.push(profileType + "_custom") // tag indicating a true Custom App
                 }
             });
-            apps.push("Zowe"); // default application name
         }
         return apps;
+        */
     }
 
     /**
@@ -57,13 +64,15 @@ export class EventUtils {
      * @static
      * @param {string} appName - The name of the application.
      */
-    public static validateAppName(appName: string){
+    public static validateAppName(appName: string): void {
         const appList = this.getListOfApps();
-        if (appName !== "Zowe" && !appList.includes(appName)) {
-            throw new ImperativeError({
-                msg: `Application name not found: ${appName}. Please use an application name from the list:\n- ${appList.join("\n- ")}`
-            });
-        }
+        if (appList.includes(appName)) return;
+        // Performing `appList.find(app => app.includes(appName))` will allow for "tags" (or suffixes) coming from `getListOfApps()`
+        // However, we do not want this behavior because it will allow partial application names to be used
+        // Hence why we should probably match the application name with the exact profileType in `extenders.json`
+        throw new ImperativeError({
+            msg: `Application name not found: ${appName}. Please use an application name from the list:\n- ${appList.join("\n- ")}`
+        });
     }
 
     /**
@@ -89,14 +98,12 @@ export class EventUtils {
     /**
      * Determines the directory path for storing event files based on the event type and application name.
      *
-     * @param {EventTypes} eventType - The type of event.
      * @param {string} appName - The name of the application.
      * @return {string} The directory path.
      */
-    public static getEventDir(eventType: EventTypes, appName: string): string {
+    public static getEventDir(appName: string): string {
         this.validateAppName(appName);
-        return eventType === EventTypes.SharedEvents || eventType === EventTypes.UserEvents ?
-            join(".events", appName) : ".events";
+        return join(".events", appName);
     }
 
     /**
@@ -107,7 +114,7 @@ export class EventUtils {
     public static ensureEventsDirExists(directoryPath: string) {
         try {
             if (!fs.existsSync(directoryPath)) {
-                fs.mkdirSync(directoryPath);
+                IO.mkdirp(directoryPath);
             }
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
@@ -138,11 +145,11 @@ export class EventUtils {
      * @return {IEventDisposable} An interface for managing the subscription.
      */
     public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IEventDisposable {
-        const dir = this.getEventDir(eventType, eeInst.appName);
-        this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), '.events'));
-        this.ensureEventsDirExists(join(ConfigUtils.getZoweDir(), dir));
+        const zoweDir = ConfigUtils.getZoweDir();
+        const dir = join(zoweDir, EventUtils.getEventDir(eeInst.appName));
+        this.ensureEventsDirExists(dir);
 
-        const filePath = join(ConfigUtils.getZoweDir(), dir, eventName);
+        const filePath = join(dir, eventName);
         this.ensureFileExists(filePath);
 
         const newEvent = new Event({

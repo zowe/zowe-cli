@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeEventJson as EventJson, EventUtils, IEventJson, ImperativeEventEmitter, ImperativeSharedEvents } from "../../..";
+import { EventOperator, EventTypes, EventUtils, IEventJson, ZoweSharedEvents } from "../../..";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import * as TestUtil from "../../../../__tests__/src/TestUtil";
@@ -18,9 +18,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
-const iee = ImperativeEventEmitter;
-const iee_s = ImperativeSharedEvents;
 let cwd = '';
+const appName = "Zowe";
 
 describe("Event Emitter", () => {
     const mainModule = process.mainModule;
@@ -38,50 +37,47 @@ describe("Event Emitter", () => {
         cwd = TEST_ENVIRONMENT.workingDir;
     });
 
-    beforeEach(() => {
-        iee.initialize("zowe", { logger: testLogger });
-    });
-
-    afterEach(() => {
-        iee.teardown();
-    });
-
     afterAll(() => {
         process.mainModule = mainModule;
         TestUtil.rimraf(cwd);
     });
 
-    const doesEventFileExists = (eventType: string) => {
-        const eventDir = iee.instance.getEventDir(eventType);
+    const doesEventFileExists = (eventName: string) => {
+        const eventType = EventUtils.isSharedEvent(eventName) ? EventTypes.ZoweSharedEvents :
+            EventUtils.isUserEvent(eventName) ? EventTypes.ZoweUserEvents : EventTypes.SharedEvents;
+
+        const eventDir = EventUtils.getEventDir(appName);
         if (!fs.existsSync(eventDir)) return false;
-        if (fs.existsSync(path.join(eventDir, eventType))) return true;
+        if (fs.existsSync(path.join(eventDir, appName, eventName))) return true;
         return false;
     };
 
     describe("Shared Events", () => {
         it("should create an event file upon first subscription if the file does not exist", () => {
-            const theEvent = iee_s.ON_CREDENTIAL_MANAGER_CHANGED;
+            const theEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
+            const theProc = EventOperator.getZoweProcessor()
 
             expect(doesEventFileExists(theEvent)).toBeFalsy();
+            expect((theProc as any).subscribedEvents.get(theEvent)).toBeFalsy();
 
             const subSpy = jest.fn();
-            iee.instance.subscribe(theEvent, subSpy);
+            theProc.subscribeShared(theEvent, subSpy);
 
             expect(subSpy).not.toHaveBeenCalled();
             expect(doesEventFileExists(theEvent)).toBeTruthy();
 
-            expect(iee.instance.getEventContents(theEvent)).toBeFalsy();
+            theProc.emitEvent(theEvent);
 
-            iee.instance.emitEvent(theEvent);
-
-            (iee.instance as any).subscriptions.get(theEvent)[1][0](); // simulate FSWatcher called
+            (theProc as any).subscribedEvents.get(theEvent).subscriptions[0](); // simulate FSWatcher called
 
             expect(doesEventFileExists(theEvent)).toBeTruthy();
-            const eventDetails: IEventJson = JSON.parse(iee.instance.getEventContents(theEvent));
+            const eventDetails: IEventJson = (theProc as any).subscribedEvents.get(theEvent).toJson();
             expect(eventDetails.eventName).toEqual(theEvent);
-            expect(EventUtils.isUserEvent(eventDetails.eventName)).toBeTruthy();
+            expect(EventUtils.isSharedEvent(eventDetails.eventName)).toBeTruthy();
 
             expect(subSpy).toHaveBeenCalled();
+
+            EventOperator.deleteProcessor(appName);
         });
         it("should trigger subscriptions for all instances watching for onCredentialManagerChanged", () => { });
         it("should not affect subscriptions from another instance when unsubscribing from events", () => { });

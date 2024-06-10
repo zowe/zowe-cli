@@ -78,6 +78,18 @@ describe("Submit Jobs - System Tests", () => {
             await deleteJob(job);
         });
 
+        it("should allow users to call submitJCLCommon with correct extended parameters", async () => {
+            const job = await SubmitJobs.submitJclCommon(REAL_SESSION, {
+                jcl: iefbr14JCL,
+                internalReaderFileEncoding: "IBM-037",
+                internalReaderLrecl: "80",
+                internalReaderRecfm: "F"
+            });
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
+            await deleteJob(job);
+        });
+
 
         it("should allow users to call submitJCL with correct parameters (no internal reader settings)",
             async () => {
@@ -98,7 +110,8 @@ describe("Submit Jobs - System Tests", () => {
                 const job = await SubmitJobs.submitJcl(REAL_SESSION,
                     jcl,
                     "V",
-                    "256"
+                    "256",
+                    "IBM-037"
                 );
                 expect(job.jobid).toBeDefined();
                 expect(job.jobname).toBeDefined();
@@ -117,7 +130,8 @@ describe("Submit Jobs - System Tests", () => {
                     {
                         jcl,
                         internalReaderLrecl: "256",
-                        internalReaderRecfm: "F"
+                        internalReaderRecfm: "F",
+                        internalReaderFileEncoding: "IBM-037"
                     }
                 );
                 expect(job.jobid).toBeDefined();
@@ -167,7 +181,8 @@ describe("Submit Jobs - System Tests", () => {
             jcl += Array(twoHundredChars).join("A"); // add a long line to test internal reader
             const job = await SubmitJobs.submitJclNotify(REAL_SESSION, jcl,
                 "V",
-                "256");
+                "256",
+                "IBM-037");
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
             await deleteJob(job);
@@ -211,6 +226,17 @@ describe("Submit Jobs - System Tests", () => {
 
         it("should return the job info of a submitted JCL string", async () => {
             const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {jclSource: "stdin"});
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
+        });
+
+        it("should return the job info of a submitted JCL string with extended options", async () => {
+            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
+                jclSource: "stdin",
+                internalReaderFileEncoding: "IBM-037",
+                internalReaderLrecl: "80",
+                internalReaderRecfm: "F"
+            });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
         });
