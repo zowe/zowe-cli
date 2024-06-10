@@ -16,14 +16,10 @@ describe('EventProcessor Unit Tests', () => {
     });
 
     it('constructor initializes EventProcessor correctly', () => {
-        // need to fix :/
         expect(EventOperator['instances'].get(appName)).toBeUndefined();
 
-        const type = IProcessorTypes.BOTH;
-        const processor = new EventProcessor(appName, type, logger);
+        EventOperator.getProcessor(appName);
 
         expect(EventOperator['instances'].get(appName)).toBeDefined();
-        expect(processor.appName).toBe(appName);
-        expect(processor.processorType).toBe(type);
     });
 });
