@@ -14,7 +14,7 @@ import { EventProcessor } from '../../src/EventProcessor';
 import { Logger } from '../../..';
 import { IProcessorTypes } from '../../src/doc';
 import { Event } from '../../..';
-import { EventTypes } from "../../src/EventConstants";
+import { EventTypes, ZoweUserEvents } from "../../src/EventConstants";
 
 jest.mock('../../src/EventProcessor');
 jest.mock('../../../logger');
@@ -39,7 +39,19 @@ describe("EventOperator Unit Tests", () => {
         it("'getZoweProcessor' should return the Zowe processor instance", () => {
             const processor = EventOperator.getZoweProcessor();
 
+            expect(EventProcessor).toHaveBeenCalledWith("Zowe", IProcessorTypes.BOTH, logger);
             expect(processor).toBeInstanceOf(EventProcessor);
+        });
+
+        it('emitZoweEvent is called by a Zowe processor and emits a ZoweUserEvents', () => {
+            const processor = EventOperator.getZoweProcessor();
+            const eventName = "onVaultChanged";
+            const emitZoweEventSpy = jest.spyOn(processor, 'emitZoweEvent');
+
+            processor.emitZoweEvent(eventName);
+
+            expect(emitZoweEventSpy).toHaveBeenCalledWith(eventName);
+            expect(Object.values(ZoweUserEvents)).toContain(eventName);
         });
 
         it("'getProcessor' should return a generic event processor", () => {

@@ -1,3 +1,14 @@
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
 import { EventProcessor } from '../../src/EventProcessor';
 import { EventUtils } from '../../src/EventUtils';
 import { IProcessorTypes } from '../../src/doc/IEventInstanceTypes';
@@ -33,21 +44,21 @@ describe('EventProcessor Unit Tests', () => {
     });
 
     describe('Subscription Methods', () => {
-        it('subscribeShared throws error for emitter-only processor', () => {
+        it('"subscribeShared" throws error for emitter-only processor', () => {
             const appName = 'toEmit';
             const emitter = new EventProcessor(appName, IProcessorTypes.EMITTER);
 
             expect(() => emitter.subscribeShared('fakeEventToSubscribeTo', () => {})).toThrow(ImperativeError);
         });
 
-        it('subscribeUser throws error for emitter-only processor', () => {
+        it('"subscribeUser" throws error for emitter-only processor', () => {
             const appName = 'toEmit';
             const emitter = new EventProcessor(appName, IProcessorTypes.EMITTER);
 
             expect(() => emitter.subscribeUser('fakeEventToSubscribeTo', () => {})).toThrow(ImperativeError);
         });
 
-        it('subscribeShared correctly subscribes to shared events', () => {
+        it('"subscribeShared" correctly subscribes to shared events', () => {
             const appName = 'toSubscribeAndEmit';
             const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
             const eventName = 'someEvent';
@@ -63,7 +74,7 @@ describe('EventProcessor Unit Tests', () => {
             expect(disposable).toBeDefined();
         });
 
-        it('subscribeUser correctly subscribes to user-specific events', () => {
+        it('"subscribeUser" correctly subscribes to user-specific events', () => {
             const appName = 'toSubscribeAndEmit';
             const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
             const eventName = 'someEvent';
@@ -81,14 +92,21 @@ describe('EventProcessor Unit Tests', () => {
     });
 
     describe('Emission Methods', () => {
-        it('emitEvent throws error for watcher-only processor', () => {
+        it('"emitEvent" throws error for watcher-only processor', () => {
             const appName = 'toSubscribeTo';
             const watcher = new EventProcessor(appName, IProcessorTypes.WATCHER);
 
             expect(() => watcher.emitEvent('someEvent')).toThrow(ImperativeError);
         });
 
-        it('emitEvent updates event timestamp and writes event', () => {
+        it('"emitZoweEvent" throws error for watcher-only processor', () => {
+            const appName = 'toSubscribeTo';
+            const watcher = new EventProcessor(appName, IProcessorTypes.WATCHER);
+
+            expect(() => watcher.emitZoweEvent('someEvent')).toThrow(ImperativeError);
+        });
+
+        it('"emitEvent" updates event timestamp and writes event', () => {
             const appName = 'toEmit';
             const emitter = new EventProcessor(appName, IProcessorTypes.EMITTER);
             const eventName = 'someEvent';
@@ -104,44 +122,58 @@ describe('EventProcessor Unit Tests', () => {
             expect(event.eventTime).not.toBe('');
             expect(EventUtils.writeEvent).toHaveBeenCalledWith(event);
         });
-
-        it('emitZoweEvent updates event timestamp and writes event', () => {
-            const appName = 'toEmit';
-            const emitter = new EventProcessor(appName, IProcessorTypes.BOTH);
-            const eventName = 'ZoweEvent';
-            const event = { eventTime: '', eventName, eventType: EventTypes.ZoweSharedEvents, appName, subscriptions: new Set() } as unknown as Event;
-            emitter.subscribedEvents.set(eventName, event);
-
-            writeEventSpy.mockImplementation(() => {});
-
-            emitter.emitZoweEvent(eventName);
-
-            expect(event.eventTime).not.toBe('');
-            expect(EventUtils.writeEvent).toHaveBeenCalledWith(event);
-        });
     });
 
     describe('Unsubscribe Methods', () => {
-        it('unsubscribe removes subscriptions and cleans up resources', () => {
+        it('"unsubscribe" removes subscriptions and cleans up resources', () => {
             const appName = 'toSubscribeAndEmit';
             const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
-            const eventName = 'someEvent';
-            const subscription = { close: jest.fn() };
+            processor.subscribedEvents = new Map([
+                ['testEvent', {
+                    eventTime: '',
+                    eventName: 'testEvent',
+                    eventType: EventTypes.UserEvents,
+                    appName: appName,
+                    subscriptions: new Set([
+                        {
+                            removeAllListeners: jest.fn(),
+                            close: jest.fn()
+                        }
+                    ])
+                } as unknown as Event]
+            ]);
+
+            processor.unsubscribe('testEvent');
+
+            expect(processor.subscribedEvents.has('testEvent')).toBe(false);
+        });
+        it('subscription removed from a processor\'s subscribed events and resources are cleaned', () => {
+            const appName = 'toSubscribeAndEmit';
+            const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
+            const mockSubscription = {
+                removeAllListeners: jest.fn(),
+                close: jest.fn()
+            };
+
             const event = {
                 eventTime: '',
-                eventName, eventType: EventTypes.ZoweSharedEvents,
-                appName,
-                subscriptions: subscription
+                eventName: 'testEvent',
+                eventType: EventTypes.UserEvents,
+                appName: appName,
+                subscriptions: new Set([mockSubscription])
             } as unknown as Event;
-            processor.subscribedEvents.set(eventName, event);
 
-            processor.unsubscribe(eventName);
+            processor.subscribedEvents = new Map([
+                ['testEvent', event]
+            ]);
 
-            expect(subscription.close).toHaveBeenCalled();
-            expect(processor.subscribedEvents.has(eventName)).toBe(false);
+            expect(processor.subscribedEvents.has('testEvent')).toBe(true);
+            processor.unsubscribe('testEvent');
+            expect(mockSubscription.removeAllListeners).toHaveBeenCalled();
+            expect(mockSubscription.close).toHaveBeenCalled();
+            expect(processor.subscribedEvents.has('testEvent')).toBe(false);
         });
-
-        it('unsubscribe throws error for emitter-only processor', () => {
+        it('"unsubscribe" throws error for emitter-only processor', () => {
             const appName = 'toEmit';
 
             const emitter = new EventProcessor(appName, IProcessorTypes.EMITTER);

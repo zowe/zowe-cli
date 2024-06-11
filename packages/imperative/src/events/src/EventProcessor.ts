@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../logger/src/Logger";
-import { EventCallback, EventTypes } from "./EventConstants";
+import { EventCallback, EventTypes, ZoweSharedEvents, ZoweUserEvents } from "./EventConstants";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { Event } from "./Event";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
@@ -122,16 +122,23 @@ export class EventProcessor {
      * @throws {ImperativeError} - If the event cannot be emitted.
      */
     public emitZoweEvent(eventName: string): void {
-        if (this.processorType === IProcessorTypes.WATCHER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
+        if (this.appName === "Zowe") {
+            if (this.processorType === IProcessorTypes.WATCHER) {
+                throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
+            }
+            if (!Object.values(ZoweUserEvents).includes(eventName as ZoweUserEvents) &&
+            !Object.values(ZoweSharedEvents).includes(eventName as ZoweSharedEvents)) {
+                throw new ImperativeError({ msg: `Invalid Zowe event: ${eventName}` });
+            }
+            try {
+                const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
+                event.eventTime = new Date().toISOString();
+                EventUtils.writeEvent(event);
+            } catch (err) {
+                throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
+            }
         }
-        try {
-            const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
-            event.eventTime = new Date().toISOString();
-            EventUtils.writeEvent(event);
-        } catch (err) {
-            throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
-        }
+        throw new ImperativeError({ msg: `Processor does not have Zowe permissions: ${eventName}` });
     }
 
     /**
@@ -144,14 +151,15 @@ export class EventProcessor {
         if (this.processorType === IProcessorTypes.EMITTER) {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
         }
-        try {
-            // find watcher list and close everything
-            this.subscribedEvents.get(eventName).subscriptions.forEach((watcher) => {
-                watcher.removeAllListeners(eventName).close();
+        const event = this.subscribedEvents.get(eventName);
+        if (event) {
+            event.subscriptions.forEach(subscription => {
+                subscription.removeAllListeners(eventName);
+                if (typeof subscription.close === 'function') {
+                    subscription.close();
+                }
             });
             this.subscribedEvents.delete(eventName);
-        } catch (err) {
-            throw new ImperativeError({ msg: `Error unsubscribing from event: ${eventName}`, causeErrors: err });
         }
     }
 }
