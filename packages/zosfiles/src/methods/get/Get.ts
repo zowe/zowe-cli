@@ -40,7 +40,7 @@ export class Get {
             ...options,
             stream: responseStream
         });
-        return responseStream.read();
+        return responseStream.read() ?? Buffer.alloc(0);
     }
 
     /**
@@ -64,6 +64,6 @@ export class Get {
             ...options,
             stream: responseStream
         });
-        return responseStream.read();
+        return responseStream.read() ?? Buffer.alloc(0);
     }
 }
