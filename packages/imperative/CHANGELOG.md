@@ -2,9 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `8.0.0-next.202406061600`
-
-- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
+## Recent Changes
 - LTS Breaking: Modified the @zowe/imperative SDK [#2083](https://github.com/zowe/zowe-cli/issues/2083)
   - Removed the following exported classes:
     - AbstractAuthHandler
@@ -46,6 +44,10 @@ All notable changes to the Imperative package will be documented in this file.
   - Deprecated the following classes:
     - Operation
     - Operations
+
+## `8.0.0-next.202406061600`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
 
 ## `8.0.0-next.202405241520`
 
