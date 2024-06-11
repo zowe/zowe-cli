@@ -122,7 +122,7 @@ export class DownloadJobs {
             parameters += "?mode=record";
         }
 
-        if (!parms.binary && !parms.record && parms.encoding?.trim() != "") {
+        if (!parms.binary && !parms.record && parms.encoding?.trim()) {
             parameters += "?fileEncoding=" + parms.encoding;
         }
 
