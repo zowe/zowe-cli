@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202406111728`
 
 - BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method when encoding parameter is not specified. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
 
