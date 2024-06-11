@@ -18,7 +18,8 @@ import {
 } from "../doc/IProfileValidationTask";
 import { IProfileValidationTaskResult } from "../doc/IProfileValidationTaskResult";
 import { isNullOrUndefined } from "util";
-import { Logger, LoggerUtils } from "../../../../logger";
+import { Logger } from "../../../../logger";
+import { LoggerUtils } from "../../../../logger/src/LoggerUtils";
 import { TextUtils } from "../../../../utilities";
 import { IPromiseWithProgress, ITaskWithStatus, TaskProgress, TaskStage } from "../../../../operations";
 import { ICommandOptionDefinition } from "../../../../cmd";

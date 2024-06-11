@@ -15,6 +15,7 @@ import { Session, Logger } from "@zowe/imperative";
 /**
  * Interface to map client's REST call response
  * @export
+ * @deprecated - Use Imperative's IRestClientResponse instead
  * @interface IRestClientResponse
  */
 export interface IRestClientResponse {

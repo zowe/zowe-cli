@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Modified the zos-files SDK. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+  - Deprecated the following interfaces:
+    - IOptionsFullResponse - use `IOptionsFullResponse` from `@zowe/imperative`.
+    - IRestClientResponse - use `IRestClientResponse` from `@zowe/imperative`.
+
 ## `8.0.0-next.202406111728`
 
 - BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)

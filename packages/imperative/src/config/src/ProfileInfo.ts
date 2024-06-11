@@ -39,7 +39,8 @@ import { IProfileLoaded, IProfileProperty, IProfileSchema } from "../../profiles
 // for imperative operations
 import { CliUtils, ImperativeConfig } from "../../utilities";
 import { ImperativeExpect } from "../../expect";
-import { Logger, LoggerUtils } from "../../logger";
+import { Logger } from "../../logger";
+import { LoggerUtils } from "../../logger/src/LoggerUtils";
 import {
     IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
 } from "../../rest";

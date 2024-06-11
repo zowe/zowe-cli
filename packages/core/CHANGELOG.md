@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Deprecated the IHeaderContent interface - use `IHeaderContent` from `@zowe/imperative`. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+
 ## `8.0.0-next.202406061600`
 
 - Enhancement: Modified Services.ts to have commented properties end with commas. [#1049](https://github.com/zowe/zowe-cli/issues/1049)

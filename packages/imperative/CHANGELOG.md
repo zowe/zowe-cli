@@ -2,6 +2,50 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Modified the @zowe/imperative SDK [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+  - Removed the following exported classes:
+    - AbstractAuthHandler
+    - AbstractCommandYargs
+    - AbstractHelpGenerator
+    - AbstractHelpGeneratorFactory
+    - CommandPreparer
+    - CommandProcessor
+    - CommandUtils
+    - CommandYargs
+    - CompressionUtils
+    - ConfigAutoStore
+    - ConfigurationLoader
+    - ConfigurationValidator
+    - DefinitionTreeResolver
+    - FailedCommandHandler
+    - GroupCommandYargs
+    - HelpConstants
+    - HelpGeneratorFactory
+    - ImperativeReject
+    - LoggerConfigBuilder
+    - LoggerUtils
+    - RestStandAloneUtils
+    - SharedOptions
+    - SyntaxValidator
+    - WebHelpManager
+    - YargsConfigurer
+    - YargsDefiner
+  - Removed the following exported interfaces:
+    - ICommandHandlerResponseChecker
+    - ICommandHandlerResponseValidator
+    - ICommandValidatorError
+    - ICommandValidatorResponse
+    - IConstructor
+    - IHelpGenerator
+    - IHelpGeneratorFactory
+    - IYargsParms
+    - IYargsResponse
+  - Deprecated the following classes:
+    - Operation
+    - Operations
+
 ## `8.0.0-next.202406111728`
 
 - Enhancement: Added `BufferBuilder` utility class to provide convenient way of downloading to a stream that can be read as a buffer. [#2167](https://github.com/zowe/zowe-cli/pull/2167)

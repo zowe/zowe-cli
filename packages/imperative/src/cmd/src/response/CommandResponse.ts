@@ -34,7 +34,8 @@ import * as tty from "tty";
 import { IPromptOptions } from "../doc/response/api/handler/IPromptOptions";
 import { DaemonRequest } from "../../../utilities/src/DaemonRequest";
 import { IDaemonResponse } from "../../../utilities/src/doc/IDaemonResponse";
-import { Logger, LoggerUtils } from "../../../logger";
+import { Logger } from "../../../logger";
+import { LoggerUtils } from "../../../logger/src/LoggerUtils";
 
 const DataObjectParser = require("dataobject-parser");
 

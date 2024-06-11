@@ -9,7 +9,7 @@
 *
 */
 
-import { IHeaderContent } from "./doc/IHeaderContent";
+import { IHeaderContent } from "@zowe/imperative";
 
 /**
  * Class to contain default z/OSMF headers
