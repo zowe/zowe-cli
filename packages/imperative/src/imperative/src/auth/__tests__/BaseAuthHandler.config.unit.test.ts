@@ -10,7 +10,6 @@
 */
 
 jest.mock("../../../../logger/src/LoggerUtils");
-// jest.mock("../../../../events/src/ImperativeEventEmitter");
 
 import * as fs from "fs";
 import * as path from "path";
@@ -22,7 +21,7 @@ import { Config } from "../../../../config";
 import { IConfigSecure } from "../../../../config/src/doc/IConfigSecure";
 import FakeAuthHandler from "./__data__/FakeAuthHandler";
 import { CredentialManagerFactory } from "../../../../security";
-import { ImperativeError } from "../../../..";
+import { EventOperator, EventUtils, ImperativeError } from "../../../..";
 
 const MY_APP = "my_app";
 
@@ -45,6 +44,11 @@ describe("BaseAuthHandler config", () => {
                 loadedConfig: { envVariablePrefix: "FAKE" }
             })
         });
+    });
+
+    beforeEach(() => {
+        jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
     });
 
     afterEach(() => {
@@ -465,6 +469,9 @@ describe("BaseAuthHandler config", () => {
             jest.spyOn(Config, "search").mockReturnValue(configPath);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
             fakeConfig = await Config.load(MY_APP, { vault: fakeVault });
+
+            jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
+            jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
         });
 
         it("should logout successfully from profile specified by user", async () => {

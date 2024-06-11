@@ -59,7 +59,7 @@ import { UpdateImpConfig } from "../../../../src/UpdateImpConfig";
 import * as fs from "fs";
 import * as path from "path";
 import { gt as versionGreaterThan } from "semver";
-import { ProfileInfo } from "../../../../../config";
+import { ConfigUtils } from "../../../../../config";
 import mockTypeConfig from "../../__resources__/typeConfiguration";
 import { updateExtendersJson } from "../../../../src/plugins/utilities/npm-interface/install";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
@@ -84,9 +84,9 @@ describe("PMF: Install Interface", () => {
         UpdateImpConfig_addProfiles: UpdateImpConfig.addProfiles as Mock<typeof UpdateImpConfig.addProfiles>,
         path: path as unknown as Mock<typeof path>,
         ConfigSchema_loadSchema: jest.spyOn(ConfigSchema, "loadSchema"),
-        ProfileInfo: {
-            readExtendersJsonFromDisk: jest.spyOn(ProfileInfo, "readExtendersJsonFromDisk"),
-            writeExtendersJson: jest.spyOn(ProfileInfo, "writeExtendersJson")
+        ConfigUtils: {
+            readExtendersJson: jest.spyOn(ConfigUtils, "readExtendersJson"),
+            writeExtendersJson: jest.spyOn(ConfigUtils, "writeExtendersJson")
         }
     };
 
@@ -110,14 +110,14 @@ describe("PMF: Install Interface", () => {
         mocks.sync.mockReturnValue("fake_find-up_sync_result" as any);
         jest.spyOn(path, "dirname").mockReturnValue("fake-dirname");
         jest.spyOn(path, "join").mockReturnValue("/fake/join/path");
-        mocks.ProfileInfo.readExtendersJsonFromDisk.mockReturnValue({
+        mocks.ConfigUtils.readExtendersJson.mockReturnValue({
             profileTypes: {
                 "zosmf": {
                     from: ["Zowe CLI"]
                 }
             }
         });
-        mocks.ProfileInfo.writeExtendersJson.mockImplementation();
+        mocks.ConfigUtils.writeExtendersJson.mockImplementation();
         mocks.ConfigSchema_loadSchema.mockReturnValue([mockTypeConfig]);
         mocks.ConfigurationLoader_load.mockReturnValue({ profiles: [mockTypeConfig] } as any);
     });
@@ -405,7 +405,7 @@ describe("PMF: Install Interface", () => {
                 mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
                 if (opts.lastVersion) {
-                    mocks.ProfileInfo.readExtendersJsonFromDisk.mockReturnValueOnce({
+                    mocks.ConfigUtils.readExtendersJson.mockReturnValueOnce({
                         profileTypes: {
                             "test-type": {
                                 from: [oneOldPlugin.plugin1.package],
@@ -426,9 +426,9 @@ describe("PMF: Install Interface", () => {
 
                 if (opts.version && opts.lastVersion) {
                     if (versionGreaterThan(opts.version, opts.lastVersion)) {
-                        expect(mocks.ProfileInfo.writeExtendersJson).toHaveBeenCalled();
+                        expect(mocks.ConfigUtils.writeExtendersJson).toHaveBeenCalled();
                     } else {
-                        expect(mocks.ProfileInfo.writeExtendersJson).not.toHaveBeenCalled();
+                        expect(mocks.ConfigUtils.writeExtendersJson).not.toHaveBeenCalled();
                     }
                 }
             };

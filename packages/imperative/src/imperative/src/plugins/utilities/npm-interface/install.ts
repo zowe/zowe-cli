@@ -212,7 +212,7 @@ export async function install(packageLocation: string, registry: string, install
 
                         if (shouldUpdate) {
                             // Update extenders.json (if necessary) after installing the plugin
-                            ProfileInfo.writeExtendersJson(extendersJson);
+                            ConfigUtils.writeExtendersJson(extendersJson);
                         }
                         const schema = ConfigSchema.buildSchema(loadedSchema);
                         ConfigSchema.updateSchema({ layer: "global", schema });
