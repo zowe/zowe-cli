@@ -429,7 +429,7 @@ describe("PluginRequireProvider", () => {
 
                                 try {
                                     // The return should be the main module as that is what the module loader does.
-                                    expect(modulePrototype.require.call(thisObject, module, testRequireIndicator)).toBe(null || undefined);
+                                    expect(modulePrototype.require.call(thisObject, module, testRequireIndicator)).toBe(undefined);
 
                                     // Expect that the require was just called with the module
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);

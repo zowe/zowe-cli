@@ -21,8 +21,8 @@ describe("Imperative should validate config provided by the consumer", function 
     if (require.main) {
         packageJsonPath = dirname(require.main.filename) + "/package.json";
         if (existsSync(packageJsonPath)) {
-            // Throw an error if package.json exists in the main module dir, since we don't want to overwrite or delete it. 
-            // Let the user decide if it is test data, and delete it if it is left over from a previous test. 
+            // Throw an error if package.json exists in the main module dir, since we don't want to overwrite or delete it.
+            // Let the user decide if it is test data, and delete it if it is left over from a previous test.
             throw Error("Package JSON exists at " + packageJsonPath + ". Verify the file is test data and delete if it is.");
         }
     }

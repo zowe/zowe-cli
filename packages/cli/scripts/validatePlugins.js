@@ -31,7 +31,7 @@ function validatePlugins() {
     const zowePgm = process.cwd() + "/lib/main.js";
     if (fs.existsSync(zowePgm)) {
         console.log("Since you re-installed Zowe CLI, we are re-validating any plugins.");
-        spawnSync("node " + zowePgm + " plugins validate --no-fail-on-error", {shell: true, cwd: process.cwd(), windowsHide: true});
+        spawnSync("node " + zowePgm + " plugins validate --no-fail-on-error", {shell: true, stdio: "inherit", cwd: process.cwd(), windowsHide: true});
     }
 }
 
