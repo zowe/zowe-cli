@@ -4,8 +4,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## Recent Changes
 
-- LTS Breaking: Modified the core SDK. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
-  - Deprecated the IHeaderContent interface - use `IHeaderContent` from `@zowe/imperative`.
+- BugFix: Deprecated the IHeaderContent interface - use `IHeaderContent` from `@zowe/imperative`. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
 
 ## `8.0.0-next.202406061600`
 
