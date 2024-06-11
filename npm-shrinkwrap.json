@@ -12303,11 +12303,12 @@
       }
     },
     "node_modules/micromatch": {
-      "version": "4.0.4",
-      "license": "MIT",
+      "version": "4.0.7",
+      "resolved": "https://registry.npmjs.org/micromatch/-/micromatch-4.0.7.tgz",
+      "integrity": "sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==",
       "dependencies": {
-        "braces": "^3.0.1",
-        "picomatch": "^2.2.3"
+        "braces": "^3.0.3",
+        "picomatch": "^2.3.1"
       },
       "engines": {
         "node": ">=8.6"
