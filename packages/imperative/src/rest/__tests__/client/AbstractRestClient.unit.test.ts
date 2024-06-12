@@ -464,7 +464,7 @@ describe("AbstractRestClient tests", () => {
         const fakeResponseStream: any = {
             write: jest.fn(),
             on: jest.fn(),
-            end: jest.fn(),
+            end: jest.fn((cb: any) => cb()),
             writableFinished: true
         };
         const fakeRequestStream: any = {

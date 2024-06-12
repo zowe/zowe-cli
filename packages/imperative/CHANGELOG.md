@@ -2,6 +2,56 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.0-next.202406111958`
+
+- LTS Breaking: Modified the @zowe/imperative SDK [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+  - Removed the following exported classes:
+    - AbstractAuthHandler
+    - AbstractCommandYargs
+    - AbstractHelpGenerator
+    - AbstractHelpGeneratorFactory
+    - CommandPreparer
+    - CommandProcessor
+    - CommandUtils
+    - CommandYargs
+    - CompressionUtils
+    - ConfigAutoStore
+    - ConfigurationLoader
+    - ConfigurationValidator
+    - DefinitionTreeResolver
+    - FailedCommandHandler
+    - GroupCommandYargs
+    - HelpConstants
+    - HelpGeneratorFactory
+    - ImperativeReject
+    - LoggerConfigBuilder
+    - LoggerUtils
+    - RestStandAloneUtils
+    - SharedOptions
+    - SyntaxValidator
+    - WebHelpManager
+    - YargsConfigurer
+    - YargsDefiner
+  - Removed the following exported interfaces:
+    - ICommandHandlerResponseChecker
+    - ICommandHandlerResponseValidator
+    - ICommandValidatorError
+    - ICommandValidatorResponse
+    - IConstructor
+    - IHelpGenerator
+    - IHelpGeneratorFactory
+    - IYargsParms
+    - IYargsResponse
+  - Deprecated the following classes:
+    - Operation
+    - Operations
+
+## `8.0.0-next.202406111728`
+
+- Enhancement: Added `BufferBuilder` utility class to provide convenient way of downloading to a stream that can be read as a buffer. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+- BugFix: Fixed error in REST client that when using stream could cause small data sets to download with incomplete contents. [#744](https://github.com/zowe/zowe-cli/issues/744)
+- BugFix: Updated `micromatch` dependency for technical currency. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
 ## `8.0.0-next.202406061600`
 
 - BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
@@ -334,6 +384,20 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.24.0`
+
+- Enhancement: Added `BufferBuilder` utility class to provide convenient way of downloading to a stream that can be read as a buffer. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+- BugFix: Fixed error in REST client that when using stream could cause small data sets to download with incomplete contents. [#744](https://github.com/zowe/zowe-cli/issues/744)
+- BugFix: Updated `micromatch` dependency for technical currency. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
+## `5.23.4`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2157](https://github.com/zowe/zowe-cli/pull/2157)
+
+## `5.23.3`
+
+- BugFix: Modified error text in SyntaxValidator.invalidOptionError. [#2138](https://github.com/zowe/zowe-cli/issues/2138)
 
 ## `5.23.2`
 

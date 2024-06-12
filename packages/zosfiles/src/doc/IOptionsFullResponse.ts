@@ -15,6 +15,7 @@ import { CLIENT_PROPERTY } from "./types/ZosmfRestClientProperties";
 /**
  * Interface to define input options for RestClient GET|POST|PUT|DELETE ExpectFullResponse methods
  * @export
+ * @deprecated - Use Imperative's IOptionsFullResponse instead
  * @interface IOptionsFullResponse
  */
 export interface IOptionsFullResponse {

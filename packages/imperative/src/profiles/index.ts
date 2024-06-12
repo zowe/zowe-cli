@@ -24,7 +24,6 @@ export * from "./src/doc/response/IProfileLoaded";
 
 export * from "./src/utils/V1ProfileRead";
 export * from "./src/utils/ProfileUtils";
-export * from "./src/utils";
 
 export * from "./src/validation/doc/IProfileValidationPlan";
 export * from "./src/validation/doc/IProfileValidationReport";

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `8.0.0-next.202406111728`
+
+- BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method when encoding parameter is not specified. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
+
 ## `8.0.0-next.202403131702`
 
 - BugFix: Removing stack trace for zosjobs errors. Added constant to JobsMessages.ts for error handling. [#2078](https://github.com/zowe/zowe-cli/pull/2078)
@@ -26,6 +30,10 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.26.1`
+
+- BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method when encoding parameter is not specified. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
 
 ## `7.25.0`
 

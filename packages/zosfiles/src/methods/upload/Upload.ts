@@ -9,7 +9,8 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress, IHeaderContent } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger,
+    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -27,8 +28,6 @@ import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
-import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
-import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
 

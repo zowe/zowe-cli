@@ -109,6 +109,32 @@ describe("z/OS Files - View", () => {
             }));
         });
 
+        it("should get data set content when empty", async () => {
+            let response;
+            let caughtError;
+            zosmfExpectSpy.mockImplementationOnce(async (_session, options) => {
+                options.responseStream?.end();
+                return {};
+            });
+
+            try {
+                response = await Get.dataSet(dummySession, dsname);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(Buffer.alloc(0));
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
+        });
+
         it("should get data set content in binary mode", async () => {
             let response;
             let caughtError;
@@ -361,6 +387,32 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                resource: endpoint
+            }));
+        });
+
+        it("should get uss file content when empty", async () => {
+            let response;
+            let caughtError;
+            zosmfExpectSpy.mockImplementationOnce(async (_session, options) => {
+                options.responseStream?.end();
+                return {};
+            });
+
+            try {
+                response = await Get.USSFile(dummySession, ussfile);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(Buffer.alloc(0));
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({

@@ -15,7 +15,8 @@ import { ICommandOptionDefinition } from "../../src/doc/option/ICommandOptionDef
 import { COMPLEX_COMMAND, COMPLEX_COMMAND_WITH_ALIASES, MULTIPLE_GROUPS } from "../__resources__/CommandDefinitions";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { inspect } from "util";
-import { CommandUtils, ICommandTreeEntry } from "../../";
+import { CommandUtils } from "../../src/utils/CommandUtils";
+import { ICommandTreeEntry } from "../../src/utils/CommandUtils";
 import { cloneDeep } from "lodash";
 // UnitTestUtils.replaceIt();
 
