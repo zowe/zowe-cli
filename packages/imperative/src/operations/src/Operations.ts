@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { IOperationResultReady, Operation } from "./Operation";
 import { IOperationResult } from "./doc/IOperationResult";
 import { TextUtils } from "../../utilities";
