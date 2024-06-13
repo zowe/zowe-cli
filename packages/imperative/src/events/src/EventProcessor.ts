@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../logger/src/Logger";
-import { EventCallback, EventTypes, ZoweSharedEvents, ZoweUserEvents } from "./EventConstants";
+import { EventCallback, EventTypes } from "./EventConstants";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { Event } from "./Event";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
@@ -123,11 +123,7 @@ export class EventProcessor {
      */
     public emitZoweEvent(eventName: string): void {
         if (this.appName === "Zowe") {
-            if (this.processorType === IProcessorTypes.WATCHER) {
-                throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
-            }
-            if (!Object.values(ZoweUserEvents).includes(eventName as ZoweUserEvents) &&
-            !Object.values(ZoweSharedEvents).includes(eventName as ZoweSharedEvents)) {
+            if (!EventUtils.isUserEvent(eventName) && !EventUtils.isSharedEvent(eventName)) {
                 throw new ImperativeError({ msg: `Invalid Zowe event: ${eventName}` });
             }
             try {
@@ -137,8 +133,9 @@ export class EventProcessor {
             } catch (err) {
                 throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
             }
+        }else{
+            throw new ImperativeError({ msg: `Processor does not have Zowe permissions: ${eventName}` });
         }
-        throw new ImperativeError({ msg: `Processor does not have Zowe permissions: ${eventName}` });
     }
 
     /**
