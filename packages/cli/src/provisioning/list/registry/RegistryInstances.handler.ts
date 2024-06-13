@@ -43,7 +43,7 @@ export default class RegistryInstancesHandler extends ZosmfBaseHandler {
             commandParameters.response.console.log(TextUtils.prettyJson(unique));
         } else {
             commandParameters.response.console.log("z/OSMF Service Registry");
-            if (!(commandParameters.arguments.filterByType == null)) {
+            if (commandParameters.arguments.filterByType != null) {
                 commandParameters.response.console.log("\nShowing ONLY \""
                     + commandParameters.arguments.filterByType.toUpperCase() + "\" instance types.");
             }

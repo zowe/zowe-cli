@@ -442,7 +442,7 @@ describe("PluginRequireProvider", () => {
                                     const submodule = `${module}/submodule/import`;
                                     expect(modulePrototype.require.call(
                                         thisObject, submodule, testRequireIndicator
-                                    )).toBe(null || undefined);
+                                    )).toBe(undefined);
 
                                     // Expect that the require was just called with the submodule
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
@@ -475,7 +475,7 @@ describe("PluginRequireProvider", () => {
                                 try {
                                     expect(modulePrototype.require.call(
                                         thisObject, module, testRequireIndicator
-                                    )).toBe(null || undefined);
+                                    )).toBe(undefined);
 
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
                                     expect(mockedRequire).toHaveBeenCalledWith("./", testRequireIndicator);
@@ -506,7 +506,7 @@ describe("PluginRequireProvider", () => {
                                 try {
                                     expect(modulePrototype.require.call(
                                         thisObject, module + submoduleImport, testRequireIndicator
-                                    )).toBe(null || undefined);
+                                    )).toBe(undefined);
 
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
                                     expect(mockedRequire).toHaveBeenCalledWith(packageRoot + submoduleImport, testRequireIndicator);
