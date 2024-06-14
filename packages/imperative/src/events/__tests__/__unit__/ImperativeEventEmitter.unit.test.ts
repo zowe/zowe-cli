@@ -12,7 +12,6 @@
 import * as fs from "fs";
 import { join } from "path";
 import { homedir } from "os";
-import { Logger } from "../../../logger/src/Logger";
 import { ImperativeEventEmitter, ImperativeSharedEvents, ImperativeUserEvents } from "../..";
 
 jest.mock("fs");
