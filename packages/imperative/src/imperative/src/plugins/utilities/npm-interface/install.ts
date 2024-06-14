@@ -26,7 +26,7 @@ import { UpdateImpConfig } from "../../../UpdateImpConfig";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
-import { ConfigUtils, ProfileInfo } from "../../../../../config";
+import { ConfigUtils } from "../../../../../config";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
 
 // Helper function to update extenders.json object during plugin install.

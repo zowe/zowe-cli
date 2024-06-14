@@ -17,7 +17,6 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { IEventDisposable, IEventJson } from "./doc";
 import { Event } from "./Event";
 import { EventProcessor } from "./EventProcessor";
-import { IO } from "../../io";
 
 /**
  * A collection of helper functions related to event processing, including:
@@ -129,7 +128,7 @@ export class EventUtils {
     public static ensureEventsDirExists(directoryPath: string) {
         try {
             if (!fs.existsSync(directoryPath)) {
-                IO.mkdirp(directoryPath);
+                fs.mkdirSync(directoryPath, {mode: 0o750, recursive: true}); // user read/write/exec, group read/exec
             }
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
@@ -144,7 +143,8 @@ export class EventUtils {
     public static ensureFileExists(filePath: string) {
         try {
             if (!fs.existsSync(filePath)) {
-                fs.closeSync(fs.openSync(filePath, 'w'));
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                fs.closeSync(fs.openSync(filePath, 'w+', 0o640)); // user read/write, group read
             }
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
