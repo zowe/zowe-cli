@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202406140245`
 
 - BugFix: Updated documentation for the `zos-files search ds` command's `--mainframe-search` option to include a disclaimer about z/OSMF API limitations. [#2160](https://github.com/zowe/zowe-cli/issues/2160)
 
