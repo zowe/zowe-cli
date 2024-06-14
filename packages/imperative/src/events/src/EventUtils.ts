@@ -35,26 +35,7 @@ export class EventUtils {
      */
     public static getListOfApps(): string[] {
         const extendersJson = ConfigUtils.readExtendersJson();
-        // We should not need to keep a reference to their sources
         return ["Zowe", ...Object.keys(extendersJson.profileTypes)];
-
-        /*
-        const apps: string[] = ["Zowe"]; // default application name
-        // Loop through each profile type and accumulate all names and their sources based on conditions.
-        for (const [profileType, details] of Object.entries(extendersJson.profileTypes)) {
-            // Check each entry in the 'from' array to decide if a tag is needed
-            details.from.forEach(item => {
-                if (item.includes("(for VS Code)")) {
-                    apps.push(profileType, "_vsce"); // tag indicating Visual Studio Code Extension
-                } else if (item.includes("@zowe")) {
-                    apps.push(profileType); // no tag indicates Zowe CLI plugin (default)
-                } else {
-                    apps.push(profileType + "_custom") // tag indicating a true Custom App
-                }
-            });
-        }
-        return apps;
-        */
     }
 
     /**
@@ -105,7 +86,7 @@ export class EventUtils {
         try {
             return JSON.parse(fs.readFileSync(eventFilePath).toString());
         } catch (err) {
-            throw new ImperativeError({msg: `Unable to retrieve event contents: Path: ${eventFilePath}`});
+            throw new ImperativeError({ msg: `Unable to retrieve event contents: Path: ${eventFilePath}` });
         }
     }
 

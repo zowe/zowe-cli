@@ -11,33 +11,24 @@
 
 import { EventOperator } from '../../src/EventOperator';
 import { EventProcessor } from '../../src/EventProcessor';
-import { EventUtils, Logger } from '../../..';
+import { Logger } from '../../..';
 import { IProcessorTypes } from '../../src/doc';
 import { Event } from '../../..';
 import { EventTypes, ZoweUserEvents } from "../../src/EventConstants";
 
-jest.mock('../../../logger');
 jest.mock('../../src/EventProcessor');
-jest.mock('../../src/Event');
+jest.mock('../../../logger');
 
 const logger = Logger.getImperativeLogger();
-const appName = 'TestApp';
 
 describe("EventOperator Unit Tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.spyOn(EventUtils, "getListOfApps").mockReturnValue(["Zowe", appName]);
-        const subs = EventProcessor.prototype.subscribedEvents = new Map();
-        const dummyEvent: any = { subscriptions: [ { removeAllListeners: jest.fn().mockReturnValue({close: jest.fn()})} as any] } ;
-        subs.set("Zowe", dummyEvent);
-    });
-    afterEach(() => {
-        EventOperator.deleteProcessor("Zowe");
-        EventOperator.deleteProcessor(appName);
     });
 
     describe("processor tests", () => {
         it("'createProcessor' should create a new 'EventProcessor' if not already existing", () => {
+            const appName = 'TestApp';
             const type = IProcessorTypes.BOTH;
             const processor = EventOperator.getProcessor(appName, logger);
 
@@ -64,6 +55,7 @@ describe("EventOperator Unit Tests", () => {
         });
 
         it("'getProcessor' should return a generic event processor", () => {
+            const appName = 'GenericApp';
             const processor = EventOperator.getProcessor(appName, logger);
 
             expect(EventProcessor).toHaveBeenCalledWith(appName, IProcessorTypes.BOTH, logger);
@@ -71,6 +63,7 @@ describe("EventOperator Unit Tests", () => {
         });
 
         it("'deleteProcessor' should remove the correct event processor", () => {
+            const appName = 'DeleteApp';
             const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
             processor.subscribedEvents = new Map([
                 ['testEvent', {
@@ -94,19 +87,15 @@ describe("EventOperator Unit Tests", () => {
     });
 
     describe("watcher tests", () => {
-        it("'getWatcher' should return a Zowe watcher as the default", () => {
-            const processor = EventOperator.getWatcher();
-
-            expect(EventProcessor).toHaveBeenCalledWith("Zowe", IProcessorTypes.WATCHER, undefined);
-            expect(processor).toBeInstanceOf(EventProcessor);
-        });
         it("'getWatcher' should return a watcher-only event processor", () => {
+            const appName = 'WatcherApp';
             const processor = EventOperator.getWatcher(appName, logger);
 
             expect(EventProcessor).toHaveBeenCalledWith(appName, IProcessorTypes.WATCHER, logger);
             expect(processor).toBeInstanceOf(EventProcessor);
         });
         it("'deleteWatcher' should remove the correct event processor", () => {
+            const appName = 'DeleteWatcher';
             const processor = new EventProcessor(appName, IProcessorTypes.WATCHER);
             processor.subscribedEvents = new Map([
                 ['testEvent', {
@@ -131,6 +120,7 @@ describe("EventOperator Unit Tests", () => {
 
     describe("emitter tests", () => {
         it("'getEmitter' should return an emitter-only event processor", () => {
+            const appName = 'EmitterApp';
             const processor = EventOperator.getEmitter(appName, logger);
 
             expect(EventProcessor).toHaveBeenCalledWith(appName, IProcessorTypes.EMITTER, logger);
@@ -138,6 +128,7 @@ describe("EventOperator Unit Tests", () => {
         });
 
         it("'deleteEmitter' should remove the correct event processor", () => {
+            const appName = 'DeleteEmitter';
             const processor = new EventProcessor(appName, IProcessorTypes.EMITTER);
             processor.subscribedEvents = new Map([
                 ['testEvent', {

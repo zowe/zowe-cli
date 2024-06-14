@@ -48,7 +48,6 @@ export class EventOperator {
         const procInstance = this.instances.get(appName);
         if (procInstance.processorType !== type) {
             procInstance.processorType = IProcessorTypes.BOTH;
-            // throw new ImperativeError({msg: "Not allowed to get the other hald"})
         }
         return procInstance;
     }

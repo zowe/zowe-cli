@@ -93,6 +93,21 @@ export class EventProcessor {
     }
 
     /**
+     * Private method to emit the event
+     * @private
+     * @param eventName Event to be emitted
+     */
+    private emit(eventName: string) {
+        try {
+            const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
+            event.eventTime = new Date().toISOString();
+            EventUtils.writeEvent(event);
+        } catch (err) {
+            throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
+        }
+    }
+
+    /**
      * Emits an event by updating its timestamp and writing event data.
      *
      * @param {string} eventName - The name of the event to emit.
@@ -105,13 +120,7 @@ export class EventProcessor {
         if (EventUtils.isUserEvent(eventName) || EventUtils.isSharedEvent(eventName)) {
             throw new ImperativeError({ msg: `Processor not allowed to emit Zowe events: ${eventName}` });
         }
-        try {
-            const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
-            event.eventTime = new Date().toISOString();
-            EventUtils.writeEvent(event);
-        } catch (err) {
-            throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
-        }
+        this.emit(eventName);
     }
 
     /**
@@ -122,20 +131,13 @@ export class EventProcessor {
      * @throws {ImperativeError} - If the event cannot be emitted.
      */
     public emitZoweEvent(eventName: string): void {
-        if (this.appName === "Zowe") {
-            if (!EventUtils.isUserEvent(eventName) && !EventUtils.isSharedEvent(eventName)) {
-                throw new ImperativeError({ msg: `Invalid Zowe event: ${eventName}` });
-            }
-            try {
-                const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
-                event.eventTime = new Date().toISOString();
-                EventUtils.writeEvent(event);
-            } catch (err) {
-                throw new ImperativeError({ msg: `Error writing event: ${eventName}`, causeErrors: err });
-            }
-        }else{
+        if (this.appName !== "Zowe") {
             throw new ImperativeError({ msg: `Processor does not have Zowe permissions: ${eventName}` });
         }
+        if (!EventUtils.isUserEvent(eventName) && !EventUtils.isSharedEvent(eventName)) {
+            throw new ImperativeError({ msg: `Invalid Zowe event: ${eventName}` });
+        }
+        this.emit(eventName);
     }
 
     /**
