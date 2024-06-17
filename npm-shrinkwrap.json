@@ -52,7 +52,7 @@
     },
     "__tests__/__packages__/cli-test-utils": {
       "name": "@zowe/cli-test-utils",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
         "find-up": "^5.0.0",
@@ -63,7 +63,7 @@
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
         "@types/uuid": "^9.0.8",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "peerDependencies": {
         "@zowe/imperative": "^8.0.0-next"
@@ -17616,21 +17616,21 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245",
-        "@zowe/provisioning-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-console-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-logs-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-tso-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202406140245",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053",
+        "@zowe/provisioning-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-console-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-logs-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-tso-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202406172053",
         "find-process": "1.4.7",
         "lodash": "4.17.21",
         "minimatch": "9.0.3",
@@ -17643,7 +17643,7 @@
         "@types/diff": "^5.0.9",
         "@types/lodash": "^4.14.202",
         "@types/tar": "^6.1.11",
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
         "comment-json": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "which": "^4.0.0"
@@ -17652,7 +17652,7 @@
         "node": ">=18.12.0"
       },
       "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202406140245"
+        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202406172053"
       }
     },
     "packages/cli/node_modules/brace-expansion": {
@@ -17702,15 +17702,15 @@
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
         "comment-json": "~4.2.3",
         "string-width": "^4.2.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -17721,7 +17721,7 @@
     },
     "packages/imperative": {
       "name": "@zowe/imperative",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
         "@types/yargs": "^17.0.32",
@@ -17773,7 +17773,7 @@
         "@types/pacote": "^11.1.8",
         "@types/progress": "^2.0.7",
         "@types/stack-trace": "^0.0.29",
-        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202406140245",
+        "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202406172053",
         "concurrently": "^8.0.0",
         "cowsay": "^1.6.0",
         "deep-diff": "^1.0.0",
@@ -17890,16 +17890,16 @@
     },
     "packages/provisioning": {
       "name": "@zowe/provisioning-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
         "js-yaml": "^4.1.0"
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -17911,7 +17911,7 @@
     },
     "packages/secrets": {
       "name": "@zowe/secrets-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "devDependencies": {
@@ -17924,15 +17924,15 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202406140245"
+        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202406172053"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -17944,12 +17944,12 @@
     },
     "packages/zosconsole": {
       "name": "@zowe/zos-console-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -17961,16 +17961,16 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
         "minimatch": "^9.0.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245",
-        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053",
+        "@zowe/zos-uss-for-zowe-sdk": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -18003,15 +18003,15 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202406140245"
+        "@zowe/zos-files-for-zowe-sdk": "8.0.0-next.202406172053"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -18023,12 +18023,12 @@
     },
     "packages/zoslogs": {
       "name": "@zowe/zos-logs-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -18040,12 +18040,12 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -18057,15 +18057,15 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202406140245"
+        "@zowe/zosmf-for-zowe-sdk": "8.0.0-next.202406172053"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/core-for-zowe-sdk": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -18077,15 +18077,15 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "8.0.0-next.202406140245",
+      "version": "8.0.0-next.202406172053",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "^1.15.0"
       },
       "devDependencies": {
         "@types/ssh2": "^1.11.19",
-        "@zowe/cli-test-utils": "8.0.0-next.202406140245",
-        "@zowe/imperative": "8.0.0-next.202406140245"
+        "@zowe/cli-test-utils": "8.0.0-next.202406172053",
+        "@zowe/imperative": "8.0.0-next.202406172053"
       },
       "engines": {
         "node": ">=18.12.0"
