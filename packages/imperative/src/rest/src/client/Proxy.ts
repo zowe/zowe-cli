@@ -122,7 +122,7 @@ export class Proxy {
      * @memberof Proxy
      */
     private static getHttpEnvVariables(): string | undefined {
-        return env.HTTP_PROXY ?? env.http_proxy ?? undefined;
+        return env.HTTP_PROXY ?? env.http_proxy;
     }
 
     /**
@@ -133,7 +133,7 @@ export class Proxy {
      * @memberof Proxy
      */
     private static getHttpsEnvVariables(): string | undefined {
-        return env.HTTPS_PROXY ?? env.https_proxy ?? this.getHttpEnvVariables() ?? undefined;
+        return env.HTTPS_PROXY ?? env.https_proxy ?? this.getHttpEnvVariables();
     }
 
     /**
@@ -145,7 +145,7 @@ export class Proxy {
      * @memberof Proxy
      */
     private static getNoProxyEnvVariables(): string[] | undefined {
-        const noProxyValue = env.NO_PROXY ?? env.no_proxy ?? undefined;
+        const noProxyValue = env.NO_PROXY ?? env.no_proxy;
         if (!noProxyValue) {
             return;
         }
