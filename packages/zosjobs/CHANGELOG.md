@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `7.26.1`
+
+- BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method when encoding parameter is not specified. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
+
 ## `7.25.0`
 
 - Enhancement: Added the ability to set `internalReaderFileEncoding` on the `submitJcl`, `submitJclString`, `submitJclCommon`, `submitJclNotify`, and `submitJclNotifyCommon` Jobs APIs [#2139](https://github.com/zowe/zowe-cli/pull/2139)
