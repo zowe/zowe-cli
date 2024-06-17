@@ -139,7 +139,7 @@ export class PMFConstants {
         if (this.PLUGIN_USING_CONFIG) {
             this.PLUGIN_CONFIG.paths.forEach((path: string) => {
                 const dir = dirname(path);
-                modPaths.push(join(dir, (process.platform !== "win32") ? "lib" : "", "node_modules"));
+                modPaths.push(join(dir, process.platform !== "win32" ? "lib" : "", "node_modules"));
             });
         }
         modPaths.push(this.PLUGIN_HOME_LOCATION);

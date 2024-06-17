@@ -81,7 +81,7 @@ describe("Event Emitter", () => {
             const processError = (eventType: string, msg: string, isCustomEvent = true) => {
                 let caughtError: any;
                 try {
-                    iee.instance[(isCustomEvent ? "emitCustomEvent" : "emitEvent")](eventType as any);
+                    iee.instance[isCustomEvent ? "emitCustomEvent" : "emitEvent"](eventType as any);
                 } catch (err) {
                     caughtError = err;
                 }
@@ -104,7 +104,7 @@ describe("Event Emitter", () => {
 
             const processEvent = (theEvent: any, isUser: boolean, isCustomEvent = false) => {
                 // Emit the event
-                iee.instance[(isCustomEvent ? "emitCustomEvent" : "emitEvent")](theEvent);
+                iee.instance[isCustomEvent ? "emitCustomEvent" : "emitEvent"](theEvent);
 
                 const dir = isUser ? userDir : sharedDir;
                 expect(fs.existsSync).toHaveBeenCalledWith(dir);
@@ -152,7 +152,7 @@ describe("Event Emitter", () => {
                 () => { iee.instance.unsubscribe(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED); },
             ];
             cbs.forEach(cb => {
-                expect((getError(cb)).message).toContain("You must initialize the instance");
+                expect(getError(cb).message).toContain("You must initialize the instance");
             });
         });
 
@@ -222,7 +222,7 @@ describe("Event Emitter", () => {
                     iee.instance.subscribe(theEvent, cbSpy);
                 }
 
-                iee.instance[(isCustomEvent ? "emitCustomEvent" : "emitEvent")](theEvent);
+                iee.instance[isCustomEvent ? "emitCustomEvent" : "emitEvent"](theEvent);
                 expect(cbSpy).toHaveBeenCalledTimes(numberOfCalls);
             };
 
@@ -234,9 +234,9 @@ describe("Event Emitter", () => {
             iee.initialize("zowe");
 
             const dummyMap = {
-                has: () => (true),
+                has: () => true,
                 delete: jest.fn(),
-                get: () => ([{ removeAllListeners }, jest.fn()])
+                get: () => [{ removeAllListeners }, jest.fn()]
             };
             // Mocked map of subscriptions
             (iee.instance as any).subscriptions = dummyMap;
@@ -255,10 +255,10 @@ describe("Event Emitter", () => {
             expect((iee as any).initialized).toBeTruthy();
 
             const dummyMap = {
-                has: () => (true),
+                has: () => true,
                 delete: jest.fn(),
                 keys: () => ["dummy"],
-                get: () => ([{ removeAllListeners }, jest.fn()])
+                get: () => [{ removeAllListeners }, jest.fn()]
             };
             // Mocked map of subscriptions
             (iee.instance as any).subscriptions = dummyMap;

@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 import { syntaxErrorHeader } from "../../../messages";
 import { CliUtils } from "../../../utilities/src/CliUtils";
 import { Constants } from "../../../constants";
@@ -124,11 +124,11 @@ export class SyntaxValidator {
          * Prevent empty string options, regardless of if they are
          * required or not  e.g.   --zosmf-profile (without a value)
          */
-        if (!isNullOrUndefined(this.mCommandDefinition.options)) {
+        if (!(this.mCommandDefinition.options == null)) {
             for (const option of this.mCommandDefinition.options) {
-                if (!isNullOrUndefined(commandArguments[option.name]) &&
+                if (!(commandArguments[option.name] == null) &&
                     (option.type !== "stringOrEmpty" && commandArguments[option.name] === "") ||
-                    (option.type !== "boolean" && commandArguments[option.name] === true)) {
+                    option.type !== "boolean" && commandArguments[option.name] === true) {
                     valid = false;
                     this.emptyValueError(responseObject, option.name);
                 }
@@ -143,7 +143,7 @@ export class SyntaxValidator {
          * Imperative gets a chance to detect them.
          */
         if (this.mCommandDefinition.type === "command" &&
-            !isNullOrUndefined(this.mCommandDefinition.name) &&
+            !(this.mCommandDefinition.name == null) &&
             commandArguments._.length > expectedUnderscoreLength) {
             valid = false;
             this.unknownPositionalError(responseObject, commandArguments, expectedUnderscoreLength);
@@ -202,14 +202,14 @@ export class SyntaxValidator {
          * we would like to have more syntax validation and control over the error message. Therefore, the mark them
          * as "optional" to yargs and enforce the required here.
          */
-        if (!isNullOrUndefined(this.mCommandDefinition.positionals) && this.mCommandDefinition.positionals.length > 0) {
+        if (!(this.mCommandDefinition.positionals == null) && this.mCommandDefinition.positionals.length > 0) {
             const missingPositionals: ICommandPositionalDefinition[] = [];
             for (const positional of this.mCommandDefinition.positionals) {
                 if (positional.required) {
                     // Use replace to trim possible ... which is used for arrays
                     const positionalName = positional.name.replace("...", "");
                     if (commandArguments[positionalName] == null ||
-                        (positional.type !== "stringOrEmpty" && commandArguments[positionalName] === "")) {
+                        positional.type !== "stringOrEmpty" && commandArguments[positionalName] === "") {
                         missingPositionals.push(positional);
                     }
                 }
@@ -223,10 +223,10 @@ export class SyntaxValidator {
              * Validate that the positional parameter matches the supplied regex.
              */
             for (const positional of this.mCommandDefinition.positionals) {
-                if (!isNullOrUndefined(commandArguments[positional.name])) {
+                if (!(commandArguments[positional.name] == null)) {
                     if (positional.regex) {
-                        if (isNullOrUndefined(commandArguments[positional.name]
-                            .toString().match(new RegExp(positional.regex)))) {
+                        if (commandArguments[positional.name]
+                            .toString().match(new RegExp(positional.regex) == null)) {
                             valid = false;
                             this.positionalParameterInvalid(positional,
                                 commandArguments[positional.name], responseObject);
@@ -236,9 +236,9 @@ export class SyntaxValidator {
                         valid = this.validateNumeric(commandArguments[positional.name], positional, responseObject, true) && valid;
                     }
 
-                    if (!isNullOrUndefined(positional.stringLengthRange) &&
-                        !isNullOrUndefined(positional.stringLengthRange[0]) &&
-                        !isNullOrUndefined(positional.stringLengthRange[1])) {
+                    if (!(positional.stringLengthRange == null) &&
+                        !(positional.stringLengthRange[0] == null) &&
+                        !(positional.stringLengthRange[1] == null)) {
                         valid = this.validateOptionValueLength(positional, commandArguments[positional.name], responseObject, true) && valid;
                     }
                 }
@@ -261,7 +261,7 @@ export class SyntaxValidator {
              * If omitting an option implies that some other option must be specified,
              * validate that with any missing options
              */
-            if (!isNullOrUndefined(optionDef.absenceImplications) && optionDef.absenceImplications.length > 0) {
+            if (!(optionDef.absenceImplications == null) && optionDef.absenceImplications.length > 0) {
                 for (const implication of optionDef.absenceImplications) {
                     if (!util.optionWasSpecified(optionName, this.mCommandDefinition, commandArguments)
                         && !util.optionWasSpecified(implication, this.mCommandDefinition, commandArguments)) {
@@ -293,7 +293,7 @@ export class SyntaxValidator {
                 }
 
                 // check if the value of the option conforms to the allowableValues (if any)
-                if (!isNullOrUndefined(optionDef.allowableValues)) {
+                if (!(optionDef.allowableValues == null)) {
                     // Make a copy of optionDef, so that modifications below are only used in this place
                     const optionDefCopy: ICommandOptionDefinition = JSON.parse(JSON.stringify(optionDef));
                     // Use modified regular expressions for allowable values to check and to generate error
@@ -320,7 +320,7 @@ export class SyntaxValidator {
                         });
                 }
 
-                if (!isNullOrUndefined(optionDef.conflictsWith) && optionDef.conflictsWith.length > 0) {
+                if (!(optionDef.conflictsWith == null) && optionDef.conflictsWith.length > 0) {
                     for (const conflict of optionDef.conflictsWith) {
                         if (util.optionWasSpecified(conflict, this.mCommandDefinition, commandArguments)) {
                             this.optionCombinationInvalidError(optionDef,
@@ -333,7 +333,7 @@ export class SyntaxValidator {
                 /**
                  * Check validity of implications
                  */
-                if (!isNullOrUndefined(optionDef.implies) && optionDef.implies.length > 0) {
+                if (!(optionDef.implies == null) && optionDef.implies.length > 0) {
                     for (const implication of optionDef.implies) {
                         if (!util.optionWasSpecified(implication, this.mCommandDefinition, commandArguments)) {
                             this.optionDependencyError(optionDef, this.mOptionDefinitionsMap[implication],
@@ -346,7 +346,7 @@ export class SyntaxValidator {
                 /**
                  * Check validity of 'implication alternatives' (.impliesOneOf())
                  */
-                if (!isNullOrUndefined(optionDef.impliesOneOf) && optionDef.impliesOneOf.length > 0) {
+                if (!(optionDef.impliesOneOf == null) && optionDef.impliesOneOf.length > 0) {
                     let implicationSatisfied = false;
                     for (const implication of optionDef.impliesOneOf) {
                         if (util.optionWasSpecified(implication, this.mCommandDefinition, commandArguments)) {
@@ -395,9 +395,9 @@ export class SyntaxValidator {
                 /**
                  * Validate option values
                  */
-                if (!isNullOrUndefined(optionDef.numericValueRange) &&
-                    !isNullOrUndefined(optionDef.numericValueRange[0]) &&
-                    !isNullOrUndefined(optionDef.numericValueRange[1])) {
+                if (!(optionDef.numericValueRange == null) &&
+                    !(optionDef.numericValueRange[0] == null) &&
+                    !(optionDef.numericValueRange[1] == null)) {
                     valid = this.validateOptionValueRange(optionDef, commandArguments[optionDef.name],
                         responseObject) && valid;
                 }
@@ -405,9 +405,9 @@ export class SyntaxValidator {
                 /**
                  * Validate option lengths
                  */
-                if (!isNullOrUndefined(optionDef.stringLengthRange) &&
-                    !isNullOrUndefined(optionDef.stringLengthRange[0]) &&
-                    !isNullOrUndefined(optionDef.stringLengthRange[1])) {
+                if (!(optionDef.stringLengthRange == null) &&
+                    !(optionDef.stringLengthRange[0] == null) &&
+                    !(optionDef.stringLengthRange[1] == null)) {
                     valid = this.validateOptionValueLength(optionDef, commandArguments[optionDef.name],
                         responseObject) && valid;
                 }
@@ -422,14 +422,14 @@ export class SyntaxValidator {
                     }
                 }
 
-                if (!isNullOrUndefined(optionDef.valueImplications) && Object.keys(optionDef.valueImplications).length > 0) {
+                if (!(optionDef.valueImplications == null) && Object.keys(optionDef.valueImplications).length > 0) {
                     for (const value of Object.keys(optionDef.valueImplications)) {
                         const implicationObject: ICommandOptionValueImplications
                             = optionDef.valueImplications[value];
-                        if ((implicationObject.isCaseSensitive &&
-                            commandArguments[optionName] === value) ||
-                            (!implicationObject.isCaseSensitive &&
-                                commandArguments[optionName].toUpperCase() === value.toUpperCase())) {
+                        if (implicationObject.isCaseSensitive &&
+                            commandArguments[optionName] === value ||
+                            !implicationObject.isCaseSensitive &&
+                                commandArguments[optionName].toUpperCase() === value.toUpperCase()) {
                             for (const impliedOption of implicationObject.impliedOptionNames) {
                                 if (!util.optionWasSpecified(impliedOption,
                                     this.mCommandDefinition, commandArguments)) {
@@ -504,7 +504,7 @@ export class SyntaxValidator {
 
         if (!isPositional) {
             const def = optionDefinition as ICommandOptionDefinition;
-            aliasString = (!isNullOrUndefined(def.aliases) && def.aliases.length > 0) ?
+            aliasString = !(def.aliases == null) && def.aliases.length > 0 ?
                 "(" + def.aliases.map((alias: string) => {
                     return this.getDashFormOfOption(alias);
                 }).join(",") + ")" : "";
@@ -615,8 +615,8 @@ export class SyntaxValidator {
         let valid: boolean = true;
         const min = optionDefinition.numericValueRange[0];
         const max = optionDefinition.numericValueRange[1];
-        if ((optionValue < min) ||
-            (optionValue > max)) {
+        if (optionValue < min ||
+            optionValue > max) {
             responseObject.console.errorHeader(syntaxErrorHeader.message);
             const msg: string = responseObject.console.error("Invalid numeric value specified for option:\n{{option}}\n\n" +
                 "You specified:\n{{value}}\n\n" +
@@ -705,7 +705,7 @@ export class SyntaxValidator {
                 {message: msg, optionInError: optionDefinition.name, definition: optionDefinition});
         }
 
-        const valid = (duplicateValuesSet.size === 0);
+        const valid = duplicateValuesSet.size === 0;
         return valid;
     }
 

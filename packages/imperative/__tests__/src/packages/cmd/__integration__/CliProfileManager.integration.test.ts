@@ -21,15 +21,10 @@ import { bananaProfile, getConfig, PROFILE_TYPE } from "./CliProfileManagerTestC
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 describe("Cli Profile Manager", () => {
-    const mainModule = process.mainModule;
     const testLogger = TestLogger.getTestLogger();
     const profileTypeOne = "banana";
 
     beforeAll(async () => {
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "CMD_CLI_CLI_HOME",
             testName: "basic_profile_mgr"
@@ -37,7 +32,6 @@ describe("Cli Profile Manager", () => {
     });
 
     afterAll(() => {
-        process.mainModule = mainModule;
         TestUtil.rimraf(TEST_ENVIRONMENT.workingDir);
     });
 

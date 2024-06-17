@@ -216,18 +216,18 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     constructor(params?: ICommandResponseParms) {
-        this.mControl = (params == null) ? {} : params;
+        this.mControl = params == null ? {} : params;
         this.mArguments = this.mControl.args;
         this.mDefinition = this.mControl.definition;
         this.mPrimaryTextColor = this.mControl.primaryTextColor == null ? this.mPrimaryTextColor : this.mControl.primaryTextColor;
         ImperativeExpect.toNotBeEqual(this.mPrimaryTextColor.trim(), "",
             `${CommandResponse.RESPONSE_ERR_TAG} The primary text color supplied is blank. Must provide a valid color.`);
         const formats: string[] = ["json", "default"];
-        this.mResponseFormat = (this.mControl.responseFormat == null) ? "default" : this.mControl.responseFormat;
+        this.mResponseFormat = this.mControl.responseFormat == null ? "default" : this.mControl.responseFormat;
         ImperativeExpect.toBeOneOf(this.mResponseFormat, formats,
             `${CommandResponse.RESPONSE_ERR_TAG} Response format invalid. Valid formats: "${formats.join(",")}"`);
-        this.mSilent = (this.mControl.silent == null) ? false : this.mControl.silent;
-        this.mProgressBarSpinnerChars = (this.mControl.progressBarSpinner == null) ? this.mProgressBarSpinnerChars : this.mControl.progressBarSpinner;
+        this.mSilent = this.mControl.silent == null ? false : this.mControl.silent;
+        this.mProgressBarSpinnerChars = this.mControl.progressBarSpinner == null ? this.mProgressBarSpinnerChars : this.mControl.progressBarSpinner;
         this.mStream = params ? params.stream : undefined;
     }
 
@@ -252,8 +252,8 @@ export class CommandResponse implements ICommandResponseApi {
                         `Output format must be one of the following: ${OptionConstants.RESPONSE_FORMAT_TYPES.toString()}`);
 
                     // If the output is an array and the length is 0 or - do nothing
-                    if ((Array.isArray(format.output) && format.output.length === 0) ||
-                        (Object.keys(format.output).length === 0 && format.output.constructor === Object)) {
+                    if (Array.isArray(format.output) && format.output.length === 0 ||
+                        Object.keys(format.output).length === 0 && format.output.constructor === Object) {
                         return;
                     }
 
@@ -272,11 +272,11 @@ export class CommandResponse implements ICommandResponseApi {
 
                     // Depending on the command definition and arguments, override the format options
                     if (outer.mDefinition != null && outer.mDefinition.outputFormatOptions != null) {
-                        formatCopy.format = (outer.mArguments != null && outer.mArguments.responseFormatType != null) ?
+                        formatCopy.format = outer.mArguments != null && outer.mArguments.responseFormatType != null ?
                             outer.mArguments.responseFormatType : formatCopy.format;
-                        formatCopy.fields = (outer.mArguments != null && outer.mArguments.responseFormatFilter != null) ?
+                        formatCopy.fields = outer.mArguments != null && outer.mArguments.responseFormatFilter != null ?
                             outer.mArguments.responseFormatFilter : formatCopy.fields;
-                        formatCopy.header = (outer.mArguments != null && outer.mArguments.responseFormatHeader != null) ?
+                        formatCopy.header = outer.mArguments != null && outer.mArguments.responseFormatHeader != null ?
                             outer.mArguments.responseFormatHeader : formatCopy.header;
                     }
 
@@ -304,7 +304,7 @@ export class CommandResponse implements ICommandResponseApi {
                 private formatOutput(params: ICommandOutputFormat, response: CommandResponse) {
 
                     // If a single filter is specified, save the field the data was extracted from
-                    const extractedFrom = (params.fields != null && params.fields.length === 1 && typeof params.output !== "string") ?
+                    const extractedFrom = params.fields != null && params.fields.length === 1 && typeof params.output !== "string" ?
                         params.fields[0] : undefined;
 
                     // If filter fields are present, filter the object
@@ -387,7 +387,7 @@ export class CommandResponse implements ICommandResponseApi {
 
                                     // Build the table
                                     table = TextUtils.getTable(params.output, "yellow", CommandResponse.MAX_COLUMN_WIDTH,
-                                        (params.header != null) ? params.header : false);
+                                        params.header != null ? params.header : false);
                                 } catch (tableErr) {
                                     throw new ImperativeError({
                                         msg: `Error formulating table for command response. ` +
@@ -424,8 +424,8 @@ export class CommandResponse implements ICommandResponseApi {
                 private errorDetails(params: ICommandOutputFormat, appliedTo: string, extractedFrom?: string): string {
                     return `The format type of "${params.format}" can only be applied to ${appliedTo}.\n` +
                         `The data being formatted is of type ` +
-                        `"${(Array.isArray(params.output)) ? "array" : typeof params.output}".` +
-                        `${(extractedFrom != null) ? `\nNote that the data being formatted was extracted from property "${extractedFrom}" ` +
+                        `"${Array.isArray(params.output) ? "array" : typeof params.output}".` +
+                        `${extractedFrom != null ? `\nNote that the data being formatted was extracted from property "${extractedFrom}" ` +
                             `because that field was specified as the single filter.` : ""}`;
                 }
 
@@ -648,7 +648,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * completely overwritten.
                  */
                 public setObj(data: any, merge = false) {
-                    outer.mData = (merge) ? DeepMerge(outer.mData, data) : data;
+                    outer.mData = merge ? DeepMerge(outer.mData, data) : data;
                 }
 
                 /**
@@ -732,7 +732,7 @@ export class CommandResponse implements ICommandResponseApi {
                         this.mProgressBarStdoutStartIndex = outer.mStdout.length;
                         this.mProgressBarStderrStartIndex = outer.mStderr.length;
                         this.mProgressTask = params.task;
-                        let stream: any = (params.stream == null) ? process.stderr : params.stream;
+                        let stream: any = params.stream == null ? process.stderr : params.stream;
                         const arbitraryColumnSize = 80;
 
                         // if we have an outer stream (e.g. socket connection for daemon mode) use it
@@ -767,7 +767,7 @@ export class CommandResponse implements ICommandResponseApi {
 
                         // Set the interval based on the params of the default
                         this.mProgressBarInterval = setInterval(this.updateProgressBar.bind(this),
-                            (params.updateInterval == null) ? this.mProgressBarPollFrequency : params.updateInterval);
+                            params.updateInterval == null ? this.mProgressBarPollFrequency : params.updateInterval);
                     }
                 }
 
@@ -871,7 +871,7 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     public bufferStdout(data: Buffer | string) {
-        this.mStdout = Buffer.concat([this.mStdout, ((data instanceof Buffer) ? data : Buffer.from(data))]);
+        this.mStdout = Buffer.concat([this.mStdout, data instanceof Buffer ? data : Buffer.from(data)]);
     }
 
     /**
@@ -881,7 +881,7 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     public bufferStderr(data: Buffer | string) {
-        this.mStderr = Buffer.concat([this.mStderr, ((data instanceof Buffer) ? data : Buffer.from(data))]);
+        this.mStderr = Buffer.concat([this.mStderr, data instanceof Buffer ? data : Buffer.from(data)]);
     }
 
     /**

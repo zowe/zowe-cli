@@ -10,7 +10,7 @@
 */
 
 import { Arguments, Argv, Options } from "yargs";
-import { isNullOrUndefined, inspect } from "util";
+import { inspect } from "util";
 import { Constants } from "../../../constants";
 import { IYargsResponse } from "./doc/IYargsResponse";
 import { AbstractCommandYargs, YargsCommandCompleted } from "./AbstractCommandYargs";
@@ -32,13 +32,13 @@ export class CommandYargs extends AbstractCommandYargs {
      * @param {ICommandOptionDefinition[]} zoweOptions: The option definition document array.
      */
     public static defineOptionsToYargs(yargsInstance: Argv, zoweOptions: ICommandOptionDefinition[]): void {
-        if (!isNullOrUndefined(zoweOptions)) {
+        if (!(zoweOptions == null)) {
             for (const option of zoweOptions) {
                 const definition: Options = {
                     alias: option.aliases,
                     description: option.description
                 };
-                if (!isNullOrUndefined(option.type)) {
+                if (!(option.type == null)) {
                     // don't let yargs handle any types that we are validating ourselves
                     // and don't use custom types as the yargs type since yargs won't understand
                     if (option.type !== "number" &&
@@ -119,7 +119,7 @@ export class CommandYargs extends AbstractCommandYargs {
                     const handlerDefinition: any[] = [];
                     for (const parent of this.parents) {
                         const definition: any = parent.definition;
-                        if (!isNullOrUndefined(definition.handler)) {
+                        if (!(definition.handler == null)) {
                             handlerDefinition.push(definition);
                         }
                     }
@@ -176,11 +176,11 @@ export class CommandYargs extends AbstractCommandYargs {
     private buildPositionalString(): string {
         if (this.definition.positionals) {
             this.log.debug("Building positional string from: " + this.definition.name);
-            let yargPositionalSyntax: string = (this.definition.positionals.length > 0) ? " " : "";
+            let yargPositionalSyntax: string = this.definition.positionals.length > 0 ? " " : "";
             this.definition.positionals.forEach((positional) => {
-                yargPositionalSyntax += ("[" + positional.name + "] ");
+                yargPositionalSyntax += "[" + positional.name + "] ";
             });
-            const posString: string = yargPositionalSyntax.substr(0, yargPositionalSyntax.lastIndexOf(" "));
+            const posString: string = yargPositionalSyntax.substring(0, yargPositionalSyntax.lastIndexOf(" "));
             this.log.debug("Positional String: " + posString);
             return posString;
         } else {
@@ -210,7 +210,7 @@ export class CommandYargs extends AbstractCommandYargs {
                 if (!AbstractCommandYargs.STOP_YARGS) {
 
                     // Determine if we should print JSON
-                    const printJson: boolean = (index === handlers.length - 1) &&
+                    const printJson: boolean = index === handlers.length - 1 &&
                         (argsForHandler[Constants.JSON_OPTION] as boolean);
 
                     // Protect against issues allocating the command processor
@@ -232,7 +232,7 @@ export class CommandYargs extends AbstractCommandYargs {
                         }).invoke({
                             arguments: argsForHandler,
                             silent: false,
-                            responseFormat: (printJson) ? "json" : "default"
+                            responseFormat: printJson ? "json" : "default"
                         }).then((commandHandlerResponse) => {
                             /**
                              * Push the responses - If an error occurs, reject the promise with the error response.
@@ -258,7 +258,7 @@ export class CommandYargs extends AbstractCommandYargs {
                     } catch (processorError) {
                         const response = new CommandResponse({
                             silent: false,
-                            responseFormat: (printJson) ? "json" : "default",
+                            responseFormat: printJson ? "json" : "default",
                             stream: ImperativeConfig.instance.daemonContext?.stream
                         });
                         response.failed();

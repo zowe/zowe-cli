@@ -222,7 +222,7 @@ export class Search {
                 // Update the progress bar
                 if (searchOptions.progressTask) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                    searchOptions.progressTask.percentComplete = Math.floor(((complete / total) / 2) * 100);
+                    searchOptions.progressTask.percentComplete = Math.floor(complete / total / 2 * 100);
                     searchOptions.progressTask.statusMessage = "Initial mainframe search: " + complete + " of " + total + " entries checked";
                 }
 
@@ -285,11 +285,11 @@ export class Search {
                 if (searchOptions.progressTask) {
                     if (searchOptions.mainframeSearch) {
                         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                        searchOptions.progressTask.percentComplete = Math.floor((((complete / total) / 2) * 100) + 50);
+                        searchOptions.progressTask.percentComplete = Math.floor(complete / total / 2 * 100 + 50);
                         searchOptions.progressTask.statusMessage = "Performing search: " + complete + " of " + total + " entries checked";
                     } else {
                         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                        searchOptions.progressTask.percentComplete = Math.floor(((complete / total) * 100));
+                        searchOptions.progressTask.percentComplete = Math.floor(complete / total * 100);
                         searchOptions.progressTask.statusMessage = "Performing search: " + complete + " of " + total + " entries checked";
                     }
                 }

@@ -95,7 +95,7 @@ describe("imperative-test-cli config secure", () => {
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
         const securedValue = await keytar.getPassword(service, "secure_config_props");
-        const securedValueJson = (securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString()));
+        const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
         expect(response.stderr.toString()).toEqual("");
@@ -138,7 +138,7 @@ describe("imperative-test-cli config secure", () => {
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
         const securedValue = await keytar.getPassword(service, "secure_config_props");
-        const securedValueJson = (securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString()));
+        const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
         expect(response.stderr.toString()).toEqual("");

@@ -10,7 +10,8 @@
 */
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
-import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions, List } from "../../../../src";
+import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke,
+    ICreateVsamOptions, List, IZosFilesResponse } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
@@ -29,7 +30,8 @@ describe("Create data set", () => {
         dsname: likePsDataSetName,
         dsorg: "PS",
         spacu: "TRK",
-        blksz: "800"
+        blksz: "800",
+        dsntype: "BASIC"
     };
 
     beforeEach(() => {
@@ -170,9 +172,13 @@ describe("Create data set", () => {
 
             dsOptions.dsntype = "PDS";
             dsOptions.responseTimeout = 5;
+            let response: IZosFilesResponse;
 
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
-
+            try {
+                response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+            } finally {
+                dsOptions.responseTimeout = undefined; // This was messing up other tests if the code was not hit
+            }
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
             expect(mySpy).toHaveBeenCalledWith(
@@ -183,11 +189,11 @@ describe("Create data set", () => {
                     ...CreateDefaults.DATA_SET.SEQUENTIAL,
                     ...dsOptions,
                     ...{
+                        responseTimeout: 5, // Therefore this is required, because it is no longer in dsOptions
                         secondary: 1
                     }
                 })
             );
-            dsOptions.responseTimeout = undefined;
         });
 
         it("should be able to allocate like from a sequential data set", async () => {
@@ -232,8 +238,12 @@ describe("Create data set", () => {
                 };
             });
 
-            const response2 = await Create.dataSetLike(dummySession, dataSetName, likePsDataSetName, dsOptions);
-
+            let response2: IZosFilesResponse;
+            try {
+                response2 = await Create.dataSetLike(dummySession, dataSetName, likePsDataSetName, dsOptions);
+            } finally {
+                dsOptions.responseTimeout = undefined;
+            }
             expect(response2.success).toBe(true);
             expect(response2.commandResponse).toContain("created successfully");
             expect(mySpy).toHaveBeenCalledWith(
@@ -248,7 +258,6 @@ describe("Create data set", () => {
                     }
                 })
             );
-            dsOptions.responseTimeout = undefined;
         });
 
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {

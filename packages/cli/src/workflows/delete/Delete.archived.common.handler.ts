@@ -76,10 +76,10 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 const successWfs: IWorkflowsInfo[] = [];
                 const failedWfs: IWorkflowsInfo[] = [];
                 this.arguments.workflowName.includes(".*")
-                    ? (normalized = this.arguments.workflowName
+                    ? normalized = this.arguments.workflowName
                         .split(".*")
-                        .join("*"))
-                    : (wildCard = false);
+                        .join("*")
+                    : wildCard = false;
 
                 listWorkflows = await ListArchivedWorkflows.listArchivedWorkflows(
                     this.mSession
@@ -92,14 +92,14 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 ) {
                 // Swap between checks to avoid "glob pattern string required" error.
                     wildCard
-                        ? (check = minimatch(
+                        ? check = minimatch(
                             listWorkflows.archivedWorkflows[i].workflowName,
                             normalized
-                        ))
-                        : (check =
+                        )
+                        : check =
                               listWorkflows.archivedWorkflows[i]
                                   .workflowName ===
-                              this.arguments.workflowName);
+                              this.arguments.workflowName;
 
                     if (check) {
                         try {

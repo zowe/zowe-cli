@@ -109,8 +109,8 @@ export class Utilities {
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const stdout = jsonObj.stdout[0];
             // Tests if binary tag set
-            return (stdout.indexOf("b ") > -1) ||
-                (stdout.indexOf("UTF-") > -1) || (stdout.indexOf("ISO8859-") > -1) || (stdout.indexOf("IBM-850") > -1);
+            return stdout.indexOf("b ") > -1 ||
+                stdout.indexOf("UTF-") > -1 || stdout.indexOf("ISO8859-") > -1 || stdout.indexOf("IBM-850") > -1;
         }
         return false;
     }

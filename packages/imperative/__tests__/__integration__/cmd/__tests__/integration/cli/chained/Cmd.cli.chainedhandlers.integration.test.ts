@@ -27,18 +27,6 @@ describe("cmd-cli chained handlers", () => {
         });
     });
 
-    const mainModule = process.mainModule;
-
-    beforeEach(() => {
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-    });
-
-    afterEach(() => {
-        process.mainModule = mainModule;
-    });
-
     it("should not allow us to configure chained handlers that map arguments to indices beyond " +
         "the end of the list of chained handlers (edge case - one beyond the length of the array)", async () => {
         const fakeHandler = "my_handler_here";

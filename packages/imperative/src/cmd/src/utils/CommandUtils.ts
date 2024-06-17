@@ -10,7 +10,6 @@
 */
 
 import { Arguments } from "yargs";
-import { isNullOrUndefined } from "util";
 import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { ICommandOptionDefinition } from "../doc/option/ICommandOptionDefinition";
 import { CliUtils } from "../../../utilities/src/CliUtils";
@@ -56,9 +55,9 @@ export class CommandUtils {
         for (const option of options) {
             aliases.push(...option.aliases);
         }
-        if (!isNullOrUndefined(commandDefinition.positionals)) {
+        if (!(commandDefinition.positionals == null)) {
             for (const positional of commandDefinition.positionals) {
-                if (!isNullOrUndefined(commandArguments[positional.name])) {
+                if (!(commandArguments[positional.name] == null)) {
                     command += " \"" + commandArguments[positional.name] + "\"";
                 }
             }
@@ -84,7 +83,7 @@ export class CommandUtils {
      */
     public static optionWasSpecified(optionName: string, commandDefinition: ICommandDefinition, args: ICommandArguments["args"]): boolean {
         const optionDef = CommandUtils.getOptionDefinitionFromName(optionName, commandDefinition);
-        if (isNullOrUndefined(optionDef)) {
+        if (optionDef == null) {
             // if it's not an option, it's not specified
             return false;
         }
@@ -92,7 +91,7 @@ export class CommandUtils {
             return args[optionName] !== undefined;
         }
         else {
-            return !isNullOrUndefined(args[optionName]);
+            return !(args[optionName] == null);
         }
     }
 
@@ -106,7 +105,7 @@ export class CommandUtils {
     public static getOptionDefinitionFromName(optionName: string,
         commandDefinition: ICommandDefinition) {
         let optionDef: ICommandOptionDefinition;
-        if (!isNullOrUndefined(commandDefinition.options)) {
+        if (!(commandDefinition.options == null)) {
             for (const option of commandDefinition.options) {
                 if (option.name === optionName) {
                     optionDef = option;

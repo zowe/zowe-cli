@@ -51,7 +51,7 @@ describe("Search", () => {
     function generateDS(name: string, pds: boolean, poe: boolean = false, migr: boolean = false) {
         return {
             dsname: name,
-            dsorg: pds ? (poe ? "PO-E" : "PO") : "PS",
+            dsorg: pds ? poe ? "PO-E" : "PO" : "PS",
             migr: migr ? "yes" : undefined
         };
     }

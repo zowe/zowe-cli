@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import * as CoreUtils from "../../../src/utils/CoreUtils";
 
 jest.mock("fs");

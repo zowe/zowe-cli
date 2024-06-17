@@ -11,7 +11,6 @@
 
 import { IHelpGeneratorFactoryParms } from "../doc/IHelpGeneratorFactoryParms";
 import { IHelpGeneratorFactory } from "../doc/IHelpGeneratorFactory";
-import { isNullOrUndefined } from "util";
 import { IHelpGeneratorParms } from "../doc/IHelpGeneratorParms";
 import { IHelpGenerator } from "../doc/IHelpGenerator";
 import { ImperativeExpect } from "../../../../expect";
@@ -69,7 +68,7 @@ export abstract class AbstractHelpGeneratorFactory implements IHelpGeneratorFact
         this.mRootCommandName = parms.rootCommandName;
         // TODO - what is the default color for imperative?
         this.mPrimaryHighlightColor = parms.primaryHighlightColor || "yellow";
-        this.mProduceMarkdown = isNullOrUndefined(parms.produceMarkdown) ? false : parms.produceMarkdown;
+        this.mProduceMarkdown = parms.produceMarkdown == null ? false : parms.produceMarkdown;
     }
 
     /**

@@ -579,11 +579,11 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if ((nextMsg.msgText.includes("Your old V1 profiles have been moved") &&
-                             nextMsg.msgText.includes("Delete them by re-running this operation and requesting deletion"))
+                        if (nextMsg.msgText.includes("Your old V1 profiles have been moved") &&
+                             nextMsg.msgText.includes("Delete them by re-running this operation and requesting deletion")
                             ||
-                            (nextMsg.msgText.includes("Your new profiles have been saved") &&
-                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor"))
+                            nextMsg.msgText.includes("Your new profiles have been saved") &&
+                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor")
                         ) {
                             numMsgsFound++;
                         }

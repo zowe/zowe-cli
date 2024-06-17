@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { IOperationResult } from "./doc/IOperationResult";
 import { TaskStage } from "./TaskStage";
 import * as fs from "fs";
@@ -188,7 +189,7 @@ export abstract class Operation<T> implements ITaskWithStatus {
             operationUndoPossible: false,
             operationUndoFailed: false,
             operationUndoAttempted: false,
-            critical: (criticalOperation != null ? criticalOperation : false),
+            critical: criticalOperation != null ? criticalOperation : false,
             output: null,
             infoMessages: [],
             errorMessages: []
@@ -320,7 +321,7 @@ export abstract class Operation<T> implements ITaskWithStatus {
      * @param {string} message: The result message you wish to append.
      */
     set operationResultMessage(message: string) {
-        this.mOperationResult.resultMessage += (" " + message);
+        this.mOperationResult.resultMessage += " " + message;
     }
 
     /**

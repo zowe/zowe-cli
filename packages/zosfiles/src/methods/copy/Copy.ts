@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
-    TaskStage, IHeaderContent } from "@zowe/imperative";
+    IHeaderContent, TaskStage } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -262,7 +262,7 @@ export class Copy {
             *  Don't overwrite an existing dataset or member if overwrite is false
             */
             if(overwriteTarget || !targetFound ||
-                (targetMember != undefined && !targetMemberFound )){
+                targetMember != undefined && !targetMemberFound ){
                 /**
                  *  Upload the source data to the target dataset
                  */
@@ -304,7 +304,7 @@ export class Copy {
             storclass: targetOptions.targetStorageClass,
             mgntclass: targetOptions.targetManagementClass,
             dataclass: targetOptions.targetDataClass,
-            dirblk: parseInt(((dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE" ) ? "10" : "0"))
+            dirblk: parseInt(dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE"  ? "10" : "0")
         }));
     }
 

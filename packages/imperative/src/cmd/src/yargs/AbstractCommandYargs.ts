@@ -210,7 +210,7 @@ export abstract class AbstractCommandYargs {
      */
     public constructDefinitionTree(): ICommandDefinition {
         const parents: GroupCommandYargs[] = this.parents;
-        return (parents[0]) ? JSON.parse(JSON.stringify(parents[0].definition)) : {};
+        return parents[0] ? JSON.parse(JSON.stringify(parents[0].definition)) : {};
     }
 
     /**
@@ -234,7 +234,7 @@ export abstract class AbstractCommandYargs {
         if (responses != null && responses.length > 0) {
             for (const response of responses) {
                 // use the maximum exit code from all command responses
-                if (exitCode == null || (response.exitCode != null && response.exitCode > exitCode)) {
+                if (exitCode == null || response.exitCode != null && response.exitCode > exitCode) {
                     exitCode = response.exitCode;
                 }
             }
@@ -259,7 +259,7 @@ export abstract class AbstractCommandYargs {
          * object is recreated/changed based on the currently specified CLI options
          */
         let tempDefinition: ICommandDefinition;
-        if (args[Constants.HELP_EXAMPLES] && (this.definition.children.length > 0)) {
+        if (args[Constants.HELP_EXAMPLES] && this.definition.children.length > 0) {
             tempDefinition = this.getDepthExamples();
         }
 
@@ -283,7 +283,7 @@ export abstract class AbstractCommandYargs {
                 daemonContext: ImperativeConfig.instance.daemonContext
             }).help(new CommandResponse({
                 silent: false,
-                responseFormat: (args[Constants.JSON_OPTION] || false) ? "json" : "default",
+                responseFormat: args[Constants.JSON_OPTION] || false ? "json" : "default",
                 stream: ImperativeConfig.instance.daemonContext?.stream
             }));
         } catch (helpErr) {
@@ -323,7 +323,7 @@ export abstract class AbstractCommandYargs {
             commandDefinition.examples = [];
         }
 
-        lodashDeep.deepMapValues(this.definition.children, ((value: any, path: any) => {
+        lodashDeep.deepMapValues(this.definition.children, (value: any, path: any) => {
             if(path.endsWith("name") && (path.includes("options") || path.includes("positionals"))) {
                 /* Do nothing */
             } else if(path.endsWith("name") && path.includes("children")) {
@@ -359,13 +359,13 @@ export abstract class AbstractCommandYargs {
 
                 if(tempDescPath === tempOpPath ) {
                     let commandExamples: ICommandExampleDefinition;
-                    (tempPre && (tempDescPath === tempPrePath)) ?
+                    tempPre && tempDescPath === tempPrePath ?
                         commandDefinition.examples[commandDefinition.examples.length - 1].prefix = tempPre
                         :commandExamples = {description: tempDesc, options: tempOp};
                     if(commandExamples) {commandDefinition.examples.push(commandExamples);}
                 }
             }
-        }));
+        });
         return commandDefinition;
     }
 
@@ -395,7 +395,7 @@ export abstract class AbstractCommandYargs {
             }).webHelp(fullCommandName + "_" + this.definition.name,
                 new CommandResponse({
                     silent: false,
-                    responseFormat: (args[Constants.JSON_OPTION] || false) ? "json" : "default",
+                    responseFormat: args[Constants.JSON_OPTION] || false ? "json" : "default",
                     stream: ImperativeConfig.instance.daemonContext?.stream
                 })
             );

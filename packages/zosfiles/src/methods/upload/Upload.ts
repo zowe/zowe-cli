@@ -318,8 +318,8 @@ export class Upload {
                 });
             }
 
-            memberName = dataSetName.substr(dataSetName.indexOf("(")).replace(/[()]/g, "");
-            dataSetName = dataSetName.substr(0, dataSetName.indexOf("("));
+            memberName = dataSetName.substring(dataSetName.indexOf("(")).replace(/[()]/g, "");
+            dataSetName = dataSetName.substring(0, dataSetName.indexOf("("));
         }
 
 

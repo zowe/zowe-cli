@@ -123,7 +123,7 @@ describe("Configuration Update-Schema command handler", () => {
         loadedConfigMock.mockReturnValueOnce(undefined);
         let caughtError = null;
         try {
-            await (new UpdateSchemasHandler()).process(handlerParms);
+            await new UpdateSchemasHandler().process(handlerParms);
         } catch (err) {
             caughtError = err.message;
         }
@@ -134,7 +134,7 @@ describe("Configuration Update-Schema command handler", () => {
     });
 
     it("should print schema JSON", async () => {
-        await (new UpdateSchemasHandler()).process(handlerParms);
+        await new UpdateSchemasHandler().process(handlerParms);
         expect(dataObj).toMatchObject(expectedDataObj);
         expect(logText).toEqual(`Configuration files found: ${Object.keys(expectedDataObj).length}`);
         expect(formatObj).toMatchObject({
