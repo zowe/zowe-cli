@@ -64,12 +64,14 @@ export interface IConvertV1ProfResult {
     v1ScsPluginName: string | null;
 
     /**
+     * This property indicates whether secure credentials were migrated during conversion.
+     *
      * If the old V1 Secure Credential Store plugin was supplying the credential manager
-     * override, that CredMgr has been replaced with the Zowe CLI built-in credential manager.
-     * This property indicates whether the caller must re-initialize the credential Manager
-     * by restarting its app.
+     * override and the CredentialManager was initialized before calling this function,
+     * profile conversion will not be able to migrate credentials from the old SCS plugin
+     * to the current embedded Secure Credential Store.
      */
-    reInitCredMgr: boolean;
+    credsWereMigrated: boolean;
 
     /**
      * The following properties contain information about the success or failure of

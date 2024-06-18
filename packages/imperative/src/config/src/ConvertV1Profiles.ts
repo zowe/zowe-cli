@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { readFileSync } from "jsonfile";
 import { removeSync } from "fs-extra";
 import stripAnsi = require("strip-ansi");
 import { V1ProfileRead, ProfilesConstants, ProfileUtils } from "../../profiles";
@@ -21,8 +22,8 @@ import { IConvertV1ProfOpts, ConvertMsg, ConvertMsgFmt, IConvertV1ProfResult } f
 import { IImperativeOverrides } from "../../imperative/src/doc/IImperativeOverrides";
 import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { AppSettings } from "../../settings";
+import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
 import { ImperativeConfig } from "../../utilities";
-import { PluginIssues } from "../../imperative/src/plugins/utilities/PluginIssues";
 import { CredentialManagerOverride } from "../../security/src/CredentialManagerOverride";
 import { OverridesLoader } from "../../imperative/src/OverridesLoader";
 import { ConfigSchema } from "./ConfigSchema";
@@ -41,6 +42,8 @@ interface IOldPluginInfo {
 
 export class ConvertV1Profiles {
     private static readonly noCfgFilePathNm: string = "CouldNotGetPathToConfigFile";
+    private static readonly builtInCredMgrNm: string = "@zowe/cli";
+    private static readonly credMgrKey: string = "CredentialManager";
 
     private static convertOpts: IConvertV1ProfOpts = null;
     private static convertResult: IConvertV1ProfResult = null;
@@ -49,13 +52,22 @@ export class ConvertV1Profiles {
     private static zoweKeyRing: typeof keyring = undefined;
 
     /**
-     * Convert V1 profiles into a current zowe client config.
-     *      Remove old credential manager overrides.
-     *      Uninstall old SCS plugin.
-     *      Delete old V1 profiles if requested.
+     * Convert V1 profiles into a zowe.config.json file.
+     *
+     * It will also do the following:
+     *    Create a zowe.schema.json file.
+     *    Migrate V1 secure properties into the current consolidated Zowe client secure properties.
+     *    Replace old SCS-plugin credential manager override with the Zowe embedded SCS.
+     *    Delete old V1 profiles (and old V1 secure properties) if requested.
      *
      * Calling this function after having already converted, will not attempt to
      * convert again. However it will still delete the old profiles if requested.
+     *
+     * You should **NOT** initialize the secure credential manager before calling this function.
+     * The CredMgr can only be initialized once. If the old V1 SCS-plugin happens to be configured
+     * as the CredMgr when this function is called, the old V1 SCS-plugin CredMgr is unable
+     * to create the current consolidated Zowe client secure properties. Users will have to
+     * re-enter all of their credentials.
      *
      * @param convertOpts Options that will control the conversion process.
      * @returns Result object into which messages and stats are stored.
@@ -65,7 +77,7 @@ export class ConvertV1Profiles {
         ConvertV1Profiles.convertResult = {
             msgs: [],
             v1ScsPluginName: null,
-            reInitCredMgr: false,
+            credsWereMigrated: true,
             cfgFilePathNm: ConvertV1Profiles.noCfgFilePathNm,
             numProfilesFound: 0,
             profilesConverted: {},
@@ -79,23 +91,26 @@ export class ConvertV1Profiles {
             ConvertV1Profiles.profilesRootDir = ProfileUtils.constructProfilesRootDirectory(ImperativeConfig.instance.cliHome);
             ConvertV1Profiles.oldProfilesDir = `${ConvertV1Profiles.profilesRootDir.replace(/[\\/]$/, "")}-old`;
 
-            if (ConvertV1Profiles.isConversionNeeded()) {
+            if (await ConvertV1Profiles.isConversionNeeded()) {
+                ConvertV1Profiles.replaceOldCredMgrOverride();
+                await ConvertV1Profiles.initCredMgr();
                 await ConvertV1Profiles.moveV1ProfilesToConfigFile();
-                await ConvertV1Profiles.removeOldOverrides();
+            }
+
+            // Report if the old SCS plugin should be uninstalled
+            if (ConvertV1Profiles.convertResult.v1ScsPluginName != null) {
+                ConvertV1Profiles.addToConvertMsgs(
+                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
+                    `The obsolete plug-in '${ConvertV1Profiles.convertResult.v1ScsPluginName}' should be removed ` +
+                    `because it is now part of the core Zowe client.`
+                );
             }
 
             if (convertOpts.deleteV1Profs){
                 await ConvertV1Profiles.deleteV1Profiles();
             }
         } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                "Encountered the following error while trying to convert V1 profiles:"
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                stripAnsi(error.message)
-            );
+            ConvertV1Profiles.addExceptionToConvertMsgs("Encountered the following error while trying to convert V1 profiles:", error);
         }
 
         return ConvertV1Profiles.convertResult;
@@ -105,8 +120,19 @@ export class ConvertV1Profiles {
      * Detect whether we must convert any V1 profiles to a zowe client configuration.
      * @returns True means we must do a conversion. False otherwise.
      */
-    private static isConversionNeeded(): boolean {
+    private static async isConversionNeeded(): Promise<boolean> {
         ConvertV1Profiles.convertResult.numProfilesFound = 0;
+
+        if (ImperativeConfig.instance.config == null) {
+            // Initialization for VSCode extensions does not create the config property, so create it now.
+            ImperativeConfig.instance.config = await Config.load(
+                ImperativeConfig.instance.loadedConfig.name,
+                {
+                    homeDir: ImperativeConfig.instance.loadedConfig.defaultHome
+                }
+            );
+        }
+
         if (ImperativeConfig.instance.config?.exists) {
             // We do not convert if we already have an existing zowe client config
             ConvertV1Profiles.putCfgFileNmInResult(ImperativeConfig.instance.config);
@@ -125,26 +151,101 @@ export class ConvertV1Profiles {
                 if (ConvertV1Profiles.convertResult.numProfilesFound === 0) {
                     ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.REPORT_LINE, noProfilesMsg);
                 }
-            } catch (caughtErr) {
-                ConvertV1Profiles.convertResult.numProfilesFound = 0;
-
+            } catch (error) {
                 // did the profiles directory not exist?
-                if (caughtErr?.additionalDetails?.code === "ENOENT") {
+                if (error?.additionalDetails?.code === "ENOENT") {
                     ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.REPORT_LINE, noProfilesMsg);
                 } else {
                     // must have been some sort of I/O error
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                        `Failed to get V1 profiles in "${ConvertV1Profiles.profilesRootDir}".`
-                    );
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                        stripAnsi(caughtErr.message)
+                    ConvertV1Profiles.addExceptionToConvertMsgs(
+                        `Failed to get V1 profiles in "${ConvertV1Profiles.profilesRootDir}".`, error
                     );
                 }
             }
         }
         return (ConvertV1Profiles.convertResult.numProfilesFound > 0);
+    }
+
+    /**
+     * Replace any detected oldCredMgr override entry in settings.json with the Zowe embedded credMgr.
+     *
+     * After the replacement of the credential manager override, we can then initialize
+     * credential manager later in this class.
+     */
+    private static replaceOldCredMgrOverride(): void {
+        const oldPluginInfo = ConvertV1Profiles.getOldPluginInfo();
+        for (const override of oldPluginInfo.overrides) {
+            if (override === ConvertV1Profiles.credMgrKey) {
+                try {
+                    AppSettings.instance.set("overrides", ConvertV1Profiles.credMgrKey, CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
+                    if (ImperativeConfig.instance.loadedConfig.overrides?.CredentialManager != null) {
+                        delete ImperativeConfig.instance.loadedConfig.overrides.CredentialManager;
+                    }
+                } catch (error) {
+                    ConvertV1Profiles.addExceptionToConvertMsgs("Failed to replace credential manager override setting.", error);
+                }
+            }
+        }
+
+        /* We only had one override in V1 - the old SCS plugin.
+         * So, despite the array for multiple plugins, we just report
+         * the first plugin name in the array as the plugin that our
+         * caller should uninstall.
+         */
+        ConvertV1Profiles.convertResult.v1ScsPluginName =
+            (oldPluginInfo.plugins.length > 0) ? oldPluginInfo.plugins[0] : null;
+    }
+
+    /**
+     * Initialize credential manager so that we can migrate the secure properties that are
+     * stored for V1 profiles to new secure properties for the converted config that we will create.
+     *
+     * For all CLI commands other than convert-profiles, the credential manager is loaded in
+     * Imperative.init and frozen with Object.freeze so it cannot be modified later on.
+     * Because convert-profiles cannot create new secure properties for the converted config
+     * (if the old SCS plugin credMgr is already loaded), Imperative.init does not load the
+     * credential manager for the convert-profiles command.
+     *
+     * VSCode extensions must also avoid initializing the Credential Manager before calling
+     * ConvertV1Profiles.convert.
+     *
+     * If we encounter an error when trying to initialize the credential manager, we report (through
+     * ConvertV1Profiles.convertResult.credsWereMigrated) that creds were not migrated.
+     */
+    private static async initCredMgr(): Promise<void> {
+        if (!CredentialManagerFactory.initialized) {
+            // we must initialize credMgr to get and store credentials
+            try {
+                if (Object.hasOwn(ImperativeConfig.instance, "callerPackageJson")) {
+                    // Since callerPackageJson exists, we know that we are in the convert-profiles command.
+                    // We now initialize CredMgr like all other CLI commands.
+                    await OverridesLoader.load(ImperativeConfig.instance.loadedConfig, ImperativeConfig.instance.callerPackageJson);
+                } else {
+                    // Since callerPackageJson is not set in ImperativeConfig, we are in a VSCode extension.
+                    // Initialize CredMgr with default values.
+                    await CredentialManagerFactory.initialize({
+                        service: null,
+                        Manager: null,
+                        displayName: null,
+                        invalidOnFailure: null
+                    });
+
+                    // Load CredMgr with some initialization properties that we create.
+                    // OverridesLoader crashes unless the overrides property exists.
+                    // The only thing that OverridesLoader wants from package.json is the name.
+                    if (!ImperativeConfig.instance.loadedConfig?.overrides?.CredentialManager) {
+                        ImperativeConfig.instance.loadedConfig.overrides = {};
+                    }
+                    const callerPackageJson: any = {
+                        name: ConvertV1Profiles.builtInCredMgrNm,
+                    };
+                    await OverridesLoader.load(ImperativeConfig.instance.loadedConfig, callerPackageJson);
+                }
+            } catch (error) {
+                ConvertV1Profiles.convertResult.credsWereMigrated = false;
+                ConvertV1Profiles.addExceptionToConvertMsgs("Failed to initialize CredentialManager", error);
+            }
+        }
     }
 
     /**
@@ -154,12 +255,6 @@ export class ConvertV1Profiles {
      */
     private static async moveV1ProfilesToConfigFile(): Promise<void> {
         const convertedConfig: IConfig = Config.empty();
-
-        /* Only the convert-profiles command is able to disable the credential manager
-         * and reload it. For all other commands, the credential manager is loaded in
-         * `Imperative.init` and frozen with `Object.freeze` so cannot be modified later on.
-         */
-        await OverridesLoader.ensureCredentialManagerLoaded();
 
         for (const profileType of V1ProfileRead.getAllProfileDirectories(ConvertV1Profiles.profilesRootDir)) {
             const profileTypeDir = path.join(ConvertV1Profiles.profilesRootDir, profileType);
@@ -197,15 +292,9 @@ export class ConvertV1Profiles {
                         ...(ConvertV1Profiles.convertResult.profilesConverted[profileType] || []), profileName
                     ];
                 } catch (error) {
+                    ConvertV1Profiles.convertResult.credsWereMigrated = false;
                     ConvertV1Profiles.convertResult.profilesFailed.push({ name: profileName, type: profileType, error });
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                        `Failed to read "${profileType}" profile named "${profileName}"`
-                    );
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                        stripAnsi(error.message)
-                    );
+                    ConvertV1Profiles.addExceptionToConvertMsgs(`Failed to read "${profileType}" profile named "${profileName}"`, error);
                 }
             }
 
@@ -217,14 +306,7 @@ export class ConvertV1Profiles {
                 }
             } catch (error) {
                 ConvertV1Profiles.convertResult.profilesFailed.push({ type: profileType, error });
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                    `Failed to find default "${profileType}" profile.`
-                );
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                    stripAnsi(error.message)
-                );
+                ConvertV1Profiles.addExceptionToConvertMsgs(`Failed to find default "${profileType}" profile.`, error);
             }
         }
 
@@ -262,6 +344,7 @@ export class ConvertV1Profiles {
         const newConfig = ImperativeConfig.instance.config;
         newConfig.api.layers.activate(false, true);
         newConfig.api.layers.merge(convertedConfig);
+        ConvertV1Profiles.loadV1Schemas();
         ConfigSchema.updateSchema();
         await newConfig.save();
         ConvertV1Profiles.putCfgFileNmInResult(newConfig);
@@ -278,13 +361,8 @@ export class ConvertV1Profiles {
                 );
             }
         } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                `Failed to rename profiles directory to ${ConvertV1Profiles.oldProfilesDir}:`
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                error.message
+            ConvertV1Profiles.addExceptionToConvertMsgs(
+                `Failed to rename profiles directory to ${ConvertV1Profiles.oldProfilesDir}:`, error
             );
         }
 
@@ -293,6 +371,32 @@ export class ConvertV1Profiles {
             `Your new profiles have been saved to ${ConvertV1Profiles.convertResult.cfgFilePathNm}. ` +
             `To change your configuration, update that file in your text editor.`
         );
+    }
+
+    /**
+     * Load V1 profile schemas, which will not have been loaded for VSCode extensions.
+     */
+    private static loadV1Schemas(): void {
+        if (!Object.hasOwn(ImperativeConfig.instance.loadedConfig, "profiles")) {
+            // since no schemas are loaded, we read them from the V1 profiles directory
+            ImperativeConfig.instance.loadedConfig.profiles = [];
+            const v1ProfileTypes = fs.existsSync(ConvertV1Profiles.profilesRootDir) ?
+                V1ProfileRead.getAllProfileDirectories(ConvertV1Profiles.profilesRootDir) : [];
+
+            for (const profType of v1ProfileTypes) {
+                const schemaFileNm = path.join(ConvertV1Profiles.profilesRootDir, profType, profType + "_meta.yaml");
+                if (fs.existsSync(schemaFileNm)) {
+                    try {
+                        const schemaContent = V1ProfileRead.readMetaFile(schemaFileNm);
+                        ImperativeConfig.instance.loadedConfig.profiles.push(schemaContent.configuration);
+                    } catch (error) {
+                        ConvertV1Profiles.addExceptionToConvertMsgs(
+                            `Failed to load schema for profile type ${profType} from file "${schemaFileNm}"`, error
+                        );
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -305,14 +409,7 @@ export class ConvertV1Profiles {
         try {
             ConvertV1Profiles.convertResult.cfgFilePathNm = configForPath?.layerActive().path;
         } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE,
-                "Failed to retrieve the path to the config file."
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                error.message
-            );
+            ConvertV1Profiles.addExceptionToConvertMsgs("Failed to retrieve the path to the config file.", error);
         }
         if (!ConvertV1Profiles.convertResult.cfgFilePathNm) {
             ConvertV1Profiles.convertResult.cfgFilePathNm = ConvertV1Profiles.noCfgFilePathNm;
@@ -339,20 +436,15 @@ export class ConvertV1Profiles {
                 );
             }
         } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                `Failed to delete the profiles directory '${ConvertV1Profiles.oldProfilesDir}'`
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                error.message
+            ConvertV1Profiles.addExceptionToConvertMsgs(
+                `Failed to delete the profiles directory '${ConvertV1Profiles.oldProfilesDir}'`, error
             );
         }
 
         // Delete the securely stored credentials
         const isZoweKeyRingAvailable = await ConvertV1Profiles.checkZoweKeyRingAvailable();
         if (isZoweKeyRingAvailable) {
-            const knownServices = ["@brightside/core", "@zowe/cli", "Zowe-Plugin", "Broadcom-Plugin", "Zowe"];
+            const knownServices = [ConvertV1Profiles.builtInCredMgrNm, "@brightside/core", "Zowe-Plugin", "Broadcom-Plugin", "Zowe"];
             for (const service of knownServices) {
                 const accounts = await ConvertV1Profiles.findOldSecureProps(service);
                 for (const account of accounts) {
@@ -379,85 +471,6 @@ export class ConvertV1Profiles {
                 "Zowe keyring or the credential vault are unavailable. Unable to delete old secure values."
             );
         }
-    }
-
-    /**
-     * Remove any old credential manager overrides.
-     */
-    private static async removeOldOverrides(): Promise<void> {
-        /* Replace any detected oldCredMgr override entry in settings.json with the Zowe embedded credMgr.
-         * Only the convert-profiles command is able to disable the credential manager
-         * and reload it. For all other commands, the credential manager is loaded in
-         * `Imperative.init` and frozen with `Object.freeze` so cannot be modified later on.
-         *
-         * Unlike a CLI command (which gets re-initialized on the next command), long-running apps
-         * must re-initialize the credential manager with a call to CredentialManagerFactory.initialize.
-         * That initialize function can only be called once within a running process.
-         * ConvertV1Profiles.convertResult.reInitCredMgr will be set to true to tell our calling app
-         * that the app must be restarted.
-         */
-        const oldPluginInfo = ConvertV1Profiles.getOldPluginInfo();
-        for (const override of oldPluginInfo.overrides) {
-            if (override === "CredentialManager") {
-                try {
-                    AppSettings.instance.set("overrides", "CredentialManager", CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
-                    if (ImperativeConfig.instance.loadedConfig.overrides.CredentialManager != null) {
-                        delete ImperativeConfig.instance.loadedConfig.overrides.CredentialManager;
-                    }
-                    if (CredentialManagerFactory.initialized ) {
-                        // We cannot re-initialize CredMgr, so let our caller know.
-                        ConvertV1Profiles.convertResult.reInitCredMgr = true;
-                    } else {
-                        /* We can initialize the CredMgr.
-                         * At this point, we have a new config file. Load that new config, so that
-                         * ImperativeConfig.instance.config.exists is true when we call OverridesLoader.
-                         */
-                        ImperativeConfig.instance.config = await Config.load(ImperativeConfig.instance.rootCommandName,
-                            { homeDir: ImperativeConfig.instance.cliHome }
-                        );
-
-                        // Load the overrides that we just set. That will re-initialize the CredMgr.
-                        await OverridesLoader.load(
-                            ImperativeConfig.instance.loadedConfig,
-                            ImperativeConfig.instance.callerPackageJson
-                        );
-                    }
-                } catch (error) {
-                    ConvertV1Profiles.convertResult.reInitCredMgr = true;
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                        "Failed to replace credential manager override setting."
-                    );
-                    ConvertV1Profiles.addToConvertMsgs(
-                        ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                        stripAnsi(error.message)
-                    );
-                }
-            }
-        }
-
-        // Report any plugin that we will uninstall
-        if (oldPluginInfo.plugins.length > 0) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
-                "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed:"
-            );
-
-            for (const nextPlugin of oldPluginInfo.plugins) {
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.INDENT,
-                    nextPlugin
-                );
-            }
-        }
-
-        /* We only had one override in V1 - the old SCS plugin.
-         * So, despite the array for multiple plugins, we just report
-         * the first plugin name in the array as the plugin that our
-         * caller should uninstall.
-         */
-        ConvertV1Profiles.convertResult.v1ScsPluginName =
-            (oldPluginInfo.plugins.length > 0) ? oldPluginInfo.plugins[0] : null;
     }
 
     /**
@@ -536,20 +549,32 @@ export class ConvertV1Profiles {
         };
 
         // if the old SCS plugin is our credential manager, record that it should be replaced
-        const credMgrKey = "CredentialManager";
         let currCredMgr;
         try {
-            currCredMgr = AppSettings.instance.get("overrides", credMgrKey);
+            // have AppSettings been initialized?
+            AppSettings.instance;
+        } catch (error) {
+            let settingsFile: string = "NotSetYet";
+            try {
+                // A VSCode extension will not have initialized AppSettings, so initialize it now
+                settingsFile = path.join(ImperativeConfig.instance.cliHome, "settings", "imperative.json");
+                const defaultSettings: ISettingsFile = {
+                    overrides: {}
+                } as any;
+                defaultSettings.overrides[ConvertV1Profiles.credMgrKey] = ConvertV1Profiles.builtInCredMgrNm;
+                AppSettings.initialize(settingsFile, defaultSettings);
+            } catch(error) {
+                currCredMgr = null;
+                ConvertV1Profiles.addExceptionToConvertMsgs(`Failed to initialize AppSettings overrides from '${settingsFile}'.`, error);
+            }
+        }
+
+        // get the current credMgr from AppSettings
+        try {
+            currCredMgr = AppSettings.instance.get("overrides", ConvertV1Profiles.credMgrKey);
         } catch(error) {
             currCredMgr = null;
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                `Failed trying to read '${credMgrKey}' overrides.`
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                stripAnsi(error.message)
-            );
+            ConvertV1Profiles.addExceptionToConvertMsgs(`Failed trying to read '${ConvertV1Profiles.credMgrKey}' overrides.`, error);
         }
 
         // we leave the 'false' indicator unchanged to allow for the use of no credMgr
@@ -557,7 +582,7 @@ export class ConvertV1Profiles {
             // if any of the old SCS credMgr names are found, record that we want to replace the credMgr
             for (const oldOverrideName of [oldScsPluginNm, "KeytarCredentialManager", "Zowe-Plugin", "Broadcom-Plugin"]) {
                 if (currCredMgr.includes(oldOverrideName)) {
-                    pluginInfo.overrides.push(credMgrKey);
+                    pluginInfo.overrides.push(ConvertV1Profiles.credMgrKey);
                     break;
                 }
             }
@@ -565,24 +590,36 @@ export class ConvertV1Profiles {
 
         try {
             // Only record the need to uninstall the SCS plug-in if it is currently installed
-            if (oldScsPluginNm in PluginIssues.instance.getInstalledPlugins()) {
+            if ( ConvertV1Profiles.isPluginInstalled(oldScsPluginNm)) {
                 pluginInfo.plugins.push(oldScsPluginNm);
             }
-        } catch (caughtErr) {
+        } catch (error) {
             // report all errors except the absence of the plugins.json file
-            if (!caughtErr.message.includes("ENOENT")) {
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                    "Failed trying to get the set of installed plugins."
-                );
-                ConvertV1Profiles.addToConvertMsgs(
-                    ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                    caughtErr.message
-                );
+            if (!error.message.includes("ENOENT")) {
+                ConvertV1Profiles.addExceptionToConvertMsgs("Failed trying to get the set of installed plugins.", error);
             }
         }
 
         return pluginInfo;
+    }
+
+    /**
+     * Report whether the specified plugin is installed.
+     * @param pluginName name of the plugin to search for.
+     * @returns True if plugin is installed. False otherwise.
+     */
+    private static isPluginInstalled(pluginName: string): boolean {
+        const pluginsFileNm = path.join(ImperativeConfig.instance.cliHome, "plugins", "plugins.json");
+        try {
+            const pluginsFileJson = readFileSync(pluginsFileNm);
+            if (Object.hasOwn(pluginsFileJson, pluginName)) {
+                return true;
+            }
+        }
+        catch (ioErr) {
+            ConvertV1Profiles.addExceptionToConvertMsgs(`Cannot read plugins file '${pluginsFileNm}'`, ioErr);
+        }
+        return false;
     }
 
     /**
@@ -632,13 +669,9 @@ export class ConvertV1Profiles {
                 oldSecurePropNames.push(element.account);
             }
         } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE,
-                `Encountered an error while gathering secure properties for service '${acct}':`
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                error.message
+            ConvertV1Profiles.convertResult.credsWereMigrated = false;
+            ConvertV1Profiles.addExceptionToConvertMsgs(
+                `Encountered an error while gathering secure properties for service '${acct}':`, error
             );
         }
         return oldSecurePropNames;
@@ -656,17 +689,26 @@ export class ConvertV1Profiles {
         try {
             success = await ConvertV1Profiles.zoweKeyRing.deletePassword(acct, propName);
         } catch (error) {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE,
-                `Encountered an error while deleting secure data for service '${acct}/${propName}':`
-            );
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT,
-                error.message
+            ConvertV1Profiles.addExceptionToConvertMsgs(
+                `Encountered an error while deleting secure data for service '${acct}/${propName}':`, error
             );
             success = false;
         }
         return success;
+    }
+
+    /**
+     * Add a new message to the V1 profile conversion messages that reports a caught exception.
+     *
+     * @param introMsg An introductory message describing what action was being attempted when we failed.
+     * @param error The exception that we caught.
+     */
+    private static addExceptionToConvertMsgs(introMsg: string, error: Error): void {
+        ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH, introMsg);
+        ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT, "Reason: " + stripAnsi(error.message));
+        if (Object.hasOwn(error, "stack")) {
+            ConvertV1Profiles.addToConvertMsgs(ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.INDENT, stripAnsi(error.stack));
+        }
     }
 
     /**
@@ -680,6 +722,5 @@ export class ConvertV1Profiles {
         }
         const newMsg = new ConvertMsg(msgFormat, msgText);
         ConvertV1Profiles.convertResult.msgs.push(newMsg);
-
     }
 }
