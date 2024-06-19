@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+
+## Recent Changes
+
+- Enhancement: Added `ProfileInfo.profileManagerWillLoad` function to verify the credential manager will load before attempting to use it. [#2111](https://github.com/zowe/zowe-cli/issues/2111)
+
 ## `5.24.0`
 
 - Enhancement: Added `BufferBuilder` utility class to provide convenient way of downloading to a stream that can be read as a buffer. [#2167](https://github.com/zowe/zowe-cli/pull/2167)

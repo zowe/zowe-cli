@@ -997,6 +997,25 @@ export class ProfileInfo {
         this.loadAllSchemas();
     }
 
+    //_________________________________________________________________________
+    /**
+     * Function to ensure the credential manager will load successfully
+     * Returns true if it will load, or the credentials are not secured. Returns false if it will not load.
+     */
+    public async profileManagerWillLoad(): Promise<boolean> {
+        if (this.mCredentials.isSecured) {
+            try {
+                await this.mCredentials.loadManager();
+                return true;
+            } catch (err) {
+                this.mImpLogger.warn("Failed to initialize secure credential manager: " + err.message);
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
     // _______________________________________________________________________
     /**
      * Returns an indicator of whether we are using a team configuration or
