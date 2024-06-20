@@ -33,6 +33,7 @@ import { NextVerFeatures, TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
+import { Proxy } from "./Proxy";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -467,6 +468,16 @@ export abstract class AbstractRestClient {
 
         // NOTE(Kelosky): This cannot be set for http requests
         // options.agent = new https.Agent({secureProtocol: this.session.ISession.secureProtocol});
+
+        const proxyUrl = Proxy.getSystemProxyUrl(this.session.ISession);
+        if (proxyUrl) {
+            if (Proxy.matchesNoProxySettings(this.session.ISession)) {
+                this.mLogger.info(`Proxy setting "${proxyUrl.href}" will not be used as hostname was found listed under "no_proxy" setting.`);
+            } else {
+                this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
+                options.agent = Proxy.getProxyAgent(this.session.ISession);
+            }
+        }
 
         // NOTE(Kelosky): we can bring certificate implementation back whenever we port tests and
         // convert for imperative usage
