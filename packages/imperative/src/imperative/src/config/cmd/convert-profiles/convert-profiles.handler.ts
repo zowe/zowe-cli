@@ -62,13 +62,13 @@ export default class ConvertProfilesHandler implements ICommandHandler {
                 uninstallPlugin(convertResult.v1ScsPluginName);
                 const newMsg = new ConvertMsg(
                     ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
-                    `Uninstalled plug-in "${convertResult.v1ScsPluginName}"`
+                    `Successfully uninstalled plug-in ${convertResult.v1ScsPluginName}.`
                 );
                 convertResult.msgs.push(newMsg);
             } catch (error) {
                 let newMsg = new ConvertMsg(
                     ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                    `Failed to uninstall plug-in "${convertResult.v1ScsPluginName}"`
+                    `Failed to uninstall plug-in ${convertResult.v1ScsPluginName}.`
                 );
                 convertResult.msgs.push(newMsg);
 
