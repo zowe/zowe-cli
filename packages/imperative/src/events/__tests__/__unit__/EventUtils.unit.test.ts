@@ -25,6 +25,9 @@ describe("EventOperator Unit Tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
 
     describe("processor tests", () => {
         it("'createProcessor' should create a new 'EventProcessor' if not already existing", () => {

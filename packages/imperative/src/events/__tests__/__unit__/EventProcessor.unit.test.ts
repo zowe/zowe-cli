@@ -38,6 +38,9 @@ describe('EventProcessor Unit Tests', () => {
     afterEach(() => {
         EventOperator.deleteProcessor(appName);
     });
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
 
     describe('Constructor', () => {
         it('initializes EventProcessor correctly', () => {

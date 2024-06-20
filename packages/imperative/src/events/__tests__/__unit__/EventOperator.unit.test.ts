@@ -35,6 +35,9 @@ describe("EventOperator Unit Tests", () => {
         EventOperator.deleteProcessor("Zowe");
         EventOperator.deleteProcessor(appName);
     });
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
 
     describe("processor tests", () => {
         it("'createProcessor' should create a new 'EventProcessor' if not already existing", () => {
