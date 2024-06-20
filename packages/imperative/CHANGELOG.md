@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Added `ProfileInfo.profileManagerWillLoad` function to verify the credential manager can load. [#2111](https://github.com/zowe/zowe-cli/issues/2111)
 - Enhancement: Added support for proxy servers using a proxy http agent. Supports the usage of the environment variables HTTP_PROXY, HTTPS_PROXY (not case sensitive).
   - If any of these environment variables is set and depending how the Zowe session is configured for http or https, the REST client instantiates an appropriate http agent.
   - If the z/OS system uses self-signed certificates then the proxy server must be configured to accept them.
