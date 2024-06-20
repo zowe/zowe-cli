@@ -9,7 +9,7 @@
 *
 */
 
-import { EventCallback, EventOperator, EventProcessor, EventUtils, IEventJson, ZoweSharedEvents, ZoweUserEvents } from "../../..";
+import { ConfigUtils, EventCallback, EventOperator, EventProcessor, EventUtils, IEventJson, ZoweSharedEvents, ZoweUserEvents } from "../../..";
 import * as fs from "fs";
 import * as path from "path";
 import * as TestUtil from "../../../../__tests__/src/TestUtil";
@@ -18,8 +18,11 @@ import { SetupTestEnvironment } from "../../../../__tests__/__src__/environment/
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 const appName = "Zowe";
+const sampleApp = "sample";
 const userHome = require('os').homedir();
-const zoweCliHome = process.env.ZOWE_CLI_HOME || '';
+const userEventsDir = path.join(userHome, '.zowe', '.events');
+let zoweCliHome: string;
+let sharedEventsDir: string;
 
 describe("Event Operator and Processor", () => {
 
@@ -28,15 +31,18 @@ describe("Event Operator and Processor", () => {
             cliHomeEnvVar: "ZOWE_CLI_HOME",
             testName: "event_operator_and_processor"
         });
+        zoweCliHome = process.env.ZOWE_CLI_HOME || '';
+        sharedEventsDir = path.join(zoweCliHome, '.events');
+        const extJson = ConfigUtils.readExtendersJson();
+        extJson.profileTypes[sampleApp] = { from: [sampleApp] };
+        ConfigUtils.writeExtendersJson(extJson);
     });
 
     const cleanupDirectories = () => {
-        const userEventsDir = path.join(userHome, '.zowe', '.events');
         if (fs.existsSync(userEventsDir)) {
             fs.rmdirSync(userEventsDir, { recursive: true });
         }
 
-        const sharedEventsDir = path.join(zoweCliHome, '.events');
         if (fs.existsSync(sharedEventsDir)) {
             fs.rmdirSync(sharedEventsDir, { recursive: true });
         }
@@ -45,7 +51,6 @@ describe("Event Operator and Processor", () => {
     afterEach(cleanupDirectories);
 
     afterAll(() => {
-        TestUtil.rimraf(userHome);
         TestUtil.rimraf(zoweCliHome);
     });
 
@@ -57,8 +62,9 @@ describe("Event Operator and Processor", () => {
     describe("Shared Events", () => {
         it("should create an event file upon first subscription if the file does not exist", () => {
             const theEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
-            const theWatcher = EventOperator.getWatcher("sample");
+            const theWatcher = EventOperator.getWatcher(appName);
             const theEmitter = EventOperator.getZoweProcessor();
+            const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
 
             const eventDir = path.join(zoweCliHome, '.events');
             expect(doesEventFileExist(eventDir, theEvent)).toBeFalsy();
@@ -68,15 +74,17 @@ describe("Event Operator and Processor", () => {
             theWatcher.subscribeShared(theEvent, theCallback);
 
             expect(theCallback).not.toHaveBeenCalled();
-            expect(doesEventFileExist(eventDir, theEvent)).toBeTruthy();
+            expect(doesEventFileExist(path.join(eventDir, "Zowe"), theEvent)).toBeTruthy();
 
             theEmitter.emitZoweEvent(theEvent);
+            (setupWatcherSpy.mock.calls[0][2] as Function)(); // Mock the event emission 
 
             const eventDetails: IEventJson = (theWatcher as any).subscribedEvents.get(theEvent).toJson();
             expect(eventDetails.eventName).toEqual(theEvent);
             expect(EventUtils.isSharedEvent(eventDetails.eventName)).toBeTruthy();
             expect(theCallback).toHaveBeenCalled();
 
+            EventOperator.deleteProcessor(sampleApp);
             EventOperator.deleteProcessor(appName);
         });
     });
