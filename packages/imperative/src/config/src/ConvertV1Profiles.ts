@@ -27,6 +27,7 @@ import { ImperativeConfig } from "../../utilities";
 import { CredentialManagerOverride } from "../../security/src/CredentialManagerOverride";
 import { OverridesLoader } from "../../imperative/src/OverridesLoader";
 import { ConfigSchema } from "./ConfigSchema";
+import { ProfileInfo } from "./ProfileInfo";
 import { Logger } from "../../logger";
 
 interface IOldPluginInfo {
@@ -46,7 +47,7 @@ export class ConvertV1Profiles {
     private static readonly oldScsPluginNm = "@zowe/secure-credential-store-for-zowe-cli";
     private static readonly builtInCredMgrNm: string = "@zowe/cli";
 
-    private static callerIsExternalApp: boolean = false;
+    private static profileInfo: ProfileInfo = null;
     private static oldScsPluginWasConfigured: boolean = false;
     private static convertOpts: IConvertV1ProfOpts = null;
     private static convertResult: IConvertV1ProfResult = null;
@@ -76,7 +77,7 @@ export class ConvertV1Profiles {
      * @returns Result object into which messages and stats are stored.
      */
     public static async convert(convertOpts: IConvertV1ProfOpts): Promise<IConvertV1ProfResult> {
-        ConvertV1Profiles.callerIsExternalApp = false;
+        ConvertV1Profiles.profileInfo = convertOpts.profileInfo;
 
         // initialize our result, which will be used by our utility functions, and returned by us
         ConvertV1Profiles.convertResult = {
@@ -109,13 +110,13 @@ export class ConvertV1Profiles {
             // Report if the old SCS plugin should be uninstalled
             if (ConvertV1Profiles.convertResult.v1ScsPluginName != null) {
                 let verb = "will";
-                if (ConvertV1Profiles.callerIsExternalApp) {
+                if (ConvertV1Profiles.profileInfo) {
                     verb = "should";
                 }
                 let uninstallMsg: string = `The obsolete plug-in ${ConvertV1Profiles.convertResult.v1ScsPluginName} ` +
                     `${verb} be uninstalled because the SCS is now embedded within the Zowe clients.`;
 
-                if (ConvertV1Profiles.callerIsExternalApp) {
+                if (ConvertV1Profiles.profileInfo) {
                     uninstallMsg += ` Zowe CLI plugins can only be uninstalled by the CLI. Use the command ` +
                         `'zowe plugins uninstall ${ConvertV1Profiles.convertResult.v1ScsPluginName}'.`;
                 }
@@ -137,7 +138,6 @@ export class ConvertV1Profiles {
 
         if (ImperativeConfig.instance.config == null) {
             // Initialization for VSCode extensions does not create the config property, so create it now.
-            ConvertV1Profiles.callerIsExternalApp = true;
             ImperativeConfig.instance.config = await Config.load(
                 ImperativeConfig.instance.loadedConfig.name,
                 {
@@ -237,25 +237,15 @@ export class ConvertV1Profiles {
         } else {
             // we must initialize credMgr to get and store credentials
             try {
-                // Initialize CredMgr with default values.
-                await CredentialManagerFactory.initialize({
-                    service: null,
-                    Manager: null,
-                    displayName: null,
-                    invalidOnFailure: null
-                });
-
-                // OverridesLoader crashes unless the overrides property exists.
-                if (!ImperativeConfig.instance.loadedConfig?.overrides?.CredentialManager) {
-                    ImperativeConfig.instance.loadedConfig.overrides = {};
+                if (ConvertV1Profiles.profileInfo) {
+                    // Initialize CredMgr using the profileInfo object supplied by a VS Code extension
+                    await ConvertV1Profiles.profileInfo.readProfilesFromDisk();
+                } else {
+                    // Initialize CredMgr using CLI techniques.
+                    await OverridesLoader.load(ImperativeConfig.instance.loadedConfig,
+                        ImperativeConfig.instance.callerPackageJson
+                    );
                 }
-
-                // The only thing that OverridesLoader wants from package.json is the name.
-                const callerPackageJson = {
-                    name: ConvertV1Profiles.builtInCredMgrNm,
-                };
-
-                await OverridesLoader.load(ImperativeConfig.instance.loadedConfig, callerPackageJson);
             } catch (error) {
                 ConvertV1Profiles.convertResult.credsWereMigrated = false;
                 ConvertV1Profiles.addExceptionToConvertMsgs("Failed to initialize CredentialManager", error);
@@ -358,6 +348,21 @@ export class ConvertV1Profiles {
      * @returns string - Path name to the newly created config file.
      */
     private static async createNewConfigFile(convertedConfig: IConfig): Promise<void> {
+        if (typeof (ImperativeConfig.instance.config.mVault) === "undefined" ||
+            ImperativeConfig.instance.config.mVault === null ||
+            Object.keys(ImperativeConfig.instance.config.mVault).length == 0
+        ) {
+            // Either the vault does not exist or it is empty. So create a vault.
+            ImperativeConfig.instance.config.mVault = {
+                load: ((key: string): Promise<string> => {
+                    return CredentialManagerFactory.manager.load(key, true);
+                }),
+                save: ((key: string, value: any): Promise<void> => {
+                    return CredentialManagerFactory.manager.save(key, value);
+                })
+            };
+        }
+
         const newConfig = ImperativeConfig.instance.config;
         newConfig.api.layers.activate(false, true);
         newConfig.api.layers.merge(convertedConfig);
@@ -396,7 +401,6 @@ export class ConvertV1Profiles {
     private static loadV1Schemas(): void {
         if (!Object.hasOwn(ImperativeConfig.instance.loadedConfig, "profiles")) {
             // since no schemas are loaded, we read them from the V1 profiles directory
-            ConvertV1Profiles.callerIsExternalApp = true;
             ImperativeConfig.instance.loadedConfig.profiles = [];
             const v1ProfileTypes = fs.existsSync(ConvertV1Profiles.profilesRootDir) ?
                 V1ProfileRead.getAllProfileDirectories(ConvertV1Profiles.profilesRootDir) : [];

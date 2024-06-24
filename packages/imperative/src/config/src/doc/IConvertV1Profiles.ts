@@ -9,12 +9,18 @@
 *
 */
 
+import { ProfileInfo } from "../ProfileInfo";
+
 /**
  * This is the structure of the input options to be supplied to ConvertV1Profiles.convert.
  */
 export interface IConvertV1ProfOpts {
     // Should V1 profiles be deleted after conversion?
     deleteV1Profs: boolean;
+
+    // The ProfileInfo object that the API will use to initialize the Secure Credential Manager.
+    // This property should be supplied by a VSCode application.
+    profileInfo?: ProfileInfo
 }
 
 /**
