@@ -348,7 +348,7 @@ export class ConvertV1Profiles {
      * @returns string - Path name to the newly created config file.
      */
     private static async createNewConfigFile(convertedConfig: IConfig): Promise<void> {
-        if (typeof (ImperativeConfig.instance.config.mVault) === "undefined" ||
+        if (typeof ImperativeConfig.instance.config.mVault === "undefined" ||
             ImperativeConfig.instance.config.mVault === null ||
             Object.keys(ImperativeConfig.instance.config.mVault).length == 0
         ) {
@@ -464,8 +464,7 @@ export class ConvertV1Profiles {
         }
 
         // Delete the securely stored credentials
-        const isZoweKeyRingAvailable = await ConvertV1Profiles.checkZoweKeyRingAvailable();
-        if (isZoweKeyRingAvailable) {
+        if (await ConvertV1Profiles.isZoweKeyRingAvailable()) {
             let deleteMsgFormat: any = ConvertMsgFmt.PARAGRAPH;
             const knownServices = [ConvertV1Profiles.builtInCredMgrNm, "@brightside/core", "Zowe-Plugin", "Broadcom-Plugin", "Zowe"];
             for (const service of knownServices) {
@@ -491,11 +490,6 @@ export class ConvertV1Profiles {
                     }
                 }
             }
-        } else {
-            ConvertV1Profiles.addToConvertMsgs(
-                ConvertMsgFmt.ERROR_LINE | ConvertMsgFmt.PARAGRAPH,
-                "Zowe keyring or the credential vault are unavailable. Unable to delete old secure values."
-            );
         }
     }
 
@@ -671,16 +665,17 @@ export class ConvertV1Profiles {
     }
 
     /**
-     * Lazy load zoweKeyRing, and verify that the credential vault is able to be accessed,
-     * or whether there is a problem.
+     * Verify that the credential vault is accessible, or whether there is a problem.
      * @returns true if credential vault is available, false if it is not
      */
-    private static async checkZoweKeyRingAvailable(): Promise<boolean> {
+    private static async isZoweKeyRingAvailable(): Promise<boolean> {
         try {
-            const zoweSecretsPath = require.resolve("@zowe/secrets-for-zowe-sdk");
-            ConvertV1Profiles.zoweKeyRing = (await import(zoweSecretsPath)).keyring;
+            ConvertV1Profiles.zoweKeyRing = (await import("@zowe/secrets-for-zowe-sdk")).keyring;
             await ConvertV1Profiles.zoweKeyRing.findCredentials(CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
-        } catch (err) {
+        } catch (error) {
+            ConvertV1Profiles.addExceptionToConvertMsgs(
+                "Zowe keyring or the credential vault are unavailable. Unable to delete old secure values.", error
+            );
             return false;
         }
         return true;
