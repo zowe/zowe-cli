@@ -164,7 +164,7 @@ export class ConfigUtils {
     public static secureSaveError(solution?: string): ImperativeError {
         let details = CredentialManagerFactory.manager.secureErrorDetails();
         if (solution != null) {
-            details = (details != null) ? (details + `\n - ${solution}`) : solution;
+            details = details != null ? details + `\n - ${solution}` : solution;
         }
         return new ImperativeError({
             msg: "Unable to securely save credentials.",

@@ -885,10 +885,10 @@ export class PluginManagementFacility {
             for ( let credMgrInx = 1; credMgrInx < knownCredMgrs.length; credMgrInx++) {
                 overrideErrMsg += `\n"${settingNm}": "${knownCredMgrs[credMgrInx].credMgrDisplayName}" `;
 
-                if ( typeof(knownCredMgrs[credMgrInx].credMgrPluginName) !== "undefined") {
+                if ( typeof knownCredMgrs[credMgrInx].credMgrPluginName !== "undefined") {
                     overrideErrMsg += `(supplied in CLI plugin ${knownCredMgrs[credMgrInx].credMgrPluginName}`;
                 }
-                if ( typeof(knownCredMgrs[credMgrInx].credMgrZEName) !== "undefined") {
+                if ( typeof knownCredMgrs[credMgrInx].credMgrZEName !== "undefined") {
                     const punctuation = 8;
                     overrideErrMsg += "\n";
                     for (let indent: number = 0; indent <

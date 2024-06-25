@@ -212,7 +212,7 @@ export class EnvQuery {
         getResult: IGetItemVal, getItemOpts: IGetItemOpts
     ): Promise<void> {
         const teamCfg: string = "Zowe Client Config";
-        const doesProgBarExist: boolean = (getItemOpts?.progressApi) ? true: false;
+        const doesProgBarExist: boolean = getItemOpts?.progressApi ? true: false;
 
         // setup progress bar
         const configProgress: ITaskWithStatus = {
@@ -289,7 +289,7 @@ export class EnvQuery {
             let maxSpace: number = 1;
             for (const profType of Object.keys(config.mProperties.defaults)) {
                 // calculate the max space we need between profile type and name
-                maxSpace = (maxSpace < profType.length) ? profType.length + 1 : maxSpace;
+                maxSpace = maxSpace < profType.length ? profType.length + 1 : maxSpace;
             }
             for (const profType of Object.keys(config.mProperties.defaults)) {
                 getResult.itemValMsg += EnvQuery.indent + profType + " =";
@@ -381,7 +381,7 @@ export class EnvQuery {
         getItemOpts: IGetItemOpts
     ): Promise<void> {
         const percentIncr: number = 10;
-        const doesProgBarExist: boolean = (getItemOpts?.progressApi) ? true: false;
+        const doesProgBarExist: boolean = getItemOpts?.progressApi ? true: false;
 
         // setup progress bar
         const npmProgress: ITaskWithStatus = {
@@ -511,7 +511,7 @@ export class EnvQuery {
     private static async getPluginInfo(
         getResult: IGetItemVal, getItemOpts: IGetItemOpts
     ): Promise<void> {
-        const doesProgBarExist: boolean = (getItemOpts?.progressApi) ? true: false;
+        const doesProgBarExist: boolean = getItemOpts?.progressApi ? true: false;
 
         // setup progress bar
         const configProgress: ITaskWithStatus = {

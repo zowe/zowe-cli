@@ -11,7 +11,6 @@
 
 import { IProfileValidationPlan, IProfileValidationTask } from "../../../../../src/profiles";
 import { IProfileValidationTaskResult } from "../../../../../src/profiles/src/validation/doc/IProfileValidationTaskResult";
-import { isNullOrUndefined } from "util";
 
 export = class ManyFieldValidationPlan implements IProfileValidationPlan {
 
@@ -22,7 +21,7 @@ export = class ManyFieldValidationPlan implements IProfileValidationPlan {
                 name: "Tea color",
                 taskFunction: (profile: any, done: (result: IProfileValidationTaskResult) => void) => {
                     let result: IProfileValidationTaskResult;
-                    if (isNullOrUndefined(profile.tea) || profile.tea !== "earl_grey") {
+                    if (profile.tea == null || profile.tea !== "earl_grey") {
                         result = {
                             outcome: "Failed",
                             resultDescription: "Tea was not earl_grey"

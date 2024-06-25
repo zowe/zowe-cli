@@ -18,7 +18,7 @@
  * Module imports for TestUtils and testing infrastructure
  */
 import { SpawnSyncReturns } from "child_process";
-import { inspect, isArray, isNullOrUndefined, isString } from "util";
+import { inspect } from "util";
 import { Constants } from "../../src/constants";
 import { ICommandResponse } from "../../src/cmd";
 import { ICompareParms } from "./doc/ICompareParms";
@@ -178,7 +178,7 @@ export function executeTestCLICommand(cliBinModule: string, testContext: any, ar
     const commandExecutionMessage = "Executing " + nodeCommand + " " + args.join(" ");
 
     testLogger.info(commandExecutionMessage);
-    if (!isNullOrUndefined(testContext)) {
+    if (!(testContext == null)) {
         TestLogger.getTestLogger().debug(testContext, commandExecutionMessage);
     }
     const childEnv = JSON.parse(JSON.stringify(env)); // copy current env
@@ -199,7 +199,7 @@ export function executeTestCLICommand(cliBinModule: string, testContext: any, ar
     const commandResultMessage = "Command output: \n" + child.output.join(" ") +
         "\nexit code: " + child.status;
 
-    if (!isNullOrUndefined(testContext)) {
+    if (!(testContext == null)) {
         TestLogger.getTestLogger().debug(commandResultMessage);
     }
 
@@ -257,13 +257,13 @@ export function findExpectedOutputInCommand(cliBinModule: string,
         try {
             jsonOutput = JSON.parse(jsonCommand.stdout);
         } catch (e) {
-            const message = ("Error parsing JSON output: stdout:'" + jsonCommand.stdout + "' stderr: '" + jsonCommand.stderr +
-                "'\n status code " + jsonCommand.status) + " " + e.message;
+            const message = "Error parsing JSON output: stdout:'" + jsonCommand.stdout + "' stderr: '" + jsonCommand.stderr +
+                "'\n status code " + jsonCommand.status + " " + e.message;
             throw new Error(message);
         }
         dataObjectParser = new DataObjectParser(jsonOutput);
         // verify the dot-notation object passed in exists in the output JSON
-        if (isNullOrUndefined(dataObjectParser.get(jsonFieldForContent))) {
+        if (dataObjectParser.get(jsonFieldForContent) == null) {
             throw new Error("Requested field " + jsonFieldForContent + " was not available in the JSON response");
         }
     }
@@ -303,7 +303,7 @@ export function findExpectedOutputInCommand(cliBinModule: string,
 
     expectedContent = expectedContent || "";
 
-    if (!isArray(expectedContent)) {
+    if (!Array.isArray(expectedContent)) {
         // convert single expected content to an array
         expectedContent = [expectedContent];
     }
@@ -326,7 +326,7 @@ export function findExpectedOutputInCommand(cliBinModule: string,
         }
         if (variationsToRun === CMD_TYPE.ALL || variationsToRun === CMD_TYPE.JSON) {
             let objectSummary = dataObjectParser.get(jsonFieldForContent);
-            if (!isString(objectSummary)) {
+            if (!(typeof objectSummary === 'string')) {
                 objectSummary = inspect(objectSummary);
             }
             if (compareOptions.ignoreCase) {
@@ -357,8 +357,8 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
     if (parms) {
         diffs.forEach((difference: any) => {
             const path = difference.path.join(".");
-            if (isNullOrUndefined(parms.ignorePaths) || (parms.ignorePaths.indexOf(path) < 0)) {
-                if (!isNullOrUndefined(parms.pathRegex)) {
+            if (parms.ignorePaths == undefined || parms.ignorePaths.indexOf(path) < 0) {
+                if (!(parms.pathRegex == undefined)) {
                     let regexPathMatch: boolean = false;
                     for (const reg of parms.pathRegex) {
                         if (path === reg.path) {
@@ -386,7 +386,7 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
             }
         });
     } else {
-        if (!isNullOrUndefined(diffs)) {
+        if (!(diffs == undefined)) {
             returnDiffs = returnDiffs.concat(diffs);
         }
     }

@@ -19,7 +19,7 @@ import { ImperativeError } from "../../../../../error";
 import { ExecUtils, TextUtils } from "../../../../../utilities";
 import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
-import { ConfigSchema, ConfigUtils, ProfileInfo } from "../../../../../config";
+import { ConfigSchema, ConfigUtils } from "../../../../../config";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 
 const npmCmd = findNpmOnPath();
@@ -59,7 +59,7 @@ export const updateAndGetRemovedTypes = (npmPackage: string): string[] => {
                 typesToRemove.push(profileType);
             }
         }
-        ProfileInfo.writeExtendersJson(extendersJson);
+        ConfigUtils.writeExtendersJson(extendersJson);
     }
 
     return typesToRemove;

@@ -60,7 +60,7 @@ export default class ListHandler implements ICommandHandler {
         params.response.data.setObj(obj);
         params.response.format.output({
             output: obj,
-            format: (Array.isArray(obj)) ? "list" : "object"
+            format: Array.isArray(obj) ? "list" : "object"
         });
     }
 }

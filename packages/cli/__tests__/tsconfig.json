@@ -18,6 +18,7 @@
   },
   "include": [
     "**/*.test.ts",
+    "**/*.subtest.ts",
     "**/__tests__/**/*"
   ],
   "exclude": [

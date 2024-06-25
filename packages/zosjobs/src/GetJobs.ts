@@ -156,7 +156,7 @@ export class GetJobs {
 
         if (params) {
             if (params.owner) {
-                query += (JobsConstants.QUERY_OWNER + encodeURIComponent(params.owner));
+                query += JobsConstants.QUERY_OWNER + encodeURIComponent(params.owner);
             }
             if (params.prefix) {
                 if (params.prefix !== JobsConstants.DEFAULT_PREFIX) {
@@ -171,31 +171,31 @@ export class GetJobs {
                     if (RestClient.hasQueryString(query)) {
                         query += JobsConstants.COMBO_ID;
                     }
-                    query += (JobsConstants.QUERY_MAX_JOBS + encodeURIComponent(params.maxJobs));
+                    query += JobsConstants.QUERY_MAX_JOBS + encodeURIComponent(params.maxJobs);
                 }
             }
             if (params.jobid) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
-                query += (JobsConstants.QUERY_JOBID + encodeURIComponent(params.jobid));
+                query += JobsConstants.QUERY_JOBID + encodeURIComponent(params.jobid);
             }
             if (params.execData) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
-                query += (JobsConstants.EXEC_DATA);
+                query += JobsConstants.EXEC_DATA;
             }
             if (params.status) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
-                query += (JobsConstants.QUERY_STATUS + encodeURIComponent(params.status));
+                query += JobsConstants.QUERY_STATUS + encodeURIComponent(params.status);
             }
         }
 
         let resource = JobsConstants.RESOURCE;
-        resource += (query === JobsConstants.QUERY_ID) ? "" : query;
+        resource += query === JobsConstants.QUERY_ID ? "" : query;
         Logger.getAppLogger().info("GetJobs.getJobsCommon() resource: " + resource);
 
         const jobs = await ZosmfRestClient.getExpectJSON<IJob[]>(session, resource);

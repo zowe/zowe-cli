@@ -13,12 +13,14 @@ import { IO } from "../../../../../src/io";
 import * as T from "../../../TestUtil";
 import { join } from "path";
 import { config } from "../plugins/PluginTestConstants";
+import * as Module from "module";
 
 const testCliNodeModulePath = join(__dirname, "..", "plugins", "test_cli", "node_modules");
 const impLibDir = join(__dirname, "../../../../../lib");
 
 describe("Plugin Management Facility", () => {
     const home = config.defaultHome;
+    const origRequire = Module.prototype.require;
 
     beforeAll(() => {
         /**
@@ -44,6 +46,8 @@ describe("Plugin Management Facility", () => {
     });
 
     afterAll(() => {
+        // reset require mock to avoid impacting other tests
+        Module.prototype.require = origRequire;
         // remove the subdirectories and symbolic link that we created
         IO.deleteDirTree(testCliNodeModulePath);
     });

@@ -9,7 +9,8 @@
 *
 */
 
-import { ConfigurationValidator, IImperativeConfig } from "../index";
+import { IImperativeConfig } from "..";
+import { ConfigurationValidator } from "../src/ConfigurationValidator";
 
 describe("Imperative should validate config provided by the consumer", () => {
 

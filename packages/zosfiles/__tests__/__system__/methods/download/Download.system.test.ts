@@ -1006,7 +1006,7 @@ describe("Download Data Set", () => {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
             try {
-                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
                 await delay(delayTime);
             } catch (err) {
                 Imperative.console.error(err);
@@ -1793,7 +1793,7 @@ describe("Download Data Set - encoded", () => {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
 
             try {
-                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
                 await delay(delayTime);
             } catch (err) {
                 Imperative.console.error(err);

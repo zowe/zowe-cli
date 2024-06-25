@@ -103,6 +103,10 @@ describe("DownloadJobs", () => {
 
         describe("downloadAllSpoolContentCommon", () => {
             it("should allow users to call downloadAllSpoolContentCommon with correct parameters", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
                 const allSpoolParms: IDownloadAllSpoolContentParms = {
                     jobid: fakeJobID,
                     jobname: fakeJobName,
@@ -116,6 +120,7 @@ describe("DownloadJobs", () => {
 
                 expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
+                expect(uri).not.toContain("fileEncoding");
             });
 
             it("should allow users to call downloadAllSpoolContentCommon with correct parameters and binary mode", async () => {

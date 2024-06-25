@@ -5,7 +5,8 @@ module.exports = {
     },
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:deprecation/recommended"
     ],
     "ignorePatterns": [
         "**/*.js",
@@ -37,7 +38,8 @@ module.exports = {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 12,
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": ["./tsconfig.json", "./__tests__/tsconfig.json"]
     },
     "plugins": [
         "@typescript-eslint",
@@ -47,6 +49,7 @@ module.exports = {
     "rules": {
         "max-len": ["warn", 150],
         "no-console": "error",
+        "no-extra-parens": "error",
         "no-multiple-empty-lines": "warn",
         "no-trailing-spaces": "warn",
         "@typescript-eslint/ban-types": "off",

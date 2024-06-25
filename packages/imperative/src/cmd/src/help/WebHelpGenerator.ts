@@ -291,7 +291,7 @@ export class WebHelpGenerator {
         }
 
         // Generate HTML anchor in front of header
-        const anchorText = `<a${(definition.type !== "group") ? " class=\"cmd-anchor\"" : ""} name="${rootCommandName}_${fullCommandName}"></a>`;
+        const anchorText = `<a${definition.type !== "group" ? " class=\"cmd-anchor\"" : ""} name="${rootCommandName}_${fullCommandName}"></a>`;
 
         if (definition.type === "group") {
             // Remove sections from HTML that would be redundant
@@ -349,7 +349,7 @@ export class WebHelpGenerator {
             id: helpHtmlFile,
             text: [definition.name, ...definition.aliases].join(" | ")
         };
-        parentNode.children = [...(parentNode.children || []), childNode];
+        parentNode.children = [...parentNode.children || [], childNode];
 
         definition.aliases.forEach((alias: string) => {
             if (alias !== definition.name) {

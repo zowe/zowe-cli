@@ -46,8 +46,8 @@ export class ConfigAutoStore {
      */
     private static _findActiveProfile(opts: IConfigAutoStoreFindActiveProfileOpts): [string, string] | undefined {
         const profileTypes = typeof opts.params !== "undefined" ? [
-            ...(opts.params.definition.profile?.required || []),
-            ...(opts.params.definition.profile?.optional || [])
+            ...opts.params.definition.profile?.required || [],
+            ...opts.params.definition.profile?.optional || []
         ] : opts.profileTypes || [];
 
         for (const profType of profileTypes) {
@@ -174,9 +174,9 @@ export class ConfigAutoStore {
                 (3) Property is tokenValue and tokenType is missing from service profile, but present in base profile
                 (4) Given profile is just a base profile :yum:
             */
-            if ((!config.api.profiles.exists(profileName) && config.api.profiles.exists(baseProfileName)) ||
-                (profileObj[propName] == null && !profileSecureProps.includes(propName) &&
-                    (baseProfileObj[propName] != null || baseProfileSecureProps.includes(propName))) ||
+            if (!config.api.profiles.exists(profileName) && config.api.profiles.exists(baseProfileName) ||
+                profileObj[propName] == null && !profileSecureProps.includes(propName) &&
+                    (baseProfileObj[propName] != null || baseProfileSecureProps.includes(propName)) ||
                 (propName === "tokenValue" && profileObj.tokenType == null && baseProfileObj.tokenType != null ||
                 profileType === "base")
             ) {

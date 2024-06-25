@@ -90,8 +90,8 @@ describe("Zowe daemon suite", () => {
     });
 
     // run all of our daemon-related tests
-    require("./cli.zowe.exe.integration");
-    require("./enable/cli.daemon.enable.integration");
-    require("./disable/cli.daemon.disable.integration");
-    require("./restart/cli.daemon.restart.integration");
+    require("./cli.zowe.exe.integration.subtest");
+    require("./enable/cli.daemon.enable.integration.subtest");
+    require("./disable/cli.daemon.disable.integration.subtest");
+    require("./restart/cli.daemon.restart.integration.subtest");
 });

@@ -68,7 +68,7 @@ describe("Download Jobs - System tests", () => {
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
-        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "DJ";
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
@@ -103,7 +103,7 @@ describe("Download Jobs - System tests", () => {
 
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 6;
-            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "DJ";
             JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
             SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
@@ -116,7 +116,11 @@ describe("Download Jobs - System tests", () => {
                 encoding: "IBM-037"
             });
 
-            const expectedFile = DownloadJobs.getSpoolDownloadFile(alteredjesJCLJobFile, false, downloadDir);
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath({
+                jobFile: alteredjesJCLJobFile,
+                omitJobidDirectory: false,
+                outDir: downloadDir
+            });
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("^");
@@ -132,7 +136,11 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of alteredjobFiles) {
-                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                const expectedFile = DownloadJobs.getSpoolDownloadFilePath({
+                    jobFile: file,
+                    omitJobidDirectory: false,
+                    outDir: downloadDir
+                });
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
                     expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
@@ -367,7 +375,7 @@ describe("Download Jobs - System tests - Encoded", () => {
         }
 
         const JOB_LENGTH = 5;
-        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "#DJ";
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "#DJ";
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });

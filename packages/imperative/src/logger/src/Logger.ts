@@ -9,7 +9,7 @@
 *
 */
 
-import { format, inspect, isNullOrUndefined } from "util";
+import { format, inspect } from "util";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as StackTrace from "stack-trace";
 import * as path from "path";
@@ -113,15 +113,15 @@ export class Logger {
      * @return {[type]}                       [description]
      */
     public static initLogger(loggingConfig: IConfigLogging) {
-        if (isNullOrUndefined(loggingConfig)) {
+        if (loggingConfig == null) {
             throw new ImperativeError({msg: "Input logging config document is required"});
         }
 
-        if (isNullOrUndefined(loggingConfig.log4jsConfig)) {
+        if (loggingConfig.log4jsConfig == null) {
             throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig"});
         }
 
-        if (isNullOrUndefined(loggingConfig.log4jsConfig.appenders)) {
+        if (loggingConfig.log4jsConfig.appenders == null) {
             throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders"});
         }
 
@@ -297,13 +297,13 @@ export class Logger {
     public logError(err: ImperativeError): void {
         this.debug("Stack at time of error logging: %s", new Error().stack);
 
-        if (!isNullOrUndefined(err.details.additionalDetails)) {
+        if (!(err.details.additionalDetails == null)) {
             this.error(err.details.additionalDetails);
         }
-        if (!isNullOrUndefined(err.stack)) {
+        if (!(err.stack == null)) {
             this.error(err.stack);
         }
-        if (!isNullOrUndefined(err.details.causeErrors) && !isNullOrUndefined(err.details.causeErrors.length)
+        if (!(err.details.causeErrors == null) && !(err.details.causeErrors.length == null)
             && err.details.causeErrors.length > 0) {
             for (const cause of err.details.causeErrors) {
                 this.error("Cause error:\n%s", inspect(cause));
@@ -353,7 +353,7 @@ export class Logger {
         try {
             const frame: StackTrace.StackFrame[] = StackTrace.parse(new Error());
             let callerStackIndex = 1;
-            while (!frame[callerStackIndex].getFileName() || (frame[callerStackIndex].getFileName().indexOf(path.basename(__filename)) >= 0)) {
+            while (!frame[callerStackIndex].getFileName() || frame[callerStackIndex].getFileName().indexOf(path.basename(__filename)) >= 0) {
                 // go up the stack until we're outside of the Zowe Logger file
                 callerStackIndex += 1;
             }

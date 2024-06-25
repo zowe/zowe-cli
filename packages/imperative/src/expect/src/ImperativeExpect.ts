@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError } from "../../error";
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 
 const DataObjectParser = require("dataobject-parser");
 
@@ -87,7 +87,7 @@ export class ImperativeExpect {
      * @memberof ImperativeExpect
      */
     public static toMatchRegExp(value: any, myRegex: string, msg?: string) {
-        if (!(new RegExp(myRegex).test(value))) {
+        if (!new RegExp(myRegex).test(value)) {
             throw new ImperativeError({msg: msg || "Input object/value does not match the regular expression"},
                 {tag: ImperativeExpect.ERROR_TAG});
         }
@@ -101,7 +101,7 @@ export class ImperativeExpect {
      * @memberof ImperativeExpect
      */
     public static toNotBeNullOrUndefined(obj: any, msg?: string) {
-        if (isNullOrUndefined(obj)) {
+        if (obj == null) {
             throw new ImperativeError({msg: msg || "Required object must be defined"},
                 {tag: ImperativeExpect.ERROR_TAG});
         }
@@ -127,7 +127,7 @@ export class ImperativeExpect {
                 break;
             }
         }
-        if (isNullOrUndefined(foundEntry)) {
+        if (foundEntry == null) {
             throw new ImperativeError({
                 msg: msg || "The required entry was NOT found within the input array: " +
                     arr.map((entry) => inspect(entry))
@@ -182,7 +182,7 @@ export class ImperativeExpect {
         ImperativeExpect.toNotBeNullOrUndefined(obj, msg);
         const objParser = new DataObjectParser(obj);
         keys.forEach((key) => {
-            if (isNullOrUndefined(objParser.get(key))) {
+            if (objParser.get(key) == null) {
                 throw new ImperativeError({msg: msg || "Required parameter '" + key + "' must be defined"},
                     {tag: ImperativeExpect.ERROR_TAG});
             }
@@ -209,7 +209,7 @@ export class ImperativeExpect {
         ImperativeExpect.toNotBeNullOrUndefined(obj, msg);
         const objParser = new DataObjectParser(obj);
         keys.forEach((key) => {
-            if (isNullOrUndefined(objParser.get(key))) {
+            if (objParser.get(key) == null) {
                 throw new ImperativeError({msg: msg || "Required parameter '" + key + "' must be defined"},
                     {tag: ImperativeExpect.ERROR_TAG});
             }
@@ -290,7 +290,7 @@ export class ImperativeExpect {
     public static keysToBeUndefined(obj: { [key: string]: any }, keys: string[], msg?: string) {
         ImperativeExpect.toNotBeNullOrUndefined(obj, msg);
         keys.forEach((key) => {
-            if (!isNullOrUndefined(obj[key])) {
+            if (!(obj[key] == null)) {
                 throw new ImperativeError({msg: "Required parameter '" + key + "' must be undefined"},
                     {tag: ImperativeExpect.ERROR_TAG});
             }

@@ -37,7 +37,7 @@ export const UssFile: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         CreateCommonOptions.ussFile,
         CreateCommonOptions.systemName,
         CreateCommonOptions.owner,
@@ -48,7 +48,7 @@ export const UssFile: ICommandDefinition = {
         CreateCommonOptions.deleteCompleted,
         CreateCommonOptions.overwrite
         // CreateCommonOptions.zosmfVersion
-    ]),
+    ],
     outputFormatOptions: true,
     examples: [
         {

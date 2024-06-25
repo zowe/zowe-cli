@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import {
     explainProvisionTemplateResponse,
@@ -27,7 +26,7 @@ export default class Handler extends ZosmfBaseHandler {
         let usedOptionalParms: boolean = false;
         let arrayOfSystemNickNames: string[];
 
-        if (!isNullOrUndefined(commandParameters.arguments.systemNickNames)) {
+        if (!(commandParameters.arguments.systemNickNames== null)) {
             arrayOfSystemNickNames = commandParameters.arguments.systemNickNames
                 .split(",")
                 .map((systemName: string) => {
@@ -48,10 +47,10 @@ export default class Handler extends ZosmfBaseHandler {
 
         for (const property in provisionOptionalParams) {
             if (
-                !isNullOrUndefined(
+                !(
                     provisionOptionalParams[
                         property as keyof IProvisionOptionals
-                    ]
+                    ] == null
                 )
             ) {
                 usedOptionalParms = true;

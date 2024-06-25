@@ -334,7 +334,7 @@ describe("We should provide the ability to validate Imperative CLI profiles by t
         let expectedWords: string[] = [];
         const findExpectedWordsInTask = (task: IProfileValidationTask) => {
             expectedWords = expectedWords.concat(task.description.split(" "));
-            for (const dependent of (task.dependentTasks || [])) {
+            for (const dependent of task.dependentTasks || []) {
                 findExpectedWordsInTask(dependent);
             }
         };

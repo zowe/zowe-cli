@@ -114,7 +114,7 @@ export class ConfigSecure extends ConfigApi {
 
         // Build the entries for each layer
         for (const { user, global } of this.mConfig.mLayers) {
-            if (allLayers || (user === this.mConfig.mActive.user && global === this.mConfig.mActive.global)) {
+            if (allLayers || user === this.mConfig.mActive.user && global === this.mConfig.mActive.global) {
                 this.cacheAndPrune({ user, global });
             }
         }
@@ -232,7 +232,7 @@ export class ConfigSecure extends ConfigApi {
     public findSecure(profiles: { [key: string]: IConfigProfile }, path: string): string[] {
         const secureProps = [];
         for (const profName of Object.keys(profiles)) {
-            for (const propName of (profiles[profName].secure || [])) {
+            for (const propName of profiles[profName].secure || []) {
                 secureProps.push(`${path}.${profName}.properties.${propName}`);
             }
             if (profiles[profName].profiles != null) {
@@ -299,6 +299,6 @@ export class ConfigSecure extends ConfigApi {
      * it was never called because the CredentialManager failed to initialize.
      */
     public get loadFailed(): boolean {
-        return (this.mLoadFailed != null) ? this.mLoadFailed : !CredentialManagerFactory.initialized;
+        return this.mLoadFailed != null ? this.mLoadFailed : !CredentialManagerFactory.initialized;
     }
 }

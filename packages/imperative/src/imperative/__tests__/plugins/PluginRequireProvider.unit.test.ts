@@ -349,9 +349,9 @@ describe("PluginRequireProvider", () => {
                     modules: randomModuleMaxLength,
                     shouldRequireDirectly: [
                         "./anything/goes/here",
-                        randomModuleMaxLength[0].substr(15),
-                        randomModuleMaxLength[1].substr(200),
-                        randomModuleMaxLength[2].substr(59)
+                        randomModuleMaxLength[0].substring(15),
+                        randomModuleMaxLength[1].substring(200),
+                        randomModuleMaxLength[2].substring(59)
                     ]
                 },
                 "1 module with periods": {
@@ -429,7 +429,7 @@ describe("PluginRequireProvider", () => {
 
                                 try {
                                     // The return should be the main module as that is what the module loader does.
-                                    expect(modulePrototype.require.call(thisObject, module, testRequireIndicator)).toBe(process.mainModule);
+                                    expect(modulePrototype.require.call(thisObject, module, testRequireIndicator)).toBe(undefined);
 
                                     // Expect that the require was just called with the module
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
@@ -442,7 +442,7 @@ describe("PluginRequireProvider", () => {
                                     const submodule = `${module}/submodule/import`;
                                     expect(modulePrototype.require.call(
                                         thisObject, submodule, testRequireIndicator
-                                    )).toBe(process.mainModule);
+                                    )).toBe(undefined);
 
                                     // Expect that the require was just called with the submodule
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
@@ -475,7 +475,7 @@ describe("PluginRequireProvider", () => {
                                 try {
                                     expect(modulePrototype.require.call(
                                         thisObject, module, testRequireIndicator
-                                    )).toBe(process.mainModule);
+                                    )).toBe(undefined);
 
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
                                     expect(mockedRequire).toHaveBeenCalledWith("./", testRequireIndicator);
@@ -506,7 +506,7 @@ describe("PluginRequireProvider", () => {
                                 try {
                                     expect(modulePrototype.require.call(
                                         thisObject, module + submoduleImport, testRequireIndicator
-                                    )).toBe(process.mainModule);
+                                    )).toBe(undefined);
 
                                     expect(mockedRequire).toHaveBeenCalledTimes(1);
                                     expect(mockedRequire).toHaveBeenCalledWith(packageRoot + submoduleImport, testRequireIndicator);

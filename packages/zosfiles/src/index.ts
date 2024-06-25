@@ -43,7 +43,3 @@ export * from "./methods/utilities";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
-export * from "./doc/IOptionsFullResponse";
-export * from "./doc/IRestClientResponse";
-export * from "./doc/IOptions";
-export * from "./doc/types/ZosmfRestClientProperties";

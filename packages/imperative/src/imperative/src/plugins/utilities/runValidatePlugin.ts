@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../../../logger";
-import { ExecUtils } from "../../../../utilities";
+import { ExecUtils, ImperativeConfig } from "../../../../utilities";
 import { PMFConstants } from "./PMFConstants";
 import { ImperativeError } from "../../../../error";
 
@@ -30,7 +30,7 @@ import { ImperativeError } from "../../../../error";
 export function runValidatePlugin(pluginName: string): string {
     const extLen = 3;
     const cmdToRun = process.execPath;
-    const cliPgmToRun = require.main.filename;
+    const cliPgmToRun = ImperativeConfig.instance.callerLocation ?? require.main.filename;
     let cmdToRunArgs: string[] = [];
     if (cliPgmToRun.substring(cliPgmToRun.length - extLen) === ".ts") {
         cmdToRunArgs = ["--require", "ts-node/register"];

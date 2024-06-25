@@ -40,7 +40,7 @@ export class Services {
         );
 
         // Get the APIML configs from the loaded imperative config
-        for (const apimlConfig of (ImperativeConfig.instance.loadedConfig.apimlConnLookup || [])) {
+        for (const apimlConfig of ImperativeConfig.instance.loadedConfig.apimlConnLookup || []) {
             apimlConfigs.push({
                 ...apimlConfig,
                 connProfType: apimlConfig.connProfType || ImperativeConfig.instance.loadedConfig.profiles[0].type,
@@ -50,7 +50,7 @@ export class Services {
 
         // Load APIML configs from all plugins
         for (const pluginCfgProps of PluginManagementFacility.instance.allPluginCfgProps) {
-            for (const apimlConfig of (pluginCfgProps.impConfig.apimlConnLookup || [])) {
+            for (const apimlConfig of pluginCfgProps.impConfig.apimlConnLookup || []) {
                 apimlConfigs.push({
                     ...apimlConfig,
                     connProfType: apimlConfig.connProfType || pluginCfgProps.impConfig.profiles[0].type,
@@ -125,7 +125,7 @@ export class Services {
 
                         profInfo.pluginConfigs.add(config);
                         profInfo.gatewayUrlConflicts[config.pluginName] = [
-                            ...(profInfo.gatewayUrlConflicts[config.pluginName] || []),
+                            ...profInfo.gatewayUrlConflicts[config.pluginName] || [],
                             apiInfo.gatewayUrl
                         ];
                     }

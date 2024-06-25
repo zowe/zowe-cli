@@ -179,7 +179,7 @@ export class ConfigLayers extends ConfigApi {
 
         layer.properties.defaults = lodash.merge(cnfg.defaults, layer.properties.defaults);
 
-        for (const pluginName of (cnfg.plugins || [])) {
+        for (const pluginName of cnfg.plugins || []) {
             if (layer.properties.plugins == null) {
                 layer.properties.plugins = [pluginName];
             } else if (!layer.properties.plugins?.includes(pluginName)) {

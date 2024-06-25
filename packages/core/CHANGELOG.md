@@ -2,10 +2,13 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `8.0.0-next.202406111958`
+
+- BugFix: Deprecated the IHeaderContent interface - use `IHeaderContent` from `@zowe/imperative`. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+
 ## `8.0.0-next.202406061600`
 
 - Enhancement: Modified Services.ts to have commented properties end with commas. [#1049](https://github.com/zowe/zowe-cli/issues/1049)
-
 
 ## `8.0.0-next.202403041352`
 
@@ -36,6 +39,10 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 - Major: First major version bump for V3
 
+## `7.25.2`
+
+- Enhancement: Modified Services.ts to have commented properties end with commas. [#1049](https://github.com/zowe/zowe-cli/issues/1049)
+
 ## `7.25.0`
 
 - Enhancement: Added `X_IBM_INTRDR_FILE_ENCODING` header to `ZosmfHeaders` [#2139](https://github.com/zowe/zowe-cli/pull/2139)
@@ -55,7 +62,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 ## `7.17.0`
 
 - Enhancement: Set properties for z/OSMF REST errors for use in a more user-friendly format with the ZOWE_V3_ERR_FORMAT environment variable. [zowe-cli#935](https://github.com/zowe/zowe-cli/issues/935)
--
+
 ## `7.16.5`
 
 - BugFix: Fixed confusing error message "Token is not valid or expired" when APIML token is used to connect direct-to-service with `ZosmfRestClient`. [Imperative #978](https://github.com/zowe/imperative/issues/978)

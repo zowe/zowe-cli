@@ -18,7 +18,6 @@ import { Config } from "../src/Config";
 import { IConfig } from "../src/doc/IConfig";
 import { IConfigSecure } from "../src/doc/IConfigSecure";
 import { IConfigVault } from "../src/doc/IConfigVault";
-import { EventOperator } from "../../events";
 
 const MY_APP = "my_app";
 

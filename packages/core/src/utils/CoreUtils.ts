@@ -20,6 +20,7 @@ const stringWidth = require("string-width");
  * @param {string} str              - string to add the padding to
  * @param {number} len              - final length of the padded string
  * @param {string} [padChar=" "]    - Padding character
+ * @deprecated - use string.padStart instead
  * @return {string} Padded string
  */
 export function padLeft(str: string, len: number, padChar: string = " "): string {
@@ -93,16 +94,16 @@ export function getErrorContext(content: string | string[], lineIndex: number): 
 
     // Gather the line before in case we are able to get it
     if (lineIndex > 0) {
-        retValue += trimLineToTerminalWidth(`\n   ${padLeft(lineIndex.toString(), maxLineIndexLength)} |  ${lines[lineIndex - 1]}`);
+        retValue += trimLineToTerminalWidth(`\n   ${lineIndex.toString().padStart(maxLineIndexLength)} |  ${lines[lineIndex - 1]}`);
     }
 
     // Format the current line of the
     retValue +=
-        trimLineToTerminalWidth(`\n > ${TextUtils.chalk.red(padLeft((lineIndex + 1).toString(), maxLineIndexLength))} |  ${lines[lineIndex]}`);
+        trimLineToTerminalWidth(`\n > ${TextUtils.chalk.red((lineIndex + 1).toString().padStart(maxLineIndexLength))} |  ${lines[lineIndex]}`);
 
     // Gather the next line in case we are able to get it
     if (lineIndex + 1 < lines.length) {
-        retValue += trimLineToTerminalWidth(`\n   ${padLeft((lineIndex + 2).toString(), maxLineIndexLength)} |  ${lines[lineIndex + 1]}`);
+        retValue += trimLineToTerminalWidth(`\n   ${(lineIndex + 2).toString().padStart(maxLineIndexLength)} |  ${lines[lineIndex + 1]}`);
     }
 
     return retValue;
@@ -153,7 +154,7 @@ export function readStdin(): Promise<Buffer> {
             const stdinReadError: IImperativeError = {
                 msg: "Error encountered while reading from stdin",
                 causeErrors: error,
-                additionalDetails: (error == null) ? undefined : error.message
+                additionalDetails: error == null ? undefined : error.message
             };
             reject(stdinReadError);
         });

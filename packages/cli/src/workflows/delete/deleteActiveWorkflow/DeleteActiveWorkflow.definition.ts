@@ -30,11 +30,11 @@ export const DeleteActiveWorkflow: ICommandDefinition = {
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         DeleteWorkflowOptions.workflowKey,
         DeleteWorkflowOptions.workflowName
 
-    ]),
+    ],
     examples: [
         {
             description: "To delete a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",

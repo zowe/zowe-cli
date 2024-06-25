@@ -40,7 +40,7 @@ export const UssDefinition: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         {
             name: "for-sure",
             aliases: ["f"],
@@ -55,7 +55,7 @@ export const UssDefinition: ICommandDefinition = {
             type: "boolean",
             required: false
         }
-    ]),
+    ],
     examples: [
         {
             description: strings.EXAMPLES.EX1,

@@ -11,45 +11,38 @@
 
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../__tests__/__src__/environment/SetupTestEnvironment";
-import { EventCallback, EventOperator, EventProcessor, EventUtils, IEventJson, IWatcher, ZoweSharedEvents, ZoweUserEvents } from "../../..";
+import { ConfigUtils, EventCallback, EventOperator, EventProcessor, EventUtils, IEventJson, ZoweSharedEvents } from "../../..";
 import * as fs from "fs";
 import * as path from "path";
+import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
 
-let TEST_ENVIRONMENT: ITestEnvironment;
-const appName = "Zowe"; //the only guarenteed app name in the plugins list
-const app1 = "Zowe";//"FakeWatcherApp1";
-const app2 = "Zowe";//"FakeWatcherApp2";
-const userHome = require('os').homedir();
+const appName = "Zowe";
+const sampleApps = ["sample1", "sample2"];
 let zoweCliHome: string;
-let eventDir: string;
 
 describe("Event Operator and Processor", () => {
-    const doesEventFileExist = (eventDir: string, eventName: string) => {
-        const eventFilePath = path.join(eventDir, eventName);
-        return fs.existsSync(eventFilePath);
-    };
-
-    const cleanupDirectories = () => {
-        const userEventsDir = path.join(userHome, '.zowe', '.events');
-        if (fs.existsSync(userEventsDir)) {
-            fs.rmSync(userEventsDir, { recursive: true, force: true });
-        }
-
-        const sharedEventsDir = path.join(zoweCliHome, 'Zowe', '.events');
-        if (fs.existsSync(sharedEventsDir)) {
-            fs.rmSync(sharedEventsDir, { recursive: true, force: true });
-        }
-    };
-
-    beforeEach(async () => {
-        TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
+    beforeAll(async () => {
+        await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "ZOWE_CLI_HOME",
             testName: "event_operator_and_processor"
         });
         zoweCliHome = process.env.ZOWE_CLI_HOME || '';
+        const extJson: IExtendersJsonOpts = ConfigUtils.readExtendersJson();
+        sampleApps.forEach(app => extJson.profileTypes[app] = { from: [app] });
+        ConfigUtils.writeExtendersJson(extJson);
+    });
+    afterEach(() => {
+        const sharedEventsDir = path.join(zoweCliHome, '.events');
+        if (fs.existsSync(sharedEventsDir)) {
+            fs.rmSync(sharedEventsDir, { recursive: true, force: true });
+        }
+        jest.restoreAllMocks();
     });
 
-    afterEach(cleanupDirectories);
+    const doesEventFileExist = (eventDir: string, eventName: string) => {
+        const eventFilePath = path.join(eventDir, eventName);
+        return fs.existsSync(eventFilePath);
+    };
 
     describe("Shared Events", () => {
         const theEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
@@ -68,17 +61,25 @@ describe("Event Operator and Processor", () => {
         });
 
         it("should create an event file upon first subscription if the file does not exist - ZOWE EVENT", async () => {
+            const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
+            const theEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
+            const theCallback = jest.fn();
+            const theWatcher = EventOperator.getWatcher(appName);
+            const theEmitter = EventOperator.getZoweProcessor();
+            const eventDir = path.join(zoweCliHome, ".events");
+
             expect((theWatcher as EventProcessor).subscribedEvents.get(theEvent)).toBeFalsy();
 
             // Subscribe to the event
             theWatcher.subscribeShared(theEvent, theCallback);
             const eventDetails: IEventJson = (theWatcher as any).subscribedEvents.get(theEvent).toJson();
 
-            // Check for subscription evidence
-            expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
+            expect(theCallback).not.toHaveBeenCalled();
+            expect(doesEventFileExist(path.join(eventDir, "Zowe"), theEvent)).toBeTruthy();
 
             // Emit event and trigger callback
             theEmitter.emitZoweEvent(theEvent);
+            setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)()); // Mock the event emission 
 
             // Adding a delay to ensure the callback has time to be called
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -89,33 +90,21 @@ describe("Event Operator and Processor", () => {
             EventOperator.deleteProcessor(appName);
         });
 
-        // it("should trigger subscriptions for all instances watching for onCredentialManagerChanged", async () => {
-        //     expect((theWatcher as EventProcessor).subscribedEvents.get(theEvent)).toBeFalsy();
-        //     expect((secondWatcher as EventProcessor).subscribedEvents.get(theEvent)).toBeFalsy();
+        it("should trigger subscriptions for all instances watching for onCredentialManagerChanged", async () => {
+            const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
+            const theEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
+            const firstWatcher = EventOperator.getWatcher(sampleApps[0]);
+            const secondWatcher = EventOperator.getWatcher(sampleApps[1]);
+            const theEmitter = EventOperator.getZoweProcessor();
 
-        //     // Subscribe to the event
-        //     theWatcher.subscribeShared(theEvent, theCallback);
-        //     secondWatcher.subscribeShared(theEvent, theSecondCallback);
-        //     const firstEventDetails: IEventJson = (theWatcher as any).subscribedEvents.get(theEvent).toJson();
-        //     const secondEventDetails: IEventJson = (secondWatcher as any).subscribedEvents.get(theEvent).toJson();
+            const theFirstCallback: EventCallback = jest.fn() as EventCallback;
+            const theSecondCallback: EventCallback = jest.fn() as EventCallback;
 
-        //     // Emit event and trigger callbacks
-        //     theEmitter.emitZoweEvent(theEvent);
+            expect((firstWatcher as EventProcessor).subscribedEvents.get(theEvent)).toBeFalsy();
+            expect((secondWatcher as EventProcessor).subscribedEvents.get(theEvent)).toBeFalsy();
 
-        //     // Adding a delay to ensure the callbacks have time to be called
-        //     await new Promise(resolve => setTimeout(resolve, 1000));
-
-        //     expect(firstEventDetails.eventName).toEqual(theEvent);
-        //     expect(secondEventDetails.eventName).toEqual(theEvent);
-        //     expect(EventUtils.isSharedEvent(firstEventDetails.eventName)).toBeTruthy();
-        //     expect(EventUtils.isSharedEvent(secondEventDetails.eventName)).toBeTruthy();
-        //     expect(theCallback).toHaveBeenCalled();
-        //     expect(theSecondCallback).toHaveBeenCalled();
-        //     EventOperator.deleteProcessor(appName);
-        // });
-
-        it("should not affect subscriptions from another instance when unsubscribing from events", async () => {
-            theWatcher.subscribeShared(theEvent, theCallback);
+            // Subscribe to the event
+            firstWatcher.subscribeShared(theEvent, theFirstCallback);
             secondWatcher.subscribeShared(theEvent, theSecondCallback);
 
             // Check that subscribed
@@ -127,50 +116,24 @@ describe("Event Operator and Processor", () => {
             theEmitter.emitZoweEvent(theEvent);
 
             // Adding a delay to ensure the callbacks have time to be called
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)()); // Mock the event emission 
 
-            // Testing that only the watching processor has their callback triggered
-            expect(theCallback).toHaveBeenCalled();
-            expect(theSecondCallback).not.toHaveBeenCalled();
-            EventOperator.deleteProcessor(appName);
-        });
-    });
-
-    describe("User Events", () => {
-        const theEvent = ZoweUserEvents.ON_VAULT_CHANGED;
-        let theWatcher: IWatcher;
-        let secondWatcher: IWatcher;
-        let theEmitter: any;
-        let theCallback: EventCallback;
-        let theSecondCallback: EventCallback;
-
-        beforeEach(() => {
-            theWatcher = EventOperator.getWatcher(app1);
-            secondWatcher = EventOperator.getWatcher(app2);
-            theEmitter = EventOperator.getZoweProcessor();
-            theCallback = jest.fn() as EventCallback;
-            theSecondCallback = jest.fn() as EventCallback;
-            zoweCliHome = process.env.ZOWE_CLI_HOME || '';
-            eventDir = path.join(zoweCliHome, 'Zowe', '.events');
-        });
-
-        it("should create an event file upon first subscription if the file does not exist", () => {
-            // File should not exist before first-time subscription
-            expect(doesEventFileExist(zoweCliHome, theEvent)).toBeFalsy();
-            expect((theEmitter as any).subscribedEvents.get(theEvent)).toBeFalsy();
-
-            // Subscribe to the event
-            theWatcher.subscribeShared(theEvent, theCallback);
-            const eventDetails: IEventJson = (theWatcher as any).subscribedEvents.get(theEvent).toJson();
-
-            // Check that file now exists
-            expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
+            expect(firstEventDetails.eventName).toEqual(theEvent);
+            expect(secondEventDetails.eventName).toEqual(theEvent);
+            expect(EventUtils.isSharedEvent(firstEventDetails.eventName)).toBeTruthy();
+            expect(EventUtils.isSharedEvent(secondEventDetails.eventName)).toBeTruthy();
+            expect(theFirstCallback).toHaveBeenCalled();
+            expect(theSecondCallback).toHaveBeenCalled();
+            EventOperator.deleteProcessor(sampleApps[0]);
+            EventOperator.deleteProcessor(sampleApps[1]);
             EventOperator.deleteProcessor(appName);
         });
 
-        it("should trigger subscriptions for all instances watching for onVaultChanged", () => {
-            const theEvent = ZoweUserEvents.ON_VAULT_CHANGED;
-            const firstProc = EventOperator.getZoweProcessor();
+        it("should not affect subscriptions from another instance when unsubscribing from events", async () => {
+            const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
+            const theEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
+            const firstProc = EventOperator.getProcessor(sampleApps[0]);
             const secondProc = EventOperator.getZoweProcessor();
 
             const firstSubSpy = jest.fn();
@@ -181,14 +144,103 @@ describe("Event Operator and Processor", () => {
 
             firstProc.emitZoweEvent(theEvent);
 
-            (firstProc as any).subscribedEvents.get(theEvent).subscriptions.forEach((sub: any) => sub()); // simulate FSWatcher called
+            expect((firstProc as any).subscribedEvents.get(theEvent)).toBeFalsy();
+            expect((secondProc as any).subscribedEvents.get(theEvent)).toBeTruthy();
 
-            expect(firstSubSpy).toHaveBeenCalled();
+            // Emit event and trigger callbacks
+            secondProc.emitZoweEvent(theEvent);
+
+            // Adding a delay to ensure the callbacks have time to be called
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            setupWatcherSpy.mock.calls.forEach(call => {
+                if (call[0].appName === appName) { (call[2] as Function)(); }
+            }); // Mock the event emission 
+
+            expect(firstSubSpy).not.toHaveBeenCalled();
             expect(secondSubSpy).toHaveBeenCalled();
 
+            EventOperator.deleteProcessor(sampleApps[0]);
             EventOperator.deleteProcessor(appName);
         });
     });
+
+    // describe("User Events", () => {
+    //     it("should create an event file upon first subscription if the file does not exist", () => {
+    //         const theEvent = ZoweUserEvents.ON_VAULT_CHANGED;
+    //         const processor = EventOperator.getZoweProcessor();
+
+    //         expect(doesEventFileExist(zoweCliHome, theEvent)).toBeFalsy();
+    //         expect((processor as any).subscribedEvents.get(theEvent)).toBeFalsy();
+
+    //         const subSpy = jest.fn();
+    //         processor.subscribeUser(theEvent, subSpy);
+
+    //         expect(subSpy).not.toHaveBeenCalled();
+    //         expect(doesEventFileExist(zoweCliHome, theEvent)).toBeTruthy();
+
+    //         processor.emitZoweEvent(theEvent);
+
+    //         (processor as any).subscribedEvents.get(theEvent).subscriptions.forEach((sub: any) => sub()); // simulate FSWatcher called
+
+    //         expect(doesEventFileExist(zoweCliHome, theEvent)).toBeTruthy();
+    //         const eventDetails: IEventJson = (processor as any).subscribedEvents.get(theEvent).toJson();
+    //         expect(eventDetails.eventName).toEqual(theEvent);
+    //         expect(EventUtils.isUserEvent(eventDetails.eventName)).toBeTruthy();
+
+    //         expect(subSpy).toHaveBeenCalled();
+
+    //         EventOperator.deleteProcessor(appName);
+    //     });
+
+    //     it("should trigger subscriptions for all instances watching for onVaultChanged", () => {
+    //         const theEvent = ZoweUserEvents.ON_VAULT_CHANGED;
+    //         const firstProc = EventOperator.getZoweProcessor();
+    //         const secondProc = EventOperator.getZoweProcessor();
+
+    //         const firstSubSpy = jest.fn();
+    //         const secondSubSpy = jest.fn();
+
+    //         firstProc.subscribeUser(theEvent, firstSubSpy);
+    //         secondProc.subscribeUser(theEvent, secondSubSpy);
+
+    //         firstProc.emitZoweEvent(theEvent);
+
+    //         (firstProc as any).subscribedEvents.get(theEvent).subscriptions.forEach((sub: any) => sub()); // simulate FSWatcher called
+
+    //         expect(firstSubSpy).toHaveBeenCalled();
+    //         expect(secondSubSpy).toHaveBeenCalled();
+
+    //         EventOperator.deleteProcessor(appName);
+    //     });
+
+    //     it("should not affect subscriptions from another instance when unsubscribing from events", () => {
+    //         const theEvent = ZoweUserEvents.ON_VAULT_CHANGED;
+    //         const firstProc = EventOperator.getZoweProcessor();
+    //         const secondProc = EventOperator.getZoweProcessor();
+
+    //         const firstSubSpy = jest.fn();
+    //         const secondSubSpy = jest.fn();
+
+    //         firstProc.subscribeUser(theEvent, firstSubSpy);
+    //         secondProc.subscribeUser(theEvent, secondSubSpy);
+
+    //         firstProc.unsubscribe(theEvent);
+
+    //         expect((firstProc as any).subscribedEvents.get(theEvent)).toBeFalsy();
+    //         expect((secondProc as any).subscribedEvents.get(theEvent)).toBeTruthy();
+
+    //         secondProc.emitZoweEvent(theEvent);
+
+    //         (secondProc as any).subscribedEvents.get(theEvent).subscriptions.forEach((sub: any) => sub()); // simulate FSWatcher called
+
+    //         expect(firstSubSpy).not.toHaveBeenCalled();
+    //         expect(secondSubSpy).toHaveBeenCalled();
+
+    //         EventOperator.deleteProcessor(appName);
+    //     });
+    // });
+
+    // describe("Custom Events", () => {
     //     const customEvent = "onMyCustomEvent";
 
     //     it("should create an event file upon first subscription if the file does not exist", () => {

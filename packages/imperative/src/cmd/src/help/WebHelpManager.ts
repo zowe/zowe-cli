@@ -101,7 +101,7 @@ export class WebHelpManager implements IWebHelpManager {
 
         const newMetadata: MaybePackageMetadata = this.checkIfMetadataChanged();
         if (newMetadata !== null) {
-            (new WebHelpGenerator(this.mFullCommandTree, ImperativeConfig.instance, this.webHelpDir)).
+            new WebHelpGenerator(this.mFullCommandTree, ImperativeConfig.instance, this.webHelpDir).
                 buildHelp(cmdResponse);
             this.writePackageMetadata(newMetadata);
         }
@@ -121,7 +121,7 @@ export class WebHelpManager implements IWebHelpManager {
         }
 
         try {
-            const htmlFile = (inContext != null) ? "launcher.html" : "index.html";
+            const htmlFile = inContext != null ? "launcher.html" : "index.html";
             ProcessUtils.openInDefaultApp(`file:///${this.webHelpDir}/${htmlFile}`);
         } catch (e) {
             throw new ImperativeError({
