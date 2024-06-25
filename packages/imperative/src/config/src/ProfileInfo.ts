@@ -1262,7 +1262,7 @@ export class ProfileInfo {
 
         // Update contents of extenders.json if it has changed
         if (wasGlobalUpdated && !lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
-            if (!ProfileInfo.writeExtendersJson(this.mExtendersJson)) {
+            if (!ConfigUtils.writeExtendersJson(this.mExtendersJson)) {
                 return {
                     success: true,
                     // Even if we failed to update extenders.json, it was technically added to the schema cache.

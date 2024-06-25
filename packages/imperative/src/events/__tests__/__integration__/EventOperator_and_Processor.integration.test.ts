@@ -16,14 +16,13 @@ import * as fs from "fs";
 import * as path from "path";
 import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
 
-let TEST_ENVIRONMENT: ITestEnvironment;
 const appName = "Zowe";
 const sampleApps = ["sample1", "sample2"];
 let zoweCliHome: string;
 
 describe("Event Operator and Processor", () => {
     beforeAll(async () => {
-        TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
+        await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "ZOWE_CLI_HOME",
             testName: "event_operator_and_processor"
         });
@@ -136,7 +135,7 @@ describe("Event Operator and Processor", () => {
             // Adding a delay to ensure the callbacks have time to be called
             // await new Promise(resolve => setTimeout(resolve, 1000));
             setupWatcherSpy.mock.calls.forEach(call => {
-                if (call[0].appName === appName) { (call[2] as Function)() }
+                if (call[0].appName === appName) { (call[2] as Function)(); }
             }); // Mock the event emission 
 
             expect(firstSubSpy).not.toHaveBeenCalled();
