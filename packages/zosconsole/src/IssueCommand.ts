@@ -12,7 +12,6 @@
 import { AbstractSession, Headers } from "@zowe/imperative";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { isNullOrUndefined } from "util";
 import { IZosmfIssueParms } from "./doc/zosmf/IZosmfIssueParms";
 import { ConsoleValidator } from "./ConsoleValidator";
 import { IZosmfIssueResponse } from "./doc/zosmf/IZosmfIssueResponse";
@@ -70,7 +69,7 @@ export class IssueCommand {
     public static async issue(session: AbstractSession, parms: IIssueParms) {
         ConsoleValidator.validateIssueParms(session, parms);
 
-        const consoleName: string = isNullOrUndefined(parms.consoleName) ? ConsoleConstants.RES_DEF_CN : parms.consoleName;
+        const consoleName: string = parms.consoleName == null ? ConsoleConstants.RES_DEF_CN : parms.consoleName;
         const commandParms: IZosmfIssueParms = IssueCommand.buildZosmfConsoleApiParameters(parms);
         let response: IConsoleResponse = ConsoleResponseService.getEmptyConsoleResponse();
 
@@ -146,13 +145,13 @@ export class IssueCommand {
         ConsoleValidator.validateIssueParm(parms);
 
         const zosmfParms: IZosmfIssueParms = {cmd: parms.command};
-        if (!isNullOrUndefined(parms.solicitedKeyword)) {
+        if (!(parms.solicitedKeyword == null)) {
             zosmfParms["sol-key"] = parms.solicitedKeyword;
         }
-        if (!isNullOrUndefined(parms.sysplexSystem)) {
+        if (!(parms.sysplexSystem == null)) {
             zosmfParms.system = parms.sysplexSystem;
         }
-        if (!isNullOrUndefined(parms.async)) {
+        if (!(parms.async == null)) {
             zosmfParms.async = parms.async;
         }
         return zosmfParms;

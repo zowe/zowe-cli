@@ -23,7 +23,7 @@ export default class FailedCommandHandler implements ICommandHandler {
             params.response.console.error(params.arguments.error.stack);
         }
         const additionalDetails: string = params.arguments.error ? params.arguments.error.message : undefined;
-        const msg: string = (additionalDetails == null) ? params.arguments.failureMessage : additionalDetails + "\n"
+        const msg: string = additionalDetails == null ? params.arguments.failureMessage : additionalDetails + "\n"
             + params.arguments.failureMessage;
         const failedCommandError: IImperativeError = {
             msg,

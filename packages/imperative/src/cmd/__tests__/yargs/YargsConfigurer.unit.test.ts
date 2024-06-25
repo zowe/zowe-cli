@@ -10,7 +10,8 @@
 */
 
 import { CommandProcessor } from "../../src/CommandProcessor";
-import { Constants, ImperativeConfig, YargsConfigurer } from "../../..";
+import { Constants, ImperativeConfig } from "../../..";
+import { YargsConfigurer } from "../../src/yargs/YargsConfigurer";
 
 jest.mock("yargs");
 jest.mock("../../src/CommandProcessor");

@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { IOperationCompleted, IOperationUndoCompleted, Operation } from "../../../../index";
 import { TestLogger } from "../../../../../__tests__/src/TestLogger";
 

@@ -150,7 +150,7 @@ export class DefinitionTreeResolver {
     private static addBaseProfile(cmdDefs: ICommandDefinition[]): ICommandDefinition[] {
         return cmdDefs.map((cmdDef: ICommandDefinition) => {
             if (cmdDef.profile && Object.keys(cmdDef.profile).length > 0) {
-                cmdDef.profile.optional = [...(cmdDef.profile.optional || []), "base"];
+                cmdDef.profile.optional = [...cmdDef.profile.optional || [], "base"];
             }
             if (cmdDef.children && cmdDef.children.length > 0) {
                 cmdDef.children = this.addBaseProfile(cmdDef.children);

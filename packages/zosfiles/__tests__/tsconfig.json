@@ -1,4 +1,12 @@
 {
   // tsconfig for test files //
-  "extends": "../../__tests__/tsconfig.json"
+  "extends": "../../../__tests__/tsconfig.json",
+  "include": [
+    "**/*.test.ts",
+    "**/__tests__/**/*"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules"
+  ]
 }

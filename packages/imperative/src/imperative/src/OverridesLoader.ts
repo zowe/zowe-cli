@@ -65,24 +65,25 @@ export class OverridesLoader {
         const overrides: IImperativeOverrides = config.overrides;
 
         // The manager display name used to populate the "managed by" fields in profiles
-        const displayName: string = (
+        const displayName: string =
             overrides.CredentialManager != null
             && AppSettings.initialized
             && AppSettings.instance.getNamespace("overrides") != null
             && AppSettings.instance.get("overrides", "CredentialManager") != null
             && AppSettings.instance.get("overrides", "CredentialManager") !== false
-        ) ?
+                ?
             // App settings is configured - use the plugin name for the manager name
-            AppSettings.instance.get("overrides", "CredentialManager") as string
-            :
+                AppSettings.instance.get("overrides", "CredentialManager") as string
+                :
             // App settings is not configured - use the CLI display name OR the package name as the manager name
-            config.productDisplayName || config.name;
+                config.productDisplayName || config.name;
 
         // Initialize the credential manager if an override was supplied and/or keytar was supplied in package.json
         if (overrides.CredentialManager != null || this.shouldUseKeytar(packageJson, useTeamConfig)) {
             let Manager = overrides.CredentialManager;
             if (typeof overrides.CredentialManager === "string" && !isAbsolute(overrides.CredentialManager)) {
-                Manager = resolve(process.mainModule.filename, "../", overrides.CredentialManager);
+                const resolvePath = ImperativeConfig.instance.callerLocation ?? require.main.filename;
+                Manager = resolve(resolvePath, "../", overrides.CredentialManager);
             }
 
             await CredentialManagerFactory.initialize({
@@ -125,12 +126,12 @@ export class OverridesLoader {
         if (!CredentialManagerFactory.initialized) return;
 
         const vault: IConfigVault = {
-            load: ((key: string): Promise<string> => {
+            load: (key: string): Promise<string> => {
                 return CredentialManagerFactory.manager.load(key, true);
-            }),
-            save: ((key: string, value: any): Promise<void> => {
+            },
+            save: (key: string, value: any): Promise<void> => {
                 return CredentialManagerFactory.manager.save(key, value);
-            })
+            }
         };
 
         try {

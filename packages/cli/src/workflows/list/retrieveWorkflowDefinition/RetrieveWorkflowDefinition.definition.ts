@@ -38,10 +38,10 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         RetrieveWorkflowDefinitionCommonOptions.listSteps,
         RetrieveWorkflowDefinitionCommonOptions.listVariables
-    ]),
+    ],
     examples: [
         {
             description: "To list the contents of a workflow definition stored in the UNIX file \"/user/dir/workflow.xml\"" +

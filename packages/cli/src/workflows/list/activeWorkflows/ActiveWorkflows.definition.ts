@@ -32,14 +32,14 @@ export const ActiveWorkflows: ICommandDefinition = {
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         ListActiveWorkflowsOptions.workflowName,
         ListActiveWorkflowsOptions.category,
         ListActiveWorkflowsOptions.system,
         ListActiveWorkflowsOptions.owner,
         ListActiveWorkflowsOptions.vendor,
         ListActiveWorkflowsOptions.statusName
-    ]),
+    ],
     outputFormatOptions: true,
     examples: [
         {

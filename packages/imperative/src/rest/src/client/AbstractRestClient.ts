@@ -531,7 +531,7 @@ export abstract class AbstractRestClient {
         this.setTransferFlags(options.headers);
 
         const logResource = path.posix.join(path.posix.sep,
-            (this.session.ISession.basePath == null ? "" : this.session.ISession.basePath), resource);
+            this.session.ISession.basePath == null ? "" : this.session.ISession.basePath, resource);
         this.log.trace("Rest request: %s %s:%s%s %s", request, this.session.ISession.hostname, this.session.ISession.port,
             logResource, this.session.ISession.user ? "as user " + this.session.ISession.user : "");
 
@@ -789,10 +789,6 @@ export abstract class AbstractRestClient {
             this.mTask.percentComplete = TaskProgress.ONE_HUNDRED_PERCENT;
             this.mTask.stageName = TaskStage.COMPLETE;
         }
-        if (this.mResponseStream != null) {
-            this.log.debug("Ending response stream");
-            this.mResponseStream.end();
-        }
         if (this.mContentEncoding != null && this.mData.length > 0) {
             this.log.debug("Decompressing encoded response");
             try {
@@ -801,22 +797,25 @@ export abstract class AbstractRestClient {
                 this.mReject(err);
             }
         }
-        if (this.requestFailure) {
-            // Reject the promise with an error
-            const httpStatus = this.response == null ? undefined : this.response.statusCode;
-            this.mReject(this.populateError({
-                msg: "Rest API failure with HTTP(S) status " + httpStatus,
-                causeErrors: this.dataString,
-                source: "http"
-            }));
-        } else if (this.mResponseStream != null && this.mResponseStream.writableEnded) {
-            // This will correct any instances where the finished event does not get emitted
-            // even though the stream processing has ended.
-            this.mResolve(this.dataString);
-        } else if (this.mResponseStream != null && !this.mResponseStream.writableFinished) {
-            this.mResponseStream.on("finish", () => this.mResolve(this.dataString));
+
+        const requestEnd = () => {
+            if (this.requestFailure) {
+                // Reject the promise with an error
+                const httpStatus = this.response == null ? undefined : this.response.statusCode;
+                this.mReject(this.populateError({
+                    msg: "Rest API failure with HTTP(S) status " + httpStatus,
+                    causeErrors: this.dataString,
+                    source: "http"
+                }));
+            } else {
+                this.mResolve(this.dataString);
+            }
+        };
+        if (this.mResponseStream != null) {
+            this.log.debug("Ending response stream");
+            this.mResponseStream.end(requestEnd);
         } else {
-            this.mResolve(this.dataString);
+            requestEnd();
         }
     }
 
@@ -865,8 +864,8 @@ export abstract class AbstractRestClient {
         finalError.host = this.mSession.ISession.hostname;
         finalError.basePath = this.mSession.ISession.basePath;
         finalError.httpStatus = httpStatus;
-        finalError.errno = (nodeClientError != null) ? nodeClientError.errno : undefined;
-        finalError.syscall = (nodeClientError != null) ? nodeClientError.syscall : undefined;
+        finalError.errno = nodeClientError != null ? nodeClientError.errno : undefined;
+        finalError.syscall = nodeClientError != null ? nodeClientError.syscall : undefined;
         finalError.payload = this.mWriteData;
         finalError.headers = this.mReqHeaders;
         finalError.resource = this.mResource;
@@ -938,7 +937,7 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private setTransferFlags(headers: http.OutgoingHttpHeaders) {
-        if ((headers[Headers.CONTENT_TYPE]) != null) {
+        if (headers[Headers.CONTENT_TYPE] != null) {
             const contentType = headers[Headers.CONTENT_TYPE];
             if (contentType === Headers.APPLICATION_JSON[Headers.CONTENT_TYPE]) {
                 this.mIsJson = true;
@@ -958,8 +957,8 @@ export abstract class AbstractRestClient {
         if (this.response == null) {
             return false;
         } else {
-            return (this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
-                this.response.statusCode < RestConstants.HTTP_STATUS_300);
+            return this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
+                this.response.statusCode < RestConstants.HTTP_STATUS_300;
         }
     }
 

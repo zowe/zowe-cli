@@ -116,12 +116,12 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
      */
     public async initialize(): Promise<void> {
         try {
-            // Imperative overrides the value of process.mainModule.filename to point to
+            // Imperative overrides the value of require.main.filename to point to
             // our calling CLI. Since our caller must supply keytar, we search for keytar
             // within our caller's path.
             const requireOpts: any = {};
-            if (process.mainModule?.filename != null) {
-                requireOpts.paths = [process.mainModule.filename, ...require.resolve.paths("@zowe/secrets-for-zowe-sdk")];
+            if (require.main.filename != null) {
+                requireOpts.paths = [require.main.filename, ...require.resolve.paths("@zowe/secrets-for-zowe-sdk")];
             }
             // use helper function for require.resolve so it can be mocked in jest tests
             const keytarPath = require.resolve("@zowe/secrets-for-zowe-sdk", requireOpts);

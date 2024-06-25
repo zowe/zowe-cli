@@ -139,7 +139,7 @@ export class IO {
         let createDir: string = "";
         for (const crDir of dirs) {
 
-            createDir += (crDir + path.posix.sep);
+            createDir += crDir + path.posix.sep;
             IO.createDirSync(createDir);
         }
     }

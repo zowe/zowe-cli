@@ -33,7 +33,7 @@ describe("ZosmfRestClient tests", () => {
                 shouldNotDelete: shouldNotDeleteMessage
             })
         };
-        const processedError = ((zosmfRestClient as any).processError(error));
+        const processedError = (zosmfRestClient as any).processError(error);
         expect(processedError.causeErrors).not.toContain(shouldDeleteMessage);
         expect(processedError.causeErrors).toContain(shouldNotDeleteMessage);
         expect(processedError.msg.indexOf()).toEqual(-1);
@@ -60,7 +60,7 @@ describe("ZosmfRestClient tests", () => {
                     'Allow Unauth Cert: true' +
                 '}'
             };
-            const processedError = ((zosmfRestClient as any).processError(error));
+            const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Rest API failure with HTTP(S) status 401");
             expect(processedError.msg).toContain("This operation requires authentication.");
             expect(processedError.msg).toContain("Username or password are not valid or expired.");
@@ -93,7 +93,7 @@ describe("ZosmfRestClient tests", () => {
                     'Allow Unauth Cert: true' +
                     '}'
             };
-            const processedError = ((zosmfRestClient as any).processError(error));
+            const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Rest API failure with HTTP(S) status 401");
             expect(processedError.msg).toContain("This operation requires authentication.");
             expect(processedError.msg).toContain("Username or password are not valid or expired.");
@@ -116,7 +116,7 @@ describe("ZosmfRestClient tests", () => {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
             const error: IImperativeError = { msg: "Fake token error" };
-            const processedError = ((zosmfRestClient as any).processError(error));
+            const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Fake token error");
             expect(processedError.msg).toContain("This operation requires authentication.");
             expect(processedError.msg).toContain("Token is not valid or expired");
@@ -137,7 +137,7 @@ describe("ZosmfRestClient tests", () => {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
             const error: IImperativeError = { msg: "Fake token error" };
-            const processedError = ((zosmfRestClient as any).processError(error));
+            const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Fake token error");
             expect(processedError.msg).toContain("This operation requires authentication.");
             expect(processedError.msg).toContain("Token type \"apimlAuthenticationToken\" requires base path to be defined.");
@@ -157,7 +157,7 @@ describe("ZosmfRestClient tests", () => {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
             const error: IImperativeError = { msg: "Bad Cert" };
-            const processedError = ((zosmfRestClient as any).processError(error));
+            const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Bad Cert");
             expect(processedError.msg).toContain("This operation requires authentication.");
             expect(processedError.msg).toContain("Certificate is not valid or expired.");

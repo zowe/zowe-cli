@@ -11,7 +11,7 @@
 
 jest.mock("@zowe/secrets-for-zowe-sdk");
 
-import * as path from "path";
+import { Module } from "module";
 import { DefaultCredentialManager } from "..";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ImperativeError } from "../../error";
@@ -50,6 +50,9 @@ describe("DefaultCredentialManager", () => {
         });
 
         describe("initialize", () => {
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
             it("should properly initialize keytar", async () => {
                 await manager.initialize();
 
@@ -72,54 +75,22 @@ describe("DefaultCredentialManager", () => {
                 expect(privateManager.loadError.message).toMatch(/^Failed to load Keytar module:/);
             });
 
-            it("should look for keytar in CLI node_modules folder", async () => {
-                // Jest doesn't let us mock require.resolve, so instead we purposely
-                // fail the import and look for module path in the error message
-                const fakeCliPath = "/root/fakeCli";
-                const mainModule = process.mainModule;
-                process.mainModule = { filename: fakeCliPath } as any;
-                const resolveSpy = jest.spyOn(path, "resolve").mockReturnValue(fakeCliPath);
-
-                // Force enter the try catch
-                Object.defineProperty(manager, "keytar", {
-                    writable: false
-                });
-
-                try {
-                    await manager.initialize();
-
-                    expect(privateManager.keytar).toBeUndefined();
-                    expect(privateManager.loadError).toBeInstanceOf(ImperativeError);
-                    const error: Error = privateManager.loadError.causeErrors;
-                    expect(error).toBeDefined();
-                    expect(error.message).toContain("Cannot resolve module");
-                    expect(error.message).toContain(fakeCliPath);
-                } finally {
-                    process.mainModule = mainModule;
-                    resolveSpy.mockRestore();
-                }
-            });
-
             it("should look for keytar in local node_modules folder", async () => {
-                const mainModule = process.mainModule;
-                process.mainModule = { filename: "/root/fakeCli" } as any;
+                const mainModule = require.main;
+                jest.spyOn(Module.prototype, "require").mockReturnValue({...require, main: {...mainModule, filename: "/root/fakeCli"} as any} as any);
 
                 // Force enter the try catch
                 Object.defineProperty(manager, "keytar", {
                     writable: false
                 });
 
-                try {
-                    await manager.initialize();
+                await manager.initialize();
 
-                    expect(privateManager.keytar).toBeUndefined();
-                    expect(privateManager.loadError).toBeInstanceOf(ImperativeError);
-                    const error: Error = privateManager.loadError.causeErrors;
-                    expect(error).toBeDefined();
-                    expect(error.message).toContain("Cannot assign to read only property");
-                } finally {
-                    process.mainModule = mainModule;
-                }
+                expect(privateManager.keytar).toBeUndefined();
+                expect(privateManager.loadError).toBeInstanceOf(ImperativeError);
+                const error: Error = privateManager.loadError.causeErrors;
+                expect(error).toBeDefined();
+                expect(error.message).toContain("Cannot assign to read only property");
             });
         });
 

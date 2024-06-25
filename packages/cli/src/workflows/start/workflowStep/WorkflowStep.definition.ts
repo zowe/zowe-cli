@@ -38,13 +38,13 @@ export const WorkflowStep: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         StartCommonOptions.workflowKey,
         StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
         StartCommonOptions.performFollowingSteps
         // StartCommonOptions.zosmfVersion,
-    ]),
+    ],
     examples: [
         {
             description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",

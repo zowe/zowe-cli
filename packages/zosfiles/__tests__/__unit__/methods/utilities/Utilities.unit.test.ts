@@ -179,8 +179,6 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
-
             expect(response).toBeUndefined();
             expect(caughtError).toBeDefined();
 
@@ -213,7 +211,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
@@ -273,7 +271,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(true);
 
@@ -296,7 +294,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(true);
@@ -317,7 +315,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(true);
@@ -338,7 +336,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(false);
@@ -359,7 +357,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(false);

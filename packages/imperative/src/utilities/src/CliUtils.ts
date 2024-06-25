@@ -51,7 +51,7 @@ export class CliUtils {
      * @returns {string} - e.g. --my-option
      */
     public static getDashFormOfOption(optionName: string): string {
-        if ((optionName !== undefined && optionName !== null) && optionName.length >= 1) {
+        if (optionName !== undefined && optionName !== null && optionName.length >= 1) {
             const dashes = optionName.length > 1 ? Constants.OPT_LONG_DASH : Constants.OPT_SHORT_DASH;
             return dashes + optionName;
         } else {
@@ -123,7 +123,7 @@ export class CliUtils {
         let args: any = {};
 
         // Construct the precedence order to iterate through the profiles
-        let profileOrder: any = (definitions.required != null) ? definitions.required : [];
+        let profileOrder: any = definitions.required != null ? definitions.required : [];
         if (definitions.optional != null) {
             profileOrder = profileOrder.concat(definitions.optional);
         }
@@ -170,11 +170,11 @@ export class CliUtils {
 
                         // If both case properties are present in the profile, use the one that matches
                         // the option name explicitly
-                        const value = (profileKebab !== undefined && profileCamel !== undefined) ?
-                            ((opt.name === cases.kebabCase) ? profileKebab : profileCamel) :
-                            ((profileKebab !== undefined) ? profileKebab : profileCamel);
+                        const value = profileKebab !== undefined && profileCamel !== undefined ?
+                            opt.name === cases.kebabCase ? profileKebab : profileCamel :
+                            profileKebab !== undefined ? profileKebab : profileCamel;
                         const keys = CliUtils.setOptionValue(opt.name,
-                            ("aliases" in opt) ? (opt as ICommandOptionDefinition).aliases : [],
+                            "aliases" in opt ? (opt as ICommandOptionDefinition).aliases : [],
                             value
                         );
                         args = {...args, ...keys};
@@ -257,7 +257,7 @@ export class CliUtils {
                 }
 
                 const keys = CliUtils.setOptionValue(opt.name,
-                    ("aliases" in opt) ? (opt as ICommandOptionDefinition).aliases : [],
+                    "aliases" in opt ? (opt as ICommandOptionDefinition).aliases : [],
                     envValue
                 );
                 args = {...args, ...keys};
@@ -495,7 +495,7 @@ export class CliUtils {
                 prompt: message,
                 silent: opts?.hideText,
                 replace: opts?.maskChar,
-                timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
+                timeout: secToWait ? secToWait * 1000 : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
             });
             if (opts?.hideText) {
                 process.stdout.write("\r\n");

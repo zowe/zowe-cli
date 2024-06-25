@@ -11,11 +11,11 @@
 
 import { IOptions } from "../../doc/IOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Headers, IHeaderContent } from "@zowe/imperative";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
@@ -109,8 +109,8 @@ export class Utilities {
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const stdout = jsonObj.stdout[0];
             // Tests if binary tag set
-            return (stdout.indexOf("b ") > -1) ||
-                (stdout.indexOf("UTF-") > -1) || (stdout.indexOf("ISO8859-") > -1) || (stdout.indexOf("IBM-850") > -1);
+            return stdout.indexOf("b ") > -1 ||
+                stdout.indexOf("UTF-") > -1 || stdout.indexOf("ISO8859-") > -1 || stdout.indexOf("IBM-850") > -1;
         }
         return false;
     }

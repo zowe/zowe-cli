@@ -9,7 +9,7 @@
 *
 */
 
-import { ConfigurationLoader } from "..";
+import { ConfigurationLoader } from "../src/ConfigurationLoader";
 import { IImperativeOverrides } from "../src/doc/IImperativeOverrides";
 import { IApimlSvcAttrs } from "../src/doc/IApimlSvcAttrs";
 import { homedir } from "os";

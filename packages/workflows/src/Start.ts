@@ -15,7 +15,6 @@ import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { WorkflowConstants, noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IStartWorkflow, startT } from "./doc/IStartWorkflow";
-import { isNullOrUndefined } from "util";
 
 /**
  * Class to handle starting of zOSMF workflow instance
@@ -51,7 +50,7 @@ export class StartWorkflow{
             // TODO error if stepName doesn't exist + add to unit and system tests
             data.stepName = step;
         }
-        if (!isNullOrUndefined(subsequent)) {
+        if (!(subsequent == null)) {
             data.performSubsequent = subsequent;
         }
 
