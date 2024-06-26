@@ -12,7 +12,6 @@
 import { AbstractSession, Logger, TextUtils } from "@zowe/imperative";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { isNullOrUndefined } from "util";
 import { ConsoleValidator } from "./ConsoleValidator";
 import { IZosmfCollectResponse } from "./doc/zosmf/IZosmfCollectResponse";
 import { collectProcessingDetails, ConsoleConstants, decreaseCounter, resetCounter } from "./ConsoleConstants";
@@ -70,11 +69,11 @@ export class CollectCommand {
     public static async collect(session: AbstractSession, parms: ICollectParms, response?: IConsoleResponse) {
         ConsoleValidator.validateCollectParms(session, parms);
 
-        if (isNullOrUndefined(response)) {
+        if (response == null) {
             response = ConsoleResponseService.getEmptyConsoleResponse();
         }
 
-        const consoleName: string = isNullOrUndefined(parms.consoleName) ? ConsoleConstants.RES_DEF_CN : parms.consoleName;
+        const consoleName: string = parms.consoleName == null ? ConsoleConstants.RES_DEF_CN : parms.consoleName;
         const maxFollowUpAttempts: number = CollectCommand.getFollowUpAttempts(parms);
         const timeout = CollectCommand.getTimeout(parms);
         let collectResponse: IZosmfCollectResponse;
@@ -127,7 +126,7 @@ export class CollectCommand {
      * @return {number}
      */
     private static getFollowUpAttempts(parms: ICollectParms): number {
-        return isNullOrUndefined(parms) || isNullOrUndefined(parms.followUpAttempts) ? ConsoleConstants.DEFAULT_FOLLOWUP_ATTEMPTS
+        return parms == null || parms.followUpAttempts == null ? ConsoleConstants.DEFAULT_FOLLOWUP_ATTEMPTS
             : parms.followUpAttempts;
     }
 
@@ -138,7 +137,7 @@ export class CollectCommand {
      * @memberof CollectCommand
      */
     private static getTimeout(parms: ICollectParms): number {
-        return isNullOrUndefined(parms) || isNullOrUndefined(parms.waitToCollect) ? ConsoleConstants.DEFAULT_TIMEOUT
+        return parms == null || parms.waitToCollect == null ? ConsoleConstants.DEFAULT_TIMEOUT
             : parms.waitToCollect * CollectCommand.TO_SECONDS;
     }
 

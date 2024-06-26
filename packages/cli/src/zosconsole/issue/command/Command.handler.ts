@@ -11,7 +11,6 @@
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { ICollectParms, IConsoleResponse, IIssueParms, IssueCommand } from "@zowe/zos-console-for-zowe-sdk";
-import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -34,7 +33,7 @@ export default class Handler extends ZosmfBaseHandler {
             async: commandParameters.arguments["key-only"] === true ? "Y" : "N"
         };
 
-        if (isNullOrUndefined(commandParameters.arguments["wait-to-collect"])) {
+        if (commandParameters.arguments["wait-to-collect"] == null) {
             response = await IssueCommand.issue(this.mSession, issueParms);
         } else {
             const collectParms: ICollectParms = {
@@ -48,7 +47,7 @@ export default class Handler extends ZosmfBaseHandler {
 
         // Print out the response
         if (commandParameters.arguments["key-only"]) {
-            if (!isNullOrUndefined(response.lastResponseKey)) {
+            if (!(response.lastResponseKey == null)) {
                 commandParameters.response.console.log(response.lastResponseKey);
             }
         } else {
@@ -58,7 +57,7 @@ export default class Handler extends ZosmfBaseHandler {
                     responseKey: response.lastResponseKey,
                     cmdResponseUrl: response.cmdResponseUrl || undefined,
                     keywordDetected: response.keywordDetected ||
-                        ((!isNullOrUndefined(commandParameters.arguments["solicited-keyword"])) ? false : undefined)
+                        (!(commandParameters.arguments["solicited-keyword"] == null) ? false : undefined)
                 };
                 commandParameters.response.console.log("Additional details:");
                 commandParameters.response.console.log("-------------------");

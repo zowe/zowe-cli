@@ -12,25 +12,26 @@
 import * as T from "../../../TestUtil";
 import { IImperativeConfig, Imperative } from "../../../../../src/imperative";
 import { ImperativeConfig } from "../../../../../src/utilities";
+import { dirname } from "path";
+import { existsSync } from "fs";
 
 describe("Imperative should validate config provided by the consumer", function () {
-    const testDir = T.createUniqueTestDataDir("config-loading");
-    const packageJsonPath = testDir + "/package.json";
-    const mainModule = process.mainModule;
-
-    beforeAll(() => {
-        // Temporarily change the main module filename so that the test can work.
-        (process.mainModule as any) = {
-            filename: packageJsonPath
-        };
-    });
+    let packageJsonPath: string;
+    // This is just to satisfy the type check. As long as we are CommonJS, this should be defined
+    if (require.main) {
+        packageJsonPath = dirname(require.main.filename) + "/package.json";
+        if (existsSync(packageJsonPath)) {
+            // Throw an error if package.json exists in the main module dir, since we don't want to overwrite or delete it.
+            // Let the user decide if it is test data, and delete it if it is left over from a previous test.
+            throw Error("Package JSON exists at " + packageJsonPath + ". Verify the file is test data and delete if it is.");
+        }
+    }
 
     afterAll(() => {
-        process.mainModule = mainModule;
         T.unlinkSync(packageJsonPath);
     });
 
-    it("We should be able to load our configuration from our package.json", function () {
+    it("We should be able to load our configuration from our package.json", async function () {
         const config: IImperativeConfig = {
             definitions: [
                 {
@@ -45,10 +46,9 @@ describe("Imperative should validate config provided by the consumer", function 
             rootCommandDescription: "My Product CLI"
         };
         T.writeFileSync(packageJsonPath, JSON.stringify({imperative: config, name: "sample"}));
-        return Imperative.init().then(() => {
-            // "Display name should have matched our config"
-            expect(ImperativeConfig.instance.loadedConfig.productDisplayName)
-                .toEqual(config.productDisplayName);
-        });
+        await Imperative.init();
+
+        // "Display name should have matched our config"
+        expect(ImperativeConfig.instance.loadedConfig.productDisplayName).toEqual(config.productDisplayName);
     });
 });

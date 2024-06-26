@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.0.0-next.202406140245`
+
+- BugFix: Updated documentation for the `zos-files search ds` command's `--mainframe-search` option to include a disclaimer about z/OSMF API limitations. [#2160](https://github.com/zowe/zowe-cli/issues/2160)
+
 ## `8.0.0-next.202406061600`
 
 - BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
@@ -97,7 +101,6 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
   - Removed zosmfProfile from `ZosFilesBase.handler.ts`
   - Removed statCmdFlag as an export from Shell.ts
 
-
 ## `8.0.0-next.202401262128`
 
 - Enhancement: Adding `--binary` and `--encoding` options to `zosfiles edit`
@@ -131,6 +134,10 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.25.1`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2157](https://github.com/zowe/zowe-cli/pull/2157)
 
 ## `7.25.0`
 

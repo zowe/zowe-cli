@@ -606,7 +606,9 @@ export default {
                 },
                 OPTIONS: {
                     CASESENSITIVE: "The search should be case sensitive",
-                    MAINFRAMESEARCH: "Perform a preliminary search on the mainframe, reducing network traffic",
+                    MAINFRAMESEARCH: "Perform a preliminary search on the mainframe, reducing network traffic. However, this option " +
+                    "does not work with data sets that contain binary data. This option should be omitted if any data sets may be in " +
+                    "binary format. Failure to do so may result in an incomplete set of search results.",
                     MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to search files. " +
                     "Increasing the value results in faster searches. " +
                     "However, increasing the value increases resource consumption on z/OS and can be prone " +

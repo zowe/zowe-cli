@@ -23,14 +23,9 @@ const iee_s = ImperativeSharedEvents;
 let cwd = '';
 
 describe("Event Emitter", () => {
-    const mainModule = process.mainModule;
     const testLogger = TestLogger.getTestLogger();
 
     beforeAll(async () => {
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "ZOWE_CLI_HOME",
             testName: "event_emitter"
@@ -47,7 +42,6 @@ describe("Event Emitter", () => {
     });
 
     afterAll(() => {
-        process.mainModule = mainModule;
         TestUtil.rimraf(cwd);
     });
 

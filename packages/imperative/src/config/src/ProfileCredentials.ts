@@ -23,7 +23,7 @@ export class ProfileCredentials {
     private mCredMgrOverride?: ICredentialManagerInit;
 
     constructor(private mProfileInfo: ProfileInfo, opts?: IProfOpts | (() => NodeModule)) {
-        this.mCredMgrOverride = (typeof opts === "function") ? ProfileCredentials.defaultCredMgrWithKeytar(opts) : opts?.credMgrOverride;
+        this.mCredMgrOverride = typeof opts === "function" ? ProfileCredentials.defaultCredMgrWithKeytar(opts) : opts?.credMgrOverride;
     }
 
     /**
@@ -78,9 +78,9 @@ export class ProfileCredentials {
             try {
                 // TODO? Make CredentialManagerFactory.initialize params optional
                 // see https://github.com/zowe/imperative/issues/545
-                await CredentialManagerFactory.initialize({ service: null, ...(this.mCredMgrOverride || {}) });
+                await CredentialManagerFactory.initialize({ service: null, ...this.mCredMgrOverride || {} });
             } catch (error) {
-                throw (error instanceof ImperativeError) ? error : new ImperativeError({
+                throw error instanceof ImperativeError ? error : new ImperativeError({
                     msg: `Failed to load CredentialManager class: ${error.message}`,
                     causeErrors: error
                 });
@@ -88,12 +88,12 @@ export class ProfileCredentials {
         }
 
         await this.mProfileInfo.getTeamConfig().api.secure.load({
-            load: ((key: string): Promise<string> => {
+            load: (key: string): Promise<string> => {
                 return CredentialManagerFactory.manager.load(key, true);
-            }),
-            save: ((key: string, value: any): Promise<void> => {
+            },
+            save: (key: string, value: any): Promise<void> => {
                 return CredentialManagerFactory.manager.save(key, value);
-            })
+            }
         });
     }
 
@@ -119,7 +119,7 @@ export class ProfileCredentials {
             }
             const value1 = settings?.overrides.CredentialManager;
             const value2 = settings?.overrides["credential-manager"];
-            return (typeof value1 === "string" && value1.length > 0) || (typeof value2 === "string" && value2.length > 0);
+            return typeof value1 === "string" && value1.length > 0 || typeof value2 === "string" && value2.length > 0;
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to read Imperative settings file",

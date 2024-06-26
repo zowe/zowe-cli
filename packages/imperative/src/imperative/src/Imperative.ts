@@ -129,7 +129,7 @@ export class Imperative {
             /**
              * Identify caller's location on the system
              */
-            ImperativeConfig.instance.callerLocation = process.mainModule.filename;
+            ImperativeConfig.instance.callerLocation = require.main.filename;
 
             /**
              * Load callers configuration, validate, and save

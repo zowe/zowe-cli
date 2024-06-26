@@ -10,7 +10,8 @@
 */
 
 import { ICommandArguments, ICommandHandler, IHandlerParameters } from "../../../../../cmd";
-import { Config, ConfigAutoStore, ConfigConstants, ConfigSchema } from "../../../../../config";
+import { Config, ConfigConstants, ConfigSchema } from "../../../../../config";
+import { ConfigAutoStore } from "../../../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
 import { ImperativeError } from "../../../../../error";
 import { Logger } from "../../../../../logger";

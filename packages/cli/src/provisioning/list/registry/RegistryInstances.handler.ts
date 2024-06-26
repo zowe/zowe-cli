@@ -18,7 +18,6 @@ import {
     ProvisioningConstants,
     ListRegistryInstances
 } from "@zowe/provisioning-for-zowe-sdk";
-import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -44,7 +43,7 @@ export default class RegistryInstancesHandler extends ZosmfBaseHandler {
             commandParameters.response.console.log(TextUtils.prettyJson(unique));
         } else {
             commandParameters.response.console.log("z/OSMF Service Registry");
-            if (!isNullOrUndefined(commandParameters.arguments.filterByType)) {
+            if (commandParameters.arguments.filterByType != null) {
                 commandParameters.response.console.log("\nShowing ONLY \""
                     + commandParameters.arguments.filterByType.toUpperCase() + "\" instance types.");
             }

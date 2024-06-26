@@ -38,7 +38,7 @@ export const LocalFile: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         CreateCommonOptions.localFile,
         CreateCommonOptions.systemName,
         CreateCommonOptions.owner,
@@ -50,7 +50,7 @@ export const LocalFile: ICommandDefinition = {
         CreateCommonOptions.overwrite,
         CreateCommonOptions.remoteDirectory,
         CreateCommonOptions.keepFiles
-    ]),
+    ],
     outputFormatOptions: true,
     examples: [
         {

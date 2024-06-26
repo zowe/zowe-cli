@@ -37,7 +37,7 @@ export const DataSet: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         CreateCommonOptions.dataSet,
         CreateCommonOptions.systemName,
         CreateCommonOptions.owner,
@@ -48,7 +48,7 @@ export const DataSet: ICommandDefinition = {
         CreateCommonOptions.deleteCompleted,
         CreateCommonOptions.overwrite
         // CreateCommonOptions.zosmfVersion
-    ]),
+    ],
     outputFormatOptions: true,
     examples: [
         {

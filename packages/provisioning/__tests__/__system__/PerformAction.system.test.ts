@@ -44,6 +44,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             templateName);
         instanceID = instance["object-id"];
         Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+        if (instanceID == null) { throw Error("Cannot continue test - instance ID is undefined"); }
     });
 
     afterAll(async () => {

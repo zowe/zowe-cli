@@ -78,7 +78,7 @@ describe("View uss file", () => {
             await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length)]);
+            const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length)]);
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -90,7 +90,7 @@ describe("View uss file", () => {
             await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--binary"]);
+            const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length), "--binary"]);
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -102,7 +102,7 @@ describe("View uss file", () => {
             await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data), { binary: true });
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--binary"]);
+            const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length), "--binary"]);
             const respdata = response.stdout.toLocaleString();
 
             expect(response.stderr.toString()).toBe("");
@@ -115,7 +115,7 @@ describe("View uss file", () => {
             await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
-            const response = runCliScript(shellScript, testEnvironment, [ussname.substr(1, ussname.length), "--range", "0,1"]);
+            const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length), "--range", "0,1"]);
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

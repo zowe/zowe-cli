@@ -50,8 +50,8 @@ export default class FruitAutoInitHandler extends BaseAutoInitHandler {
      * @returns {Promise<string>} The response from the auth service containing a token
      */
     protected async doAutoInit(session: AbstractSession, params: IHandlerParameters): Promise<IConfig> {
-        const tokenType = (session.ISession.type === "basic") ? SessConstants.TOKEN_TYPE_JWT : session.ISession.tokenType;
-        const tokenValue = (session.ISession.type === "basic") ?
+        const tokenType = session.ISession.type === "basic" ? SessConstants.TOKEN_TYPE_JWT : session.ISession.tokenType;
+        const tokenValue = session.ISession.type === "basic" ?
             `${session.ISession.user}:${session.ISession.password}@fakeToken` : session.ISession.tokenValue;
         return {
             profiles: {

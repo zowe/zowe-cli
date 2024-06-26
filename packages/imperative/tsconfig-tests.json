@@ -25,12 +25,13 @@
     "./node_modules/@types"
   ],
   "include": [
-    "**/__tests__/*"
+    "**/__tests__/*",
+    "**/__tests__/**/*",
+    "**/__mocks__/*"
   ],
   "exclude": [
     "lib",
-    "node_modules",
-    "**/__mocks__/*"
+    "node_modules"
   ],
   "files": [
     "../../__types__/wontache.d.ts"

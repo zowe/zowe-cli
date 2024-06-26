@@ -176,7 +176,7 @@ export class ConvertV1Profiles {
                 }
             }
         }
-        return (ConvertV1Profiles.convertResult.numProfilesFound > 0);
+        return ConvertV1Profiles.convertResult.numProfilesFound > 0;
     }
 
     /**
@@ -207,7 +207,7 @@ export class ConvertV1Profiles {
          * caller should uninstall.
          */
         ConvertV1Profiles.convertResult.v1ScsPluginName =
-            (oldPluginInfo.plugins.length > 0) ? oldPluginInfo.plugins[0] : null;
+            oldPluginInfo.plugins.length > 0 ? oldPluginInfo.plugins[0] : null;
     }
 
     /**
@@ -294,7 +294,7 @@ export class ConvertV1Profiles {
                     };
 
                     ConvertV1Profiles.convertResult.profilesConverted[profileType] = [
-                        ...(ConvertV1Profiles.convertResult.profilesConverted[profileType] || []), profileName
+                        ...ConvertV1Profiles.convertResult.profilesConverted[profileType] || [], profileName
                     ];
                 } catch (error) {
                     ConvertV1Profiles.convertResult.credsWereMigrated = false;
@@ -354,12 +354,12 @@ export class ConvertV1Profiles {
         ) {
             // Either the vault does not exist or it is empty. So create a vault.
             ImperativeConfig.instance.config.mVault = {
-                load: ((key: string): Promise<string> => {
+                load: (key: string): Promise<string> => {
                     return CredentialManagerFactory.manager.load(key, true);
-                }),
-                save: ((key: string, value: any): Promise<void> => {
+                },
+                save: (key: string, value: any): Promise<void> => {
                     return CredentialManagerFactory.manager.save(key, value);
-                })
+                }
             };
         }
 

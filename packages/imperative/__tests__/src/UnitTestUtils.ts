@@ -10,7 +10,6 @@
 */
 
 import { TestLogger } from "./TestLogger";
-import { isNullOrUndefined } from "util";
 
 const fnArgs = require("get-function-arguments");
 const cowsay = require("cowsay");
@@ -84,7 +83,7 @@ export class UnitTestUtils {
         // eslint-disable-next-line no-global-assign
         (it as any) = function (description: string, testFunc: (done?: any) => void) {
             const log = TestLogger.getTestLogger();
-            if (isNullOrUndefined(testDetailHandler)) {
+            if (testDetailHandler == null) {
                 testDetailHandler = function (details: any) {
                     log.info("\n" + cowsay.say({
                         text: (details as any).description,

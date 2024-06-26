@@ -17,6 +17,7 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
 import { ICommandProfileSchema } from "../../cmd";
 import { Config } from "../../config";
+import { sync } from "find-up";
 
 /**
  * This class is used to contain all configuration being set by Imperative.
@@ -273,7 +274,7 @@ export class ImperativeConfig {
         // try to locate the file using find-up first
         let findupErr: Error;
         try {
-            const filePath = require("find-up").sync(file, {cwd: ImperativeConfig.instance.callerLocation});
+            const filePath = sync(file, {cwd: ImperativeConfig.instance.callerLocation});
             return require(filePath);
         } catch (e) {
             // couldn't locate using find-up, try to require directly

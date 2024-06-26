@@ -10,11 +10,11 @@
 */
 
 import * as fs from "fs";
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
 import { posix } from "path";
 import * as util from "util";
 
-import { IHeaderContent, ZosmfRestClient, ZosmfHeaders, getErrorContext } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders, getErrorContext } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

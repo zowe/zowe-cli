@@ -10,8 +10,8 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import { isNullOrUndefined } from "util";
-import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
+import { CommandProcessor } from "../../../../../src/cmd/src/CommandProcessor";
+import { ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
 import { ValidationTestCommand } from "../ValidationTestCommand";
 import { Constants } from "../../../../../src/constants/index";
 import { Imperative } from "../../../../../src/imperative/src/Imperative";
@@ -19,7 +19,7 @@ import { TestLogger } from "../../../../src/TestLogger";
 import { createUniqueTestDataDir, rimraf } from "../../../TestUtil";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { IProfileTypeConfiguration } from "../../../../../src/index";
+import { IProfileTypeConfiguration, ImperativeConfig } from "../../../../../src/index";
 
 const ENV_PREFIX = "INTEGRATION_TEST";
 const TEST_HOME = createUniqueTestDataDir();
@@ -44,13 +44,9 @@ const DUMMY_PROFILE_TYPE_CONFIG: IProfileTypeConfiguration[] = [
 ];
 describe("Imperative should provide advanced syntax validation rules", function () {
     const home = __dirname + "/validationtests";
-    const mainModule = process.mainModule;
 
-    beforeAll(function () {
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-        return Imperative.init({
+    beforeAll(async function () {
+        await Imperative.init({
             productDisplayName: "Validation tests",
             definitions: [{
                 name: "banana",
@@ -59,9 +55,9 @@ describe("Imperative should provide advanced syntax validation rules", function 
             }],
             defaultHome: home,
         });
+        ImperativeConfig.instance.callerLocation = __filename;
     });
     afterAll(() => {
-        process.mainModule = mainModule;
         rimraf(home);
     });
     describe("Advanced syntax validation for commands using a test command", function () {
@@ -105,7 +101,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
                         } else {
                             expect(completedResponse.success).toEqual(false);
                         }
-                        if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                        if (!(expectedText == undefined) && expectedText.length > 0) {
                             (completedResponse.stderr as any) = completedResponse.stderr.toString();
                             (completedResponse.stdout as any) = completedResponse.stdout.toString();
                             for (const text of expectedText) {

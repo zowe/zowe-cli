@@ -2486,7 +2486,7 @@ describe("z/OS Files - Upload", () => {
                 //      ignoredfile
 
                 isDirSpy.mockImplementation((dirPath: string) => {
-                    return (dirPath.endsWith("dir"));
+                    return dirPath.endsWith("dir");
                 });
                 getFileListWithFsSpy.mockImplementation((dirPath: any): any[] => {
                     if (dirPath.endsWith("uploaddir")) {

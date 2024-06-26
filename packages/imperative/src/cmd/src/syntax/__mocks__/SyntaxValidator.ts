@@ -19,7 +19,7 @@ export class SyntaxValidator {
             if (commandArguments.syntaxThrow === true) {
                 throw new Error("Syntax validation error!");
             } else {
-                validationComplete({ valid: (commandArguments.valid == null) ? false : commandArguments.valid as boolean });
+                validationComplete({ valid: commandArguments.valid == null ? false : commandArguments.valid as boolean });
             }
         });
     }

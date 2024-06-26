@@ -511,10 +511,10 @@ export class CommandPreparer {
             if (definition.profile.optional) {
                 types = types.concat(definition.profile.optional);
             }
-            const profileOptions: string[] = types.filter((type) => (
+            const profileOptions: string[] = types.filter((type) =>
                 !Array.isArray(definition.profile.suppressOptions) ?
                     true : definition.profile.suppressOptions.indexOf(type) < 0
-            ));
+            );
 
             profileOptions.forEach((profOpt) => {
                 const [profOptName, profOptAlias] = ProfileUtils.getProfileOptionAndAlias(profOpt);
@@ -617,7 +617,7 @@ export class CommandPreparer {
                     /**
                      * Either merge/append or overwrite the field in the definition.
                      */
-                    const cloned = (trait.value != null) ?
+                    const cloned = trait.value != null ?
                         JSON.parse(JSON.stringify(trait.value)) : undefined;
 
                     if (cloned == null) {

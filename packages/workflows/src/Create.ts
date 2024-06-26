@@ -21,7 +21,6 @@ import {
     wrongOwner
 } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { isNullOrUndefined } from "util";
 import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
 import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
@@ -96,22 +95,22 @@ export class CreateWorkflow{
             accessType: AccessType,
             deleteCompletedJobs: DeleteCompletedJobs
         };
-        if (!isNullOrUndefined(VariableInputFile)){
+        if (!(VariableInputFile == null)){
             if (VariableInputFile.charAt(0) === "/" && VariableInputFile.charAt(1) === "/") {
                 VariableInputFile = VariableInputFile.substring(1);
             }
             data.variableInputFile = VariableInputFile;
         }
-        if (!isNullOrUndefined(Variables)){
+        if (!(Variables == null)){
             data.variables = this.parseProperties(Variables);
         }
-        if (isNullOrUndefined(AssignToOwner)){
+        if (AssignToOwner == null){
             data.assignToOwner = true;
         }
-        if (isNullOrUndefined(AccessType)){
+        if (AccessType == null){
             data.accessType = "Public";
         }
-        if (isNullOrUndefined(DeleteCompletedJobs)){
+        if (DeleteCompletedJobs == null){
             data.deleteCompletedJobs = false;
         }
 
@@ -210,7 +209,7 @@ export class CreateWorkflow{
             await Upload.fileToUssFile(session, localFile, remoteFile, { binary: true });
         } catch (error) {
             throw new ImperativeError({
-                msg : "Failed to create temporary uss file\n" + (error.message) + "\n" + (error.additionalDetails)
+                msg : "Failed to create temporary uss file\n" + error.message + "\n" + error.additionalDetails
             });
         }
     }
