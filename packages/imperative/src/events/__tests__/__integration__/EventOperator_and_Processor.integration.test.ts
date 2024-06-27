@@ -144,7 +144,7 @@ describe("Event Operator and Processor", () => {
         });
     });
 
-    describe("Custom Events ", () => {
+    describe("Custom Events", () => {
         it("should create an event file upon first subscription if file does not exist - specific to CustomUserEvent directory structure", async () => {
             const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
             const callback = jest.fn();
