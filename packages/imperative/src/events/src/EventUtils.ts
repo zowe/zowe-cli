@@ -123,15 +123,12 @@ export class EventUtils {
      */
     public static ensureFileExists(filePath: string) {
         try {
-            if (!fs.existsSync(filePath)) {
-                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                fs.closeSync(fs.openSync(filePath, 'w+', 0o640)); // user read/write, group read
-            }
+            const fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o600);
+            fs.closeSync(fd);
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
         }
     }
-
 
     /**
      * Create an event with minimal information
