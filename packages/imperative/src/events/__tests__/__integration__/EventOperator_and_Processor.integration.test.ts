@@ -10,7 +10,7 @@
 */
 
 import { SetupTestEnvironment } from "../../../../__tests__/__src__/environment/SetupTestEnvironment";
-import { ConfigUtils, EventCallback, EventOperator, EventProcessor, EventUtils, IEventJson, ZoweSharedEvents, ZoweUserEvents } from "../../..";
+import { ConfigUtils, EventCallback, EventOperator, EventProcessor, EventUtils, IEventJson, ZoweSharedEvents } from "../../..";
 import * as fs from "fs";
 import * as path from "path";
 import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
@@ -42,11 +42,6 @@ describe("Event Operator and Processor", () => {
         jest.restoreAllMocks();
     });
 
-    // afterAll(() => {
-    //     if (fs.existsSync(testsEventDir)) {
-    //         fs.rmdirSync(testsEventDir, { recursive: true });
-    //     }
-// });
     describe("Zowe Events", () => {
         it("should create an event file upon first subscription if file does not exist", async () => {
             const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
@@ -123,9 +118,8 @@ describe("Event Operator and Processor", () => {
             // Subscribe to  event
             firstWatcher.subscribeShared(sharedEvent, firstCallback);
             secondWatcher.subscribeShared(sharedEvent, secondCallback);
-            const firstEventDetails: IEventJson = (firstWatcher as any).subscribedEvents.get(sharedEvent).toJson();
-            const secondEventDetails: IEventJson = (secondWatcher as any).subscribedEvents.get(sharedEvent).toJson();
 
+            // unsubscribe!
             secondWatcher.unsubscribe(sharedEvent);
 
             expect((firstWatcher as any).subscribedEvents.get(sharedEvent)).toBeTruthy();
