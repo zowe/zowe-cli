@@ -17,11 +17,14 @@ import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
 
 const zoweApp = "Zowe";
 const sampleApps = ["firstSample", "secondSample"];
-let testsEventDir: string;
 let zoweCliHome: string;
 
+/**
+ * |  Zowe Event Dir  | <...>/.zowe/.events/Zowe/<zoweEventName>
+ * | Custom Event Dir | <...>/.zowe/.events/custApp/<custEventName>
+ */
 describe("Event Operator and Processor", () => {
-    const sharedEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
+    const sharedZoweEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
     const customUserEvent = "onCustomUserEvent";
     beforeAll(async () => {
         await SetupTestEnvironment.createTestEnv({
@@ -32,7 +35,6 @@ describe("Event Operator and Processor", () => {
         process.env.ZOWE_CLI_HOME = path.join(process.env.ZOWE_CLI_HOME || '', ".zowe");
         zoweCliHome  = process.env.ZOWE_CLI_HOME;
         EventUtils.ensureEventsDirExists(zoweCliHome);
-        testsEventDir = path.join(zoweCliHome, '.events');
         const extJson: IExtendersJsonOpts = ConfigUtils.readExtendersJson();
         sampleApps.forEach(app => extJson.profileTypes[app] = { from: [app] });
         ConfigUtils.writeExtendersJson(extJson);
@@ -49,20 +51,20 @@ describe("Event Operator and Processor", () => {
             const Watcher = EventOperator.getWatcher(zoweApp);
             const Emitter = EventOperator.getZoweProcessor();
 
-            expect((Watcher as EventProcessor).subscribedEvents.get(sharedEvent)).toBeFalsy();
+            expect((Watcher as EventProcessor).subscribedEvents.get(sharedZoweEvent)).toBeFalsy();
 
             // Subscribe to  event
-            Watcher.subscribeShared(sharedEvent, callback);
-            const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(sharedEvent).toJson();
+            Watcher.subscribeShared(sharedZoweEvent, callback);
+            const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(sharedZoweEvent).toJson();
 
             expect(callback).not.toHaveBeenCalled();
             expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
 
             // Emit event and trigger callback
-            Emitter.emitZoweEvent(sharedEvent);
+            Emitter.emitZoweEvent(sharedZoweEvent);
             setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)()); // Mock event emission
 
-            expect(eventDetails.eventName).toEqual(sharedEvent);
+            expect(eventDetails.eventName).toEqual(sharedZoweEvent);
             expect(EventUtils.isSharedEvent(eventDetails.eventName)).toBeTruthy();
             expect(callback).toHaveBeenCalled();
             EventOperator.deleteProcessor(zoweApp);
@@ -70,7 +72,7 @@ describe("Event Operator and Processor", () => {
 
         it("should trigger subscriptions for all instances watching for ZoweSharedEvent", async () => {
             const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
-            // create two watchers watching the same app (Zowe)
+            // create two watchers watching the same app (Zowe - default)
             const firstWatcher = EventOperator.getWatcher();
             const secondWatcher = EventOperator.getWatcher();
             const Emitter = EventOperator.getZoweProcessor();
@@ -78,21 +80,22 @@ describe("Event Operator and Processor", () => {
             const firstCallback: EventCallback = jest.fn() as EventCallback;
             const secondCallback: EventCallback = jest.fn() as EventCallback;
 
-            expect((firstWatcher as EventProcessor).subscribedEvents.get(sharedEvent)).toBeFalsy();
-            expect((secondWatcher as EventProcessor).subscribedEvents.get(sharedEvent)).toBeFalsy();
+            // We expect no subscriptions yet
+            expect((firstWatcher as EventProcessor).subscribedEvents.get(sharedZoweEvent)).toBeFalsy();
+            expect((secondWatcher as EventProcessor).subscribedEvents.get(sharedZoweEvent)).toBeFalsy();
 
             // Subscribe to  event
-            firstWatcher.subscribeShared(sharedEvent, firstCallback);
-            secondWatcher.subscribeShared(sharedEvent, secondCallback);
-            const firstEventDetails: IEventJson = (firstWatcher as any).subscribedEvents.get(sharedEvent).toJson();
-            const secondEventDetails: IEventJson = (secondWatcher as any).subscribedEvents.get(sharedEvent).toJson();
+            firstWatcher.subscribeShared(sharedZoweEvent, firstCallback);
+            secondWatcher.subscribeShared(sharedZoweEvent, secondCallback);
+            const firstEventDetails: IEventJson = (firstWatcher as any).subscribedEvents.get(sharedZoweEvent).toJson();
+            const secondEventDetails: IEventJson = (secondWatcher as any).subscribedEvents.get(sharedZoweEvent).toJson();
 
             // Emit event and trigger callbacks
-            Emitter.emitZoweEvent(sharedEvent);
+            Emitter.emitZoweEvent(sharedZoweEvent);
             setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)());
 
-            expect(firstEventDetails.eventName).toEqual(sharedEvent);
-            expect(secondEventDetails.eventName).toEqual(sharedEvent);
+            expect(firstEventDetails.eventName).toEqual(sharedZoweEvent);
+            expect(secondEventDetails.eventName).toEqual(sharedZoweEvent);
             expect(EventUtils.isSharedEvent(firstEventDetails.eventName)).toBeTruthy();
             expect(EventUtils.isSharedEvent(secondEventDetails.eventName)).toBeTruthy();
             expect(firstCallback).toHaveBeenCalled();
@@ -112,21 +115,21 @@ describe("Event Operator and Processor", () => {
             const firstCallback: EventCallback = jest.fn() as EventCallback;
             const secondCallback: EventCallback = jest.fn() as EventCallback;
 
-            expect((firstWatcher as EventProcessor).subscribedEvents.get(sharedEvent)).toBeFalsy();
-            expect((secondWatcher as EventProcessor).subscribedEvents.get(sharedEvent)).toBeFalsy();
+            expect((firstWatcher as EventProcessor).subscribedEvents.get(sharedZoweEvent)).toBeFalsy();
+            expect((secondWatcher as EventProcessor).subscribedEvents.get(sharedZoweEvent)).toBeFalsy();
 
             // Subscribe to  event
-            firstWatcher.subscribeShared(sharedEvent, firstCallback);
-            secondWatcher.subscribeShared(sharedEvent, secondCallback);
+            firstWatcher.subscribeShared(sharedZoweEvent, firstCallback);
+            secondWatcher.subscribeShared(sharedZoweEvent, secondCallback);
 
             // unsubscribe!
-            secondWatcher.unsubscribe(sharedEvent);
+            secondWatcher.unsubscribe(sharedZoweEvent);
 
-            expect((firstWatcher as any).subscribedEvents.get(sharedEvent)).toBeTruthy();
-            expect((secondWatcher as any).subscribedEvents.get(sharedEvent)).toBeFalsy();
+            expect((firstWatcher as any).subscribedEvents.get(sharedZoweEvent)).toBeTruthy();
+            expect((secondWatcher as any).subscribedEvents.get(sharedZoweEvent)).toBeFalsy();
 
             // Emit event and trigger callbacks
-            Emitter.emitZoweEvent(sharedEvent);
+            Emitter.emitZoweEvent(sharedZoweEvent);
             setupWatcherSpy.mock.calls.forEach(call => {
                 if (call[0].appName === zoweApp) { (call[2] as Function)(); }
             });
