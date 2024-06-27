@@ -49,9 +49,10 @@ afterAll(() => {
 });
 
 describe("Event Operator and Processor", () => {
-    const userEvent = ZoweUserEvents.ON_VAULT_CHANGED;
-    const customEvent = "onCustomEvent";
     const sharedEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
+    const userEvent = ZoweUserEvents.ON_VAULT_CHANGED;
+    const customUserEvent = "onCustomUserEvent";
+    const customSharedEvent = "onCustomSharedEvent";
 
     describe("Zowe Events - Shared", () => {
         it("should create an event file upon first subscription if file does not exist", async () => {
@@ -174,28 +175,56 @@ describe("Event Operator and Processor", () => {
         });
     });
 
-    describe("Custom Events", () => {
-        it("should create an event file upon first subscription if file does not exist - specific to custom event directory structure", async () => {
+    describe("Custom Events - Shared ", () => {
+        it("should create an event file upon first subscription if file does not exist - specific to CustomSharedEvent directory structure", async () => {
             const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
             const callback = jest.fn();
             const Watcher = EventOperator.getWatcher(sampleApps[0]);
             const Emitter = EventOperator.getZoweProcessor();
             const eventDir = path.join(zoweCliHome, sampleApps[0], ".events");
 
-            expect((Watcher as EventProcessor).subscribedEvents.get(customEvent)).toBeFalsy();
+            expect((Watcher as EventProcessor).subscribedEvents.get(customSharedEvent)).toBeFalsy();
 
             // Subscribe to  event
-            Watcher.subscribeShared(customEvent, callback);
-            const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(customEvent).toJson();
+            Watcher.subscribeShared(customSharedEvent, callback);
+            const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(customSharedEvent).toJson();
 
             expect(callback).not.toHaveBeenCalled();
             expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
 
             // Emit event and trigger callback
-            Emitter.emitZoweEvent(customEvent);
+            Emitter.emitZoweEvent(customSharedEvent);
             setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)()); // Mock  event emission
 
-            expect(eventDetails.eventName).toEqual(customEvent);
+            expect(eventDetails.eventName).toEqual(customSharedEvent);
+            expect(EventUtils.isSharedEvent(eventDetails.eventName)).toBeTruthy();
+            expect(callback).toHaveBeenCalled();
+            EventOperator.deleteProcessor("Zowe");
+        });
+    });
+
+    describe("Custom Events - User ", () => {
+        it("should create an event file upon first subscription if file does not exist - specific to CustomUserEvent directory structure", async () => {
+            const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
+            const callback = jest.fn();
+            const Watcher = EventOperator.getWatcher(sampleApps[0]);
+            const Emitter = EventOperator.getZoweProcessor();
+            const eventDir = path.join(zoweCliHome, sampleApps[0], ".events");
+
+            expect((Watcher as EventProcessor).subscribedEvents.get(customUserEvent)).toBeFalsy();
+
+            // Subscribe to  event
+            Watcher.subscribeShared(customUserEvent, callback);
+            const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(customUserEvent).toJson();
+
+            expect(callback).not.toHaveBeenCalled();
+            expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
+
+            // Emit event and trigger callback
+            Emitter.emitZoweEvent(customUserEvent);
+            setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)()); // Mock  event emission
+
+            expect(eventDetails.eventName).toEqual(customUserEvent);
             expect(EventUtils.isSharedEvent(eventDetails.eventName)).toBeTruthy();
             expect(callback).toHaveBeenCalled();
             EventOperator.deleteProcessor("Zowe");
