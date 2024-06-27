@@ -16,7 +16,7 @@ import * as path from "path";
 import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
 
 const zoweApp = "Zowe";
-const sampleApps = ["firstSample", "secondSample"];
+const sampleApps = ["firstApp", "secondApp"];
 let zoweCliHome: string;
 
 /**
