@@ -123,10 +123,12 @@ export class EventUtils {
      */
     public static ensureFileExists(filePath: string) {
         try {
-            const fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o600);
+            const fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o640);
             fs.closeSync(fd);
         } catch (err) {
-            throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
+            if (err.code!=='EEXIST'){
+                throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
+            }
         }
     }
 
