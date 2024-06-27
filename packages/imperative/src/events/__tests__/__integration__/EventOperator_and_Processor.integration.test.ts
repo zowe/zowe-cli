@@ -17,6 +17,9 @@ import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
 
 const appName = "Zowe";
 const sampleApps = ["sample1", "sample2"];
+const userHome = require('os').homedir();
+const userEventsDir = path.join(userHome, '.zowe', '.events');
+let sharedEventsDir: string;
 let zoweCliHome: string;
 
 beforeAll(async () => {
@@ -25,6 +28,7 @@ beforeAll(async () => {
         testName: "event_operator_and_processor"
     });
     zoweCliHome = process.env.ZOWE_CLI_HOME || '';
+    sharedEventsDir = path.join(zoweCliHome, '.events');
     const extJson: IExtendersJsonOpts = ConfigUtils.readExtendersJson();
     sampleApps.forEach(app => extJson.profileTypes[app] = { from: [app] });
     ConfigUtils.writeExtendersJson(extJson);
@@ -34,17 +38,15 @@ beforeEach(() => {
     jest.restoreAllMocks();
 });
 
-afterEach(() => {
-    const sharedEventsDir = path.join(zoweCliHome, '.events');
+afterAll(() => {
+    if (fs.existsSync(userEventsDir)) {
+        fs.rmdirSync(userEventsDir, { recursive: true });
+    }
+
     if (fs.existsSync(sharedEventsDir)) {
-        fs.rmSync(sharedEventsDir, { recursive: true, force: true });
+        fs.rmdirSync(sharedEventsDir, { recursive: true });
     }
 });
-
-const doesEventFileExist = (eventDir: string, eventName: string) => {
-    const eventFilePath = path.join(eventDir, eventName);
-    return fs.existsSync(eventFilePath);
-};
 
 describe("Event Operator and Processor", () => {
     const userEvent = ZoweUserEvents.ON_VAULT_CHANGED;
@@ -55,7 +57,6 @@ describe("Event Operator and Processor", () => {
         it("should create an event file upon first subscription if file does not exist", async () => {
             const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
             const callback = jest.fn();
-            const eventDir = path.join(zoweCliHome, ".events");
             const Watcher = EventOperator.getWatcher(appName);
             const Emitter = EventOperator.getZoweProcessor();
 
@@ -179,7 +180,7 @@ describe("Event Operator and Processor", () => {
             const callback = jest.fn();
             const Watcher = EventOperator.getWatcher(sampleApps[0]);
             const Emitter = EventOperator.getZoweProcessor();
-            const eventDir = path.join(zoweCliHome,sampleApps[0], ".events");
+            const eventDir = path.join(zoweCliHome, sampleApps[0], ".events");
 
             expect((Watcher as EventProcessor).subscribedEvents.get(customEvent)).toBeFalsy();
 
